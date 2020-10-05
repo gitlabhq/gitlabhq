@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "required": ["event", "incident"],
+  "properties": {
+    "event": { "type": "string" },
+    "incident": {
+      "type": "object",
+      "required": [
+        "html_url",
+        "incident_number",
+        "title",
+        "status",
+        "created_at",
+        "urgency",
+        "incident_key"
+      ],
+      "properties": {
+        "html_url": { "type": "string" },
+        "incindent_number": { "type": "integer" },
+        "title": { "type": "string" },
+        "status": { "type": "string" },
+        "created_at": { "type": "string" },
+        "urgency": { "type": "string", "enum": ["high", "low"] },
+        "incident_key": { "type": ["string", "null"] },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "assignee": {
+              "type": "array",
+              "items": {
+                "summary": { "type": "string" },
+                "html_url": { "type": "string" }
+              }
+            }
+          }
+        },
+        "impacted_services": {
+          "type": "array",
+          "items": {
+            "summary": { "type": "string" },
+            "html_url": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

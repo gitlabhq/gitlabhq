@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :docker, :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages do
     describe 'Maven Repository' do
       include Runtime::Fixtures
 

@@ -1,0 +1,5 @@
+---
+title: Fix broken user avatars in Jira Development Panel
+merge_request: 43563
+author:
+type: fixed

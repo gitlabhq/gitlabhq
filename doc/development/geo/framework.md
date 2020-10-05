@@ -91,8 +91,6 @@ module Geo
       ::Packages::PackageFile
     end
 
-    # Change this to `true` to release replication of this model. Then remove
-    # this override in the next release.
     # The feature flag follows the format `geo_#{replicable_name}_replication`,
     # so here it would be `geo_package_file_replication`
     def self.replication_enabled_by_default?
@@ -220,8 +218,6 @@ For example, to add support for files referenced by a `Widget` model with a
          model_record.file
        end
 
-       # Change this to `true` to release replication of this model. Then remove
-       # this override in the next release.
        # The feature flag follows the format `geo_#{replicable_name}_replication`,
        # so here it would be `geo_widget_replication`
        def self.replication_enabled_by_default?
@@ -637,7 +633,7 @@ the Admin Area UI, and Prometheus!
          include ::Types::Geo::RegistryType
 
          graphql_name 'WidgetRegistry'
-         description 'Represents the sync and verification state of a widget'
+         description 'Represents the Geo sync and verification state of a widget'
 
          field :widget_id, GraphQL::ID_TYPE, null: false, description: 'ID of the Widget'
        end
@@ -676,6 +672,12 @@ the Admin Area UI, and Prometheus!
    }
    ```
 
+1. Update the GraphQL reference documentation:
+
+   ```shell
+   bundle exec rake gitlab:graphql:compile_docs
+   ```
+
 Individual widget synchronization and verification data should now be available
 via the GraphQL API!
 
@@ -693,3 +695,33 @@ To do: This should be done as part of
 
 Widget sync and verification data (aggregate and individual) should now be
 available in the Admin UI!
+
+#### Releasing the feature
+
+1. In `ee/app/replicators/geo/widget_replicator.rb`, delete the `self.replication_enabled_by_default?` method:
+
+   ```ruby
+   module Geo
+     class WidgetReplicator < Gitlab::Geo::Replicator
+       ...
+
+       # REMOVE THIS METHOD
+       def self.replication_enabled_by_default?
+         false
+       end
+       # REMOVE THIS METHOD
+
+       ...
+     end
+   end
+   ```
+
+1. In `ee/app/graphql/types/geo/geo_node_type.rb`, remove the `feature_flag` option for the released type:
+
+   ```ruby
+   field :widget_registries, ::Types::Geo::WidgetRegistryType.connection_type,
+         null: true,
+         resolver: ::Resolvers::Geo::WidgetRegistriesResolver,
+         description: 'Find widget registries on this Geo node',
+         feature_flag: :geo_widget_replication # REMOVE THIS LINE
+   ```

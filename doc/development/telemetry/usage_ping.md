@@ -31,7 +31,7 @@ More useful links:
 - The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product. In addition to counts, other facts
     that help us classify and understand GitLab installations are collected.
 - Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
-- Once usage ping is enabled, GitLab will gather data from the other instances and will be able to show usage statistics of your instance to your users.
+- While usage ping is enabled, GitLab will gather data from the other instances and will be able to show usage statistics of your instance to your users.
 
 ### Why should we enable Usage Ping?
 
@@ -126,10 +126,11 @@ happened over time, such as how many CI pipelines have run. They are monotonic a
 Observations are facts collected from one or more GitLab instances and can carry arbitrary data. There are no
 general guidelines around how to collect those, due to the individual nature of that data.
 
-There are four types of counters which are all found in `usage_data.rb`:
+There are several types of counters which are all found in `usage_data.rb`:
 
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
 - **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation on given column
+- **Sum Batch Counters:** Sum the values of a given ActiveRecord_Relation on given column
 - **Alternative Counters:** Used for settings and configurations
 - **Redis Counters:** Used for in-memory counts.
 
@@ -198,6 +199,47 @@ Examples:
 distinct_count(::Project, :creator_id)
 distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
 distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
+```
+
+### Sum Batch Counters
+
+Handles `ActiveRecord::StatementInvalid` error
+
+Sum the values of a given ActiveRecord_Relation on given column and handles errors.
+
+Method: `sum(relation, column, batch_size: nil, start: nil, finish: nil)`
+
+Arguments:
+
+- `relation` the ActiveRecord_Relation to perform the operation
+- `column` the column to sum on
+- `batch_size`: if none set it will use default value 1000 from `Gitlab::Database::BatchCounter`
+- `start`: custom start of the batch counting in order to avoid complex min calculations
+- `end`: custom end of the batch counting in order to avoid complex min calculations
+
+Examples:
+
+```ruby
+sum(JiraImportState.finished, :imported_issues_count)
+```
+
+### Grouping & Batch Operations
+
+The `count`, `distinct_count`, and `sum` batch counters can accept an `ActiveRecord::Relation`
+object, which groups by a specified column. With a grouped relation, the methods do batch counting, 
+handle errors, and returns a hash table of key-value pairs.
+
+Examples:
+
+```ruby
+count(Namespace.group(:type))
+# returns => {nil=>179, "Group"=>54}
+
+distinct_count(Project.group(:visibility_level), :creator_id)
+# returns => {0=>1, 10=>1, 20=>11}
+
+sum(Issue.group(:state_id), :weight))
+# returns => {1=>3542, 2=>6820}
 ```
 
 ### Redis Counters
@@ -360,13 +402,25 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    | `event` | string | yes | The event name it should be tracked |
 
    Response
-
+w
    Return 200 if tracking failed for any reason.
 
    - `200` if event was tracked or any errors
    - `400 Bad request` if event parameter is missing
    - `401 Unauthorized` if user is not authenticated
    - `403 Forbidden` for invalid CSRF token provided
+
+1. Track events using JavaScript/Vue API helper which calls the API above
+
+   Example usage for an existing event already defined in  [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml):
+
+   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to be able to track events
+
+   ```javascript
+   import api from '~/api';
+
+   api.trackRedisHllUserEvent('my_already_defined_event_name'),
+   ```
 
 1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(entity_id, event_name)`.
 
@@ -396,15 +450,6 @@ Recommendations:
 All events added in [`known_events.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
-- `#{event_name}_weekly` data for 7 days for daily [aggregation](#adding-new-events) events and data for last complete week for weekly [aggregation](#adding-new-events) events.
-- `#{event_name}_monthly` data for 28 days for daily [aggregation](#adding-new-events) events and data for last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
-- `#{category}_total_unique_counts_weekly` total unique counts for events in same category for last 7 days or last complete week, if events are in the same Redis slot and if we have more than one metric.
-- `#{event_name}_weekly` - Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
-- `#{event_name}_monthly` - Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
-- `#{category}_total_unique_counts_weekly` - Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
-- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for last complete week for weekly [aggregation](#adding-new-events) events.
-- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
-- `#{category}_total_unique_counts_weekly` total unique counts for events in same category for last 7 days or last complete week, if events are in the same Redis slot and if we have more than one metric.
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
 - `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
 - `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.

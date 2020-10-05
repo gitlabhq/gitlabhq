@@ -18,6 +18,8 @@ class Namespace < ApplicationRecord
   # Android repo (15) + some extra backup.
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
+  SHARED_RUNNERS_SETTINGS = %w[disabled_and_unoverridable disabled_with_override enabled].freeze
+
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -59,6 +61,8 @@ class Namespace < ApplicationRecord
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
   validate :nesting_level_allowed
+  validate :changing_shared_runners_enabled_is_allowed
+  validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed
 
   validates_associated :runners
 
@@ -376,6 +380,52 @@ class Namespace < ApplicationRecord
 
   def actual_plan_name
     actual_plan.name
+  end
+
+  def changing_shared_runners_enabled_is_allowed
+    return unless Feature.enabled?(:disable_shared_runners_on_group, default_enabled: true)
+    return unless new_record? || changes.has_key?(:shared_runners_enabled)
+
+    if shared_runners_enabled && has_parent? && parent.shared_runners_setting == 'disabled_and_unoverridable'
+      errors.add(:shared_runners_enabled, _('cannot be enabled because parent group has shared Runners disabled'))
+    end
+  end
+
+  def changing_allow_descendants_override_disabled_shared_runners_is_allowed
+    return unless Feature.enabled?(:disable_shared_runners_on_group, default_enabled: true)
+    return unless new_record? || changes.has_key?(:allow_descendants_override_disabled_shared_runners)
+
+    if shared_runners_enabled && !new_record?
+      errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be changed if shared runners are enabled'))
+    end
+
+    if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == 'disabled_and_unoverridable'
+      errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be enabled because parent group does not allow it'))
+    end
+  end
+
+  def shared_runners_setting
+    if shared_runners_enabled
+      'enabled'
+    else
+      if allow_descendants_override_disabled_shared_runners
+        'disabled_with_override'
+      else
+        'disabled_and_unoverridable'
+      end
+    end
+  end
+
+  def shared_runners_setting_higher_than?(other_setting)
+    if other_setting == 'enabled'
+      false
+    elsif other_setting == 'disabled_with_override'
+      shared_runners_setting == 'enabled'
+    elsif other_setting == 'disabled_and_unoverridable'
+      shared_runners_setting == 'enabled' || shared_runners_setting == 'disabled_with_override'
+    else
+      raise ArgumentError
+    end
   end
 
   private

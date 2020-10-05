@@ -228,13 +228,13 @@ which ideally should not have Redis or Sentinels in the same machine:
      sentinels:
        -
          host: 10.0.0.1
-         port: 26379 # point to sentinel, not to redis port
+         port: 26379  # point to sentinel, not to redis port
        -
          host: 10.0.0.2
-         port: 26379 # point to sentinel, not to redis port
+         port: 26379  # point to sentinel, not to redis port
        -
          host: 10.0.0.3
-         port: 26379 # point to sentinel, not to redis port
+         port: 26379  # point to sentinel, not to redis port
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
@@ -353,13 +353,13 @@ or a failover promotes a different **Primary** node.
      sentinels:
        -
          host: 10.0.0.1
-         port: 26379 # point to sentinel, not to redis port
+         port: 26379  # point to sentinel, not to redis port
        -
          host: 10.0.0.2
-         port: 26379 # point to sentinel, not to redis port
+         port: 26379  # point to sentinel, not to redis port
        -
          host: 10.0.0.3
-         port: 26379 # point to sentinel, not to redis port
+         port: 26379  # point to sentinel, not to redis port
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.

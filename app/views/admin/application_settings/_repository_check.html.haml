@@ -18,8 +18,7 @@
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
           - clear_repository_checks_link = _('Clear all repository checks')
           - clear_repository_checks_message = _('This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?')
-        .gl-display-flex.gl-justify-content-end
-          = link_to clear_repository_checks_link, clear_repository_check_states_admin_application_settings_path, data: { confirm: clear_repository_checks_message }, method: :put, class: "btn btn-sm btn-remove"
+        = link_to clear_repository_checks_link, clear_repository_check_states_admin_application_settings_path, data: { confirm: clear_repository_checks_message }, method: :put, class: "btn btn-sm btn-remove"
 
     .sub-section
       %h4 Housekeeping
@@ -56,5 +55,4 @@
         .form-text.text-muted
           Number of Git pushes after which 'git gc' is run.
 
-  .gl-display-flex.gl-justify-content-end
-    = f.submit _('Save changes'), class: "btn btn-success"
+  = f.submit _('Save changes'), class: "btn btn-success"

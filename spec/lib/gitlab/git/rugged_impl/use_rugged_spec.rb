@@ -7,7 +7,7 @@ require 'tempfile'
 RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:feature_flag_name) { 'feature-flag-name' }
+  let(:feature_flag_name) { wrapper.rugged_feature_keys.first }
   let(:temp_gitaly_metadata_file) { create_temporary_gitaly_metadata_file }
 
   before(:all) do
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     end
   end
 
-  context 'when feature flag is not persisted' do
+  context 'when feature flag is not persisted', stub_feature_flags: false do
     context 'when running puma with multiple threads' do
       before do
         allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(true)

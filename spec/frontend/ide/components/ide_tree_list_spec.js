@@ -38,13 +38,7 @@ describe('IDE tree list', () => {
     beforeEach(() => {
       bootstrapWithTree();
 
-      jest.spyOn(vm, 'updateViewer');
-
       vm.$mount();
-    });
-
-    it('updates viewer on mount', () => {
-      expect(vm.updateViewer).toHaveBeenCalledWith('edit');
     });
 
     it('renders loading indicator', done => {
@@ -66,8 +60,6 @@ describe('IDE tree list', () => {
   describe('empty-branch state', () => {
     beforeEach(() => {
       bootstrapWithTree(emptyBranchTree);
-
-      jest.spyOn(vm, 'updateViewer');
 
       vm.$mount();
     });

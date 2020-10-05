@@ -444,7 +444,7 @@ RSpec.describe SearchService do
         context 'with :with_api_entity_associations' do
           let(:unredacted_results) { ar_relation(MergeRequest.with_api_entity_associations, readable, unreadable) }
 
-          it_behaves_like "redaction limits N+1 queries", limit: 7
+          it_behaves_like "redaction limits N+1 queries", limit: 8
         end
       end
 
@@ -481,7 +481,7 @@ RSpec.describe SearchService do
         end
 
         context 'with :with_api_entity_associations' do
-          it_behaves_like "redaction limits N+1 queries", limit: 12
+          it_behaves_like "redaction limits N+1 queries", limit: 13
         end
       end
 
@@ -496,7 +496,7 @@ RSpec.describe SearchService do
         end
 
         context 'with :with_api_entity_associations' do
-          it_behaves_like "redaction limits N+1 queries", limit: 3
+          it_behaves_like "redaction limits N+1 queries", limit: 4
         end
       end
 

@@ -650,7 +650,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       context 'when the labels change' do
         before do
-          Timecop.freeze(1.minute.from_now) do
+          travel_to(1.minute.from_now) do
             update_issue(label_ids: [label.id])
           end
         end

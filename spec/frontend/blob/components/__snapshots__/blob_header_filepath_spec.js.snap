@@ -27,8 +27,10 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
   </small>
    
   <clipboard-button-stub
+    category="tertiary"
     cssclass="btn-clipboard btn-transparent lh-100 position-static"
     gfm="\`foo/bar/dummy.md\`"
+    size="medium"
     text="foo/bar/dummy.md"
     title="Copy file path"
     tooltipplacement="top"

@@ -1,7 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
 import DraftsCount from './drafts_count.vue';
 
 export default {
@@ -15,11 +14,6 @@ export default {
       required: false,
       default: false,
     },
-    label: {
-      type: String,
-      required: false,
-      default: __('Finish review'),
-    },
     category: {
       type: String,
       required: false,
@@ -30,22 +24,14 @@ export default {
       required: false,
       default: 'success',
     },
-    shouldPublish: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     ...mapState('batchComments', ['isPublishing']),
   },
   methods: {
-    ...mapActions('batchComments', ['publishReview', 'toggleReviewDropdown']),
+    ...mapActions('batchComments', ['publishReview']),
     onClick() {
-      if (this.shouldPublish) {
-        this.publishReview();
-      } else {
-        this.toggleReviewDropdown();
-      }
+      this.publishReview();
     },
   },
 };
@@ -59,7 +45,7 @@ export default {
     :variant="variant"
     @click="onClick"
   >
-    {{ label }}
+    {{ __('Submit review') }}
     <drafts-count v-if="showCount" />
   </gl-button>
 </template>

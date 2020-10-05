@@ -23,6 +23,19 @@ RSpec.describe API::ProjectPackages do
         it_behaves_like 'returns packages', :project, :no_type
       end
 
+      context 'with conan package' do
+        let!(:conan_package) { create(:conan_package, project: project) }
+
+        it 'uses the conan recipe as the package name' do
+          subject
+
+          response_conan_package = json_response.find { |package| package['id'] == conan_package.id }
+
+          expect(response_conan_package['name']).to eq(conan_package.conan_recipe)
+          expect(response_conan_package['conan_package_name']).to eq(conan_package.name)
+        end
+      end
+
       context 'project is private' do
         let(:project) { create(:project, :private) }
 

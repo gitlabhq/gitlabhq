@@ -104,23 +104,24 @@ module Gitlab
           action = scanner[1]
           timestamp = scanner[2]
           section = scanner[3]
+          options = parse_section_options(scanner[4])
 
           section_name = sanitize_section_name(section)
 
-          if action == "start"
-            handle_section_start(scanner, section_name, timestamp)
-          elsif action == "end"
+          if action == 'start'
+            handle_section_start(scanner, section_name, timestamp, options)
+          elsif action == 'end'
             handle_section_end(scanner, section_name, timestamp)
           else
             raise 'unsupported action'
           end
         end
 
-        def handle_section_start(scanner, section, timestamp)
+        def handle_section_start(scanner, section, timestamp, options)
           # We make a new line for new section
           flush_current_line
 
-          @state.open_section(section, timestamp)
+          @state.open_section(section, timestamp, options)
 
           # we need to consume match after handling
           # the open of section, as we want the section
@@ -156,6 +157,18 @@ module Gitlab
 
         def sanitize_section_name(section)
           section.to_s.downcase.gsub(/[^a-z0-9]/, '-')
+        end
+
+        def parse_section_options(raw_options)
+          return unless raw_options
+
+          # We need to remove the square brackets and split
+          # by comma to get a list of the options
+          options = raw_options[1...-1].split ','
+
+          # Now split each option by equals to separate
+          # each in the format [key, value]
+          options.to_h { |option| option.split '=' }
         end
       end
     end

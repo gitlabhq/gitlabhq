@@ -10,6 +10,7 @@ exports[`Suggestion Diff component matches snapshot 1`] = `
     helppagepath="path_to_docs"
     isapplyingbatch="true"
     isbatched="true"
+    suggestionscount="0"
   />
    
   <table

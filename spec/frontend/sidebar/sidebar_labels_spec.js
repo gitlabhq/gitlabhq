@@ -114,7 +114,7 @@ describe('sidebar labels', () => {
 
       const expected = {
         [defaultProps.issuableType]: {
-          label_ids: [27, 28, 40],
+          label_ids: [27, 28, 29, 40],
         },
       };
 

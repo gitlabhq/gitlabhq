@@ -1,13 +1,16 @@
 <script>
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { s__, sprintf } from '~/locale';
+import Tracking from '~/tracking';
+
 import SkeletonLoader from '../components/skeleton_loader.vue';
 import EditArea from '../components/edit_area.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
+import hasSubmittedChangesMutation from '../graphql/mutations/has_submitted_changes.mutation.graphql';
 import submitContentChangesMutation from '../graphql/mutations/submit_content_changes.mutation.graphql';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import Tracking from '~/tracking';
 import { LOAD_CONTENT_ERROR, TRACKING_ACTION_INITIALIZE_EDITOR } from '../constants';
 import { SUCCESS_ROUTE } from '../router/constants';
 
@@ -74,6 +77,20 @@ export default {
     submitChanges(images) {
       this.isSavingChanges = true;
 
+      // eslint-disable-next-line promise/catch-or-return
+      this.$apollo
+        .mutate({
+          mutation: hasSubmittedChangesMutation,
+          variables: {
+            input: {
+              hasSubmittedChanges: true,
+            },
+          },
+        })
+        .finally(() => {
+          this.$router.push(SUCCESS_ROUTE);
+        });
+
       this.$apollo
         .mutate({
           mutation: submitContentChangesMutation,
@@ -84,11 +101,14 @@ export default {
               sourcePath: this.appData.sourcePath,
               content: this.content,
               images,
+              mergeRequestMeta: {
+                title: sprintf(s__(`StaticSiteEditor|Update %{sourcePath} file`), {
+                  sourcePath: this.appData.sourcePath,
+                }),
+                description: s__('StaticSiteEditor|Copy update'),
+              },
             },
           },
-        })
-        .then(() => {
-          this.$router.push(SUCCESS_ROUTE);
         })
         .catch(e => {
           this.submitChangesError = e.message;

@@ -10,15 +10,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Container Registry manifest `v1` support was added in GitLab 8.9 to support
 >   Docker versions earlier than 1.10.
 
-NOTE: **Note:**
-This document is the administrator's guide. To learn how to use GitLab Container
+With the GitLab Container Registry, every project can have its
+own space to store Docker images.
+
+Read more about the Docker Registry in [the Docker documentation](https://docs.docker.com/registry/introduction/).
+
+This document is the administrator's guide. To learn how to use the GitLab Container
 Registry, see the [user documentation](../../user/packages/container_registry/index.md).
-
-With the Container Registry integrated into GitLab, every project can have its
-own space to store its Docker images.
-
-You can read more about the Docker Registry at
-<https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry
 
@@ -37,7 +35,6 @@ Otherwise, the Container Registry is not enabled. To enable it:
 - You can configure it for your [GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain), or
 - You can configure it for [a different domain](#configure-container-registry-under-its-own-domain).
 
-NOTE: **Note:**
 The Container Registry works under HTTPS by default. You can use HTTP
 but it's not recommended and is out of the scope of this document.
 Read the [insecure Registry documentation](https://docs.docker.com/registry/insecure/)
@@ -47,12 +44,12 @@ if you want to implement this.
 
 If you have installed GitLab from source:
 
-1. You will have to [install Registry](https://docs.docker.com/registry/deploying/) by yourself.
-1. After the installation is complete, you will have to configure the Registry's
-   settings in `gitlab.yml` in order to enable it.
-1. Use the sample NGINX configuration file that is found under
+1. You must [install Registry](https://docs.docker.com/registry/deploying/) by yourself.
+1. After the installation is complete, to enable it, you must configure the Registry's
+   settings in `gitlab.yml`.
+1. Use the sample NGINX configuration file from under
    [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
-   `host`, `port` and TLS certs paths.
+   `host`, `port`, and TLS certificate paths.
 
 The contents of `gitlab.yml` are:
 
@@ -67,19 +64,18 @@ registry:
   issuer: gitlab-issuer
 ```
 
-where:
+Where:
 
 | Parameter | Description |
 | --------- | ----------- |
 | `enabled` | `true` or `false`. Enables the Registry in GitLab. By default this is `false`. |
-| `host`    | The host URL under which the Registry will run and the users will be able to use. |
-| `port`    | The port under which the external Registry domain will listen on. |
-| `api_url` | The internal API URL under which the Registry is exposed to. It defaults to `http://localhost:5000`. |
+| `host`    | The host URL under which the Registry runs and users can use. |
+| `port`    | The port the external Registry domain listens on. |
+| `api_url` | The internal API URL under which the Registry is exposed. It defaults to `http://localhost:5000`. |
 | `key`     | The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 | `path`    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation](https://docs.docker.com/registry/configuration/#storage). This path needs to be readable by the GitLab user, the web-server user and the Registry user. Read more in [#configure-storage-for-the-container-registry](#configure-storage-for-the-container-registry). |
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 
-NOTE: **Note:**
 A Registry init file is not shipped with GitLab if you install it from source.
 Hence, [restarting GitLab](../restart_gitlab.md#installations-from-source) will not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
@@ -98,21 +94,20 @@ auth:
 ```
 
 CAUTION: **Caution:**
-If `auth` is not set up, users will be able to pull Docker images without authentication.
+If `auth` is not set up, users can pull Docker images without authentication.
 
 ## Container Registry domain configuration
 
 There are two ways you can configure the Registry's external domain. Either:
 
-- [Use the existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain) where in that case
-  the Registry will have to listen on a port and reuse GitLab's TLS certificate,
+- [Use the existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain).
+  The Registry listens on a port and reuse GitLab's TLS certificate.
 - [Use a completely separate domain](#configure-container-registry-under-its-own-domain) with a new TLS certificate
   for that domain.
 
-Since the container Registry requires a TLS certificate, in the end it all boils
-down to how easy or pricey it is to get a new one.
+Because the Container Registry requires a TLS certificate, cost may be a factor.
 
-Please take this into consideration before configuring the Container Registry
+Take this into consideration before configuring the Container Registry
 for the first time.
 
 ### Configure Container Registry under an existing GitLab domain
@@ -126,9 +121,8 @@ Registry is exposed to the outside world is `5050`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
 
-NOTE: **Note:**
-Be careful to choose a port different than the one that Registry listens to (`5000` by default),
-otherwise you will run into conflicts.
+Ensure you choose a port different than the one that Registry listens to (`5000` by default),
+otherwise there will be conflicts.
 
 **Omnibus GitLab installations**
 
@@ -139,7 +133,7 @@ otherwise you will run into conflicts.
    registry_external_url 'https://gitlab.example.com:5050'
    ```
 
-   Note how the `registry_external_url` is listening on HTTPS under the
+   The `registry_external_url` is listening on HTTPS under the
    existing GitLab URL, but on a different port.
 
    If your TLS certificate is not in `/etc/gitlab/ssl/gitlab.example.com.crt`
@@ -160,7 +154,6 @@ otherwise you will run into conflicts.
    openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:5050 > cacert.pem
    ```
 
-NOTE: **Note:**
 If your certificate provider provides the CA Bundle certificates, append them to the TLS certificate file.
 
 **Installations from source**
@@ -188,11 +181,10 @@ docker login gitlab.example.com:5050
 ### Configure Container Registry under its own domain
 
 If the Registry is configured to use its own domain, you will need a TLS
-certificate for that specific domain (e.g., `registry.example.com`) or maybe
+certificate for that specific domain (for example, `registry.example.com`) or maybe
 a wildcard certificate if hosted under a subdomain of your existing GitLab
-domain (e.g., `registry.gitlab.example.com`).
+domain, for example, `registry.gitlab.example.com`.
 
-NOTE: **Note:**
 As well as manually generated SSL certificates (explained here), certificates automatically
 generated by Let's Encrypt are also [supported in Omnibus installs](https://docs.gitlab.com/omnibus/settings/ssl.html#host-services).
 
@@ -210,19 +202,19 @@ Let's assume that you want the container Registry to be accessible at
    chmod 600 /etc/gitlab/ssl/registry.gitlab.example.com.*
    ```
 
-1. Once the TLS certificate is in place, edit `/etc/gitlab/gitlab.rb` with:
+1. After the TLS certificate is in place, edit `/etc/gitlab/gitlab.rb` with:
 
    ```ruby
    registry_external_url 'https://registry.gitlab.example.com'
    ```
 
-   Note how the `registry_external_url` is listening on HTTPS.
+   The `registry_external_url` is listening on HTTPS.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-If you have a [wildcard certificate](https://en.wikipedia.org/wiki/Wildcard_certificate), you need to specify the path to the
-certificate in addition to the URL, in this case `/etc/gitlab/gitlab.rb` will
-look like:
+If you have a [wildcard certificate](https://en.wikipedia.org/wiki/Wildcard_certificate), you must specify the path to the
+certificate in addition to the URL, in this case `/etc/gitlab/gitlab.rb`
+looks like:
 
 ```ruby
 registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificate.pem"
@@ -252,9 +244,8 @@ docker login registry.gitlab.example.com
 
 ## Disable Container Registry site-wide
 
-NOTE: **Note:**
-Disabling the Registry in the Rails GitLab application as set by the following
-steps, will not remove any existing Docker images. This is handled by the
+When you disable the Registry by following these steps, you do not
+remove any existing Docker images. This is handled by the
 Registry application itself.
 
 **Omnibus GitLab**
@@ -331,8 +322,7 @@ The different supported drivers are:
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
-NOTE: **Note:**
-Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the registry, we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations, we can debug issues, but we cannot patch the registry unless an issue is reproducible against an AWS S3 bucket.
+Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the Container Registry, we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations, we can debug issues, but we cannot patch the registry unless an issue is reproducible against an AWS S3 bucket.
 
 Read more about the individual driver's configuration options in the
 [Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
@@ -347,8 +337,7 @@ This path is accessible to:
 - The user running the Container Registry daemon.
 - The user running GitLab.
 
-CAUTION: **Warning:**
-You should confirm that all GitLab, Registry and web server users
+All GitLab, Registry, and web server users must
 have access to this directory.
 
 **Omnibus GitLab installations**
@@ -387,12 +376,9 @@ driver for the Container Registry.
 [Read more about using object storage with GitLab](../object_storage.md).
 
 CAUTION: **Warning:**
-GitLab will not backup Docker images that are not stored on the
-filesystem. Remember to enable backups with your object storage provider if
+GitLab does not back up Docker images that are not stored on the
+filesystem. Enable backups with your object storage provider if
 desired.
-
-NOTE: **Note:**
-`regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
 
 **Omnibus GitLab installations**
 
@@ -411,15 +397,15 @@ To configure the `s3` storage driver in Omnibus:
      }
    }
    ```
+ 
+   - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
+   - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-NOTE: **Note:**
-`your-s3-bucket` should only be the name of a bucket that exists, and can't include subdirectories.
-
 **Installations from source**
 
-Configuring the storage driver is done in your registry configuration YML file created
+Configuring the storage driver is done in the registry configuration YML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 `s3` storage driver example:
@@ -438,8 +424,7 @@ storage:
     enabled: true
 ```
 
-NOTE: **Note:**
-`your-s3-bucket` should only be the name of a bucket that exists, and can't include subdirectories.
+`your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 
 #### Migrate to object storage without downtime
 
@@ -489,7 +474,7 @@ you can pull from the Container Registry, but you cannot push.
 
    DANGER: **Danger:**
    The [`--delete`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
-   flag will delete files that exist in the destination but not in the source.
+   flag deletes files that exist in the destination but not in the source.
    Make sure not to swap the source and destination, or you will delete all data in the Registry.
 
 1. Verify all Container Registry files have been uploaded to object storage
@@ -565,10 +550,6 @@ configurable in future releases.
 
 ## Change the registry's internal port
 
-NOTE: **Note:**
-This is not to be confused with the port that GitLab itself uses to expose
-the Registry to the world.
-
 The Registry server listens on localhost at port `5000` by default,
 which is the address for which the Registry server should accept connections.
 In the examples below we set the Registry's port to `5001`.
@@ -589,7 +570,7 @@ In the examples below we set the Registry's port to `5001`.
    [`http:addr`](https://docs.docker.com/registry/configuration/#http) value:
 
    ```yaml
-   http
+   http:
      addr: localhost:5001
    ```
 
@@ -603,9 +584,8 @@ on how to achieve that.
 
 ## Use an external container registry with GitLab as an auth endpoint
 
-NOTE: **Note:**
-In using an external container registry, some features associated with the
-container registry may be unavailable or have [inherent risks](./../../user/packages/container_registry/index.md#use-with-external-container-registries)
+If you use an external container registry, some features associated with the
+container registry may be unavailable or have [inherent risks](./../../user/packages/container_registry/index.md#use-with-external-container-registries).
 
 **Omnibus GitLab**
 
@@ -619,10 +599,9 @@ You can use GitLab as an auth endpoint with an external container registry.
    gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
    ```
 
-   NOTE: **Note:**
    `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab's
    Container Registry features and authentication endpoint. GitLab's bundled
-   Container Registry service will not be started even with this enabled.
+   Container Registry service does not start, even with this enabled.
 
 1. A certificate-key pair is required for GitLab and the external container
    registry to communicate securely. You will need to create a certificate-key
@@ -641,11 +620,10 @@ You can use GitLab as an auth endpoint with an external container registry.
    gitlab_rails['registry_key_path'] = "/custom/path/to/registry-key.key"
    ```
 
-   NOTE: **Note:**
-   The file specified at `registry_key_path` gets populated with the
-   content specified by `internal_key`, each time reconfigure is executed. If
-   no file is specified, Omnibus GitLab will default it to
-   `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and will populate
+   Each time reconfigure is executed, the file specified at `registry_key_path`
+   gets populated with the content specified by `internal_key`. If
+   no file is specified, Omnibus GitLab defaults it to
+   `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and populates
    it.
 
 1. To change the container registry URL displayed in the GitLab Container
@@ -686,8 +664,7 @@ response to events happening within the registry.
 Read more about the Container Registry notifications configuration options in the
 [Docker Registry notifications documentation](https://docs.docker.com/registry/notifications/).
 
-NOTE: **Note:**
-Multiple endpoints can be configured for the Container Registry.
+You can configure multiple endpoints for the Container Registry.
 
 **Omnibus GitLab installations**
 
@@ -761,21 +738,9 @@ project.container_repositories.find_each do |repo|
 end
 ```
 
-NOTE: **Note:**
 You can also [run cleanup on a schedule](../../user/packages/container_registry/index.md#cleanup-policy).
 
 ## Container Registry garbage collection
-
-NOTE: **Note:**
-The garbage collection tools are only available when you've installed GitLab
-via an Omnibus package or the [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
-
-DANGER: **Danger:**
-By running the built-in garbage collection command, it will cause downtime to
-the Container Registry. If you run this command on an instance in an environment
-where one of your other instances is still writing to the Registry storage,
-referenced manifests will be removed. To avoid that, make sure Registry is set to
-[read-only mode](#performing-garbage-collection-without-downtime) before proceeding.
 
 Container Registry can use considerable amounts of disk space. To clear up
 some unused layers, the registry includes a garbage collect command.
@@ -790,6 +755,15 @@ periodically based on their own criteria, however, this alone does not recycle d
 it only unlinks tags from manifests and image blobs. To recycle the Container
 Registry data in the whole GitLab instance, you can use the built-in command
 provided by `gitlab-ctl`.
+
+Prerequisites:
+
+- You must have installed GitLab by using an Omnibus package or the
+  [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
+- You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
+  Running garbage collection causes downtime for the Container Registry. If you run this command
+  on an instance in an environment where another instances is still writing to the Registry storage,
+  referenced manifests will be removed.
 
 ### Understanding the content-addressable layers
 
@@ -818,15 +792,14 @@ no longer directly accessible via the `:latest` tag.
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/987) in Omnibus GitLab 8.12.
 
-There are a couple of considerations you need to note before running the
-built-in command:
+Before you run the built-in command, note the following:
 
-- The built-in command will stop the registry before it starts the garbage collection.
+- The built-in command stops the registry before it starts the garbage collection.
 - The garbage collect command takes some time to complete, depending on the
   amount of data that exists.
-- If you changed the location of registry configuration file, you will need to
+- If you changed the location of registry configuration file, you must
   specify its path.
-- After the garbage collection is done, the registry should start up automatically.
+- After the garbage collection is done, the registry should start automatically.
 
 If you did not change the default location of the configuration file, run:
 
@@ -882,7 +855,6 @@ During this time,
 you will be able to pull from the Container Registry, but you will not be able to
 push.
 
-NOTE: **Note:**
 By default, the [registry storage path](#configure-storage-for-the-container-registry)
 is `/var/opt/gitlab/gitlab-rails/shared/registry`.
 
@@ -1065,7 +1037,7 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
      s3:
        accesskey: 'AKIAKIAKI'
        secretkey: 'secret123'
-       bucket:    'gitlab-registry-bucket-AKIAKIAKI'
+       bucket: 'gitlab-registry-bucket-AKIAKIAKI'
        chunksize: 25000000
    ```
 
@@ -1166,12 +1138,7 @@ curl localhost:5001/debug/vars
 
 ### Advanced Troubleshooting
 
-NOTE: **Note:**
-The following section is only recommended for experts.
-
-Sometimes it's not obvious what is wrong, and you may need to dive deeper into
-the communication between the Docker client and the Registry to find out
-what's wrong. We will use a concrete example in the past to illustrate how to
+We will use a concrete example in the past to illustrate how to
 diagnose a problem with the S3 setup.
 
 #### Unexpected 403 error during push

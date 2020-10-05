@@ -62,6 +62,12 @@ module Gitlab
       },
       invite_email: {
         tracking_category: 'Growth::Acquisition::Experiment::InviteEmail'
+      },
+      invitation_reminders: {
+        tracking_category: 'Growth::Acquisition::Experiment::InvitationReminders'
+      },
+      group_only_trials: {
+        tracking_category: 'Growth::Conversion::Experiment::GroupOnlyTrials'
       }
     }.freeze
 
@@ -91,10 +97,17 @@ module Gitlab
         }
       end
 
+      def push_frontend_experiment(experiment_key)
+        var_name = experiment_key.to_s.camelize(:lower)
+        enabled = experiment_enabled?(experiment_key)
+
+        gon.push({ experiments: { var_name => enabled } }, true)
+      end
+
       def experiment_enabled?(experiment_key)
         return false if dnt_enabled?
 
-        return true if Experimentation.enabled_for_user?(experiment_key, experimentation_subject_index)
+        return true if Experimentation.enabled_for_value?(experiment_key, experimentation_subject_index)
         return true if forced_enabled?(experiment_key)
 
         false
@@ -102,7 +115,7 @@ module Gitlab
 
       def track_experiment_event(experiment_key, action, value = nil)
         track_experiment_event_for(experiment_key, action, value) do |tracking_data|
-          ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), tracking_data)
+          ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), **tracking_data)
         end
       end
 
@@ -183,9 +196,14 @@ module Gitlab
         experiment.enabled? && experiment.enabled_for_environment?
       end
 
-      def enabled_for_user?(experiment_key, experimentation_subject_index)
+      def enabled_for_attribute?(experiment_key, attribute)
+        index = Digest::SHA1.hexdigest(attribute).hex % 100
+        enabled_for_value?(experiment_key, index)
+      end
+
+      def enabled_for_value?(experiment_key, experimentation_subject_index)
         enabled?(experiment_key) &&
-          experiment(experiment_key).enabled_for_experimentation_subject?(experimentation_subject_index)
+          experiment(experiment_key).enabled_for_index?(experimentation_subject_index)
       end
     end
 
@@ -200,10 +218,10 @@ module Gitlab
         environment
       end
 
-      def enabled_for_experimentation_subject?(experimentation_subject_index)
-        return false if experimentation_subject_index.blank?
+      def enabled_for_index?(index)
+        return false if index.blank?
 
-        experimentation_subject_index <= experiment_percentage
+        index <= experiment_percentage
       end
 
       private

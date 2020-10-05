@@ -30,4 +30,5 @@ export default () => ({
   createClusterError: false,
 
   gitlabManagedCluster: true,
+  namespacePerEnvironment: true,
 });

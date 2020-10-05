@@ -43,22 +43,6 @@ describe('Batch comments draft preview item component', () => {
     );
   });
 
-  it('adds is last class', () => {
-    createComponent(true);
-
-    expect(vm.$el.classList).toContain('is-last');
-  });
-
-  it('scrolls to draft on click', () => {
-    createComponent();
-
-    jest.spyOn(vm.$store, 'dispatch').mockImplementation();
-
-    vm.$el.click();
-
-    expect(vm.$store.dispatch).toHaveBeenCalledWith('batchComments/scrollToDraft', vm.draft);
-  });
-
   describe('for file', () => {
     it('renders file path', () => {
       createComponent(false, { file_path: 'index.js', file_hash: 'abc', position: {} });

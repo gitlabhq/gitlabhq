@@ -18,9 +18,9 @@ automatically create merge requests for updating dependencies of several project
 up-to-date list of projects managed by the renovate bot in the project’s README. Some key dependencies
 updated using renovate are:
 
-- [`@gitlab/ui`](https://gitlab.com/gitlab-org/gitlab-ui/)
-- [`@gitlab/svgs`](https://gitlab.com/gitlab-org/gitlab-svgs/)
-- [`@gitlab/eslint-config`](https://gitlab.com/gitlab-org/gitlab-eslint-config)
+- [`@gitlab/ui`](https://gitlab.com/gitlab-org/gitlab-ui)
+- [`@gitlab/svgs`](https://gitlab.com/gitlab-org/gitlab-svgs)
+- [`@gitlab/eslint-plugin`](https://gitlab.com/gitlab-org/frontend/eslint-plugin)
 
 ### Blocked dependencies
 

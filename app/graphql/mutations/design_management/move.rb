@@ -21,7 +21,7 @@ module Mutations
             description: "The current state of the collection"
 
       def resolve(**args)
-        service = ::DesignManagement::MoveDesignsService.new(current_user, parameters(args))
+        service = ::DesignManagement::MoveDesignsService.new(current_user, parameters(**args))
 
         { design_collection: service.collection, errors: service.execute.errors }
       end
@@ -29,9 +29,16 @@ module Mutations
       private
 
       def parameters(**args)
-        args.transform_values { |id| GitlabSchema.find_by_gid(id) }.transform_values(&:sync).tap do |hash|
+        args.transform_values { |id| find_design(id) }.transform_values(&:sync).tap do |hash|
           hash.each { |k, design| not_found(args[k]) unless current_user.can?(:read_design, design) }
         end
+      end
+
+      def find_design(id)
+        # TODO: remove this line when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        id = DesignID.coerce_isolated_input(id)
+        GitlabSchema.object_from_id(id)
       end
 
       def not_found(gid)

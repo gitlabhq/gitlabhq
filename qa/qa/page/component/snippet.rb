@@ -98,15 +98,39 @@ module QA
           end
         end
 
-        def has_file_name?(file_name)
-          within_element(:file_title_content) do
-            has_text?(file_name)
+        def has_file_name?(file_name, file_number = nil)
+          if file_number
+            within_element_by_index(:file_title_content, file_number - 1) do
+              has_text?(file_name)
+            end
+          else
+            within_element(:file_title_content) do
+              has_text?(file_name)
+            end
           end
         end
 
-        def has_file_content?(file_content)
-          within_element(:file_content) do
-            has_text?(file_content)
+        def has_file_content?(file_content, file_number = nil)
+          if file_number
+            within_element_by_index(:file_content, file_number - 1) do
+              has_text?(file_content)
+            end
+          else
+            within_element(:file_content) do
+              has_text?(file_content)
+            end
+          end
+        end
+
+        def has_no_file_content?(file_content, file_number = nil)
+          if file_number
+            within_element_by_index(:file_content, file_number - 1) do
+              has_no_text?(file_content)
+            end
+          else
+            within_element(:file_content) do
+              has_no_text?(file_content)
+            end
           end
         end
 

@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554) in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
 
-## Overview
-
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
 It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) or a
@@ -374,27 +372,22 @@ If you're not able to do some of the things above, make sure you have the right
 
 ### First time using an issue board
 
-The first time you open an issue board, you are presented with
-the default lists (**Open** and **Closed**) and a welcome message that gives
-you two options. You can either:
+> The automatic creation of the **To Do** and **Doing** lists was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202144) in GitLab 13.4.
 
-- Create a predefined set of labels (by default: **To Do** and **Doing**) and create their
-  corresponding lists to the issue board.
-- Opt-out and use your own lists.
+The first time you open an issue board, you are presented with the default lists
+(**Open**, **To Do**, **Doing**, and **Closed**).
 
-![issue board welcome message](img/issue_board_welcome_message.png)
+If the **To Do** and **Doing** labels don't exist in the project or group, they are created, and
+their lists appear as empty. If any of them already exists, the list is filled with the issues that
+have that label.
 
-If you choose to use and create the predefined lists, they will appear as empty
-because the labels associated to them will not exist up until that moment,
-which means the system has no way of populating them automatically. That's of
-course if the predefined labels don't already exist. If any of them does exist,
-the list will be created and filled with the issues that have that label.
+![issue board default lists](img/issue_board_default_lists_v13_4.png)
 
 ### Create a new list
 
 Create a new list by clicking the **Add list** button in the upper right corner of the issue board.
 
-![issue board welcome message](img/issue_board_add_list.png)
+![creating a new list in an issue board](img/issue_board_add_list.png)
 
 Then, choose the label or user to create the list from. The new list will be inserted
 at the end of the lists, before **Done**. Moving and reordering lists is as

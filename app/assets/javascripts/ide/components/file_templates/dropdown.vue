@@ -1,12 +1,13 @@
 <script>
 import $ from 'jquery';
 import { mapActions, mapState } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
 export default {
   components: {
     DropdownButton,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -85,7 +86,7 @@ export default {
           type="search"
           class="dropdown-input-field qa-dropdown-filter-input"
         />
-        <i aria-hidden="true" class="fa fa-search dropdown-input-search"></i>
+        <gl-icon name="search" class="dropdown-input-search" aria-hidden="true" />
       </div>
       <div class="dropdown-content">
         <gl-loading-icon v-if="showLoading" size="lg" />

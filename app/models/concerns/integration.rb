@@ -16,7 +16,7 @@ module Integration
       Project.where(id: custom_integration_project_ids)
     end
 
-    def ids_without_integration(integration, limit)
+    def without_integration(integration)
       services = Service
         .select('1')
         .where('services.project_id = projects.id')
@@ -26,8 +26,6 @@ module Integration
         .where('NOT EXISTS (?)', services)
         .where(pending_delete: false)
         .where(archived: false)
-        .limit(limit)
-        .pluck(:id)
     end
   end
 end

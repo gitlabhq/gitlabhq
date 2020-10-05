@@ -50,7 +50,7 @@ describe('CollapsedFilesWarning', () => {
     ({ limited, containerClasses }) => {
       createComponent({ limited });
 
-      expect(wrapper.classes()).toEqual(containerClasses);
+      expect(wrapper.classes()).toEqual(['col-12'].concat(containerClasses));
     },
   );
 

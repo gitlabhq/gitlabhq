@@ -73,4 +73,14 @@ RSpec.describe ResourceWeightEvent, type: :model do
       expect(event.discussion_id).to eq('73d167c478')
     end
   end
+
+  context 'callbacks' do
+    describe '#usage_metrics' do
+      it 'tracks changed weights' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_weight_changed_action).with(author: user1)
+
+        create(:resource_weight_event, issue: issue1, user: user1)
+      end
+    end
+  end
 end

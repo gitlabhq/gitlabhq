@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { escape } from 'lodash';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
@@ -12,7 +12,7 @@ export default {
   name: 'MRWidgetRebase',
   components: {
     statusIcon,
-    GlLoadingIcon,
+    GlButton,
   },
   props: {
     mr: {
@@ -109,29 +109,29 @@ export default {
 
     <div class="rebase-state-find-class-convention media media-body space-children">
       <template v-if="mr.rebaseInProgress || isMakingRequest">
-        <span class="bold">{{ __('Rebase in progress') }}</span>
+        <span class="bold" data-testid="rebase-message">{{ __('Rebase in progress') }}</span>
       </template>
       <template v-if="!mr.rebaseInProgress && !mr.canPushToSourceBranch">
-        <span class="bold" v-html="fastForwardMergeText"></span>
+        <span class="bold" data-testid="rebase-message" v-html="fastForwardMergeText"></span>
       </template>
       <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
         <div
           class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"
         >
-          <button
-            :disabled="isMakingRequest"
-            type="button"
-            class="btn btn-sm btn-reopen btn-success qa-mr-rebase-button"
+          <gl-button
+            :loading="isMakingRequest"
+            variant="success"
+            class="qa-mr-rebase-button"
             @click="rebase"
           >
-            <gl-loading-icon v-if="isMakingRequest" />{{ __('Rebase') }}
-          </button>
-          <span v-if="!rebasingError" class="bold">{{
+            {{ __('Rebase') }}
+          </gl-button>
+          <span v-if="!rebasingError" class="bold" data-testid="rebase-message">{{
             __(
               'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
             )
           }}</span>
-          <span v-else class="bold danger">{{ rebasingError }}</span>
+          <span v-else class="bold danger" data-testid="rebase-message">{{ rebasingError }}</span>
         </div>
       </template>
     </div>

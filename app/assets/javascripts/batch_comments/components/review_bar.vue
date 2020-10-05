@@ -1,22 +1,15 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlModal, GlModalDirective, GlButton } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { mapActions, mapGetters } from 'vuex';
 import PreviewDropdown from './preview_dropdown.vue';
+import PublishButton from './publish_button.vue';
 
 export default {
   components: {
-    GlButton,
-    GlModal,
     PreviewDropdown,
-  },
-  directives: {
-    'gl-modal': GlModalDirective,
+    PublishButton,
   },
   computed: {
     ...mapGetters(['isNotesFetched']),
-    ...mapState('batchComments', ['isDiscarding']),
     ...mapGetters('batchComments', ['draftsCount']),
   },
   watch: {
@@ -27,45 +20,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions('batchComments', ['discardReview', 'expandAllDiscussions']),
+    ...mapActions('batchComments', ['expandAllDiscussions']),
   },
-  modalId: 'discard-draft-review',
-  text: sprintf(
-    s__(
-      `BatchComments|You're about to discard your review which will delete all of your pending comments.
-      The deleted comments %{strong_start}cannot%{strong_end} be restored.`,
-    ),
-    {
-      strong_start: '<strong>',
-      strong_end: '</strong>',
-    },
-    false,
-  ),
 };
 </script>
 <template>
   <div v-show="draftsCount > 0">
     <nav class="review-bar-component">
-      <div class="review-bar-content qa-review-bar">
+      <div class="review-bar-content qa-review-bar d-flex gl-justify-content-end">
         <preview-dropdown />
-        <gl-button
-          v-gl-modal="$options.modalId"
-          :loading="isDiscarding"
-          class="qa-discard-review float-right"
-        >
-          {{ __('Discard review') }}
-        </gl-button>
+        <publish-button class="gl-ml-3" show-count />
       </div>
     </nav>
-    <gl-modal
-      :title="s__('BatchComments|Discard review?')"
-      :ok-title="s__('BatchComments|Delete all pending comments')"
-      :modal-id="$options.modalId"
-      title-tag="h4"
-      ok-variant="danger qa-modal-delete-pending-comments"
-      @ok="discardReview"
-    >
-      <p v-html="$options.text"></p>
-    </gl-modal>
   </div>
 </template>

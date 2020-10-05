@@ -16,6 +16,7 @@ module Gitlab
 
       ArchiveError = Class.new(StandardError)
       AlreadyArchivedError = Class.new(StandardError)
+      LockedError = Class.new(StandardError)
 
       attr_reader :job
 
@@ -128,6 +129,12 @@ module Gitlab
         Gitlab::Redis::SharedState.with do |redis|
           redis.exists(being_watched_cache_key)
         end
+      end
+
+      def lock(&block)
+        in_write_lock(&block)
+      rescue FailedToObtainLockError
+        raise LockedError, "build trace `#{job.id}` is locked"
       end
 
       private

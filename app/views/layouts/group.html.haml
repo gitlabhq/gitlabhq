@@ -1,6 +1,6 @@
 - page_title       @group.name
-- page_description @group.description  unless page_description
-- header_title     group_title(@group) unless header_title
+- page_description @group.description_html unless page_description
+- header_title     group_title(@group)     unless header_title
 - nav "group"
 - display_subscription_banner!
 - display_namespace_storage_limit_alert!

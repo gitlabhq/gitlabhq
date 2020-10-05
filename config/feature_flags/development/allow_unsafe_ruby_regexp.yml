@@ -1,7 +1,7 @@
 ---
 name: allow_unsafe_ruby_regexp
 introduced_by_url: 
-rollout_issue_url: 
-group: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257849
 type: development
+group: group::continuous integration
 default_enabled: false

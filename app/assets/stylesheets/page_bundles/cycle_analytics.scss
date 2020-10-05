@@ -1,0 +1,355 @@
+@import 'mixins_and_variables_and_functions';
+
+#cycle-analytics,
+.cycle-analytics {
+  margin: 24px auto 0;
+  position: relative;
+
+  .landing {
+    margin-top: 0;
+
+    .inner-content {
+      white-space: normal;
+
+      h4,
+      p {
+        margin: 7px 0 0;
+        max-width: 480px;
+        padding: 0 $gl-padding;
+
+        @include media-breakpoint-down(sm) {
+          margin: 0 auto;
+        }
+      }
+    }
+
+    .svg-container svg {
+      width: 136px;
+      height: 136px;
+    }
+  }
+
+  .col-headers {
+    ul {
+      @include clearfix;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: inline-block;
+      float: left;
+      line-height: 50px;
+      width: 20%;
+    }
+
+    .stage-header {
+      width: 20.5%;
+    }
+
+    .median-header {
+      width: 19.5%;
+    }
+
+    .event-header {
+      width: 45%;
+    }
+
+    .total-time-header {
+      width: 15%;
+    }
+  }
+
+  .card {
+    .content-block {
+      padding: 24px 0;
+      border-bottom: 0;
+      position: relative;
+
+      @include media-breakpoint-down(xs) {
+        padding: 6px 0 24px;
+      }
+    }
+
+    .column {
+      text-align: center;
+
+      @include media-breakpoint-down(xs) {
+        padding: 15px 0;
+      }
+
+      .header {
+        font-size: 30px;
+        line-height: 38px;
+        font-weight: $gl-font-weight-normal;
+        margin: 0;
+      }
+
+      .text {
+        color: var(--gray-500, $gray-500);
+        margin: 0;
+      }
+
+      &:last-child {
+        @include media-breakpoint-down(xs) {
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .stage-panel-body {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .stage-nav,
+  .stage-entries {
+    display: flex;
+    vertical-align: top;
+    font-size: $gl-font-size;
+  }
+
+  .stage-nav {
+    width: 40%;
+    margin-bottom: 0;
+
+    ul {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+
+    li {
+      @include clearfix;
+      list-style-type: none;
+    }
+
+    .stage-nav-item {
+      line-height: 65px;
+
+      &.active {
+        background: var(--blue-50, $blue-50);
+        border-color: var(--blue-300, $blue-300);
+        box-shadow: inset 4px 0 0 0 var(--blue-500, $blue-500);
+      }
+
+      &:hover:not(.active) {
+        background-color: var(--gray-10, $gray-10);
+        box-shadow: inset 2px 0 0 0 var(--border-color, $border-color);
+        cursor: pointer;
+      }
+
+      .stage-nav-item-cell.stage-name {
+        width: 44.5%;
+      }
+
+      .stage-nav-item-cell.stage-median {
+        min-width: 43%;
+      }
+
+      .stage-empty,
+      .not-available {
+        color: var(--gray-500, $gray-500);
+      }
+    }
+  }
+
+  .stage-panel-container {
+    width: 100%;
+    overflow: auto;
+  }
+
+  .stage-panel {
+    min-width: 968px;
+
+    .card-header {
+      padding: 0;
+      background-color: transparent;
+    }
+
+    .events-description {
+      line-height: 65px;
+      padding: 0 $gl-padding;
+    }
+
+    .events-info {
+      color: var(--gray-500, $gray-500);
+    }
+  }
+
+  .stage-events {
+    width: 60%;
+    min-height: 467px;
+  }
+
+  .stage-event-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .stage-event-item {
+    @include clearfix;
+    list-style-type: none;
+    padding: 0 0 $gl-padding;
+    margin: 0 $gl-padding $gl-padding;
+    border-bottom: 1px solid var(--gray-50, $gray-50);
+
+    &:last-child {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .item-details,
+    .item-time {
+      float: left;
+    }
+
+    .item-details {
+      width: 75%;
+    }
+
+    .item-title {
+      margin: 0 0 2px;
+
+      &.issue-title,
+      &.commit-title,
+      &.merge-request-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+        display: block;
+
+        a {
+          color: var(--gl-text-color, $gl-text-color);
+        }
+      }
+    }
+
+    .item-time {
+      width: 25%;
+      text-align: right;
+    }
+
+    .total-time {
+      font-size: $cycle-analytics-big-font;
+      color: var(--gl-text-color, $gl-text-color);
+
+      span {
+        color: var(--gl-text-color, $gl-text-color);
+        font-size: $gl-font-size;
+      }
+    }
+
+    .issue-date,
+    .build-date {
+      color: var(--gl-text-color, $gl-text-color);
+    }
+
+    .mr-link,
+    .issue-link,
+    .commit-author-link,
+    .issue-author-link {
+      color: var(--gl-text-color, $gl-text-color);
+    }
+
+    // Custom CSS for components
+    .item-conmmit-component {
+      .commit-icon {
+        svg {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          vertical-align: bottom;
+        }
+      }
+    }
+
+    .merge-request-branch {
+      a {
+        max-width: 180px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: bottom;
+      }
+    }
+  }
+
+  // Custom Styles for stage items
+  .item-build-component {
+    .item-title {
+      .icon-build-status {
+        float: left;
+        margin-right: 5px;
+        position: relative;
+        top: 2px;
+      }
+
+      .item-build-name {
+        color: var(--gl-text-color, $gl-text-color);
+      }
+
+      .pipeline-id {
+        color: var(--gl-text-color, $gl-text-color);
+        padding: 0 3px 0 0;
+      }
+
+      .ref-name {
+        color: var(--gray-900, $gray-900);
+        display: inline-block;
+        max-width: 180px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: 1.3;
+        vertical-align: top;
+      }
+
+      .commit-sha {
+        color: var(--blue-600, $blue-600);
+        line-height: 1.3;
+        vertical-align: top;
+        font-weight: $gl-font-weight-normal;
+      }
+
+      .fa {
+        color: var(--gray-500, $gray-500);
+        font-size: $code-font-size;
+      }
+    }
+  }
+
+  .empty-stage,
+  .no-access-stage {
+    text-align: center;
+    width: 75%;
+    margin: 0 auto;
+    padding-top: 130px;
+    color: var(--gray-500, $gray-500);
+
+    h4 {
+      color: var(--gl-text-color, $gl-text-color);
+    }
+  }
+
+  .empty-stage {
+    .icon-no-data {
+      height: 36px;
+      width: 78px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+  }
+
+  .no-access-stage {
+    .icon-lock {
+      height: 36px;
+      width: 78px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+  }
+}

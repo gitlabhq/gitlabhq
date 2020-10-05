@@ -131,4 +131,25 @@ RSpec.describe Projects::TagsController do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    let(:tag) { project.repository.add_tag(user, 'fake-tag', 'master') }
+    let(:request) do
+      delete(:destroy, params: { id: tag.name, namespace_id: project.namespace.to_param, project_id: project })
+    end
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'deletes tag' do
+      request
+
+      expect(response).to be_successful
+      expect(response.body).to include("Tag was removed")
+
+      expect(project.repository.find_tag(tag.name)).not_to be_present
+    end
+  end
 end

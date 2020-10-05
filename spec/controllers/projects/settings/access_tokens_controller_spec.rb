@@ -14,28 +14,21 @@ RSpec.describe Projects::Settings::AccessTokensController do
     sign_in(user)
   end
 
-  shared_examples 'feature unavailability' do
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(resource_access_token: false)
-      end
+  shared_examples 'feature unavailable' do
+    let_it_be(:project) { create(:project) }
 
-      it { is_expected.to have_gitlab_http_status(:not_found) }
+    before do
+      allow(Gitlab).to receive(:com?).and_return(false)
+      project.add_developer(user)
     end
 
-    context 'when environment is Gitlab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-      end
-
-      it { is_expected.to have_gitlab_http_status(:not_found) }
-    end
+    it { is_expected.to have_gitlab_http_status(:not_found) }
   end
 
   describe '#index' do
     subject { get :index, params: { namespace_id: project.namespace, project_id: project } }
 
-    it_behaves_like 'feature unavailability'
+    it_behaves_like 'feature unavailable'
 
     context 'when feature is available' do
       let_it_be(:bot_user) { create(:user, :project_bot) }
@@ -84,7 +77,7 @@ RSpec.describe Projects::Settings::AccessTokensController do
 
     let_it_be(:access_token_params) { {} }
 
-    it_behaves_like 'feature unavailability'
+    it_behaves_like 'feature unavailable'
 
     context 'when feature is available' do
       let_it_be(:access_token_params) { { name: 'Nerd bot', scopes: ["api"], expires_at: 1.month.since.to_date } }
@@ -148,7 +141,7 @@ RSpec.describe Projects::Settings::AccessTokensController do
       project.add_maintainer(bot_user)
     end
 
-    it_behaves_like 'feature unavailability'
+    it_behaves_like 'feature unavailable'
 
     context 'when feature is available' do
       before do
@@ -185,6 +178,5 @@ RSpec.describe Projects::Settings::AccessTokensController do
 
   def enable_feature
     allow(Gitlab).to receive(:com?).and_return(false)
-    stub_feature_flags(resource_access_token: true)
   end
 end

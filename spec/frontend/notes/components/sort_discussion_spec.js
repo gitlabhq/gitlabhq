@@ -55,7 +55,7 @@ describe('Sort Discussion component', () => {
       it('calls the right actions', () => {
         createComponent();
 
-        wrapper.find('.js-newest-first').trigger('click');
+        wrapper.find('.js-newest-first').vm.$emit('click');
 
         expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', DESC);
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
@@ -67,7 +67,7 @@ describe('Sort Discussion component', () => {
     it('shows the "Oldest First" as the dropdown', () => {
       createComponent();
 
-      expect(wrapper.find('.js-dropdown-text').text()).toBe('Oldest first');
+      expect(wrapper.find('.js-dropdown-text').props('text')).toBe('Oldest first');
     });
   });
 
@@ -79,7 +79,7 @@ describe('Sort Discussion component', () => {
 
     describe('when the dropdown item is clicked', () => {
       it('calls the right actions', () => {
-        wrapper.find('.js-oldest-first').trigger('click');
+        wrapper.find('.js-oldest-first').vm.$emit('click');
 
         expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', ASC);
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
@@ -87,13 +87,13 @@ describe('Sort Discussion component', () => {
         });
       });
 
-      it('applies the active class to the correct button in the dropdown', () => {
-        expect(wrapper.find('.js-newest-first').classes()).toContain('is-active');
+      it('sets is-checked to true on the active button in the dropdown', () => {
+        expect(wrapper.find('.js-newest-first').props('isChecked')).toBe(true);
       });
     });
 
     it('shows the "Newest First" as the dropdown', () => {
-      expect(wrapper.find('.js-dropdown-text').text()).toBe('Newest first');
+      expect(wrapper.find('.js-dropdown-text').props('text')).toBe('Newest first');
     });
   });
 });

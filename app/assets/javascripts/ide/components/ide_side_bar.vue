@@ -7,9 +7,8 @@ import ActivityBar from './activity_bar.vue';
 import RepoCommitSection from './repo_commit_section.vue';
 import CommitForm from './commit_sidebar/form.vue';
 import IdeReview from './ide_review.vue';
-import SuccessMessage from './commit_sidebar/success_message.vue';
 import IdeProjectHeader from './ide_project_header.vue';
-import { leftSidebarViews, SIDEBAR_INIT_WIDTH } from '../constants';
+import { SIDEBAR_INIT_WIDTH } from '../constants';
 
 export default {
   components: {
@@ -20,18 +19,11 @@ export default {
     IdeTree,
     CommitForm,
     IdeReview,
-    SuccessMessage,
     IdeProjectHeader,
   },
   computed: {
     ...mapState(['loading', 'currentActivityView', 'changedFiles', 'stagedFiles', 'lastCommitMsg']),
     ...mapGetters(['currentProject', 'someUncommittedChanges']),
-    showSuccessMessage() {
-      return (
-        this.currentActivityView === leftSidebarViews.edit.name &&
-        (this.lastCommitMsg && !this.someUncommittedChanges)
-      );
-    },
   },
   SIDEBAR_INIT_WIDTH,
 };
@@ -44,7 +36,7 @@ export default {
     class="multi-file-commit-panel flex-column"
   >
     <template v-if="loading">
-      <div class="multi-file-commit-panel-inner">
+      <div class="multi-file-commit-panel-inner" data-testid="ide-side-bar-inner">
         <div v-for="n in 3" :key="n" class="multi-file-loading-container">
           <gl-skeleton-loading />
         </div>
@@ -54,9 +46,11 @@ export default {
       <ide-project-header :project="currentProject" />
       <div class="ide-context-body d-flex flex-fill">
         <activity-bar />
-        <div class="multi-file-commit-panel-inner">
+        <div class="multi-file-commit-panel-inner" data-testid="ide-side-bar-inner">
           <div class="multi-file-commit-panel-inner-content">
-            <component :is="currentActivityView" />
+            <keep-alive>
+              <component :is="currentActivityView" />
+            </keep-alive>
           </div>
           <commit-form />
         </div>

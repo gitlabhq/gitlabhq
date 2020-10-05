@@ -1,0 +1,16 @@
+#js-dropdown-approved-by.filtered-search-input-dropdown-menu.dropdown-menu
+  %ul{ data: { dropdown: true } }
+    %li.filter-dropdown-item{ data: { value: 'None' } }
+      %button.btn.btn-link{ type: 'button' }
+        = _('None')
+    %li.filter-dropdown-item{ data: { value: 'Any' } }
+      %button.btn.btn-link{ type: 'button' }
+        = _('Any')
+    %li.divider.droplab-item-ignore
+    - if current_user
+      = render 'shared/issuable/user_dropdown_item',
+        user: current_user
+  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+    = render 'shared/issuable/user_dropdown_item',
+      user: User.new(username: '{{username}}', name: '{{name}}'),
+      avatar: { lazy: true, url: '{{avatar_url}}' }

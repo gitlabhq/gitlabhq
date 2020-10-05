@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class DataList
-  def initialize(batch_ids, data_fields_hash, klass)
-    @batch_ids = batch_ids
+  def initialize(batch, data_fields_hash, klass)
+    @batch = batch
     @data_fields_hash = data_fields_hash
     @klass = klass
   end
@@ -13,15 +13,15 @@ class DataList
 
   private
 
-  attr_reader :batch_ids, :data_fields_hash, :klass
+  attr_reader :batch, :data_fields_hash, :klass
 
   def columns
     data_fields_hash.keys << 'service_id'
   end
 
   def values
-    batch_ids.map do |row|
-      data_fields_hash.values << row['id']
+    batch.map do |record|
+      data_fields_hash.values << record['id']
     end
   end
 end

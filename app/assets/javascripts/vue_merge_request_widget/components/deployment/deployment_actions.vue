@@ -74,9 +74,6 @@ export default {
     canBeManuallyRedeployed() {
       return this.computedDeploymentStatus === FAILED && Boolean(this.redeployPath);
     },
-    shouldShowManualButtons() {
-      return this.glFeatures.deployFromFooter;
-    },
     hasExternalUrls() {
       return Boolean(this.deployment.external_url && this.deployment.external_url_formatted);
     },
@@ -154,7 +151,7 @@ export default {
 <template>
   <div>
     <deployment-action-button
-      v-if="shouldShowManualButtons && canBeManuallyDeployed"
+      v-if="canBeManuallyDeployed"
       :action-in-progress="actionInProgress"
       :actions-configuration="$options.actionsConfiguration[constants.DEPLOYING]"
       :computed-deployment-status="computedDeploymentStatus"
@@ -165,7 +162,7 @@ export default {
       <span>{{ $options.actionsConfiguration[constants.DEPLOYING].buttonText }}</span>
     </deployment-action-button>
     <deployment-action-button
-      v-if="shouldShowManualButtons && canBeManuallyRedeployed"
+      v-if="canBeManuallyRedeployed"
       :action-in-progress="actionInProgress"
       :actions-configuration="$options.actionsConfiguration[constants.REDEPLOYING]"
       :computed-deployment-status="computedDeploymentStatus"

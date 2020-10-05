@@ -2,9 +2,8 @@
 /* eslint-disable vue/no-v-html */
 import { mapActions, mapState } from 'vuex';
 import { throttle } from 'lodash';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '../../../locale';
-import tooltip from '../../../vue_shared/directives/tooltip';
 import ScrollButton from './detail/scroll_button.vue';
 import JobDescription from './detail/description.vue';
 
@@ -15,7 +14,7 @@ const scrollPositions = {
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlIcon,
@@ -84,7 +83,7 @@ export default {
       <job-description :job="detailJob" />
       <div class="controllers ml-auto">
         <a
-          v-tooltip
+          v-gl-tooltip
           :title="__('Show complete raw log')"
           :href="detailJob.rawPath"
           data-placement="top"

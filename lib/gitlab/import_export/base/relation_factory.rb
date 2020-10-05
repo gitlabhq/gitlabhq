@@ -53,6 +53,7 @@ module Gitlab
           @importable = importable
           @imported_object_retries = 0
           @relation_hash[importable_column_name] = @importable.id
+          @original_user = {}
 
           # Remove excluded keys from relation_hash
           # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
@@ -112,6 +113,7 @@ module Gitlab
         def update_user_references
           self.class::USER_REFERENCES.each do |reference|
             if @relation_hash[reference]
+              @original_user[reference] = @relation_hash[reference]
               @relation_hash[reference] = @members_mapper.map[@relation_hash[reference]]
             end
           end
@@ -243,28 +245,20 @@ module Gitlab
         # will be used. Otherwise, a note stating the original author name
         # is left.
         def set_note_author
-          old_author_id = @relation_hash['author_id']
+          old_author_id = @original_user['author_id']
           author = @relation_hash.delete('author')
 
-          update_note_for_missing_author(author['name']) unless has_author?(old_author_id)
-        end
-
-        def has_author?(old_author_id)
-          admin_user? && @members_mapper.include?(old_author_id)
+          unless @members_mapper.include?(old_author_id)
+            @relation_hash['note'] = "%{note}\n\n %{missing_author_note}" % {
+              note: @relation_hash['note'].presence || '*Blank note*',
+              missing_author_note: missing_author_note(@relation_hash['updated_at'], author['name'])
+            }
+          end
         end
 
         def missing_author_note(updated_at, author_name)
           timestamp = updated_at.split('.').first
-          "\n\n *By #{author_name} on #{timestamp} (imported from GitLab project)*"
-        end
-
-        def update_note_for_missing_author(author_name)
-          @relation_hash['note'] = '*Blank note*' if @relation_hash['note'].blank?
-          @relation_hash['note'] = "#{@relation_hash['note']}#{missing_author_note(@relation_hash['updated_at'], author_name)}"
-        end
-
-        def admin_user?
-          @user.admin?
+          "*By #{author_name} on #{timestamp} (imported from GitLab)*"
         end
 
         def existing_object?

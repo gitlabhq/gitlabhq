@@ -137,6 +137,7 @@ module Gitlab
 
       # TODO this class is meant to replace Handler when the feature flag
       # upload_middleware_jwt_params_handler is removed
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/233895#roll-out-steps
       class HandlerForJWTParams < Handler
         def with_open_files
           @rewritten_fields.keys.each do |field|

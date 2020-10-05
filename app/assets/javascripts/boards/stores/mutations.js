@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { sortBy, pull } from 'lodash';
 import { formatIssue, moveIssueListHelper } from '../boards_util';
 import * as mutationTypes from './mutation_types';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 const notImplemented = () => {
@@ -49,7 +49,7 @@ export default {
   },
 
   [mutationTypes.CREATE_LIST_FAILURE]: state => {
-    state.error = __('An error occurred while creating the list. Please try again.');
+    state.error = s__('Boards|An error occurred while creating the list. Please try again.');
   },
 
   [mutationTypes.REQUEST_ADD_LIST]: () => {
@@ -73,7 +73,7 @@ export default {
   },
 
   [mutationTypes.UPDATE_LIST_FAILURE]: (state, backupList) => {
-    state.error = __('An error occurred while updating the list. Please try again.');
+    state.error = s__('Boards|An error occurred while updating the list. Please try again.');
     Vue.set(state, 'boardLists', backupList);
   },
 
@@ -98,19 +98,17 @@ export default {
   },
 
   [mutationTypes.RECEIVE_ISSUES_FOR_LIST_FAILURE]: (state, listId) => {
-    state.error = __('An error occurred while fetching the board issues. Please reload the page.');
+    state.error = s__(
+      'Boards|An error occurred while fetching the board issues. Please reload the page.',
+    );
     const listIndex = state.boardLists.findIndex(l => l.id === listId);
     Vue.set(state.boardLists[listIndex], 'loading', false);
   },
 
-  [mutationTypes.REQUEST_ISSUES_FOR_ALL_LISTS]: state => {
-    state.isLoadingIssues = true;
-  },
-
-  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS]: (state, { listData, issues }) => {
-    state.issuesByListId = listData;
-    state.issues = issues;
-    state.isLoadingIssues = false;
+  [mutationTypes.RESET_ISSUES]: state => {
+    Object.keys(state.issuesByListId).forEach(listId => {
+      Vue.set(state.issuesByListId, listId, []);
+    });
   },
 
   [mutationTypes.UPDATE_ISSUE_BY_ID]: (state, { issueId, prop, value }) => {
@@ -120,11 +118,6 @@ export default {
     }
 
     Vue.set(state.issues[issueId], prop, value);
-  },
-
-  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE]: state => {
-    state.error = __('An error occurred while fetching the board issues. Please reload the page.');
-    state.isLoadingIssues = false;
   },
 
   [mutationTypes.REQUEST_ADD_ISSUE]: () => {
@@ -162,7 +155,7 @@ export default {
     state,
     { originalIssue, fromListId, toListId, originalIndex },
   ) => {
-    state.error = __('An error occurred while moving the issue. Please try again.');
+    state.error = s__('Boards|An error occurred while moving the issue. Please try again.');
     Vue.set(state.issues, originalIssue.id, originalIssue);
     removeIssueFromList(state, toListId, originalIssue.id);
     addIssueToList({
@@ -193,7 +186,7 @@ export default {
   },
 
   [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issue }) => {
-    state.error = __('An error occurred while creating the issue. Please try again.');
+    state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
     removeIssueFromList(state, list.id, issue.id);
   },
 

@@ -544,7 +544,6 @@ module API
 
       feature_name = "usage_data_#{event_name}"
       return unless Feature.enabled?(feature_name)
-      return unless Gitlab::CurrentSettings.usage_ping_enabled?
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name)
     rescue => error

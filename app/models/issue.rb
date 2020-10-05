@@ -19,6 +19,8 @@ class Issue < ApplicationRecord
   include WhereComposite
   include StateEventable
   include IdInOrdered
+  include Presentable
+  include IssueAvailableFeatures
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
@@ -54,6 +56,7 @@ class Issue < ApplicationRecord
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
+  has_many :issue_email_participants
   has_many :assignees, class_name: "User", through: :issue_assignees
   has_many :zoom_meetings
   has_many :user_mentions, class_name: "IssueUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
@@ -101,6 +104,8 @@ class Issue < ApplicationRecord
   scope :order_relative_position_asc, -> { reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
   scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
+  scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
+  scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, :project) }
@@ -122,6 +127,7 @@ class Issue < ApplicationRecord
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
   scope :service_desk, -> { where(author: ::User.support_bot) }
+  scope :inc_relations_for_view, -> { includes(author: :status) }
 
   # An issue can be uniquely identified by project_id and iid
   # Takes one or more sets of composite IDs, expressed as hash-like records of
@@ -145,6 +151,7 @@ class Issue < ApplicationRecord
 
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
+  after_create_commit :record_create_action, unless: :importing?
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -232,6 +239,8 @@ class Issue < ApplicationRecord
     when 'due_date', 'due_date_asc'                       then order_due_date_asc.with_order_id_desc
     when 'due_date_desc'                                  then order_due_date_desc.with_order_id_desc
     when 'relative_position', 'relative_position_asc'     then order_relative_position_asc.with_order_id_desc
+    when 'severity_asc'                                   then order_severity_asc.with_order_id_desc
+    when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
     else
       super
     end
@@ -413,11 +422,19 @@ class Issue < ApplicationRecord
     IssueLink.inverse_link_type(type)
   end
 
+  def relocation_target
+    moved_to || duplicated_to
+  end
+
   private
 
   def ensure_metrics
     super
     metrics.record!
+  end
+
+  def record_create_action
+    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author)
   end
 
   # Returns `true` if the given User can read the current Issue.

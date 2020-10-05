@@ -1,6 +1,10 @@
 import { cloneDeep } from 'lodash';
+import { getJSONFixture } from 'helpers/fixtures';
 import { releaseToApiJson, apiJsonToRelease, convertGraphQLResponse } from '~/releases/util';
-import { graphqlReleasesResponse as originalGraphqlReleasesResponse } from './mock_data';
+
+const originalGraphqlReleasesResponse = getJSONFixture(
+  'graphql/releases/queries/all_releases.query.graphql.json',
+);
 
 describe('releases/util.js', () => {
   describe('releaseToApiJson', () => {

@@ -12,7 +12,7 @@ more repositories, by importing an SSH public key to your GitLab instance.
 
 This is useful for cloning repositories to your Continuous
 Integration (CI) server. By using deploy keys, you don't have to set up a
-dummy user account.
+fake user account.
 
 There are two types of deploy keys:
 

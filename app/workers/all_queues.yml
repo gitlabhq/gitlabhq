@@ -211,6 +211,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:member_invitation_reminder_emails
+  :feature_category: :subgroups
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:metrics_dashboard_schedule_annotations_prune
   :feature_category: :metrics
   :has_external_dependencies:
@@ -722,6 +730,14 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: true
+  :tags: []
+- :name: incident_management:incident_management_add_severity_system_note
+  :feature_category: :incident_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 2
+  :idempotent:
   :tags: []
 - :name: incident_management:incident_management_pager_duty_process_incident
   :feature_category: :incident_management
@@ -1324,6 +1340,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: design_management_copy_design_collection
+  :feature_category: :design_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: design_management_new_version
   :feature_category: :design_management
   :has_external_dependencies:
@@ -1532,6 +1556,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: metrics_dashboard_sync_dashboards
+  :feature_category: :metrics
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: migrate_external_diffs
   :feature_category: :source_code_management
   :has_external_dependencies:
@@ -1701,6 +1733,30 @@
   :idempotent: true
   :tags: []
 - :name: propagate_integration
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: propagate_integration_group
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: propagate_integration_inherit
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: propagate_integration_project
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low

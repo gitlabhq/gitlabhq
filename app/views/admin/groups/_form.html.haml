@@ -36,5 +36,3 @@
     .form-actions
       = f.submit _('Save changes'), class: "btn btn-success", data: { qa_selector: 'save_changes_button' }
       = link_to  _('Cancel'), admin_group_path(@group), class: "btn btn-cancel"
-
-= render_if_exists 'ldap_group_links/ldap_syncrhonizations', group: @group

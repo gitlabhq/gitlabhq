@@ -7,43 +7,34 @@ module Projects
       include ::IncidentManagement::Settings
 
       def execute(token)
+        return bad_request unless valid_payload_size?
         return forbidden unless alerts_service_activated?
         return unauthorized unless valid_token?(token)
 
-        alert = process_alert
+        process_alert
         return bad_request unless alert.persisted?
 
-        process_incident_issues(alert) if process_issues?
+        process_incident_issues if process_issues?
         send_alert_email if send_email?
 
         ServiceResponse.success
-      rescue Gitlab::Alerting::NotificationPayloadParser::BadPayloadError
-        bad_request
       end
 
       private
 
       delegate :alerts_service, :alerts_service_activated?, to: :project
 
-      def am_alert_params
-        strong_memoize(:am_alert_params) do
-          Gitlab::AlertManagement::AlertParams.from_generic_alert(project: project, payload: params.to_h)
-        end
-      end
-
       def process_alert
-        existing_alert = find_alert_by_fingerprint(am_alert_params[:fingerprint])
-
-        if existing_alert
-          process_existing_alert(existing_alert)
+        if alert.persisted?
+          process_existing_alert
         else
           create_alert
         end
       end
 
-      def process_existing_alert(alert)
-        if am_alert_params[:ended_at].present?
-          process_resolved_alert(alert)
+      def process_existing_alert
+        if incoming_payload.ends_at.present?
+          process_resolved_alert
         else
           alert.register_new_event!
         end
@@ -51,10 +42,10 @@ module Projects
         alert
       end
 
-      def process_resolved_alert(alert)
+      def process_resolved_alert
         return unless auto_close_incident?
 
-        if alert.resolve(am_alert_params[:ended_at])
+        if alert.resolve(incoming_payload.ends_at)
           close_issue(alert.issue)
         end
 
@@ -72,20 +63,16 @@ module Projects
       end
 
       def create_alert
-        alert = AlertManagement::Alert.create(am_alert_params.except(:ended_at))
-        alert.execute_services if alert.persisted?
-        SystemNoteService.create_new_alert(alert, 'Generic Alert Endpoint')
+        return unless alert.save
 
-        alert
+        alert.execute_services
+        SystemNoteService.create_new_alert(
+          alert,
+          alert.monitoring_tool || 'Generic Alert Endpoint'
+        )
       end
 
-      def find_alert_by_fingerprint(fingerprint)
-        return unless fingerprint
-
-        AlertManagement::Alert.not_resolved.for_fingerprint(project, fingerprint).first
-      end
-
-      def process_incident_issues(alert)
+      def process_incident_issues
         return if alert.issue
 
         ::IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, alert.id)
@@ -94,11 +81,33 @@ module Projects
       def send_alert_email
         notification_service
           .async
-          .prometheus_alerts_fired(project, [parsed_payload])
+          .prometheus_alerts_fired(project, [alert.attributes])
       end
 
-      def parsed_payload
-        Gitlab::Alerting::NotificationPayloadParser.call(params.to_h, project)
+      def alert
+        strong_memoize(:alert) do
+          existing_alert || new_alert
+        end
+      end
+
+      def existing_alert
+        return unless incoming_payload.gitlab_fingerprint
+
+        AlertManagement::Alert.not_resolved.for_fingerprint(project, incoming_payload.gitlab_fingerprint).first
+      end
+
+      def new_alert
+        AlertManagement::Alert.new(**incoming_payload.alert_params, ended_at: nil)
+      end
+
+      def incoming_payload
+        strong_memoize(:incoming_payload) do
+          Gitlab::AlertManagement::Payload.parse(project, params.to_h)
+        end
+      end
+
+      def valid_payload_size?
+        Gitlab::Utils::DeepSize.new(params).valid?
       end
 
       def valid_token?(token)

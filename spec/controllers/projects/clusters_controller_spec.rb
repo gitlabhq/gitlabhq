@@ -251,6 +251,7 @@ RSpec.describe Projects::ClustersController do
         cluster: {
           name: 'new-cluster',
           managed: '1',
+          namespace_per_environment: '0',
           provider_gcp_attributes: {
             gcp_project_id: 'gcp-project-12345',
             legacy_abac: legacy_abac_param
@@ -278,6 +279,7 @@ RSpec.describe Projects::ClustersController do
           expect(project.clusters.first).to be_kubernetes
           expect(project.clusters.first.provider_gcp).to be_legacy_abac
           expect(project.clusters.first.managed?).to be_truthy
+          expect(project.clusters.first.namespace_per_environment?).to be_falsy
         end
 
         context 'when legacy_abac param is false' do
@@ -369,6 +371,7 @@ RSpec.describe Projects::ClustersController do
 
           expect(project.clusters.first).to be_user
           expect(project.clusters.first).to be_kubernetes
+          expect(project.clusters.first).to be_namespace_per_environment
         end
       end
 
@@ -400,6 +403,7 @@ RSpec.describe Projects::ClustersController do
           expect(cluster).to be_user
           expect(cluster).to be_kubernetes
           expect(cluster).to be_platform_kubernetes_rbac
+          expect(cluster).to be_namespace_per_environment
         end
       end
 
@@ -726,6 +730,7 @@ RSpec.describe Projects::ClustersController do
           enabled: false,
           name: 'my-new-cluster-name',
           managed: false,
+          namespace_per_environment: false,
           platform_kubernetes_attributes: {
             namespace: 'my-namespace'
           }
@@ -742,6 +747,7 @@ RSpec.describe Projects::ClustersController do
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
       expect(cluster).not_to be_managed
+      expect(cluster).not_to be_namespace_per_environment
       expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
     end
 

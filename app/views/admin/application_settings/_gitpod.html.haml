@@ -1,6 +1,5 @@
 - return unless Gitlab::Gitpod.feature_available?
 - expanded = integration_expanded?('gitpod_')
-- gitpod_link = link_to("Gitpod#{sprite_icon('external-link', size: 12, css_class: 'ml-1 vertical-align-center')}".html_safe, 'https://gitpod.io/', target: '_blank', rel: 'noopener noreferrer')
 
 %section.settings.no-animate#js-gitpod-settings{ class: ('expanded' if expanded) }
   .settings-header
@@ -9,7 +8,7 @@
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = s_('Enable %{gitpod_link} integration to launch a development environment in your browser directly from GitLab.').html_safe % { gitpod_link: gitpod_link }
+      = gitpod_enable_description
       = link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
 
 

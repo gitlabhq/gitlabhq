@@ -89,10 +89,7 @@ module AuthenticatesWithTwoFactor
       user.save!
       sign_in(user, message: :two_factor_authenticated, event: :authentication)
     else
-      user.increment_failed_attempts!
-      Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
-      flash.now[:alert] = _('Invalid two-factor code.')
-      prompt_for_two_factor(user)
+      handle_two_factor_failure(user, 'OTP', _('Invalid two-factor code.'))
     end
   end
 
@@ -101,7 +98,7 @@ module AuthenticatesWithTwoFactor
     if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenge])
       handle_two_factor_success(user)
     else
-      handle_two_factor_failure(user, 'U2F')
+      handle_two_factor_failure(user, 'U2F', _('Authentication via U2F device failed.'))
     end
   end
 
@@ -109,7 +106,7 @@ module AuthenticatesWithTwoFactor
     if Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:challenge]).execute
       handle_two_factor_success(user)
     else
-      handle_two_factor_failure(user, 'WebAuthn')
+      handle_two_factor_failure(user, 'WebAuthn', _('Authentication via WebAuthn device failed.'))
     end
   end
 
@@ -152,11 +149,17 @@ module AuthenticatesWithTwoFactor
     sign_in(user, message: :two_factor_authenticated, event: :authentication)
   end
 
-  def handle_two_factor_failure(user, method)
+  def handle_two_factor_failure(user, method, message)
     user.increment_failed_attempts!
+    log_failed_two_factor(user, method, request.remote_ip)
+
     Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=#{method}")
-    flash.now[:alert] = _('Authentication via %{method} device failed.') % { method: method }
+    flash.now[:alert] = message
     prompt_for_two_factor(user)
+  end
+
+  def log_failed_two_factor(user, method, ip_address)
+    # overridden in EE
   end
 
   def handle_changed_user(user)
@@ -173,3 +176,5 @@ module AuthenticatesWithTwoFactor
     Digest::SHA256.hexdigest(user.encrypted_password) != session[:user_password_hash]
   end
 end
+
+AuthenticatesWithTwoFactor.prepend_if_ee('EE::AuthenticatesWithTwoFactor')

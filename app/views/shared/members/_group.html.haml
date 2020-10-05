@@ -6,17 +6,18 @@
 
 -# Note this is just for groups. For individual members please see shared/members/_member
 
-%li.member.group_member.py-2.px-3.d-flex.flex-column.flex-md-row{ id: dom_id, data: { qa_selector: 'group_row' } }
+%li.member.js-member.group_member.py-2.px-3.d-flex.flex-column.flex-md-row{ id: dom_id, data: { qa_selector: 'group_row' } }
   %span.list-item-name.mb-2.m-md-0
     = group_icon(group, class: "avatar s40 flex-shrink-0 flex-grow-0", alt: '')
     .user-info
       = link_to group.full_name, group_path(group), class: 'member'
       .cgray
         Given access #{time_ago_with_tooltip(group_link.created_at)}
-        - if group_link.expires?
-          ·
-          %span{ class: ('text-warning' if group_link.expires_soon?) }
-            = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(group_link.expires_at) }
+        %span.js-expires-in{ class: ('gl-display-none' unless group_link.expires?) }
+          &middot;
+          %span.js-expires-in-text{ class: ('text-warning' if group_link.expires_soon?) }
+            - if group_link.expires?
+              = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(group_link.expires_at) }
   .controls.member-controls.align-items-center
     = form_tag group_link_path, method: :put, remote: true, class: 'js-edit-member-form form-group d-sm-flex' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access

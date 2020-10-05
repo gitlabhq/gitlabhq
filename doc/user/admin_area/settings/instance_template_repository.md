@@ -9,8 +9,6 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5986) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
-## Overview
-
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the
 instance-wide collection of file templates. These templates are then exposed to

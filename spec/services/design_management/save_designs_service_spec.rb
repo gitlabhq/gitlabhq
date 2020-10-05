@@ -32,7 +32,7 @@ RSpec.describe DesignManagement::SaveDesignsService do
     end
 
     allow(::DesignManagement::NewVersionWorker)
-      .to receive(:perform_async).with(Integer).and_return(nil)
+      .to receive(:perform_async).with(Integer, false).and_return(nil)
   end
 
   def run_service(files_to_upload = nil)
@@ -128,6 +128,25 @@ RSpec.describe DesignManagement::SaveDesignsService do
         expect { run_parallel(blocks) }.to change(DesignManagement::Version, :count).by(parellism)
       end
 
+      context 'when the design collection is in the process of being copied', :clean_gitlab_redis_shared_state do
+        before do
+          issue.design_collection.start_copy!
+        end
+
+        it_behaves_like 'a service error'
+      end
+
+      context 'when the design collection has a copy error', :clean_gitlab_redis_shared_state do
+        before do
+          issue.design_collection.copy_state = 'error'
+          issue.design_collection.send(:set_stored_copy_state!)
+        end
+
+        it 'resets the copy state' do
+          expect { run_service }.to change { issue.design_collection.copy_state }.from('error').to('ready')
+        end
+      end
+
       describe 'the response' do
         it 'includes designs with the expected properties' do
           updated_designs = response[:designs]
@@ -220,7 +239,7 @@ RSpec.describe DesignManagement::SaveDesignsService do
           counter = Gitlab::UsageDataCounters::DesignsCounter
 
           expect(::DesignManagement::NewVersionWorker)
-            .to receive(:perform_async).once.with(Integer).and_return(nil)
+            .to receive(:perform_async).once.with(Integer, false).and_return(nil)
 
           expect { run_service }
             .to change { Event.count }.by(2)
@@ -254,7 +273,7 @@ RSpec.describe DesignManagement::SaveDesignsService do
           design_repository.has_visible_content?
 
           expect(::DesignManagement::NewVersionWorker)
-            .to receive(:perform_async).once.with(Integer).and_return(nil)
+            .to receive(:perform_async).once.with(Integer, false).and_return(nil)
 
           expect { service.execute }
             .to change { issue.designs.count }.from(0).to(2)
@@ -269,6 +288,14 @@ RSpec.describe DesignManagement::SaveDesignsService do
 
           it 'returns the correct error' do
             expect(response[:message]).to match(/only \d+ files are allowed simultaneously/i)
+          end
+        end
+
+        context 'when uploading duplicate files' do
+          let(:files) { [rails_sample, dk_png, rails_sample] }
+
+          it 'returns the correct error' do
+            expect(response[:message]).to match('Duplicate filenames are not allowed!')
           end
         end
       end

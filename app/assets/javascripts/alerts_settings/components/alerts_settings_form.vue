@@ -511,16 +511,11 @@ export default {
             max-rows="10"
           />
         </gl-form-group>
-        <div class="gl-display-flex gl-justify-content-end">
-          <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
-            $options.i18n.testAlertInfo
-          }}</gl-button>
-        </div>
+        <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
+          $options.i18n.testAlertInfo
+        }}</gl-button>
       </template>
       <div class="footer-block row-content-block gl-display-flex gl-justify-content-space-between">
-        <gl-button category="primary" :disabled="!canSaveConfig" @click="onReset">
-          {{ __('Cancel') }}
-        </gl-button>
         <gl-button
           variant="success"
           category="primary"
@@ -528,6 +523,9 @@ export default {
           @click="onSubmit"
         >
           {{ __('Save changes') }}
+        </gl-button>
+        <gl-button category="primary" :disabled="!canSaveConfig" @click="onReset">
+          {{ __('Cancel') }}
         </gl-button>
       </div>
     </gl-form>

@@ -4,9 +4,12 @@ FactoryBot.define do
   factory :pages_deployment, class: 'PagesDeployment' do
     project
     file_store { ObjectStorage::SUPPORTED_STORES.first }
-    size { 1.megabytes }
 
-    # TODO: replace with proper file uploaded in https://gitlab.com/gitlab-org/gitlab/-/issues/245295
-    file { "dummy string" }
+    after(:build) do |deployment, _evaluator|
+      deployment.file = fixture_file_upload(
+        Rails.root.join("spec/fixtures/pages.zip")
+      )
+      deployment.size = deployment.file.size
+    end
   end
 end

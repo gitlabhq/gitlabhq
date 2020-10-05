@@ -2,6 +2,7 @@
 
 class Admin::IntegrationsController < Admin::ApplicationController
   include IntegrationsActions
+  include ServicesHelper
 
   private
 
@@ -10,7 +11,7 @@ class Admin::IntegrationsController < Admin::ApplicationController
   end
 
   def integrations_enabled?
-    true
+    instance_level_integrations?
   end
 
   def scoped_edit_integration_path(integration)

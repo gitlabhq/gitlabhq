@@ -214,6 +214,12 @@ module Gitlab
         title.gsub(DRAFT_REGEX, '').gsub(/`/, '\\\`')
       end
 
+      def draft_mr?
+        return false unless gitlab_helper
+
+        DRAFT_REGEX.match?(gitlab_helper.mr_json['title'])
+      end
+
       def security_mr?
         return false unless gitlab_helper
 

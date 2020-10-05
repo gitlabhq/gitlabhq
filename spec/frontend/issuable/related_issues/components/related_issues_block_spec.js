@@ -18,7 +18,10 @@ describe('RelatedIssuesBlock', () => {
   const findIssueCountBadgeAddButton = () => wrapper.find(GlButton);
 
   afterEach(() => {
-    wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   describe('with defaults', () => {

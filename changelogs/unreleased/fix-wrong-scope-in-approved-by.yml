@@ -1,0 +1,5 @@
+---
+title: Fix approvedBy filed in MR GraphQL API
+merge_request: 43705
+author:
+type: fixed

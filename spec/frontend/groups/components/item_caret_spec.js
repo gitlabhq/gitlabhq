@@ -1,38 +1,48 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import ItemCaret from '~/groups/components/item_caret.vue';
 
-import mountComponent from 'helpers/vue_mount_component_helper';
-import itemCaretComponent from '~/groups/components/item_caret.vue';
+describe('ItemCaret', () => {
+  let wrapper;
 
-const createComponent = (isGroupOpen = false) => {
-  const Component = Vue.extend(itemCaretComponent);
+  const defaultProps = {
+    isGroupOpen: false,
+  };
 
-  return mountComponent(Component, {
-    isGroupOpen,
-  });
-};
-
-describe('ItemCaretComponent', () => {
-  let vm;
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(ItemCaret, {
+      propsData: { ...defaultProps, ...props },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
+  const findAllGlIcons = () => wrapper.findAll(GlIcon);
+  const findGlIcon = () => wrapper.find(GlIcon);
+
   describe('template', () => {
-    it('should render component template correctly', () => {
-      vm = createComponent();
-      expect(vm.$el.classList.contains('folder-caret')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('svg').length).toBe(1);
+    it('renders component template correctly', () => {
+      createComponent();
+
+      expect(wrapper.classes()).toContain('folder-caret');
+      expect(findAllGlIcons()).toHaveLength(1);
     });
 
-    it('should render caret down icon if `isGroupOpen` prop is `true`', () => {
-      vm = createComponent(true);
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('angle-down-icon');
-    });
+    it.each`
+      isGroupOpen | icon
+      ${true}     | ${'angle-down'}
+      ${false}    | ${'angle-right'}
+    `('renders "$icon" icon when `isGroupOpen` is $isGroupOpen', ({ isGroupOpen, icon }) => {
+      createComponent({
+        isGroupOpen,
+      });
 
-    it('should render caret right icon if `isGroupOpen` prop is `false`', () => {
-      vm = createComponent();
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('angle-right-icon');
+      expect(findGlIcon().props('name')).toBe(icon);
     });
   });
 });

@@ -33,11 +33,8 @@ We have complete examples of configuring pipelines:
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
 >   from 30 days to under 8 hours with GitLab.
 
-NOTE: **Note:**
 If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
-you may need to enable pipeline triggering. Go to your project's
-
-**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+you may need to enable pipeline triggering. Go to your project's **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
 ## Introduction
 
@@ -961,7 +958,7 @@ GitLab performs a reverse deep merge based on the keys. GitLab:
 - Merges the `rspec` contents into `.tests` recursively.
 - Doesn't merge the values of the keys.
 
-The result is this `rspec` job:
+The result is this `rspec` job, where `script: rake test` is overwritten by `script: rake rspec`:
 
 ```yaml
 rspec:
@@ -973,9 +970,6 @@ rspec:
     variables:
       - $RSPEC
 ```
-
-NOTE: **Note:**
-Note that `script: rake test` has been overwritten by `script: rake rspec`.
 
 If you do want to include the `rake test`, see [`before_script` and `after_script`](#before_script-and-after_script).
 
@@ -1547,11 +1541,11 @@ docker build:
         - Dockerfile
         - docker/scripts/*
       when: manual
-    # - when: never would be redundant here, this is implied any time rules are listed.
+      # - when: never would be redundant here, this is implied any time rules are listed.
 ```
 
-Keywords such as `branches` or `refs` that are currently available for
-`only`/`except` are not yet available in `rules` as they are being individually
+Keywords such as `branches` or `refs` that are available for
+`only`/`except` are not available in `rules`. They are being individually
 considered for their usage and behavior in this context. Future keyword improvements
 are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
 where anyone can add suggestions or requests.
@@ -1754,7 +1748,7 @@ the pipeline if the following is true:
 
 In the example below, the `test` job will `only` be created when **all** of the following are true:
 
-- The pipeline has been [scheduled](../../user/project/pipelines/schedules.md) **or** runs for `master`.
+- The pipeline has been [scheduled](../pipelines/schedules.md) **or** runs for `master`.
 - The `variables` keyword matches.
 - The `kubernetes` service is active on the project.
 
@@ -3578,6 +3572,11 @@ job split into three separate jobs.
 Use `matrix:` to configure different variables for jobs that are running in parallel.
 There can be from 2 to 50 jobs.
 
+In GitLab 13.5 and later, you can have one-dimensional matrices with a single job.
+The ability to have one-dimensional matrices is [deployed behind a feature flag](../../user/feature_flags.md),
+disabled by default. It's disabled on GitLab.com. To use it in a GitLab self-managed
+instance, ask a GitLab administrator to [enable the `one_dimensional_matrix:` feature flag](../../administration/feature_flags.md). **(CORE-ONLY)**
+
 Every job gets the same `CI_NODE_TOTAL` [environment variable](../variables/README.md#predefined-environment-variables) value, and a unique `CI_NODE_INDEX` value.
 
 ```yaml
@@ -4056,7 +4055,9 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 
 `secrets` indicates the [CI Secrets](../secrets/index.md) this job needs. It should be a hash,
-and the keys should be the names of the environment variables the job needs to access the secrets.
+and the keys should be the names of the environment variables that are made available to the job.
+The value of each secret is saved in a temporary file. This file's path is stored in these
+environment variables.
 
 #### `secrets:vault` **(PREMIUM)**
 
@@ -4072,7 +4073,7 @@ field to fetch the value for:
 job:
   secrets:
     DATABASE_PASSWORD:
-      vault: production/db/password # translates to secret `kv-v2/data/production/db`, field `password`
+      vault: production/db/password  # translates to secret `kv-v2/data/production/db`, field `password`
 ```
 
 You can specify a custom secrets engine path by adding a suffix starting with `@`:
@@ -4081,7 +4082,7 @@ You can specify a custom secrets engine path by adding a suffix starting with `@
 job:
   secrets:
     DATABASE_PASSWORD:
-      vault: production/db/password@ops # translates to secret `ops/data/production/db`, field `password`
+      vault: production/db/password@ops  # translates to secret `ops/data/production/db`, field `password`
 ```
 
 In the detailed form of the syntax, you can specify all details explicitly:

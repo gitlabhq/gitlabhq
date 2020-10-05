@@ -25,7 +25,7 @@ RSpec.describe "Internal references", :js do
           add_note("##{public_project_issue.to_reference(private_project)}")
         end
 
-        context "when user doesn't have access to private project" do
+        context "when user doesn't have access to private project", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
           before do
             sign_in(public_project_user)
 
@@ -52,7 +52,7 @@ RSpec.describe "Internal references", :js do
             visit(project_issue_path(public_project, public_project_issue))
           end
 
-          it "doesn't show any references" do
+          it "doesn't show any references", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
             page.within(".issue-details") do
               expect(page).not_to have_content("#merge-requests .merge-requests-title")
             end
@@ -94,7 +94,7 @@ RSpec.describe "Internal references", :js do
           add_note("##{public_project_merge_request.to_reference(private_project)}")
         end
 
-        context "when user doesn't have access to private project" do
+        context "when user doesn't have access to private project", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
           before do
             sign_in(public_project_user)
 
@@ -121,7 +121,7 @@ RSpec.describe "Internal references", :js do
             visit(project_merge_request_path(public_project, public_project_merge_request))
           end
 
-          it "doesn't show any references" do
+          it "doesn't show any references", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
             page.within(".merge-request-details") do
               expect(page).not_to have_content("#merge-requests .merge-requests-title")
             end

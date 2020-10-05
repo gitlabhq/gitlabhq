@@ -27,7 +27,7 @@ module Resolvers
     private
 
     def board_lists(id)
-      service = Boards::Lists::ListService.new(
+      service = ::Boards::Lists::ListService.new(
         board.resource_parent,
         context[:current_user],
         list_id: extract_list_id(id)

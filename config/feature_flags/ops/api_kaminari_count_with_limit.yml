@@ -1,0 +1,7 @@
+---
+name: api_kaminari_count_with_limit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931
+rollout_issue_url:
+group: group::ecosystem
+type: ops
+default_enabled: false

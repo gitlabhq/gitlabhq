@@ -108,6 +108,20 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('.foobar').for(:name) }
         it { is_expected.not_to allow_value('%foo%bar').for(:name) }
       end
+
+      context 'generic package' do
+        subject { build_stubbed(:generic_package) }
+
+        it { is_expected.to allow_value('123').for(:name) }
+        it { is_expected.to allow_value('foo').for(:name) }
+        it { is_expected.to allow_value('foo.bar.baz-2.0-20190901.47283-1').for(:name) }
+        it { is_expected.not_to allow_value('../../foo').for(:name) }
+        it { is_expected.not_to allow_value('..\..\foo').for(:name) }
+        it { is_expected.not_to allow_value('%2f%2e%2e%2f%2essh%2fauthorized_keys').for(:name) }
+        it { is_expected.not_to allow_value('$foo/bar').for(:name) }
+        it { is_expected.not_to allow_value('my file name').for(:name) }
+        it { is_expected.not_to allow_value('!!().for(:name)().for(:name)').for(:name) }
+      end
     end
 
     describe '#version' do

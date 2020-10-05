@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import MergeRequest from '~/merge_request';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';
@@ -128,8 +129,7 @@ export default {
           .then(res => res.data)
           .then(data => {
             eventHub.$emit('UpdateWidgetData', data);
-            createFlash(__('The merge request can now be merged.'), 'notice');
-            $('.merge-request .detail-page-description .title').text(this.mr.title);
+            MergeRequest.toggleDraftStatus(this.mr.title, true);
           })
           .catch(() => {
             this.isMakingRequest = false;

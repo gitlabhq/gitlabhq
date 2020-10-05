@@ -12,6 +12,10 @@ RSpec.describe 'Graphql Field feature flags' do
   let(:query_string) { '{ item { name } }' }
   let(:result) { execute_query(query_type)['data'] }
 
+  before do
+    skip_feature_flags_yaml_validation
+  end
+
   subject { result }
 
   describe 'Feature flagged field' do

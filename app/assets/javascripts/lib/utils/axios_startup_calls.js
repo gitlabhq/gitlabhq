@@ -7,7 +7,7 @@ const removeGitLabUrl = url => url.replace(gon.gitlab_url, '');
 
 const getFullUrl = req => {
   const url = removeGitLabUrl(req.url);
-  return mergeUrlParams(req.params || {}, url);
+  return mergeUrlParams(req.params || {}, url, { sort: true });
 };
 
 const handleStartupCall = async ({ fetchCall }, req) => {

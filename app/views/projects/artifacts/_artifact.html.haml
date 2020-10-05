@@ -10,7 +10,7 @@
           %span.build-link ##{artifact.job_id}
 
         - if artifact.job.ref
-          .icon-container{ "aria-label" => artifact.job.tag? ? _('Tag') : _('Branch') }
+          .icon-container.gl-display-inline-block{ "aria-label" => artifact.job.tag? ? _('Tag') : _('Branch') }
             = artifact.job.tag? ? sprite_icon('tag', css_class: 'sprite') : sprite_icon('branch', css_class: 'sprite')
           = link_to artifact.job.ref, project_ref_path(@project, artifact.job.ref), class: 'ref-name'
         - else

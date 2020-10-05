@@ -24,7 +24,7 @@ module GoogleApi
 
     def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, **options)
       WebMock.stub_request(:get, cloud_platform_get_zone_cluster_url(project_id, zone, cluster_id))
-        .to_return(cloud_platform_response(cloud_platform_cluster_body(options)))
+        .to_return(cloud_platform_response(cloud_platform_cluster_body(**options)))
     end
 
     def stub_cloud_platform_get_zone_cluster_error(project_id, zone, cluster_id)

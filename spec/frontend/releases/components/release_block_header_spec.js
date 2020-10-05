@@ -1,10 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import { merge } from 'lodash';
 import { GlLink } from '@gitlab/ui';
+import { getJSONFixture } from 'helpers/fixtures';
 import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { release as originalRelease } from '../mock_data';
 import { BACK_URL_PARAM } from '~/releases/constants';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release block header', () => {
   let wrapper;
@@ -49,7 +51,7 @@ describe('Release block header', () => {
     });
 
     it('renders the title as text', () => {
-      expect(findHeader().text()).toBe(release.name);
+      expect(findHeader().text()).toContain(release.name);
       expect(findHeaderLink().exists()).toBe(false);
     });
   });

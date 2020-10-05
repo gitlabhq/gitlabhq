@@ -46,13 +46,11 @@ module Gitlab
               end
             end
 
-            # rubocop:disable CodeReuse/ActiveRecord
             def number_of_generated_jobs
               value.sum do |config|
                 config.values.reduce(1) { |acc, values| acc * values.size }
               end
             end
-            # rubocop:enable CodeReuse/ActiveRecord
           end
         end
       end

@@ -251,7 +251,7 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                           |
 | `doc/install/`        | Contains instructions for installing GitLab.                                                                                            |
 | `doc/update/`         | Contains instructions for updating GitLab.                                                                                              |
-| `doc/topics/`         | Indexes per topic (`doc/topics/topic-name/index.md`): all resources for that topic.                                                     |
+| `doc/topics/`         | Indexes per topic (`doc/topics/topic_name/index.md`): all resources for that topic.                                                     |
 
 ### Work with directories and files
 
@@ -369,7 +369,7 @@ create an issue or an MR to propose a change to the user interface text.
   - milestones
   - reorder issues
   - runner, runners, shared runners
-  - a to-do, to-dos
+  - a to-do item, to dos
 - *Some features are capitalized*, typically nouns naming GitLab-specific
   capabilities or tools. For example:
   - GitLab CI/CD
@@ -410,7 +410,7 @@ Use forms of *sign in*, instead of *log in* or *login*. For example:
 Exceptions to this rule include the concept of *single sign-on* and
 references to user interface elements. For example:
 
-- To sign in to product X, enter your credentials, and then click **Log in**.
+- To sign in to product X, enter your credentials, and then select **Log in**.
 
 ### Inclusive language
 
@@ -418,8 +418,11 @@ We strive to create documentation that is inclusive. This section includes
 guidance and examples in the following categories:
 
 - [Gender-specific wording](#avoid-gender-specific-wording).
+  (Tested in [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml).)
 - [Ableist language](#avoid-ableist-language).
+  (Tested in [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml).)
 - [Cultural sensitivity](#culturally-sensitive-language).
+  (Tested in [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml).)
 
 We write our developer documentation with inclusivity and diversity in mind. This
 page is not an exhaustive reference, but describes some general guidelines and
@@ -433,11 +436,15 @@ a gender-neutral pronoun.
 
 Avoid the use of gender-specific pronouns, unless referring to a specific person.
 
+<!-- vale gitlab.InclusionGender = NO -->
+
 | Use                               | Avoid                           |
 |-----------------------------------|---------------------------------|
 | People, humanity                  | Mankind                         |
 | GitLab Team Members               | Manpower                        |
 | You can install; They can install | He can install; She can install |
+
+<!-- vale gitlab.InclusionGender = YES -->
 
 If you need to set up [Fake user information](#fake-user-information), use
 diverse or non-gendered names with common surnames.
@@ -445,6 +452,8 @@ diverse or non-gendered names with common surnames.
 #### Avoid ableist language
 
 Avoid terms that are also used in negative stereotypes for different groups.
+
+<!-- vale gitlab.InclusionAbleism = NO -->
 
 | Use                    | Avoid                |
 |------------------------|----------------------|
@@ -455,6 +464,8 @@ Avoid terms that are also used in negative stereotypes for different groups.
 | Active/Inactive        | Enabled/Disabled     |
 | On/Off                 | Enabled/Disabled     |
 
+<!-- vale gitlab.InclusionAbleism = YES -->
+
 Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-documentation#ableist-language)
 in the Google Developer Style Guide.
 
@@ -464,12 +475,56 @@ Avoid terms that reflect negative cultural stereotypes and history. In most
 cases, you can replace terms such as `master` and `slave` with terms that are
 more precise and functional, such as `primary` and `secondary`.
 
+<!-- vale gitlab.InclusionCultural = NO -->
+
 | Use                  | Avoid                 |
 |----------------------|-----------------------|
 | Primary / secondary  | Master / slave        |
 | Allowlist / denylist | Blacklist / whitelist |
 
+<!-- vale gitlab.InclusionCultural = YES -->
+
 For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
+
+### Fake user information
+
+You may need to include user information in entries such as a REST call or user profile.
+**Do not** use real user information or email addresses in GitLab documentation. For email
+addresses and names, do use:
+
+- **Email addresses**: Use an email address ending in `example.com`.
+- **Names**: Use strings like `example_username`. Alternatively, use diverse or
+  non-gendered names with common surnames, such as `Sidney Jones`, `Zhang Wei`,
+  or `Maria Garcia`.
+
+### Fake URLs
+
+When including sample URLs in the documentation, use:
+
+- `example.com` when the domain name is generic.
+- `gitlab.example.com` when referring to self-managed instances of GitLab.
+
+### Fake tokens
+
+There may be times where a token is needed to demonstrate an API call using
+cURL or a variable used in CI. It is strongly advised not to use real tokens in
+documentation even if the probability of a token being exploited is low.
+
+You can use the following fake tokens as examples:
+
+| Token type            | Token value                                                        |
+|:----------------------|:-------------------------------------------------------------------|
+| Private user token    | `<your_access_token>`                                              |
+| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
+| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
+| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
+| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
+| Specific runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Shared runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
 ### Language to avoid
 
@@ -832,8 +887,10 @@ When creating tables of lists of features (such as whether or not features are
 available to certain roles on the [Permissions](../../user/permissions.md#project-members-permissions)
 page), use the following phrases (based on the SVG icons):
 
-- *No*: **{dotted-circle}** No
-- *Yes*: **{check-circle}** Yes
+| Option | Markdown                 | Displayed result       |
+|--------|--------------------------|------------------------|
+| No     | `**{dotted-circle}** No` | **{dotted-circle}** No |
+| Yes    | `**{check-circle}** Yes` | **{check-circle}** Yes |
 
 ## Quotes
 
@@ -890,8 +947,8 @@ search engine optimization (SEO), use the imperative, where possible.
 For guidelines on capitalizing headings, see the section on [capitalization](#capitalization).
 
 NOTE: **Note:**
-If you change an existing title, be careful. Any such changes may affect not
-only [links](#anchor-links) within the page, but may also affect links to the
+If you change an existing title, be careful. These changes might affect not
+only [links](#anchor-links) within the page, but might also affect links to the
 GitLab documentation from both the GitLab application and external sites.
 
 ### Anchor links
@@ -1095,14 +1152,26 @@ document to ensure it links to the most recent version of the file.
 
 ## Navigation
 
-To indicate the steps of navigation through the user interface:
+When documenting navigation through the user interface:
 
-- Use the exact word as shown in the UI, including any capital letters as-is.
+- Use the exact wording as shown in the UI, including any capital letters as-is.
 - Use bold text for navigation items and the char "greater than" (`>`) as a
-  separator (for example, `Navigate to your project's **Settings > CI/CD**` ).
+  separator. For example: `Navigate to your project's **Settings > CI/CD**`.
 - If there are any expandable menus, make sure to mention that the user needs to
-  expand the tab to find the settings you're referring to (for example,
-  `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`).
+  expand the tab to find the settings you're referring to. For example:
+  `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`.
+
+### Navigational elements
+
+Use the following terms when referring to the main GitLab user interface
+elements:
+
+- **Top menu**: This is the top menu that spans the width of the user interface.
+  It includes the GitLab logo, search field, counters, and the user's avatar.
+- **Left sidebar**: This is the navigation sidebar on the left of the user
+  interface, specific to the project or group.
+- **Right sidebar**: This is the navigation sidebar on the right of the user
+  interface, specific to the open issue, merge request, or epic.
 
 ## Images
 
@@ -1161,9 +1230,6 @@ that:
 
 - Are accurate, succinct, and unique.
 - Don't use *image of …* or *graphic of…* to describe the image.
-
-Also, if a heading immediately follows an image, be sure to add three dashes
-(`---`) between the image and the heading.
 
 ### Remove image shadow
 
@@ -1249,7 +1315,7 @@ reviewed and approved by a technical writer.
 1. In YouTube, visit the video URL you want to display. Copy the regular URL
    from your browser (`https://www.youtube.com/watch?v=VIDEO-ID`) and replace
    the video title and link in the line under `<div class="video-fallback">`.
-1. In YouTube, click **Share**, and then click **Embed**.
+1. In YouTube, select **Share**, and then select **Embed**.
 1. Copy the `<iframe>` source (`src`) **URL only**
    (`https://www.youtube.com/embed/VIDEO-ID`),
    and paste it, replacing the content of the `src` field in the
@@ -1292,6 +1358,9 @@ the documentation site, but will be displayed on GitLab's `/help`.
   added to code blocks. To make things easier for the user, always add a full
   code block for things that can be useful to copy and paste, as they can easily
   do it with the button on code blocks.
+- HTTP methods (`HTTP POST`) and HTTP status codes, both full (`404 File Not Found`)
+  and abbreviated (`404`), should be wrapped in inline code blocks when used in sentences.
+  For example: Send a `DELETE` request to delete the runner. Send a `POST` request to create one.
 - Add a blank line above and below code blocks.
 - When providing a shell command and its output, prefix the shell command with `$`
   and leave a blank line between the command and the output.
@@ -1416,17 +1485,17 @@ interface:
 Use an icon when you find yourself having to describe an interface element. For
 example:
 
-- Do: Click the Admin Area icon ( **{admin}** ).
-- Don't: Click the Admin Area icon (the wrench icon).
+- Do: Select the Admin Area icon ( **{admin}** ).
+- Don't: Select the Admin Area icon (the wrench icon).
 
 ## Alert boxes
 
 When you need to call special attention to particular sentences, use the
 following markup to create highlighted alert boxes.
 
-Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
-lists, headers and so on, will not render correctly. For multiple lines, use
-[blockquotes](#blockquotes) instead.
+Alert boxes work for one paragraph only. Multiple paragraphs, lists, and headers
+won't render correctly. For multiple lines, use [blockquotes](#blockquotes)
+instead.
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
 Within GitLab itself, they will appear as plain Markdown text (like the examples
@@ -1444,23 +1513,20 @@ guidelines, but for consistency you should try to use these values:
 
 ### Note
 
-Notes catch the eye of most readers, and therefore should be used very sparingly.
-In most cases, content considered for a note should be included:
+Notes indicate additional information that is of special use to the reader.
+Notes are most effective when used _sparingly_.
 
-- As just another sentence in the previous paragraph or the most-relevant
-  paragraph.
-- As its own standalone paragraph.
-- As content under a new subheading that introduces the topic, making it more
-  visible or findable.
+Try to avoid them. Too many notes can impact the scannability of a topic and
+create an overly busy page.
 
-#### When to use
+Instead of adding a note, try one of these alternatives:
 
-Use a note when there is a reason that most or all readers who browse the
-section should see the content. That is, if missed, it’s likely to cause major
-trouble for a minority of users or significant trouble for a majority of users.
+- Re-write the sentence as part of the most-relevant paragraph.
+- Put the information into its own standalone paragraph.
+- Put the content under a new subheading that introduces the topic, which makes
+  it more visible.
 
-Weigh the costs of distracting users to whom the content is not relevant against
-the cost of users missing the content if it were not expressed as a note.
+If you must use a note, use the following formatting:
 
 ```markdown
 NOTE: **Note:**
@@ -1582,12 +1648,11 @@ application:
 The following are recommended verbs for specific uses with user interface
 elements:
 
-| Recommended         | Used for                   | Replaces                   |
-|:--------------------|:---------------------------|:---------------------------|
-| *click*             | buttons, links, menu items | "hit", "press", "select"   |
-| *select* or *clear* | checkboxes                 | "enable", "click", "press" |
-| *select*            | dropdowns                  | "pick"                     |
-| *expand*            | expandable sections        | "open"                     |
+| Recommended         | Used for                              | Replaces                   |
+|:--------------------|:--------------------------------------|:---------------------------|
+| *select*            | buttons, links, menu items, dropdowns | "click, "press," "hit"     |
+| *select* or *clear* | checkboxes                            | "enable", "click", "press" |
+| *expand*            | expandable sections                   | "open"                     |
 
 ### Other Verbs
 
@@ -1613,6 +1678,15 @@ apply only to self-managed instances. If so, the relevant "`TIER` ONLY"
 heading level.
 
 ### Text for documentation requiring version text
+
+When a feature is new or updated, you can add version information as a bulleted
+item in the **Version history**, or as an inline reference with related text.
+
+#### Version text in the **Version History**
+
+If all content in a section is related, add version text in a bulleted list
+following the heading for the section. To render correctly, it must be on its
+own line and surrounded by blank lines.
 
 - For features that need to declare the GitLab version that the feature was
   introduced. Text similar to the following should be added immediately below
@@ -1663,9 +1737,20 @@ heading level.
    and replaced by [Feature name](link-to-feature-documentation).
    ```
 
-NOTE: **Note:**
-Version text must be on its own line and surrounded by blank lines to render
-correctly.
+#### Inline version text
+
+If you're adding content to an existing topic, you can add version information
+inline with the existing text.
+
+In this case, add `([introduced/deprecated](<link-to-issue>) in GitLab X.X)`.
+If applicable, include the paid tier: `([introduced/deprecated](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4)`
+
+Including the issue link is encouraged, but isn't a requirement. For example:
+
+```markdown
+The voting strategy (introduced in GitLab 13.4) requires
+the primary and secondary voters to agree.
+```
 
 ### Versions in the past or future
 
@@ -1894,216 +1979,9 @@ steps aren't required, consider setting up a [table](#tables) with headers of
 Learn how to [document features deployed behind flags](feature_flags.md). For
 guidance on developing GitLab with feature flags, see [Feature flags in development of GitLab](../feature_flags/index.md).
 
-## RESTful API
-
-REST API resources are documented in Markdown under
-[`/doc/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api). Each
-resource has its own Markdown file, which is linked from `api_resources.md`.
-
-When modifying the Markdown, also update the corresponding
-[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi)
-if one exists for the resource. If not, consider creating one. Match the latest
-[OpenAPI 3.0.x specification](https://swagger.io/specification/). (For more
-information, see the discussion in this
-[issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16023#note_370901810).)
-
-In the Markdown doc for a resource (AKA endpoint):
-
-- Every method must have the REST API request. For example:
-
-  ```plaintext
-  GET /projects/:id/repository/branches
-  ```
-
-- Every method must have a detailed [description of the parameters](#method-description).
-- Every method must have a cURL example.
-- Every method must have a response body (in JSON format).
-
-### API topic template
-
-The following can be used as a template to get started:
-
-````markdown
-## Descriptive title
-
-One or two sentence description of what endpoint does.
-
-```plaintext
-METHOD /endpoint
-```
-
-| Attribute   | Type     | Required | Description           |
-|:------------|:---------|:---------|:----------------------|
-| `attribute` | datatype | yes/no   | Detailed description. |
-| `attribute` | datatype | yes/no   | Detailed description. |
-
-Example request:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/endpoint?parameters"
-```
-
-Example response:
-
-```json
-[
-  {
-  }
-]
-```
-````
-
-### Fake user information
-
-You may need to demonstrate an API call or a cURL command that includes the name
-and email address of a user. Don't use real user information in API calls:
-
-- **Email addresses**: Use an email address ending in `example.com`.
-- **Names**: Use strings like `Example Username`. Alternatively, use diverse or
-  non-gendered names with common surnames, such as `Sidney Jones`, `Zhang Wei`,
-  or `Maria Garcia`.
-
-### Fake URLs
-
-When including sample URLs in the documentation, use:
-
-- `example.com` when the domain name is generic.
-- `gitlab.example.com` when referring to self-managed instances of GitLab.
-
-### Fake tokens
-
-There may be times where a token is needed to demonstrate an API call using
-cURL or a variable used in CI. It is strongly advised not to use real tokens in
-documentation even if the probability of a token being exploited is low.
-
-You can use the following fake tokens as examples:
-
-| Token type            | Token value                                                        |
-|:----------------------|:-------------------------------------------------------------------|
-| Private user token    | `<your_access_token>`                                              |
-| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
-| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
-| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
-| Specific runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
-| Shared runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
-| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
-| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
-| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
-
-### Method description
-
-Use the following table headers to describe the methods. Attributes should
-always be in code blocks using backticks (`` ` ``).
-
-```markdown
-| Attribute | Type | Required | Description |
-|:----------|:-----|:---------|:------------|
-```
-
-Rendered example:
-
-| Attribute | Type   | Required | Description         |
-|:----------|:-------|:---------|:--------------------|
-| `user`    | string | yes      | The GitLab username |
-
-### cURL commands
-
-- Use `https://gitlab.example.com/api/v4/` as an endpoint.
-- Wherever needed use this personal access token: `<your_access_token>`.
-- Always put the request first. `GET` is the default so you don't have to
-  include it.
-- Wrap the URL in double quotes (`"`).
-- Prefer to use examples using the personal access token and don't pass data of
-  username and password.
-
-| Methods                                         | Description                                           |
-|:-------------------------------------------     |:------------------------------------------------------|
-| `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed |
-| `--request POST`                                | Use this method when creating new objects             |
-| `--request PUT`                                 | Use this method when updating existing objects        |
-| `--request DELETE`                              | Use this method when removing existing objects        |
-
-### cURL Examples
-
-The following sections include a set of [cURL](https://curl.haxx.se) examples
-you can use in the API documentation.
-
-#### Simple cURL command
-
-Get the details of a group:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/gitlab-org"
-```
-
-#### cURL example with parameters passed in the URL
-
-Create a new project under the authenticated user's namespace:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?name=foo"
-```
-
-#### Post data using cURL's `--data`
-
-Instead of using `--request POST` and appending the parameters to the URI, you
-can use cURL's `--data` option. The example below will create a new project
-`foo` under the authenticated user's namespace.
-
-```shell
-curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
-```
-
-#### Post data using JSON content
-
-NOTE: **Note:**
-In this example we create a new group. Watch carefully the single and double
-quotes.
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' "https://gitlab.example.com/api/v4/groups"
-```
-
-#### Post data using form-data
-
-Instead of using JSON or urlencode you can use multipart/form-data which
-properly handles data encoding:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." "https://gitlab.example.com/api/v4/users/25/keys"
-```
-
-The above example is run by and administrator and will add an SSH public key
-titled `ssh-key` to user's account which has an ID of 25.
-
-#### Escape special characters
-
-Spaces or slashes (`/`) may sometimes result to errors, thus it is recommended
-to escape them when possible. In the example below we create a new issue which
-contains spaces in its title. Observe how spaces are escaped using the `%20`
-ASCII code.
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
-```
-
-Use `%2F` for slashes (`/`).
-
-#### Pass arrays to API calls
-
-The GitLab API sometimes accepts arrays of strings or integers. For example, to
-exclude specific users when requesting a list of users for a project, you would
-do something like this:
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "skip_users[]=<user_id>" --data "skip_users[]=<user_id>" "https://gitlab.example.com/api/v4/projects/<project_id>/users"
-```
-
 ## GraphQL API
 
-GraphQL APIs are different from [RESTful APIs](#restful-api). Reference
+GraphQL APIs are different from [RESTful APIs](restful_api_styleguide.md). Reference
 information is generated in our [GraphQL reference](../../api/graphql/reference/index.md).
 
 However, it's helpful to include examples on how to use GraphQL for different
@@ -2158,7 +2036,7 @@ Set up the section with the following:
   ```markdown
   1. Open the GraphiQL explorer tool in the following URL: `https://gitlab.com/-/graphql-explorer`.
   1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
-  1. Click Play to get the result shown here:
+  1. Select Play to get the result shown here:
   ```
 
 - Include a screenshot of the result in the GraphiQL explorer. Follow the naming

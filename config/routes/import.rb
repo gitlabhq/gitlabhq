@@ -69,6 +69,11 @@ namespace :import do
     post :authorize
   end
 
+  resource :bulk_import, only: [:create] do
+    post :configure
+    get :status
+  end
+
   resource :manifest, only: [:create, :new], controller: :manifest do
     get :status
     get :realtime_changes

@@ -111,7 +111,7 @@ const mixins = {
       return this.isMergeRequest && this.pipelineStatus && Object.keys(this.pipelineStatus).length;
     },
     isOpen() {
-      return this.state === 'opened';
+      return this.state === 'opened' || this.state === 'reopened';
     },
     isClosed() {
       return this.state === 'closed';

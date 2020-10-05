@@ -1,10 +1,12 @@
 import { mount } from '@vue/test-utils';
 import { GlCollapse } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
-import { cloneDeep } from 'lodash';
+import { getJSONFixture } from 'helpers/fixtures';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockAssets from '~/releases/components/release_block_assets.vue';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
-import { assets } from '../mock_data';
+
+const { assets } = getJSONFixture('api/releases/release.json');
 
 describe('Release block assets', () => {
   let wrapper;
@@ -31,7 +33,7 @@ describe('Release block assets', () => {
     wrapper.findAll('h5').filter(h5 => h5.text() === sections[type]);
 
   beforeEach(() => {
-    defaultProps = { assets: cloneDeep(assets) };
+    defaultProps = { assets: convertObjectPropsToCamelCase(assets, { deep: true }) };
   });
 
   describe('with default props', () => {
@@ -43,7 +45,7 @@ describe('Release block assets', () => {
       const accordionButton = findAccordionButton();
 
       expect(accordionButton.exists()).toBe(true);
-      expect(trimText(accordionButton.text())).toBe('Assets 5');
+      expect(trimText(accordionButton.text())).toBe('Assets 8');
     });
 
     it('renders the accordion as expanded by default', () => {

@@ -254,24 +254,6 @@ RSpec.describe Git::WikiPushService, services: true do
           service.execute
         end
       end
-
-      context 'the wiki_events_on_git_push feature is disabled' do
-        before do
-          stub_feature_flags(wiki_events_on_git_push: false)
-        end
-
-        it_behaves_like 'a no-op push'
-
-        context 'but is enabled for a given container' do
-          before do
-            stub_feature_flags(wiki_events_on_git_push: wiki.container)
-          end
-
-          it 'creates events' do
-            expect { process_changes { write_new_page } }.to change(Event, :count).by(1)
-          end
-        end
-      end
     end
   end
 

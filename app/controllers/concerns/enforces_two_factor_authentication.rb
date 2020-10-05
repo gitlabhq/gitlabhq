@@ -11,7 +11,7 @@ module EnforcesTwoFactorAuthentication
   extend ActiveSupport::Concern
 
   included do
-    before_action :check_two_factor_requirement
+    before_action :check_two_factor_requirement, except: [:route_not_found]
 
     # to include this in controllers inheriting from `ActionController::Metal`
     # we need to add this block

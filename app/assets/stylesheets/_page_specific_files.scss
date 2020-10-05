@@ -1,13 +1,11 @@
 @import './pages/admin';
 @import './pages/alert_management/details';
 @import './pages/alert_management/severity-icons';
-@import './pages/boards';
 @import './pages/branches';
 @import './pages/builds';
 @import './pages/ci_projects';
 @import './pages/clusters';
 @import './pages/commits';
-@import './pages/cycle_analytics';
 @import './pages/deploy_keys';
 @import './pages/detail_page';
 @import './pages/dev_ops_report';
@@ -35,7 +33,6 @@
 @import './pages/members';
 @import './pages/merge_conflicts';
 @import './pages/merge_requests';
-@import './pages/milestone';
 @import './pages/monitor';
 @import './pages/note_form';
 @import './pages/notes';
@@ -57,9 +54,7 @@
 @import './pages/sherlock';
 @import './pages/status';
 @import './pages/storage_quota';
-@import './pages/tags';
 @import './pages/tree';
 @import './pages/trials';
-@import './pages/ui_dev_kit';
 @import './pages/users';
 @import './pages/wiki';

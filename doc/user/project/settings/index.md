@@ -270,7 +270,7 @@ To restore a project marked for deletion:
 Forking is a great way to [contribute to a project](../repository/forking_workflow.md)
 of which you're not a member.
 If you want to use the fork for yourself and don't need to send
-[merge requests](../merge_requests.md) to the upstream project,
+[merge requests](../merge_requests/index.md) to the upstream project,
 you can safely remove the fork relationship.
 
 CAUTION: **Caution:**

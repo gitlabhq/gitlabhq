@@ -4,13 +4,11 @@
 
 query GetSnippetQuery($ids: [ID!]) {
   snippets(ids: $ids) {
-    edges {
-      node {
-        ...SnippetBase
-        ...SnippetProject
-        author {
-          ...Author
-        }
+    nodes {
+      ...SnippetBase
+      ...SnippetProject
+      author {
+        ...Author
       }
     }
   }

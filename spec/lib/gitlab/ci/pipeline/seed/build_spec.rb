@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
-  let(:project) { create(:project, :repository) }
-  let(:head_sha) { project.repository.head_commit.id }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: head_sha) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:head_sha) { project.repository.head_commit.id }
+  let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
   let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage } }
   let(:previous_stages) { [] }
 
@@ -503,7 +503,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       using RSpec::Parameterized
 
       let(:pipeline) do
-        build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source)
+        build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source, project: project)
       end
 
       context 'matches' do
@@ -766,7 +766,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       context 'with a matching changes: rule' do
         let(:pipeline) do
-          create(:ci_pipeline, project: project).tap do |pipeline|
+          build(:ci_pipeline, project: project).tap do |pipeline|
             stub_pipeline_modified_paths(pipeline, %w[app/models/ci/pipeline.rb spec/models/ci/pipeline_spec.rb .gitlab-ci.yml])
           end
         end

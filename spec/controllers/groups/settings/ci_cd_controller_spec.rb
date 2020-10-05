@@ -225,4 +225,25 @@ RSpec.describe Groups::Settings::CiCdController do
       end
     end
   end
+
+  describe 'GET #runner_setup_scripts' do
+    before do
+      group.add_owner(user)
+    end
+
+    it 'renders the setup scripts' do
+      get :runner_setup_scripts, params: { os: 'linux', arch: 'amd64', group_id: group }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to have_key("install")
+      expect(json_response).to have_key("register")
+    end
+
+    it 'renders errors if they occur' do
+      get :runner_setup_scripts, params: { os: 'foo', arch: 'bar', group_id: group }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response).to have_key("errors")
+    end
+  end
 end

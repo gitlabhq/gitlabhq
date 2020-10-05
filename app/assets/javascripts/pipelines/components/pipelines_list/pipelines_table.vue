@@ -91,6 +91,10 @@ export default {
       <div class="table-section section-15 js-pipeline-stages pipeline-stages" role="rowheader">
         {{ s__('Pipeline|Stages') }}
       </div>
+      <div class="table-section section-15" role="rowheader"></div>
+      <div class="table-section section-20" role="rowheader">
+        <slot name="table-header-actions"></slot>
+      </div>
     </div>
     <pipelines-table-row-component
       v-for="model in pipelines"

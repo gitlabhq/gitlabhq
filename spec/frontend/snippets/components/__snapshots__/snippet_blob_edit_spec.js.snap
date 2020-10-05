@@ -3,6 +3,7 @@
 exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
 <div
   class="file-holder snippet"
+  data-qa-selector="file_holder_container"
 >
   <blob-header-edit-stub
     candelete="true"

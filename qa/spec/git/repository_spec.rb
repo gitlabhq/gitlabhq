@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Git::Repository do
+RSpec.describe QA::Git::Repository do
   include Helpers::StubENV
 
   shared_context 'unresolvable git directory' do
@@ -115,6 +115,66 @@ describe QA::Git::Repository do
 
         it_behaves_like 'command with retries' do
           let(:call_method) { repository.push_changes(branch) }
+        end
+      end
+
+      context 'with push options' do
+        let(:command) { "git push #{push_options} #{repo_uri_with_credentials} #{branch}" }
+
+        context 'when set to create a merge request' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.create' }
+            let(:call_method) { repository.push_changes(push_options: { create: true }) }
+          end
+        end
+
+        context 'when set to merge when pipeline succeeds' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.merge_when_pipeline_succeeds' }
+            let(:call_method) { repository.push_changes(push_options: { merge_when_pipeline_succeeds: true }) }
+          end
+        end
+
+        context 'when set to remove source branch' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.remove_source_branch' }
+            let(:call_method) { repository.push_changes(push_options: { remove_source_branch: true }) }
+          end
+        end
+
+        context 'when title is given' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.title="Is A Title"' }
+            let(:call_method) { repository.push_changes(push_options: { title: 'Is A Title' }) }
+          end
+        end
+
+        context 'when description is given' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.description="Is A Description"' }
+            let(:call_method) { repository.push_changes(push_options: { description: 'Is A Description' }) }
+          end
+        end
+
+        context 'when target branch is given' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.target="is-a-target-branch"' }
+            let(:call_method) { repository.push_changes(push_options: { target: 'is-a-target-branch' }) }
+          end
+        end
+
+        context 'when a label is given' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.label="is-a-label"' }
+            let(:call_method) { repository.push_changes(push_options: { label: ['is-a-label'] }) }
+          end
+        end
+
+        context 'when two labels are given' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.label="is-a-label" -o merge_request.label="is-another-label"' }
+            let(:call_method) { repository.push_changes(push_options: { label: %w[is-a-label is-another-label] }) }
+          end
         end
       end
     end

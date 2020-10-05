@@ -42,6 +42,7 @@ export default {
         name: this.item.path,
         tags_path: this.item.tags_path,
         id: this.item.id,
+        cleanup_policy_started_at: this.item.cleanup_policy_started_at,
       });
       return window.btoa(params);
     },
@@ -82,7 +83,7 @@ export default {
         :disabled="item.deleting"
         :text="item.location"
         :title="item.location"
-        css-class="btn-default btn-transparent btn-clipboard gl-text-gray-300"
+        category="tertiary"
       />
       <gl-icon
         v-if="item.failedDelete"

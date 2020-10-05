@@ -34,7 +34,11 @@ module QA
         #
         # Returns the relative path to the requested API resource
         def request_path(path, version: API_VERSION, **query_string)
-          full_path = ::File.join('/api', version, path)
+          full_path = if path == '/graphql'
+                        ::File.join('/api', path)
+                      else
+                        ::File.join('/api', version, path)
+                      end
 
           if query_string.any?
             full_path << (path.include?('?') ? '&' : '?')

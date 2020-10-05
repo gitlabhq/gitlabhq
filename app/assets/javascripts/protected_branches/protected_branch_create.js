@@ -108,6 +108,10 @@ export default class ProtectedBranchCreate {
           levelAttributes.push({
             group_id: item.group_id,
           });
+        } else if (item.type === LEVEL_TYPES.DEPLOY_KEY) {
+          levelAttributes.push({
+            deploy_key_id: item.deploy_key_id,
+          });
         }
       });
 

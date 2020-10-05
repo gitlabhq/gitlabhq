@@ -4,8 +4,6 @@ module API
   class ProjectImport < Grape::API::Instance
     include PaginationParams
 
-    MAXIMUM_FILE_SIZE = 50.megabytes
-
     helpers Helpers::ProjectsHelpers
     helpers Helpers::FileUploadHelpers
     helpers Helpers::RateLimiter

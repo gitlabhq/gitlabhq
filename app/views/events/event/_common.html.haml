@@ -7,7 +7,7 @@
   - if event.target
     %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name }
       = event.action_name
-    %span.event-target-type.gl-mr-2= event.target_type.titleize.downcase
+    %span.event-target-type.gl-mr-2= event.target_type_name
     = link_to event.target_link_options, class: 'has-tooltip event-target-link gl-mr-2', title: event.target_title do
       = event.target.reference_link_text
     - unless event.milestone?

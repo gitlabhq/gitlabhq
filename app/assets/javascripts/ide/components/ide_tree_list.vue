@@ -2,6 +2,13 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import FileTree from '~/vue_shared/components/file_tree.vue';
+import {
+  WEBIDE_MARK_TREE_START,
+  WEBIDE_MEASURE_TREE_FROM_REQUEST,
+  WEBIDE_MARK_FILE_CLICKED,
+} from '~/performance_constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
+import eventHub from '../eventhub';
 import IdeFileRow from './ide_file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
 
@@ -12,10 +19,6 @@ export default {
     FileTree,
   },
   props: {
-    viewerType: {
-      type: String,
-      required: true,
-    },
     headerClass: {
       type: String,
       required: false,
@@ -29,11 +32,21 @@ export default {
       return !this.currentTree || this.currentTree.loading;
     },
   },
-  mounted() {
-    this.updateViewer(this.viewerType);
+  beforeCreate() {
+    performanceMarkAndMeasure({ mark: WEBIDE_MARK_TREE_START });
+  },
+  updated() {
+    if (this.currentTree?.tree?.length) {
+      this.$nextTick(() => {
+        eventHub.$emit(WEBIDE_MEASURE_TREE_FROM_REQUEST);
+      });
+    }
   },
   methods: {
-    ...mapActions(['updateViewer', 'toggleTreeOpen']),
+    ...mapActions(['toggleTreeOpen']),
+    clickedFile() {
+      performanceMarkAndMeasure({ mark: WEBIDE_MARK_FILE_CLICKED });
+    },
   },
   IdeFileRow,
 };
@@ -51,7 +64,7 @@ export default {
         <nav-dropdown />
         <slot name="header"></slot>
       </header>
-      <div class="ide-tree-body h-100">
+      <div class="ide-tree-body h-100" data-testid="ide-tree-body">
         <template v-if="currentTree.tree.length">
           <file-tree
             v-for="file in currentTree.tree"
@@ -60,6 +73,7 @@ export default {
             :level="0"
             :file-row-component="$options.IdeFileRow"
             @toggleTreeOpen="toggleTreeOpen"
+            @clickFile="clickedFile"
           />
         </template>
         <div v-else class="file-row">{{ __('No files') }}</div>

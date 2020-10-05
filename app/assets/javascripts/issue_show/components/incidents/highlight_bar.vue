@@ -1,10 +1,13 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
     GlLink,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     alert: {
@@ -22,19 +25,21 @@ export default {
 
 <template>
   <div
-    class="gl-border-solid gl-border-1 gl-border-gray-100 gl-p-5 gl-mb-3 gl-rounded-base gl-display-flex gl-justify-content-space-between"
+    class="gl-border-solid gl-border-1 gl-border-gray-100 gl-p-5 gl-mb-3 gl-rounded-base gl-display-flex gl-justify-content-space-between gl-xs-flex-direction-column"
   >
-    <div class="text-truncate gl-pr-3">
+    <div class="gl-pr-3">
       <span class="gl-font-weight-bold">{{ s__('HighlightBar|Original alert:') }}</span>
-      <gl-link :href="alert.detailsUrl">{{ alert.title }}</gl-link>
+      <gl-link v-gl-tooltip :title="alert.title" :href="alert.detailsUrl">
+        #{{ alert.iid }}
+      </gl-link>
     </div>
 
-    <div class="gl-pr-3 gl-white-space-nowrap">
+    <div class="gl-pr-3">
       <span class="gl-font-weight-bold">{{ s__('HighlightBar|Alert start time:') }}</span>
       {{ startTime }}
     </div>
 
-    <div class="gl-white-space-nowrap">
+    <div>
       <span class="gl-font-weight-bold">{{ s__('HighlightBar|Alert events:') }}</span>
       <span>{{ alert.eventCount }}</span>
     </div>

@@ -69,7 +69,7 @@ describe('Getters PackageDetails Store', () => {
   const nugetInstallationCommandStr = `nuget install ${nugetPackage.name} -Source "GitLab"`;
   const nugetSetupCommandStr = `nuget source Add -Name "GitLab" -Source "${registryUrl}" -UserName <your_username> -Password <your_token>`;
 
-  const pypiPipCommandStr = `pip install ${pypiPackage.name} --index-url ${registryUrl}`;
+  const pypiPipCommandStr = `pip install ${pypiPackage.name} --extra-index-url ${registryUrl}`;
   const composerRegistryIncludeStr = '{"type":"composer","url":"foo"}';
   const composerPackageIncludeStr = JSON.stringify({
     [packageWithoutBuildInfo.name]: packageWithoutBuildInfo.version,

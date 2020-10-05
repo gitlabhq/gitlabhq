@@ -21,6 +21,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
   preloadFixtures(jsonFixtureName);
 
+  const findRunPipelineBtn = () => vm.$el.querySelector('[data-testid="run_pipeline_button"]');
+  const findRunPipelineBtnMobile = () =>
+    vm.$el.querySelector('[data-testid="run_pipeline_button_mobile"]');
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
@@ -131,7 +135,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         vm = mountComponent(PipelinesTable, { ...props });
 
         setImmediate(() => {
-          expect(vm.$el.querySelector('.js-run-mr-pipeline')).not.toBeNull();
+          expect(findRunPipelineBtn()).not.toBeNull();
+          expect(findRunPipelineBtnMobile()).not.toBeNull();
           done();
         });
       });
@@ -147,7 +152,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         vm = mountComponent(PipelinesTable, { ...props });
 
         setImmediate(() => {
-          expect(vm.$el.querySelector('.js-run-mr-pipeline')).toBeNull();
+          expect(findRunPipelineBtn()).toBeNull();
+          expect(findRunPipelineBtnMobile()).toBeNull();
           done();
         });
       });
@@ -157,7 +163,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       const findModal = () =>
         document.querySelector('#create-pipeline-for-fork-merge-request-modal');
 
-      beforeEach(() => {
+      beforeEach(done => {
         pipelineCopy.flags.detached_merge_request_pipeline = true;
 
         mock.onGet('endpoint.json').reply(200, [pipelineCopy]);
@@ -168,23 +174,46 @@ describe('Pipelines table in Commits and Merge requests', () => {
           projectId: '5',
           mergeRequestId: 3,
         });
-      });
 
-      it('updates the loading state', done => {
         jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
 
         setImmediate(() => {
-          vm.$el.querySelector('.js-run-mr-pipeline').click();
+          done();
+        });
+      });
 
-          vm.$nextTick(() => {
-            expect(findModal()).toBeNull();
-            expect(vm.state.isRunningMergeRequestPipeline).toBe(true);
+      it('on desktop, shows a loading button', done => {
+        findRunPipelineBtn().click();
 
-            setImmediate(() => {
-              expect(vm.state.isRunningMergeRequestPipeline).toBe(false);
+        vm.$nextTick(() => {
+          expect(findModal()).toBeNull();
 
-              done();
-            });
+          expect(findRunPipelineBtn().disabled).toBe(true);
+          expect(findRunPipelineBtn().querySelector('.gl-spinner')).not.toBeNull();
+
+          setImmediate(() => {
+            expect(findRunPipelineBtn().disabled).toBe(false);
+            expect(findRunPipelineBtn().querySelector('.gl-spinner')).toBeNull();
+
+            done();
+          });
+        });
+      });
+
+      it('on mobile, shows a loading button', done => {
+        findRunPipelineBtnMobile().click();
+
+        vm.$nextTick(() => {
+          expect(findModal()).toBeNull();
+
+          expect(findModal()).toBeNull();
+          expect(findRunPipelineBtn().querySelector('.gl-spinner')).not.toBeNull();
+
+          setImmediate(() => {
+            expect(findRunPipelineBtn().disabled).toBe(false);
+            expect(findRunPipelineBtn().querySelector('.gl-spinner')).toBeNull();
+
+            done();
           });
         });
       });
@@ -194,7 +223,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       const findModal = () =>
         document.querySelector('#create-pipeline-for-fork-merge-request-modal');
 
-      beforeEach(() => {
+      beforeEach(done => {
         pipelineCopy.flags.detached_merge_request_pipeline = true;
 
         mock.onGet('endpoint.json').reply(200, [pipelineCopy]);
@@ -207,18 +236,29 @@ describe('Pipelines table in Commits and Merge requests', () => {
           sourceProjectFullPath: 'test/parent-project',
           targetProjectFullPath: 'test/fork-project',
         });
-      });
 
-      it('shows a security warning modal', done => {
         jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
 
         setImmediate(() => {
-          vm.$el.querySelector('.js-run-mr-pipeline').click();
+          done();
+        });
+      });
 
-          vm.$nextTick(() => {
-            expect(findModal()).not.toBeNull();
-            done();
-          });
+      it('on desktop, shows a security warning modal', done => {
+        findRunPipelineBtn().click();
+
+        vm.$nextTick(() => {
+          expect(findModal()).not.toBeNull();
+          done();
+        });
+      });
+
+      it('on mobile, shows a security warning modal', done => {
+        findRunPipelineBtnMobile().click();
+
+        vm.$nextTick(() => {
+          expect(findModal()).not.toBeNull();
+          done();
         });
       });
     });

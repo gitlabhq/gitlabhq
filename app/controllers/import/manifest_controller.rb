@@ -26,8 +26,7 @@ class Import::ManifestController < Import::BaseController
     manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
 
     if manifest.valid?
-      session[:manifest_import_repositories] = manifest.projects
-      session[:manifest_import_group_id] = group.id
+      manifest_import_metadata.save(manifest.projects, group.id)
 
       redirect_to status_import_manifest_path
     else
@@ -96,12 +95,16 @@ class Import::ManifestController < Import::BaseController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def group
-    @group ||= Group.find_by(id: session[:manifest_import_group_id])
+    @group ||= Group.find_by(id: manifest_import_metadata.group_id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def manifest_import_metadata
+    @manifest_import_status ||= Gitlab::ManifestImport::Metadata.new(current_user, fallback: session)
+  end
+
   def repositories
-    @repositories ||= session[:manifest_import_repositories]
+    @repositories ||= manifest_import_metadata.repositories
   end
 
   def find_jobs

@@ -30,5 +30,6 @@
       = search_filter_link 'issues', _("Issues")
       = search_filter_link 'merge_requests', _("Merge requests")
       = search_filter_link 'milestones', _("Milestones")
+      = render_if_exists 'search/epics_filter_link'
       = render_if_exists 'search/category_elasticsearch'
       = users

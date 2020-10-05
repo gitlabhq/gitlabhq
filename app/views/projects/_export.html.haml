@@ -26,6 +26,5 @@
     = link_to _('Generate new export'), generate_new_export_project_path(project),
             method: :post, class: "btn btn-default"
   - else
-    .gl-display-flex.gl-justify-content-end
-      = link_to _('Export project'), export_project_path(project),
-            method: :post, class: "btn btn-default", data: { qa_selector: 'export_project_link' }
+    = link_to _('Export project'), export_project_path(project),
+          method: :post, class: "btn btn-default", data: { qa_selector: 'export_project_link' }

@@ -9,7 +9,7 @@ class GroupImportWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(user_id, group_id)
     current_user = User.find(user_id)
     group = Group.find(group_id)
-    group_import_state = group.import_state || group.build_import_state
+    group_import_state = group.import_state
 
     group_import_state.jid = self.jid
     group_import_state.start!

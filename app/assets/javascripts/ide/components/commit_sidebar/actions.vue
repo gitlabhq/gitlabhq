@@ -1,8 +1,8 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
-import { sprintf, s__ } from '~/locale';
+import { GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
 import NewMergeRequestOption from './new_merge_request_option.vue';
@@ -13,6 +13,7 @@ const { mapState: mapCommitState, mapActions: mapCommitActions } = createNamespa
 
 export default {
   components: {
+    GlSprintf,
     RadioGroup,
     NewMergeRequestOption,
   },
@@ -20,12 +21,8 @@ export default {
     ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
     ...mapCommitState(['commitAction']),
     ...mapGetters(['currentBranch', 'emptyRepo', 'canPushToBranch']),
-    commitToCurrentBranchText() {
-      return sprintf(
-        s__('IDE|Commit to %{branchName} branch'),
-        { branchName: `<strong class="monospace">${escape(this.currentBranchId)}</strong>` },
-        false,
-      );
+    currentBranchText() {
+      return escape(this.currentBranchId);
     },
     containsStagedChanges() {
       return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
@@ -77,11 +74,13 @@ export default {
       :disabled="!canPushToBranch"
       :title="$options.currentBranchPermissionsTooltip"
     >
-      <span
-        class="ide-option-label"
-        data-qa-selector="commit_to_current_branch_radio"
-        v-html="commitToCurrentBranchText"
-      ></span>
+      <span class="ide-option-label" data-qa-selector="commit_to_current_branch_radio">
+        <gl-sprintf :message="s__('IDE|Commit to %{branchName} branch')">
+          <template #branchName>
+            <strong class="monospace">{{ currentBranchText }}</strong>
+          </template>
+        </gl-sprintf>
+      </span>
     </radio-group>
     <template v-if="!emptyRepo">
       <radio-group

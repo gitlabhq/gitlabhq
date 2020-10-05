@@ -14,6 +14,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
       self.reactive_cache_lifetime = 5.minutes
       self.reactive_cache_refresh_interval = 15.seconds
+      self.reactive_cache_work_type = :no_dependency
 
       attr_reader :id
 
@@ -371,5 +372,15 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     it { expect(subject.reactive_cache_key).to respond_to(:call) }
     it { expect(subject.reactive_cache_hard_limit).to be_nil }
     it { expect(subject.reactive_cache_worker_finder).to respond_to(:call) }
+  end
+
+  describe 'classes including this concern' do
+    it 'sets reactive_cache_work_type' do
+      classes = ObjectSpace.each_object(Class).select do |klass|
+        klass < described_class && klass.name
+      end
+
+      expect(classes).to all(have_attributes(reactive_cache_work_type: be_in(described_class::WORK_TYPE.keys)))
+    end
   end
 end

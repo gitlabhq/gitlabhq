@@ -38,7 +38,8 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
       data-testid="instruction-button"
     >
       <button
-        class="btn input-group-text btn-secondary btn-md btn-default"
+        aria-label="Copy this value"
+        class="btn input-group-text btn-default btn-md gl-button btn-default-secondary btn-icon"
         data-clipboard-text="npm i @my-package"
         title="Copy npm install command"
         type="button"
@@ -53,6 +54,8 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
             href="#copy-to-clipboard"
           />
         </svg>
+          
+        <!---->
       </button>
     </span>
   </div>

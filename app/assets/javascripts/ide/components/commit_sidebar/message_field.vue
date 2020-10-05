@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlPopover } from '@gitlab/ui';
 import { __, sprintf } from '../../../locale';
 import popover from '../../../vue_shared/directives/popover';
 import { MAX_TITLE_LENGTH, MAX_BODY_LENGTH } from '../../constants';
@@ -10,6 +10,7 @@ export default {
   },
   components: {
     GlIcon,
+    GlPopover,
   },
   props: {
     text: {
@@ -58,7 +59,7 @@ export default {
     },
   },
   popoverOptions: {
-    trigger: 'hover',
+    triggers: 'hover',
     placement: 'top',
     content: sprintf(
       __(`
@@ -83,9 +84,16 @@ export default {
         <ul class="nav-links">
           <li>
             {{ __('Commit Message') }}
-            <span v-popover="$options.popoverOptions" class="form-text text-muted gl-ml-3">
-              <gl-icon name="question" />
-            </span>
+            <div id="ide-commit-message-popover-container">
+              <span id="ide-commit-message-question" class="form-text text-muted gl-ml-3">
+                <gl-icon name="question" />
+              </span>
+              <gl-popover
+                target="ide-commit-message-question"
+                container="ide-commit-message-popover-container"
+                v-bind="$options.popoverOptions"
+              />
+            </div>
           </li>
         </ul>
       </div>

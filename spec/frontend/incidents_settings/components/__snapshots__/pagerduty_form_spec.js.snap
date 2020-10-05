@@ -42,24 +42,21 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         />
       </div>
        
-      <div
-        class="gl-display-flex gl-justify-content-end"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        class="gl-mt-3"
+        data-testid="webhook-reset-btn"
+        icon=""
+        role="button"
+        size="medium"
+        tabindex="0"
+        variant="default"
       >
-        <gl-button-stub
-          category="primary"
-          class="gl-mt-3"
-          data-testid="webhook-reset-btn"
-          icon=""
-          role="button"
-          size="medium"
-          tabindex="0"
-          variant="default"
-        >
-          
-          Reset webhook URL
         
-        </gl-button-stub>
-      </div>
+        Reset webhook URL
+      
+      </gl-button-stub>
        
       <gl-modal-stub
         modalclass=""
@@ -76,22 +73,19 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       </gl-modal-stub>
     </gl-form-group-stub>
      
-    <div
-      class="gl-display-flex gl-justify-content-end"
+    <gl-button-stub
+      buttontextclasses=""
+      category="primary"
+      class="js-no-auto-disable"
+      icon=""
+      size="medium"
+      type="submit"
+      variant="success"
     >
-      <gl-button-stub
-        category="primary"
-        class="js-no-auto-disable"
-        icon=""
-        size="medium"
-        type="submit"
-        variant="success"
-      >
-        
-        Save changes
       
-      </gl-button-stub>
-    </div>
+      Save changes
+    
+    </gl-button-stub>
   </form>
 </div>
 `;

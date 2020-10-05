@@ -5,9 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::MilestoneReferenceFilter do
   include FilterSpecHelper
 
-  let(:parent_group) { create(:group, :public) }
-  let(:group) { create(:group, :public, parent: parent_group) }
-  let(:project) { create(:project, :public, group: group) }
+  let_it_be(:parent_group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, parent: parent_group) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:another_project) { create(:project, :public, namespace: namespace) }
 
   it 'requires project context' do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
@@ -188,11 +190,9 @@ RSpec.describe Banzai::Filter::MilestoneReferenceFilter do
   end
 
   shared_examples 'cross-project / cross-namespace complete reference' do
-    let(:namespace)       { create(:namespace) }
-    let(:another_project) { create(:project, :public, namespace: namespace) }
-    let(:milestone)       { create(:milestone, project: another_project) }
-    let(:reference)       { "#{another_project.full_path}%#{milestone.iid}" }
-    let!(:result)         { reference_filter("See #{reference}") }
+    let_it_be(:milestone) { create(:milestone, project: another_project) }
+    let(:reference) { "#{another_project.full_path}%#{milestone.iid}" }
+    let!(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
@@ -226,12 +226,10 @@ RSpec.describe Banzai::Filter::MilestoneReferenceFilter do
   end
 
   shared_examples 'cross-project / same-namespace complete reference' do
-    let(:namespace)       { create(:namespace) }
-    let(:project)         { create(:project, :public, namespace: namespace) }
-    let(:another_project) { create(:project, :public, namespace: namespace) }
-    let(:milestone)       { create(:milestone, project: another_project) }
-    let(:reference)       { "#{another_project.full_path}%#{milestone.iid}" }
-    let!(:result)         { reference_filter("See #{reference}") }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+    let_it_be(:milestone) { create(:milestone, project: another_project) }
+    let(:reference) { "#{another_project.full_path}%#{milestone.iid}" }
+    let!(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
@@ -265,12 +263,10 @@ RSpec.describe Banzai::Filter::MilestoneReferenceFilter do
   end
 
   shared_examples 'cross project shorthand reference' do
-    let(:namespace)       { create(:namespace) }
-    let(:project)         { create(:project, :public, namespace: namespace) }
-    let(:another_project) { create(:project, :public, namespace: namespace) }
-    let(:milestone)       { create(:milestone, project: another_project) }
-    let(:reference)       { "#{another_project.path}%#{milestone.iid}" }
-    let!(:result)         { reference_filter("See #{reference}") }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+    let_it_be(:milestone) { create(:milestone, project: another_project) }
+    let(:reference) { "#{another_project.path}%#{milestone.iid}" }
+    let!(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
@@ -439,13 +435,13 @@ RSpec.describe Banzai::Filter::MilestoneReferenceFilter do
 
   context 'when milestone is open' do
     context 'project milestones' do
-      let(:milestone) { create(:milestone, project: project) }
+      let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
 
       include_context 'project milestones'
     end
 
     context 'group milestones' do
-      let(:milestone) { create(:milestone, group: group) }
+      let_it_be_with_reload(:milestone) { create(:milestone, group: group) }
 
       include_context 'group milestones'
     end
@@ -453,13 +449,13 @@ RSpec.describe Banzai::Filter::MilestoneReferenceFilter do
 
   context 'when milestone is closed' do
     context 'project milestones' do
-      let(:milestone) { create(:milestone, :closed, project: project) }
+      let_it_be_with_reload(:milestone) { create(:milestone, :closed, project: project) }
 
       include_context 'project milestones'
     end
 
     context 'group milestones' do
-      let(:milestone) { create(:milestone, :closed, group: group) }
+      let_it_be_with_reload(:milestone) { create(:milestone, :closed, group: group) }
 
       include_context 'group milestones'
     end

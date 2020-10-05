@@ -151,7 +151,7 @@ export default {
       this.newSnippet = false;
     },
     onSnippetFetch(snippetRes) {
-      if (snippetRes.data.snippets.edges.length === 0) {
+      if (snippetRes.data.snippets.nodes.length === 0) {
         this.onNewSnippetFetched();
       } else {
         this.onExistingSnippetFetched();

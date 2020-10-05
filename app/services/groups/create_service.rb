@@ -15,6 +15,8 @@ module Groups
 
       after_build_hook(@group, params)
 
+      inherit_group_shared_runners_settings
+
       unless can_use_visibility_level? && can_create_group?
         return @group
       end
@@ -28,9 +30,12 @@ module Groups
         @group.build_chat_team(name: response['name'], team_id: response['id'])
       end
 
-      if @group.save
-        @group.add_owner(current_user)
-        add_settings_record
+      Group.transaction do
+        if @group.save
+          @group.add_owner(current_user)
+          @group.create_namespace_settings
+          Service.create_from_active_default_integrations(@group, :group_id) if Feature.enabled?(:group_level_integrations)
+        end
       end
 
       @group
@@ -84,8 +89,11 @@ module Groups
       params[:visibility_level] = Gitlab::CurrentSettings.current_application_settings.default_group_visibility
     end
 
-    def add_settings_record
-      @group.create_namespace_settings
+    def inherit_group_shared_runners_settings
+      return unless @group.parent
+
+      @group.shared_runners_enabled = @group.parent.shared_runners_enabled
+      @group.allow_descendants_override_disabled_shared_runners = @group.parent.allow_descendants_override_disabled_shared_runners
     end
   end
 end

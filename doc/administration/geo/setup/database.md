@@ -17,9 +17,10 @@ NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
 
-This document describes the minimal steps you have to take in order to
-replicate your **primary** GitLab database to a **secondary** node's database. You may
-have to change some values according to your database setup, how big it is, etc.
+This document describes the minimal steps you have to take to replicate your
+**primary** GitLab database to a **secondary** node's database. You may have to
+change some values, based on attributes including your database's setup and
+size.
 
 You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
@@ -432,6 +433,11 @@ data before running `pg_basebackup`.
 
    NOTE: **Note:**
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.
+
+   NOTE: **Note:**
+   In GitLab 13.4, a seed project is added when GitLab is first installed. This makes it necessary to pass `--force` even
+   on a new Geo secondary node. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
+   when checking the database.
 
    When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
    user in the first step.

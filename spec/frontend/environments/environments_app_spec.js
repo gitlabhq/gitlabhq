@@ -40,6 +40,9 @@ describe('Environment', () => {
     return axios.waitForAll();
   };
 
+  const findEnvironmentsTabAvailable = () => wrapper.find('.js-environments-tab-available > a');
+  const findEnvironmentsTabStopped = () => wrapper.find('.js-environments-tab-stopped > a');
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
   });
@@ -108,8 +111,15 @@ describe('Environment', () => {
 
         it('should make an API request when using tabs', () => {
           jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
-          wrapper.find('.js-environments-tab-stopped').trigger('click');
+          findEnvironmentsTabStopped().trigger('click');
           expect(wrapper.vm.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
+        });
+
+        it('should not make the same API request when clicking on the current scope tab', () => {
+          // component starts at available
+          jest.spyOn(wrapper.vm, 'updateContent').mockImplementation(() => {});
+          findEnvironmentsTabAvailable().trigger('click');
+          expect(wrapper.vm.updateContent).toHaveBeenCalledTimes(0);
         });
       });
     });

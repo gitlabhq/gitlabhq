@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'securerandom'
+require 'active_support/core_ext/object/blank'
 
 module QA
   module Resource
@@ -17,7 +18,12 @@ module QA
                     :labels,
                     :file_name,
                     :file_content
-      attr_writer :no_preparation
+      attr_writer :no_preparation,
+                  :wait_for_merge
+
+      attribute :merge_when_pipeline_succeeds
+      attribute :merge_status
+      attribute :state
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -58,6 +64,7 @@ module QA
         @file_content = "File Added"
         @target_new_branch = true
         @no_preparation = false
+        @wait_for_merge = true
       end
 
       def fabricate!
@@ -80,8 +87,15 @@ module QA
       end
 
       def fabricate_via_api!
+        resource_web_url(api_get)
+      rescue ResourceNotFoundError
         populate(:target, :source) unless @no_preparation
+
         super
+      end
+
+      def api_merge_path
+        "/projects/#{project.id}/merge_requests/#{id}/merge"
       end
 
       def api_get_path
@@ -99,6 +113,36 @@ module QA
           target_branch: @target_branch,
           title: @title
         }
+      end
+
+      def merge_via_api!
+        Support::Waiter.wait_until(sleep_interval: 1) do
+          QA::Runtime::Logger.debug("Waiting until merge request with id '#{id}' can be merged")
+
+          reload!.api_resource[:merge_status] == 'can_be_merged'
+        end
+
+        Support::Retrier.retry_on_exception do
+          response = put(Runtime::API::Request.new(api_client, api_merge_path).url)
+
+          unless response.code == HTTP_STATUS_OK
+            raise ResourceUpdateFailedError, "Could not merge. Request returned (#{response.code}): `#{response}`."
+          end
+
+          result = parse_body(response)
+
+          project.wait_for_merge(result[:title]) if @wait_for_merge
+
+          result
+        end
+      end
+
+      private
+
+      def transform_api_resource(api_resource)
+        raise ResourceNotFoundError if api_resource.blank?
+
+        super(api_resource)
       end
     end
   end

@@ -18,6 +18,7 @@ import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';
 import CanCreatePersonalSnippet from '../queries/userPermissions.query.graphql';
 import CanCreateProjectSnippet from '../queries/projectPermissions.query.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { fetchPolicies } from '~/lib/graphql';
 
 export default {
   components: {
@@ -37,6 +38,7 @@ export default {
   },
   apollo: {
     canCreateSnippet: {
+      fetchPolicy: fetchPolicies.NO_CACHE,
       query() {
         return this.snippet.project ? CanCreateProjectSnippet : CanCreatePersonalSnippet;
       },

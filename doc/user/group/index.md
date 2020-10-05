@@ -395,7 +395,7 @@ milestones.
 
 Get an overview of the vulnerabilities of all the projects in a group and its subgroups.
 
-[Learn more about the Group Security Dashboard.](security_dashboard/index.md)
+[Learn more about the Group Security Dashboard.](../application_security/security_dashboard/index.md)
 
 ## Insights **(ULTIMATE)**
 

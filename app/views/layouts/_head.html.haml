@@ -42,35 +42,39 @@
   %title= page_title(site_name)
   %meta{ name: "description", content: page_description }
 
+  - if page_canonical_link
+    %link{ rel: 'canonical', href: page_canonical_link }
+
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   = render 'layouts/startup_css'
   - if user_application_theme == 'gl-dark'
     = stylesheet_link_tag_defer "application_dark"
+    = yield :page_specific_styles
+    = stylesheet_link_tag_defer "application_utilities_dark"
   - else
     = stylesheet_link_tag_defer "application"
+    = yield :page_specific_styles
+    = stylesheet_link_tag_defer "application_utilities"
   - unless use_startup_css?
-    = stylesheet_link_tag_defer "themes/theme_#{user_application_theme_name}"
+    = stylesheet_link_tag_defer "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
-  = stylesheet_link_tag_defer 'performance_bar' if performance_bar_enabled?
 
   = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
 
   = render 'layouts/startup_css_activation'
 
-  = Gon::Base.render_data(nonce: content_security_policy_nonce)
+  = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
-  - if content_for?(:library_javascripts)
-    = yield :library_javascripts
+  = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
   = javascript_include_tag locale_path unless I18n.locale == :en
   = webpack_bundle_tag "sentry" if Gitlab.config.sentry.enabled
+  = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
-  - if content_for?(:page_specific_javascripts)
-    = yield :page_specific_javascripts
+  = yield :page_specific_javascripts
 
   = webpack_controller_bundle_tags
-  = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
   = webpack_bundle_tag "chrome_84_icon_fix" if browser.chrome?([">=84", "<84.0.4147.125"]) || browser.edge?([">=84", "<84.0.522.59"])
 
   = yield :project_javascripts
@@ -79,8 +83,6 @@
   = csp_meta_tag
   = action_cable_meta_tag
 
-  - unless browser.safari?
-    %meta{ name: 'referrer', content: 'origin-when-cross-origin' }
   %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
   %meta{ name: 'theme-color', content: '#474D57' }
 

@@ -17,21 +17,21 @@ full list of reference architectures, see
 
 | Service                                 | Nodes       | Configuration           | GCP             | AWS          | Azure    |
 |-----------------------------------------|-------------|-------------------------|-----------------|--------------|----------|
-| External load balancing node            | 1           | 8 vCPU, 7.2GB memory    | n1-highcpu-8    | c5.2xlarge   | F8s v2   |
-| Consul                                  | 3           | 2 vCPU, 1.8GB memory    | n1-highcpu-2    | c5.large     | F2s v2   |
-| PostgreSQL                              | 3           | 16 vCPU, 60GB memory    | n1-standard-16  | m5.4xlarge   | D16s v3  |
-| PgBouncer                               | 3           | 2 vCPU, 1.8GB memory    | n1-highcpu-2    | c5.large     | F2s v2   |
-| Internal load balancing node            | 1           | 8 vCPU, 7.2GB memory    | n1-highcpu-8    | c5.2xlarge   | F8s v2   |
-| Redis - Cache                           | 3           | 4 vCPU, 15GB memory     | n1-standard-4   | m5.xlarge    | D4s v3   |
-| Redis - Queues / Shared State           | 3           | 4 vCPU, 15GB memory     | n1-standard-4   | m5.xlarge    | D4s v3   |
-| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7GB memory    | g1-small        | t2.small     | B1MS     |
-| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7GB memory    | g1-small        | t2.small     | B1MS     |
-| Gitaly                                  | 2 (minimum) | 64 vCPU, 240GB memory   | n1-standard-64  | m5.16xlarge  | D64s v3  |
-| Sidekiq                                 | 4           | 4 vCPU, 15GB memory     | n1-standard-4   | m5.xlarge    | D4s v3   |
-| GitLab Rails                            | 12          | 32 vCPU, 28.8GB memory  | n1-highcpu-32   | c5.9xlarge   | F32s v2  |
-| Monitoring node                         | 1           | 4 vCPU, 3.6GB memory    | n1-highcpu-4    | c5.xlarge    | F4s v2   |
-| Object Storage                          | n/a         | n/a                     | n/a             | n/a          | n/a      |
-| NFS Server                              | 1           | 4 vCPU, 3.6GB memory    | n1-highcpu-4    | c5.xlarge    | F4s v2   |
+| External load balancing node            | 1           | 8 vCPU, 7.2 GB memory   | n1-highcpu-8    | c5.2xlarge   | F8s v2   |
+| Consul                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large     | F2s v2   |
+| PostgreSQL                              | 3           | 16 vCPU, 60 GB memory   | n1-standard-16  | m5.4xlarge   | D16s v3  |
+| PgBouncer                               | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2    | c5.large     | F2s v2   |
+| Internal load balancing node            | 1           | 8 vCPU, 7.2 GB memory   | n1-highcpu-8    | c5.2xlarge   | F8s v2   |
+| Redis - Cache                           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
+| Redis - Queues / Shared State           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
+| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t2.small     | B1MS     |
+| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t2.small     | B1MS     |
+| Gitaly                                  | 2 (minimum) | 64 vCPU, 240 GB memory  | n1-standard-64  | m5.16xlarge  | D64s v3  |
+| Sidekiq                                 | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
+| GitLab Rails                            | 12          | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | c5.9xlarge   | F32s v2  |
+| Monitoring node                         | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge    | F4s v2   |
+| Object storage                          | n/a         | n/a                     | n/a             | n/a          | n/a      |
+| NFS server                              | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge    | F4s v2   |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -40,41 +40,43 @@ or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-For data objects (such as LFS, Uploads, or Artifacts), an
-[object storage service](#configure-the-object-storage) is recommended instead
-of NFS where possible, due to better performance and availability. Since this
-doesn't require a node to be set up, *Object Storage* is noted as not
-applicable (n/a) in the previous table.
+Due to better performance and availability, for data objects (such as LFS,
+uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
+is recommended instead of using NFS. Using an object storage service also
+doesn't require you to provision and maintain a node.
 
 ## Setup components
 
 To set up GitLab and its components to accommodate up to 50,000 users:
 
 1. [Configure the external load balancing node](#configure-the-external-load-balancer)
-   that will handle the load balancing of the three GitLab application services nodes.
+   to handle the load balancing of the GitLab application services nodes.
 1. [Configure Consul](#configure-consul).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure the internal load balancing node](#configure-the-internal-load-balancer)
+1. [Configure the internal load balancing node](#configure-the-internal-load-balancer).
 1. [Configure Redis](#configure-redis).
 1. [Configure Gitaly](#configure-gitaly),
    which provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq).
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend requests (UI, API, Git
-   over HTTP/SSH).
-1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab environment.
-1. [Configure the Object Storage](#configure-the-object-storage)
+   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   requests (which include UI, API, and Git over HTTP/SSH).
+1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
+   environment.
+1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
-1. [Configure NFS (Optional)](#configure-nfs-optional)
-   to have shared disk storage service as an alternative to Gitaly and/or Object Storage (although
-   not recommended). NFS is required for GitLab Pages, you can skip this step if you're not using
-   that feature.
+1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
+   more advanced code search across your entire GitLab instance.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage. You can skip this step if you're not using GitLab Pages (which
+   requires NFS).
 
-We start with all servers on the same 10.6.0.0/24 private network range, they
-can connect to each other freely on those addresses.
+The servers start on the same 10.6.0.0/24 private network range, and can
+connect to each other freely on these addresses.
 
-Here is a list and description of each machine and the assigned IP:
+The following list includes descriptions of each server and its assigned IP:
 
 - `10.6.0.10`: External Load Balancer
 - `10.6.0.11`: Consul 1
@@ -1752,6 +1754,7 @@ On each node perform the following:
    roles ['application_role']
    gitaly['enable'] = false
    nginx['enable'] = true
+   sidekiq['enable'] = false
 
    ## PostgreSQL connection details
    # Disable PostgreSQL on the application node
@@ -1795,7 +1798,6 @@ On each node perform the following:
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
-   sidekiq['listen_address'] = "0.0.0.0"
    puma['listen'] = '0.0.0.0'
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
@@ -1836,7 +1838,7 @@ On each node perform the following:
 
    1. Specify the necessary NFS mounts in `/etc/fstab`.
       The exact contents of `/etc/fstab` will depend on how you chose
-      to configure your NFS server. See the [NFS documentation](../high_availability/nfs.md)
+      to configure your NFS server. See the [NFS documentation](../nfs.md)
       for examples and the various options.
 
    1. Create the shared directories. These may be different depending on your NFS
@@ -1889,18 +1891,22 @@ for more information.
 
 ### GitLab Rails post-configuration
 
-Initialize the GitLab database, by running the following in one of the Rails nodes:
+1. Designate one application node for running database migrations during
+   installation and updates. Initialize the GitLab database and ensure all
+   migrations ran:
 
-```shell
-sudo gitlab-rake gitlab:db:configure
-```
+   ```shell
+   sudo gitlab-rake gitlab:db:configure
+   ```
 
-NOTE: **Note:**
-If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to
-PostgreSQL it may be that your PgBouncer node's IP address is missing from
-PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-[PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
-in the Troubleshooting section before proceeding.
+    NOTE: **Note:**
+    If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to
+    PostgreSQL it may be that your PgBouncer node's IP address is missing from
+    PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
+    [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+    in the Troubleshooting section before proceeding.
+
+1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2033,13 +2039,32 @@ work.
   </a>
 </div>
 
+## Configure Advanced Search **(STARTER ONLY)**
+
+NOTE: **Note:**
+Elasticsearch cluster design and requirements are dependent on your specific data.
+For recommended best practices on how to set up your Elasticsearch cluster
+alongside your instance, read how to
+[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+
+You can leverage Elasticsearch and enable Advanced Search for faster, more
+advanced code search across your entire GitLab instance.
+
+[Learn how to set it up.](../../integration/elasticsearch.md)
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
 ## Configure NFS (optional)
 
 [Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
 are recommended over NFS wherever possible for improved performance. If you intend
 to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pages-requires-nfs).
 
-See how to [configure NFS](../high_availability/nfs.md).
+See how to [configure NFS](../nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

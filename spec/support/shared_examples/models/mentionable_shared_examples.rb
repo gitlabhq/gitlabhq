@@ -207,29 +207,8 @@ RSpec.shared_examples 'an editable mentionable' do
 end
 
 RSpec.shared_examples 'mentions in description' do |mentionable_type|
-  describe 'when store_mentioned_users_to_db feature disabled' do
+  describe 'when storing user mentions' do
     before do
-      stub_feature_flags(store_mentioned_users_to_db: false)
-      mentionable.store_mentions!
-    end
-
-    context 'when mentionable description contains mentions' do
-      let(:user) { create(:user) }
-      let(:mentionable) { create(mentionable_type, description: "#{user.to_reference} some description") }
-
-      it 'stores no mentions' do
-        expect(mentionable.user_mentions.count).to eq 0
-      end
-
-      it 'renders description_html correctly' do
-        expect(mentionable.description_html).to include("<a href=\"/#{user.username}\" data-user=\"#{user.id}\"")
-      end
-    end
-  end
-
-  describe 'when store_mentioned_users_to_db feature enabled' do
-    before do
-      stub_feature_flags(store_mentioned_users_to_db: true)
       mentionable.store_mentions!
     end
 

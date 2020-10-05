@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Resource::Repository::Push do
+RSpec.describe QA::Resource::Repository::Push do
   describe '.files=' do
     let(:files) do
       [

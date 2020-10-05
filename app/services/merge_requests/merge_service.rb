@@ -84,7 +84,7 @@ module MergeRequests
 
       merge_request.update!(merge_commit_sha: commit_id)
     ensure
-      merge_request.update_column(:in_progress_merge_commit_sha, nil)
+      merge_request.update_and_mark_in_progress_merge_commit_sha(nil)
     end
 
     def try_merge

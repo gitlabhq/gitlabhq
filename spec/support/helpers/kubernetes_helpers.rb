@@ -153,7 +153,7 @@ module KubernetesHelpers
 
     options[:name] ||= "kubetest"
     options[:domain] ||= "example.com"
-    options[:response] ||= kube_response(kube_knative_services_body(options))
+    options[:response] ||= kube_response(kube_knative_services_body(**options))
 
     stub_kubeclient_discover(service.api_url)
 
@@ -167,7 +167,7 @@ module KubernetesHelpers
     options[:namespace] ||= "default"
 
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{options[:namespace]}/secrets/#{options[:metadata_name]}")
-      .to_return(kube_response(kube_v1_secret_body(options)))
+      .to_return(kube_response(kube_v1_secret_body(**options)))
   end
 
   def stub_kubeclient_get_secret_error(api_url, name, namespace: 'default', status: 404)
@@ -517,7 +517,7 @@ module KubernetesHelpers
   def kube_knative_services_body(**options)
     {
       "kind" => "List",
-      "items" => [knative_09_service(options)]
+      "items" => [knative_09_service(**options)]
     }
   end
 
@@ -604,7 +604,7 @@ module KubernetesHelpers
     }
   end
 
-  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil)
+  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil, replicas: 3)
     {
       "metadata" => {
         "name" => name,
@@ -617,7 +617,7 @@ module KubernetesHelpers
           "track" => track
         }.compact
       },
-      "spec" => { "replicas" => 3 },
+      "spec" => { "replicas" => replicas },
       "status" => {
         "observedGeneration" => 4
       }

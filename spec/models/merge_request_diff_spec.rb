@@ -180,6 +180,17 @@ RSpec.describe MergeRequestDiff do
       expect(diff.external_diff_store).to eq(file_store)
     end
 
+    it 'migrates a nil diff file' do
+      expect(diff).not_to be_stored_externally
+      MergeRequestDiffFile.where(merge_request_diff_id: diff.id).update_all(diff: nil)
+
+      stub_external_diffs_setting(enabled: true)
+
+      diff.migrate_files_to_external_storage!
+
+      expect(diff).to be_stored_externally
+    end
+
     it 'safely handles a transaction error when migrating to external storage' do
       expect(diff).not_to be_stored_externally
       expect(diff.external_diff).not_to be_exists

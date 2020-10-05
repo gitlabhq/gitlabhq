@@ -63,4 +63,47 @@ export default IssuableTokenKeys => {
 
   IssuableTokenKeys.tokenKeys.push(targetBranchToken);
   IssuableTokenKeys.tokenKeysWithAlternative.push(targetBranchToken);
+
+  const approvedBy = {
+    token: {
+      formattedKey: __('Approved-By'),
+      key: 'approved-by',
+      type: 'array',
+      param: 'usernames[]',
+      symbol: '@',
+      icon: 'approval',
+      tag: '@approved-by',
+    },
+    condition: [
+      {
+        url: 'approved_by_usernames[]=None',
+        tokenKey: 'approved-by',
+        value: __('None'),
+        operator: '=',
+      },
+      {
+        url: 'not[approved_by_usernames][]=None',
+        tokenKey: 'approved-by',
+        value: __('None'),
+        operator: '!=',
+      },
+      {
+        url: 'approved_by_usernames[]=Any',
+        tokenKey: 'approved-by',
+        value: __('Any'),
+        operator: '=',
+      },
+      {
+        url: 'not[approved_by_usernames][]=Any',
+        tokenKey: 'approved-by',
+        value: __('Any'),
+        operator: '!=',
+      },
+    ],
+  };
+
+  const tokenPosition = 2;
+  IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, ...[approvedBy.token]);
+  IssuableTokenKeys.tokenKeysWithAlternative.splice(tokenPosition, 0, ...[approvedBy.token]);
+  IssuableTokenKeys.conditions.push(...approvedBy.condition);
 };

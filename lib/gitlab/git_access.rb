@@ -504,7 +504,7 @@ module Gitlab
       changes_size = 0
 
       changes_list.each do |change|
-        changes_size += repository.new_blobs(change[:newrev]).sum(&:size) # rubocop: disable CodeReuse/ActiveRecord
+        changes_size += repository.new_blobs(change[:newrev]).sum(&:size)
 
         check_size_against_limit(changes_size)
       end

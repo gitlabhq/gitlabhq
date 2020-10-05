@@ -12,7 +12,7 @@ module Lfs
 
     def execute
       lfs_objects_relation.each_batch(of: BATCH_SIZE) do |objects|
-        push_objects(objects)
+        push_objects!(objects)
       end
 
       success
@@ -30,8 +30,8 @@ module Lfs
       project.lfs_objects_for_repository_types(nil, :project)
     end
 
-    def push_objects(objects)
-      rsp = lfs_client.batch('upload', objects)
+    def push_objects!(objects)
+      rsp = lfs_client.batch!('upload', objects)
       objects = objects.index_by(&:oid)
 
       rsp.fetch('objects', []).each do |spec|
@@ -53,14 +53,14 @@ module Lfs
         return
       end
 
-      lfs_client.upload(object, upload, authenticated: authenticated)
+      lfs_client.upload!(object, upload, authenticated: authenticated)
     end
 
     def verify_object!(object, spec)
-      # TODO: the remote has requested that we make another call to verify that
-      # the object has been sent correctly.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/250654
-      log_error("LFS upload verification requested, but not supported for #{object.oid}")
+      authenticated = spec['authenticated']
+      verify = spec.dig('actions', 'verify')
+
+      lfs_client.verify!(object, verify, authenticated: authenticated)
     end
 
     def url

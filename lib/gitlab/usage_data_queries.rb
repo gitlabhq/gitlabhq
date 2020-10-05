@@ -22,7 +22,7 @@ module Gitlab
       end
 
       def sum(relation, column, *rest)
-        relation.select(relation.all.table[column].sum).to_sql # rubocop:disable CodeReuse/ActiveRecord
+        relation.select(relation.all.table[column].sum).to_sql
       end
 
       private

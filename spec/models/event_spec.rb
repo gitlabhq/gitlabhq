@@ -918,6 +918,56 @@ RSpec.describe Event do
       expect(destroyed).to eq('deleted')
       expect(archived).to eq('archived')
     end
+
+    it 'handles correct push_action' do
+      project = create(:project)
+      user = create(:user)
+      project.add_developer(user)
+      push_event = create_push_event(project, user)
+
+      expect(push_event.push_action?).to be true
+      expect(push_event.action_name).to eq('pushed to')
+    end
+
+    context 'handles correct base actions' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:trait, :action_name) do
+        :created   | 'created'
+        :updated   | 'opened'
+        :closed    | 'closed'
+        :reopened  | 'opened'
+        :commented | 'commented on'
+        :merged    | 'accepted'
+        :joined    | 'joined'
+        :left      | 'left'
+        :destroyed | 'destroyed'
+        :expired   | 'removed due to membership expiration from'
+        :approved  | 'approved'
+      end
+
+      with_them do
+        it 'with correct name and method' do
+          event = build(:event, trait)
+
+          expect(event.action_name).to eq(action_name)
+        end
+      end
+    end
+
+    context 'for created_project_action?' do
+      it 'returns created for created event' do
+        action = build(:project_created_event)
+
+        expect(action.action_name).to eq('created')
+      end
+
+      it 'returns imported for imported event' do
+        action = build(:project_imported_event)
+
+        expect(action.action_name).to eq('imported')
+      end
+    end
   end
 
   def create_push_event(project, user)

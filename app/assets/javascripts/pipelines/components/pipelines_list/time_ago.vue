@@ -1,12 +1,11 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import '~/lib/utils/datetime_utility';
-import tooltip from '~/vue_shared/directives/tooltip';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: { GlIcon },
   mixins: [timeagoMixin],
@@ -63,7 +62,7 @@ export default {
         <gl-icon name="calendar" class="gl-vertical-align-baseline!" aria-hidden="true" />
 
         <time
-          v-tooltip
+          v-gl-tooltip
           :title="tooltipTitle(finishedTime)"
           data-placement="top"
           data-container="body"

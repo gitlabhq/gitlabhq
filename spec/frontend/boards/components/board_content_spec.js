@@ -23,9 +23,6 @@ describe('BoardContent', () => {
     return new Vuex.Store({
       getters,
       state,
-      actions: {
-        fetchIssuesForAllLists: () => {},
-      },
     });
   };
 

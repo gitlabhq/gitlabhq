@@ -101,8 +101,6 @@ describe('ReadyToMerge', () => {
       expect(vm.isMakingRequest).toBeFalsy();
       expect(vm.isMergingImmediately).toBeFalsy();
       expect(vm.commitMessage).toBe(vm.mr.commitMessage);
-      expect(vm.successSvg).toBeDefined();
-      expect(vm.warningSvg).toBeDefined();
     });
   });
 
@@ -489,19 +487,6 @@ describe('ReadyToMerge', () => {
 
           expect(statusBox.classList.contains('status-box-mr-merged')).toBeTruthy();
           expect(statusBox.textContent).toContain('Merged');
-
-          done();
-        });
-      });
-
-      it('hides close button', done => {
-        jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
-        jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
-
-        vm.handleMergePolling(() => {}, () => {});
-
-        setImmediate(() => {
-          expect(document.querySelector('.btn-close').classList.contains('hidden')).toBeTruthy();
 
           done();
         });

@@ -15,7 +15,7 @@ export const GROUP_PAGE_TYPE = 'groups';
 export const LIST_KEY_NAME = 'name';
 export const LIST_KEY_PROJECT = 'project_path';
 export const LIST_KEY_VERSION = 'version';
-export const LIST_KEY_PACKAGE_TYPE = 'package_type';
+export const LIST_KEY_PACKAGE_TYPE = 'type';
 export const LIST_KEY_CREATED_AT = 'created_at';
 export const LIST_KEY_ACTIONS = 'actions';
 
@@ -23,10 +23,8 @@ export const LIST_LABEL_NAME = __('Name');
 export const LIST_LABEL_PROJECT = __('Project');
 export const LIST_LABEL_VERSION = __('Version');
 export const LIST_LABEL_PACKAGE_TYPE = __('Type');
-export const LIST_LABEL_CREATED_AT = __('Created');
+export const LIST_LABEL_CREATED_AT = __('Published');
 export const LIST_LABEL_ACTIONS = '';
-
-export const LIST_ORDER_BY_PACKAGE_TYPE = 'type';
 
 export const ASCENDING_ODER = 'asc';
 export const DESCENDING_ORDER = 'desc';
@@ -34,36 +32,26 @@ export const DESCENDING_ORDER = 'desc';
 // The following is not translated because it is used to build a JavaScript exception error message
 export const MISSING_DELETE_PATH_ERROR = 'Missing delete_api_path link';
 
-export const TABLE_HEADER_FIELDS = [
+export const SORT_FIELDS = [
   {
-    key: LIST_KEY_NAME,
-    label: LIST_LABEL_NAME,
     orderBy: LIST_KEY_NAME,
-    class: ['text-left'],
+    label: LIST_LABEL_NAME,
   },
   {
-    key: LIST_KEY_PROJECT,
-    label: LIST_LABEL_PROJECT,
     orderBy: LIST_KEY_PROJECT,
-    class: ['text-left'],
+    label: LIST_LABEL_PROJECT,
   },
   {
-    key: LIST_KEY_VERSION,
-    label: LIST_LABEL_VERSION,
     orderBy: LIST_KEY_VERSION,
-    class: ['text-center'],
+    label: LIST_LABEL_VERSION,
   },
   {
-    key: LIST_KEY_PACKAGE_TYPE,
+    orderBy: LIST_KEY_PACKAGE_TYPE,
     label: LIST_LABEL_PACKAGE_TYPE,
-    orderBy: LIST_ORDER_BY_PACKAGE_TYPE,
-    class: ['text-center'],
   },
   {
-    key: LIST_KEY_CREATED_AT,
-    label: LIST_LABEL_CREATED_AT,
     orderBy: LIST_KEY_CREATED_AT,
-    class: ['text-center'],
+    label: LIST_LABEL_CREATED_AT,
   },
 ];
 
@@ -98,3 +86,9 @@ export const PACKAGE_REGISTRY_TABS = [
     type: PackageType.PYPI,
   },
 ];
+
+export const LIST_TITLE_TEXT = s__('PackageRegistry|Package Registry');
+
+export const LIST_INTRO_TEXT = s__(
+  'PackageRegistry|Publish and share packages for a variety of common package managers. %{docLinkStart}More information%{docLinkEnd}',
+);

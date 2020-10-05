@@ -149,6 +149,7 @@ export default {
           :alt="filename"
           class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
           data-qa-selector="design_image"
+          :data-qa-filename="filename"
           @load="onImageLoad"
           @error="onImageError"
         />

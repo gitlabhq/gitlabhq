@@ -110,6 +110,10 @@ module MergeRequests
         return
       end
 
+      unless merge_request.allows_multiple_reviewers?
+        params[:reviewer_ids] = params[:reviewer_ids].first(1)
+      end
+
       reviewer_ids = params[:reviewer_ids].select { |reviewer_id| user_can_read?(merge_request, reviewer_id) }
 
       if params[:reviewer_ids].map(&:to_s) == [IssuableFinder::Params::NONE]
@@ -128,6 +132,11 @@ module MergeRequests
     def create_assignee_note(merge_request, old_assignees)
       SystemNoteService.change_issuable_assignees(
         merge_request, merge_request.project, current_user, old_assignees)
+    end
+
+    def create_reviewer_note(merge_request, old_reviewers)
+      SystemNoteService.change_issuable_reviewers(
+        merge_request, merge_request.project, current_user, old_reviewers)
     end
 
     def create_pipeline_for(merge_request, user)

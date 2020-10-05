@@ -1,0 +1,5 @@
+---
+title: Add validator for IP address/inet columns
+merge_request: 42893
+author:
+type: added

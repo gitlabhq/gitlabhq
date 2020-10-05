@@ -30,6 +30,8 @@ RSpec.describe 'User uses header search field', :js do
       before do
         find('#search')
         find('body').native.send_keys('s')
+
+        wait_for_all_requests
       end
 
       it 'shows the category search dropdown' do
@@ -89,9 +91,7 @@ RSpec.describe 'User uses header search field', :js do
 
     context 'when entering text into the search field' do
       it 'does not display the category search dropdown' do
-        page.within('.search-input-wrap') do
-          fill_in('search', with: scope_name.first(4))
-        end
+        fill_in_search(scope_name.first(4))
 
         expect(page).not_to have_selector('.dropdown-header', text: /#{scope_name}/i)
       end
@@ -105,9 +105,7 @@ RSpec.describe 'User uses header search field', :js do
     end
 
     it 'displays search options' do
-      page.within('.search-input-wrap') do
-        fill_in('search', with: 'test')
-      end
+      fill_in_search('test')
 
       expect(page).to have_selector(scoped_search_link('test'))
     end
@@ -140,9 +138,7 @@ RSpec.describe 'User uses header search field', :js do
       end
 
       it 'displays search options' do
-        page.within('.search-input-wrap') do
-          fill_in('search', with: 'test')
-        end
+        fill_in_search('test')
 
         expect(page).to have_selector(scoped_search_link('test'))
         expect(page).to have_selector(scoped_search_link('test', group_id: group.id))
@@ -157,9 +153,7 @@ RSpec.describe 'User uses header search field', :js do
       end
 
       it 'displays search options' do
-        page.within('.search-input-wrap') do
-          fill_in('search', with: 'test')
-        end
+        fill_in_search('test')
 
         expect(page).to have_selector(scoped_search_link('test'))
         expect(page).not_to have_selector(scoped_search_link('test', group_id: project.namespace_id))
@@ -182,9 +176,7 @@ RSpec.describe 'User uses header search field', :js do
     end
 
     it 'displays search options' do
-      page.within('.search-input-wrap') do
-        fill_in('search', with: 'test')
-      end
+      fill_in_search('test')
 
       expect(page).to have_selector(scoped_search_link('test'))
       expect(page).to have_selector(scoped_search_link('test', group_id: group.id))
@@ -208,9 +200,7 @@ RSpec.describe 'User uses header search field', :js do
     end
 
     it 'displays search options' do
-      page.within('.search-input-wrap') do
-        fill_in('search', with: 'test')
-      end
+      fill_in_search('test')
 
       expect(page).to have_selector(scoped_search_link('test'))
       expect(page).to have_selector(scoped_search_link('test', group_id: subgroup.id))

@@ -57,7 +57,9 @@ describe('Suggestion Diff component', () => {
   });
 
   it('renders apply suggestion and add to batch buttons', () => {
-    createComponent();
+    createComponent({
+      suggestionsCount: 2,
+    });
 
     const applyBtn = findApplyButton();
     const addToBatchBtn = findAddToBatchButton();
@@ -104,7 +106,9 @@ describe('Suggestion Diff component', () => {
 
   describe('when add to batch is clicked', () => {
     it('emits addToBatch', () => {
-      createComponent();
+      createComponent({
+        suggestionsCount: 2,
+      });
 
       findAddToBatchButton().vm.$emit('click');
 

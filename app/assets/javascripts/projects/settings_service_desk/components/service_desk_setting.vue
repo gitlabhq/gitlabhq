@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormSelect, GlToggle, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlFormSelect, GlToggle, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -17,6 +17,7 @@ export default {
     GlFormSelect,
     GlToggle,
     GlLoadingIcon,
+    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -60,6 +61,7 @@ export default {
       selectedTemplate: this.initialSelectedTemplate,
       outgoingName: this.initialOutgoingName || __('GitLab Support Bot'),
       projectKey: this.initialProjectKey,
+      baseEmail: this.incomingEmail.replace(this.initialProjectKey, ''),
     };
   },
   computed: {
@@ -108,7 +110,7 @@ export default {
             <input
               ref="service-desk-incoming-email"
               type="text"
-              class="form-control incoming-email h-auto"
+              class="form-control incoming-email"
               :placeholder="__('Incoming email')"
               :aria-label="__('Incoming email')"
               aria-describedby="incoming-email-describer"
@@ -119,14 +121,35 @@ export default {
               <clipboard-button
                 :title="__('Copy')"
                 :text="incomingEmail"
-                css-class="btn qa-clipboard-button"
+                css-class="input-group-text qa-clipboard-button"
               />
             </div>
           </div>
+          <span v-if="projectKey" class="form-text text-muted">
+            <gl-sprintf :message="__('Emails sent to %{email} will still be supported')">
+              <template #email>
+                <code>{{ baseEmail }}</code>
+              </template>
+            </gl-sprintf>
+          </span>
         </template>
         <template v-else>
           <gl-loading-icon :inline="true" />
           <span class="sr-only">{{ __('Fetching incoming email') }}</span>
+        </template>
+
+        <template v-if="hasProjectKeySupport">
+          <label for="service-desk-project-suffix" class="mt-3">
+            {{ __('Project name suffix') }}
+          </label>
+          <input id="service-desk-project-suffix" v-model.trim="projectKey" class="form-control" />
+          <span class="form-text text-muted">
+            {{
+              __(
+                'Project name suffix is a user-defined string which will be appended to the project path, and will form the Service Desk email address.',
+              )
+            }}
+          </span>
         </template>
 
         <label for="service-desk-template-select" class="mt-3">
@@ -144,19 +167,6 @@ export default {
         <span class="form-text text-muted">
           {{ __('Emails sent from Service Desk will have this name') }}
         </span>
-        <template v-if="hasProjectKeySupport">
-          <label for="service-desk-project-suffix" class="mt-3">
-            {{ __('Project name suffix') }}
-          </label>
-          <input id="service-desk-project-suffix" v-model.trim="projectKey" class="form-control" />
-          <span class="form-text text-muted mb-3">
-            {{
-              __(
-                'Project name suffix is a user-defined string which will be appended to the project path, and will form the Service Desk email address.',
-              )
-            }}
-          </span>
-        </template>
         <div class="gl-display-flex gl-justify-content-end">
           <gl-button
             variant="success"

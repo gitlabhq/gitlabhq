@@ -203,18 +203,6 @@
             margin-right: 0;
           }
         }
-
-        &:hover,
-        &:focus {
-          text-decoration: none;
-          outline: 0;
-          opacity: 1;
-          color: $white;
-
-          &.header-user-dropdown-toggle .header-user-avatar {
-            border-color: $white;
-          }
-        }
       }
 
       .header-new-dropdown-toggle {

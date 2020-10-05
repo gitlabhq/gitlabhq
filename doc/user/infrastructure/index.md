@@ -82,6 +82,10 @@ local machine, this is a simple way to get started:
        -backend-config="retry_wait_min=5"
    ```
 
+   NOTE: **Note:**
+   The name of your state can contain only uppercase and lowercase letters,
+   decimal digits, hyphens and underscores.
+
 You can now run `terraform plan` and `terraform apply` as you normally would.
 
 ## Get started using GitLab CI

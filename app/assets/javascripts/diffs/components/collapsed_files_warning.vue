@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="!isDismissed" data-testid="root" :class="containerClasses">
+  <div v-if="!isDismissed" data-testid="root" :class="containerClasses" class="col-12">
     <gl-alert
       :dismissible="true"
       :title="__('Some changes are not shown')"

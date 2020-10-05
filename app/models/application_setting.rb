@@ -95,7 +95,7 @@ class ApplicationSetting < ApplicationRecord
             allow_blank: true,
             addressable_url: true
 
-  validates :admin_notification_email,
+  validates :abuse_notification_email,
             devise_email: true,
             allow_blank: true
 

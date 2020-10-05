@@ -21,7 +21,7 @@ RSpec.describe "User views milestones" do
       .and have_content("Merge Requests")
   end
 
-  context "with issues" do
+  context "with issues", :js do
     let_it_be(:issue) { create(:issue, project: project, milestone: milestone) }
     let_it_be(:closed_issue) { create(:closed_issue, project: project, milestone: milestone) }
 
@@ -33,7 +33,6 @@ RSpec.describe "User views milestones" do
         .and have_selector("#tab-issues li.issuable-row", count: 2)
         .and have_content(issue.title)
         .and have_content(closed_issue.title)
-        .and have_selector("#tab-merge-requests")
     end
   end
 

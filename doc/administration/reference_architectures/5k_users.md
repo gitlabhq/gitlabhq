@@ -24,18 +24,18 @@ costly-to-operate environment by using the
 
 | Service                                    | Nodes       | Configuration           | GCP            | AWS         | Azure    |
 |--------------------------------------------|-------------|-------------------------|----------------|-------------|----------|
-| External load balancing node               | 1           | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large    | F2s v2   |
-| Redis                                      | 3           | 2 vCPU, 7.5GB memory    | n1-standard-2  | m5.large    | D2s v3   |
-| Consul + Sentinel                          | 3           | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large    | F2s v2   |
-| PostgreSQL                                 | 3           | 2 vCPU, 7.5GB memory    | n1-standard-2  | m5.large    | D2s v3   |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large    | F2s v2   |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large    | F2s v2   |
-| Gitaly                                     | 2 (minimum) | 8 vCPU, 30GB memory     | n1-standard-8  | m5.2xlarge  | D8s v3   |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5GB memory    | n1-standard-2  | m5.large    | D2s v3   |
-| GitLab Rails                               | 3           | 16 vCPU, 14.4GB memory  | n1-highcpu-16  | c5.4xlarge  | F16s v2  |
-| Monitoring node                            | 1           | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large    | F2s v2   |
-| Object Storage                             | n/a         | n/a                     | n/a            | n/a         | n/a      |
-| NFS Server (optional, not recommended)     | 1           | 4 vCPU, 3.6GB memory    | n1-highcpu-4   | c5.xlarge   | F4s v2   |
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
+| Redis                                      | 3           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large    | D2s v3   |
+| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
+| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large    | D2s v3   |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
+| Gitaly                                     | 2 (minimum) | 8 vCPU, 30 GB memory    | n1-standard-8  | m5.2xlarge  | D8s v3   |
+| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large    | D2s v3   |
+| GitLab Rails                               | 3           | 16 vCPU, 14.4 GB memory | n1-highcpu-16  | c5.4xlarge  | F16s v2  |
+| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large    | F2s v2   |
+| Object storage                             | n/a         | n/a                     | n/a            | n/a         | n/a      |
+| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | c5.xlarge   | F4s v2   |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -44,41 +44,43 @@ or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-For data objects (such as LFS, Uploads, or Artifacts), an
-[object storage service](#configure-the-object-storage) is recommended instead
-of NFS where possible, due to better performance and availability. Since this
-doesn't require a node to be set up, *Object Storage* is noted as not
-applicable (n/a) in the previous table.
+Due to better performance and availability, for data objects (such as LFS,
+uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
+is recommended instead of using NFS. Using an object storage service also
+doesn't require you to provision and maintain a node.
 
 ## Setup components
 
 To set up GitLab and its components to accommodate up to 5,000 users:
 
 1. [Configure the external load balancing node](#configure-the-external-load-balancer)
-   that will handle the load balancing of the two GitLab application services nodes.
+   to handle the load balancing of the GitLab application services nodes.
 1. [Configure Redis](#configure-redis).
 1. [Configure Consul and Sentinel](#configure-consul-and-sentinel).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure the internal load balancing node](#configure-the-internal-load-balancer)
+1. [Configure the internal load balancing node](#configure-the-internal-load-balancer).
 1. [Configure Gitaly](#configure-gitaly),
    which provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq).
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend requests (UI, API, Git
-   over HTTP/SSH).
-1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab environment.
-1. [Configure the Object Storage](#configure-the-object-storage)
+   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   requests (which include UI, API, and Git over HTTP/SSH).
+1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
+   environment.
+1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
-1. [Configure NFS (Optional)](#configure-nfs-optional)
-   to have shared disk storage service as an alternative to Gitaly and/or Object Storage (although
-   not recommended). NFS is required for GitLab Pages, you can skip this step if you're not using
-   that feature.
+1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
+   more advanced code search across your entire GitLab instance.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage. You can skip this step if you're not using GitLab Pages (which
+   requires NFS).
 
-We start with all servers on the same 10.6.0.0/16 private network range, they
-can connect to each other freely on those addresses.
+The servers start on the same 10.6.0.0/24 private network range, and can
+connect to each other freely on these addresses.
 
-Here is a list and description of each machine and the assigned IP:
+The following list includes descriptions of each server and its assigned IP:
 
 - `10.6.0.10`: External Load Balancer
 - `10.6.0.61`: Redis Primary
@@ -1581,6 +1583,11 @@ On each node perform the following:
    sudo gitlab-ctl tail gitaly
    ```
 
+1. Save the `/etc/gitlab/gitlab-secrets.json` file from one of the two
+   application nodes and install it on the other application node and the
+   [Gitaly node](#configure-gitaly) and
+   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 1. Verify the GitLab services are running:
 
    ```shell
@@ -1751,6 +1758,25 @@ One risk of using a single bucket would be if your organization decided to
 migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
 backups might not be realized until the organization had a critical requirement for the backups to
 work.
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
+## Configure Advanced Search **(STARTER ONLY)**
+
+NOTE: **Note:**
+Elasticsearch cluster design and requirements are dependent on your specific data.
+For recommended best practices on how to set up your Elasticsearch cluster
+alongside your instance, read how to
+[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+
+You can leverage Elasticsearch and enable Advanced Search for faster, more
+advanced code search across your entire GitLab instance.
+
+[Learn how to set it up.](../../integration/elasticsearch.md)
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

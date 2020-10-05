@@ -1,13 +1,15 @@
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { getJSONFixture } from 'helpers/fixtures';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
-import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { ASSET_LINK_TYPE, DEFAULT_ASSET_LINK_TYPE } from '~/releases/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release edit component', () => {
   let wrapper;
@@ -223,10 +225,18 @@ describe('Release edit component', () => {
       });
     });
 
-    it('selects the default asset type if no type was provided by the backend', () => {
-      const selected = wrapper.find({ ref: 'typeSelect' }).element.value;
+    describe('when no link type was provided by the backend', () => {
+      beforeEach(() => {
+        delete release.assets.links[0].linkType;
 
-      expect(selected).toBe(DEFAULT_ASSET_LINK_TYPE);
+        factory({ release });
+      });
+
+      it('selects the default asset type', () => {
+        const selected = wrapper.find({ ref: 'typeSelect' }).element.value;
+
+        expect(selected).toBe(DEFAULT_ASSET_LINK_TYPE);
+      });
     });
   });
 

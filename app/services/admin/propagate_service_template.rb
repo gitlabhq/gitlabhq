@@ -9,11 +9,5 @@ module Admin
 
       create_integration_for_projects_without_integration
     end
-
-    private
-
-    def service_hash
-      @service_hash ||= integration.to_service_hash
-    end
   end
 end

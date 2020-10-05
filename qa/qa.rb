@@ -91,6 +91,7 @@ module QA
     autoload :UserGPG, 'qa/resource/user_gpg'
     autoload :Visibility, 'qa/resource/visibility'
     autoload :ProjectSnippet, 'qa/resource/project_snippet'
+    autoload :Design, 'qa/resource/design'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'
@@ -260,6 +261,7 @@ module QA
       module Pipeline
         autoload :Index, 'qa/page/project/pipeline/index'
         autoload :Show, 'qa/page/project/pipeline/show'
+        autoload :New, 'qa/page/project/pipeline/new'
       end
 
       module Tag
@@ -371,6 +373,7 @@ module QA
       module Snippet
         autoload :New, 'qa/page/project/snippet/new'
         autoload :Show, 'qa/page/project/snippet/show'
+        autoload :Index, 'qa/page/project/snippet/index'
       end
     end
 

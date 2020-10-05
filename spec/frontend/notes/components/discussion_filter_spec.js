@@ -74,13 +74,15 @@ describe('DiscussionFilter component', () => {
   });
 
   it('renders the all filters', () => {
-    expect(wrapper.findAll('.dropdown-menu li').length).toBe(discussionFiltersMock.length);
+    expect(wrapper.findAll('.discussion-filter-container .dropdown-item').length).toBe(
+      discussionFiltersMock.length,
+    );
   });
 
   it('renders the default selected item', () => {
     expect(
       wrapper
-        .find('#discussion-filter-dropdown')
+        .find('#discussion-filter-dropdown .dropdown-item')
         .text()
         .trim(),
     ).toBe(discussionFiltersMock[0].title);
@@ -88,7 +90,7 @@ describe('DiscussionFilter component', () => {
 
   it('updates to the selected item', () => {
     const filterItem = wrapper.find(
-      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"] button`,
+      `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"]`,
     );
 
     filterItem.trigger('click');
@@ -98,7 +100,9 @@ describe('DiscussionFilter component', () => {
 
   it('only updates when selected filter changes', () => {
     wrapper
-      .find(`.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"] button`)
+      .find(
+        `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"]`,
+      )
       .trigger('click');
 
     expect(filterDiscussion).not.toHaveBeenCalled();
@@ -106,7 +110,7 @@ describe('DiscussionFilter component', () => {
 
   it('disables commenting when "Show history only" filter is applied', () => {
     const filterItem = wrapper.find(
-      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"] button`,
+      `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"]`,
     );
     filterItem.trigger('click');
 
@@ -115,7 +119,7 @@ describe('DiscussionFilter component', () => {
 
   it('enables commenting when "Show history only" filter is not applied', () => {
     const filterItem = wrapper.find(
-      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"] button`,
+      `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"]`,
     );
     filterItem.trigger('click');
 
@@ -124,10 +128,10 @@ describe('DiscussionFilter component', () => {
 
   it('renders a dropdown divider for the default filter', () => {
     const defaultFilter = wrapper.findAll(
-      `.dropdown-menu li[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"] > *`,
+      `.discussion-filter-container .dropdown-item-wrapper > *`,
     );
 
-    expect(defaultFilter.at(defaultFilter.length - 1).classes('dropdown-divider')).toBe(true);
+    expect(defaultFilter.at(1).classes('gl-new-dropdown-divider')).toBe(true);
   });
 
   describe('Merge request tabs', () => {

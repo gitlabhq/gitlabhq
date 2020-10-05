@@ -5,15 +5,19 @@ import initSortDiscussions from './sort_discussions';
 import { store } from './stores';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('js-vue-notes');
+
+  if (!el) return;
+
   // eslint-disable-next-line no-new
   new Vue({
-    el: '#js-vue-notes',
+    el,
     components: {
       notesApp,
     },
     store,
     data() {
-      const notesDataset = document.getElementById('js-vue-notes').dataset;
+      const notesDataset = el.dataset;
       const parsedUserData = JSON.parse(notesDataset.currentUserData);
       const noteableData = JSON.parse(notesDataset.noteableData);
       let currentUserData = {};

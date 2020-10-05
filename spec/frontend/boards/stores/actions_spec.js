@@ -6,12 +6,13 @@ import {
   mockIssueWithModel,
   mockIssue2WithModel,
   rawIssue,
+  mockIssues,
 } from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId, ListType } from '~/boards/constants';
 import issueMoveListMutation from '~/boards/queries/issue_move_list.mutation.graphql';
-import { fullBoardId } from '~/boards/boards_util';
+import { fullBoardId, formatListIssues } from '~/boards/boards_util';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -235,6 +236,77 @@ describe('updateList', () => {
 
 describe('deleteList', () => {
   expectNotImplemented(actions.deleteList);
+});
+
+describe('fetchIssuesForList', () => {
+  const listId = mockLists[0].id;
+
+  const state = {
+    endpoints: {
+      fullPath: 'gitlab-org',
+      boardId: 1,
+    },
+    filterParams: {},
+    boardType: 'group',
+  };
+
+  const queryResponse = {
+    data: {
+      group: {
+        board: {
+          lists: {
+            nodes: [
+              {
+                id: listId,
+                issues: {
+                  nodes: mockIssues,
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+
+  const formattedIssues = formatListIssues(queryResponse.data.group.board.lists);
+
+  it('should commit mutation RECEIVE_ISSUES_FOR_LIST_SUCCESS on success', done => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+    testAction(
+      actions.fetchIssuesForList,
+      listId,
+      state,
+      [
+        {
+          type: types.RECEIVE_ISSUES_FOR_LIST_SUCCESS,
+          payload: { listIssues: formattedIssues, listId },
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('should commit mutation RECEIVE_ISSUES_FOR_LIST_FAILURE on failure', done => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
+
+    testAction(
+      actions.fetchIssuesForList,
+      listId,
+      state,
+      [{ type: types.RECEIVE_ISSUES_FOR_LIST_FAILURE, payload: listId }],
+      [],
+      done,
+    );
+  });
+});
+
+describe('resetIssues', () => {
+  it('commits RESET_ISSUES mutation', () => {
+    return testAction(actions.resetIssues, {}, {}, [{ type: types.RESET_ISSUES }], []);
+  });
 });
 
 describe('moveIssue', () => {

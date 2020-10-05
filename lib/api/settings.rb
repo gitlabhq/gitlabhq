@@ -29,7 +29,8 @@ module API
       success Entities::ApplicationSetting
     end
     params do
-      optional :admin_notification_email, type: String, desc: 'Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
+      optional :admin_notification_email, type: String, desc: 'Deprecated: Use :abuse_notification_email instead. Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
+      optional :abuse_notification_email, type: String, desc: 'Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
       optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'
       optional :after_sign_out_path, type: String, desc: 'We will redirect users to this page after they sign out'
       optional :akismet_enabled, type: Boolean, desc: 'Helps prevent bots from creating issues'
@@ -192,6 +193,11 @@ module API
       # support legacy names, can be removed in v5
       if attrs.has_key?(:allow_local_requests_from_hooks_and_services)
         attrs[:allow_local_requests_from_web_hooks_and_services] = attrs.delete(:allow_local_requests_from_hooks_and_services)
+      end
+
+      # support legacy names, can be removed in v5
+      if attrs.has_key?(:admin_notification_email)
+        attrs[:abuse_notification_email] = attrs.delete(:admin_notification_email)
       end
 
       # since 13.0 it's not possible to disable hashed storage - support can be removed in 14.0

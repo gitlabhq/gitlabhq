@@ -31,7 +31,7 @@ Your Security Implementation Issue should have `4` merge requests associated:
 
 ## Blog post
 
-Dev: {https://dev.gitlab.org/gitlab/www-gitlab-com/merge_requests/ link}<br/>
+Security: {https://gitlab.com/gitlab-org/security/www-gitlab-com/merge_requests/ link}<br/>
 GitLab.com: {https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/ link}
 
 ## Email notification

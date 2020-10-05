@@ -1,14 +1,14 @@
-<%= _('An alert has been triggered in %{project_path}.') % { project_path: @alert.project_full_path } %>.
+<%= _('An alert has been triggered in %{project_path}.') % { project_path: @alert.project.full_path } %>.
 
 <% if description = @alert.description %>
 <%= _('Description:') %> <%= description %>
 <% end %>
 
-<% if env_name = @alert.environment_name %>
+<% if env_name = @alert.environment&.name %>
 <%= _('Environment:') %> <%= env_name %>
 <% end %>
 
-<% if metric_query = @alert.metric_query %>
+<% if metric_query = @alert.prometheus_alert&.full_query %>
 <%= _('Metric:') %> <%= metric_query %>
 <% end %>
 

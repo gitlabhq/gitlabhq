@@ -1,7 +1,8 @@
 - add_to_breadcrumbs _('Milestones'), project_milestones_path(@project)
 - breadcrumb_title @milestone.title
 - page_title       @milestone.title, _('Milestones')
-- page_description @milestone.description
+- page_description @milestone.description_html
+- add_page_specific_style 'page_bundles/milestone'
 
 = render 'shared/milestones/header', milestone: @milestone
 = render 'shared/milestones/description', milestone: @milestone

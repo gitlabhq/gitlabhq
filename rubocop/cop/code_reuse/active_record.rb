@@ -5,20 +5,20 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module CodeReuse
-      # Cop that blacklists the use of ActiveRecord methods outside of models.
+      # Cop that denies the use of ActiveRecord methods outside of models.
       class ActiveRecord < RuboCop::Cop::Cop
         include CodeReuseHelpers
 
         MSG = 'This method can only be used inside an ActiveRecord model: ' \
         'https://gitlab.com/gitlab-org/gitlab-foss/issues/49653'
 
-        # Various methods from ActiveRecord::Querying that are blacklisted. We
+        # Various methods from ActiveRecord::Querying that are denied. We
         # exclude some generic ones such as `any?` and `first`, as these may
         # lead to too many false positives, since `Array` also supports these
         # methods.
         #
-        # The keys of this Hash are the blacklisted method names. The values are
-        # booleans that indicate if the method should only be blacklisted if any
+        # The keys of this Hash are the denied method names. The values are
+        # booleans that indicate if the method should only be denied if any
         # arguments are provided.
         NOT_ALLOWED = {
           average: true,
@@ -57,7 +57,6 @@ module RuboCop
           references: true,
           reorder: true,
           rewhere: true,
-          sum: false,
           take: false,
           take!: false,
           unscope: false,
@@ -65,9 +64,9 @@ module RuboCop
           with: true
         }.freeze
 
-        # Directories that allow the use of the blacklisted methods. These
+        # Directories that allow the use of the denied methods. These
         # directories are checked relative to both . and ee/
-        WHITELISTED_DIRECTORIES = %w[
+        ALLOWED_DIRECTORIES = %w[
           app/models
           config
           danger
@@ -88,7 +87,7 @@ module RuboCop
         ].freeze
 
         def on_send(node)
-          return if in_whitelisted_directory?(node)
+          return if in_allowed_directory?(node)
 
           receiver = node.children[0]
           send_name = node.children[1]
@@ -105,12 +104,12 @@ module RuboCop
           end
         end
 
-        # Returns true if the node resides in one of the whitelisted
+        # Returns true if the node resides in one of the allowed
         # directories.
-        def in_whitelisted_directory?(node)
+        def in_allowed_directory?(node)
           path = file_path_for_node(node)
 
-          WHITELISTED_DIRECTORIES.any? do |directory|
+          ALLOWED_DIRECTORIES.any? do |directory|
             path.start_with?(
               File.join(rails_root, directory),
               File.join(rails_root, 'ee', directory)
@@ -119,12 +118,12 @@ module RuboCop
         end
 
         # We can not auto correct code like this, as it requires manual
-        # refactoring. Instead, we'll just whitelist the surrounding scope.
+        # refactoring. Instead, we'll just allow the surrounding scope.
         #
         # Despite this method's presence, you should not use it. This method
-        # exists to make it possible to whitelist large chunks of offenses we
+        # exists to make it possible to allow large chunks of offenses we
         # can't fix in the short term. If you are writing new code, follow the
-        # code reuse guidelines, instead of whitelisting any new offenses.
+        # code reuse guidelines, instead of allowing any new offenses.
         def autocorrect(node)
           scope = surrounding_scope_of(node)
           indent = indentation_of(scope)
@@ -132,7 +131,7 @@ module RuboCop
           lambda do |corrector|
             # This prevents us from inserting the same enable/disable comment
             # for a method or block that has multiple offenses.
-            next if whitelisted_scopes.include?(scope)
+            next if allowed_scopes.include?(scope)
 
             corrector.insert_before(
               scope.source_range,
@@ -144,7 +143,7 @@ module RuboCop
               "\n#{indent}# rubocop: enable #{cop_name}"
             )
 
-            whitelisted_scopes << scope
+            allowed_scopes << scope
           end
         end
 
@@ -160,8 +159,8 @@ module RuboCop
           end
         end
 
-        def whitelisted_scopes
-          @whitelisted_scopes ||= Set.new
+        def allowed_scopes
+          @allowed_scopes ||= Set.new
         end
       end
     end

@@ -38,10 +38,10 @@ Voting for translations is also valuable, helping to confirm good and flag inacc
 
 See [Translation guidelines](translation.md).
 
-### Proof reading
+### Proofreading
 
-Proof reading helps ensure the accuracy and consistency of translations. All
-translations are proof read before being accepted. If a translations requires
+Proofreading helps ensure the accuracy and consistency of translations. All
+translations are proofread before being accepted. If a translations requires
 changes, you will be notified with a comment explaining why.
 
 See [Proofreading Translations](proofreader.md) for more information on who's

@@ -53,7 +53,6 @@ class AuditEventService
 
   private
 
-  attr_accessor :authentication_event
   attr_reader :ip_address
 
   def build_author(author)
@@ -99,23 +98,35 @@ class AuditEventService
   end
 
   def mark_as_authentication_event!
-    self.authentication_event = true
+    @authentication_event = true
   end
 
   def authentication_event?
-    authentication_event
+    @authentication_event
   end
 
   def log_security_event_to_database
     return if Gitlab::Database.read_only?
 
-    AuditEvent.create(base_payload.merge(details: @details))
+    event = AuditEvent.new(base_payload.merge(details: @details))
+    save_or_track event
+
+    event
   end
 
   def log_authentication_event_to_database
     return unless Gitlab::Database.read_write? && authentication_event?
 
-    AuthenticationEvent.create(authentication_event_payload)
+    event = AuthenticationEvent.new(authentication_event_payload)
+    save_or_track event
+
+    event
+  end
+
+  def save_or_track(event)
+    event.save!
+  rescue => e
+    Gitlab::ErrorTracking.track_exception(e, audit_event_type: event.class.to_s)
   end
 end
 

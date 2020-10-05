@@ -42,6 +42,9 @@ class UploadedFile
     @remote_id = remote_id
   end
 
+  # TODO this function is meant to replace .from_params when the feature flag
+  # upload_middleware_jwt_params_handler is removed
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/233895#roll-out-steps
   def self.from_params_without_field(params, upload_paths)
     path = params['path']
     remote_id = params['remote_id']
@@ -68,6 +71,10 @@ class UploadedFile
     )
   end
 
+  # Deprecated. Don't use it.
+  # .from_params_without_field will replace this one
+  # See .from_params_without_field and
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/233895#roll-out-steps
   def self.from_params(params, field, upload_paths, path_override = nil)
     path = path_override || params["#{field}.path"]
     remote_id = params["#{field}.remote_id"]

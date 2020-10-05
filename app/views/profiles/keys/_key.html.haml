@@ -23,9 +23,10 @@
       %span.expires.gl-mr-3
         = s_('Profiles|Expires:')
         = key.expires_at ? key.expires_at.to_date : _('Never')
-      %span.key-created-at
-        = s_('Profiles|Created %{time_ago}'.html_safe) % { time_ago:time_ago_with_tooltip(key.created_at)}
+      %span.key-created-at.gl-display-flex.gl-align-items-center
+        = s_('Profiles|Created%{time_ago}'.html_safe) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2')}
         - if key.can_delete?
-          = link_to path_to_key(key, is_admin), data: { confirm: _('Are you sure?')}, method: :delete, class: "btn btn-transparent gl-ml-3 align-baseline" do
-            %span.sr-only= _('Remove')
-            = sprite_icon('remove')
+          .gl-ml-3
+            = button_to '#', class: "btn btn-default gl-button btn-default-tertiary js-confirm-modal-button", data: ssh_key_delete_modal_data(key, is_admin) do
+              %span.sr-only= _('Delete')
+              = sprite_icon('remove')

@@ -61,8 +61,8 @@ module PreferencesHelper
     @user_application_theme ||= Gitlab::Themes.for_user(current_user).css_class
   end
 
-  def user_application_theme_name
-    @user_application_theme_name ||= Gitlab::Themes.for_user(current_user).name.downcase.tr(' ', '_')
+  def user_application_theme_css_filename
+    @user_application_theme_css_filename ||= Gitlab::Themes.for_user(current_user).css_filename
   end
 
   def user_color_scheme

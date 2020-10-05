@@ -11,8 +11,9 @@ module QA
           element :add_key_button
         end
 
-        view 'app/views/profiles/keys/_key_details.html.haml' do
-          element :delete_key_button
+        view 'app/helpers/profiles_helper.rb' do
+          element :delete_ssh_key_button
+          element :ssh_key_delete_modal
         end
 
         view 'app/views/profiles/keys/_key_table.html.haml' do
@@ -38,8 +39,14 @@ module QA
         def remove_key(title)
           click_link(title)
 
-          accept_alert do
-            click_element(:delete_key_button)
+          click_element(:delete_ssh_key_button)
+
+          # Retrying due to https://gitlab.com/gitlab-org/gitlab/-/issues/255287
+          retry_on_exception do
+            wait_for_animated_element(:ssh_key_delete_modal)
+            within_element(:ssh_key_delete_modal) do
+              click_button('Delete')
+            end
           end
         end
 

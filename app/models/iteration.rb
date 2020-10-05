@@ -94,13 +94,25 @@ class Iteration < ApplicationRecord
 
   private
 
+  def parent_group
+    group || project.group
+  end
+
   def start_or_due_dates_changed?
     start_date_changed? || due_date_changed?
   end
 
-  # ensure dates do not overlap with other Iterations in the same group/project
+  # ensure dates do not overlap with other Iterations in the same group/project tree
   def dates_do_not_overlap
-    return unless resource_parent.iterations.where.not(id: self.id).within_timeframe(start_date, due_date).exists?
+    iterations = if parent_group.present? && resource_parent.is_a?(Project)
+                   Iteration.where(group: parent_group.self_and_ancestors).or(project.iterations)
+                 elsif parent_group.present?
+                   Iteration.where(group: parent_group.self_and_ancestors)
+                 else
+                   project.iterations
+                 end
+
+    return unless iterations.where.not(id: self.id).within_timeframe(start_date, due_date).exists?
 
     errors.add(:base, s_("Iteration|Dates cannot overlap with other existing Iterations"))
   end

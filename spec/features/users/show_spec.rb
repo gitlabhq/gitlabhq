@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User page' do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
 
   context 'with public profile' do
     it 'shows all the tabs' do
@@ -173,5 +173,13 @@ RSpec.describe 'User page' do
         expect(page).not_to have_content('Most Recent Activity')
       end
     end
+  end
+
+  context 'page description' do
+    before do
+      visit(user_path(user))
+    end
+
+    it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
 end

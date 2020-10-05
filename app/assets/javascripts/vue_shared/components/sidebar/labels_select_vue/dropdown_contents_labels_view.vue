@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon, GlButton, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
@@ -39,9 +40,9 @@ export default {
     ...mapGetters(['selectedLabelsList', 'isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     visibleLabels() {
       if (this.searchKey) {
-        return this.labels.filter(label =>
-          label.title.toLowerCase().includes(this.searchKey.toLowerCase()),
-        );
+        return fuzzaldrinPlus.filter(this.labels, this.searchKey, {
+          key: ['title'],
+        });
       }
       return this.labels;
     },
@@ -112,6 +113,7 @@ export default {
         this.currentHighlightItem += 1;
       } else if (e.keyCode === ENTER_KEY_CODE && this.currentHighlightItem > -1) {
         this.updateSelectedLabels([this.visibleLabels[this.currentHighlightItem]]);
+        this.searchKey = '';
       } else if (e.keyCode === ESC_KEY_CODE) {
         this.toggleDropdownContents();
       }
@@ -155,7 +157,11 @@ export default {
       />
     </div>
     <div class="dropdown-input" @click.stop="() => {}">
-      <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
+      <gl-search-box-by-type
+        v-model="searchKey"
+        :autofocus="true"
+        data-qa-selector="dropdown_input_field"
+      />
     </div>
     <div
       v-show="showListContainer"

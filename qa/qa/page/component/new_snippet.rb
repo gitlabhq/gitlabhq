@@ -21,18 +21,11 @@ module QA
 
           base.view 'app/assets/javascripts/snippets/components/snippet_blob_edit.vue' do
             element :file_name_field
+            element :file_holder_container
           end
 
-          base.view 'app/views/shared/form_elements/_description.html.haml' do
-            element :issuable_form_description
-          end
-
-          base.view 'app/views/shared/snippets/_form.html.haml' do
-            element :snippet_description_field
-            element :description_placeholder
-            element :snippet_title_field
-            element :file_name_field
-            element :submit_button
+          base.view 'app/assets/javascripts/snippets/components/snippet_blob_actions_edit.vue' do
+            element :add_file_button
           end
 
           base.view 'app/views/shared/_zen.html.haml' do
@@ -54,12 +47,28 @@ module QA
           choose visibility
         end
 
-        def fill_file_name(name)
-          fill_element :file_name_field, name
+        def fill_file_name(name, file_number = nil)
+          if file_number
+            within_element_by_index(:file_holder_container, file_number - 1) do
+              fill_element(:file_name_field, name)
+            end
+          else
+            fill_element(:file_name_field, name)
+          end
         end
 
-        def fill_file_content(content)
-          text_area.set content
+        def fill_file_content(content, file_number = nil)
+          if file_number
+            within_element_by_index(:file_holder_container, file_number - 1) do
+              text_area.set(content)
+            end
+          else
+            text_area.set content
+          end
+        end
+
+        def click_add_file
+          click_element(:add_file_button)
         end
 
         def click_create_snippet_button

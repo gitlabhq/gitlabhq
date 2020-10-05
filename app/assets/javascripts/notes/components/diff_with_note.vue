@@ -76,7 +76,7 @@ export default {
       :discussion-path="discussion.discussion_path"
       :diff-file="discussion.diff_file"
       :can-current-user-fork="false"
-      :expanded="!discussion.diff_file.viewer.collapsed"
+      :expanded="!discussion.diff_file.viewer.automaticallyCollapsed"
     />
     <div v-if="isTextFile" class="diff-content">
       <table class="code js-syntax-highlight" :class="$options.userColorSchemeClass">

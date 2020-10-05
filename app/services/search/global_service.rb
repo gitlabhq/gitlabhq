@@ -4,6 +4,8 @@ module Search
   class GlobalService
     include Gitlab::Utils::StrongMemoize
 
+    ALLOWED_SCOPES = %w(issues merge_requests milestones users).freeze
+
     attr_accessor :current_user, :params
 
     def initialize(user, params)
@@ -14,7 +16,8 @@ module Search
       Gitlab::SearchResults.new(current_user,
                                 params[:search],
                                 projects,
-                                filters: { state: params[:state] })
+                                sort: params[:sort],
+                                filters: { state: params[:state], confidential: params[:confidential] })
     end
 
     def projects
@@ -22,10 +25,7 @@ module Search
     end
 
     def allowed_scopes
-      strong_memoize(:allowed_scopes) do
-        allowed_scopes = %w[issues merge_requests milestones]
-        allowed_scopes << 'users' if Feature.enabled?(:users_search, default_enabled: true)
-      end
+      ALLOWED_SCOPES
     end
 
     def scope

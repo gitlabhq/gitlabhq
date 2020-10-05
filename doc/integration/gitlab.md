@@ -63,9 +63,10 @@ GitLab.com will generate an application ID and secret key for you to use.
    For installations from source:
 
    ```yaml
-   - { name: 'gitlab', app_id: 'YOUR_APP_ID',
-     app_secret: 'YOUR_APP_SECRET',
-     args: { scope: 'api' } }
+   - { name: 'gitlab',
+       app_id: 'YOUR_APP_ID',
+       app_secret: 'YOUR_APP_SECRET',
+       args: { scope: 'api' } }
    ```
 
 1. Change 'YOUR_APP_ID' to the Application ID from the GitLab.com application page.

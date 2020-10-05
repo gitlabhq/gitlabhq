@@ -231,3 +231,6 @@ export const getDiscussion = state => discussionId =>
   state.discussions.find(discussion => discussion.id === discussionId);
 
 export const commentsDisabled = state => state.commentsDisabled;
+
+export const suggestionsCount = (state, getters) =>
+  Object.values(getters.notesById).filter(n => n.suggestions.length).length;

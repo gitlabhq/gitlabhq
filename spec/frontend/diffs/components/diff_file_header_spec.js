@@ -1,9 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlIcon } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
-import EditButton from '~/diffs/components/edit_button.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -76,15 +74,7 @@ describe('DiffFileHeader component', () => {
   const findReplacedFileButton = () => wrapper.find({ ref: 'replacedFileButton' });
   const findViewFileButton = () => wrapper.find({ ref: 'viewButton' });
   const findCollapseIcon = () => wrapper.find({ ref: 'collapseIcon' });
-
-  const findIconByName = iconName => {
-    const icons = wrapper.findAll(GlIcon).filter(w => w.props('name') === iconName);
-    if (icons.length === 0) return icons;
-    if (icons.length > 1) {
-      throw new Error(`Multiple icons found for ${iconName}`);
-    }
-    return icons.at(0);
-  };
+  const findEditButton = () => wrapper.find({ ref: 'editButton' });
 
   const createComponent = props => {
     mockStoreConfig = cloneDeep(defaultMockStoreConfig);
@@ -203,16 +193,6 @@ describe('DiffFileHeader component', () => {
   describe('for any file', () => {
     const otherModes = Object.keys(diffViewerModes).filter(m => m !== 'mode_changed');
 
-    it('when edit button emits showForkMessage event it is re-emitted', () => {
-      createComponent({
-        addMergeRequestButtons: true,
-      });
-      wrapper.find(EditButton).vm.$emit('showForkMessage');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted().showForkMessage).toBeDefined();
-      });
-    });
-
     it('for mode_changed file mode displays mode changes', () => {
       createComponent({
         diffFile: {
@@ -271,16 +251,16 @@ describe('DiffFileHeader component', () => {
       });
       it('should not render edit button', () => {
         createComponent({ addMergeRequestButtons: false });
-        expect(wrapper.find(EditButton).exists()).toBe(false);
+        expect(findEditButton().exists()).toBe(false);
       });
     });
 
     describe('when addMergeRequestButtons is true', () => {
       describe('without discussions', () => {
-        it('renders a disabled toggle discussions button', () => {
+        it('does not render a toggle discussions button', () => {
           diffHasDiscussionsResultMock.mockReturnValue(false);
           createComponent({ addMergeRequestButtons: true });
-          expect(findToggleDiscussionsButton().attributes('disabled')).toBe('true');
+          expect(findToggleDiscussionsButton().exists()).toBe(false);
         });
       });
 
@@ -288,7 +268,7 @@ describe('DiffFileHeader component', () => {
         it('dispatches toggleFileDiscussionWrappers when user clicks on toggle discussions button', () => {
           diffHasDiscussionsResultMock.mockReturnValue(true);
           createComponent({ addMergeRequestButtons: true });
-          expect(findToggleDiscussionsButton().attributes('disabled')).toBeFalsy();
+          expect(findToggleDiscussionsButton().exists()).toBe(true);
           findToggleDiscussionsButton().vm.$emit('click');
           expect(
             mockStoreConfig.modules.diffs.actions.toggleFileDiscussionWrappers,
@@ -300,7 +280,7 @@ describe('DiffFileHeader component', () => {
         createComponent({
           addMergeRequestButtons: true,
         });
-        expect(wrapper.find(EditButton).exists()).toBe(true);
+        expect(findEditButton().exists()).toBe(true);
       });
 
       describe('view on environment button', () => {
@@ -334,7 +314,7 @@ describe('DiffFileHeader component', () => {
         });
 
         it('should not render edit button', () => {
-          expect(wrapper.find(EditButton).exists()).toBe(false);
+          expect(findEditButton().exists()).toBe(false);
         });
       });
       describe('with file blob', () => {
@@ -345,7 +325,7 @@ describe('DiffFileHeader component', () => {
             addMergeRequestButtons: true,
           });
           expect(findViewFileButton().attributes('href')).toBe(viewPath);
-          expect(findViewFileButton().attributes('title')).toEqual(
+          expect(findViewFileButton().text()).toEqual(
             `View file @ ${diffFile.content_sha.substr(0, 8)}`,
           );
         });
@@ -374,21 +354,6 @@ describe('DiffFileHeader component', () => {
           },
           addMergeRequestButtons: true,
         };
-
-        it.each`
-          iconName         | isShowingFullFile
-          ${'doc-expand'}  | ${false}
-          ${'doc-changes'} | ${true}
-        `(
-          'shows $iconName when isShowingFullFile set to $isShowingFullFile',
-          ({ iconName, isShowingFullFile }) => {
-            createComponent({
-              ...fullyNotExpandedFileProps,
-              diffFile: { ...fullyNotExpandedFileProps.diffFile, isShowingFullFile },
-            });
-            expect(findIconByName(iconName).exists()).toBe(true);
-          },
-        );
 
         it('renders expand to full file button if not showing full file already', () => {
           createComponent(fullyNotExpandedFileProps);
@@ -455,7 +420,7 @@ describe('DiffFileHeader component', () => {
 
     it('does not show edit button', () => {
       createComponent({ diffFile: { ...diffFile, deleted_file: true } });
-      expect(wrapper.find(EditButton).exists()).toBe(false);
+      expect(findEditButton().exists()).toBe(false);
     });
   });
 

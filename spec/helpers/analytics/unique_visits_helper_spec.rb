@@ -22,15 +22,6 @@ RSpec.describe Analytics::UniqueVisitsHelper do
       helper.track_visit(target_id)
     end
 
-    it 'does not track visits if usage ping is disabled' do
-      sign_in(current_user)
-      expect(Gitlab::CurrentSettings).to receive(:usage_ping_enabled?).and_return(false)
-
-      expect_any_instance_of(Gitlab::Analytics::UniqueVisits).not_to receive(:track_visit)
-
-      helper.track_visit(target_id)
-    end
-
     it 'does not track visit if user is not logged in' do
       expect_any_instance_of(Gitlab::Analytics::UniqueVisits).not_to receive(:track_visit)
 

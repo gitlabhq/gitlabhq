@@ -13,11 +13,12 @@ module Gitlab
             @dashboard_hash = dashboard_hash
             @project = project
             @dashboard_path = dashboard_path
+            @affected_environment_ids = []
           end
 
           def execute
             import
-          rescue ActiveRecord::RecordInvalid, ::Gitlab::Metrics::Dashboard::Transformers::TransformerError
+          rescue ActiveRecord::RecordInvalid, Dashboard::Transformers::Errors::BaseError
             false
           end
 
@@ -32,28 +33,51 @@ module Gitlab
           def import
             delete_stale_metrics
             create_or_update_metrics
+            update_prometheus_environments
           end
 
           # rubocop: disable CodeReuse/ActiveRecord
           def create_or_update_metrics
             # TODO: use upsert and worker for callbacks?
+
+            affected_metric_ids = []
             prometheus_metrics_attributes.each do |attributes|
-              prometheus_metric = PrometheusMetric.find_or_initialize_by(attributes.slice(:identifier, :project))
+              prometheus_metric = PrometheusMetric.find_or_initialize_by(attributes.slice(:dashboard_path, :identifier, :project))
               prometheus_metric.update!(attributes.slice(*ALLOWED_ATTRIBUTES))
+
+              affected_metric_ids << prometheus_metric.id
             end
+
+            @affected_environment_ids += find_alerts(affected_metric_ids).get_environment_id
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
           def delete_stale_metrics
-            identifiers = prometheus_metrics_attributes.map { |metric_attributes| metric_attributes[:identifier] }
+            identifiers_from_yml = prometheus_metrics_attributes.map { |metric_attributes| metric_attributes[:identifier] }
 
             stale_metrics = PrometheusMetric.for_project(project)
               .for_dashboard_path(dashboard_path)
               .for_group(Enums::PrometheusMetric.groups[:custom])
-              .not_identifier(identifiers)
+              .not_identifier(identifiers_from_yml)
 
-            # TODO: use destroy_all and worker for callbacks?
-            stale_metrics.each(&:destroy)
+            return unless stale_metrics.exists?
+
+            delete_stale_alerts(stale_metrics)
+            stale_metrics.each_batch { |batch| batch.delete_all }
+          end
+
+          def delete_stale_alerts(stale_metrics)
+            stale_alerts = find_alerts(stale_metrics)
+
+            affected_environment_ids = stale_alerts.get_environment_id
+            return unless affected_environment_ids.present?
+
+            @affected_environment_ids += affected_environment_ids
+            stale_alerts.each_batch { |batch| batch.delete_all }
+          end
+
+          def find_alerts(metrics)
+            Projects::Prometheus::AlertsFinder.new(project: project, metric: metrics).execute
           end
 
           def prometheus_metrics_attributes
@@ -62,6 +86,19 @@ module Gitlab
                 dashboard_hash,
                 project: project,
                 dashboard_path: dashboard_path
+              ).execute
+            end
+          end
+
+          def update_prometheus_environments
+            affected_environments = ::Environment.for_id(@affected_environment_ids.flatten.uniq).for_project(project)
+
+            return unless affected_environments.exists?
+
+            affected_environments.each do |affected_environment|
+              ::Clusters::Applications::ScheduleUpdateService.new(
+                affected_environment.cluster_prometheus_adapter,
+                project
               ).execute
             end
           end

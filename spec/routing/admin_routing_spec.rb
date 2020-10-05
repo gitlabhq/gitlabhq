@@ -184,3 +184,9 @@ RSpec.describe Admin::PlanLimitsController, "routing" do
     expect(post("/admin/plan_limits")).to route_to('admin/plan_limits#create')
   end
 end
+
+RSpec.describe Admin::RunnersController, "routing" do
+  it "to #runner_setup_scripts" do
+    expect(get("/admin/runners/runner_setup_scripts")).to route_to('admin/runners#runner_setup_scripts')
+  end
+end

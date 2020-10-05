@@ -49,7 +49,7 @@ export default {
       variant="info"
       category="secondary"
       type="button"
-      class="js-enable-review-app-button"
+      class="gl-w-full js-enable-review-app-button"
     >
       {{ s__('Environments|Enable review app') }}
     </gl-button>

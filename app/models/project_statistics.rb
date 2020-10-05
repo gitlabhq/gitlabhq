@@ -2,12 +2,20 @@
 
 class ProjectStatistics < ApplicationRecord
   include AfterCommitQueue
+  include CounterAttribute
 
   belongs_to :project
   belongs_to :namespace
 
   default_value_for :wiki_size, 0
   default_value_for :snippets_size, 0
+
+  counter_attribute :build_artifacts_size
+  counter_attribute :storage_size
+
+  counter_attribute_after_flush do |project_statistic|
+    Namespaces::ScheduleAggregationWorker.perform_async(project_statistic.namespace_id)
+  end
 
   before_save :update_storage_size
 
@@ -29,6 +37,8 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def refresh!(only: [])
+    return if Gitlab::Database.read_only?
+
     COLUMNS_TO_REFRESH.each do |column, generator|
       if only.empty? || only.include?(column)
         public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
@@ -96,12 +106,27 @@ class ProjectStatistics < ApplicationRecord
   # Additional columns are updated depending on key => [columns], which allows
   # to update statistics which are and also those which aren't included in storage_size
   # or any other additional summary column in the future.
-  def self.increment_statistic(project_id, key, amount)
+  def self.increment_statistic(project, key, amount)
     raise ArgumentError, "Cannot increment attribute: #{key}" unless INCREMENTABLE_COLUMNS.key?(key)
     return if amount == 0
 
-    where(project_id: project_id)
-      .columns_to_increment(key, amount)
+    project.statistics.try do |project_statistics|
+      if project_statistics.counter_attribute_enabled?(key)
+        statistics_to_increment = [key] + INCREMENTABLE_COLUMNS[key].to_a
+        statistics_to_increment.each do |statistic|
+          project_statistics.delayed_increment_counter(statistic, amount)
+        end
+      else
+        legacy_increment_statistic(project, key, amount)
+      end
+    end
+  end
+
+  def self.legacy_increment_statistic(project, key, amount)
+    where(project_id: project.id).columns_to_increment(key, amount)
+
+    Namespaces::ScheduleAggregationWorker.perform_async( # rubocop: disable CodeReuse/Worker
+      project.namespace_id)
   end
 
   def self.columns_to_increment(key, amount)

@@ -1,8 +1,11 @@
-# Issue links API **(STARTER)**
+# Issue links API **(CORE)**
+
+> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.4.
 
 ## List issue relations
 
-Get a list of related issues of a given issue, sorted by the relationship creation datetime (ascending).
+Get a list of a given issue's [related issues](../user/project/issues/related_issues.md),
+sorted by the relationship creation datetime (ascending).
 Issues will be filtered according to the user authorizations.
 
 ```plaintext
@@ -55,19 +58,20 @@ Parameters:
 
 ## Create an issue link
 
-Creates a two-way relation between two issues. User must be allowed to update both issues in order to succeed.
+Creates a two-way relation between two issues. The user must be allowed to
+update both issues to succeed.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/links
 ```
 
-| Attribute   | Type    | Required | Description                          |
-|-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+| Attribute           | Type           | Required | Description                          |
+|---------------------|----------------|----------|--------------------------------------|
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `issue_iid`         | integer        | yes      | The internal ID of a project's issue |
 | `target_project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) of a target project  |
-| `target_issue_iid` | integer/string | yes      | The internal ID of a target project's issue |
-| `link_type` | string  | no | The type of the relation ("relates_to", "blocks", "is_blocked_by"), defaults to "relates_to"). |
+| `target_issue_iid`  | integer/string | yes      | The internal ID of a target project's issue |
+| `link_type`         | string         | no       | The type of the relation ("relates_to", "blocks", "is_blocked_by"), defaults to "relates_to"). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/1/links?target_project_id=5&target_issue_iid=1"

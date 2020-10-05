@@ -37,6 +37,7 @@ module API
           requires :name, type: String, desc: 'Cluster name'
           optional :enabled, type: Boolean, default: true, desc: 'Determines if cluster is active or not, defaults to true'
           optional :environment_scope, default: '*', type: String, desc: 'The associated environment to the cluster'
+          optional :namespace_per_environment, default: true, type: Boolean, desc: 'Deploy each environment to a separate Kubernetes namespace'
           optional :domain, type: String, desc: 'Cluster base domain'
           optional :management_project_id, type: Integer, desc: 'The ID of the management project'
           optional :managed, type: Boolean, default: true, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true'
@@ -70,6 +71,7 @@ module API
           optional :name, type: String, desc: 'Cluster name'
           optional :enabled, type: Boolean, desc: 'Enable or disable Gitlab\'s connection to your Kubernetes cluster'
           optional :environment_scope, type: String, desc: 'The associated environment to the cluster'
+          optional :namespace_per_environment, default: true, type: Boolean, desc: 'Deploy each environment to a separate Kubernetes namespace'
           optional :domain, type: String, desc: 'Cluster base domain'
           optional :management_project_id, type: Integer, desc: 'The ID of the management project'
           optional :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do

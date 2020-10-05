@@ -49,6 +49,7 @@ export default {
         :add-spacing-classes="false"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
+        :textarea-value="value"
       >
         <template #textarea>
           <textarea

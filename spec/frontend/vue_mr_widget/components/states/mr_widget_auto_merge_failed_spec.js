@@ -1,12 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import AutoMergeFailedComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_failed.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
 describe('MRWidgetAutoMergeFailed', () => {
   let wrapper;
   const mergeError = 'This is the merge error';
-  const findButton = () => wrapper.find('button');
+  const findButton = () => wrapper.find(GlButton);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(AutoMergeFailedComponent, {
@@ -38,17 +38,13 @@ describe('MRWidgetAutoMergeFailed', () => {
 
   it('emits event and shows loading icon when button is clicked', () => {
     jest.spyOn(eventHub, '$emit');
-    findButton().trigger('click');
+    findButton().vm.$emit('click');
 
     expect(eventHub.$emit.mock.calls[0][0]).toBe('MRWidgetUpdateRequested');
 
     return wrapper.vm.$nextTick(() => {
-      expect(findButton().attributes('disabled')).toEqual('disabled');
-      expect(
-        findButton()
-          .find(GlLoadingIcon)
-          .exists(),
-      ).toBe(true);
+      expect(findButton().attributes('disabled')).toBe('true');
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
   });
 });

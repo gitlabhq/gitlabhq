@@ -1,0 +1,43 @@
+# This file exists to lock the attributes of Design Management models
+# that get copied in `DesignManagement::CopyDesignCollection::CopyService`
+# to specific schemas.
+#
+# This allows us to perform sanity checks and alert when there are changes
+# to the schema by running expectations against the lists in this file
+# and the actual schema of the models in `copy_designs_service_spec.rb`.
+#
+# If you are here because you received a failed test in
+# `copy_designs_service_spec.rb`, you need to decide how to handle the
+# changes and whether the new attribute(s) should be included in the copy
+# or ignored.
+
+# COPY.
+# Add attributes that should be copied to the `{model}_attributes` lists:
+design_attributes:
+  - filename
+  - relative_position
+
+version_attributes:
+  - author_id
+  - created_at
+
+action_attributes: # (None)
+
+# IGNORE.
+# Add attributes that should not be copied to the `ignore_{model}_attributes` lists:
+ignore_design_attributes:
+  - id
+  - issue_id
+  - project_id
+
+ignore_version_attributes:
+  - id
+  - issue_id
+  - sha
+
+ignore_action_attributes:
+  - id
+  - design_id
+  - event
+  - image_v432x230
+  - version_id

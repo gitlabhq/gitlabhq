@@ -297,6 +297,11 @@ class Projects::CreateService < BaseService
 end
 ```
 
+### Unit testing
+
+Use the `expect_snowplow_event` helper when testing backend Snowplow events. See [testing best practices](
+https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#test-snowplow-events) for details.
+
 ### Performance
 
 We use the [AsyncEmitter](https://github.com/snowplow/snowplow/wiki/Ruby-Tracker#52-the-asyncemitter-class) when tracking events, which allows for instrumentation calls to be run in a background thread. This is still an active area of development.

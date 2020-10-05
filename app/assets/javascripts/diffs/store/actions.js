@@ -103,7 +103,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
             commit(types.VIEW_DIFF_FILE, state.diffFiles[0].file_hash);
           }
 
-          if (gon.features?.codeNavigation) {
+          if (state.diffFiles?.length) {
             // eslint-disable-next-line promise/catch-or-return,promise/no-nesting
             import('~/code_navigation').then(m =>
               m.default({
@@ -236,7 +236,7 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
         commit(types.RENDER_FILE, file);
       }
 
-      if (file.viewer.collapsed) {
+      if (file.viewer.automaticallyCollapsed) {
         eventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
         scrollToElement(document.getElementById(file.file_hash));
       } else {
@@ -252,7 +252,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
       const nextFile = state.diffFiles.find(
         file =>
           !file.renderIt &&
-          (file.viewer && (!file.viewer.collapsed || file.viewer.name !== diffViewerModes.text)),
+          (file.viewer &&
+            (!file.viewer.automaticallyCollapsed || file.viewer.name !== diffViewerModes.text)),
       );
 
       if (nextFile) {
@@ -631,7 +632,7 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
         filePath: diffFile.file_path,
         viewer: {
           ...diffFile.alternate_viewer,
-          collapsed: false,
+          automaticallyCollapsed: false,
         },
       });
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });

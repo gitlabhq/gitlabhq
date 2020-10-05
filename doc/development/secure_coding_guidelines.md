@@ -82,7 +82,8 @@ This Ruby Regex specialty can have security impact, as often regular expressions
 
 #### Examples
 
-GitLab specific examples can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/36029#note_251262187) and [there](https://gitlab.com/gitlab-org/gitlab/-/issues/33569).
+GitLab-specific examples can be found in the following [path traversal](https://gitlab.com/gitlab-org/gitlab/-/issues/36029#note_251262187)
+and [open redirect](https://gitlab.com/gitlab-org/gitlab/-/issues/33569) issues.
 
 Another example would be this fictional Ruby on Rails controller:
 

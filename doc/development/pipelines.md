@@ -122,7 +122,6 @@ graph RL;
   click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
   subgraph "Needs `setup-test-env` & `compile-test-assets`";
     2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
-    2_2-3 --> 1-6 & 1-4;
   end
 
   2_3-1["build-assets-image (2.5 minutes)"];
@@ -228,7 +227,6 @@ graph RL;
   click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
   subgraph "Needs `setup-test-env` & `compile-test-assets`";
     2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
-    2_2-3 --> 1-6 & 1-4;
   end
 
   2_3-1["build-assets-image (2.5 minutes)"];

@@ -2,7 +2,18 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import {
+  WEBIDE_MARK_APP_START,
+  WEBIDE_MARK_FILE_FINISH,
+  WEBIDE_MARK_FILE_CLICKED,
+  WEBIDE_MARK_TREE_FINISH,
+  WEBIDE_MEASURE_TREE_FROM_REQUEST,
+  WEBIDE_MEASURE_FILE_FROM_REQUEST,
+  WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+} from '~/performance_constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
 import { modalTypes } from '../constants';
+import eventHub from '../eventhub';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';
 import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
@@ -13,6 +24,50 @@ import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
 import CommitEditorHeader from './commit_sidebar/editor_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+const markPerformance = params => {
+  performanceMarkAndMeasure(params);
+};
+const markTreePerformance = () => {
+  markPerformance({
+    mark: WEBIDE_MARK_TREE_FINISH,
+    measures: [
+      {
+        name: WEBIDE_MEASURE_TREE_FROM_REQUEST,
+        start: undefined,
+        end: WEBIDE_MARK_TREE_FINISH,
+      },
+    ],
+  });
+};
+const markEditorLoadPerformance = () => {
+  markPerformance({
+    mark: WEBIDE_MARK_FILE_FINISH,
+    measures: [
+      {
+        name: WEBIDE_MEASURE_FILE_FROM_REQUEST,
+        start: undefined,
+        end: WEBIDE_MARK_FILE_FINISH,
+      },
+    ],
+  });
+};
+const markEditorInteractionPerformance = () => {
+  markPerformance({
+    mark: WEBIDE_MARK_FILE_FINISH,
+    measures: [
+      {
+        name: WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+        start: WEBIDE_MARK_FILE_CLICKED,
+        end: WEBIDE_MARK_FILE_FINISH,
+      },
+    ],
+  });
+};
+
+eventHub.$on(WEBIDE_MEASURE_TREE_FROM_REQUEST, markTreePerformance);
+eventHub.$on(WEBIDE_MEASURE_FILE_FROM_REQUEST, markEditorLoadPerformance);
+eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, markEditorInteractionPerformance);
 
 export default {
   components: {
@@ -58,6 +113,9 @@ export default {
 
     if (this.themeName)
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
+  },
+  beforeCreate() {
+    performance.mark(WEBIDE_MARK_APP_START);
   },
   methods: {
     ...mapActions(['toggleFileFinder']),

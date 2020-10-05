@@ -7,18 +7,18 @@ export default {
   name: 'ReleasesPaginationRest',
   components: { TablePagination },
   computed: {
-    ...mapState('list', ['pageInfo']),
+    ...mapState('list', ['restPageInfo']),
   },
   methods: {
-    ...mapActions('list', ['fetchReleasesRest']),
+    ...mapActions('list', ['fetchReleases']),
     onChangePage(page) {
       historyPushState(buildUrlWithCurrentLocation(`?page=${page}`));
-      this.fetchReleasesRest({ page });
+      this.fetchReleases({ page });
     },
   },
 };
 </script>
 
 <template>
-  <table-pagination :change="onChangePage" :page-info="pageInfo" />
+  <table-pagination :change="onChangePage" :page-info="restPageInfo" />
 </template>

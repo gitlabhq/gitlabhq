@@ -227,6 +227,10 @@
       padding-left: 40px;
     }
 
+    .gl-label-scoped {
+      --label-inset-border: inset 0 0 0 1px currentColor;
+    }
+
     @include media-breakpoint-up(lg) {
       margin-right: 5px;
     }
@@ -442,21 +446,4 @@ table.u2f-registrations,
 .gitlab-slack-popup {
   width: 100%;
   max-width: $add-to-slack-popup-max-width;
-}
-
-.gitlab-slack-right-arrow svg {
-  fill: $white-dark;
-  width: $right-arrow-size;
-  height: $right-arrow-size;
-  vertical-align: text-bottom;
-}
-
-.gitlab-slack-double-headed-arrow {
-  vertical-align: text-top;
-
-  svg {
-    fill: $gray-darker;
-    width: $double-headed-arrow-width;
-    height: $double-headed-arrow-height;
-  }
 }

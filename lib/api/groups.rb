@@ -29,7 +29,12 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def find_groups(params, parent_id = nil)
-        find_params = params.slice(:all_available, :custom_attributes, :owned, :min_access_level)
+        find_params = params.slice(
+          :all_available,
+          :custom_attributes,
+          :owned, :min_access_level,
+          :include_parent_descendants
+        )
 
         find_params[:parent] = if params[:top_level_only]
                                  [nil]
@@ -306,6 +311,19 @@ module API
       end
       get ":id/subgroups" do
         groups = find_groups(declared_params(include_missing: false), params[:id])
+        present_groups params, groups
+      end
+
+      desc 'Get a list of descendant groups of this group.' do
+        success Entities::Group
+      end
+      params do
+        use :group_list_params
+        use :with_custom_attributes
+      end
+      get ":id/descendant_groups" do
+        finder_params = declared_params(include_missing: false).merge(include_parent_descendants: true)
+        groups = find_groups(finder_params, params[:id])
         present_groups params, groups
       end
 

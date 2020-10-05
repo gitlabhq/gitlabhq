@@ -1,7 +1,6 @@
-query allReleases($fullPath: ID!) {
+query allReleases($fullPath: ID!, $first: Int, $last: Int, $before: String, $after: String) {
   project(fullPath: $fullPath) {
-    releases(first: 20) {
-      count
+    releases(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         name
         tagName
@@ -63,6 +62,12 @@ query allReleases($fullPath: ID!) {
             }
           }
         }
+      }
+      pageInfo {
+        startCursor
+        hasPreviousPage
+        hasNextPage
+        endCursor
       }
     }
   }

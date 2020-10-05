@@ -103,6 +103,9 @@ module Groups
 
       @group.parent = @new_parent_group
       @group.clear_memoization(:self_and_ancestors_ids)
+
+      inherit_group_shared_runners_settings
+
       @group.save!
     end
 
@@ -160,6 +163,17 @@ module Groups
         cannot_transfer_to_subgroup: s_('TransferGroup|Cannot transfer group to one of its subgroup.'),
         group_contains_npm_packages: s_('TransferGroup|Group contains projects with NPM packages.')
       }.freeze
+    end
+
+    def inherit_group_shared_runners_settings
+      parent_setting = @group.parent&.shared_runners_setting
+      return unless parent_setting
+
+      if @group.shared_runners_setting_higher_than?(parent_setting)
+        result = Groups::UpdateSharedRunnersService.new(@group, current_user, shared_runners_setting: parent_setting).execute
+
+        raise TransferError, result[:message] unless result[:status] == :success
+      end
     end
   end
 end

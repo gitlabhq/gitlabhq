@@ -31,6 +31,7 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_content(current_user.last_activity_on.strftime("%e %b, %Y"))
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_content('Projects')
       expect(page).to have_button('Block')
       expect(page).to have_button('Deactivate')
       expect(page).to have_button('Delete user')
@@ -45,6 +46,19 @@ RSpec.describe "Admin::Users" do
         first_user_link.hover
 
         expect(page).to have_selector('#__BV_popover_1__')
+      end
+    end
+
+    context 'user project count' do
+      before do
+        project = create(:project)
+        project.add_maintainer(current_user)
+      end
+
+      it 'displays count of users projects' do
+        visit admin_users_path
+
+        expect(page.find("[data-testid='user-project-count-#{current_user.id}']").text).to eq("1")
       end
     end
 
@@ -606,7 +620,7 @@ RSpec.describe "Admin::Users" do
     end
   end
 
-  describe 'show user keys' do
+  describe 'show user keys', :js do
     let!(:key1) do
       create(:key, user: user, title: "ssh-rsa Key1", key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4FIEBXGi4bPU8kzxMefudPIJ08/gNprdNTaO9BR/ndy3+58s2HCTw2xCHcsuBmq+TsAqgEidVq4skpqoTMB+Uot5Uzp9z4764rc48dZiI661izoREoKnuRQSsRqUTHg5wrLzwxlQbl1MVfRWQpqiz/5KjBC7yLEb9AbusjnWBk8wvC1bQPQ1uLAauEA7d836tgaIsym9BrLsMVnR4P1boWD3Xp1B1T/ImJwAGHvRmP/ycIqmKdSpMdJXwxcb40efWVj0Ibbe7ii9eeoLdHACqevUZi6fwfbymdow+FeqlkPoHyGg3Cu4vD/D8+8cRc7mE/zGCWcQ15Var83Tczour Key1")
     end
@@ -629,7 +643,11 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_content(key2.title)
       expect(page).to have_content(key2.key)
 
-      click_link 'Remove'
+      click_button 'Delete'
+
+      page.within('.modal') do
+        page.click_button('Delete')
+      end
 
       expect(page).not_to have_content(key2.title)
     end

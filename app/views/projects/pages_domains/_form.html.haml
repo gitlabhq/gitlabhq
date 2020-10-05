@@ -1,5 +1,6 @@
 - if domain_presenter.errors.any?
-  .alert.alert-danger
+  .gl-alert.gl-alert-danger
+    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
     - domain_presenter.errors.full_messages.each do |msg|
       = msg
 

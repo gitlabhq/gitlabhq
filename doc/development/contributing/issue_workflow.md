@@ -320,6 +320,11 @@ look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https
 More experienced contributors are very welcome to tackle
 [any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 
+For more complex features that have a weight of 2 or more and clear scope, we recommend looking at issues
+with the [label `~"Community Challenge"`](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Accepting%20merge%20requests&label_name[]=Community%20challenge).
+If your MR for the `~"Community Challenge"` issue gets merged, you will also have a chance to win a custom
+GitLab merchandise. 
+
 If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
 as soon as possible. The product manager will then pull in appropriate GitLab team

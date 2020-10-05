@@ -38,69 +38,49 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware do
       end
 
       context 'request is a health check endpoint' do
-        it 'increments health endpoint counter' do
-          env['PATH_INFO'] = '/-/liveness'
+        ['/-/liveness', '/-/liveness/', '/-/%6D%65%74%72%69%63%73'].each do |path|
+          context "when path is #{path}" do
+            before do
+              env['PATH_INFO'] = path
+            end
 
-          expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
+            it 'increments health endpoint counter rather than overall counter' do
+              expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
+              expect(described_class).not_to receive(:http_request_total)
 
-          subject.call(env)
-        end
+              subject.call(env)
+            end
 
-        context 'with trailing slash' do
-          before do
-            env['PATH_INFO'] = '/-/liveness/'
-          end
+            it 'does not record the request duration' do
+              expect(described_class).not_to receive(:http_request_duration_seconds)
 
-          it 'increments health endpoint counter' do
-            expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
-
-            subject.call(env)
-          end
-        end
-
-        context 'with percent encoded values' do
-          before do
-            env['PATH_INFO'] = '/-/%6D%65%74%72%69%63%73' # /-/metrics
-          end
-
-          it 'increments health endpoint counter' do
-            expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
-
-            subject.call(env)
+              subject.call(env)
+            end
           end
         end
       end
 
       context 'request is not a health check endpoint' do
-        it 'does not increment health endpoint counter' do
-          env['PATH_INFO'] = '/-/ordinary-requests'
+        ['/-/ordinary-requests', '/-/', '/-/health/subpath'].each do |path|
+          context "when path is #{path}" do
+            before do
+              env['PATH_INFO'] = path
+            end
 
-          expect(described_class).not_to receive(:http_health_requests_total)
+            it 'increments overall counter rather than health endpoint counter' do
+              expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get')
+              expect(described_class).not_to receive(:http_health_requests_total)
 
-          subject.call(env)
-        end
+              subject.call(env)
+            end
 
-        context 'path info is a root path' do
-          before do
-            env['PATH_INFO'] = '/-/'
-          end
+            it 'records the request duration' do
+              expect(described_class)
+                .to receive_message_chain(:http_request_duration_seconds, :observe)
+                      .with({ method: 'get', status: '200' }, a_positive_execution_time)
 
-          it 'does not increment health endpoint counter' do
-            expect(described_class).not_to receive(:http_health_requests_total)
-
-            subject.call(env)
-          end
-        end
-
-        context 'path info is a subpath' do
-          before do
-            env['PATH_INFO'] = '/-/health/subpath'
-          end
-
-          it 'does not increment health endpoint counter' do
-            expect(described_class).not_to receive(:http_health_requests_total)
-
-            subject.call(env)
+              subject.call(env)
+            end
           end
         end
       end

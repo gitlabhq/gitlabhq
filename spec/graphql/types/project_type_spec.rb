@@ -27,7 +27,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       environment boards jira_import_status jira_imports services releases release
       alert_management_alerts alert_management_alert alert_management_alert_status_counts
       container_expiration_policy service_desk_enabled service_desk_address
-      issue_status_counts
+      issue_status_counts terraform_states
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -152,6 +152,13 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { described_class.fields['containerExpirationPolicy'] }
 
     it { is_expected.to have_graphql_type(Types::ContainerExpirationPolicyType) }
+  end
+
+  describe 'terraform states field' do
+    subject { described_class.fields['terraformStates'] }
+
+    it { is_expected.to have_graphql_type(Types::Terraform::StateType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Terraform::StatesResolver) }
   end
 
   it_behaves_like 'a GraphQL type with labels'

@@ -296,6 +296,12 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
         .to eq reference
     end
 
+    it 'link with trailing slash' do
+      doc = reference_filter("Fixed (#{issue_url + "/"}.)")
+
+      expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(issue.to_reference(project))}</a>\.\)})
+    end
+
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
 

@@ -205,6 +205,6 @@ Some of these errors come from the Excon Ruby gem, and could be generated in cir
 where GitLab is configured to initiate an HTTPS session to a remote server
 that is serving just HTTP.
 
-One scenario is that you're using [object storage](../high_availability/object_storage.md)
+One scenario is that you're using [object storage](../object_storage.md)
 which is not served under HTTPS. GitLab is misconfigured and attempts a TLS handshake,
 but the object storage will respond with plain HTTP.

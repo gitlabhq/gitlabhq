@@ -84,17 +84,14 @@ class Feature
       end
 
       def definitions
-        @definitions ||= {}
+        # We lazily load all definitions
+        # The hot reloading might request a feature flag
+        # before we can properly call `load_all!`
+        @definitions ||= load_all!
       end
 
-      def load_all!
-        definitions.clear
-
-        paths.each do |glob_path|
-          load_all_from_path!(glob_path)
-        end
-
-        definitions
+      def reload!
+        @definitions = load_all!
       end
 
       def valid_usage!(key, type:, default_enabled:)
@@ -110,9 +107,7 @@ class Feature
       def register_hot_reloader!
         # Reload feature flags on change of this file or any `.yml`
         file_watcher = Rails.configuration.file_watcher.new(reload_files, reload_directories) do
-          # We use `Feature::Definition` as on Ruby code-reload
-          # a new class definition is created
-          Feature::Definition.load_all!
+          Feature::Definition.reload!
         end
 
         Rails.application.reloaders << file_watcher
@@ -122,6 +117,16 @@ class Feature
       end
 
       private
+
+      def load_all!
+        # We currently do not load feature flag definitions
+        # in production environments
+        return [] unless Gitlab.dev_or_test_env?
+
+        paths.each_with_object({}) do |glob_path, definitions|
+          load_all_from_path!(definitions, glob_path)
+        end
+      end
 
       def load_from_file(path)
         definition = File.read(path)
@@ -133,7 +138,7 @@ class Feature
         raise Feature::InvalidFeatureFlagError, "Invalid definition for `#{path}`: #{e.message}"
       end
 
-      def load_all_from_path!(glob_path)
+      def load_all_from_path!(definitions, glob_path)
         Dir.glob(glob_path).each do |path|
           definition = load_from_file(path)
 
@@ -146,7 +151,7 @@ class Feature
       end
 
       def reload_files
-        [File.expand_path(__FILE__)]
+        []
       end
 
       def reload_directories

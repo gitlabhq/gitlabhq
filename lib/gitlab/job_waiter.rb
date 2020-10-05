@@ -23,7 +23,15 @@ module Gitlab
     TIMEOUTS_METRIC = :gitlab_job_waiter_timeouts_total
 
     def self.notify(key, jid)
-      Gitlab::Redis::SharedState.with { |redis| redis.lpush(key, jid) }
+      Gitlab::Redis::SharedState.with do |redis|
+        # Use a Redis MULTI transaction to ensure we always set an expiry
+        redis.multi do |multi|
+          multi.lpush(key, jid)
+          # This TTL needs to be long enough to allow whichever Sidekiq job calls
+          # JobWaiter#wait to reach BLPOP.
+          multi.expire(key, 6.hours.to_i)
+        end
+      end
     end
 
     def self.key?(key)
@@ -52,10 +60,6 @@ module Gitlab
       increment_counter(STARTED_METRIC)
 
       Gitlab::Redis::SharedState.with do |redis|
-        # Fallback key expiry: allow a long grace period to reduce the chance of
-        # a job pushing to an expired key and recreating it
-        redis.expire(key, [timeout * 2, 10.minutes.to_i].max)
-
         while jobs_remaining > 0
           # Redis will not take fractional seconds. Prefer waiting too long over
           # not waiting long enough
@@ -75,9 +79,6 @@ module Gitlab
           @finished << jid
           @jobs_remaining -= 1
         end
-
-        # All jobs have finished, so expire the key immediately
-        redis.expire(key, 0) if jobs_remaining == 0
       end
 
       finished

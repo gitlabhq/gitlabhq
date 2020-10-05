@@ -67,6 +67,7 @@ exports[`Design management design index page renders design index 1`] = `
     />
      
     <gl-button-stub
+      buttontextclasses=""
       category="primary"
       class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-mb-4"
       data-testid="resolved-comments"

@@ -10,21 +10,21 @@ module Gitlab
     APPLICATION_DEFAULT = 1
 
     # Struct class representing a single Theme
-    Theme = Struct.new(:id, :name, :css_class)
+    Theme = Struct.new(:id, :name, :css_class, :css_filename)
 
     # All available Themes
     THEMES = [
-      Theme.new(1, 'Indigo', 'ui-indigo'),
-      Theme.new(6, 'Light Indigo', 'ui-light-indigo'),
-      Theme.new(4, 'Blue', 'ui-blue'),
-      Theme.new(7, 'Light Blue', 'ui-light-blue'),
-      Theme.new(5, 'Green', 'ui-green'),
-      Theme.new(8, 'Light Green', 'ui-light-green'),
-      Theme.new(9, 'Red', 'ui-red'),
-      Theme.new(10, 'Light Red', 'ui-light-red'),
-      Theme.new(2, 'Dark', 'ui-dark'),
-      Theme.new(3, 'Light', 'ui-light'),
-      Theme.new(11, 'Dark Mode (alpha)', 'gl-dark')
+      Theme.new(1, 'Indigo', 'ui-indigo', 'theme_indigo'),
+      Theme.new(6, 'Light Indigo', 'ui-light-indigo', 'theme_light_indigo'),
+      Theme.new(4, 'Blue', 'ui-blue', 'theme_blue'),
+      Theme.new(7, 'Light Blue', 'ui-light-blue', 'theme_light_blue'),
+      Theme.new(5, 'Green', 'ui-green', 'theme_green'),
+      Theme.new(8, 'Light Green', 'ui-light-green', 'theme_light_green'),
+      Theme.new(9, 'Red', 'ui-red', 'theme_red'),
+      Theme.new(10, 'Light Red', 'ui-light-red', 'theme_light_red'),
+      Theme.new(2, 'Dark', 'ui-dark', 'theme_dark'),
+      Theme.new(3, 'Light', 'ui-light', 'theme_light'),
+      Theme.new(11, 'Dark Mode (alpha)', 'gl-dark', nil)
     ].freeze
 
     # Convenience method to get a space-separated String of all the theme

@@ -43,6 +43,8 @@ module QA
         end
 
         def wait_for_search_to_complete
+          Support::WaitForRequests.wait_for_requests
+
           has_css?('.select2-active', wait: 1)
           has_no_css?('.select2-active', wait: 30)
         end

@@ -105,7 +105,7 @@ RSpec.describe DesignManagement::DeleteDesignsService do
         end
 
         it 'informs the new-version-worker' do
-          expect(::DesignManagement::NewVersionWorker).to receive(:perform_async).with(Integer)
+          expect(::DesignManagement::NewVersionWorker).to receive(:perform_async).with(Integer, false)
 
           run_service
         end

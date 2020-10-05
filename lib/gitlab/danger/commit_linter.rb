@@ -10,7 +10,7 @@ module Gitlab
       MAX_LINE_LENGTH = 72
       MAX_CHANGED_FILES_IN_COMMIT = 3
       MAX_CHANGED_LINES_IN_COMMIT = 30
-      SHORT_REFERENCE_REGEX = %r{([\w\-\/]+)?(#|!|&|%)\d+\b}.freeze
+      SHORT_REFERENCE_REGEX = %r{([\w\-\/]+)?(?<!`)(#|!|&|%)\d+(?<!`)}.freeze
       DEFAULT_SUBJECT_DESCRIPTION = 'commit subject'
       WIP_PREFIX = 'WIP: '
       PROBLEMS = {
@@ -118,7 +118,7 @@ module Gitlab
 
           next unless line_too_long?(line)
 
-          url_size = line.scan(%r((https?://\S+))).sum { |(url)| url.length } # rubocop:disable CodeReuse/ActiveRecord
+          url_size = line.scan(%r((https?://\S+))).sum { |(url)| url.length }
 
           # If the line includes a URL, we'll allow it to exceed MAX_LINE_LENGTH characters, but
           # only if the line _without_ the URL does not exceed this limit.

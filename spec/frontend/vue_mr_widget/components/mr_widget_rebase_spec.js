@@ -6,6 +6,10 @@ import component from '~/vue_merge_request_widget/components/states/mr_widget_re
 describe('Merge request widget rebase component', () => {
   let Component;
   let vm;
+
+  const findRebaseMessageEl = () => vm.$el.querySelector('[data-testid="rebase-message"]');
+  const findRebaseMessageElText = () => findRebaseMessageEl().textContent.trim();
+
   beforeEach(() => {
     Component = Vue.extend(component);
   });
@@ -21,9 +25,7 @@ describe('Merge request widget rebase component', () => {
         service: {},
       });
 
-      expect(
-        vm.$el.querySelector('.rebase-state-find-class-convention span').textContent.trim(),
-      ).toContain('Rebase in progress');
+      expect(findRebaseMessageElText()).toContain('Rebase in progress');
     });
   });
 
@@ -39,9 +41,7 @@ describe('Merge request widget rebase component', () => {
     });
 
     it('it should render rebase button and warning message', () => {
-      const text = vm.$el
-        .querySelector('.rebase-state-find-class-convention span')
-        .textContent.trim();
+      const text = findRebaseMessageElText();
 
       expect(text).toContain('Fast-forward merge is not possible.');
       expect(text.replace(/\s\s+/g, ' ')).toContain(
@@ -53,9 +53,7 @@ describe('Merge request widget rebase component', () => {
       vm.rebasingError = 'Something went wrong!';
 
       Vue.nextTick(() => {
-        expect(
-          vm.$el.querySelector('.rebase-state-find-class-convention span').textContent.trim(),
-        ).toContain('Something went wrong!');
+        expect(findRebaseMessageElText()).toContain('Something went wrong!');
         done();
       });
     });
@@ -72,9 +70,7 @@ describe('Merge request widget rebase component', () => {
         service: {},
       });
 
-      const text = vm.$el
-        .querySelector('.rebase-state-find-class-convention span')
-        .textContent.trim();
+      const text = findRebaseMessageElText();
 
       expect(text).toContain('Fast-forward merge is not possible.');
       expect(text).toContain('Rebase the source branch onto');
@@ -93,7 +89,7 @@ describe('Merge request widget rebase component', () => {
         service: {},
       });
 
-      const elem = vm.$el.querySelector('.rebase-state-find-class-convention span');
+      const elem = findRebaseMessageEl();
 
       expect(elem.innerHTML).toContain(
         `Fast-forward merge is not possible. Rebase the source branch onto <span class="label-branch">${targetBranch}</span> to allow this merge request to be merged.`,

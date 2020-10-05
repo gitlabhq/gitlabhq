@@ -10,11 +10,11 @@
   %h5.gl-mt-3
     = namespace.human_name
   - if forked_project = namespace.find_fork_of(@project)
-    = link_to _("Go to project"), project_path(forked_project), class: "btn"
+    = link_to _("Go to project"), project_path(forked_project), class: "btn gl-button btn-default"
   - else
     %div{ class: ('has-tooltip' unless can_create_project),
       title: (_('You have reached your project limit') unless can_create_project) }
       = link_to _("Select"), project_forks_path(@project, namespace_key: namespace.id),
           data: { qa_selector: 'fork_namespace_button', qa_name: namespace.human_name },
           method: "POST",
-          class: ["btn btn-success", ("disabled" unless can_create_project)]
+          class: ["btn gl-button btn-success", ("disabled" unless can_create_project)]

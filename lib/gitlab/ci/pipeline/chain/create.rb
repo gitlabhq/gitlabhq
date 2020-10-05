@@ -8,7 +8,7 @@ module Gitlab
           include Chain::Helpers
 
           def perform!
-            BulkInsertableAssociations.with_bulk_insert(enabled: ::Gitlab::Ci::Features.bulk_insert_on_create?(project)) do
+            BulkInsertableAssociations.with_bulk_insert do
               pipeline.save!
             end
           rescue ActiveRecord::RecordInvalid => e

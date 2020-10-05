@@ -731,6 +731,12 @@ RSpec.describe 'project routing' do
     end
   end
 
+  describe Projects::Settings::CiCdController, 'routing' do
+    it "to #runner_setup_scripts" do
+      expect(get("/gitlab/gitlabhq/-/settings/ci_cd/runner_setup_scripts")).to route_to('projects/settings/ci_cd#runner_setup_scripts', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+  end
+
   describe Projects::TemplatesController, 'routing' do
     describe '#show' do
       def show_with_template_type(template_type)

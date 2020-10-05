@@ -38,6 +38,7 @@ export default {
 <template>
   <div
     class="labels-select-dropdown-contents w-100 mt-1 mb-3 py-2 rounded-top rounded-bottom position-absolute"
+    data-qa-selector="labels_dropdown_content"
     :style="directionStyle"
   >
     <component :is="dropdownContentsView" />

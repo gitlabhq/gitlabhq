@@ -103,8 +103,8 @@ variables:
 You can then call its value in your script:
 
 ```yaml
-  script:
-    - echo "$TEST"
+script:
+  - echo "$TEST"
 ```
 
 For more details, see [`.gitlab-ci.yml` defined variables](#gitlab-ciyml-defined-variables).
@@ -571,7 +571,7 @@ in which you wish to use it.
 
 ## Where variables can be used
 
-Click [here](where_variables_can_be_used.md) for a section that describes where and how the different types of variables can be used.
+[This section](where_variables_can_be_used.md) describes where and how the different types of variables can be used.
 
 ## Advanced use
 
@@ -609,8 +609,8 @@ then available as environment variables on the running application
 container.
 
 CAUTION: **Caution:**
-Variables with multi-line values are not currently supported due to
-limitations with the current Auto DevOps scripting environment.
+Variables with multi-line values are not supported due to
+limitations with the Auto DevOps scripting environment.
 
 ### Override a variable by manually running a pipeline
 
@@ -785,7 +785,7 @@ Examples:
 
 ##### Enable or disable parenthesis support for variables **(CORE ONLY)**
 
-The feature is currently deployed behind a feature flag that is **enabled by default**.
+The feature is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to disable it for your instance.
 
@@ -820,8 +820,7 @@ NOTE: **Note:**
 The available regular expression syntax is limited. See [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35438)
 for more details.
 
-If needed, you can use a test pipeline to determine whether a regular expression will
-work in a variable. The example below tests the `^mast.*` regular expression directly,
+If needed, you can use a test pipeline to determine whether a regular expression works in a variable. The example below tests the `^mast.*` regular expression directly,
 as well as from within a variable:
 
 ```yaml

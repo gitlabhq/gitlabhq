@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Git::RemoteMirror do
         .to receive(:update_remote_mirror)
         .with(ref_name, ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS', keep_divergent_refs: true)
 
-      remote_mirror.update
+      remote_mirror.update # rubocop:disable Rails/SaveBang
     end
 
     it 'wraps gitaly errors' do
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Git::RemoteMirror do
         .to receive(:update_remote_mirror)
         .and_raise(StandardError)
 
-      expect { remote_mirror.update }.to raise_error(StandardError)
+      expect { remote_mirror.update }.to raise_error(StandardError) # rubocop:disable Rails/SaveBang
     end
   end
 end

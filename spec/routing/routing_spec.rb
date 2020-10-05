@@ -374,3 +374,9 @@ RSpec.describe Snippets::BlobsController, "routing" do
       .to route_to('snippets/blobs#raw', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
   end
 end
+
+RSpec.describe RunnerSetupController, 'routing' do
+  it 'to #platforms' do
+    expect(get("/-/runner_setup/platforms")).to route_to('runner_setup#platforms')
+  end
+end

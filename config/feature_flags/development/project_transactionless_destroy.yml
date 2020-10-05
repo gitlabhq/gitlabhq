@@ -1,7 +1,7 @@
 ---
 name: project_transactionless_destroy
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39367
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255972
+group: group::continuous integration
 type: development
 default_enabled: false

@@ -36,7 +36,7 @@ export default {
       }
 
       this.edit = true;
-      this.$emit('changed', this.edit);
+      this.$emit('open');
       window.addEventListener('click', this.collapseWhenOffClick);
     },
     collapse() {
@@ -45,7 +45,7 @@ export default {
       }
 
       this.edit = false;
-      this.$emit('changed', this.edit);
+      this.$emit('close');
       window.removeEventListener('click', this.collapseWhenOffClick);
     },
   },

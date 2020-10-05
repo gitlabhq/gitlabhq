@@ -151,11 +151,14 @@ In order to reuse a single object for all calls to a named factory in implicit p
 can be used:
 
 ```ruby
+RSpec.describe API::Search, factory_default: :keep do
   let_it_be(:namespace) { create_default(:namespace) }
 ```
 
 Then every project we create will use this `namespace`, without us having to pass
-it as `namespace: namespace`.
+it as `namespace: namespace`. In order to make it work along with `let_it_be`, `factory_default: :keep`
+must be explicitly specified. That will keep the default factory for every example in a suite instead of
+recreating it for each example.
 
 Maybe we don't need to create 208 different projects - we
 can create one and reuse it. In addition, we can see that only about 1/3 of the
@@ -497,10 +500,9 @@ let_it_be(:project, refind: true) { create(:project) }
 
 ### Time-sensitive tests
 
-[Timecop](https://github.com/travisjeffery/timecop) is available in our
-Ruby-based tests for verifying things that are time-sensitive. Any test that
-exercises or verifies something time-sensitive should make use of Timecop to
-prevent transient test failures.
+[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+can be used to verify things that are time-sensitive. Any test that exercises or verifies something time-sensitive
+should make use of these helpers to prevent transient test failures.
 
 Example:
 
@@ -508,7 +510,7 @@ Example:
 it 'is overdue' do
   issue = build(:issue, due_date: Date.tomorrow)
 
-  Timecop.freeze(3.days.from_now) do
+  travel_to(3.days.from_now) do
     expect(issue).to be_overdue
   end
 end

@@ -51,6 +51,7 @@ issues:
 - status_page_published_incident
 - namespace
 - note_authors
+- issue_email_participants
 events:
 - author
 - project
@@ -242,6 +243,7 @@ ci_pipelines:
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
+- latest_statuses
 ci_refs:
 - project
 - ci_pipelines
@@ -536,6 +538,8 @@ project:
 - vulnerability_historical_statistics
 - product_analytics_events
 - pipeline_artifacts
+- terraform_states
+- alert_management_http_integrations
 award_emoji:
 - awardable
 - user

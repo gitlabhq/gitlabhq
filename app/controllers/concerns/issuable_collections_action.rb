@@ -59,6 +59,9 @@ module IssuableCollectionsAction
   end
 
   def finder_options
-    super.merge(non_archived: true)
+    super.merge(
+      non_archived: true,
+      issue_types: Issue::TYPES_FOR_LIST
+    )
   end
 end

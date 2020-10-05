@@ -43,3 +43,27 @@ export const NAME_REGEX_KEEP_PLACEHOLDER = '';
 export const NAME_REGEX_KEEP_DESCRIPTION = s__(
   'ContainerRegistry|Wildcards such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported',
 );
+
+export const KEEP_N_OPTIONS = [
+  { variable: 1, key: 'ONE_TAG', default: false },
+  { variable: 5, key: 'FIVE_TAGS', default: false },
+  { variable: 10, key: 'TEN_TAGS', default: true },
+  { variable: 25, key: 'TWENTY_FIVE_TAGS', default: false },
+  { variable: 50, key: 'FIFTY_TAGS', default: false },
+  { variable: 100, key: 'ONE_HUNDRED_TAGS', default: false },
+];
+
+export const CADENCE_OPTIONS = [
+  { key: 'EVERY_DAY', label: __('Every day'), default: true },
+  { key: 'EVERY_WEEK', label: __('Every week'), default: false },
+  { key: 'EVERY_TWO_WEEKS', label: __('Every two weeks'), default: false },
+  { key: 'EVERY_MONTH', label: __('Every month'), default: false },
+  { key: 'EVERY_THREE_MONTHS', label: __('Every three months'), default: false },
+];
+
+export const OLDER_THAN_OPTIONS = [
+  { key: 'SEVEN_DAYS', variable: 7, default: false },
+  { key: 'FOURTEEN_DAYS', variable: 14, default: false },
+  { key: 'THIRTY_DAYS', variable: 30, default: false },
+  { key: 'NINETY_DAYS', variable: 90, default: true },
+];

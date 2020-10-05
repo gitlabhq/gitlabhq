@@ -4,10 +4,10 @@ module Gitlab
   module Metrics
     module Dashboard
       module Transformers
-        TransformerError = Class.new(StandardError)
-
         module Errors
-          class MissingAttribute < TransformerError
+          BaseError = Class.new(StandardError)
+
+          class MissingAttribute < BaseError
             def initialize(attribute_name)
               super("Missing attribute: '#{attribute_name}'")
             end

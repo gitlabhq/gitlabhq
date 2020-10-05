@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { s__ } from '~/locale';
 import emptyState from './empty_state.vue';
@@ -16,7 +16,10 @@ export default {
     ConfirmRollbackModal,
     emptyState,
     EnableReviewAppButton,
-    GlDeprecatedButton,
+    GlBadge,
+    GlButton,
+    GlTab,
+    GlTabs,
     StopEnvironmentModal,
     DeleteEnvironmentModal,
   },
@@ -124,43 +127,87 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="environments-section">
     <stop-environment-modal :environment="environmentInStopModal" />
     <delete-environment-modal :environment="environmentInDeleteModal" />
     <confirm-rollback-modal :environment="environmentInRollbackModal" />
 
-    <div class="top-area">
-      <tabs :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
-
-      <div class="nav-controls">
-        <enable-review-app-button v-if="state.reviewAppDetails.can_setup_review_app" class="mr-2" />
-        <gl-deprecated-button
+    <div class="gl-w-full">
+      <div
+        class="
+        gl-display-flex
+        gl-flex-direction-column
+        gl-mt-3
+        gl-display-md-none!"
+      >
+        <enable-review-app-button
+          v-if="state.reviewAppDetails.can_setup_review_app"
+          class="gl-mb-3 gl-flex-fill-1"
+        />
+        <gl-button
           v-if="canCreateEnvironment && !isLoading"
           :href="newEnvironmentPath"
           category="primary"
           variant="success"
         >
           {{ s__('Environments|New environment') }}
-        </gl-deprecated-button>
+        </gl-button>
       </div>
+      <gl-tabs content-class="gl-display-none">
+        <gl-tab
+          v-for="(tab, idx) in tabs"
+          :key="idx"
+          :title-item-class="`js-environments-tab-${tab.scope}`"
+          @click="onChangeTab(tab.scope)"
+        >
+          <template #title>
+            <span>{{ tab.name }}</span>
+            <gl-badge size="sm" class="gl-tab-counter-badge">{{ tab.count }}</gl-badge>
+          </template>
+        </gl-tab>
+        <template #tabs-end>
+          <div
+            class="
+            gl-display-none
+            gl-display-md-flex
+            gl-lg-align-items-center
+            gl-lg-flex-direction-row
+            gl-lg-flex-fill-1
+            gl-lg-justify-content-end
+            gl-lg-mt-0"
+          >
+            <enable-review-app-button
+              v-if="state.reviewAppDetails.can_setup_review_app"
+              class="gl-mb-3 gl-lg-mr-3 gl-lg-mb-0"
+            />
+            <gl-button
+              v-if="canCreateEnvironment && !isLoading"
+              :href="newEnvironmentPath"
+              category="primary"
+              variant="success"
+            >
+              {{ s__('Environments|New environment') }}
+            </gl-button>
+          </div>
+        </template>
+      </gl-tabs>
+      <container
+        :is-loading="isLoading"
+        :environments="state.environments"
+        :pagination="state.paginationInformation"
+        :can-read-environment="canReadEnvironment"
+        :canary-deployment-feature-id="canaryDeploymentFeatureId"
+        :show-canary-deployment-callout="showCanaryDeploymentCallout"
+        :user-callouts-path="userCalloutsPath"
+        :lock-promotion-svg-path="lockPromotionSvgPath"
+        :help-canary-deployments-path="helpCanaryDeploymentsPath"
+        :deploy-boards-help-path="deployBoardsHelpPath"
+        @onChangePage="onChangePage"
+      >
+        <template v-if="!isLoading && state.environments.length === 0" #emptyState>
+          <empty-state :help-path="helpPagePath" />
+        </template>
+      </container>
     </div>
-
-    <container
-      :is-loading="isLoading"
-      :environments="state.environments"
-      :pagination="state.paginationInformation"
-      :can-read-environment="canReadEnvironment"
-      :canary-deployment-feature-id="canaryDeploymentFeatureId"
-      :show-canary-deployment-callout="showCanaryDeploymentCallout"
-      :user-callouts-path="userCalloutsPath"
-      :lock-promotion-svg-path="lockPromotionSvgPath"
-      :help-canary-deployments-path="helpCanaryDeploymentsPath"
-      :deploy-boards-help-path="deployBoardsHelpPath"
-      @onChangePage="onChangePage"
-    >
-      <template v-if="!isLoading && state.environments.length === 0" #emptyState>
-        <empty-state :help-path="helpPagePath" />
-      </template>
-    </container>
   </div>
 </template>

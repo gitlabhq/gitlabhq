@@ -10,6 +10,7 @@
 
 .deploy_to_ecs:
   image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest'
+  dependencies: []
   script:
     - ecs update-task-definition
 

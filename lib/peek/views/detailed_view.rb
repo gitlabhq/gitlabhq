@@ -23,7 +23,7 @@ module Peek
       private
 
       def duration
-        detail_store.map { |entry| entry[:duration] }.sum * 1000 # rubocop:disable CodeReuse/ActiveRecord
+        detail_store.map { |entry| entry[:duration] }.sum * 1000
       end
 
       def calls

@@ -174,7 +174,7 @@ review-performance:
     - .default-retry
     - .review:rules:review-performance
   image:
-    name: sitespeedio/sitespeed.io:6.3.1
+    name: sitespeedio/sitespeed.io
     entrypoint: [""]
   stage: qa
   # This is needed so that manual jobs with needs don't block the pipeline.

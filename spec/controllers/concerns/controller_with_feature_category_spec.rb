@@ -2,7 +2,6 @@
 
 require 'fast_spec_helper'
 require_relative "../../../app/controllers/concerns/controller_with_feature_category"
-require_relative "../../../app/controllers/concerns/controller_with_feature_category/config"
 
 RSpec.describe ControllerWithFeatureCategory do
   describe ".feature_category_for_action" do
@@ -14,17 +13,15 @@ RSpec.describe ControllerWithFeatureCategory do
 
     let(:controller) do
       Class.new(base_controller) do
-        feature_category :baz
-        feature_category :foo, except: %w(update edit)
-        feature_category :bar, only: %w(index show)
-        feature_category :quux, only: %w(destroy)
-        feature_category :quuz, only: %w(destroy)
+        feature_category :foo, %w(update edit)
+        feature_category :bar, %w(index show)
+        feature_category :quux, %w(destroy)
       end
     end
 
     let(:subclass) do
       Class.new(controller) do
-        feature_category :qux, only: %w(index)
+        feature_category :baz, %w(subclass_index)
       end
     end
 
@@ -33,34 +30,31 @@ RSpec.describe ControllerWithFeatureCategory do
     end
 
     it "returns the expected category", :aggregate_failures do
-      expect(controller.feature_category_for_action("update")).to eq(:baz)
-      expect(controller.feature_category_for_action("hello")).to eq(:foo)
+      expect(controller.feature_category_for_action("update")).to eq(:foo)
       expect(controller.feature_category_for_action("index")).to eq(:bar)
+      expect(controller.feature_category_for_action("destroy")).to eq(:quux)
     end
 
-    it "returns the closest match for categories defined in subclasses" do
-      expect(subclass.feature_category_for_action("index")).to eq(:qux)
-      expect(subclass.feature_category_for_action("show")).to eq(:bar)
+    it "returns the expected category for categories defined in subclasses" do
+      expect(subclass.feature_category_for_action("subclass_index")).to eq(:baz)
     end
 
-    it "returns the last defined feature category when multiple match" do
-      expect(controller.feature_category_for_action("destroy")).to eq(:quuz)
-    end
-
-    it "raises an error when using including and excluding the same action" do
+    it "raises an error when defining for the controller and for individual actions" do
       expect do
         Class.new(base_controller) do
-          feature_category :hello, only: [:world], except: [:world]
+          feature_category :hello
+          feature_category :goodbye, [:world]
         end
-      end.to raise_error(%r(cannot configure both `only` and `except`))
+      end.to raise_error(ArgumentError, "hello is defined for all actions, but other categories are set")
     end
 
-    it "raises an error when using unknown arguments" do
+    it "raises an error when multiple calls define the same action" do
       expect do
         Class.new(base_controller) do
-          feature_category :hello, hello: :world
+          feature_category :hello, [:world]
+          feature_category :goodbye, ["world"]
         end
-      end.to raise_error(%r(unknown arguments))
+      end.to raise_error(ArgumentError, "Actions have multiple feature categories: world")
     end
   end
 end

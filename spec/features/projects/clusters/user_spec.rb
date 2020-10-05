@@ -25,7 +25,7 @@ RSpec.describe 'User Cluster', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Add Kubernetes cluster'
+      click_link 'Integrate with a cluster certificate'
       click_link 'Connect existing cluster'
     end
 
@@ -51,6 +51,10 @@ RSpec.describe 'User Cluster', :js do
 
       it 'user sees RBAC is enabled by default' do
         expect(page).to have_checked_field('RBAC-enabled cluster')
+      end
+
+      it 'user sees namespace per environment is enabled by default' do
+        expect(page).to have_checked_field('Namespace per environment')
       end
     end
 
@@ -112,7 +116,7 @@ RSpec.describe 'User Cluster', :js do
 
       it 'user sees creation form with the successful message' do
         expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
-        expect(page).to have_link('Add Kubernetes cluster')
+        expect(page).to have_link('Integrate with a cluster certificate')
       end
     end
   end

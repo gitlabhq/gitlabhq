@@ -53,16 +53,37 @@ RSpec.describe 'getting an issue list for a project' do
 
   context 'when limiting the number of results' do
     let(:query) do
-      graphql_query_for(
-        'project',
-        { 'fullPath' => project.full_path },
-        "issues(first: 1) { #{fields} }"
-      )
+      <<~GQL
+        query($path: ID!, $n: Int) {
+          project(fullPath: $path) {
+            issues(first: $n) { #{fields} }
+          }
+        }
+      GQL
+    end
+
+    let(:issue_limit) { 1 }
+    let(:variables) do
+      { path: project.full_path, n: issue_limit }
     end
 
     it_behaves_like 'a working graphql query' do
       before do
-        post_graphql(query, current_user: current_user)
+        post_graphql(query, current_user: current_user, variables: variables)
+      end
+
+      it 'only returns N issues' do
+        expect(issues_data.size).to eq(issue_limit)
+      end
+    end
+
+    context 'no limit is provided' do
+      let(:issue_limit) { nil }
+
+      it 'returns all issues' do
+        post_graphql(query, current_user: current_user, variables: variables)
+
+        expect(issues_data.size).to be > 1
       end
     end
 
@@ -71,7 +92,7 @@ RSpec.describe 'getting an issue list for a project' do
       # Newest first, we only want to see the newest checked
       expect(Ability).not_to receive(:allowed?).with(current_user, :read_issue, issues.first)
 
-      post_graphql(query, current_user: current_user)
+      post_graphql(query, current_user: current_user, variables: variables)
     end
   end
 

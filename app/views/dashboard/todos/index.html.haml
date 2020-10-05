@@ -3,7 +3,7 @@
 - header_title _("To-Do List"), dashboard_todos_path
 
 = render_dashboard_gold_trial(current_user)
-= stylesheet_link_tag 'page_bundles/todos'
+- add_page_specific_style 'page_bundles/todos'
 
 .page-title-holder.d-flex.align-items-center
   %h1.page-title= _('To-Do List')

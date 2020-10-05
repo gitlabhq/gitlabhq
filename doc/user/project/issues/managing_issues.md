@@ -127,6 +127,7 @@ field).
 | title                | `issue[title]`        |                                                       |
 | description          | `issue[description]`  |                                                       |
 | description template | `issuable_template`   |                                                       |
+| issue type           | `issue[issue_type]`   | Either `incident` or `issue`                                     |
 | confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential |
 
 Follow these examples to form your new issue URL with prefilled fields.

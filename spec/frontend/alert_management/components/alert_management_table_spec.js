@@ -3,8 +3,8 @@ import {
   GlTable,
   GlAlert,
   GlLoadingIcon,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
+  GlDropdown,
+  GlDropdownItem,
   GlIcon,
   GlTabs,
   GlTab,
@@ -34,12 +34,12 @@ describe('AlertManagementTable', () => {
   const findAlerts = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
-  const findStatusDropdown = () => wrapper.find(GlDeprecatedDropdown);
+  const findStatusDropdown = () => wrapper.find(GlDropdown);
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
   const findStatusTabs = () => wrapper.find(GlTabs);
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
-  const findFirstStatusOption = () => findStatusDropdown().find(GlDeprecatedDropdownItem);
+  const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
   const findPagination = () => wrapper.find(GlPagination);
   const findSearch = () => wrapper.find(GlSearchBoxByType);
   const findSeverityColumnHeader = () =>
@@ -295,10 +295,30 @@ describe('AlertManagementTable', () => {
         loading: false,
       });
 
+      expect(visitUrl).not.toHaveBeenCalled();
+
       findAlerts()
         .at(0)
         .trigger('click');
-      expect(visitUrl).toHaveBeenCalledWith('/1527542/details');
+      expect(visitUrl).toHaveBeenCalledWith('/1527542/details', false);
+    });
+
+    it('navigates to the detail page in new tab when alert row is clicked with the metaKey', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
+        loading: false,
+      });
+
+      expect(visitUrl).not.toHaveBeenCalled();
+
+      findAlerts()
+        .at(0)
+        .trigger('click', {
+          metaKey: true,
+        });
+
+      expect(visitUrl).toHaveBeenCalledWith('/1527542/details', true);
     });
 
     describe('alert issue links', () => {

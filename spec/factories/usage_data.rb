@@ -50,6 +50,9 @@ FactoryBot.define do
       create(:protected_branch, project: projects[0])
       create(:protected_branch, name: 'main', project: projects[0])
 
+      # Tracing
+      create(:project_tracing_setting, project: projects[0])
+
       # Incident Labeled Issues
       incident_label = create(:label, :incident, project: projects[0])
       create(:labeled_issue, project: projects[0], labels: [incident_label])
@@ -97,16 +100,19 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
-      create(:package, project: projects[0])
-      create(:package, project: projects[0])
-      create(:package, project: projects[1])
+      create(:package, project: projects[0], created_at: 3.days.ago)
+      create(:package, project: projects[0], created_at: 3.days.ago)
+      create(:package, project: projects[1], created_at: 3.days.ago)
       create(:package, created_at: 2.months.ago, project: projects[1])
+
+      # User Preferences
+      create(:user_preference, gitpod_enabled: true)
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 
       # Create fresh & a month (28-days SMAU) old  data
       env = create(:environment, project: projects[3])
-      [2, 29].each do |n|
+      [3, 31].each do |n|
         deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
         create(:deployment, :failed, deployment_options)
         create(:deployment, :success, deployment_options)

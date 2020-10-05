@@ -32,11 +32,18 @@ module Ci
       Gitlab::Routing.url_helpers.project_new_merge_request_path(project, format: :json)
     end
 
+    def pipelines_project_merge_request_path(merge_request)
+      Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(merge_request.target_project, merge_request, format: :json)
+    end
+
+    def merge_request_widget_path(merge_request)
+      Gitlab::Routing.url_helpers.cached_widget_project_json_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+
     def each_pipelines_merge_request_path(pipeline)
       pipeline.all_merge_requests.each do |merge_request|
-        path = Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(merge_request.target_project, merge_request, format: :json)
-
-        yield(path)
+        yield(pipelines_project_merge_request_path(merge_request))
+        yield(merge_request_widget_path(merge_request))
       end
     end
 

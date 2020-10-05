@@ -1,0 +1,14 @@
+---
+# Suggestion: gitlab.InclusionAbleism
+#
+# Suggests alternatives for words that foster ableism.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Use inclusive language. Consider "%s" instead of "%s".'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#inclusive-language
+level: suggestion
+ignorecase: true
+swap:
+  sanity (?:check|test): check for completeness
+  dummy: placeholder, sample, fake

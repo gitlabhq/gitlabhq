@@ -69,7 +69,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-holder snippet">
+  <div class="file-holder snippet" data-qa-selector="file_holder_container">
     <blob-header-edit
       :id="inputId"
       :value="blob.path"

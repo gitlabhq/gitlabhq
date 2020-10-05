@@ -26,9 +26,11 @@ RSpec.describe Ci::ExpirePipelineCacheService do
       project = merge_request.target_project
 
       merge_request_pipelines_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/pipelines.json"
+      merge_request_widget_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/cached_widget.json"
 
       allow_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch)
       expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(merge_request_pipelines_path)
+      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(merge_request_widget_path)
 
       subject.execute(merge_request.all_pipelines.last)
     end

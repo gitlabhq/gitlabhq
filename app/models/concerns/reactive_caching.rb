@@ -9,7 +9,7 @@ module ReactiveCaching
   ExceededReactiveCacheLimit = Class.new(StandardError)
 
   WORK_TYPE = {
-    default: ReactiveCachingWorker,
+    no_dependency: ReactiveCachingWorker,
     external_dependency: ExternalServiceReactiveCachingWorker
   }.freeze
 
@@ -30,7 +30,6 @@ module ReactiveCaching
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes
     self.reactive_cache_hard_limit = nil # this value should be set in megabytes. E.g: 1.megabyte
-    self.reactive_cache_work_type = :default
     self.reactive_cache_worker_finder = ->(id, *_args) do
       find_by(primary_key => id)
     end

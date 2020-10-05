@@ -8,10 +8,15 @@ RSpec.describe Resolvers::ProjectsResolver do
   describe '#resolve' do
     subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }) }
 
+    let_it_be(:group) { create(:group, name: 'public-group') }
+    let_it_be(:private_group) { create(:group, name: 'private-group') }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:other_project) { create(:project, :public) }
+    let_it_be(:group_project) { create(:project, :public, group: group) }
     let_it_be(:private_project) { create(:project, :private) }
     let_it_be(:other_private_project) { create(:project, :private) }
+    let_it_be(:other_private_project) { create(:project, :private) }
+    let_it_be(:private_group_project) { create(:project, :private, group: private_group) }
 
     let_it_be(:user) { create(:user) }
 
@@ -20,6 +25,7 @@ RSpec.describe Resolvers::ProjectsResolver do
     before_all do
       project.add_developer(user)
       private_project.add_developer(user)
+      private_group.add_developer(user)
     end
 
     context 'when user is not logged in' do
@@ -27,7 +33,7 @@ RSpec.describe Resolvers::ProjectsResolver do
 
       context 'when no filters are applied' do
         it 'returns all public projects' do
-          is_expected.to contain_exactly(project, other_project)
+          is_expected.to contain_exactly(project, other_project, group_project)
         end
 
         context 'when search filter is provided' do
@@ -45,6 +51,22 @@ RSpec.describe Resolvers::ProjectsResolver do
             is_expected.to be_empty
           end
         end
+
+        context 'when searchNamespaces filter is provided' do
+          let(:filters) { { search: 'group', search_namespaces: true } }
+
+          it 'returns projects in a matching namespace' do
+            is_expected.to contain_exactly(group_project)
+          end
+        end
+
+        context 'when searchNamespaces filter false' do
+          let(:filters) { { search: 'group', search_namespaces: false } }
+
+          it 'returns ignores namespace matches' do
+            is_expected.to be_empty
+          end
+        end
       end
     end
 
@@ -53,7 +75,7 @@ RSpec.describe Resolvers::ProjectsResolver do
 
       context 'when no filters are applied' do
         it 'returns all visible projects for the user' do
-          is_expected.to contain_exactly(project, other_project, private_project)
+          is_expected.to contain_exactly(project, other_project, group_project, private_project, private_group_project)
         end
 
         context 'when search filter is provided' do
@@ -68,7 +90,23 @@ RSpec.describe Resolvers::ProjectsResolver do
           let(:filters) { { membership: true } }
 
           it 'returns projects that user is member of' do
-            is_expected.to contain_exactly(project, private_project)
+            is_expected.to contain_exactly(project, private_project, private_group_project)
+          end
+        end
+
+        context 'when searchNamespaces filter is provided' do
+          let(:filters) { { search: 'group', search_namespaces: true } }
+
+          it 'returns projects from matching group' do
+            is_expected.to contain_exactly(group_project, private_group_project)
+          end
+        end
+
+        context 'when searchNamespaces filter false' do
+          let(:filters) { { search: 'group', search_namespaces: false } }
+
+          it 'returns ignores namespace matches' do
+            is_expected.to be_empty
           end
         end
 

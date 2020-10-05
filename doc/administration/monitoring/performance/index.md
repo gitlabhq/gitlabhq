@@ -11,7 +11,7 @@ GitLab comes with its own application performance measuring system as of GitLab
 Community and Enterprise editions.
 
 Apart from this introduction, you are advised to read through the following
-documents in order to understand and properly configure GitLab Performance Monitoring:
+documents to understand and properly configure GitLab Performance Monitoring:
 
 - [GitLab Configuration](gitlab_configuration.md)
 - [Prometheus documentation](../prometheus/index.md)

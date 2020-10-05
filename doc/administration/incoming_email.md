@@ -90,7 +90,7 @@ Be careful when choosing the domain used for receiving incoming email.
 For the sake of example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain via Google
 Apps, and your company's private Slack instance requires a valid `@hooli.com`
-email address in order to sign up.
+email address to sign up.
 
 If you also host a public-facing GitLab instance at `hooli.com` and set your
 incoming email domain to `hooli.com`, an attacker could abuse the "Create new

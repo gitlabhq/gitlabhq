@@ -15,12 +15,14 @@ module ApplicationCable
     private
 
     def find_user_from_session_store
-      session = ActiveSession.sessions_from_ids([session_id.private_id]).first
+      session = ActiveSession.sessions_from_ids(Array.wrap(session_id)).first
       Warden::SessionSerializer.new('rack.session' => session).fetch(:user)
     end
 
     def session_id
-      Rack::Session::SessionId.new(cookies[Gitlab::Application.config.session_options[:key]])
+      session_cookie = cookies[Gitlab::Application.config.session_options[:key]]
+
+      Rack::Session::SessionId.new(session_cookie).private_id if session_cookie.present?
     end
 
     def notification_payload(_)

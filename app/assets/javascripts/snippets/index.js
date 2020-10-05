@@ -3,8 +3,6 @@ import VueApollo from 'vue-apollo';
 import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 
-import SnippetsShow from './components/show.vue';
-import SnippetsEdit from './components/edit.vue';
 import { SNIPPET_LEVELS_MAP, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
 
 Vue.use(VueApollo);
@@ -16,7 +14,7 @@ function appFactory(el, Component) {
   }
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient: createDefaultClient({}, { batchMax: 1 }),
   });
 
   const {
@@ -48,9 +46,17 @@ function appFactory(el, Component) {
 }
 
 export const SnippetShowInit = () => {
-  appFactory(document.getElementById('js-snippet-view'), SnippetsShow);
+  import('./components/show.vue')
+    .then(({ default: SnippetsShow }) => {
+      appFactory(document.getElementById('js-snippet-view'), SnippetsShow);
+    })
+    .catch(() => {});
 };
 
 export const SnippetEditInit = () => {
-  appFactory(document.getElementById('js-snippet-edit'), SnippetsEdit);
+  import('./components/edit.vue')
+    .then(({ default: SnippetsEdit }) => {
+      appFactory(document.getElementById('js-snippet-edit'), SnippetsEdit);
+    })
+    .catch(() => {});
 };

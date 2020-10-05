@@ -1,4 +1,0 @@
-- if @error.present?
-  new Flash({ message: '#{escape_javascript(@error)}', type: 'alert' });
-- elsif @repository.tags.empty?
-  $('.tags').load(document.URL + ' .nothing-here-block').hide().fadeIn(1000)

@@ -2,8 +2,8 @@
 
 These API calls allow you to read and modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-as appear in `/admin/application_settings/general`. You have to be an
-administrator in order to perform this action.
+as they appear in `/admin/application_settings/general`. You must be an
+administrator to perform this action.
 
 ## Get current application settings
 
@@ -185,13 +185,14 @@ Example responses: **(PREMIUM ONLY)**
 
 ## List of settings that can be accessed via API calls
 
-In general, all settings are optional. Certain settings though, if enabled, will
-require other settings to be set in order to function properly. These requirements
-are listed in the descriptions of the relevant settings.
+In general, all settings are optional. Certain settings though, if enabled,
+require other settings to be set to function properly. These requirements are
+listed in the descriptions of the relevant settings.
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | :------: | ----------- |
-| `admin_notification_email`               | string           | no                                   | Abuse reports will be sent to this address if it is set. Abuse reports are always available in the Admin Area. |
+| Attribute                                | Type             | Required                             | Description |
+|------------------------------------------|------------------|:------------------------------------:|-------------|
+| `admin_notification_email`               | string           | no                                   | Deprecated: Use `abuse_notification_email` instead. If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area.  |
+| `abuse_notification_email`               | string           | no                                   | If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
 | `after_sign_out_path`                    | string           | no                                   | Where to redirect users after logout. |
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
@@ -255,10 +256,10 @@ are listed in the descriptions of the relevant settings.
 | `external_auth_client_cert`              | string           | no                                   | (**If enabled, requires:** `external_auth_client_key`) The certificate to use to authenticate with the external authorization service |
 | `external_auth_client_key_pass`          | string           | no                                   | Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
 | `external_auth_client_key`               | string           | required by: `external_auth_client_cert` | Private key for the certificate when authentication is required for the external authorization service, this is encrypted when stored |
-| `external_authorization_service_default_label` | string     | required by: `external_authorization_service_enabled` | The default classification label to use when requesting authorization and no classification label has been specified on the project |
+| `external_authorization_service_default_label` | string     | required by:<br>`external_authorization_service_enabled` | The default classification label to use when requesting authorization and no classification label has been specified on the project. |
 | `external_authorization_service_enabled` | boolean          | no                                   | (**If enabled, requires:** `external_authorization_service_default_label`, `external_authorization_service_timeout` and `external_authorization_service_url`) Enable using an external authorization service for accessing projects |
-| `external_authorization_service_timeout` | float            | required by: `external_authorization_service_enabled` | The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001) |
-| `external_authorization_service_url`     | string           | required by: `external_authorization_service_enabled` | URL to which authorization requests will be directed |
+| `external_authorization_service_timeout` | float            | required by:<br>`external_authorization_service_enabled` | The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001). |
+| `external_authorization_service_url`     | string           | required by:<br>`external_authorization_service_enabled` | URL to which authorization requests are directed. |
 | `file_template_project_id`               | integer          | no                                   | **(PREMIUM)** The ID of a project to load custom file templates from |
 | `first_day_of_week`                      | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
 | `geo_node_allowed_ips`                   | string           | yes                                  | **(PREMIUM)** Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |
@@ -321,7 +322,7 @@ are listed in the descriptions of the relevant settings.
 | `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab will periodically run `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit`                  | integer          | no                                   | **(PREMIUM)** Size limit per repository (MB) |
-| `repository_storages_weighted`           | hash of strings to integers | no                        | (GitLab 13.1 and later) Hash of names of taken from `gitlab.yml` to weights. New projects are created in one of these stores, chosen by a weighted random selection. |
+| `repository_storages_weighted`           | hash of strings to integers | no                        | (GitLab 13.1 and later) Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#choose-where-new-repositories-will-be-stored). New projects are created in one of these stores, chosen by a weighted random selection. |
 | `repository_storages`                    | array of strings | no                                   | (GitLab 13.0 and earlier) List of names of enabled storage paths, taken from `gitlab.yml`. New projects are created in one of these stores, chosen at random. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-admin users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction. |
@@ -351,14 +352,14 @@ are listed in the descriptions of the relevant settings.
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by:** `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`     | boolean          | no                                   | (**If enabled, requires:** `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
-| `throttle_authenticated_api_period_in_seconds` | integer    | required by: `throttle_authenticated_api_enabled` | Rate limit period in seconds.  |
-| `throttle_authenticated_api_requests_per_period` | integer  | required by: `throttle_authenticated_api_enabled` | Max requests per period per user. |
+| `throttle_authenticated_api_period_in_seconds` | integer    | required by:<br>`throttle_authenticated_api_enabled` | Rate limit period in seconds.  |
+| `throttle_authenticated_api_requests_per_period` | integer  | required by:<br>`throttle_authenticated_api_enabled` | Max requests per period per user. |
 | `throttle_authenticated_web_enabled`     | boolean          | no                                   | (**If enabled, requires:** `throttle_authenticated_web_period_in_seconds` and `throttle_authenticated_web_requests_per_period`) Enable authenticated web request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
-| `throttle_authenticated_web_period_in_seconds` | integer    | required by: `throttle_authenticated_web_enabled` | Rate limit period in seconds. |
-| `throttle_authenticated_web_requests_per_period` | integer  | required by: `throttle_authenticated_web_enabled` | Max requests per period per user. |
+| `throttle_authenticated_web_period_in_seconds` | integer    | required by:<br>`throttle_authenticated_web_enabled` | Rate limit period in seconds. |
+| `throttle_authenticated_web_requests_per_period` | integer  | required by:<br>`throttle_authenticated_web_enabled` | Max requests per period per user. |
 | `throttle_unauthenticated_enabled`       | boolean          | no                                   | (**If enabled, requires:** `throttle_unauthenticated_period_in_seconds` and `throttle_unauthenticated_requests_per_period`) Enable unauthenticated request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
-| `throttle_unauthenticated_period_in_seconds` | integer      | required by: `throttle_unauthenticated_enabled` | Rate limit period in seconds.  |
-| `throttle_unauthenticated_requests_per_period` | integer    | required by: `throttle_unauthenticated_enabled` | Max requests per period per IP. |
+| `throttle_unauthenticated_period_in_seconds` | integer      | required by:<br>`throttle_unauthenticated_enabled` | Rate limit period in seconds.  |
+| `throttle_unauthenticated_requests_per_period` | integer    | required by:<br>`throttle_unauthenticated_enabled` | Max requests per period per IP. |
 | `time_tracking_limit_to_hours`           | boolean          | no                                   | Limit display of time tracking units to hours. Default is `false`. |
 | `two_factor_grace_period`                | integer          | required by: `require_two_factor_authentication` | Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication. |
 | `unique_ips_limit_enabled`               | boolean          | no                                   | (**If enabled, requires:** `unique_ips_limit_per_user` and `unique_ips_limit_time_window`) Limit sign in from multiple ips. |

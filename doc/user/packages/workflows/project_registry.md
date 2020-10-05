@@ -80,11 +80,11 @@ Now you can [deploy Maven packages](../maven_repository/index.md#uploading-packa
 
 #### Conan
 
-For Conan, first you need to add GitLab as a Conan registry remote. Follow the instructions in the [GitLab Conan Repository docs](../conan_repository/index.md#adding-the-gitlab-package-registry-as-a-conan-remote)
+For Conan, first you need to add GitLab as a Conan registry remote. Follow the instructions in the [GitLab Conan Repository docs](../conan_repository/index.md#add-the-package-registry-as-a-conan-remote)
 to do so. Then, create your package using the plus-separated (`+`) project path as your Conan user. For example,
 if your project is located at `https://gitlab.com/foo/bar/my-proj`, then you can [create your Conan package](../conan_repository/index.md)
 using `conan create . foo+bar+my-proj/channel`, where `channel` is your package channel (`stable`, `beta`, etc.). Once your package
-is created, you are ready to [upload your package](../conan_repository/index.md#uploading-a-package) depending on your final package recipe. For example:
+is created, you are ready to [upload your package](../conan_repository/index.md#publish-a-conan-package) depending on your final package recipe. For example:
 
 ```shell
 CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload MyPackage/1.0.0@foo+bar+my-proj/channel --all --remote=gitlab

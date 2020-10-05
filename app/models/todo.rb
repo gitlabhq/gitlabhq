@@ -227,7 +227,7 @@ class Todo < ApplicationRecord
   end
 
   def self_assigned?
-    assigned? && self_added?
+    self_added? && (assigned? || review_requested?)
   end
 
   private

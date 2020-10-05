@@ -156,3 +156,18 @@
     display: none;
   }
 }
+
+// This utility is used to force the z-index to match that of dropdown menu's
+.gl-z-dropdown-menu\! {
+  z-index: 300 !important;
+}
+
+.gl-flex-basis-quarter {
+  flex-basis: 25%;
+}
+
+.gl-md-ml-3 {
+  @media (min-width: $breakpoint-md) {
+    margin-left: $gl-spacing-scale-3;
+  }
+}

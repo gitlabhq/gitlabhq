@@ -129,46 +129,36 @@ RSpec.describe GitGarbageCollectWorker do
           let_it_be(:lfs_reference) { create(:lfs_objects_project, project: project) }
           let(:lfs_object) { lfs_reference.lfs_object }
 
-          context 'with cleanup_lfs_during_gc feature flag enabled' do
-            before do
-              stub_feature_flags(cleanup_lfs_during_gc: true)
+          it 'cleans up unreferenced LFS objects' do
+            expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
+              expect(svc.project).to eq(project)
+              expect(svc.dry_run).to be_falsy
+              expect(svc).to receive(:run!).and_call_original
             end
 
-            it 'cleans up unreferenced LFS objects' do
-              expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
-                expect(svc.project).to eq(project)
-                expect(svc.dry_run).to be_falsy
-                expect(svc).to receive(:run!).and_call_original
-              end
+            subject.perform(*params)
 
-              subject.perform(*params)
-
-              expect(project.lfs_objects.reload).not_to include(lfs_object)
-            end
-
-            it 'does nothing if the database is read-only' do
-              allow(Gitlab::Database).to receive(:read_only?) { true }
-
-              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
-
-              subject.perform(*params)
-
-              expect(project.lfs_objects.reload).to include(lfs_object)
-            end
+            expect(project.lfs_objects.reload).not_to include(lfs_object)
           end
 
-          context 'with cleanup_lfs_during_gc feature flag disabled' do
-            before do
-              stub_feature_flags(cleanup_lfs_during_gc: false)
-            end
+          it 'catches and logs exceptions' do
+            expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences)
+              .to receive(:run!)
+              .and_raise(/Failed/)
 
-            it 'does not clean up unreferenced LFS objects' do
-              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+            expect(Gitlab::GitLogger).to receive(:warn)
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-              subject.perform(*params)
+            subject.perform(*params)
+          end
 
-              expect(project.lfs_objects.reload).to include(lfs_object)
-            end
+          it 'does nothing if the database is read-only' do
+            allow(Gitlab::Database).to receive(:read_only?) { true }
+            expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+
+            subject.perform(*params)
+
+            expect(project.lfs_objects.reload).to include(lfs_object)
           end
         end
       end

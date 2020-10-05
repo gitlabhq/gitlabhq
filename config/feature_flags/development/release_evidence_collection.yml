@@ -1,7 +1,7 @@
 ---
 name: release_evidence_collection
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url:
+rollout_issue_url:
+group: group::release management
 type: development
 default_enabled: true

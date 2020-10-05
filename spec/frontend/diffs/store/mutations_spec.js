@@ -130,14 +130,14 @@ describe('DiffsStoreMutations', () => {
     it('should change the collapsed prop from diffFiles', () => {
       const diffFile = {
         viewer: {
-          collapsed: true,
+          automaticallyCollapsed: true,
         },
       };
       const state = { expandAllFiles: true, diffFiles: [diffFile] };
 
       mutations[types.EXPAND_ALL_FILES](state);
 
-      expect(state.diffFiles[0].viewer.collapsed).toEqual(false);
+      expect(state.diffFiles[0].viewer.automaticallyCollapsed).toEqual(false);
     });
   });
 
@@ -933,12 +933,12 @@ describe('DiffsStoreMutations', () => {
   describe('SET_FILE_COLLAPSED', () => {
     it('sets collapsed', () => {
       const state = {
-        diffFiles: [{ file_path: 'test', viewer: { collapsed: false } }],
+        diffFiles: [{ file_path: 'test', viewer: { automaticallyCollapsed: false } }],
       };
 
       mutations[types.SET_FILE_COLLAPSED](state, { filePath: 'test', collapsed: true });
 
-      expect(state.diffFiles[0].viewer.collapsed).toBe(true);
+      expect(state.diffFiles[0].viewer.automaticallyCollapsed).toBe(true);
     });
   });
 

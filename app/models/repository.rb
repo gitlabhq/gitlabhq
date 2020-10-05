@@ -853,7 +853,7 @@ class Repository
   def merge(user, source_sha, merge_request, message)
     with_cache_hooks do
       raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
-        merge_request.update(in_progress_merge_commit_sha: commit_id)
+        merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
         nil # Return value does not matter.
       end
     end
@@ -873,7 +873,7 @@ class Repository
     their_commit_id = commit(source)&.id
     raise 'Invalid merge source' if their_commit_id.nil?
 
-    merge_request&.update(in_progress_merge_commit_sha: their_commit_id)
+    merge_request&.update_and_mark_in_progress_merge_commit_sha(their_commit_id)
 
     with_cache_hooks { raw.ff_merge(user, their_commit_id, target_branch) }
   end

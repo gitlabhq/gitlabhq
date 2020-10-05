@@ -11,7 +11,8 @@ class IssueRebalancingWorker
     return if project_id.nil?
 
     project = Project.find(project_id)
-    issue = project.issues.first # All issues are equivalent as far as we are concerned
+    # All issues are equivalent as far as we are concerned
+    issue = project.issues.take # rubocop: disable CodeReuse/ActiveRecord
 
     IssueRebalancingService.new(issue).execute
   rescue ActiveRecord::RecordNotFound, IssueRebalancingService::TooManyIssues => e

@@ -24,6 +24,7 @@
 - [Background migrations](../background_migrations.md)
 - [Swapping tables](../swapping_tables.md)
 - [Deleting migrations](../deleting_migrations.md)
+- [Partitioning tables](table_partitioning.md)
 
 ## Debugging
 

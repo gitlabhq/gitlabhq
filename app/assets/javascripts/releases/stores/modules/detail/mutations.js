@@ -13,6 +13,7 @@ export default {
       name: '',
       description: '',
       milestones: [],
+      groupMilestones: [],
       assets: {
         links: [],
       },
@@ -49,6 +50,10 @@ export default {
 
   [types.UPDATE_RELEASE_MILESTONES](state, milestones) {
     state.release.milestones = milestones;
+  },
+
+  [types.UPDATE_RELEASE_GROUP_MILESTONES](state, groupMilestones) {
+    state.release.groupMilestones = groupMilestones;
   },
 
   [types.REQUEST_SAVE_RELEASE](state) {

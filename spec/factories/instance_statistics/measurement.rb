@@ -13,5 +13,13 @@ FactoryBot.define do
     trait :group_count do
       identifier { :groups }
     end
+
+    trait :pipelines_succeeded_count do
+      identifier { :pipelines_succeeded }
+    end
+
+    trait :pipelines_skipped_count do
+      identifier { :pipelines_skipped }
+    end
   end
 end

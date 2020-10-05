@@ -151,6 +151,32 @@ RSpec.describe Projects::UpdateService do
           expect(project.reload).to be_internal
         end
       end
+
+      context 'when updating shared runners' do
+        context 'can enable shared runners' do
+          let(:group) { create(:group, shared_runners_enabled: true) }
+          let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+
+          it 'enables shared runners' do
+            result = update_project(project, user, shared_runners_enabled: true)
+
+            expect(result).to eq({ status: :success })
+            expect(project.reload.shared_runners_enabled).to be_truthy
+          end
+        end
+
+        context 'cannot enable shared runners' do
+          let(:group) { create(:group, :shared_runners_disabled) }
+          let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+
+          it 'does not enable shared runners' do
+            result = update_project(project, user, shared_runners_enabled: true)
+
+            expect(result).to eq({ status: :error, message: 'Shared runners enabled cannot be enabled because parent group does not allow it' })
+            expect(project.reload.shared_runners_enabled).to be_falsey
+          end
+        end
+      end
     end
 
     describe 'when updating project that has forks' do

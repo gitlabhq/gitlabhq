@@ -184,7 +184,6 @@ export default {
             :deploy-boards-help-path="deployBoardsHelpPath"
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
-            :has-legacy-app-label="model.hasLegacyAppLabel"
             :logs-path="model.logs_path"
           />
         </div>

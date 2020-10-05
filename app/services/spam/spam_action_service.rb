@@ -45,7 +45,7 @@ module Spam
     attr_reader :user, :context
 
     def allowlisted?(user)
-      user.respond_to?(:gitlab_employee) && user.gitlab_employee?
+      user.try(:gitlab_employee?) || user.try(:gitlab_bot?)
     end
 
     def perform_spam_service_check(api)

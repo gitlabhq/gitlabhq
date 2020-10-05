@@ -93,23 +93,20 @@ exports[`Alert integration settings form default state should match the default 
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
      
-    <div
-      class="gl-display-flex gl-justify-content-end"
+    <gl-button-stub
+      buttontextclasses=""
+      category="primary"
+      class="js-no-auto-disable"
+      data-qa-selector="save_changes_button"
+      icon=""
+      size="medium"
+      type="submit"
+      variant="success"
     >
-      <gl-button-stub
-        category="primary"
-        class="js-no-auto-disable"
-        data-qa-selector="save_changes_button"
-        icon=""
-        size="medium"
-        type="submit"
-        variant="success"
-      >
-        
-        Save changes
       
-      </gl-button-stub>
-    </div>
+      Save changes
+    
+    </gl-button-stub>
   </form>
 </div>
 `;

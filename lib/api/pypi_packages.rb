@@ -72,7 +72,7 @@ module API
           package = packages_finder(project).by_file_name_and_sha256(filename, params[:sha256])
           package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
-          package_event('pull_package')
+          track_package_event('pull_package', :pypi)
 
           present_carrierwave_file!(package_file.file, supports_direct_download: true)
         end
@@ -91,7 +91,7 @@ module API
         get 'simple/*package_name', format: :txt do
           authorize_read_package!(authorized_user_project)
 
-          package_event('list_package')
+          track_package_event('list_package', :pypi)
 
           packages = find_package_versions
           presenter = ::Packages::Pypi::PackagePresenter.new(packages, authorized_user_project)
@@ -122,7 +122,7 @@ module API
           authorize_upload!(authorized_user_project)
           bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:pypi_max_file_size, params[:content].size)
 
-          package_event('push_package')
+          track_package_event('push_package', :pypi)
 
           ::Packages::Pypi::CreatePackageService
             .new(authorized_user_project, current_user, declared_params)

@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "enabled",
+    "strategies"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "description": {
+      "type": "string"
+    },
+    "strategies": {
+      "items": {
+        "$ref": "unleash_strategy.json"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  }
+}

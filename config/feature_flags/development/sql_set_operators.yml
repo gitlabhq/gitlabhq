@@ -1,7 +1,7 @@
 ---
 name: sql_set_operators
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39786#f99799ae4964b7650b877e081b669379d71bcca8
+group: group::access
 type: development
 default_enabled: false

@@ -259,7 +259,7 @@ RSpec.describe API::Releases do
         end
 
         it '#collected_at' do
-          Timecop.freeze(Time.now.round) do
+          travel_to(Time.now.round) do
             get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
             expect(json_response['evidences'].first['collected_at'].to_datetime.to_i).to be_within(1.minute).of(release.evidences.first.created_at.to_i)
@@ -476,7 +476,7 @@ RSpec.describe API::Releases do
 
     it 'sets the released_at to the current time if the released_at parameter is not provided' do
       now = Time.zone.parse('2015-08-25 06:00:00Z')
-      Timecop.freeze(now) do
+      travel_to(now) do
         post api("/projects/#{project.id}/releases", maintainer), params: params
 
         expect(project.releases.last.released_at).to eq(now)

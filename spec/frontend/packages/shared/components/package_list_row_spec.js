@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
+import PackagePath from '~/packages/shared/components/package_path.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { packageList } from '../../mock_data';
 
@@ -11,7 +12,7 @@ describe('packages_list_row', () => {
   const [packageWithoutTags, packageWithTags] = packageList;
 
   const findPackageTags = () => wrapper.find(PackageTags);
-  const findProjectLink = () => wrapper.find('[data-testid="packages-row-project"]');
+  const findPackagePath = () => wrapper.find(PackagePath);
   const findDeleteButton = () => wrapper.find('[data-testid="action-delete"]');
   const findPackageType = () => wrapper.find('[data-testid="package-type"]');
 
@@ -63,8 +64,9 @@ describe('packages_list_row', () => {
       mountComponent({ isGroup: true });
     });
 
-    it('has project field', () => {
-      expect(findProjectLink().exists()).toBe(true);
+    it('has a package path component', () => {
+      expect(findPackagePath().exists()).toBe(true);
+      expect(findPackagePath().props()).toMatchObject({ path: 'foo/bar/baz' });
     });
   });
 

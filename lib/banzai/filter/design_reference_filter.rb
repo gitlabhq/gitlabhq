@@ -3,8 +3,6 @@
 module Banzai
   module Filter
     class DesignReferenceFilter < AbstractReferenceFilter
-      FEATURE_FLAG = :design_management_reference_filter_gfm_pipeline
-
       class Identifier
         include Comparable
         attr_reader :issue_iid, :filename
@@ -34,14 +32,6 @@ module Banzai
       end
 
       self.reference_type = :design
-
-      # This filter must be enabled by setting the
-      # design_management_reference_filter_gfm_pipeline flag
-      def call
-        return doc unless enabled?
-
-        super
-      end
 
       def find_object(project, identifier)
         records_per_parent[project][identifier]
@@ -111,10 +101,6 @@ module Banzai
           .compact
           .in_groups_of(100, false) # limitation of by_issue_id_and_filename, so we batch
           .flat_map { |ids| DesignManagement::Design.by_issue_id_and_filename(ids) }
-      end
-
-      def enabled?
-        Feature.enabled?(FEATURE_FLAG, parent, default_enabled: true)
       end
     end
   end

@@ -1,7 +1,7 @@
 ---
 name: product_analytics
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36443
+rollout_issue_url:
+group: group::product_analytics
 type: development
 default_enabled: false

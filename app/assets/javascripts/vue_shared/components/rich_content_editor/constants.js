@@ -4,6 +4,8 @@ export const CUSTOM_EVENTS = {
   openAddImageModal: 'gl_openAddImageModal',
 };
 
+export const ALLOWED_VIDEO_ORIGINS = ['https://www.youtube.com'];
+
 /* eslint-disable @gitlab/require-i18n-strings */
 export const TOOLBAR_ITEM_CONFIGS = [
   { icon: 'heading', event: 'openHeadingSelect', classes: 'tui-heading', tooltip: __('Headings') },

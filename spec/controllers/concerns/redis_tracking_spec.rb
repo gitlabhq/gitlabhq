@@ -36,21 +36,9 @@ RSpec.describe RedisTracking do
     end
   end
 
-  context 'with usage ping disabled' do
-    it 'does not track the event' do
-      stub_feature_flags(feature => true)
-      allow(Gitlab::CurrentSettings).to receive(:usage_ping_enabled?).and_return(false)
-
-      expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-      get :index
-    end
-  end
-
-  context 'with feature enabled and usage ping enabled' do
+  context 'with feature enabled' do
     before do
       stub_feature_flags(feature => true)
-      allow(Gitlab::CurrentSettings).to receive(:usage_ping_enabled?).and_return(true)
     end
 
     context 'when user is logged in' do

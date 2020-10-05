@@ -9,18 +9,14 @@ module QA
 
       def wait_for_requests(skip_finished_loading_check: false)
         Waiter.wait_until(log: false) do
-          finished_all_ajax_requests? && finished_all_axios_requests? && (!skip_finished_loading_check ? finished_loading?(wait: 1) : true)
+          finished_all_ajax_requests? && (!skip_finished_loading_check ? finished_loading?(wait: 1) : true)
         end
-      end
-
-      def finished_all_axios_requests?
-        Capybara.page.evaluate_script('window.pendingRequests || 0').zero? # rubocop:disable Style/NumericPredicate
+      rescue Repeater::WaitExceededError
+        raise $!, 'Page did not fully load. This could be due to an unending async request or loading icon.'
       end
 
       def finished_all_ajax_requests?
-        return true if Capybara.page.evaluate_script('typeof jQuery === "undefined"')
-
-        Capybara.page.evaluate_script('jQuery.active').zero? # rubocop:disable Style/NumericPredicate
+        Capybara.page.evaluate_script('window.pendingRequests || window.pendingRailsUJSRequests || 0').zero? # rubocop:disable Style/NumericPredicate
       end
 
       def finished_loading?(wait: DEFAULT_MAX_WAIT_TIME)

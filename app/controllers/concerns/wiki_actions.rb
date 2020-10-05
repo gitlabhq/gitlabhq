@@ -44,7 +44,7 @@ module WikiActions
       wiki.list_pages(sort: params[:sort], direction: params[:direction])
     ).page(params[:page])
 
-    @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
+    @wiki_entries = WikiDirectory.group_pages(@wiki_pages)
 
     render 'shared/wikis/pages'
   end

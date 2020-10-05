@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
+const textareaValue = 'testing\n123';
 
 function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
   expect(writeLink.element.parentNode.classList.contains('active')).toBe(isWrite);
@@ -20,23 +21,11 @@ function createComponent() {
       markdownDocsPath,
       markdownPreviewPath,
       isSubmitting: false,
+      textareaValue,
     },
     slots: {
-      textarea: '<textarea>testing\n123</textarea>',
+      textarea: `<textarea>${textareaValue}</textarea>`,
     },
-    template: `
-    <field-component
-      markdown-preview-path="${markdownPreviewPath}"
-      markdown-docs-path="${markdownDocsPath}"
-      :isSubmitting="false"
-    >
-      <textarea
-        slot="textarea"
-        v-model="text">
-        <slot>this is a test</slot>
-      </textarea>
-    </field-component>
-    `,
   });
   return wrapper;
 }

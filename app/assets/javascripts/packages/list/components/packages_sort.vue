@@ -51,7 +51,7 @@ export default {
     <gl-sorting-item
       v-for="item in sortableFields"
       ref="packageListSortItem"
-      :key="item.key"
+      :key="item.orderBy"
       @click="onSortItemClick(item.orderBy)"
     >
       {{ item.label }}

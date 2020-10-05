@@ -103,8 +103,8 @@ When a static label is used and a query returns multiple time series, then all t
 metrics:
   - id: my_metric_id
     query_range: 'http_requests_total'
-    label: "Time Series"
-    unit: "count"
+    label: 'Time Series'
+    unit: 'count'
 ```
 
 This may render a legend like this:
@@ -117,8 +117,8 @@ For labels to be more explicit, using variables that reflect time series labels 
 metrics:
   - id: my_metric_id
     query_range: 'http_requests_total'
-    label: "Instance: {{instance}}, method: {{method}}"
-    unit: "count"
+    label: 'Instance: {{instance}}, method: {{method}}'
+    unit: 'count'
 ```
 
 The resulting rendered legend will look like this:
@@ -131,8 +131,8 @@ There is also a shorthand value for dynamic dashboard labels that make use of on
 metrics:
   - id: my_metric_id
     query_range: 'http_requests_total'
-    label: "Method"
-    unit: "count"
+    label: 'Method'
+    unit: 'count'
 ```
 
 This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value will be used and rendered in the legend like this:

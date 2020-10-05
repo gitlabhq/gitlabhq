@@ -77,6 +77,22 @@ a minimum implementation of `AbstractReferenceFilter` should define:
  and an identifier, find the object. For example, this in a reference filter for
  merge requests, this might be `project.merge_requests.where(iid: iid)`.
 
+### Add a new reference prefix and filter
+
+For reference filters for new objects, use a prefix format following the pattern
+`^<object_type>#`, because:
+
+1. Varied single-character prefixes are hard for users to track. Especially for
+   lower-use object types, this can diminish value for the feature.
+1. Suitable single-character prefixes are limited.
+1. Following a consistent pattern allows users to infer the existence of new features.
+
+To add a reference prefix for a new object `apple`,which has both a name and ID,
+format the reference as:
+
+- `^apple#123` for identification by ID.
+- `^apple#"Granny Smith"` for identification by name.
+
 ### Performance
 
 #### Find object optimization

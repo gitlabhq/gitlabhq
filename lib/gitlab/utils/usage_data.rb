@@ -39,9 +39,9 @@ module Gitlab
 
       FALLBACK = -1
 
-      def count(relation, column = nil, batch: true, start: nil, finish: nil)
+      def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch
-          Gitlab::Database::BatchCount.batch_count(relation, column, start: start, finish: finish)
+          Gitlab::Database::BatchCount.batch_count(relation, column, batch_size: batch_size, start: start, finish: finish)
         else
           relation.count
         end
@@ -106,7 +106,6 @@ module Gitlab
       # @param values [Array|String] the values counted
       def track_usage_event(event_name, values)
         return unless Feature.enabled?(:"usage_data_#{event_name}", default_enabled: true)
-        return unless Gitlab::CurrentSettings.usage_ping_enabled?
 
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name.to_s)
       end

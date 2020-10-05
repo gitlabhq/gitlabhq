@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { mapActions } from 'vuex';
-import { GlButtonGroup, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -182,14 +182,14 @@ export default {
           :endpoint="commit.pipeline_status_path"
           class="d-inline-flex"
         />
-        <div class="commit-sha-group">
-          <div class="label label-monospace monospace" v-text="commit.short_id"></div>
+        <gl-button-group class="gl-ml-4" data-testid="commit-sha-group">
+          <gl-button label class="gl-font-monospace" v-text="commit.short_id" />
           <clipboard-button
             :text="commit.id"
             :title="__('Copy commit SHA')"
-            class="btn btn-default"
+            class="input-group-text"
           />
-        </div>
+        </gl-button-group>
         <div
           v-if="hasNeighborCommits && glFeatures.mrCommitNeighborNav"
           class="commit-nav-buttons ml-3"

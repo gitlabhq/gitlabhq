@@ -429,4 +429,26 @@ RSpec.describe Git::BranchHooksService do
       end
     end
   end
+
+  describe 'Metrics dashboard sync' do
+    context 'with feature flag enabled' do
+      before do
+        Feature.enable(:metrics_dashboards_sync)
+      end
+
+      it 'imports metrics to database' do
+        expect(Metrics::Dashboard::SyncDashboardsWorker).to receive(:perform_async)
+
+        service.execute
+      end
+    end
+
+    context 'with feature flag disabled' do
+      it 'imports metrics to database' do
+        expect(Metrics::Dashboard::SyncDashboardsWorker).to receive(:perform_async)
+
+        service.execute
+      end
+    end
+  end
 end

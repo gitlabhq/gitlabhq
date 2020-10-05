@@ -283,6 +283,31 @@ RSpec.describe Groups::UpdateService do
     end
   end
 
+  context 'change shared Runners config' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, shared_runners_enabled: true, group: group) }
+
+    subject { described_class.new(group, user, shared_runners_setting: 'disabled_and_unoverridable').execute }
+
+    before do
+      group.add_owner(user)
+    end
+
+    it 'calls the shared runners update service' do
+      expect_any_instance_of(::Groups::UpdateSharedRunnersService).to receive(:execute).and_return({ status: :success })
+
+      expect(subject).to be_truthy
+    end
+
+    it 'handles errors in the shared runners update service' do
+      expect_any_instance_of(::Groups::UpdateSharedRunnersService).to receive(:execute).and_return({ status: :error, message: 'something happened' })
+
+      expect(subject).to be_falsy
+
+      expect(group.errors[:update_shared_runners].first).to eq('something happened')
+    end
+  end
+
   def update_group(group, user, opts)
     Groups::UpdateService.new(group, user, opts).execute
   end

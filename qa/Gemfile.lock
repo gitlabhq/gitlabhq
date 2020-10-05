@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     abstract_type (0.0.7)
-    activesupport (6.0.3.1)
+    activesupport (6.0.3.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -38,7 +38,7 @@ GEM
     concord (0.1.5)
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     debase (0.2.4.1)
       debase-ruby_core_source (>= 0.10.2)
     debase-ruby_core_source (0.10.6)
@@ -52,7 +52,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.8.2)
+    i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     knapsack (1.17.1)
@@ -67,11 +67,11 @@ GEM
     mime-types-data (3.2020.0425)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.1)
+    minitest (5.14.2)
     netrc (0.11.0)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
-    parallel (1.17.0)
+    parallel (1.19.2)
     parallel_tests (2.29.0)
       parallel
     parser (2.7.1.4)
@@ -145,13 +145,13 @@ GEM
       procto (~> 0.0.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.3.0)
+    zeitwerk (2.4.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 6.0.3.1)
+  activesupport (~> 6.0.3.3)
   airborne (~> 0.3.4)
   capybara (~> 3.29.0)
   capybara-screenshot (~> 1.0.23)

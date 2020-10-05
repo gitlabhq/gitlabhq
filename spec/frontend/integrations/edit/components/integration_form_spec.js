@@ -4,6 +4,7 @@ import { createStore } from '~/integrations/edit/store';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
+import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
@@ -22,6 +23,7 @@ describe('IntegrationForm', () => {
       stubs: {
         OverrideDropdown,
         ActiveCheckbox,
+        ConfirmationModal,
         JiraTriggerFields,
         TriggerFields,
       },
@@ -40,6 +42,7 @@ describe('IntegrationForm', () => {
 
   const findOverrideDropdown = () => wrapper.find(OverrideDropdown);
   const findActiveCheckbox = () => wrapper.find(ActiveCheckbox);
+  const findConfirmationModal = () => wrapper.find(ConfirmationModal);
   const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
   const findJiraIssuesFields = () => wrapper.find(JiraIssuesFields);
   const findTriggerFields = () => wrapper.find(TriggerFields);
@@ -60,6 +63,26 @@ describe('IntegrationForm', () => {
         });
 
         expect(findActiveCheckbox().exists()).toBe(false);
+      });
+    });
+
+    describe('integrationLevel is instance', () => {
+      it('renders ConfirmationModal', () => {
+        createComponent({
+          integrationLevel: 'instance',
+        });
+
+        expect(findConfirmationModal().exists()).toBe(true);
+      });
+    });
+
+    describe('integrationLevel is not instance', () => {
+      it('does not render ConfirmationModal', () => {
+        createComponent({
+          integrationLevel: 'project',
+        });
+
+        expect(findConfirmationModal().exists()).toBe(false);
       });
     });
 

@@ -90,7 +90,7 @@ RSpec.describe 'Git HTTP requests' do
 
   shared_examples_for 'pulls are allowed' do
     it 'allows pulls' do
-      download(path, env) do |response|
+      download(path, **env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
       end
@@ -99,7 +99,7 @@ RSpec.describe 'Git HTTP requests' do
 
   shared_examples_for 'pushes are allowed' do
     it 'allows pushes', :sidekiq_might_not_need_inline do
-      upload(path, env) do |response|
+      upload(path, **env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
       end
@@ -259,7 +259,7 @@ RSpec.describe 'Git HTTP requests' do
             it_behaves_like 'pulls are allowed'
 
             it 'rejects pushes with 403 Forbidden' do
-              upload(path, env) do |response|
+              upload(path, **env) do |response|
                 expect(response).to have_gitlab_http_status(:forbidden)
                 expect(response.body).to eq(git_access_wiki_error(:write_to_wiki))
               end
@@ -347,7 +347,7 @@ RSpec.describe 'Git HTTP requests' do
               end
 
               it 'rejects pushes with 403 Forbidden' do
-                upload(path, env) do |response|
+                upload(path, **env) do |response|
                   expect(response).to have_gitlab_http_status(:forbidden)
                   expect(response.body).to eq(git_access_error(:receive_pack_disabled_over_http))
                 end
@@ -358,7 +358,7 @@ RSpec.describe 'Git HTTP requests' do
               it "rejects pushes with 403 Forbidden" do
                 allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
 
-                download(path, env) do |response|
+                download(path, **env) do |response|
                   expect(response).to have_gitlab_http_status(:forbidden)
                   expect(response.body).to eq(git_access_error(:upload_pack_disabled_over_http))
                 end
@@ -370,7 +370,7 @@ RSpec.describe 'Git HTTP requests' do
             it_behaves_like 'pulls are allowed'
 
             it 'rejects pushes with 403 Forbidden' do
-              upload(path, env) do |response|
+              upload(path, **env) do |response|
                 expect(response).to have_gitlab_http_status(:forbidden)
                 expect(response.body).to eq('You are not allowed to push code to this project.')
               end
@@ -485,7 +485,7 @@ RSpec.describe 'Git HTTP requests' do
                   user.block
                   project.add_maintainer(user)
 
-                  download(path, env) do |response|
+                  download(path, **env) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
                   end
                 end
@@ -507,7 +507,7 @@ RSpec.describe 'Git HTTP requests' do
                 it "resets the IP in Rack Attack on download" do
                   expect(Rack::Attack::Allow2Ban).to receive(:reset).twice
 
-                  download(path, env) do
+                  download(path, **env) do
                     expect(response).to have_gitlab_http_status(:ok)
                     expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                   end
@@ -516,7 +516,7 @@ RSpec.describe 'Git HTTP requests' do
                 it "resets the IP in Rack Attack on upload" do
                   expect(Rack::Attack::Allow2Ban).to receive(:reset).twice
 
-                  upload(path, env) do
+                  upload(path, **env) do
                     expect(response).to have_gitlab_http_status(:ok)
                     expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                   end
@@ -525,7 +525,7 @@ RSpec.describe 'Git HTTP requests' do
                 it 'updates the user last activity', :clean_gitlab_redis_shared_state do
                   expect(user.last_activity_on).to be_nil
 
-                  download(path, env) do |response|
+                  download(path, **env) do |response|
                     expect(user.reload.last_activity_on).to eql(Date.today)
                   end
                 end
@@ -699,7 +699,7 @@ RSpec.describe 'Git HTTP requests' do
                 end
 
                 it 'uploads get status 404 with "project was moved" message' do
-                  upload(path, env) do |response|
+                  upload(path, **env) do |response|
                     expect(response).to have_gitlab_http_status(:ok)
                   end
                 end
@@ -917,11 +917,11 @@ RSpec.describe 'Git HTTP requests' do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
-      download(path, env) do |response|
+      download(path, **env) do |response|
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
-      upload(path, env) do |response|
+      upload(path, **env) do |response|
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end

@@ -13,6 +13,10 @@ export default {
       type: String,
       required: true,
     },
+    namespacePerEnvironmentHelpPath: {
+      type: String,
+      required: true,
+    },
     kubernetesIntegrationHelpPath: {
       type: String,
       required: true,
@@ -40,6 +44,7 @@ export default {
     <eks-cluster-configuration-form
       v-if="hasCredentials"
       :gitlab-managed-cluster-help-path="gitlabManagedClusterHelpPath"
+      :namespace-per-environment-help-path="namespacePerEnvironmentHelpPath"
       :kubernetes-integration-help-path="kubernetesIntegrationHelpPath"
       :external-link-icon="externalLinkIcon"
     />

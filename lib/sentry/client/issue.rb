@@ -14,7 +14,7 @@ module Sentry
       }.freeze
 
       def list_issues(**keyword_args)
-        response = get_issues(keyword_args)
+        response = get_issues(**keyword_args)
 
         issues = response[:issues]
         pagination = response[:pagination]
@@ -44,7 +44,7 @@ module Sentry
       def get_issues(**keyword_args)
         response = http_get(
           api_urls.issues_url,
-          query: list_issue_sentry_query(keyword_args)
+          query: list_issue_sentry_query(**keyword_args)
         )
 
         {

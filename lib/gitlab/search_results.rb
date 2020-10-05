@@ -7,7 +7,7 @@ module Gitlab
     DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 20
 
-    attr_reader :current_user, :query, :filters
+    attr_reader :current_user, :query, :sort, :filters
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
@@ -19,31 +19,23 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, query, limit_projects = nil, default_project_filter: false, filters: {})
+    def initialize(current_user, query, limit_projects = nil, sort: nil, default_project_filter: false, filters: {})
       @current_user = current_user
       @query = query
       @limit_projects = limit_projects || Project.all
       @default_project_filter = default_project_filter
+      @sort = sort
       @filters = filters
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true, preload_method: nil)
       should_preload = preload_method.present?
-      collection = case scope
-                   when 'projects'
-                     projects
-                   when 'issues'
-                     issues
-                   when 'merge_requests'
-                     merge_requests
-                   when 'milestones'
-                     milestones
-                   when 'users'
-                     users
-                   else
-                     should_preload = false
-                     Kaminari.paginate_array([])
-                   end
+      collection = collection_for(scope)
+
+      if collection.nil?
+        should_preload = false
+        collection = Kaminari.paginate_array([])
+      end
 
       collection = collection.public_send(preload_method) if should_preload # rubocop:disable GitlabSecurity/PublicSend
       collection = collection.page(page).per(per_page)
@@ -118,6 +110,34 @@ module Gitlab
 
     private
 
+    def collection_for(scope)
+      case scope
+      when 'projects'
+        projects
+      when 'issues'
+        issues
+      when 'merge_requests'
+        merge_requests
+      when 'milestones'
+        milestones
+      when 'users'
+        users
+      end
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def apply_sort(scope)
+      case sort
+      when 'oldest'
+        scope.reorder('created_at ASC')
+      when 'newest'
+        scope.reorder('created_at DESC')
+      else
+        scope
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def projects
       limit_projects.search(query)
     end
@@ -129,7 +149,7 @@ module Gitlab
         issues = issues.where(project_id: project_ids_relation) # rubocop: disable CodeReuse/ActiveRecord
       end
 
-      issues
+      apply_sort(issues)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -149,7 +169,7 @@ module Gitlab
         merge_requests = merge_requests.in_projects(project_ids_relation)
       end
 
-      merge_requests
+      apply_sort(merge_requests)
     end
 
     def default_scope
@@ -193,6 +213,10 @@ module Gitlab
         end
 
         params[:state] = filters[:state] if filters.key?(:state)
+
+        if Feature.enabled?(:search_filter_by_confidential) && filters.key?(:confidential) && %w(yes no).include?(filters[:confidential])
+          params[:confidential] = filters[:confidential] == 'yes'
+        end
       end
     end
 

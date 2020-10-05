@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlEmptyState, GlButton } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import Success from '~/static_site_editor/pages/success.vue';
 import { savedContentMeta, returnUrl, sourcePath } from '../mock_data';
 import { HOME_ROUTE } from '~/static_site_editor/router/constants';
 
-describe('static_site_editor/pages/success', () => {
+describe('~/static_site_editor/pages/success.vue', () => {
   const mergeRequestsIllustrationPath = 'illustrations/merge_requests.svg';
   let wrapper;
   let router;
@@ -15,14 +15,15 @@ describe('static_site_editor/pages/success', () => {
     };
   };
 
-  const buildWrapper = (data = {}) => {
+  const buildWrapper = (data = {}, appData = {}) => {
     wrapper = shallowMount(Success, {
       mocks: {
         $router: router,
       },
       stubs: {
-        GlEmptyState,
         GlButton,
+        GlEmptyState,
+        GlLoadingIcon,
       },
       propsData: {
         mergeRequestsIllustrationPath,
@@ -33,6 +34,8 @@ describe('static_site_editor/pages/success', () => {
           appData: {
             returnUrl,
             sourcePath,
+            hasSubmittedChanges: true,
+            ...appData,
           },
           ...data,
         };
@@ -40,8 +43,9 @@ describe('static_site_editor/pages/success', () => {
     });
   };
 
-  const findEmptyState = () => wrapper.find(GlEmptyState);
   const findReturnUrlButton = () => wrapper.find(GlButton);
+  const findEmptyState = () => wrapper.find(GlEmptyState);
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   beforeEach(() => {
     buildRouter();
@@ -52,50 +56,76 @@ describe('static_site_editor/pages/success', () => {
     wrapper = null;
   });
 
-  it('renders empty state with a link to the created merge request', () => {
-    buildWrapper();
+  describe('when savedContentMeta is valid', () => {
+    it('renders empty state with a link to the created merge request', () => {
+      buildWrapper();
 
-    expect(findEmptyState().exists()).toBe(true);
-    expect(findEmptyState().props()).toMatchObject({
-      primaryButtonText: 'View merge request',
-      primaryButtonLink: savedContentMeta.mergeRequest.url,
-      title: 'Your merge request has been created',
-      svgPath: mergeRequestsIllustrationPath,
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props()).toMatchObject({
+        primaryButtonText: 'View merge request',
+        primaryButtonLink: savedContentMeta.mergeRequest.url,
+        title: 'Your merge request has been created',
+        svgPath: mergeRequestsIllustrationPath,
+        svgHeight: 146,
+      });
+    });
+
+    it('displays merge request instructions in the empty state', () => {
+      buildWrapper();
+
+      expect(findEmptyState().text()).toContain(
+        'To see your changes live you will need to do the following things:',
+      );
+      expect(findEmptyState().text()).toContain('1. Add a clear title to describe the change.');
+      expect(findEmptyState().text()).toContain(
+        '2. Add a description to explain why the change is being made.',
+      );
+      expect(findEmptyState().text()).toContain(
+        '3. Assign a person to review and accept the merge request.',
+      );
+    });
+
+    it('displays return to site button', () => {
+      buildWrapper();
+
+      expect(findReturnUrlButton().text()).toBe('Return to site');
+      expect(findReturnUrlButton().attributes().href).toBe(returnUrl);
+    });
+
+    it('displays source path', () => {
+      buildWrapper();
+
+      expect(wrapper.text()).toContain(`Update ${sourcePath} file`);
     });
   });
 
-  it('displays merge request instructions in the empty state', () => {
-    buildWrapper();
+  describe('when savedContentMeta is invalid', () => {
+    it('renders empty state with a loader', () => {
+      buildWrapper({ savedContentMeta: null });
 
-    expect(findEmptyState().text()).toContain(
-      'To see your changes live you will need to do the following things:',
-    );
-    expect(findEmptyState().text()).toContain('1. Add a clear title to describe the change.');
-    expect(findEmptyState().text()).toContain(
-      '2. Add a description to explain why the change is being made.',
-    );
-    expect(findEmptyState().text()).toContain(
-      '3. Assign a person to review and accept the merge request.',
-    );
-  });
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props()).toMatchObject({
+        title: 'Creating your merge request',
+        svgPath: mergeRequestsIllustrationPath,
+      });
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
 
-  it('displays return to site button', () => {
-    buildWrapper();
+    it('displays helper info in the empty state', () => {
+      buildWrapper({ savedContentMeta: null });
 
-    expect(findReturnUrlButton().text()).toBe('Return to site');
-    expect(findReturnUrlButton().attributes().href).toBe(returnUrl);
-  });
+      expect(findEmptyState().text()).toContain(
+        'You can set an assignee to get your changes reviewed and deployed once your merge request is created',
+      );
+      expect(findEmptyState().text()).toContain(
+        'A link to view the merge request will appear once ready',
+      );
+    });
 
-  it('displays source path', () => {
-    buildWrapper();
+    it('redirects to the HOME route when content has not been submitted', () => {
+      buildWrapper({ savedContentMeta: null }, { hasSubmittedChanges: false });
 
-    expect(wrapper.text()).toContain(`Update ${sourcePath} file`);
-  });
-
-  it('redirects to the HOME route when content has not been submitted', () => {
-    buildWrapper({ savedContentMeta: null });
-
-    expect(router.push).toHaveBeenCalledWith(HOME_ROUTE);
-    expect(wrapper.html()).toBe('');
+      expect(router.push).toHaveBeenCalledWith(HOME_ROUTE);
+    });
   });
 });

@@ -27,7 +27,7 @@ GET /search
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, users.
 
-If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
+If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
 
 The response depends on the requested scope.
 
@@ -362,6 +362,40 @@ Example response:
 NOTE: **Note:**
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
+### Scope: notes **(STARTER)**
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 191,
+    "body": "Harum maxime consequuntur et et deleniti assumenda facilis.",
+    "attachment": null,
+    "author": {
+      "id": 23,
+      "name": "User 1",
+      "username": "user1",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808?s=80&d=identicon",
+      "web_url": "http://localhost:3000/user1"
+    },
+    "created_at": "2017-09-05T08:01:32.068Z",
+    "updated_at": "2017-09-05T08:01:32.068Z",
+    "system": false,
+    "noteable_id": 22,
+    "noteable_type": "Issue",
+    "noteable_iid": 2
+  }
+]
+```
+
 ### Scope: users
 
 ```shell
@@ -402,7 +436,7 @@ GET /groups/:id/search
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, users.
 
-If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
+If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
 
 The response depends on the requested scope.
 
@@ -705,6 +739,40 @@ Example response:
 
 NOTE **Note:**
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+### Scope: notes **(STARTER)**
+
+This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 191,
+    "body": "Harum maxime consequuntur et et deleniti assumenda facilis.",
+    "attachment": null,
+    "author": {
+      "id": 23,
+      "name": "User 1",
+      "username": "user1",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/111d68d06e2d317b5a59c2c6c5bad808?s=80&d=identicon",
+      "web_url": "http://localhost:3000/user1"
+    },
+    "created_at": "2017-09-05T08:01:32.068Z",
+    "updated_at": "2017-09-05T08:01:32.068Z",
+    "system": false,
+    "noteable_id": 22,
+    "noteable_type": "Issue",
+    "noteable_iid": 2
+  }
+]
+```
 
 ### Scope: users
 

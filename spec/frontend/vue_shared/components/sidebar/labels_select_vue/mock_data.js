@@ -24,6 +24,13 @@ export const mockLabels = [
     color: '#FF0000',
     textColor: '#FFFFFF',
   },
+  {
+    id: 29,
+    title: 'Boog',
+    description: 'Label for bugs',
+    color: '#FF0000',
+    textColor: '#FFFFFF',
+  },
 ];
 
 export const mockConfig = {

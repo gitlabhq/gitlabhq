@@ -1,10 +1,9 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import { GlFormInput, GlIcon } from '@gitlab/ui';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlFormInput, GlIcon, GlButton } from '@gitlab/ui';
 
 export default {
-  components: { GlFormInput, GlIcon, LoadingButton },
+  components: { GlFormInput, GlIcon, GlButton },
   computed: {
     ...mapState(['apiHost', 'connectError', 'connectSuccessful', 'isLoadingProjects', 'token']),
     tokenInputState() {
@@ -57,12 +56,16 @@ export default {
           />
         </div>
         <div class="col-4 col-md-3 gl-pl-0">
-          <loading-button
+          <gl-button
             class="js-error-tracking-connect gl-ml-2 d-inline-flex"
-            :label="isLoadingProjects ? __('Connecting') : __('Connect')"
+            category="secondary"
+            variant="default"
             :loading="isLoadingProjects"
             @click="fetchProjects"
-          />
+          >
+            {{ isLoadingProjects ? __('Connecting') : __('Connect') }}
+          </gl-button>
+
           <gl-icon
             v-show="connectSuccessful"
             class="js-error-tracking-connect-success gl-ml-2 text-success align-middle"

@@ -6,6 +6,8 @@ module Gitlab
       class LoggerAnalyzer
         COMPLEXITY_ANALYZER = GraphQL::Analysis::QueryComplexity.new { |query, complexity_value| complexity_value }
         DEPTH_ANALYZER = GraphQL::Analysis::QueryDepth.new { |query, depth_value| depth_value }
+        FIELD_USAGE_ANALYZER = GraphQL::Analysis::FieldUsage.new { |query, used_fields, used_deprecated_fields| [used_fields, used_deprecated_fields] }
+        ALL_ANALYZERS = [COMPLEXITY_ANALYZER, DEPTH_ANALYZER, FIELD_USAGE_ANALYZER].freeze
 
         def analyze?(query)
           Feature.enabled?(:graphql_logging, default_enabled: true)
@@ -29,12 +31,13 @@ module Gitlab
         def final_value(memo)
           return if memo.nil?
 
-          analyzers = [COMPLEXITY_ANALYZER, DEPTH_ANALYZER]
-          complexity, depth = GraphQL::Analysis.analyze_query(memo[:query], analyzers)
+          complexity, depth, field_usages = GraphQL::Analysis.analyze_query(memo[:query], ALL_ANALYZERS)
 
           memo[:depth] = depth
           memo[:complexity] = complexity
           memo[:duration_s] = duration(memo[:time_started]).round(1)
+          memo[:used_fields] = field_usages.first
+          memo[:used_deprecated_fields] = field_usages.second
 
           GraphqlLogger.info(memo.except!(:time_started, :query))
         rescue => e

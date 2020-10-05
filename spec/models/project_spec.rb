@@ -72,6 +72,7 @@ RSpec.describe Project do
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
+    it { is_expected.to have_one(:tracing_setting).class_name('ProjectTracingSetting') }
     it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
     it { is_expected.to have_one(:project_setting) }
     it { is_expected.to have_one(:alerting_setting).class_name('Alerting::ProjectAlertingSetting') }
@@ -116,6 +117,7 @@ RSpec.describe Project do
     it { is_expected.to have_many(:prometheus_alert_events) }
     it { is_expected.to have_many(:self_managed_prometheus_alert_events) }
     it { is_expected.to have_many(:alert_management_alerts) }
+    it { is_expected.to have_many(:alert_management_http_integrations) }
     it { is_expected.to have_many(:jira_imports) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
     it { is_expected.to have_many(:repository_storage_moves) }
@@ -123,6 +125,7 @@ RSpec.describe Project do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:pipeline_artifacts) }
+    it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -5808,6 +5811,38 @@ RSpec.describe Project do
         project.check_personal_projects_limit
 
         expect(project.errors).to be_empty
+      end
+    end
+  end
+
+  describe 'validation #changing_shared_runners_enabled_is_allowed' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
+      'enabled'                    | true  | true
+      'enabled'                    | false | true
+      'disabled_with_override'     | true  | true
+      'disabled_with_override'     | false | true
+      'disabled_and_unoverridable' | true  | false
+      'disabled_and_unoverridable' | false | true
+    end
+
+    with_them do
+      let(:group) { create(:group) }
+      let(:project) { build(:project, namespace: group, shared_runners_enabled: project_shared_runners_enabled) }
+
+      before do
+        allow_next_found_instance_of(Group) do |group|
+          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
+        end
+      end
+
+      it 'validates the configuration' do
+        expect(project.valid?).to eq(valid_record)
+
+        unless valid_record
+          expect(project.errors[:shared_runners_enabled]).to contain_exactly('cannot be enabled because parent group does not allow it')
+        end
       end
     end
   end

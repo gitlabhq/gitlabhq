@@ -23,7 +23,7 @@ RSpec.describe Milestones::PromoteService do
       end
 
       it 'raises error if project does not belong to a group' do
-        project.update(namespace: user.namespace)
+        project.update!(namespace: user.namespace)
 
         expect { service.execute(milestone) }.to raise_error(described_class::PromoteMilestoneError)
       end

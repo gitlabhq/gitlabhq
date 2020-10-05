@@ -58,6 +58,15 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line do
     end
   end
 
+  describe '#set_section_options' do
+    it 'sets the current section\'s options' do
+      options = { collapsed: true }
+      subject.set_section_options(options)
+
+      expect(subject.to_h[:section_options]).to eq(options)
+    end
+  end
+
   describe '#set_as_section_header' do
     it 'change the section_header to true' do
       expect { subject.set_as_section_header }

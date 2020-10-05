@@ -109,7 +109,7 @@ RSpec.describe Projects::Registry::TagsController do
 
         it 'tracks the event' do
           expect_delete_tags(%w[test.])
-          expect(controller).to receive(:track_event).with(:delete_tag)
+          expect(controller).to receive(:track_event).with(:delete_tag, {})
 
           destroy_tag('test.')
         end

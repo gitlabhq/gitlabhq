@@ -162,6 +162,7 @@ RSpec.describe ::API::Admin::InstanceClusters do
         name: 'test-instance-cluster',
         domain: 'domain.example.com',
         managed: false,
+        namespace_per_environment: false,
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         clusterable: clusterable
       }
@@ -206,6 +207,7 @@ RSpec.describe ::API::Admin::InstanceClusters do
           expect(cluster_result.enabled).to eq(true)
           expect(platform_kubernetes.authorization_type).to eq('rbac')
           expect(cluster_result.managed).to be_falsy
+          expect(cluster_result.namespace_per_environment).to eq(false)
           expect(platform_kubernetes.api_url).to eq("https://example.com")
           expect(platform_kubernetes.token).to eq('sample-token')
         end
@@ -232,6 +234,22 @@ RSpec.describe ::API::Admin::InstanceClusters do
             cluster_result = Clusters::Cluster.find(json_response['id'])
 
             expect(cluster_result.platform.abac?).to be_truthy
+          end
+        end
+
+        context 'when namespace_per_environment is not set' do
+          let(:cluster_params) do
+            {
+              name: 'test-cluster',
+              domain: 'domain.example.com',
+              platform_kubernetes_attributes: platform_kubernetes_attributes
+            }
+          end
+
+          it 'defaults to true' do
+            cluster_result = Clusters::Cluster.find(json_response['id'])
+
+            expect(cluster_result).to be_namespace_per_environment
           end
         end
 

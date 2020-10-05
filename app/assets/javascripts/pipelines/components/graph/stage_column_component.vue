@@ -71,7 +71,7 @@ export default {
         :action-icon="action.icon"
         :tooltip-text="action.title"
         :link="action.path"
-        class="js-stage-action stage-action position-absolute position-top-0 rounded"
+        class="js-stage-action stage-action rounded"
         @pipelineActionRequestComplete="pipelineActionRequestComplete"
       />
     </div>

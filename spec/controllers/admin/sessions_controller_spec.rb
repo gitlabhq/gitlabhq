@@ -109,7 +109,7 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
         # triggering the auth form will request admin mode
         get :new
 
-        Timecop.freeze(Gitlab::Auth::CurrentUserMode::ADMIN_MODE_REQUESTED_GRACE_PERIOD.from_now) do
+        travel_to(Gitlab::Auth::CurrentUserMode::ADMIN_MODE_REQUESTED_GRACE_PERIOD.from_now) do
           post :create, params: { user: { password: user.password } }
 
           expect(response).to redirect_to(new_admin_session_path)

@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Labels
 
-## Overview
-
 As your count of issues, merge requests, and epics grows in GitLab, it's more and more challenging
 to keep track of those items. Especially as your organization grows from just a few people to
 hundreds or thousands. This is where labels come in. They help you organize and tag your work

@@ -138,4 +138,91 @@ RSpec.describe Groups::CreateService, '#execute' do
       expect(group.namespace_settings).to be_persisted
     end
   end
+
+  describe 'create service for the group' do
+    let(:service) { described_class.new(user, group_params) }
+    let(:created_group) { service.execute }
+
+    context 'with an active instance-level integration' do
+      let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
+
+      it 'creates a service from the instance-level integration' do
+        expect(created_group.services.count).to eq(1)
+        expect(created_group.services.first.api_url).to eq(instance_integration.api_url)
+        expect(created_group.services.first.inherit_from_id).to eq(instance_integration.id)
+      end
+
+      context 'with an active group-level integration' do
+        let(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
+        let!(:group_integration) { create(:prometheus_service, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+        let(:group) do
+          create(:group).tap do |group|
+            group.add_owner(user)
+          end
+        end
+
+        it 'creates a service from the group-level integration' do
+          expect(created_group.services.count).to eq(1)
+          expect(created_group.services.first.api_url).to eq(group_integration.api_url)
+          expect(created_group.services.first.inherit_from_id).to eq(group_integration.id)
+        end
+
+        context 'with an active subgroup' do
+          let(:service) { described_class.new(user, group_params.merge(parent_id: subgroup.id)) }
+          let!(:subgroup_integration) { create(:prometheus_service, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+          let(:subgroup) do
+            create(:group, parent: group).tap do |subgroup|
+              subgroup.add_owner(user)
+            end
+          end
+
+          it 'creates a service from the subgroup-level integration' do
+            expect(created_group.services.count).to eq(1)
+            expect(created_group.services.first.api_url).to eq(subgroup_integration.api_url)
+            expect(created_group.services.first.inherit_from_id).to eq(subgroup_integration.id)
+          end
+        end
+      end
+    end
+  end
+
+  context 'shared runners configuration' do
+    context 'parent group present' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:shared_runners_config, :descendants_override_disabled_shared_runners_config) do
+        true  | false
+        false | false
+        # true  | true # invalid at the group level, leaving as comment to make explicit
+        false | true
+      end
+
+      with_them do
+        let!(:group) { create(:group, shared_runners_enabled: shared_runners_config, allow_descendants_override_disabled_shared_runners: descendants_override_disabled_shared_runners_config) }
+        let!(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
+
+        before do
+          group.add_owner(user)
+        end
+
+        it 'creates group following the parent config' do
+          new_group = service.execute
+
+          expect(new_group.shared_runners_enabled).to eq(shared_runners_config)
+          expect(new_group.allow_descendants_override_disabled_shared_runners).to eq(descendants_override_disabled_shared_runners_config)
+        end
+      end
+    end
+
+    context 'root group' do
+      let!(:service) { described_class.new(user) }
+
+      it 'follows default config' do
+        new_group = service.execute
+
+        expect(new_group.shared_runners_enabled).to eq(true)
+        expect(new_group.allow_descendants_override_disabled_shared_runners).to eq(false)
+      end
+    end
+  end
 end

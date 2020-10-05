@@ -4,6 +4,8 @@ module API
   class GroupContainerRepositories < Grape::API::Instance
     include PaginationParams
 
+    helpers ::API::Helpers::PackagesHelpers
+
     before { authorize_read_group_container_images! }
 
     REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
@@ -27,7 +29,7 @@ module API
           user: current_user, subject: user_group
         ).execute
 
-        track_event('list_repositories')
+        track_package_event('list_repositories', :container)
 
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
       end

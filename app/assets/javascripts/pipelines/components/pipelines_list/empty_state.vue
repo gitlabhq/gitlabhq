@@ -48,6 +48,7 @@ export default {
               variant="info"
               category="primary"
               class="js-get-started-pipelines"
+              data-testid="get-started-pipelines"
             >
               {{ s__('Pipelines|Get started with Pipelines') }}
             </gl-button>

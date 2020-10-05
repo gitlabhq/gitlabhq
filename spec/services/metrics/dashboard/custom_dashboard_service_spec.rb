@@ -67,6 +67,23 @@ RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memo
           .at_least(:once)
       end
 
+      context 'with metric in database' do
+        let!(:prometheus_metric) do
+          create(:prometheus_metric, project: project, identifier: 'metric_a1', group: 'custom')
+        end
+
+        it 'includes metric_id' do
+          dashboard = described_class.new(*service_params).get_dashboard
+
+          metric_id = dashboard[:dashboard][:panel_groups].find { |panel_group| panel_group[:group] == 'Group A' }
+            .fetch(:panels).find { |panel| panel[:title] == 'Super Chart A1' }
+            .fetch(:metrics).find { |metric| metric[:id] == 'metric_a1' }
+            .fetch(:metric_id)
+
+          expect(metric_id).to eq(prometheus_metric.id)
+        end
+      end
+
       context 'and the dashboard is then deleted' do
         it 'does not return the previously cached dashboard' do
           described_class.new(*service_params).get_dashboard

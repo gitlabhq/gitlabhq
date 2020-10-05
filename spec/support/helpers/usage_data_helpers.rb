@@ -99,6 +99,7 @@ module UsageDataHelpers
       projects_with_error_tracking_enabled
       projects_with_alerts_service_enabled
       projects_with_prometheus_alerts
+      projects_with_tracing_enabled
       projects_with_expiration_policy_enabled
       projects_with_expiration_policy_disabled
       projects_with_expiration_policy_enabled_with_keep_n_unset
@@ -133,6 +134,7 @@ module UsageDataHelpers
       todos
       uploads
       web_hooks
+      user_preferences_user_gitpod_enabled
     ).push(*SMAU_KEYS)
 
   USAGE_DATA_KEYS = %i(
@@ -228,7 +230,7 @@ module UsageDataHelpers
     receive_matchers.each { |m| expect(prometheus_client).to m }
   end
 
-  def for_defined_days_back(days: [29, 2])
+  def for_defined_days_back(days: [31, 3])
     days.each do |n|
       Timecop.travel(n.days.ago) do
         yield

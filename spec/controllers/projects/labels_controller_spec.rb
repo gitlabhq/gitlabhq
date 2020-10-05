@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::LabelsController do
-  let(:group)   { create(:group) }
-  let(:project) { create(:project, namespace: group) }
-  let(:user)    { create(:user) }
+  let_it_be(:group)   { create(:group) }
+  let_it_be(:project, reload: true) { create(:project, namespace: group) }
+  let_it_be(:user)    { create(:user) }
 
   before do
     project.add_maintainer(user)
@@ -14,16 +14,21 @@ RSpec.describe Projects::LabelsController do
   end
 
   describe 'GET #index' do
-    let!(:label_1) { create(:label, project: project, priority: 1, title: 'Label 1') }
-    let!(:label_2) { create(:label, project: project, priority: 3, title: 'Label 2') }
-    let!(:label_3) { create(:label, project: project, priority: 1, title: 'Label 3') }
-    let!(:label_4) { create(:label, project: project, title: 'Label 4') }
-    let!(:label_5) { create(:label, project: project, title: 'Label 5') }
+    let_it_be(:label_1) { create(:label, project: project, priority: 1, title: 'Label 1') }
+    let_it_be(:label_2) { create(:label, project: project, priority: 3, title: 'Label 2') }
+    let_it_be(:label_3) { create(:label, project: project, priority: 1, title: 'Label 3') }
+    let_it_be(:label_4) { create(:label, project: project, title: 'Label 4') }
+    let_it_be(:label_5) { create(:label, project: project, title: 'Label 5') }
 
-    let!(:group_label_1) { create(:group_label, group: group, title: 'Group Label 1') }
-    let!(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }
-    let!(:group_label_3) { create(:group_label, group: group, title: 'Group Label 3') }
-    let!(:group_label_4) { create(:group_label, group: group, title: 'Group Label 4') }
+    let_it_be(:group_label_1) { create(:group_label, group: group, title: 'Group Label 1') }
+    let_it_be(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }
+    let_it_be(:group_label_3) { create(:group_label, group: group, title: 'Group Label 3') }
+    let_it_be(:group_label_4) { create(:group_label, group: group, title: 'Group Label 4') }
+
+    let_it_be(:group_labels) { [group_label_3, group_label_4]}
+    let_it_be(:project_labels) { [label_4, label_5]}
+    let_it_be(:group_priority_labels) { [group_label_1, group_label_2]}
+    let_it_be(:project_priority_labels) { [label_1, label_2, label_3]}
 
     before do
       create(:label_priority, project: project, label: group_label_1, priority: 3)
@@ -68,6 +73,60 @@ RSpec.describe Projects::LabelsController do
       end
     end
 
+    context 'with subgroups' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup_label_1) { create(:group_label, group: subgroup, title: 'subgroup_label_1') }
+      let_it_be(:subgroup_label_2) { create(:group_label, group: subgroup, title: 'subgroup_label_2') }
+
+      before do
+        project.update!(namespace: subgroup)
+        subgroup.add_owner(user)
+        create(:label_priority, project: project, label: subgroup_label_2, priority: 1)
+      end
+
+      RSpec.shared_examples 'returns ancestor group labels' do
+        it 'returns ancestor group labels', :aggregate_failures do
+          get :index, params: params
+
+          expect(assigns(:labels)).to match_array([subgroup_label_1] + group_labels + project_labels)
+          expect(assigns(:prioritized_labels)).to match_array([subgroup_label_2] + group_priority_labels + project_priority_labels)
+        end
+      end
+
+      context 'when show_inherited_labels disabled' do
+        before do
+          stub_feature_flags(show_inherited_labels: false)
+        end
+
+        context 'when include_ancestor_groups false' do
+          let(:params) { { namespace_id: project.namespace.to_param, project_id: project } }
+
+          it 'does not return ancestor group labels', :aggregate_failures do
+            get :index, params: params
+
+            expect(assigns(:labels)).to match_array([subgroup_label_1] + project_labels)
+            expect(assigns(:prioritized_labels)).to match_array([subgroup_label_2] + project_priority_labels)
+          end
+        end
+
+        context 'when include_ancestor_groups true' do
+          let(:params) { { namespace_id: project.namespace.to_param, project_id: project, include_ancestor_groups: true } }
+
+          it_behaves_like 'returns ancestor group labels'
+        end
+      end
+
+      context 'when show_inherited_labels enabled' do
+        let(:params) { { namespace_id: project.namespace.to_param, project_id: project } }
+
+        before do
+          stub_feature_flags(show_inherited_labels: true)
+        end
+
+        it_behaves_like 'returns ancestor group labels'
+      end
+    end
+
     def list_labels
       get :index, params: { namespace_id: project.namespace.to_param, project_id: project }
     end
@@ -75,7 +134,7 @@ RSpec.describe Projects::LabelsController do
 
   describe 'POST #generate' do
     context 'personal project' do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
 
       it 'creates labels' do
         post :generate, params: { namespace_id: personal_project.namespace.to_param, project_id: personal_project }
@@ -116,8 +175,8 @@ RSpec.describe Projects::LabelsController do
   end
 
   describe 'POST #promote' do
-    let!(:promoted_label_name) { "Promoted Label" }
-    let!(:label_1) { create(:label, title: promoted_label_name, project: project) }
+    let_it_be(:promoted_label_name) { "Promoted Label" }
+    let_it_be(:label_1) { create(:label, title: promoted_label_name, project: project) }
 
     context 'not group reporters' do
       it 'denies access' do
@@ -196,7 +255,7 @@ RSpec.describe Projects::LabelsController do
       end
 
       context 'when requesting a redirected path' do
-        let!(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+        let_it_be(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
 
         it 'redirects to the canonical path' do
           get :index, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }
@@ -242,7 +301,7 @@ RSpec.describe Projects::LabelsController do
     end
 
     context 'when requesting a redirected path' do
-      let!(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+      let_it_be(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
 
       it 'returns not found' do
         post :generate, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }

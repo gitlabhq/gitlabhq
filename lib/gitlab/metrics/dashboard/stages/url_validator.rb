@@ -46,7 +46,7 @@ module Gitlab
             links&.each do |link|
               next unless link.is_a? Hash
 
-              Gitlab::UrlBlocker.validate!(link[:url], blocker_args)
+              Gitlab::UrlBlocker.validate!(link[:url], **blocker_args)
             rescue Gitlab::UrlBlocker::BlockedUrlError
               link[:url] = ''
             end

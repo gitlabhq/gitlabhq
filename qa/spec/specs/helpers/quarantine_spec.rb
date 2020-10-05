@@ -36,7 +36,7 @@ RSpec.configure do |c|
   end
 end
 
-describe QA::Specs::Helpers::Quarantine do
+RSpec.describe QA::Specs::Helpers::Quarantine do
   describe '.skip_or_run_quarantined_contexts' do
     context 'with no tag focused' do
       before do

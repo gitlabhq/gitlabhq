@@ -222,7 +222,8 @@ the environment of the deployed function:
 
 ```yaml
 provider:
-  ...
+  # Other configuration omitted
+  # ...
   environment:
     A_VARIABLE: ${env:A_VARIABLE}
 ```
@@ -245,10 +246,10 @@ functions:
   hello:
     handler: src/handler.hello
     events:
-      - http: # Rewrite this part to enable CORS
+      - http:  # Rewrite this part to enable CORS
           path: hello
           method: get
-          cors: true # <-- CORS here
+          cors: true  # <-- CORS here
 ```
 
 You also need to return CORS specific headers in your function response:

@@ -1,14 +1,16 @@
 import $ from 'jquery';
 import { mount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
+import { getJSONFixture } from 'helpers/fixtures';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release block', () => {
   let wrapper;
@@ -46,7 +48,7 @@ describe('Release block', () => {
     beforeEach(() => factory(release));
 
     it("renders the block with an id equal to the release's tag name", () => {
-      expect(wrapper.attributes().id).toBe('v0.3');
+      expect(wrapper.attributes().id).toBe(release.tagName);
     });
 
     it(`renders an edit button that links to the "Edit release" page with a "${BACK_URL_PARAM}" parameter`, () => {
@@ -107,7 +109,7 @@ describe('Release block', () => {
       });
 
       it('does not render external label when link is not external', () => {
-        expect(wrapper.find('.js-assets-list li:nth-child(2) a').text()).not.toContain(
+        expect(wrapper.find('.js-assets-list li:nth-child(3) a').text()).not.toContain(
           'external source',
         );
       });

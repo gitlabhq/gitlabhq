@@ -244,7 +244,7 @@ gem 'atlassian-jwt', '~> 0.2.0'
 gem 'flowdock', '~> 0.7'
 
 # Slack integration
-gem 'slack-messenger', '~> 2.3.3'
+gem 'slack-messenger', '~> 2.3.4'
 
 # Hangouts Chat integration
 gem 'hangouts-chat', '~> 0.0.5'
@@ -272,7 +272,7 @@ gem 'licensee', '~> 8.9'
 gem 'ace-rails-ap', '~> 4.1.0'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.7.5'
+gem 'charlock_holmes', '~> 0.7.7'
 
 # Detect mime content type from content
 gem 'mimemagic', '~> 0.3.2'
@@ -284,7 +284,6 @@ gem 'fast_blank'
 gem 'gitlab-chronic', '~> 0.10.5'
 gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 
-gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sassc-rails', '~> 2.1.0'
@@ -330,7 +329,7 @@ group :metrics do
   gem 'method_source', '~> 1.0', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.11.0'
+  gem 'prometheus-client-mmap', '~> 0.12.0'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -375,8 +374,6 @@ group :development, :test do
 
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.34.0', require: false
-  gem 'simplecov', '~> 0.18.5', require: false
-  gem 'simplecov-cobertura', '~> 1.3.1', require: false
   gem 'bundler-audit', '~> 0.6.1', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -392,6 +389,11 @@ group :development, :test do
   gem 'parallel', '~> 1.19', require: false
 
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
+end
+
+group :development, :test, :coverage do
+  gem 'simplecov', '~> 0.18.5', require: false
+  gem 'simplecov-cobertura', '~> 1.3.1', require: false
 end
 
 # Gems required in omnibus-gitlab pipeline
@@ -411,7 +413,7 @@ group :test do
 
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'email_spec', '~> 2.2.0'
-  gem 'webmock', '~> 3.5.1'
+  gem 'webmock', '~> 3.9.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.12.0'

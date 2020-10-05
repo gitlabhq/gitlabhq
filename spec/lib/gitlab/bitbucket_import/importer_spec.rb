@@ -312,7 +312,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
         # attributes later.
         existing_label.reload
 
-        Timecop.freeze(Time.now + 1.minute) do
+        travel_to(Time.now + 1.minute) do
           importer.execute
 
           label_after_import = project.labels.find(existing_label.id)

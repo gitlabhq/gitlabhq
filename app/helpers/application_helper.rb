@@ -8,8 +8,16 @@ module ApplicationHelper
 
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
   # rubocop: disable CodeReuse/ActiveRecord
-  def render_if_exists(partial, locals = {})
-    render(partial, locals) if partial_exists?(partial)
+  # We allow partial to be nil so that collection views can be passed in
+  # `render partial: 'some/view', collection: @some_collection`
+  def render_if_exists(partial = nil, **options)
+    return unless partial_exists?(partial || options[:partial])
+
+    if partial.nil?
+      render(**options)
+    else
+      render(partial, options)
+    end
   end
 
   def partial_exists?(partial)
@@ -347,6 +355,12 @@ module ApplicationHelper
       "is#{browser.id.to_s.titlecase}": true,
       "is#{browser.platform.id.to_s.titlecase}": true
     }
+  end
+
+  def add_page_specific_style(path)
+    content_for :page_specific_styles do
+      stylesheet_link_tag_defer path
+    end
   end
 
   def page_startup_api_calls

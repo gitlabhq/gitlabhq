@@ -481,7 +481,7 @@ export default {
                   type="text"
                   class="form-control js-hostname"
                 />
-                <span class="input-group-btn">
+                <span class="input-group-append">
                   <clipboard-button
                     :text="jupyterHostname"
                     :title="s__('ClusterIntegration|Copy Jupyter Hostname')"

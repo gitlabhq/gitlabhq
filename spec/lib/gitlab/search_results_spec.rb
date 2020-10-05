@@ -11,9 +11,11 @@ RSpec.describe Gitlab::SearchResults do
   let_it_be(:issue) { create(:issue, project: project, title: 'foo') }
   let_it_be(:milestone) { create(:milestone, project: project, title: 'foo') }
   let(:merge_request) { create(:merge_request, source_project: project, title: 'foo') }
+  let(:query) { 'foo' }
   let(:filters) { {} }
+  let(:sort) { nil }
 
-  subject(:results) { described_class.new(user, 'foo', Project.order(:id), filters: filters) }
+  subject(:results) { described_class.new(user, query, Project.order(:id), sort: sort, filters: filters) }
 
   context 'as a user with access' do
     before do
@@ -137,10 +139,12 @@ RSpec.describe Gitlab::SearchResults do
     end
 
     describe '#merge_requests' do
+      let(:scope) { 'merge_requests' }
+
       it 'includes project filter by default' do
         expect(results).to receive(:project_ids_relation).and_call_original
 
-        results.objects('merge_requests')
+        results.objects(scope)
       end
 
       it 'skips project filter if default project context is used' do
@@ -148,24 +152,34 @@ RSpec.describe Gitlab::SearchResults do
 
         expect(results).not_to receive(:project_ids_relation)
 
-        results.objects('merge_requests')
+        results.objects(scope)
       end
 
       context 'filtering' do
         let!(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
         let!(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
-        let(:scope) { 'merge_requests' }
         let(:query) { 'foo' }
 
         include_examples 'search results filtered by state'
       end
+
+      context 'ordering' do
+        let(:query) { 'sorted' }
+        let!(:old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'old-1', title: 'sorted old', created_at: 1.month.ago) }
+        let!(:new_result) { create(:merge_request, :opened, source_project: project, source_branch: 'new-1', title: 'sorted recent', created_at: 1.day.ago) }
+        let!(:very_old_result) { create(:merge_request, :opened, source_project: project, source_branch: 'very-old-1', title: 'sorted very old', created_at: 1.year.ago) }
+
+        include_examples 'search results sorted'
+      end
     end
 
     describe '#issues' do
+      let(:scope) { 'issues' }
+
       it 'includes project filter by default' do
         expect(results).to receive(:project_ids_relation).and_call_original
 
-        results.objects('issues')
+        results.objects(scope)
       end
 
       it 'skips project filter if default project context is used' do
@@ -173,16 +187,25 @@ RSpec.describe Gitlab::SearchResults do
 
         expect(results).not_to receive(:project_ids_relation)
 
-        results.objects('issues')
+        results.objects(scope)
       end
 
       context 'filtering' do
-        let(:scope) { 'issues' }
-
         let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
         let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo open') }
+        let_it_be(:confidential_result) { create(:issue, :confidential, project: project, title: 'foo confidential') }
 
         include_examples 'search results filtered by state'
+        include_examples 'search results filtered by confidential'
+      end
+
+      context 'ordering' do
+        let(:query) { 'sorted' }
+        let!(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
+        let!(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }
+        let!(:very_old_result) { create(:issue, project: project, title: 'sorted very old', created_at: 1.year.ago) }
+
+        include_examples 'search results sorted'
       end
     end
 

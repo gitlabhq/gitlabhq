@@ -17,7 +17,9 @@ RSpec.describe Projects::MilestonesController do
     controller.instance_variable_set(:@project, project)
   end
 
-  it_behaves_like 'milestone tabs'
+  it_behaves_like 'milestone tabs' do
+    let(:request_params) { { namespace_id: project.namespace, project_id: project, id: milestone.iid } }
+  end
 
   describe "#show" do
     render_views

@@ -1,119 +1,50 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import ItemStats from '~/groups/components/item_stats.vue';
+import ItemStatsValue from '~/groups/components/item_stats_value.vue';
 
-import mountComponent from 'helpers/vue_mount_component_helper';
-import itemStatsComponent from '~/groups/components/item_stats.vue';
-import {
-  mockParentGroupItem,
-  ITEM_TYPE,
-  VISIBILITY_TYPE_ICON,
-  GROUP_VISIBILITY_TYPE,
-  PROJECT_VISIBILITY_TYPE,
-} from '../mock_data';
+import { mockParentGroupItem, ITEM_TYPE } from '../mock_data';
 
-const createComponent = (item = mockParentGroupItem) => {
-  const Component = Vue.extend(itemStatsComponent);
+describe('ItemStats', () => {
+  let wrapper;
 
-  return mountComponent(Component, {
-    item,
+  const defaultProps = {
+    item: mockParentGroupItem,
+  };
+
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(ItemStats, {
+      propsData: { ...defaultProps, ...props },
+    });
+  };
+
+  afterEach(() => {
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
-};
 
-describe('ItemStatsComponent', () => {
-  describe('computed', () => {
-    describe('visibilityIcon', () => {
-      it('should return icon class based on `item.visibility` value', () => {
-        Object.keys(VISIBILITY_TYPE_ICON).forEach(visibility => {
-          const item = { ...mockParentGroupItem, visibility };
-          const vm = createComponent(item);
-
-          expect(vm.visibilityIcon).toBe(VISIBILITY_TYPE_ICON[visibility]);
-          vm.$destroy();
-        });
-      });
-    });
-
-    describe('visibilityTooltip', () => {
-      it('should return tooltip string for Group based on `item.visibility` value', () => {
-        Object.keys(GROUP_VISIBILITY_TYPE).forEach(visibility => {
-          const item = { ...mockParentGroupItem, visibility, type: ITEM_TYPE.GROUP };
-          const vm = createComponent(item);
-
-          expect(vm.visibilityTooltip).toBe(GROUP_VISIBILITY_TYPE[visibility]);
-          vm.$destroy();
-        });
-      });
-
-      it('should return tooltip string for Project based on `item.visibility` value', () => {
-        Object.keys(PROJECT_VISIBILITY_TYPE).forEach(visibility => {
-          const item = { ...mockParentGroupItem, visibility, type: ITEM_TYPE.PROJECT };
-          const vm = createComponent(item);
-
-          expect(vm.visibilityTooltip).toBe(PROJECT_VISIBILITY_TYPE[visibility]);
-          vm.$destroy();
-        });
-      });
-    });
-
-    describe('isProject', () => {
-      it('should return boolean value representing whether `item.type` is Project or not', () => {
-        let item;
-        let vm;
-
-        item = { ...mockParentGroupItem, type: ITEM_TYPE.PROJECT };
-        vm = createComponent(item);
-
-        expect(vm.isProject).toBeTruthy();
-        vm.$destroy();
-
-        item = { ...mockParentGroupItem, type: ITEM_TYPE.GROUP };
-        vm = createComponent(item);
-
-        expect(vm.isProject).toBeFalsy();
-        vm.$destroy();
-      });
-    });
-
-    describe('isGroup', () => {
-      it('should return boolean value representing whether `item.type` is Group or not', () => {
-        let item;
-        let vm;
-
-        item = { ...mockParentGroupItem, type: ITEM_TYPE.GROUP };
-        vm = createComponent(item);
-
-        expect(vm.isGroup).toBeTruthy();
-        vm.$destroy();
-
-        item = { ...mockParentGroupItem, type: ITEM_TYPE.PROJECT };
-        vm = createComponent(item);
-
-        expect(vm.isGroup).toBeFalsy();
-        vm.$destroy();
-      });
-    });
-  });
+  const findItemStatsValue = () => wrapper.find(ItemStatsValue);
 
   describe('template', () => {
     it('renders component container element correctly', () => {
-      const vm = createComponent();
+      createComponent();
 
-      expect(vm.$el.classList.contains('stats')).toBeTruthy();
-
-      vm.$destroy();
+      expect(wrapper.classes()).toContain('stats');
     });
 
     it('renders start count and last updated information for project item correctly', () => {
-      const item = { ...mockParentGroupItem, type: ITEM_TYPE.PROJECT, starCount: 4 };
-      const vm = createComponent(item);
+      const item = {
+        ...mockParentGroupItem,
+        type: ITEM_TYPE.PROJECT,
+        starCount: 4,
+      };
 
-      const projectStarIconEl = vm.$el.querySelector('.project-stars');
+      createComponent({ item });
 
-      expect(projectStarIconEl).not.toBeNull();
-      expect(projectStarIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
-      expect(projectStarIconEl.querySelectorAll('.stat-value').length).toBeGreaterThan(0);
-      expect(vm.$el.querySelectorAll('.last-updated').length).toBeGreaterThan(0);
-
-      vm.$destroy();
+      expect(findItemStatsValue().exists()).toBe(true);
+      expect(findItemStatsValue().props('cssClass')).toBe('project-stars');
+      expect(wrapper.contains('.last-updated')).toBe(true);
     });
   });
 });

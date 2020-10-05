@@ -75,7 +75,7 @@ FactoryBot.define do
     end
 
     # Use this trait if you want versions in a particular history, but don't
-    # want to pay for gitlay calls.
+    # want to pay for gitaly calls.
     trait :with_versions do
       transient do
         deleted { false }

@@ -431,6 +431,17 @@ To erase a job:
 
 In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../api/job_artifacts.md#get-job-artifacts) the artifacts.
 
+## Troubleshooting
+
+### Error message `No files to upload`
+
+This is often preceded by other errors or warnings that specify the filename and why it wasn't
+generated in the first place. Please check the entire job log for such messages.
+
+If you find no helpful messages, please retry the failed job after activating
+[CI debug logging](../variables/README.md#debug-logging).
+This provides useful information to investigate further.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

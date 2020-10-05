@@ -1,30 +1,37 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Tracking from '~/tracking';
 import component from '~/registry/settings/components/settings_form.vue';
 import expirationPolicyFields from '~/registry/shared/components/expiration_policy_fields.vue';
-import { createStore } from '~/registry/settings/store/';
+import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.graphql';
+import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.graphql';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/registry/shared/constants';
-import { stringifiedFormOptions } from '../../shared/mock_data';
+import { GlCard, GlLoadingIcon } from '../../shared/stubs';
+import { expirationPolicyPayload, expirationPolicyMutationPayload } from '../mock_data';
+
+const localVue = createLocalVue();
 
 describe('Settings Form', () => {
   let wrapper;
-  let store;
-  let dispatchSpy;
+  let fakeApollo;
 
-  const GlLoadingIcon = { name: 'gl-loading-icon-stub', template: '<svg></svg>' };
-  const GlCard = {
-    name: 'gl-card-stub',
-    template: `
-  <div>
-    <slot name="header"></slot>
-    <slot></slot>
-    <slot name="footer"></slot>
-  </div>
-  `,
+  const defaultProvidedValues = {
+    projectPath: 'path',
+  };
+
+  const {
+    data: {
+      project: { containerExpirationPolicy },
+    },
+  } = expirationPolicyPayload();
+
+  const defaultProps = {
+    value: { ...containerExpirationPolicy },
   };
 
   const trackingPayload = {
@@ -35,14 +42,21 @@ describe('Settings Form', () => {
   const findFields = () => wrapper.find(expirationPolicyFields);
   const findCancelButton = () => wrapper.find({ ref: 'cancel-button' });
   const findSaveButton = () => wrapper.find({ ref: 'save-button' });
-  const findLoadingIcon = (parent = wrapper) => parent.find(GlLoadingIcon);
 
-  const mountComponent = (data = {}) => {
+  const mountComponent = ({
+    props = defaultProps,
+    data,
+    config,
+    provide = defaultProvidedValues,
+    mocks,
+  } = {}) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlCard,
         GlLoadingIcon,
       },
+      propsData: { ...props },
+      provide,
       data() {
         return {
           ...data,
@@ -52,15 +66,42 @@ describe('Settings Form', () => {
         $toast: {
           show: jest.fn(),
         },
+        ...mocks,
       },
-      store,
+      ...config,
     });
   };
 
+  const mountComponentWithApollo = ({ provide = defaultProvidedValues, resolver } = {}) => {
+    localVue.use(VueApollo);
+
+    const requestHandlers = [
+      [updateContainerExpirationPolicyMutation, resolver],
+      [expirationPolicyQuery, jest.fn().mockResolvedValue(expirationPolicyPayload())],
+    ];
+
+    fakeApollo = createMockApollo(requestHandlers);
+
+    fakeApollo.defaultClient.cache.writeQuery({
+      query: expirationPolicyQuery,
+      variables: {
+        projectPath: provide.projectPath,
+      },
+      ...expirationPolicyPayload(),
+    });
+
+    mountComponent({
+      provide,
+      config: {
+        localVue,
+        apolloProvider: fakeApollo,
+      },
+    });
+
+    return requestHandlers.map(resolvers => resolvers[1]);
+  };
+
   beforeEach(() => {
-    store = createStore();
-    store.dispatch('setInitialState', stringifiedFormOptions);
-    dispatchSpy = jest.spyOn(store, 'dispatch');
     jest.spyOn(Tracking, 'event');
   });
 
@@ -72,12 +113,12 @@ describe('Settings Form', () => {
     it('v-model change update the settings property', () => {
       mountComponent();
       findFields().vm.$emit('input', { newValue: 'foo' });
-      expect(dispatchSpy).toHaveBeenCalledWith('updateSettings', { settings: 'foo' });
+      expect(wrapper.emitted('input')).toEqual([['foo']]);
     });
 
     it('v-model change update the api error property', () => {
       const apiErrors = { baz: 'bar' };
-      mountComponent({ apiErrors });
+      mountComponent({ data: { apiErrors } });
       expect(findFields().props('apiErrors')).toEqual(apiErrors);
       findFields().vm.$emit('input', { newValue: 'foo', modified: 'baz' });
       expect(findFields().props('apiErrors')).toEqual({});
@@ -85,19 +126,14 @@ describe('Settings Form', () => {
   });
 
   describe('form', () => {
-    let form;
-    beforeEach(() => {
-      mountComponent();
-      form = findForm();
-      dispatchSpy.mockReturnValue();
-    });
-
     describe('form reset event', () => {
       beforeEach(() => {
-        form.trigger('reset');
+        mountComponent();
+
+        findForm().trigger('reset');
       });
       it('calls the appropriate function', () => {
-        expect(dispatchSpy).toHaveBeenCalledWith('resetSettings');
+        expect(wrapper.emitted('reset')).toEqual([[]]);
       });
 
       it('tracks the reset event', () => {
@@ -108,54 +144,96 @@ describe('Settings Form', () => {
     describe('form submit event ', () => {
       it('save has type submit', () => {
         mountComponent();
+
         expect(findSaveButton().attributes('type')).toBe('submit');
       });
 
-      it('dispatches the saveSettings action', () => {
-        dispatchSpy.mockResolvedValue();
-        form.trigger('submit');
-        expect(dispatchSpy).toHaveBeenCalledWith('saveSettings');
+      it('dispatches the correct apollo mutation', async () => {
+        const [expirationPolicyMutationResolver] = mountComponentWithApollo({
+          resolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+        });
+
+        findForm().trigger('submit');
+        await expirationPolicyMutationResolver();
+        expect(expirationPolicyMutationResolver).toHaveBeenCalled();
       });
 
       it('tracks the submit event', () => {
-        dispatchSpy.mockResolvedValue();
-        form.trigger('submit');
+        mountComponentWithApollo({
+          resolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+        });
+
+        findForm().trigger('submit');
+
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'submit_form', trackingPayload);
       });
 
       it('show a success toast when submit succeed', async () => {
-        dispatchSpy.mockResolvedValue();
-        form.trigger('submit');
-        await waitForPromises();
+        const handlers = mountComponentWithApollo({
+          resolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+        });
+
+        findForm().trigger('submit');
+        await Promise.all(handlers);
+        await wrapper.vm.$nextTick();
+
         expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, {
           type: 'success',
         });
       });
 
       describe('when submit fails', () => {
-        it('shows an error', async () => {
-          dispatchSpy.mockRejectedValue({ response: {} });
-          form.trigger('submit');
-          await waitForPromises();
-          expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE, {
-            type: 'error',
+        describe('user recoverable errors', () => {
+          it('when there is an error is shown in a toast', async () => {
+            const handlers = mountComponentWithApollo({
+              resolver: jest
+                .fn()
+                .mockResolvedValue(expirationPolicyMutationPayload({ errors: ['foo'] })),
+            });
+
+            findForm().trigger('submit');
+            await Promise.all(handlers);
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('foo', {
+              type: 'error',
+            });
           });
         });
+        describe('global errors', () => {
+          it('shows an error', async () => {
+            const handlers = mountComponentWithApollo({
+              resolver: jest.fn().mockRejectedValue(expirationPolicyMutationPayload()),
+            });
 
-        it('parses the error messages', async () => {
-          dispatchSpy.mockRejectedValue({
-            response: {
-              data: {
-                message: {
-                  foo: 'bar',
-                  'container_expiration_policy.name': ['baz'],
-                },
-              },
-            },
+            findForm().trigger('submit');
+            await Promise.all(handlers);
+            await wrapper.vm.$nextTick();
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE, {
+              type: 'error',
+            });
           });
-          form.trigger('submit');
-          await waitForPromises();
-          expect(findFields().props('apiErrors')).toEqual({ name: 'baz' });
+
+          it('parses the error messages', async () => {
+            const mutate = jest.fn().mockRejectedValue({
+              graphQLErrors: [
+                {
+                  extensions: {
+                    problems: [{ path: ['name'], message: 'baz' }],
+                  },
+                },
+              ],
+            });
+            mountComponent({ mocks: { $apollo: { mutate } } });
+
+            findForm().trigger('submit');
+            await waitForPromises();
+            await wrapper.vm.$nextTick();
+
+            expect(findFields().props('apiErrors')).toEqual({ name: 'baz' });
+          });
         });
       });
     });
@@ -163,51 +241,78 @@ describe('Settings Form', () => {
 
   describe('form actions', () => {
     describe('cancel button', () => {
-      beforeEach(() => {
-        store.commit('SET_SETTINGS', { foo: 'bar' });
-        mountComponent();
-      });
-
       it('has type reset', () => {
+        mountComponent();
+
         expect(findCancelButton().attributes('type')).toBe('reset');
       });
 
-      it('is disabled when isEdited is false', () =>
-        wrapper.vm.$nextTick().then(() => {
-          expect(findCancelButton().attributes('disabled')).toBe('true');
-        }));
+      it.each`
+        isLoading | isEdited | mutationLoading | isDisabled
+        ${true}   | ${true}  | ${true}         | ${true}
+        ${false}  | ${true}  | ${true}         | ${true}
+        ${false}  | ${false} | ${true}         | ${true}
+        ${true}   | ${false} | ${false}        | ${true}
+        ${false}  | ${false} | ${false}        | ${true}
+        ${false}  | ${true}  | ${false}        | ${false}
+      `(
+        'when isLoading is $isLoading and isEdited is $isEdited and mutationLoading is $mutationLoading is $isDisabled that the is disabled',
+        ({ isEdited, isLoading, mutationLoading, isDisabled }) => {
+          mountComponent({
+            props: { ...defaultProps, isEdited, isLoading },
+            data: { mutationLoading },
+          });
 
-      it('is disabled isLoading is true', () => {
-        store.commit('TOGGLE_LOADING');
-        store.commit('UPDATE_SETTINGS', { settings: { foo: 'baz' } });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCancelButton().attributes('disabled')).toBe('true');
-          store.commit('TOGGLE_LOADING');
-        });
-      });
-
-      it('is enabled when isLoading is false and isEdited is true', () => {
-        store.commit('UPDATE_SETTINGS', { settings: { foo: 'baz' } });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCancelButton().attributes('disabled')).toBe(undefined);
-        });
-      });
+          const expectation = isDisabled ? 'true' : undefined;
+          expect(findCancelButton().attributes('disabled')).toBe(expectation);
+        },
+      );
     });
 
-    describe('when isLoading is true', () => {
-      beforeEach(() => {
-        store.commit('TOGGLE_LOADING');
+    describe('submit button', () => {
+      it('has type submit', () => {
         mountComponent();
-      });
-      afterEach(() => {
-        store.commit('TOGGLE_LOADING');
-      });
 
-      it('submit button is disabled and shows a spinner', () => {
-        const button = findSaveButton();
-        expect(button.attributes('disabled')).toBeTruthy();
-        expect(findLoadingIcon(button).exists()).toBe(true);
+        expect(findSaveButton().attributes('type')).toBe('submit');
       });
+      it.each`
+        isLoading | fieldsAreValid | mutationLoading | isDisabled
+        ${true}   | ${true}        | ${true}         | ${true}
+        ${false}  | ${true}        | ${true}         | ${true}
+        ${false}  | ${false}       | ${true}         | ${true}
+        ${true}   | ${false}       | ${false}        | ${true}
+        ${false}  | ${false}       | ${false}        | ${true}
+        ${false}  | ${true}        | ${false}        | ${false}
+      `(
+        'when isLoading is $isLoading and fieldsAreValid is $fieldsAreValid and mutationLoading is $mutationLoading is $isDisabled that the is disabled',
+        ({ fieldsAreValid, isLoading, mutationLoading, isDisabled }) => {
+          mountComponent({
+            props: { ...defaultProps, isLoading },
+            data: { mutationLoading, fieldsAreValid },
+          });
+
+          const expectation = isDisabled ? 'true' : undefined;
+          expect(findSaveButton().attributes('disabled')).toBe(expectation);
+        },
+      );
+
+      it.each`
+        isLoading | mutationLoading | showLoading
+        ${true}   | ${true}         | ${true}
+        ${true}   | ${false}        | ${true}
+        ${false}  | ${true}         | ${true}
+        ${false}  | ${false}        | ${false}
+      `(
+        'when isLoading is $isLoading and mutationLoading is $mutationLoading is $showLoading that the loading icon is shown',
+        ({ isLoading, mutationLoading, showLoading }) => {
+          mountComponent({
+            props: { ...defaultProps, isLoading },
+            data: { mutationLoading },
+          });
+
+          expect(findSaveButton().props('loading')).toBe(showLoading);
+        },
+      );
     });
   });
 });

@@ -154,7 +154,7 @@ commits to a feature branch in a remote repository in GitLab,
 the CI/CD pipeline set for your project is triggered. By doing
 so, GitLab CI/CD:
 
-- Runs automated scripts (sequential or parallel) to:
+- Runs automated scripts (sequentially or in parallel) to:
   - Build and test your app.
   - Preview the changes per merge request with Review Apps, as you
     would see in your `localhost`.

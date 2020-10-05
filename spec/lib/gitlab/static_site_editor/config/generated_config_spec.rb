@@ -29,7 +29,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
                     project: 'project',
                     project_id: project.id,
                     return_url: 'http://example.com',
-                    is_supported_content: 'true',
+                    is_supported_content: true,
                     base_url: '/namespace/project/-/sse/master%2FREADME.md',
                     merge_requests_illustration_path: %r{illustrations/merge_requests}
                   })
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
           stub_feature_flags(sse_erb_support: project)
         end
 
-        it { is_expected.to include(is_supported_content: 'true') }
+        it { is_expected.to include(is_supported_content: true) }
       end
 
       context 'when feature flag is disabled' do
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
           stub_feature_flags(sse_erb_support: false)
         end
 
-        it { is_expected.to include(is_supported_content: 'false') }
+        it { is_expected.to include(is_supported_content: false) }
       end
     end
 
@@ -88,31 +88,31 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
     context 'when branch is not master' do
       let(:ref) { 'my-branch' }
 
-      it { is_expected.to include(is_supported_content: 'false') }
+      it { is_expected.to include(is_supported_content: false) }
     end
 
     context 'when file does not have a markdown extension' do
       let(:path) { 'README.txt' }
 
-      it { is_expected.to include(is_supported_content: 'false') }
+      it { is_expected.to include(is_supported_content: false) }
     end
 
     context 'when file does not have an extension' do
       let(:path) { 'README' }
 
-      it { is_expected.to include(is_supported_content: 'false') }
+      it { is_expected.to include(is_supported_content: false) }
     end
 
     context 'when file does not exist' do
       let(:path) { 'UNKNOWN.md' }
 
-      it { is_expected.to include(is_supported_content: 'false') }
+      it { is_expected.to include(is_supported_content: false) }
     end
 
     context 'when repository is empty' do
       let(:repository) { create(:project_empty_repo).repository }
 
-      it { is_expected.to include(is_supported_content: 'false') }
+      it { is_expected.to include(is_supported_content: false) }
     end
 
     context 'when return_url is not a valid URL' do
@@ -131,6 +131,12 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
       let(:return_url) { nil }
 
       it { is_expected.to include(return_url: nil) }
+    end
+
+    context 'when a commit for the ref cannot be found' do
+      let(:ref) { 'nonexistent-ref' }
+
+      it { is_expected.to include(commit_id: nil) }
     end
   end
 end

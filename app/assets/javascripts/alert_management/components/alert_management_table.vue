@@ -267,8 +267,8 @@ export default {
         this.searchTerm = trimmedInput;
       }
     }, 500),
-    navigateToAlertDetails({ iid }) {
-      return visitUrl(joinPaths(window.location.pathname, iid, 'details'));
+    navigateToAlertDetails({ iid }, index, { metaKey }) {
+      return visitUrl(joinPaths(window.location.pathname, iid, 'details'), metaKey);
     },
     trackPageViews() {
       const { category, action } = trackAlertListViewsOptions;

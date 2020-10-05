@@ -136,11 +136,12 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::QueryBuilder do
       let(:relation) { Project.sorted_by_similarity_desc('test', include_in_select: true) }
       let(:arel_table) { Project.arel_table }
       let(:decoded_cursor) { { 'similarity' => 0.5, 'id' => 100 } }
+      let(:similarity_function_call) { Gitlab::Database::SimilarityScore::SIMILARITY_FUNCTION_CALL_WITH_ANNOTATION }
       let(:similarity_sql) do
         [
-          '(SIMILARITY(COALESCE("projects"."path", \'\'), \'test\') * CAST(\'1\' AS numeric))',
-          '(SIMILARITY(COALESCE("projects"."name", \'\'), \'test\') * CAST(\'0.7\' AS numeric))',
-          '(SIMILARITY(COALESCE("projects"."description", \'\'), \'test\') * CAST(\'0.2\' AS numeric))'
+          "(#{similarity_function_call}(COALESCE(\"projects\".\"path\", ''), 'test') * CAST('1' AS numeric))",
+          "(#{similarity_function_call}(COALESCE(\"projects\".\"name\", ''), 'test') * CAST('0.7' AS numeric))",
+          "(#{similarity_function_call}(COALESCE(\"projects\".\"description\", ''), 'test') * CAST('0.2' AS numeric))"
         ].join(' + ')
       end
 

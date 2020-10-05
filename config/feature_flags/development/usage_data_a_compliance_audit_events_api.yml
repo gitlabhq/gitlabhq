@@ -1,0 +1,7 @@
+---
+name: usage_data_a_compliance_audit_events_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41689
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/233786
+group: group::compliance
+type: development
+default_enabled: false

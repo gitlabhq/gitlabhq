@@ -397,8 +397,6 @@ To be able to build, test, and deploy our app with GitLab CI/CD, we need to prep
 To do that, we'll use a Docker image which has the minimum requirements that a Laravel app needs to run.
 [There are other ways](../php.md#test-php-projects-using-the-docker-executor) to do that as well, but they may lead our builds run slowly, which is not what we want when there are faster options to use.
 
-With Docker images our builds run incredibly faster!
-
 ### Create a Container Image
 
 Let's create a [Dockerfile](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Dockerfile) in the root directory of our app with the following content:
@@ -441,9 +439,9 @@ On your GitLab project repository navigate to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
-You may need to [enable Container Registry](../../../user/packages/container_registry/index.md#enable-the-container-registry-for-your-project) to your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
+You may need to enable the Container Registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
 
-To start using Container Registry on our machine, we first need to login to the GitLab registry using our GitLab username and password:
+To start using Container Registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password:
 
 ```shell
 docker login registry.gitlab.com

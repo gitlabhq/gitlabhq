@@ -15,7 +15,8 @@ class Projects::PipelinesController < Projects::ApplicationController
     push_frontend_feature_flag(:filter_pipelines_search, project, default_enabled: true)
     push_frontend_feature_flag(:dag_pipeline_tab, project, default_enabled: true)
     push_frontend_feature_flag(:pipelines_security_report_summary, project)
-    push_frontend_feature_flag(:new_pipeline_form)
+    push_frontend_feature_flag(:new_pipeline_form, project)
+    push_frontend_feature_flag(:graphql_pipeline_header, project, type: :development, default_enabled: false)
   end
   before_action :ensure_pipeline, only: [:show]
 

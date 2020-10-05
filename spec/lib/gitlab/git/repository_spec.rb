@@ -2079,7 +2079,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     let(:object_pool_rugged) { Rugged::Repository.new(object_pool_path) }
 
     before do
-      object_pool.create
+      object_pool.create # rubocop:disable Rails/SaveBang
     end
 
     it 'does not raise an error when disconnecting a non-linked repository' do

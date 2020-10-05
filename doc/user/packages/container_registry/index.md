@@ -16,100 +16,44 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - The group level Container Registry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23315) in GitLab 12.10.
 > - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
-NOTE: **Note:**
-This document is the user guide. To learn how to enable GitLab Container
-Registry across your GitLab instance, visit the
-[administrator documentation](../../../administration/packages/container_registry.md).
-
-With the Docker Container Registry integrated into GitLab, every project can
+With the Docker Container Registry integrated into GitLab, every GitLab project can
 have its own space to store its Docker images.
 
 You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
-![Container Registry repositories](img/container_registry_repositories_v13_1.png)
+NOTE: **Note:**
+This document is the user guide. To learn how to enable the Container
+Registry for your GitLab instance, visit the
+[administrator documentation](../../../administration/packages/container_registry.md).
 
-## Enable the Container Registry for your project
+## View the Container Registry
+
+You can view the Container Registry for a project or group.
+
+1. Go to your project or group.
+1. Go to **Packages & Registries > Container Registry**.
+
+You can search, sort, filter, and [delete](#delete-images-from-within-gitlab) containers on this page.
 
 CAUTION: **Warning:**
-The Container Registry follows the visibility settings of the project. If the project is public, so is the Container Registry.
+If a project is public, so is the Container Registry.
 
-If you cannot find the **Packages & Registries > Container Registry** entry under your
-project's sidebar, it is not enabled in your GitLab instance. Ask your
-administrator to enable GitLab Container Registry following the
-[administration documentation](../../../administration/packages/container_registry.md).
+## Use images from the Container Registry
 
-If you are using GitLab.com, this is enabled by default so you can start using
-the Registry immediately. Currently there is a soft (10GB) size restriction for
-Registry on GitLab.com, as part of the [repository size limit](../../project/repository/index.md).
+To download and run a container image hosted in the GitLab Container Registry:
 
-Once enabled for your GitLab instance, to enable Container Registry for your
-project:
+1. Copy the link to your container image:
+   - Go to your project or group's **Packages & Registries > Container Registry**
+     and find the image you want.
+   - Next to the image name, click the **Copy** button.
 
-1. Go to your project's **Settings > General** page.
-1. Expand the **Visibility, project features, permissions** section
-   and enable the **Container Registry** feature on your project. For new
-   projects this might be enabled by default. For existing projects
-   (prior GitLab 8.8), enable it explicitly.
-1. Press **Save changes** for the changes to take effect. You should now be able
-   to see the **Packages & Registries > Container Registry** link in the sidebar.
+    ![Container Registry image URL](img/container_registry_hover_path_13_4.png)
 
-## Control Container Registry from within GitLab
+1. Use `docker run` with the image link:
 
-GitLab offers a simple Container Registry management panel. This management panel is available
-for both projects and groups.
-
-### Control Container Registry for your project
-
-Navigate to your project's **{package}** **Packages & Registries > Container Registry**.
-
-![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v13_1.png)
-
-This view allows you to:
-
-- Show all the image repositories that belong to the project.
-- Filter image repositories by their name.
-- [Delete](#delete-images-from-within-gitlab) one or more image repository.
-- Navigate to the image repository details page.
-- Show a **Quick start** dropdown with the most common commands to log in, build and push.
-- Show a banner if the optional [cleanup policy](#cleanup-policy) is enabled for this project.
-
-### Control Container Registry for your group
-
-Navigate to your group's **{package}** **Packages & Registries > Container Registry**.
-
-![Container Registry group repositories](img/container_registry_group_repositories_v13_1.png)
-
-This view allows you to:
-
-- Show all the image repositories of the projects that belong to this group.
-- [Delete](#delete-images-from-within-gitlab) one or more image repositories.
-- Navigate to a specific image repository details page.
-
-### Image Repository details page
-
-Clicking on the name of any image repository navigates to the details.
-
-![Container Registry project repository details](img/container_registry_repository_details_v13.0.png)
-
-NOTE: **Note:**
-The following page has the same functionalities both in the **Group level container registry**
-and in the **Project level container registry**.
-
-This view:
-
-- Shows all the image repository details.
-- Shows all the tags of the image repository.
-- Allows you to quickly copy the tag path (by clicking on the clipboard button near the tag name).
-- Allows you to [delete one or more tags](#delete-images-from-within-gitlab).
-
-## Use images from GitLab Container Registry
-
-To download and run a container from images hosted in GitLab Container Registry,
-use `docker run`:
-
-```shell
-docker run [options] registry.example.com/group/project/image [arguments]
-```
+   ```shell
+   docker run [options] registry.example.com/group/project/image [arguments]
+   ```
 
 For more information on running Docker containers, visit the
 [Docker documentation](https://docs.docker.com/engine/userguide/intro/).
@@ -118,10 +62,10 @@ For more information on running Docker containers, visit the
 
 If you visit the **Packages & Registries > Container Registry** link under your project's
 menu, you can see the explicit instructions to login to the Container Registry
-using your GitLab credentials.
+by using your GitLab credentials.
 
 For example if the Registry's URL is `registry.example.com`, then you should be
-able to login with:
+able to log in with:
 
 ```shell
 docker login registry.example.com
@@ -175,6 +119,10 @@ registry.example.com/group/project/image:latest
 registry.example.com/group/project/my/image:rc1
 ```
 
+NOTE: **Note:**
+Currently there is a soft (10GB) size restriction for
+the Container Registry on GitLab.com, as part of the [repository size limit](../../project/repository/index.md).
+
 ## Build and push images using GitLab CI/CD
 
 While you can build and push your images from your local machine, take
@@ -183,7 +131,7 @@ You can then create workflows and automate any processes that involve testing,
 building, and eventually deploying your project from the Docker image you
 created.
 
-Before diving into the details, some things you should be aware of:
+Before diving into details, some things you should be aware of:
 
 - You must [authenticate to the container registry](#authenticating-to-the-container-registry-with-gitlab-cicd)
   before running any commands. You can do this in the `before_script` if multiple
@@ -359,15 +307,15 @@ in addition to the steps in the
 Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
- build:
-   image: $CI_REGISTRY/group/project/docker:19.03.12
-   services:
-     - name: $CI_REGISTRY/group/project/docker:19.03.12-dind
-       alias: docker
-   stage: build
-   script:
-     - docker build -t my-docker-image .
-     - docker run my-docker-image /script/to/run/tests
+build:
+  image: $CI_REGISTRY/group/project/docker:19.03.12
+  services:
+    - name: $CI_REGISTRY/group/project/docker:19.03.12-dind
+      alias: docker
+  stage: build
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
 ```
 
 If you forget to set the service alias, the `docker:19.03.12` image is unable to find the
@@ -394,7 +342,7 @@ the deleted images.
 
 To delete images from within GitLab:
 
-1. Navigate to your project's or group's **{package}** **Packages & Registries > Container Registry**.
+1. Navigate to your project's or group's **Packages & Registries > Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 
@@ -405,8 +353,6 @@ To delete images from within GitLab:
      to delete.
 
 1. In the dialog box, click **Remove tag**.
-
-   ![Container Registry tags](img/container_registry_repository_details_v13.0.png)
 
 ### Delete images using the API
 
@@ -512,6 +458,11 @@ Cleanup policies can be run on all projects, with these exceptions:
   for all projects (even those created before 12.8) in
   [GitLab application settings](../../../api/settings.md#change-application-settings)
   by setting `container_expiration_policies_enable_historic_entries` to true.
+  Alternatively, you can execute the following command in the [Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session):
+
+  ```ruby
+  ApplicationSetting.last.update(container_expiration_policies_enable_historic_entries: true)
+  ```
 
   There are performance risks with enabling it for all projects, especially if you
   are using an [external registry](./index.md#use-with-external-container-registries).
@@ -636,7 +587,7 @@ you can use the Container Registry to store Helm Charts. However, due to the way
 and stored by Docker, it is not possible for GitLab to parse this data and meet performance standards.
 [This epic](https://gitlab.com/groups/gitlab-org/-/epics/2313) updates the architecture of the Container Registry to support Helm Charts.
 
-You can read more about the above challenges [here](https://gitlab.com/gitlab-org/gitlab/-/issues/38047#note_298842890).
+[Read more about the above challenges](https://gitlab.com/gitlab-org/gitlab/-/issues/38047#note_298842890).
 
 ## Limitations
 
@@ -646,6 +597,19 @@ signature includes the repository name. To move or rename a repository with a
 Container Registry, you must delete all existing images.
 - Prior to GitLab 12.10, any tags that use the same image ID as the `latest` tag
 are not deleted by the cleanup policy.
+
+## Disable the Container Registry for a project
+
+The Container Registry is enabled by default. 
+
+You can, however, remove the Container Registry for a project:
+
+1. Go to your project's **Settings > General** page.
+1. Expand the **Visibility, project features, permissions** section
+   and disable **Container Registry**.
+1. Click **Save changes**.
+
+The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
 
 ## Troubleshooting the GitLab Container Registry
 
@@ -660,6 +624,13 @@ project or branch name. Special characters can include:
 To get around this, you can [change the group path](../../group/index.md#changing-a-groups-path),
 [change the project path](../../project/settings/index.md#renaming-a-repository) or change the branch
 name.
+
+You may also get a `404 Not Found` or `Unknown Manifest` message if you are using
+a Docker Engine version earlier than 17.12. Later versions of Docker Engine use
+[the v2 API](https://docs.docker.com/registry/spec/manifest-v2-2/).
+
+The images in your GitLab Container Registry must also use the Docker v2 API.
+For information on how to update your images, see the [Docker help](https://docs.docker.com/registry/spec/deprecated-schema-v1).
 
 ### Troubleshoot as a GitLab server admin
 

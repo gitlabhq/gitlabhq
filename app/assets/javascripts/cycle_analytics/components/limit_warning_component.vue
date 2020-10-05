@@ -1,7 +1,10 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  components: {
+    GlIcon,
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -15,15 +18,17 @@ export default {
 </script>
 <template>
   <span v-if="count === 50" class="events-info float-right">
-    <i
-      v-gl-tooltip
-      :title="
-        n__('Limited to showing %d event at most', 'Limited to showing %d events at most', 50)
-      "
-      class="fa fa-warning"
+    <gl-icon
+      v-gl-tooltip="{
+        title: n__(
+          'Limited to showing %d event at most',
+          'Limited to showing %d events at most',
+          50,
+        ),
+      }"
+      name="warning"
       aria-hidden="true"
-    >
-    </i>
+    />
     {{ n__('Showing %d event', 'Showing %d events', 50) }}
   </span>
 </template>

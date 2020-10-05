@@ -19,8 +19,9 @@ then in the left sidebar go to **Security & Compliance > Configuration**.
 
 For each security control the page displays:
 
-- **Status** - Status of the security control: enabled, not enabled, or available.
-- **Manage** - A management option or a link to the documentation.
+- **Security Control:** Name, description, and a documentation link.
+- **Status:** The security control's status (enabled, not enabled, or available).
+- **Manage:** A management option or a documentation link.
 
 ## Status
 
@@ -29,11 +30,10 @@ The status of each security control is determined by the project's latest defaul
 If a job with the expected security report artifact exists in the pipeline, the feature's status is
 _enabled_.
 
-For SAST, click **View history** to see the `.gitlab-ci.yml` file’s history.
-
-NOTE: **Note:**
 If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
 all security features are configured by default.
+
+For SAST, click **View history** to see the `.gitlab-ci.yml` file's history.
 
 ## Manage
 

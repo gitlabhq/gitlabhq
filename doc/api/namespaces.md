@@ -87,6 +87,23 @@ the `plan` parameter associated with a namespace:
 ]
 ```
 
+Users on GitLab.com will also see a `max_seats_used` parameter. `max_seats_used`
+is the highest number of users the group had.
+
+`max_seats_used` will be non-zero only for namespaces on paid plans.
+
+```json
+[
+  {
+    "id": 1,
+    "name": "user1",
+    "billable_members_count": 2,
+    "max_seats_used": 3,
+    ...
+  }
+]
+```
+
 NOTE: **Note:**
 Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **(BRONZE ONLY)**.
 
@@ -123,6 +140,7 @@ Example response:
     "web_url": "https://gitlab.example.com/groups/twitter",
     "members_count_with_descendants": 2,
     "billable_members_count": 2,
+    "max_seats_used": 0,
     "plan": "default",
     "trial_ends_on": null,
     "trial": false
@@ -162,6 +180,7 @@ Example response:
   "web_url": "https://gitlab.example.com/groups/group1",
   "members_count_with_descendants": 2,
   "billable_members_count": 2,
+  "max_seats_used": 0,
   "plan": "default",
   "trial_ends_on": null,
   "trial": false
@@ -188,6 +207,7 @@ Example response:
   "web_url": "https://gitlab.example.com/groups/group1",
   "members_count_with_descendants": 2,
   "billable_members_count": 2,
+  "max_seats_used": 0,
   "plan": "default",
   "trial_ends_on": null,
   "trial": false

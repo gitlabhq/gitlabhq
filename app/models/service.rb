@@ -7,9 +7,7 @@ class Service < ApplicationRecord
   include Importable
   include ProjectServicesLoggable
   include DataFields
-  include IgnorableColumns
-
-  ignore_columns %i[default], remove_with: '13.5', remove_after: '2020-10-22'
+  include FromUnion
 
   SERVICE_NAMES = %w[
     alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
@@ -65,6 +63,7 @@ class Service < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
+  scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :for_group, -> (group) { where(group_id: group, type: available_services_types) }
   scope :for_template, -> { where(template: true, type: available_services_types) }
   scope :for_instance, -> { where(instance: true, type: available_services_types) }
@@ -217,7 +216,7 @@ class Service < ApplicationRecord
     services_names.map { |service_name| "#{service_name}_service".camelize }
   end
 
-  def self.build_from_integration(project_id, integration)
+  def self.build_from_integration(integration, project_id: nil, group_id: nil)
     service = integration.dup
 
     if integration.supports_data_fields?
@@ -227,8 +226,9 @@ class Service < ApplicationRecord
 
     service.template = false
     service.instance = false
-    service.inherit_from_id = integration.id if integration.instance?
     service.project_id = project_id
+    service.group_id = group_id
+    service.inherit_from_id = integration.id if integration.instance? || integration.group
     service.active = false if service.invalid?
     service
   end
@@ -255,6 +255,19 @@ class Service < ApplicationRecord
     find_by(type: type, instance: true)
   end
   private_class_method :instance_level_integration
+
+  def self.create_from_active_default_integrations(scope, association, with_templates: false)
+    group_ids = scope.ancestors.select(:id)
+    array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
+
+    from_union([
+      with_templates ? active.where(template: true) : none,
+      active.where(instance: true),
+      active.where(group_id: group_ids)
+    ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], services.group_id), instance DESC")).group_by(&:type).each do |type, records|
+      build_from_integration(records.first, association => scope.id).save!
+    end
+  end
 
   def activated?
     active

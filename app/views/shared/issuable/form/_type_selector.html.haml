@@ -20,7 +20,7 @@
               %li.js-filter-issuable-type
                 = link_to new_project_issue_path(@project), class: ("is-active" if issuable.issue?) do
                   = _("Issue")
-              %li.js-filter-issuable-type
+              %li.js-filter-issuable-type{ data: { track: { event: "select_issue_type_incident", label: "select_issue_type_incident_dropdown_option" } } }
                 = link_to new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } }), class: ("is-active" if issuable.incident?) do
                   = _("Incident")
     - if issuable.incident?

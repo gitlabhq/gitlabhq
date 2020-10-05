@@ -39,7 +39,7 @@ Implementing Geo provides the following benefits:
 
 In addition, it:
 
-- Can be used for cloning and fetching projects, in addition to reading any data available in the GitLab web interface (see [current limitations](#current-limitations)).
+- Can be used for cloning and fetching projects, in addition to reading any data available in the GitLab web interface (see [limitations](#limitations)).
 - Overcomes slow connections between distant offices, saving time by improving speed for distributed teams.
 - Helps reducing the loading time for automated tasks, custom integrations, and internal workflows.
 - Can quickly fail over to a **secondary** node in a [disaster recovery](disaster_recovery/index.md) scenario.
@@ -69,7 +69,7 @@ Keep in mind that:
   - Replicate repositories, LFS Objects, and Attachments (HTTPS + JWT).
 - Since GitLab Premium 10.0, the **primary** node no longer talks to **secondary** nodes to notify for changes (API).
 - Pushing directly to a **secondary** node (for both HTTP and SSH, including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
-- There are [limitations](#current-limitations) in the current implementation.
+- There are [limitations](#limitations) when using Geo.
 
 ### Architecture
 
@@ -195,6 +195,9 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
+
 In some circumstances, like during [upgrades](replication/updating_the_geo_nodes.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the secondary node.
@@ -247,7 +250,7 @@ For more information on removing a Geo node, see [Removing **secondary** Geo nod
 
 To find out how to disable Geo, see [Disabling Geo](replication/disable_geo.md).
 
-## Current limitations
+## Limitations
 
 CAUTION: **Caution:**
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
@@ -261,6 +264,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Object pools for forked project deduplication work only on the **primary** node, and are duplicated on the **secondary** node.
 - [External merge request diffs](../merge_request_diffs.md) will not be replicated if they are on-disk, and viewing merge requests will fail. However, external MR diffs in object storage **are** supported. The default configuration (in-database) does work.
 - GitLab Runners cannot register with a **secondary** node. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
+- Geo **secondary** nodes can not be configured to [use high-availability configurations of PostgreSQL](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
 ### Limitations on replication/verification
 

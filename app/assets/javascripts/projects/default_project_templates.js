@@ -57,6 +57,10 @@ export default {
     text: s__('ProjectTemplates|Static Site Editor/Middleman'),
     icon: '.template-option .icon-sse_middleman',
   },
+  gitpod_spring_petclinic: {
+    text: s__('ProjectTemplates|Gitpod/Spring Petclinic'),
+    icon: '.template-option .icon-gitpod_spring_petclinic',
+  },
   nfhugo: {
     text: s__('ProjectTemplates|Netlify/Hugo'),
     icon: '.template-option .icon-nfhugo',

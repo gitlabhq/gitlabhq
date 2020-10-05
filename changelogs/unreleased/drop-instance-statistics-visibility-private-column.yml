@@ -1,0 +1,5 @@
+---
+title: Drop column instance_statistics_visibility_private
+merge_request: 42969
+author:
+type: deprecated

@@ -46,64 +46,59 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       end
 
       context 'when status is given' do
-        it 'mark job as succeeded' do
+        it 'marks job as succeeded' do
           update_job(state: 'success')
 
-          job.reload
-          expect(job).to be_success
+          expect(job.reload).to be_success
+          expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
         end
 
-        it 'mark job as failed' do
+        it 'marks job as failed' do
           update_job(state: 'failed')
 
-          job.reload
-          expect(job).to be_failed
+          expect(job.reload).to be_failed
           expect(job).to be_unknown_failure
+          expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
         end
 
         context 'when failure_reason is script_failure' do
           before do
             update_job(state: 'failed', failure_reason: 'script_failure')
-            job.reload
           end
 
-          it { expect(job).to be_script_failure }
+          it { expect(job.reload).to be_script_failure }
         end
 
         context 'when failure_reason is runner_system_failure' do
           before do
             update_job(state: 'failed', failure_reason: 'runner_system_failure')
-            job.reload
           end
 
-          it { expect(job).to be_runner_system_failure }
+          it { expect(job.reload).to be_runner_system_failure }
         end
 
         context 'when failure_reason is unrecognized value' do
           before do
             update_job(state: 'failed', failure_reason: 'what_is_this')
-            job.reload
           end
 
-          it { expect(job).to be_unknown_failure }
+          it { expect(job.reload).to be_unknown_failure }
         end
 
         context 'when failure_reason is job_execution_timeout' do
           before do
             update_job(state: 'failed', failure_reason: 'job_execution_timeout')
-            job.reload
           end
 
-          it { expect(job).to be_job_execution_timeout }
+          it { expect(job.reload).to be_job_execution_timeout }
         end
 
         context 'when failure_reason is unmet_prerequisites' do
           before do
             update_job(state: 'failed', failure_reason: 'unmet_prerequisites')
-            job.reload
           end
 
-          it { expect(job).to be_unmet_prerequisites }
+          it { expect(job.reload).to be_unmet_prerequisites }
         end
 
         context 'when unmigrated live trace chunks exist' do
@@ -119,24 +114,21 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                   expect(job.pending_state).to be_present
                   expect(response).to have_gitlab_http_status(:accepted)
+                  expect(response.header['X-GitLab-Trace-Update-Interval']).to be > 0
                 end
               end
 
               context 'when runner retries request after receiving 202' do
                 it 'responds with 202 and then with 200', :sidekiq_inline do
-                  perform_enqueued_jobs do
-                    update_job(state: 'success', checksum: 'crc32:12345678')
-                  end
+                  update_job(state: 'success', checksum: 'crc32:12345678')
 
-                  expect(job.reload.pending_state).to be_present
                   expect(response).to have_gitlab_http_status(:accepted)
+                  expect(job.reload.pending_state).to be_present
 
-                  perform_enqueued_jobs do
-                    update_job(state: 'success', checksum: 'crc32:12345678')
-                  end
+                  update_job(state: 'success', checksum: 'crc32:12345678')
 
-                  expect(job.reload.pending_state).not_to be_present
                   expect(response).to have_gitlab_http_status(:ok)
+                  expect(job.reload.pending_state).not_to be_present
                 end
               end
 
@@ -149,8 +141,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   update_job(state: 'success', checksum: 'crc:12345678')
 
                   expect(job.reload).to be_success
-                  expect(job.pending_state).not_to be_present
+                  expect(job.pending_state).to be_present
                   expect(response).to have_gitlab_http_status(:ok)
+                  expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
                 end
               end
             end

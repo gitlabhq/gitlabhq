@@ -5,17 +5,20 @@ require 'spec_helper'
 RSpec.describe Ci::PipelinePresenter do
   include Gitlab::Routing
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :test_repo) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
   let(:current_user) { user }
-  let(:project) { create(:project, :test_repo) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
 
   subject(:presenter) do
     described_class.new(pipeline)
   end
 
-  before do
+  before_all do
     project.add_developer(user)
+  end
+
+  before do
     allow(presenter).to receive(:current_user) { current_user }
   end
 
@@ -184,8 +187,8 @@ RSpec.describe Ci::PipelinePresenter do
   describe '#all_related_merge_request_text' do
     subject { presenter.all_related_merge_request_text }
 
-    let(:mr_1) { create(:merge_request) }
-    let(:mr_2) { create(:merge_request) }
+    let_it_be(:mr_1) { create(:merge_request) }
+    let_it_be(:mr_2) { create(:merge_request) }
 
     context 'with zero related merge requests (branch pipeline)' do
       it { is_expected.to eq('No related merge requests found.') }
@@ -242,7 +245,7 @@ RSpec.describe Ci::PipelinePresenter do
     end
 
     context 'permissions' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let_it_be_with_refind(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
       let(:pipeline) { merge_request.all_pipelines.take }
 
       shared_examples 'private merge requests' do

@@ -114,6 +114,22 @@ The following are GitLab upgrade validation tests we performed.
 
 The following are PostgreSQL upgrade validation tests we performed.
 
+### September 2020
+
+[Verify PostgreSQL 12 upgrade for Geo installations](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5454):
+
+- Description: With PostgreSQL 12 available as an opt-in version in GitLab 13.3, we tested upgrading
+  existing Geo installations from PostgreSQL 11 to 12. We also re-tested fresh installations of GitLab
+  with Geo after fixes were made to support PostgreSQL 12. These tests were done using a
+  [nightly build](https://packages.gitlab.com/gitlab/nightly-builds/packages/ubuntu/bionic/gitlab-ee_13.3.6+rnightly.169516.d5209202-0_amd64.deb)
+  of GitLab 13.4.
+- Outcome: Tests were successful for Geo deployments with a single database node on the primary and secondary.
+  We encountered known issues with repmgr and Patroni managed PostgreSQL clusters on the Geo primary. Using
+  PostgreSQL 12 with a database cluster on the primary is not recommended until the issues are resolved.
+- Known issues for PostgreSQL clusters:
+  - [Ensure Patroni detects PostgreSQL update](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5423)
+  - [Allow configuring permanent replication slots in patroni](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5628) 
+
 ### August 2020
 
 [Verify Geo installation with PostgreSQL 12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5453):

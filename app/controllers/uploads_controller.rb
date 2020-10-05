@@ -19,6 +19,7 @@ class UploadsController < ApplicationController
   rescue_from UnknownUploadModelError, with: :render_404
 
   skip_before_action :authenticate_user!
+  skip_before_action :check_two_factor_requirement, only: [:show]
   before_action :upload_mount_satisfied?
   before_action :authorize_access!, only: [:show]
   before_action :authorize_create_access!, only: [:create, :authorize]

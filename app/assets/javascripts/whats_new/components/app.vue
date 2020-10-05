@@ -1,6 +1,9 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { GlDrawer, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
+import Tracking from '~/tracking';
+
+const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
@@ -9,10 +12,16 @@ export default {
     GlIcon,
     GlLink,
   },
+  mixins: [trackingMixin],
   props: {
     features: {
       type: String,
       required: false,
+      default: null,
+    },
+    storageKey: {
+      type: String,
+      required: true,
       default: null,
     },
   },
@@ -31,7 +40,12 @@ export default {
     },
   },
   mounted() {
-    this.openDrawer();
+    this.openDrawer(this.storageKey);
+
+    const body = document.querySelector('body');
+    const namespaceId = body.getAttribute('data-namespace-id');
+
+    this.track('click_whats_new_drawer', { label: 'namespace_id', value: namespaceId });
   },
   methods: {
     ...mapActions(['openDrawer', 'closeDrawer']),
@@ -41,13 +55,20 @@ export default {
 
 <template>
   <div>
-    <gl-drawer class="mt-6" :open="open" @close="closeDrawer">
+    <gl-drawer class="whats-new-drawer" :open="open" @close="closeDrawer">
       <template #header>
         <h4 class="page-title my-2">{{ __("What's new at GitLab") }}</h4>
       </template>
       <div class="pb-6">
         <div v-for="feature in parsedFeatures" :key="feature.title" class="mb-6">
-          <gl-link :href="feature.url" target="_blank">
+          <gl-link
+            :href="feature.url"
+            target="_blank"
+            data-testid="whats-new-title-link"
+            data-track-event="click_whats_new_item"
+            :data-track-label="feature.title"
+            :data-track-property="feature.url"
+          >
             <h5 class="gl-font-base">{{ feature.title }}</h5>
           </gl-link>
           <div class="mb-2">
@@ -57,7 +78,13 @@ export default {
               </gl-badge>
             </template>
           </div>
-          <gl-link :href="feature.url" target="_blank">
+          <gl-link
+            :href="feature.url"
+            target="_blank"
+            data-track-event="click_whats_new_item"
+            :data-track-label="feature.title"
+            :data-track-property="feature.url"
+          >
             <img
               :alt="feature.title"
               :src="feature.image_url"
@@ -65,9 +92,17 @@ export default {
             />
           </gl-link>
           <p class="pt-2">{{ feature.body }}</p>
-          <gl-link :href="feature.url" target="_blank">{{ __('Learn more') }}</gl-link>
+          <gl-link
+            :href="feature.url"
+            target="_blank"
+            data-track-event="click_whats_new_item"
+            :data-track-label="feature.title"
+            :data-track-property="feature.url"
+            >{{ __('Learn more') }}</gl-link
+          >
         </div>
       </div>
     </gl-drawer>
+    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop"></div>
   </div>
 </template>

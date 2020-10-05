@@ -13,7 +13,7 @@ RSpec.describe 'Instance-level AWS EKS Cluster', :js do
     before do
       visit admin_clusters_path
 
-      click_link 'Add Kubernetes cluster'
+      click_link 'Integrate with a cluster certificate'
     end
 
     context 'when user creates a cluster on AWS EKS' do

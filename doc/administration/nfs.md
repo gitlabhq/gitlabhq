@@ -296,6 +296,25 @@ Having multiple NFS mounts will require manually making sure the data directorie
 are empty before attempting a restore. Read more about the
 [restore prerequisites](../raketasks/backup_restore.md).
 
+## Testing NFS
+
+Once you've set up the NFS server and client, you can verify NFS is configured correctly
+by testing the following commands:
+
+```shell
+sudo mkdir /gitlab-nfs/test-dir
+sudo chown git /gitlab-nfs/test-dir
+sudo chgrp gitlab-www /gitlab-nfs/test-dir
+sudo chgrp root /gitlab-nfs/test-dir
+sudo chmod 2755 /gitlab-nfs/test-dir
+sudo -u git mkdir /gitlab-nfs/test-dir/test2
+sudo -u git chmod 2755 /gitlab-nfs/test-dir/test2
+sudo ls -lah /gitlab-nfs/test-dir/test2
+sudo -u git rm -r /gitlab-nfs/test-dir
+```
+
+Any `Operation not permitted` errors means you should investigate your NFS server export options.
+
 ## NFS in a Firewalled Environment
 
 If the traffic between your NFS server and NFS client(s) is subject to port filtering

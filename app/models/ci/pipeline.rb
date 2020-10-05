@@ -42,6 +42,7 @@ module Ci
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :latest_statuses, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
@@ -577,11 +578,11 @@ module Ci
     end
 
     def retried
-      @retried ||= (statuses.order(id: :desc) - statuses.latest)
+      @retried ||= (statuses.order(id: :desc) - latest_statuses)
     end
 
     def coverage
-      coverage_array = statuses.latest.map(&:coverage).compact
+      coverage_array = latest_statuses.map(&:coverage).compact
       if coverage_array.size >= 1
         '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
@@ -875,7 +876,7 @@ module Ci
     end
 
     def builds_with_coverage
-      builds.with_coverage
+      builds.latest.with_coverage
     end
 
     def has_reports?(reports_scope)

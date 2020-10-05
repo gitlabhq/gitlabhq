@@ -357,14 +357,6 @@ RSpec.describe SearchHelper do
   describe '#show_user_search_tab?' do
     subject { show_user_search_tab? }
 
-    context 'when users_search feature is disabled' do
-      before do
-        stub_feature_flags(users_search: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-
     context 'when project search' do
       before do
         @project = :some_project
@@ -397,6 +389,27 @@ RSpec.describe SearchHelper do
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe '#repository_ref' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:params) { { repository_ref: 'the-repository-ref-param' } }
+
+    subject { repository_ref(project) }
+
+    it { is_expected.to eq('the-repository-ref-param') }
+
+    context 'when the param :repository_ref is not set' do
+      let(:params) { { repository_ref: nil } }
+
+      it { is_expected.to eq(project.default_branch) }
+    end
+
+    context 'when the repository_ref param is a number' do
+      let(:params) { { repository_ref: 111111 } }
+
+      it { is_expected.to eq('111111') }
     end
   end
 end

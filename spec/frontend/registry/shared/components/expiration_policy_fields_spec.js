@@ -40,13 +40,13 @@ describe('Expiration Policy Form', () => {
   });
 
   describe.each`
-    elementName        | modelName            | value    | disabledByToggle
-    ${'toggle'}        | ${'enabled'}         | ${true}  | ${'not disabled'}
-    ${'interval'}      | ${'older_than'}      | ${'foo'} | ${'disabled'}
-    ${'schedule'}      | ${'cadence'}         | ${'foo'} | ${'disabled'}
-    ${'latest'}        | ${'keep_n'}          | ${'foo'} | ${'disabled'}
-    ${'name-matching'} | ${'name_regex'}      | ${'foo'} | ${'disabled'}
-    ${'keep-name'}     | ${'name_regex_keep'} | ${'bar'} | ${'disabled'}
+    elementName        | modelName          | value    | disabledByToggle
+    ${'toggle'}        | ${'enabled'}       | ${true}  | ${'not disabled'}
+    ${'interval'}      | ${'olderThan'}     | ${'foo'} | ${'disabled'}
+    ${'schedule'}      | ${'cadence'}       | ${'foo'} | ${'disabled'}
+    ${'latest'}        | ${'keepN'}         | ${'foo'} | ${'disabled'}
+    ${'name-matching'} | ${'nameRegex'}     | ${'foo'} | ${'disabled'}
+    ${'keep-name'}     | ${'nameRegexKeep'} | ${'bar'} | ${'disabled'}
   `(
     `${FORM_ELEMENTS_ID_PREFIX}-$elementName form element`,
     ({ elementName, modelName, value, disabledByToggle }) => {
@@ -128,9 +128,9 @@ describe('Expiration Policy Form', () => {
   });
 
   describe.each`
-    modelName            | elementName
-    ${'name_regex'}      | ${'name-matching'}
-    ${'name_regex_keep'} | ${'keep-name'}
+    modelName          | elementName
+    ${'nameRegex'}     | ${'name-matching'}
+    ${'nameRegexKeep'} | ${'keep-name'}
   `('regex textarea validation', ({ modelName, elementName }) => {
     const invalidString = new Array(NAME_REGEX_LENGTH + 2).join(',');
 

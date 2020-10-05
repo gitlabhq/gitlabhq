@@ -228,8 +228,8 @@ module TimeboxesHelper
   end
   alias_method :milestone_date_range, :timebox_date_range
 
-  def milestone_tab_path(milestone, tab)
-    url_for(action: tab, format: :json)
+  def milestone_tab_path(milestone, tab, params = {})
+    url_for(params.merge(action: tab, format: :json))
   end
 
   def update_milestone_path(milestone, params = {})

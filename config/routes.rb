@@ -69,10 +69,6 @@ Rails.application.routes.draw do
   # Begin of the /-/ scope.
   # Use this scope for all new global routes.
   scope path: '-' do
-    # remove in 13.5
-    get '/instance_statistics', to: redirect('admin/dev_ops_report')
-    get '/instance_statistics/dev_ops_score', to: redirect('admin/dev_ops_report')
-    get '/instance_statistics/cohorts', to: redirect('admin/cohorts')
     # Autocomplete
     get '/autocomplete/users' => 'autocomplete#users'
     get '/autocomplete/users/:id' => 'autocomplete#user'
@@ -92,6 +88,8 @@ Rails.application.routes.draw do
     get 'readiness' => 'health#readiness'
     resources :metrics, only: [:index]
     mount Peek::Railtie => '/peek', as: 'peek_routes'
+
+    get 'runner_setup/platforms' => 'runner_setup#platforms'
 
     # Boards resources shared between group and projects
     resources :boards, only: [] do
@@ -122,6 +120,7 @@ Rails.application.routes.draw do
 
     get 'ide' => 'ide#index'
     get 'ide/*vueroute' => 'ide#index', format: false
+    get 'ide/project/:namespace/:project/merge_requests/:id' => 'ide#index', format: false, as: :ide_merge_request
 
     draw :operations
     draw :jira_connect

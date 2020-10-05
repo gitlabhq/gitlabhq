@@ -4,6 +4,7 @@ import ToolbarItem from '../toolbar_item.vue';
 import buildHtmlToMarkdownRenderer from './build_html_to_markdown_renderer';
 import buildCustomHTMLRenderer from './build_custom_renderer';
 import { TOOLBAR_ITEM_CONFIGS } from '../constants';
+import sanitizeHTML from './sanitize_html';
 
 const buildWrapper = propsData => {
   const instance = new Vue({
@@ -62,5 +63,6 @@ export const getEditorOptions = externalOptions => {
   return defaults({
     customHTMLRenderer: buildCustomHTMLRenderer(externalOptions?.customRenderers),
     toolbarItems: TOOLBAR_ITEM_CONFIGS.map(toolbarItem => generateToolbarItem(toolbarItem)),
+    customHTMLSanitizer: html => sanitizeHTML(html),
   });
 };

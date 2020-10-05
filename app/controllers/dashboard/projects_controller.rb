@@ -14,6 +14,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   before_action :projects, only: [:index]
   skip_cross_project_access_check :index, :starred
 
+  feature_category :projects
+
   def index
     respond_to do |format|
       format.html do

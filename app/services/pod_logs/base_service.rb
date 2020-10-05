@@ -10,6 +10,8 @@ module PodLogs
     CACHE_KEY_GET_POD_LOG = 'get_pod_log'
     K8S_NAME_MAX_LENGTH = 253
 
+    self.reactive_cache_work_type = :external_dependency
+
     def id
       cluster.id
     end

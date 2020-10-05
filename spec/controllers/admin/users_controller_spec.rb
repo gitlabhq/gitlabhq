@@ -23,6 +23,12 @@ RSpec.describe Admin::UsersController do
 
       expect(assigns(:users)).to eq([admin])
     end
+
+    it 'eager loads authorized projects association' do
+      get :index
+
+      expect(assigns(:users).first.association(:authorized_projects)).to be_loaded
+    end
   end
 
   describe 'GET :id' do

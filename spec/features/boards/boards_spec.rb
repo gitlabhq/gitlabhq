@@ -24,33 +24,11 @@ RSpec.describe 'Issue Boards', :js do
   context 'no lists' do
     before do
       visit project_board_path(project, board)
-      wait_for_requests
-      expect(page).to have_selector('.board', count: 3)
-    end
-
-    it 'shows blank state' do
-      expect(page).to have_content('Welcome to your Issue Board!')
-    end
-
-    it 'shows tooltip on add issues button' do
-      button = page.find('.filter-dropdown-container button', text: 'Add issues')
-
-      expect(button[:"data-original-title"]).to eq("Please add a list to your board first")
-    end
-
-    it 'hides the blank state when clicking nevermind button' do
-      page.within(find('.board-blank-state')) do
-        click_button("Nevermind, I'll use my own")
-      end
-      expect(page).to have_selector('.board', count: 2)
     end
 
     it 'creates default lists' do
       lists = ['Open', 'To Do', 'Doing', 'Closed']
 
-      page.within(find('.board-blank-state')) do
-        click_button('Add default lists')
-      end
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 4)

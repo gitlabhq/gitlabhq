@@ -1,4 +1,7 @@
 ---
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 comments: false
 description: Read through the GitLab installation methods.
 type: index
@@ -68,7 +71,7 @@ GitLab maintains a set of official Docker images based on the Omnibus GitLab pac
 
 If the Omnibus GitLab package is not available in your distribution, you can
 install GitLab from source: Useful for unsupported systems like \*BSD. For an
-overview of the directory structure, read the [structure documentation](structure.md).
+overview of the directory structure, read the [structure documentation](installation.md#gitlab-directory-structure).
 
 [**> Install GitLab from source.**](installation.md)
 

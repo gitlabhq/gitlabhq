@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
+import { fixTitle, hide } from '~/tooltips';
 
 function Sidebar() {
   this.toggleTodo = this.toggleTodo.bind(this);
@@ -42,13 +43,17 @@ Sidebar.prototype.addEventListeners = function() {
 
 Sidebar.prototype.sidebarToggleClicked = function(e, triggered) {
   const $this = $(this);
-  const isExpanded = $this.find('i').hasClass('fa-angle-double-right');
+  const $collapseIcon = $('.js-sidebar-collapse');
+  const $expandIcon = $('.js-sidebar-expand');
+  const $toggleContainer = $('.js-sidebar-toggle-container');
+  const isExpanded = $toggleContainer.data('is-expanded');
   const tooltipLabel = isExpanded ? __('Expand sidebar') : __('Collapse sidebar');
-  const $allGutterToggleIcons = $('.js-sidebar-toggle i');
   e.preventDefault();
 
   if (isExpanded) {
-    $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
+    $toggleContainer.data('is-expanded', false);
+    $collapseIcon.addClass('hidden');
+    $expandIcon.removeClass('hidden');
     $('aside.right-sidebar')
       .removeClass('right-sidebar-expanded')
       .addClass('right-sidebar-collapsed');
@@ -56,7 +61,9 @@ Sidebar.prototype.sidebarToggleClicked = function(e, triggered) {
       .removeClass('right-sidebar-expanded')
       .addClass('right-sidebar-collapsed');
   } else {
-    $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+    $toggleContainer.data('is-expanded', true);
+    $expandIcon.addClass('hidden');
+    $collapseIcon.removeClass('hidden');
     $('aside.right-sidebar')
       .removeClass('right-sidebar-collapsed')
       .addClass('right-sidebar-expanded');
@@ -77,7 +84,7 @@ Sidebar.prototype.toggleTodo = function(e) {
   const ajaxType = $this.data('deletePath') ? 'delete' : 'post';
   const url = String($this.data('deletePath') || $this.data('createPath'));
 
-  $this.tooltip('hide');
+  hide($this);
 
   $('.js-issuable-todo')
     .disable()
@@ -119,7 +126,7 @@ Sidebar.prototype.todoUpdateDone = function(data) {
       .data('deletePath', deletePath);
 
     if ($el.hasClass('has-tooltip')) {
-      $el.tooltip('_fixTitle');
+      fixTitle($el);
     }
 
     if (typeof $el.data('isCollapsed') !== 'undefined') {

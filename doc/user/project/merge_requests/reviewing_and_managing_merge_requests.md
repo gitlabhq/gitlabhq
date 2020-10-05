@@ -122,6 +122,8 @@ the commits to open the single-commit view. From there, you can navigate among t
 by clicking the **Prev** and **Next** buttons on the top-right of the page or by using the
 <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
 
+![Merge requests commit navigation](img/commit_nav_v13_4.png)
+
 ### Incrementally expand merge request diffs
 
 By default, the diff shows only the parts of a file which are changed.

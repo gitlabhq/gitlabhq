@@ -5,6 +5,7 @@ import initSnippet from '~/snippet/snippet_bundle';
 
 jest.mock('~/snippet/snippet_bundle');
 jest.mock('~/snippets');
+jest.mock('~/gl_form');
 
 describe('Snippet edit form initialization', () => {
   const setFF = flag => {

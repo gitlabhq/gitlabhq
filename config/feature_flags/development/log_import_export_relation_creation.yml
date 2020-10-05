@@ -1,7 +1,7 @@
 ---
 name: log_import_export_relation_creation
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url:
+rollout_issue_url:
+group: group::import
 type: development
 default_enabled: false

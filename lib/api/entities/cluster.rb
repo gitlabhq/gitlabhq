@@ -4,7 +4,7 @@ module API
   module Entities
     class Cluster < Grape::Entity
       expose :id, :name, :created_at, :domain
-      expose :provider_type, :platform_type, :environment_scope, :cluster_type
+      expose :provider_type, :platform_type, :environment_scope, :cluster_type, :namespace_per_environment
       expose :user, using: Entities::UserBasic
       expose :platform_kubernetes, using: Entities::Platform::Kubernetes
       expose :provider_gcp, using: Entities::Provider::Gcp

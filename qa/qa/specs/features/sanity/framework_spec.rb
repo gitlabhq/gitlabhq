@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Framework sanity checks', :orchestrated, :framework do
+  RSpec.describe 'Framework sanity checks', :orchestrated, :framework do
     describe 'Passing orchestrated example' do
       it 'succeeds' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

@@ -1,4 +1,4 @@
-- too_big = diff_file.diff_lines.count > Commit::DIFF_SAFE_LINES
+- too_big = diff_file.diff_lines.count > Commit.diff_safe_lines
 - if too_big
   .suppressed-container
     %a.show-suppressed-diff.cursor-pointer.js-show-suppressed-diff= _("Changes suppressed. Click to show.")

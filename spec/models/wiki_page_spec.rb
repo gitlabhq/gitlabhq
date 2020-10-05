@@ -4,16 +4,25 @@ require "spec_helper"
 
 RSpec.describe WikiPage do
   let_it_be(:user) { create(:user) }
-  let(:container) { create(:project, :wiki_repo) }
-  let(:wiki) { Wiki.for_container(container, user) }
-  let(:new_page) { build(:wiki_page, wiki: wiki, title: 'test page', content: 'test content') }
+  let_it_be(:container) { create(:project) }
 
-  let(:existing_page) do
-    create(:wiki_page, wiki: wiki, title: 'test page', content: 'test content', message: 'test commit')
-    wiki.find_page('test page')
+  def create_wiki_page(attrs = {})
+    page = build_wiki_page(attrs)
+
+    page.create(message: (attrs[:message] || 'test commit'))
+
+    container.wiki.find_page(page.slug)
   end
 
-  subject { new_page }
+  def build_wiki_page(attrs = {})
+    wiki_page_attrs = { container: container, content: 'test content' }.merge(attrs)
+
+    build(:wiki_page, wiki_page_attrs)
+  end
+
+  def wiki
+    container.wiki
+  end
 
   def disable_front_matter
     stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => false)
@@ -23,92 +32,16 @@ RSpec.describe WikiPage do
     stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => thing)
   end
 
-  describe '.group_by_directory' do
-    context 'when there are no pages' do
-      it 'returns an empty array' do
-        expect(described_class.group_by_directory(nil)).to eq([])
-        expect(described_class.group_by_directory([])).to eq([])
-      end
-    end
+  # Use for groups of tests that do not modify their `subject`.
+  #
+  #   include_context 'subject is persisted page', title: 'my title'
+  shared_context 'subject is persisted page' do |attrs = {}|
+    let_it_be(:persisted_page) { create_wiki_page(attrs) }
 
-    context 'when there are pages' do
-      before do
-        wiki.create_page('dir_1/dir_1_1/page_3', 'content')
-        wiki.create_page('page_1', 'content')
-        wiki.create_page('dir_1/page_2', 'content')
-        wiki.create_page('dir_2', 'page with dir name')
-        wiki.create_page('dir_2/page_5', 'content')
-        wiki.create_page('page_6', 'content')
-        wiki.create_page('dir_2/page_4', 'content')
-      end
-
-      let(:page_1) { wiki.find_page('page_1') }
-      let(:page_6) { wiki.find_page('page_6') }
-      let(:page_dir_2) { wiki.find_page('dir_2') }
-
-      let(:dir_1) do
-        WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
-      end
-
-      let(:dir_1_1) do
-        WikiDirectory.new('dir_1/dir_1_1', [wiki.find_page('dir_1/dir_1_1/page_3')])
-      end
-
-      let(:dir_2) do
-        pages = [wiki.find_page('dir_2/page_5'),
-                 wiki.find_page('dir_2/page_4')]
-        WikiDirectory.new('dir_2', pages)
-      end
-
-      describe "#list_pages" do
-        context 'sort by title' do
-          let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages) }
-          let(:expected_grouped_entries) { [dir_1_1, dir_1, page_dir_2, dir_2, page_1, page_6] }
-
-          it 'returns an array with pages and directories' do
-            grouped_entries.each_with_index do |page_or_dir, i|
-              expected_page_or_dir = expected_grouped_entries[i]
-              expected_slugs = get_slugs(expected_page_or_dir)
-              slugs = get_slugs(page_or_dir)
-
-              expect(slugs).to match_array(expected_slugs)
-            end
-          end
-        end
-
-        context 'sort by created_at' do
-          let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages(sort: 'created_at')) }
-          let(:expected_grouped_entries) { [dir_1_1, page_1, dir_1, page_dir_2, dir_2, page_6] }
-
-          it 'returns an array with pages and directories' do
-            grouped_entries.each_with_index do |page_or_dir, i|
-              expected_page_or_dir = expected_grouped_entries[i]
-              expected_slugs = get_slugs(expected_page_or_dir)
-              slugs = get_slugs(page_or_dir)
-
-              expect(slugs).to match_array(expected_slugs)
-            end
-          end
-        end
-
-        it 'returns an array with retained order with directories at the top' do
-          expected_order = ['dir_1/dir_1_1/page_3', 'dir_1/page_2', 'dir_2', 'dir_2/page_4', 'dir_2/page_5', 'page_1', 'page_6']
-
-          grouped_entries = described_class.group_by_directory(wiki.list_pages)
-
-          actual_order =
-            grouped_entries.flat_map do |page_or_dir|
-              get_slugs(page_or_dir)
-            end
-          expect(actual_order).to eq(expected_order)
-        end
-      end
-    end
+    subject { persisted_page }
   end
 
   describe '#front_matter' do
-    let_it_be(:project) { create(:project) }
-    let(:container) { project }
     let(:wiki_page) { create(:wiki_page, container: container, content: content) }
 
     shared_examples 'a page without front-matter' do
@@ -230,14 +163,14 @@ RSpec.describe WikiPage do
 
   describe "#initialize" do
     context "when initialized with an existing page" do
-      subject { existing_page }
+      include_context 'subject is persisted page', title: 'test initialization'
 
       it "sets the slug attribute" do
-        expect(subject.slug).to eq("test-page")
+        expect(subject.slug).to eq("test-initialization")
       end
 
       it "sets the title attribute" do
-        expect(subject.title).to eq("test page")
+        expect(subject.title).to eq("test initialization")
       end
 
       it "sets the formatted content attribute" do
@@ -259,6 +192,8 @@ RSpec.describe WikiPage do
   end
 
   describe "validations" do
+    subject { build_wiki_page }
+
     it "validates presence of title" do
       subject.attributes.delete(:title)
 
@@ -305,7 +240,7 @@ RSpec.describe WikiPage do
       end
 
       context 'with an existing page exceeding the limit' do
-        subject { existing_page }
+        include_context 'subject is persisted page'
 
         before do
           subject
@@ -414,18 +349,22 @@ RSpec.describe WikiPage do
   describe "#create" do
     let(:attributes) do
       {
-        title: "Index",
+        title: SecureRandom.hex,
         content: "Home Page",
         format: "markdown",
         message: 'Custom Commit Message'
       }
     end
 
+    let(:title) { attributes[:title] }
+
+    subject { build_wiki_page }
+
     context "with valid attributes" do
       it "saves the wiki page" do
         subject.create(attributes)
 
-        expect(wiki.find_page("Index")).not_to be_nil
+        expect(wiki.find_page(title)).not_to be_nil
       end
 
       it "returns true" do
@@ -435,7 +374,7 @@ RSpec.describe WikiPage do
       it 'saves the wiki page with message' do
         subject.create(attributes)
 
-        expect(wiki.find_page("Index").message).to eq 'Custom Commit Message'
+        expect(wiki.find_page(title).message).to eq 'Custom Commit Message'
       end
 
       it 'if the title is preceded by a / it is removed' do
@@ -447,9 +386,7 @@ RSpec.describe WikiPage do
 
     context "with invalid attributes" do
       it 'does not create the page' do
-        subject.create(title: '')
-
-        expect(wiki.find_page('New Page')).to be_nil
+        expect { subject.create(title: '') }.not_to change { wiki.list_pages.length }
       end
     end
   end
@@ -458,46 +395,40 @@ RSpec.describe WikiPage do
     let(:title) { 'Index v1.2.3' }
 
     describe "#create" do
-      let(:attributes) { { title: title, content: "Home Page", format: "markdown" } }
+      subject { build_wiki_page }
 
-      context "with valid attributes" do
-        it "saves the wiki page" do
-          subject.create(attributes)
+      it "saves the wiki page and returns true", :aggregate_failures do
+        attributes = { title: title, content: "Home Page", format: "markdown" }
 
-          expect(wiki.find_page(title)).not_to be_nil
-        end
-
-        it "returns true" do
-          expect(subject.create(attributes)).to eq(true)
-        end
+        expect(subject.create(attributes)).to eq(true)
+        expect(wiki.find_page(title)).not_to be_nil
       end
     end
 
     describe '#update' do
-      subject { create(:wiki_page, wiki: wiki, title: title) }
+      subject { create_wiki_page(title: title) }
 
-      it 'updates the content of the page' do
-        subject.update(content: 'new content')
+      it 'updates the content of the page and returns true', :aggregate_failures do
+        expect(subject.update(content: 'new content')).to be_truthy
+
         page = wiki.find_page(title)
 
         expect([subject.content, page.content]).to all(eq('new content'))
-      end
-
-      it "returns true" do
-        expect(subject.update(content: "more content")).to be_truthy
       end
     end
   end
 
   describe "#update" do
-    subject { existing_page }
+    let!(:original_title) { subject.title }
+
+    subject { create_wiki_page }
 
     context "with valid attributes" do
       it "updates the content of the page" do
         new_content = "new content"
 
         subject.update(content: new_content)
-        page = wiki.find_page('test page')
+        page = wiki.find_page(original_title)
 
         expect([subject.content, page.content]).to all(eq("new content"))
       end
@@ -514,10 +445,9 @@ RSpec.describe WikiPage do
       describe 'updating front_matter' do
         shared_examples 'able to update front-matter' do
           it 'updates the wiki-page front-matter' do
-            title = subject.title
             content = subject.content
             subject.update(front_matter: { slugs: ['x'] })
-            page = wiki.find_page(title)
+            page = wiki.find_page(original_title)
 
             expect([subject, page]).to all(
               have_attributes(
@@ -566,10 +496,9 @@ RSpec.describe WikiPage do
         end
 
         it 'updates the wiki-page front-matter and content together' do
-          title = subject.title
           content = 'totally new content'
           subject.update(content: content, front_matter: { slugs: ['x'] })
-          page = wiki.find_page(title)
+          page = wiki.find_page(original_title)
 
           expect([subject, page]).to all(
             have_attributes(
@@ -598,11 +527,11 @@ RSpec.describe WikiPage do
 
     context 'when renaming a page' do
       it 'raises an error if the page already exists' do
-        wiki.create_page('Existing Page', 'content')
+        existing_page = create_wiki_page
 
-        expect { subject.update(title: 'Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
-        expect(subject.title).to eq 'test page'
-        expect(subject.content).to eq 'new_content'
+        expect { subject.update(title: existing_page.title, content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
+        expect(subject.title).to eq original_title
+        expect(subject.content).to eq 'new_content' # We don't revert the content
       end
 
       it 'updates the content and rename the file' do
@@ -623,7 +552,7 @@ RSpec.describe WikiPage do
         wiki.create_page('foo/Existing Page', 'content')
 
         expect { subject.update(title: 'foo/Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
-        expect(subject.title).to eq 'test page'
+        expect(subject.title).to eq original_title
         expect(subject.content).to eq 'new_content'
       end
 
@@ -639,20 +568,22 @@ RSpec.describe WikiPage do
         expect(page.content).to eq new_content
       end
 
-      context 'in subdir' do
-        subject { create(:wiki_page, wiki: wiki, title: 'foo/Existing Page') }
-
+      describe 'in subdir' do
         it 'moves the page to the root folder if the title is preceded by /' do
-          expect(subject.slug).to eq 'foo/Existing-Page'
-          expect(subject.update(title: '/Existing Page', content: 'new_content')).to be_truthy
-          expect(subject.slug).to eq 'Existing-Page'
+          page = create_wiki_page(title: 'foo/Existing Page')
+
+          expect(page.slug).to eq 'foo/Existing-Page'
+          expect(page.update(title: '/Existing Page', content: 'new_content')).to be_truthy
+          expect(page.slug).to eq 'Existing-Page'
         end
 
         it 'does nothing if it has the same title' do
-          original_path = subject.slug
+          page = create_wiki_page(title: 'foo/Another Existing Page')
 
-          expect(subject.update(title: 'Existing Page', content: 'new_content')).to be_truthy
-          expect(subject.slug).to eq original_path
+          original_path = page.slug
+
+          expect(page.update(title: 'Another Existing Page', content: 'new_content')).to be_truthy
+          expect(page.slug).to eq original_path
         end
       end
 
@@ -660,7 +591,7 @@ RSpec.describe WikiPage do
         it 'does nothing if the title is preceded by /' do
           original_path = subject.slug
 
-          expect(subject.update(title: '/test page', content: 'new_content')).to be_truthy
+          expect(subject.update(title: "/#{subject.title}", content: 'new_content')).to be_truthy
           expect(subject.slug).to eq original_path
         end
       end
@@ -671,7 +602,7 @@ RSpec.describe WikiPage do
         expect(subject.update(title: '', content: 'new_content')).to be_falsey
         expect(subject.content).to eq 'new_content'
 
-        page = wiki.find_page('test page')
+        page = wiki.find_page(original_title)
 
         expect(page.content).to eq 'test content'
       end
@@ -679,21 +610,17 @@ RSpec.describe WikiPage do
   end
 
   describe "#delete" do
-    subject { existing_page }
+    it "deletes the page and returns true", :aggregate_failures do
+      page = create_wiki_page
 
-    it "deletes the page" do
-      subject.delete
-
-      expect(wiki.list_pages).to be_empty
-    end
-
-    it "returns true" do
-      expect(subject.delete).to eq(true)
+      expect do
+        expect(page.delete).to eq(true)
+      end.to change { wiki.list_pages.length }.by(-1)
     end
   end
 
   describe "#versions" do
-    subject { existing_page }
+    include_context 'subject is persisted page'
 
     it "returns an array of all commits for the page" do
       3.times { |i| subject.update(content: "content #{i}") }
@@ -709,19 +636,21 @@ RSpec.describe WikiPage do
   describe '#title_changed?' do
     using RSpec::Parameterized::TableSyntax
 
+    let_it_be(:unsaved_page) { build_wiki_page(title: 'test page') }
+    let_it_be(:existing_page) { create_wiki_page(title: 'test page') }
+    let_it_be(:directory_page) { create_wiki_page(title: 'parent directory/child page') }
+    let_it_be(:page_with_special_characters) { create_wiki_page(title: 'test+page') }
     let(:untitled_page) { described_class.new(wiki) }
-    let(:directory_page) { create(:wiki_page, title: 'parent directory/child page') }
-    let(:page_with_special_characters) { create(:wiki_page, title: 'test+page') }
 
     where(:page, :title, :changed) do
       :untitled_page  | nil                             | false
       :untitled_page  | 'new title'                     | true
 
-      :new_page       | nil                             | true
-      :new_page       | 'test page'                     | true
-      :new_page       | 'test-page'                     | true
-      :new_page       | 'test+page'                     | true
-      :new_page       | 'new title'                     | true
+      :unsaved_page   | nil                             | true
+      :unsaved_page   | 'test page'                     | true
+      :unsaved_page   | 'test-page'                     | true
+      :unsaved_page   | 'test+page'                     | true
+      :unsaved_page   | 'new title'                     | true
 
       :existing_page  | nil                             | false
       :existing_page  | 'test page'                     | false
@@ -764,7 +693,7 @@ RSpec.describe WikiPage do
 
   describe '#content_changed?' do
     context 'with a new page' do
-      subject { new_page }
+      subject { build_wiki_page }
 
       it 'returns true if content is set' do
         subject.attributes[:content] = 'new'
@@ -780,7 +709,7 @@ RSpec.describe WikiPage do
     end
 
     context 'with an existing page' do
-      subject { existing_page }
+      include_context 'subject is persisted page'
 
       it 'returns false' do
         expect(subject.content_changed?).to be(false)
@@ -816,17 +745,21 @@ RSpec.describe WikiPage do
 
   describe '#path' do
     it 'returns the path when persisted' do
-      expect(existing_page.path).to eq('test-page.md')
+      existing_page = create_wiki_page(title: 'path test')
+
+      expect(existing_page.path).to eq('path-test.md')
     end
 
     it 'returns nil when not persisted' do
-      expect(new_page.path).to be_nil
+      unsaved_page = build_wiki_page(title: 'path test')
+
+      expect(unsaved_page.path).to be_nil
     end
   end
 
   describe '#directory' do
     context 'when the page is at the root directory' do
-      subject { existing_page }
+      include_context 'subject is persisted page', title: 'directory test'
 
       it 'returns an empty string' do
         expect(subject.directory).to eq('')
@@ -834,7 +767,7 @@ RSpec.describe WikiPage do
     end
 
     context 'when the page is inside an actual directory' do
-      subject { create(:wiki_page, title: 'dir_1/dir_1_1/file') }
+      include_context 'subject is persisted page', title: 'dir_1/dir_1_1/directory test'
 
       it 'returns the full directory hierarchy' do
         expect(subject.directory).to eq('dir_1/dir_1_1')
@@ -843,7 +776,7 @@ RSpec.describe WikiPage do
   end
 
   describe '#historical?' do
-    subject { existing_page }
+    include_context 'subject is persisted page'
 
     let(:old_version) { subject.versions.last.id }
     let(:old_page) { wiki.find_page(subject.title, old_version) }
@@ -883,22 +816,22 @@ RSpec.describe WikiPage do
 
   describe '#persisted?' do
     it 'returns true for a persisted page' do
-      expect(existing_page).to be_persisted
+      expect(create_wiki_page).to be_persisted
     end
 
     it 'returns false for an unpersisted page' do
-      expect(new_page).not_to be_persisted
+      expect(build_wiki_page).not_to be_persisted
     end
   end
 
   describe '#to_partial_path' do
     it 'returns the relative path to the partial to be used' do
-      expect(subject.to_partial_path).to eq('../shared/wikis/wiki_page')
+      expect(build_wiki_page.to_partial_path).to eq('../shared/wikis/wiki_page')
     end
   end
 
   describe '#==' do
-    subject { existing_page }
+    include_context 'subject is persisted page'
 
     it 'returns true for identical wiki page' do
       expect(subject).to eq(subject)
@@ -906,7 +839,7 @@ RSpec.describe WikiPage do
 
     it 'returns true for updated wiki page' do
       subject.update(content: "Updated content")
-      updated_page = wiki.find_page(existing_page.slug)
+      updated_page = wiki.find_page(subject.slug)
 
       expect(updated_page).not_to be_nil
       expect(updated_page).to eq(subject)
@@ -921,7 +854,7 @@ RSpec.describe WikiPage do
     end
 
     it 'returns false for page with different slug on same container' do
-      other_page = create(:wiki_page, container: subject.container)
+      other_page = create_wiki_page
 
       expect(subject.slug).not_to eq(other_page.slug)
       expect(subject.container).to eq(other_page.container)
@@ -929,7 +862,7 @@ RSpec.describe WikiPage do
     end
 
     it 'returns false for page with the same slug on a different container' do
-      other_page = create(:wiki_page, title: existing_page.slug)
+      other_page = create(:wiki_page, title: subject.slug)
 
       expect(subject.slug).to eq(other_page.slug)
       expect(subject.container).not_to eq(other_page.container)
@@ -938,7 +871,7 @@ RSpec.describe WikiPage do
   end
 
   describe '#last_commit_sha' do
-    subject { existing_page }
+    include_context 'subject is persisted page'
 
     it 'returns commit sha' do
       expect(subject.last_commit_sha).to eq subject.last_version.sha
@@ -948,13 +881,15 @@ RSpec.describe WikiPage do
       last_commit_sha_before_update = subject.last_commit_sha
 
       subject.update(content: "new content")
-      page = wiki.find_page('test page')
+      page = wiki.find_page(subject.title)
 
       expect(page.last_commit_sha).not_to eq last_commit_sha_before_update
     end
   end
 
   describe '#hook_attrs' do
+    subject { build_wiki_page }
+
     it 'adds absolute urls for images in the content' do
       subject.attributes[:content] = 'test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)'
 
@@ -965,19 +900,21 @@ RSpec.describe WikiPage do
   describe '#version_commit_timestamp' do
     context 'for a new page' do
       it 'returns nil' do
-        expect(new_page.version_commit_timestamp).to be_nil
+        expect(build_wiki_page.version_commit_timestamp).to be_nil
       end
     end
 
     context 'for page that exists' do
       it 'returns the timestamp of the commit' do
+        existing_page = create_wiki_page
+
         expect(existing_page.version_commit_timestamp).to eq(existing_page.version.commit.committed_date)
       end
     end
   end
 
   describe '#diffs' do
-    subject { existing_page }
+    include_context 'subject is persisted page'
 
     it 'returns a diff instance' do
       diffs = subject.diffs(foo: 'bar')
@@ -991,16 +928,6 @@ RSpec.describe WikiPage do
         paths: [subject.path],
         foo: 'bar'
       )
-    end
-  end
-
-  private
-
-  def get_slugs(page_or_dir)
-    if page_or_dir.is_a? WikiPage
-      [page_or_dir.slug]
-    else
-      page_or_dir.pages.present? ? page_or_dir.pages.map(&:slug) : []
     end
   end
 end

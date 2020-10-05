@@ -52,10 +52,10 @@ invocations:
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_ops_flag, project, type: ops)
+Feature.enabled?(:my_ops_flag, project, type: :ops)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_ops_flag, project, type: ops)
+Feature.disabled?(:my_ops_flag, project, type: :ops)
 
 # Push feature flag to Frontend
 push_frontend_feature_flag(:my_ops_flag, project, type: :ops)

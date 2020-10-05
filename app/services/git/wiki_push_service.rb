@@ -34,9 +34,7 @@ module Git
     def can_process_wiki_events?
       # TODO: Support activity events for group wikis
       # https://gitlab.com/gitlab-org/gitlab/-/issues/209306
-      return false unless wiki.is_a?(ProjectWiki)
-
-      Feature.enabled?(:wiki_events_on_git_push, wiki.container)
+      wiki.is_a?(ProjectWiki)
     end
 
     def push_changes

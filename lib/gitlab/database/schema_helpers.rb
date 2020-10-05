@@ -32,11 +32,14 @@ module Gitlab
       def trigger_exists?(table_name, name)
         connection.select_value(<<~SQL)
           SELECT 1
-          FROM pg_trigger
-          INNER JOIN pg_class
-            ON pg_trigger.tgrelid = pg_class.oid
-          WHERE pg_class.relname = '#{table_name}'
-            AND pg_trigger.tgname = '#{name}'
+          FROM pg_catalog.pg_trigger trgr
+            INNER JOIN pg_catalog.pg_class rel
+              ON trgr.tgrelid = rel.oid
+            INNER JOIN pg_catalog.pg_namespace nsp
+              ON nsp.oid = rel.relnamespace
+          WHERE nsp.nspname = #{connection.quote(current_schema)}
+            AND rel.relname = #{connection.quote(table_name)}
+            AND trgr.tgname = #{connection.quote(name)}
         SQL
       end
 
@@ -68,10 +71,10 @@ module Gitlab
       end
 
       def with_lock_retries(&block)
-        Gitlab::Database::WithLockRetries.new({
+        Gitlab::Database::WithLockRetries.new(
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger
-        }).run(&block)
+        ).run(&block)
       end
 
       def assert_not_in_transaction_block(scope:)

@@ -6,6 +6,14 @@ module Gitlab
     #   * https://github.com/git-lfs/git-lfs/blob/master/docs/api/batch.md
     #   * https://github.com/git-lfs/git-lfs/blob/master/docs/api/basic-transfers.md
     class Client
+      GIT_LFS_CONTENT_TYPE = 'application/vnd.git-lfs+json'
+      GIT_LFS_USER_AGENT = "GitLab #{Gitlab::VERSION} LFS client"
+      DEFAULT_HEADERS = {
+        'Accept' => GIT_LFS_CONTENT_TYPE,
+        'Content-Type' => GIT_LFS_CONTENT_TYPE,
+        'User-Agent' => GIT_LFS_USER_AGENT
+      }.freeze
+
       attr_reader :base_url
 
       def initialize(base_url, credentials:)
@@ -13,19 +21,19 @@ module Gitlab
         @credentials = credentials
       end
 
-      def batch(operation, objects)
+      def batch!(operation, objects)
         body = {
           operation: operation,
           transfers: ['basic'],
           # We don't know `ref`, so can't send it
-          objects: objects.map { |object| { oid: object.oid, size: object.size } }
+          objects: objects.as_json(only: [:oid, :size])
         }
 
         rsp = Gitlab::HTTP.post(
           batch_url,
           basic_auth: basic_auth,
           body: body.to_json,
-          headers: { 'Content-Type' => 'application/vnd.git-lfs+json' }
+          headers: build_request_headers
         )
 
         raise BatchSubmitError unless rsp.success?
@@ -40,14 +48,15 @@ module Gitlab
         body
       end
 
-      def upload(object, upload_action, authenticated:)
+      def upload!(object, upload_action, authenticated:)
         file = object.file.open
 
         params = {
           body_stream: file,
           headers: {
             'Content-Length' => object.size.to_s,
-            'Content-Type' => 'application/octet-stream'
+            'Content-Type' => 'application/octet-stream',
+            'User-Agent' => GIT_LFS_USER_AGENT
           }.merge(upload_action['header'] || {})
         }
 
@@ -60,7 +69,24 @@ module Gitlab
         file&.close
       end
 
+      def verify!(object, verify_action, authenticated:)
+        params = {
+          body: object.to_json(only: [:oid, :size]),
+          headers: build_request_headers(verify_action['header'])
+        }
+
+        params[:basic_auth] = basic_auth unless authenticated
+
+        rsp = Gitlab::HTTP.post(verify_action['href'], params)
+
+        raise ObjectVerifyError unless rsp.success?
+      end
+
       private
+
+      def build_request_headers(extra_headers = nil)
+        DEFAULT_HEADERS.merge(extra_headers || {})
+      end
 
       attr_reader :credentials
 
@@ -94,6 +120,12 @@ module Gitlab
       class ObjectUploadError < StandardError
         def message
           "Failed to upload object"
+        end
+      end
+
+      class ObjectVerifyError < StandardError
+        def message
+          "Failed to verify object"
         end
       end
     end

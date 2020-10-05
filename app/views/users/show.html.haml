@@ -2,7 +2,7 @@
 - @hide_breadcrumbs = true
 - @no_container = true
 - page_title       @user.blocked? ? s_('UserProfile|Blocked user') : @user.name
-- page_description @user.bio
+- page_description @user.bio_html
 - header_title     @user.name, user_path(@user)
 - link_classes = "flex-grow-1 mx-1 "
 

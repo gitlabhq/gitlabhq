@@ -14,7 +14,10 @@ describe('RelatedIssuesList', () => {
   let wrapper;
 
   afterEach(() => {
-    wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   describe('with defaults', () => {

@@ -28,9 +28,6 @@ After that, the next pipeline will use the up-to-date `knapsack/report-master.js
 The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `master` branch, and any branch
 that includes `rspec-profile` in their name.
 
-A [public dashboard](https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default) is available for everyone to see. Feel free to look at the
-slowest test files and try to improve them.
-
 ## CI setup
 
 - Rails logging to `log/test.log` is disabled by default in CI [for

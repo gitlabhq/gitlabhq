@@ -77,6 +77,15 @@ module Emails
           Gitlab::Tracking.event(Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category], 'sent', property: 'control_group')
         end
       end
+
+      if member.invite_to_unknown_user? && Gitlab::Experimentation.enabled?(:invitation_reminders)
+        Gitlab::Tracking.event(
+          Gitlab::Experimentation.experiment(:invitation_reminders).tracking_category,
+          'sent',
+          property: Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, member.invite_email) ? 'experimental_group' : 'control_group',
+          label: Digest::MD5.hexdigest(member.to_global_id.to_s)
+        )
+      end
     end
 
     def member_invite_accepted_email(member_source_type, member_id)

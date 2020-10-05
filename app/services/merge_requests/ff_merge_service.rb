@@ -27,7 +27,7 @@ module MergeRequests
     rescue StandardError => e
       raise MergeError, "Something went wrong during merge: #{e.message}"
     ensure
-      merge_request.update(in_progress_merge_commit_sha: nil)
+      merge_request.update_and_mark_in_progress_merge_commit_sha(nil)
     end
   end
 end

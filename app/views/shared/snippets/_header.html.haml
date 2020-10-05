@@ -21,8 +21,6 @@
     .description
       .md
         = markdown_field(@snippet, :description)
-      %textarea.hidden.js-task-list-field
-        = @snippet.description
 
   - if @snippet.updated_at != @snippet.created_at
     = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', exclude_author: true)
@@ -31,15 +29,15 @@
     .embed-snippet
       .input-group
         .input-group-prepend
-          %button.btn.btn-svg.embed-toggle.input-group-text{ 'data-toggle': 'dropdown', type: 'button' }
+          %button.btn.gl-button.btn-svg.embed-toggle.input-group-text{ 'data-toggle': 'dropdown', type: 'button' }
             %span.js-embed-action= _("Embed")
             = sprite_icon('angle-down', size: 12, css_class: 'caret-down')
           %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list
             %li
-              %button.js-embed-btn.btn.btn-transparent.is-active{ type: 'button' }
+              %button.js-embed-btn.btn.gl-button.btn-default-tertiary.is-active{ type: 'button' }
                 %strong.embed-toggle-list-item= _("Embed")
             %li
-              %button.js-share-btn.btn.btn-transparent{ type: 'button' }
+              %button.js-share-btn.btn.gl-button.btn-default-tertiary{ type: 'button' }
                 %strong.embed-toggle-list-item= _("Share")
         = snippet_embed_input(@snippet)
         .input-group-append

@@ -124,7 +124,10 @@ The supported buildpacks are:
 If your application needs a buildpack that is not in the above list, you
 might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
-## Auto Code Quality **(STARTER)**
+## Auto Code Quality
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
@@ -133,9 +136,10 @@ report, it's uploaded as an artifact which you can later download and check
 out. The merge request widget also displays any
 [differences between the source and target branches](../../user/project/merge_requests/code_quality.md).
 
-## Auto SAST **(ULTIMATE)**
+## Auto SAST
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
+> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
+> - Select functionality made available in all tiers beginning in 13.1
 
 Static Application Security Testing (SAST) uses the
 [SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
@@ -151,9 +155,10 @@ warnings.
 To learn more about [how SAST works](../../user/application_security/sast/index.md),
 see the documentation.
 
-## Auto Secret Detection **(ULTIMATE)**
+## Auto Secret Detection
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Select functionality made available in all tiers](../../user/application_security/secret_detection/#making-secret-detection-available-to-all-gitlab-tiers) in 13.3
 
 Secret Detection uses the
 [Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. The
@@ -466,7 +471,7 @@ application runs.
 
 ### Upgrade auto-deploy-app Chart
 
-You can upgrade auto-deploy-app chart by following the [upgrade guide](upgrading_chart.md).
+You can upgrade the auto-deploy-app chart by following the [upgrade guide](upgrading_auto_deploy_dependencies.md).
 
 ### Workers
 

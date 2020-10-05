@@ -25,7 +25,7 @@ function factory(routeArg) {
     mocks: {
       $apollo: {
         queries: {
-          designs: { loading: true },
+          designCollection: { loading: true },
           design: { loading: true },
           permissions: { loading: true },
         },

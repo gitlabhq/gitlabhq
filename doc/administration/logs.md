@@ -100,9 +100,9 @@ The ActionCable connection or channel class is used as the `controller`.
 
 ```json
 {
-  "method":{},
-  "path":{},
-  "format":{},
+  "method":null,
+  "path":null,
+  "format":null,
   "controller":"IssuesChannel",
   "action":"subscribe",
   "status":200,

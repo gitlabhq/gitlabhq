@@ -1,28 +1,45 @@
 <script>
-import { get } from 'lodash';
-import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlCard, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlCard, GlButton } from '@gitlab/ui';
 import Tracking from '~/tracking';
-import { mapComputed } from '~/vuex_shared/bindings';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '../../shared/constants';
 import ExpirationPolicyFields from '../../shared/components/expiration_policy_fields.vue';
 import { SET_CLEANUP_POLICY_BUTTON, CLEANUP_POLICY_CARD_HEADER } from '../constants';
+import { formOptionsGenerator } from '~/registry/shared/utils';
+import updateContainerExpirationPolicyMutation from '../graphql/mutations/update_container_expiration_policy.graphql';
+import { updateContainerExpirationPolicy } from '../graphql/utils/cache_update';
 
 export default {
   components: {
     GlCard,
     GlButton,
-    GlLoadingIcon,
     ExpirationPolicyFields,
   },
   mixins: [Tracking.mixin()],
+  inject: ['projectPath'],
+  props: {
+    value: {
+      type: Object,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isEdited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   labelsConfig: {
     cols: 3,
     align: 'right',
   },
+  formOptions: formOptionsGenerator(),
   i18n: {
     CLEANUP_POLICY_CARD_HEADER,
     SET_CLEANUP_POLICY_BUTTON,
@@ -34,49 +51,74 @@ export default {
       },
       fieldsAreValid: true,
       apiErrors: null,
+      mutationLoading: false,
     };
   },
   computed: {
-    ...mapState(['formOptions', 'isLoading']),
-    ...mapGetters({ isEdited: 'getIsEdited' }),
-    ...mapComputed([{ key: 'settings', getter: 'getSettings' }], 'updateSettings'),
+    showLoadingIcon() {
+      return this.isLoading || this.mutationLoading;
+    },
     isSubmitButtonDisabled() {
-      return !this.fieldsAreValid || this.isLoading;
+      return !this.fieldsAreValid || this.showLoadingIcon;
     },
     isCancelButtonDisabled() {
-      return !this.isEdited || this.isLoading;
+      return !this.isEdited || this.isLoading || this.mutationLoading;
+    },
+    mutationVariables() {
+      return {
+        projectPath: this.projectPath,
+        enabled: this.value.enabled,
+        cadence: this.value.cadence,
+        olderThan: this.value.olderThan,
+        keepN: this.value.keepN,
+        nameRegex: this.value.nameRegex,
+        nameRegexKeep: this.value.nameRegexKeep,
+      };
     },
   },
   methods: {
-    ...mapActions(['resetSettings', 'saveSettings']),
     reset() {
       this.track('reset_form');
       this.apiErrors = null;
-      this.resetSettings();
+      this.$emit('reset');
     },
     setApiErrors(response) {
-      const messages = get(response, 'data.message', []);
-
-      this.apiErrors = Object.keys(messages).reduce((acc, curr) => {
-        if (curr.startsWith('container_expiration_policy.')) {
-          const key = curr.replace('container_expiration_policy.', '');
-          acc[key] = get(messages, [curr, 0], '');
-        }
+      this.apiErrors = response.graphQLErrors.reduce((acc, curr) => {
+        curr.extensions.problems.forEach(item => {
+          acc[item.path[0]] = item.message;
+        });
         return acc;
       }, {});
     },
     submit() {
       this.track('submit_form');
       this.apiErrors = null;
-      this.saveSettings()
-        .then(() => this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE, { type: 'success' }))
-        .catch(({ response }) => {
-          this.setApiErrors(response);
+      this.mutationLoading = true;
+      return this.$apollo
+        .mutate({
+          mutation: updateContainerExpirationPolicyMutation,
+          variables: {
+            input: this.mutationVariables,
+          },
+          update: updateContainerExpirationPolicy(this.projectPath),
+        })
+        .then(({ data }) => {
+          const errorMessage = data?.updateContainerExpirationPolicy?.errors[0];
+          if (errorMessage) {
+            this.$toast.show(errorMessage, { type: 'error' });
+          }
+          this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE, { type: 'success' });
+        })
+        .catch(error => {
+          this.setApiErrors(error);
           this.$toast.show(UPDATE_SETTINGS_ERROR_MESSAGE, { type: 'error' });
+        })
+        .finally(() => {
+          this.mutationLoading = false;
         });
     },
     onModelChange(changePayload) {
-      this.settings = changePayload.newValue;
+      this.$emit('input', changePayload.newValue);
       if (this.apiErrors) {
         this.apiErrors[changePayload.modified] = undefined;
       }
@@ -93,8 +135,8 @@ export default {
       </template>
       <template #default>
         <expiration-policy-fields
-          :value="settings"
-          :form-options="formOptions"
+          :value="value"
+          :form-options="$options.formOptions"
           :is-loading="isLoading"
           :api-errors="apiErrors"
           @validated="fieldsAreValid = true"
@@ -103,27 +145,25 @@ export default {
         />
       </template>
       <template #footer>
-        <div class="gl-display-flex gl-justify-content-end">
-          <gl-button
-            ref="cancel-button"
-            type="reset"
-            class="gl-mr-3 gl-display-block"
-            :disabled="isCancelButtonDisabled"
-          >
-            {{ __('Cancel') }}
-          </gl-button>
-          <gl-button
-            ref="save-button"
-            type="submit"
-            :disabled="isSubmitButtonDisabled"
-            variant="success"
-            category="primary"
-            class="gl-display-flex gl-justify-content-center gl-align-items-center js-no-auto-disable"
-          >
-            {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
-            <gl-loading-icon v-if="isLoading" class="gl-ml-3" />
-          </gl-button>
-        </div>
+        <gl-button
+          ref="cancel-button"
+          type="reset"
+          class="gl-mr-3 gl-display-block float-right"
+          :disabled="isCancelButtonDisabled"
+        >
+          {{ __('Cancel') }}
+        </gl-button>
+        <gl-button
+          ref="save-button"
+          type="submit"
+          :disabled="isSubmitButtonDisabled"
+          :loading="showLoadingIcon"
+          variant="success"
+          category="primary"
+          class="js-no-auto-disable"
+        >
+          {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
+        </gl-button>
       </template>
     </gl-card>
   </form>

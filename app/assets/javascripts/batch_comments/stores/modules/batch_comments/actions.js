@@ -75,15 +75,6 @@ export const updateDiscussionsAfterPublish = ({ dispatch, getters, rootGetters }
       }),
   );
 
-export const discardReview = ({ commit, getters }) => {
-  commit(types.REQUEST_DISCARD_REVIEW);
-
-  return service
-    .discard(getters.getNotesData.draftsDiscardPath)
-    .then(() => commit(types.RECEIVE_DISCARD_REVIEW_SUCCESS))
-    .catch(() => commit(types.RECEIVE_DISCARD_REVIEW_ERROR));
-};
-
 export const updateDraft = (
   { commit, getters },
   { note, noteText, resolveDiscussion, position, callback },
@@ -108,8 +99,6 @@ export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {
   const draftID = `note_${draft.id}`;
   const el = document.querySelector(`#${tabEl} #${draftID}`);
 
-  dispatch('closeReviewDropdown');
-
   window.location.hash = draftID;
 
   if (window.mrTabs.currentAction !== tab) {
@@ -124,17 +113,6 @@ export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {
     setTimeout(() => scrollToElement(el.closest('.draft-note-component')));
   }
 };
-
-export const toggleReviewDropdown = ({ dispatch, state }) => {
-  if (state.showPreviewDropdown) {
-    dispatch('closeReviewDropdown');
-  } else {
-    dispatch('openReviewDropdown');
-  }
-};
-
-export const openReviewDropdown = ({ commit }) => commit(types.OPEN_REVIEW_DROPDOWN);
-export const closeReviewDropdown = ({ commit }) => commit(types.CLOSE_REVIEW_DROPDOWN);
 
 export const expandAllDiscussions = ({ dispatch, state }) =>
   state.drafts

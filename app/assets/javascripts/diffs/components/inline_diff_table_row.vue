@@ -1,22 +1,9 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import {
-  MATCH_LINE_TYPE,
-  NEW_LINE_TYPE,
-  OLD_LINE_TYPE,
-  CONTEXT_LINE_TYPE,
-  CONTEXT_LINE_CLASS_NAME,
-  LINE_POSITION_LEFT,
-  LINE_POSITION_RIGHT,
-  LINE_HOVER_CLASS_NAME,
-  OLD_NO_NEW_LINE_TYPE,
-  NEW_NO_NEW_LINE_TYPE,
-  EMPTY_CELL_TYPE,
-} from '../constants';
-import { __ } from '~/locale';
-import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { CONTEXT_LINE_CLASS_NAME } from '../constants';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
+import * as utils from './diff_row_utils';
 
 export default {
   components: {
@@ -61,14 +48,11 @@ export default {
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
-        if (this.isCommented) return true;
-
-        const lineCode = this.line.line_code;
-        return lineCode ? lineCode === state.diffs.highlightedRow : false;
+        return utils.isHighlighted(state, this.line, this.isCommented);
       },
     }),
     isContextLine() {
-      return this.line.type === CONTEXT_LINE_TYPE;
+      return utils.isContextLine(this.line.type);
     },
     classNameMap() {
       return [
@@ -82,81 +66,47 @@ export default {
       return this.line.line_code || `${this.fileHash}_${this.line.old_line}_${this.line.new_line}`;
     },
     isMatchLine() {
-      return this.line.type === MATCH_LINE_TYPE;
+      return utils.isMatchLine(this.line.type);
     },
     coverageState() {
       return this.fileLineCoverage(this.filePath, this.line.new_line);
     },
     isMetaLine() {
-      const { type } = this.line;
-
-      return (
-        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
-      );
+      return utils.isMetaLine(this.line.type);
     },
     classNameMapCell() {
-      const { type } = this.line;
-
-      return [
-        type,
-        {
-          hll: this.isHighlighted,
-          [LINE_HOVER_CLASS_NAME]:
-            this.isLoggedIn && this.isHover && !this.isContextLine && !this.isMetaLine,
-        },
-      ];
+      return utils.classNameMapCell(this.line, this.isHighlighted, this.isLoggedIn, this.isHover);
     },
     addCommentTooltip() {
-      const brokenSymlinks = this.line.commentsDisabled;
-      let tooltip = __('Add a comment to this line');
-
-      if (brokenSymlinks) {
-        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
-          tooltip = __(
-            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
-          );
-        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
-          tooltip = __(
-            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
-          );
-        }
-      }
-
-      return tooltip;
+      return utils.addCommentTooltip(this.line);
     },
     shouldRenderCommentButton() {
-      if (this.isLoggedIn) {
-        const isDiffHead = parseBoolean(getParameterByName('diff_head'));
-        return !isDiffHead || gon.features?.mergeRefHeadComments;
-      }
-
-      return false;
+      return utils.shouldRenderCommentButton(
+        this.isLoggedIn,
+        true,
+        gon.features?.mergeRefHeadComments,
+      );
     },
     shouldShowCommentButton() {
-      return this.isHover && !this.isContextLine && !this.isMetaLine && !this.hasDiscussions;
+      return utils.shouldShowCommentButton(
+        this.isHover,
+        this.isContextLine,
+        this.isMetaLine,
+        this.hasDiscussions,
+      );
     },
     hasDiscussions() {
-      return this.line.discussions && this.line.discussions.length > 0;
+      return utils.hasDiscussions(this.line);
     },
     lineHref() {
-      return `#${this.line.line_code || ''}`;
+      return utils.lineHref(this.line);
     },
     lineCode() {
-      return (
-        this.line.line_code ||
-        (this.line.left && this.line.left.line_code) ||
-        (this.line.right && this.line.right.line_code)
-      );
+      return utils.lineCode(this.line);
     },
     shouldShowAvatarsOnGutter() {
       return this.hasDiscussions;
     },
-  },
-  created() {
-    this.newLineType = NEW_LINE_TYPE;
-    this.oldLineType = OLD_LINE_TYPE;
-    this.linePositionLeft = LINE_POSITION_LEFT;
-    this.linePositionRight = LINE_POSITION_RIGHT;
   },
   mounted() {
     this.scrollToLineIfNeededInline(this.line);
@@ -242,6 +192,7 @@ export default {
       class="line-coverage"
     ></td>
     <td
+      :key="line.line_code"
       v-safe-html="line.rich_text"
       :class="[
         line.type,

@@ -6,7 +6,9 @@ RSpec.describe 'GFM autocomplete', :js do
   let_it_be(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
   let_it_be(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group, name: 'Ancestor') }
+  let_it_be(:child_group) { create(:group, parent: group, name: 'My group') }
+  let_it_be(:project) { create(:project, group: child_group) }
   let_it_be(:label) { create(:label, project: project, title: 'special+') }
 
   let(:issue) { create(:issue, project: project) }
@@ -530,7 +532,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       expect(page).to have_selector('.tribute-container', visible: true)
 
-      expect(find('.tribute-container ul', visible: true).text).to have_content(user_xss.username)
+      expect(find('.tribute-container ul', visible: true)).to have_text(user_xss.username)
     end
 
     it 'selects the first item for assignee dropdowns' do
@@ -556,6 +558,24 @@ RSpec.describe 'GFM autocomplete', :js do
       wait_for_requests
 
       expect(find('.tribute-container ul', visible: true)).to have_content(user.name)
+    end
+
+    context 'when autocompleting for groups' do
+      it 'shows the group when searching for the name of the group' do
+        page.within '.timeline-content-form' do
+          find('#note-body').native.send_keys('@mygroup')
+        end
+
+        expect(find('.tribute-container ul', visible: true)).to have_text('My group')
+      end
+
+      it 'does not show the group when searching for the name of the parent of the group' do
+        page.within '.timeline-content-form' do
+          find('#note-body').native.send_keys('@ancestor')
+        end
+
+        expect(find('.tribute-container ul', visible: true)).not_to have_text('My group')
+      end
     end
 
     context 'if a selected value has special characters' do

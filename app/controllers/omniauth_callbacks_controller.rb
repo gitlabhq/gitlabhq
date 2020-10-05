@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  include AuthenticatesWithTwoFactor
-  include Authenticates2FAForAdminMode
+  include AuthenticatesWithTwoFactorForAdminMode
   include Devise::Controllers::Rememberable
   include AuthHelper
   include InitializesCurrentUserMode

@@ -31,7 +31,7 @@
 
       - if todo.self_assigned?
         %span.title-item.action-name
-          to yourself
+          = todo_self_addressing(todo)
 
       %span.title-item
         &middot;

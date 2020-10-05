@@ -18,7 +18,9 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
     click_notifications_button
     click_link 'On mention'
 
-    wait_for_requests
+    page.within('.notification-dropdown') do
+      expect(page).not_to have_css('.gl-spinner')
+    end
 
     click_notifications_button
     expect(find('.update-notification.is-active')).to have_content('On mention')
@@ -30,7 +32,9 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
     click_notifications_button
     click_link 'Disabled'
 
-    wait_for_requests
+    page.within('.notification-dropdown') do
+      expect(page).not_to have_css('.gl-spinner')
+    end
 
     expect(page).to have_css('.notifications-icon[data-testid="notifications-off-icon"]')
   end

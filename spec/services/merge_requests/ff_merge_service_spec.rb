@@ -22,74 +22,72 @@ RSpec.describe MergeRequests::FfMergeService do
   end
 
   describe '#execute' do
-    [true, false].each do |state_tracking_enabled|
-      context "valid params with state_tracking #{state_tracking_enabled ? 'enabled' : 'disabled'}" do
-        let(:service) { described_class.new(project, user, valid_merge_params) }
+    context 'valid params' do
+      let(:service) { described_class.new(project, user, valid_merge_params) }
 
-        def execute_ff_merge
-          perform_enqueued_jobs do
-            service.execute(merge_request)
-          end
+      def execute_ff_merge
+        perform_enqueued_jobs do
+          service.execute(merge_request)
         end
+      end
 
-        before do
-          stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
+      before do
+        allow(service).to receive(:execute_hooks)
+      end
 
-          allow(service).to receive(:execute_hooks)
-        end
+      it "does not create merge commit" do
+        execute_ff_merge
 
-        it "does not create merge commit" do
-          execute_ff_merge
+        source_branch_sha = merge_request.source_project.repository.commit(merge_request.source_branch).sha
+        target_branch_sha = merge_request.target_project.repository.commit(merge_request.target_branch).sha
 
-          source_branch_sha = merge_request.source_project.repository.commit(merge_request.source_branch).sha
-          target_branch_sha = merge_request.target_project.repository.commit(merge_request.target_branch).sha
+        expect(source_branch_sha).to eq(target_branch_sha)
+      end
 
-          expect(source_branch_sha).to eq(target_branch_sha)
-        end
+      it 'keeps the merge request valid' do
+        expect { execute_ff_merge }
+          .not_to change { merge_request.valid? }
+      end
 
-        it 'keeps the merge request valid' do
-          expect { execute_ff_merge }
-            .not_to change { merge_request.valid? }
-        end
+      it 'updates the merge request to merged' do
+        expect { execute_ff_merge }
+          .to change { merge_request.merged? }
+          .from(false)
+          .to(true)
+      end
 
-        it 'updates the merge request to merged' do
-          expect { execute_ff_merge }
-            .to change { merge_request.merged? }
-            .from(false)
-            .to(true)
-        end
+      it 'sends email to user2 about merge of new merge_request' do
+        execute_ff_merge
 
-        it 'sends email to user2 about merge of new merge_request' do
-          execute_ff_merge
+        email = ActionMailer::Base.deliveries.last
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(merge_request.title)
+      end
 
-          email = ActionMailer::Base.deliveries.last
-          expect(email.to.first).to eq(user2.email)
-          expect(email.subject).to include(merge_request.title)
-        end
+      it 'creates resource event about merge_request merge' do
+        execute_ff_merge
 
-        it 'creates system note about merge_request merge' do
-          execute_ff_merge
+        event = merge_request.resource_state_events.last
+        expect(event.state).to eq('merged')
+      end
 
-          if state_tracking_enabled
-            event = merge_request.resource_state_events.last
-            expect(event.state).to eq('merged')
-          else
-            note = merge_request.notes.last
-            expect(note.note).to include 'merged'
-          end
-        end
+      it 'does not update squash_commit_sha if it is not a squash' do
+        expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
-        it 'does not update squash_commit_sha if it is not a squash' do
-          expect { execute_ff_merge }.not_to change { merge_request.squash_commit_sha }
-        end
+        expect { execute_ff_merge }.not_to change { merge_request.squash_commit_sha }
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
+      end
 
-        it 'updates squash_commit_sha if it is a squash' do
-          merge_request.update!(squash: true)
+      it 'updates squash_commit_sha if it is a squash' do
+        expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
-          expect { execute_ff_merge }
-            .to change { merge_request.squash_commit_sha }
-            .from(nil)
-        end
+        merge_request.update!(squash: true)
+
+        expect { execute_ff_merge }
+          .to change { merge_request.squash_commit_sha }
+          .from(nil)
+
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
     end
 

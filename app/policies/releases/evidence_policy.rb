@@ -15,6 +15,7 @@ module Releases
     # - Project
     # - Milestones
     # - Issues
+    # TODO: remove issues from this check: https://gitlab.com/gitlab-org/gitlab/-/issues/259674
     condition(:allowed_to_read_evidence) do
       can?(:read_release) &&
         can?(:download_code) &&

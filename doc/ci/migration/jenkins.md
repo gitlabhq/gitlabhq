@@ -23,7 +23,7 @@ that were able to quickly complete this migration:
    1. Use the [Jenkins Wrapper](#jenkinsfile-wrapper) to temporarily maintain fragile Jenkins jobs.
    1. Migrate the build and CI jobs and configure them to show results directly in your merge requests. They can use [Auto DevOps](../../topics/autodevops/index.md) as a starting point, and [customize](../../topics/autodevops/customize.md) or [decompose](../../topics/autodevops/customize.md#using-components-of-auto-devops) the configuration as needed.
    1. Add [Review Apps](../review_apps/index.md).
-   1. Migrate the deployment jobs using [cloud deployment templates](../cloud_deployment/index.md), adding [environments](../environments/index.md), and [deploy boards](../..//user/project/deploy_boards.md).
+   1. Migrate the deployment jobs using [cloud deployment templates](../cloud_deployment/index.md), adding [environments](../environments/index.md), and [deploy boards](../../user/project/deploy_boards.md).
    1. Work to unwrap any jobs still running with the use of the Jenkins wrapper.
 1. Take stock of any common CI/CD job definitions then create and share [templates](#templates) for them.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
@@ -83,7 +83,7 @@ There are some high level differences between the products worth mentioning:
 
 - You can control which jobs run in which cases, depending on how they are triggered,
   with the [`rules` syntax](../yaml/README.md#rules).
-- GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
+- GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different from Jenkins.
 - You can reuse pipeline configurations using the [`include` keyword](../yaml/README.md#include)
   and [templates](#templates). Your templates can be kept in a central repository (with different
   permissions), and then any project can use them. This central project could also

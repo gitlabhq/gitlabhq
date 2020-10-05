@@ -525,8 +525,8 @@ conflicting_permanent_redirects.destroy_all
 ### Close a merge request properly (if merged but still marked as open)
 
 ```ruby
-p = Project.find_by_full_path('')
-m = project.merge_requests.find_by(iid: )
+p = Project.find_by_full_path('<full/path/to/project>')
+m = p.merge_requests.find_by(iid: <iid>)
 u = User.find_by_username('')
 MergeRequests::PostMergeService.new(p, u).execute(m)
 ```

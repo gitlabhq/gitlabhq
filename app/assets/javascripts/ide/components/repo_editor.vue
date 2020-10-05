@@ -5,6 +5,14 @@ import { deprecatedCreateFlash as flash } from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import {
+  WEBIDE_MARK_FILE_CLICKED,
+  WEBIDE_MARK_FILE_START,
+  WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+  WEBIDE_MEASURE_FILE_FROM_REQUEST,
+} from '~/performance_constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
+import eventHub from '../eventhub';
+import {
   leftSidebarViews,
   viewerTypes,
   FILE_VIEW_MODE_EDITOR,
@@ -164,6 +172,9 @@ export default {
       }
     },
   },
+  beforeCreate() {
+    performanceMarkAndMeasure({ mark: WEBIDE_MARK_FILE_START });
+  },
   beforeDestroy() {
     this.editor.dispose();
   },
@@ -289,6 +300,13 @@ export default {
       });
 
       this.$emit('editorSetup');
+      this.$nextTick(() => {
+        if (performance.getEntriesByName(WEBIDE_MARK_FILE_CLICKED).length) {
+          eventHub.$emit(WEBIDE_MEASURE_FILE_AFTER_INTERACTION);
+        } else {
+          eventHub.$emit(WEBIDE_MEASURE_FILE_FROM_REQUEST);
+        }
+      });
     },
     refreshEditorDimensions() {
       if (this.showEditor) {

@@ -14,9 +14,9 @@ export const mockProjectId = '21';
 
 export const mockPostParams = {
   ref: 'tag-1',
-  variables: [
-    { key: 'test_var', value: 'test_var_val', variable_type: 'env_var' },
-    { key: 'test_file', value: 'test_file_val', variable_type: 'file' },
+  variables_attributes: [
+    { key: 'test_var', secret_value: 'test_var_val', variable_type: 'env_var' },
+    { key: 'test_file', secret_value: 'test_file_val', variable_type: 'file' },
   ],
 };
 

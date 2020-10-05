@@ -298,6 +298,7 @@ OmniAuth
 onboarding
 OpenID
 OpenShift
+Opsgenie
 Packagist
 parallelization
 parallelizations
@@ -382,6 +383,7 @@ reusability
 reverified
 reverifies
 reverify
+RHEL
 rollout
 rollouts
 rsync

@@ -75,8 +75,8 @@ extensions), which contain the following in a single encrypted file:
 - Intermediate certificates (if any)
 - Private key
 
-In order to export the required files in PEM encoding from the PKCS#12 file,
-the `openssl` command can be used:
+To export the required files in PEM encoding from the PKCS#12 file, the
+`openssl` command can be used:
 
 ```shell
 #-- Extract private key in PEM encoding (no password, unencrypted)

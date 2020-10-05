@@ -149,6 +149,7 @@ export default {
       data-testid="add_button"
       class="gl-my-3"
       variant="dashed"
+      data-qa-selector="add_file_button"
       @click="addBlob"
       >{{ addLabel }}</gl-button
     >

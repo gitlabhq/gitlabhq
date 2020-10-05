@@ -1,6 +1,7 @@
 query appData {
   appData @client {
     isSupportedContent
+    hasSubmittedChanges
     project
     sourcePath
     username

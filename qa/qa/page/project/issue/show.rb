@@ -12,7 +12,7 @@ module QA
 
           view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :comment_button
-            element :comment_input
+            element :comment_field
           end
 
           view 'app/assets/javascripts/notes/components/discussion_filter.vue' do
@@ -43,7 +43,7 @@ module QA
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issuable_input.vue' do
-            element :add_issue_input
+            element :add_issue_field
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
@@ -57,8 +57,8 @@ module QA
 
           def relate_issue(issue)
             click_element(:related_issues_plus_button)
-            fill_element(:add_issue_input, issue.web_url)
-            send_keys_to_element(:add_issue_input, :enter)
+            fill_element(:add_issue_field, issue.web_url)
+            send_keys_to_element(:add_issue_field, :enter)
           end
 
           def related_issuable_item
@@ -84,7 +84,7 @@ module QA
           # attachment option should be an absolute path
           def comment(text, attachment: nil, filter: :all_activities)
             method("select_#{filter}_filter").call
-            fill_element :comment_input, "#{text}\n"
+            fill_element :comment_field, "#{text}\n"
 
             unless attachment.nil?
               QA::Page::Component::Dropzone.new(self, '.new-note')
@@ -125,6 +125,8 @@ module QA
               click_element(:title)
               click_element :discussion_filter
               find_element(:filter_options, text: text).click
+
+              wait_for_loading
             end
           end
         end

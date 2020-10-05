@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import SelfMonitor from '~/self_monitor/components/self_monitor_form.vue';
 import { createStore } from '~/self_monitor/store';
@@ -42,7 +42,7 @@ describe('self monitor component', () => {
       it('renders as an expand button by default', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
-        const button = wrapper.find(GlDeprecatedButton);
+        const button = wrapper.find(GlButton);
 
         expect(button.text()).toBe('Expand');
       });

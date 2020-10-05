@@ -79,7 +79,7 @@ describe('Incident Tabs component', () => {
     it('renders the alert details table with the correct props', () => {
       const alert = { iid: mockAlert.iid };
 
-      expect(findAlertDetailsComponent().props('alert')).toEqual(alert);
+      expect(findAlertDetailsComponent().props('alert')).toMatchObject(alert);
       expect(findAlertDetailsComponent().props('loading')).toBe(true);
     });
 

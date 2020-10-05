@@ -50,7 +50,7 @@ Feature.disable(:go_proxy, Project.find(2))
 ### Enable the Package Registry
 
 The Package Registry is enabled for new projects by default. If you cannot find
-the **{package}** **Packages > List** entry under your project's sidebar, verify
+the **Packages > List** entry under your project's sidebar, verify
 the following:
 
 1. Your GitLab administrator has

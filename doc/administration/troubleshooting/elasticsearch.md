@@ -206,7 +206,7 @@ The best place to start is to determine if the issue is with creating an empty i
 If it is, check on the Elasticsearch side to determine if the `gitlab-production` (the
 name for the GitLab index) exists. If it exists, manually delete it on the Elasticsearch
 side and attempt to recreate it from the
-[`recreate_index`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks)
+[`recreate_index`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks)
 Rake task.
 
 If you still encounter issues, try creating an index manually on the Elasticsearch
@@ -225,8 +225,8 @@ during the indexing of projects. If errors do occur, they will either stem from 
 
 If the indexing process does not present errors, you will want to check the status of the indexed projects. You can do this via the following Rake tasks:
 
-- [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks) (shows the overall status)
-- [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks) (shows specific projects that are not indexed)
+- [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows the overall status)
+- [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows specific projects that are not indexed)
 
 If:
 

@@ -34,6 +34,9 @@ module NotificationRecipients
         when :reassign_merge_request, :reassign_issue
           add_recipients(previous_assignees, :mention, nil)
           add_recipients(target.assignees, :mention, NotificationReason::ASSIGNED)
+        when :change_reviewer_merge_request
+          add_recipients(previous_assignees, :mention, nil)
+          add_recipients(target.reviewers, :mention, NotificationReason::REVIEW_REQUESTED)
         end
 
         add_subscribed_users

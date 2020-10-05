@@ -20,10 +20,23 @@ module Gitlab
       # - Assigns DiffFile#highlighted_diff_lines for cached files
       #
       def decorate(diff_file)
-        if content = read_file(diff_file)
-          diff_file.highlighted_diff_lines = content.map do |line|
-            Gitlab::Diff::Line.safe_init_from_hash(line)
-          end
+        content = read_file(diff_file)
+
+        return [] unless content
+
+        if content.empty? && recache_due_to_size?(diff_file)
+          # If the file is missing from the cache and there's reason to believe
+          #   it is uncached due to a size issue around changing the values for
+          #   max patch size, manually populate the hash and then set the value.
+          #
+          new_cache_content = {}
+          new_cache_content[diff_file.file_path] = diff_file.highlighted_diff_lines.map(&:to_hash)
+
+          write_to_redis_hash(new_cache_content)
+
+          set_highlighted_diff_lines(diff_file, read_file(diff_file))
+        else
+          set_highlighted_diff_lines(diff_file, content)
         end
       end
 
@@ -57,6 +70,28 @@ module Gitlab
       end
 
       private
+
+      def set_highlighted_diff_lines(diff_file, content)
+        diff_file.highlighted_diff_lines = content.map do |line|
+          Gitlab::Diff::Line.safe_init_from_hash(line)
+        end
+      end
+
+      def recache_due_to_size?(diff_file)
+        diff_file_class = diff_file.diff.class
+
+        current_patch_safe_limit_bytes = diff_file_class.patch_safe_limit_bytes
+        default_patch_safe_limit_bytes = diff_file_class.patch_safe_limit_bytes(diff_file_class::DEFAULT_MAX_PATCH_BYTES)
+
+        # If the diff is >= than the default limit, but less than the current
+        #   limit, it is likely uncached due to having hit the default limit,
+        #   making it eligible for recalculating.
+        #
+        diff_file.diff.diff_bytesize.between?(
+          default_patch_safe_limit_bytes,
+          current_patch_safe_limit_bytes
+        )
+      end
 
       def cacheable_files
         strong_memoize(:cacheable_files) do

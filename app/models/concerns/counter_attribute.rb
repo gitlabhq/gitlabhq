@@ -20,6 +20,14 @@
 # To increment the counter we can use the method:
 #   delayed_increment_counter(:commit_count, 3)
 #
+# It is possible to register callbacks to be executed after increments have
+# been flushed to the database. Callbacks are not executed if there are no increments
+# to flush.
+#
+#  counter_attribute_after_flush do |statistic|
+#    Namespaces::ScheduleAggregationWorker.perform_async(statistic.namespace_id)
+#  end
+#
 module CounterAttribute
   extend ActiveSupport::Concern
   extend AfterCommitQueue
@@ -48,6 +56,15 @@ module CounterAttribute
     def counter_attributes
       @counter_attributes ||= Set.new
     end
+
+    def after_flush_callbacks
+      @after_flush_callbacks ||= []
+    end
+
+    # perform registered callbacks after increments have been flushed to the database
+    def counter_attribute_after_flush(&callback)
+      after_flush_callbacks << callback
+    end
   end
 
   # This method must only be called by FlushCounterIncrementsWorker
@@ -75,6 +92,8 @@ module CounterAttribute
         unsafe_update_counters(id, attribute => increment_value)
         redis_state { |redis| redis.del(flushed_key) }
       end
+
+      execute_after_flush_callbacks
     end
   end
 
@@ -108,12 +127,12 @@ module CounterAttribute
     counter_key(attribute) + ':lock'
   end
 
-  private
-
   def counter_attribute_enabled?(attribute)
     Feature.enabled?(:efficient_counter_attribute, project) &&
       self.class.counter_attributes.include?(attribute)
   end
+
+  private
 
   def steal_increments(increment_key, flushed_key)
     redis_state do |redis|
@@ -127,6 +146,12 @@ module CounterAttribute
 
   def unsafe_update_counters(id, increments)
     self.class.update_counters(id, increments)
+  end
+
+  def execute_after_flush_callbacks
+    self.class.after_flush_callbacks.each do |callback|
+      callback.call(self)
+    end
   end
 
   def redis_state(&block)

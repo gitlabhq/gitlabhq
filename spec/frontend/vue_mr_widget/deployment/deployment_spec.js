@@ -19,10 +19,7 @@ describe('Deployment component', () => {
     if (wrapper && wrapper.destroy) {
       wrapper.destroy();
     }
-    wrapper = mount(DeploymentComponent, {
-      ...options,
-      provide: { glFeatures: { deployFromFooter: true } },
-    });
+    wrapper = mount(DeploymentComponent, options);
   };
 
   beforeEach(() => {

@@ -1,10 +1,16 @@
+---
+stage: Enablement
+group: Database
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM ONLY)**
 
-This document will focus only on configuration supported with [GitLab Premium](https://about.gitlab.com/pricing/), using the Omnibus GitLab package.
-If you are a Community Edition or Starter user, consider using a cloud hosted solution.
-This document will not cover installations from source.
+This document focuses on configuration supported with [GitLab Premium](https://about.gitlab.com/pricing/), using the Omnibus GitLab package.
+If you're a Community Edition or Starter user, consider using a cloud hosted solution.
+This document doesn't cover installations from source.
 
-If a setup with replication and failover is not what you were looking for, see
+If a setup with replication and failover isn't what you were looking for, see
 the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
 for the Omnibus GitLab packages.
 
@@ -87,9 +93,9 @@ information.
 
 #### Network information
 
-PostgreSQL does not listen on any network interface by default. It needs to know
-which IP address to listen on in order to be accessible to other services.
-Similarly, PostgreSQL access is controlled based on the network source.
+PostgreSQL doesn't listen on any network interface by default. It needs to know
+which IP address to listen on to be accessible to other services. Similarly,
+PostgreSQL access is controlled based on the network source.
 
 This is why you will need:
 
@@ -1348,3 +1354,93 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
 1. Repeat the last two steps for all replica nodes. `gitlab.rb` should look the same on all nodes.
 1. Optional: You can remove `gitlab_repmgr` database and role on the primary.
+
+### Upgrading PostgreSQL major version in a Patroni cluster
+
+As of GitLab 13.3, PostgreSQL 11.7 and 12.3 are both shipped with Omnibus GitLab. GitLab still
+uses PostgreSQL 11 by default. Therefore `gitlab-ctl pg-upgrade` does not automatically upgrade
+to PostgreSQL 12. If you want to upgrade to PostgreSQL 12, you must ask for it explicitly.
+
+CAUTION: **Warning:**
+The procedure for upgrading PostgreSQL in a Patroni cluster is different than when upgrading using repmgr.
+The following outlines the key differences and important considerations that need to be accounted for when
+upgrading PostgreSQL.
+
+Here are a few key facts that you must consider before upgrading PostgreSQL:
+
+- The main point is that you will have to **shut down the Patroni cluster**. This means that your
+  GitLab deployment will be down for the duration of database upgrade or, at least, as long as your leader
+  node is upgraded. This can be **a significant downtime depending on the size of your database**.
+
+- Upgrading PostgreSQL creates a new data directory with a new control data. From Patroni's perspective
+  this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure,
+  the cluster state, which is stored in Consul, will be wiped out. Once the upgrade is completed, Patroni
+  will be instructed to bootstrap a new cluster. **Note that this will change your _cluster ID_**.
+
+- The procedures for upgrading leader and replicas are not the same. That is why it is important to use the
+  right procedure on each node.
+
+- Upgrading a replica node **deletes the data directory and resynchronizes it** from the leader using the
+  configured replication method (currently `pg_basebackup` is the only available option). It might take some
+  time for replica to catch up with the leader, depending on the size of your database.
+
+- An overview of the upgrade procedure is outlined in [Patoni's documentation](https://patroni.readthedocs.io/en/latest/existing_data.html#major-upgrade-of-postgresql-version).
+  You can still use `gitlab-ctl pg-upgrade` which implements this procedure with a few adjustments.
+
+Considering these, you should carefully plan your PostgreSQL upgrade:
+
+1. Find out which node is the leader and which node is a replica:
+
+   ```shell
+   gitlab-ctl patroni members
+   ```
+
+   NOTE: **Note:**
+   `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
+   does not work or you believe it did not detect the role correctly, you can use the `--leader` or `--replica`
+   arguments to manually override it.
+
+1. Stop Patroni **only on replicas**.
+
+   ```shell
+   sudo gitlab-ctl stop patroni
+   ```
+
+1. Enable the maintenance mode on the **application node**:
+
+   ```shell
+   sudo gitlab-ctl deploy-page up
+   ```
+
+1. Upgrade PostgreSQL on **the leader node** and make sure that the upgrade is completed successfully:
+
+   ```shell
+   sudo gitlab-ctl pg-upgrade -V 12
+   ```
+
+1. Check the status of the leader and cluster. You can only proceed if you have a healthy leader:
+
+   ```shell
+   gitlab-ctl patroni check-leader
+
+   # OR 
+
+   gitlab-ctl patroni members
+   ```
+
+1. You can now disable the maintenance mode on the **application node**:
+
+   ```shell
+   sudo gitlab-ctl deploy-page down
+   ```
+
+1. Upgrade PostgreSQL **on replicas** (you can do this in parallel on all of them):
+
+   ```shell
+   sudo gitlab-ctl pg-upgrade -V 12
+   ```
+
+CAUTION: **Warning:**
+Reverting PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
+`gitlab-ctl pg-upgrade`. It can be complicated and may involve deletion of the data directory.
+If you need to do that, please contact GitLab support.

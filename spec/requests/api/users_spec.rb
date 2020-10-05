@@ -1460,39 +1460,22 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'GET /user/:id/gpg_keys' do
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api("/users/#{user.id}/gpg_keys")
+    it 'returns 404 for non-existing user' do
+      get api('/users/0/gpg_keys')
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    context 'when authenticated' do
-      it 'returns 404 for non-existing user' do
-        get api('/users/0/gpg_keys', admin)
+    it 'returns array of GPG keys' do
+      user.gpg_keys << gpg_key
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
+      get api("/users/#{user.id}/gpg_keys")
 
-      it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}", admin)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 GPG Key Not Found')
-      end
-
-      it 'returns array of GPG keys' do
-        user.gpg_keys << gpg_key
-
-        get api("/users/#{user.id}/gpg_keys", admin)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['key']).to eq(gpg_key.key)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['key']).to eq(gpg_key.key)
     end
   end
 
@@ -2308,23 +2291,31 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
     end
 
     describe 'POST /users/:id/activate' do
+      subject(:activate) { post api("/users/#{user_id}/activate", api_user) }
+
+      let(:user_id) { user.id }
+
       context 'performed by a non-admin user' do
+        let(:api_user) { user }
+
         it 'is not authorized to perform the action' do
-          post api("/users/#{user.id}/activate", user)
+          activate
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
       context 'performed by an admin user' do
+        let(:api_user) { admin }
+
         context 'for a deactivated user' do
           before do
             user.deactivate
-
-            post api("/users/#{user.id}/activate", admin)
           end
 
           it 'activates a deactivated user' do
+            activate
+
             expect(response).to have_gitlab_http_status(:created)
             expect(user.reload.state).to eq('active')
           end
@@ -2333,11 +2324,11 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         context 'for an active user' do
           before do
             user.activate
-
-            post api("/users/#{user.id}/activate", admin)
           end
 
           it 'returns 201' do
+            activate
+
             expect(response).to have_gitlab_http_status(:created)
             expect(user.reload.state).to eq('active')
           end
@@ -2346,11 +2337,11 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         context 'for a blocked user' do
           before do
             user.block
-
-            post api("/users/#{user.id}/activate", admin)
           end
 
           it 'returns 403' do
+            activate
+
             expect(response).to have_gitlab_http_status(:forbidden)
             expect(json_response['message']).to eq('403 Forbidden  - A blocked user must be unblocked to be activated')
             expect(user.reload.state).to eq('blocked')
@@ -2360,11 +2351,11 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         context 'for a ldap blocked user' do
           before do
             user.ldap_block
-
-            post api("/users/#{user.id}/activate", admin)
           end
 
           it 'returns 403' do
+            activate
+
             expect(response).to have_gitlab_http_status(:forbidden)
             expect(json_response['message']).to eq('403 Forbidden  - A blocked user must be unblocked to be activated')
             expect(user.reload.state).to eq('ldap_blocked')
@@ -2372,8 +2363,10 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         end
 
         context 'for a user that does not exist' do
+          let(:user_id) { 0 }
+
           before do
-            post api("/users/0/activate", admin)
+            activate
           end
 
           it_behaves_like '404'

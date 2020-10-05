@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     buttonLabel() {
-      return this.isTodo ? __('Mark as done') : __('Add a To-Do');
+      return this.isTodo ? __('Mark as done') : __('Add a To Do');
     },
   },
 };

@@ -37,7 +37,7 @@ describe('DiffFile', () => {
 
       expect(el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
       expect(el.querySelector('.js-file-title')).toBeDefined();
-      expect(el.querySelector('.btn-clipboard')).toBeDefined();
+      expect(el.querySelector('[data-testid="diff-file-copy-clipboard"]')).toBeDefined();
       expect(el.querySelector('.file-title-name').innerText.indexOf(file_path)).toBeGreaterThan(-1);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
 
@@ -47,7 +47,7 @@ describe('DiffFile', () => {
         .then(() => {
           expect(el.querySelectorAll('.line_content').length).toBe(8);
           expect(el.querySelectorAll('.js-line-expansion-content').length).toBe(1);
-          triggerEvent('.btn-clipboard');
+          triggerEvent('[data-testid="diff-file-copy-clipboard"]');
         })
         .then(done)
         .catch(done.fail);
@@ -56,11 +56,11 @@ describe('DiffFile', () => {
     it('should track a click event on copy to clip board button', done => {
       const el = vm.$el;
 
-      expect(el.querySelector('.btn-clipboard')).toBeDefined();
+      expect(el.querySelector('[data-testid="diff-file-copy-clipboard"]')).toBeDefined();
       vm.file.renderIt = true;
       vm.$nextTick()
         .then(() => {
-          triggerEvent('.btn-clipboard');
+          triggerEvent('[data-testid="diff-file-copy-clipboard"]');
 
           expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_copy_file_button', {
             label: 'diff_copy_file_path_button',
@@ -90,8 +90,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This file is collapsed.');
-          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
 
           done();
         });
@@ -102,8 +102,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This file is collapsed.');
-          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
 
           done();
         });
@@ -121,8 +121,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This file is collapsed.');
-          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
 
           done();
         });
@@ -135,7 +135,7 @@ describe('DiffFile', () => {
         vm.file.viewer.name = diffViewerModes.renamed;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This file is collapsed.');
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
 
           done();
         });
@@ -148,7 +148,7 @@ describe('DiffFile', () => {
         vm.file.viewer.name = diffViewerModes.mode_changed;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This file is collapsed.');
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
 
           done();
         });
@@ -181,7 +181,7 @@ describe('DiffFile', () => {
       });
 
       it('updates local state when changing file state', done => {
-        vm.file.viewer.collapsed = true;
+        vm.file.viewer.automaticallyCollapsed = true;
 
         vm.$nextTick(() => {
           expect(vm.isCollapsed).toBe(true);

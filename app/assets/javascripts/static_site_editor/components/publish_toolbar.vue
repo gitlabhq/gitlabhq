@@ -41,7 +41,7 @@ export default {
         :disabled="savingChanges"
         @click="$emit('editSettings')"
       >
-        {{ __('Settings') }}
+        {{ __('Page settings') }}
       </gl-button>
       <gl-button
         ref="submit"

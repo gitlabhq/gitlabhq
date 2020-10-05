@@ -9,25 +9,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
-Dependency Scanning helps to find security vulnerabilities in your dependencies automatically
-while you're developing and testing your applications, such as when your
-application is using an external (open source) library that is known to be vulnerable.
+GitLab's Dependency Scanning feature can automatically find security vulnerabilities in your
+dependencies while you're developing and testing your applications. For example, dependency scanning
+lets you know if your application uses an external (open source) library that is known to be
+vulnerable. You can then take action to protect your application.
 
 ## Overview
 
-If you're using [GitLab CI/CD](../../../ci/README.md), you can analyze your dependencies for known
-vulnerabilities using Dependency Scanning.
-All dependencies are scanned, including the transitive dependencies (also known as nested dependencies).
-You can take advantage of Dependency Scanning by either [including the Dependency Scanning template](#configuration)
-in your existing `.gitlab-ci.yml` file or by implicitly using
-the [Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
+If you're using [GitLab CI/CD](../../../ci/README.md), you can use dependency scanning to analyze
+your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
+dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
+either [including the dependency scanning template](#configuration)
+in your existing `.gitlab-ci.yml` file, or by implicitly using
+the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-GitLab checks the Dependency Scanning report, compares the found vulnerabilities
+GitLab checks the dependency scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information on the
 merge request.
 
-![Dependency Scanning Widget](img/dependency_scanning_v13_2.png)
+![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
 The results are sorted by the severity of the vulnerability:
 
@@ -40,7 +41,7 @@ The results are sorted by the severity of the vulnerability:
 
 ## Requirements
 
-To run Dependency Scanning jobs, by default, you need GitLab Runner with the
+To run dependency scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared runners on GitLab.com, this is enabled by default.
@@ -56,24 +57,24 @@ The current detection logic limits the maximum search depth to two levels. For e
 
 The following languages and dependency managers are supported:
 
-| Language (package managers)  | Supported files | Scan tool(s) |
-|----------------------------- | --------------- | ------------ |
-| C# .NET ([NuGet](https://www.nuget.org/) 4.9+) | [`packages.lock.json`](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| C/C++ ([Conan](https://conan.io/)) | [`conan.lock`](https://docs.conan.io/en/latest/versioning/lockfiles.html) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Java ([Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)) | `build.gradle`, `build.gradle.kts`, `pom.xml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/)) | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js/) |
-| Go ([Golang](https://golang.org/)) | `go.sum` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| PHP ([Composer](https://getcomposer.org/))  | `composer.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Python ([setuptools](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/)) | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Ruby ([Bundler](https://bundler.io/)) | `Gemfile.lock`, `gems.locked` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
-| Scala ([sbt](https://www.scala-sbt.org/)) | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| Package Managers | Languages  | Supported files | Scan tools |
+| ------------------- | --------- | --------------- | ------------ |
+| [Bundler](https://bundler.io/) | Ruby | `Gemfile.lock`, `gems.locked` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
+| [Composer](https://getcomposer.org/) | PHP | `composer.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [Conan](https://conan.io/) | C, C++ | [`conan.lock`](https://docs.conan.io/en/latest/versioning/lockfiles.html) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [Golang](https://golang.org/) | Go | `go.sum` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) | Java | `build.gradle`, `build.gradle.kts`, `pom.xml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) | JavaScript | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js/) |
+| [NuGet](https://www.nuget.org/) 4.9+ | .NET, C# | [`packages.lock.json`](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [setuptools](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| [sbt](https://www.scala-sbt.org/) | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
 Plans are underway for supporting the following languages, dependency managers, and dependency files. For details, see the issue link for each.
 
-| Language (package managers)  | Supported files | Scan tool(s) | Issue |
-|----------------------------- | --------------- | ------------ | ----- |
-| Python ([Poetry](https://python-poetry.org/)) | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
-| Python ([Pipenv](https://pipenv.pypa.io/en/latest/)) | `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#11756](https://gitlab.com/gitlab-org/gitlab/-/issues/11756) |
+| Package Managers | Languages  | Supported files | Scan tools |
+| ------------------- | --------- | --------------- | ------------ |
+| [Pipenv](https://pipenv.pypa.io/en/latest/) | Python | `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#11756](https://gitlab.com/gitlab-org/gitlab/-/issues/11756) |
+| [Poetry](https://python-poetry.org/) | Python | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
 
 ## Contribute your scanner
 
@@ -81,7 +82,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 ## Configuration
 
-To enable Dependency Scanning for GitLab 11.9 and later, you must
+To enable dependency scanning for GitLab 11.9 and later, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
 [`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
 that is provided as a part of your GitLab installation.
@@ -95,16 +96,16 @@ include:
   - template: Dependency-Scanning.gitlab-ci.yml
 ```
 
-The included template creates Dependency Scanning jobs in your CI/CD
+The included template creates dependency scanning jobs in your CI/CD
 pipeline and scans your project's source code for possible vulnerabilities.
 The results are saved as a
-[Dependency Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdependency_scanning)
+[dependency scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdependency_scanning)
 that you can later download and analyze. Due to implementation limitations, we
-always take the latest Dependency Scanning artifact available.
+always take the latest dependency scanning artifact available.
 
-### Customizing the Dependency Scanning settings
+### Customizing the dependency scanning settings
 
-The Dependency Scanning settings can be changed through [environment variables](#available-variables) by using the
+The dependency scanning settings can be changed through [environment variables](#available-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 For example:
 
@@ -119,7 +120,7 @@ variables:
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
 configuration, the last mention of the variable takes precedence.
 
-### Overriding Dependency Scanning jobs
+### Overriding dependency scanning jobs
 
 CAUTION: **Deprecation:**
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
@@ -141,10 +142,10 @@ gemnasium-dependency_scanning:
 
 ### Available variables
 
-Dependency Scanning can be [configured](#customizing-the-dependency-scanning-settings)
+Dependency scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
 
-#### Configuring Dependency Scanning
+#### Configuring dependency scanning
 
 The following variables allow configuration of global dependency scanning settings.
 
@@ -156,7 +157,7 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"` |
 | `SECURE_LOG_LEVEL`                      | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info` |
 
-#### Configuring specific analyzers used by Dependency Scanning
+#### Configuring specific analyzers used by dependency scanning
 
 The following variables are used for configuring specific analyzers (used for a specific language/framework).
 
@@ -176,7 +177,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repos). |
 | `GRADLE_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                          | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
-| `BUNDLER_AUDIT_UPDATE_DISABLED`         | `bundler-audit`    | `"false"`                    | Disable automatic updates for the `bundler-audit` analyzer. Useful if you're running Dependency Scanning in an offline, air-gapped environment.|
+| `BUNDLER_AUDIT_UPDATE_DISABLED`         | `bundler-audit`    | `"false"`                    | Disable automatic updates for the `bundler-audit` analyzer. Useful if you're running dependency scanning in an offline, air-gapped environment.|
 | `BUNDLER_AUDIT_ADVISORY_DB_URL`         | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
 | `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME`    | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
 | `RETIREJS_JS_ADVISORY_DB`               | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/jsrepository.json` | Path or URL to `retire.js` JS vulnerability data file. Note that if the URL hosting the data file uses a custom SSL certificate, for example in an offline installation, you can pass the certificate in the `ADDITIONAL_CA_CERT_BUNDLE` environment variable. |
@@ -214,16 +215,16 @@ For more information about the vulnerabilities database update, check the
 
 ## Dependency List
 
-An additional benefit of Dependency Scanning is the ability to view your
+An additional benefit of dependency scanning is the ability to view your
 project's dependencies and their known vulnerabilities. Read more about
 the [Dependency List](../dependency_list/index.md).
 
 ## Reports JSON format
 
-The Dependency Scanning tool emits a JSON report file. For more information, see the
+The dependency scanning tool emits a JSON report file. For more information, see the
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
-Here's an example Dependency Scanning report:
+Here's an example dependency scanning report:
 
 ```json-doc
 {
@@ -342,36 +343,35 @@ You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-product
 to find a vulnerability in the Gemnasium database.
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
 
-## Running Dependency Scanning in an offline environment
+## Running dependency scanning in an offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
-to external resources through the internet, some adjustments are required for Dependency Scanning
+to external resources through the internet, some adjustments are required for dependency scanning
 jobs to run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
 
-### Requirements for offline Dependency Scanning
+### Requirements for offline dependency scanning
 
-Here are the requirements for using Dependency Scanning in an offline environment:
+Here are the requirements for using dependency scanning in an offline environment:
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
-- Docker Container Registry with locally available copies of Dependency Scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- Docker Container Registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/).
   This is required because, in an offline environment, the Gemnasium analyzer can't fetch the latest
   advisories from the online repository.
 - _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
 - _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.
 
-NOTE: **Note:**
-GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+Note that GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
 recommend keeping the pull policy setting to `always` if not in an offline environment, as this
 enables the use of updated scanners in your CI/CD pipelines.
 
-### Make GitLab Dependency Scanning analyzer images available inside your Docker registry
+### Make GitLab dependency scanning analyzer images available inside your Docker registry
 
-For Dependency Scanning with all [supported languages and frameworks](#supported-languages-and-package-managers),
-import the following default Dependency Scanning analyzer images from `registry.gitlab.com` into
+For dependency scanning with all [supported languages and frameworks](#supported-languages-and-package-managers),
+import the following default dependency scanning analyzer images from `registry.gitlab.com` into
 your [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
@@ -392,7 +392,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
-### Set Dependency Scanning CI job variables to use local Dependency Scanning analyzers
+### Set dependency scanning CI job variables to use local dependency scanning analyzers
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must change the value of
 `SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry. You must also change the
@@ -479,7 +479,19 @@ As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyz
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
-This error occurs when the Docker version that runs the Dependency Scanning job is `19.03.00`.
+This error occurs when the Docker version that runs the dependency scanning job is `19.03.00`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
+
+### Getting warning message `gl-dependency-scanning-report.json: no matching files`
+
+For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+
+### Limitation when using rules:exists
+
+The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+uses the [`rules:exists`](../../../ci/yaml/README.md#rulesexists)
+syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
+number. Because of this, and depending on the number of files in your repository, a dependency
+scanning job might be triggered even if the scanner doesn't support your project.

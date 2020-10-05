@@ -37,6 +37,9 @@ export default {
   [types.SET_GITLAB_MANAGED_CLUSTER](state, { gitlabManagedCluster }) {
     state.gitlabManagedCluster = gitlabManagedCluster;
   },
+  [types.SET_NAMESPACE_PER_ENVIRONMENT](state, { namespacePerEnvironment }) {
+    state.namespacePerEnvironment = namespacePerEnvironment;
+  },
   [types.REQUEST_CREATE_ROLE](state) {
     state.isCreatingRole = true;
     state.createRoleError = null;

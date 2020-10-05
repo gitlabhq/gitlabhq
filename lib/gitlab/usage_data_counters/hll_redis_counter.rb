@@ -72,7 +72,8 @@ module Gitlab
             events_names = events_for_category(category)
 
             event_results = events_names.each_with_object({}) do |event, hash|
-              hash[event] = unique_events(event_names: event, start_date: 7.days.ago.to_date, end_date: Date.current)
+              hash["#{event}_weekly"] = unique_events(event_names: event, start_date: 7.days.ago.to_date, end_date: Date.current)
+              hash["#{event}_monthly"] = unique_events(event_names: event, start_date: 4.weeks.ago.to_date, end_date: Date.current)
             end
 
             if eligible_for_totals?(events_names)

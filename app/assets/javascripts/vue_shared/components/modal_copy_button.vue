@@ -1,19 +1,16 @@
 <script>
 import $ from 'jquery';
-import { GlDeprecatedButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Clipboard from 'clipboard';
 import { __ } from '~/locale';
 
 export default {
   components: {
-    GlDeprecatedButton,
-    GlIcon,
+    GlButton,
   },
-
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-
   props: {
     text: {
       type: String,
@@ -55,15 +52,12 @@ export default {
       default: null,
     },
   },
-
   copySuccessText: __('Copied'),
-
   computed: {
     modalDomId() {
       return this.modalId ? `#${this.modalId}` : '';
     },
   },
-
   mounted() {
     this.$nextTick(() => {
       this.clipboard = new Clipboard(this.$el, {
@@ -83,13 +77,11 @@ export default {
         .on('error', e => this.$emit('error', e));
     });
   },
-
   destroyed() {
     if (this.clipboard) {
       this.clipboard.destroy();
     }
   },
-
   methods: {
     updateTooltip(target) {
       const $target = $(target);
@@ -112,15 +104,12 @@ export default {
 };
 </script>
 <template>
-  <gl-deprecated-button
+  <gl-button
     v-gl-tooltip="{ placement: tooltipPlacement, container: tooltipContainer }"
     :class="cssClasses"
     :data-clipboard-target="target"
     :data-clipboard-text="text"
     :title="title"
-  >
-    <slot>
-      <gl-icon name="copy-to-clipboard" />
-    </slot>
-  </gl-deprecated-button>
+    icon="copy-to-clipboard"
+  />
 </template>

@@ -416,6 +416,7 @@ RSpec.describe Admin::ClustersController do
           expect(cluster).to be_user
           expect(cluster).to be_kubernetes
           expect(cluster).to be_platform_kubernetes_rbac
+          expect(cluster).to be_namespace_per_environment
         end
       end
     end
@@ -585,6 +586,7 @@ RSpec.describe Admin::ClustersController do
           enabled: false,
           name: 'my-new-cluster-name',
           managed: false,
+          namespace_per_environment: false,
           base_domain: domain
         }
       }
@@ -599,6 +601,7 @@ RSpec.describe Admin::ClustersController do
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
       expect(cluster).not_to be_managed
+      expect(cluster).not_to be_namespace_per_environment
       expect(cluster.domain).to eq('test-domain.com')
     end
 
@@ -624,6 +627,7 @@ RSpec.describe Admin::ClustersController do
                 enabled: false,
                 name: 'my-new-cluster-name',
                 managed: false,
+                namespace_per_environment: false,
                 domain: domain
               }
             }
@@ -637,6 +641,7 @@ RSpec.describe Admin::ClustersController do
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
             expect(cluster).not_to be_managed
+            expect(cluster).not_to be_namespace_per_environment
           end
         end
 

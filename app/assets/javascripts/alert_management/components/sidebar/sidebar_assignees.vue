@@ -1,10 +1,11 @@
 <script>
 import {
   GlIcon,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownDivider,
-  GlDeprecatedDropdownHeader,
-  GlDeprecatedDropdownItem,
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownSectionHeader,
+  GlDropdownItem,
+  GlSearchBoxByType,
   GlLoadingIcon,
   GlTooltip,
   GlButton,
@@ -33,10 +34,11 @@ export default {
   },
   components: {
     GlIcon,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
-    GlDeprecatedDropdownDivider,
-    GlDeprecatedDropdownHeader,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownDivider,
+    GlDropdownSectionHeader,
+    GlSearchBoxByType,
     GlLoadingIcon,
     GlTooltip,
     GlButton,
@@ -216,48 +218,36 @@ export default {
       </p>
 
       <div class="dropdown dropdown-menu-selectable" :class="dropdownClass">
-        <gl-deprecated-dropdown
+        <gl-dropdown
           ref="dropdown"
           :text="userName"
           class="w-100"
           toggle-class="dropdown-menu-toggle"
-          variant="outline-default"
           @keydown.esc.native="hideDropdown"
           @hide="hideDropdown"
         >
-          <div class="dropdown-title gl-display-flex">
-            <span class="alert-title gl-ml-auto">{{ __('Assign To') }}</span>
-            <gl-button
-              :aria-label="__('Close')"
-              variant="link"
-              class="dropdown-title-button dropdown-menu-close gl-ml-auto gl-text-black-normal!"
-              icon="close"
-              @click="hideDropdown"
-            />
-          </div>
-          <div class="dropdown-input">
-            <input
-              v-model.trim="search"
-              class="dropdown-input-field"
-              type="search"
-              :placeholder="__('Search users')"
-            />
-            <gl-icon name="search" class="dropdown-input-search ic-search" data-hidden="true" />
-          </div>
+          <p class="gl-new-dropdown-header-top">
+            {{ __('Assign To') }}
+          </p>
+          <gl-search-box-by-type
+            v-model.trim="search"
+            class="m-2"
+            :placeholder="__('Search users')"
+          />
           <div class="dropdown-content dropdown-body">
             <template v-if="userListValid">
-              <gl-deprecated-dropdown-item
+              <gl-dropdown-item
                 :active="!userName"
                 active-class="is-active"
                 @click="updateAlertAssignees('')"
               >
                 {{ __('Unassigned') }}
-              </gl-deprecated-dropdown-item>
-              <gl-deprecated-dropdown-divider />
+              </gl-dropdown-item>
+              <gl-dropdown-divider />
 
-              <gl-deprecated-dropdown-header class="mt-0">
+              <gl-dropdown-section-header>
                 {{ __('Assignee') }}
-              </gl-deprecated-dropdown-header>
+              </gl-dropdown-section-header>
               <sidebar-assignee
                 v-for="user in sortedUsers"
                 :key="user.username"
@@ -266,12 +256,12 @@ export default {
                 @update-alert-assignees="updateAlertAssignees"
               />
             </template>
-            <gl-deprecated-dropdown-item v-else-if="userListEmpty">
+            <p v-else-if="userListEmpty" class="mx-3 my-2">
               {{ __('No Matching Results') }}
-            </gl-deprecated-dropdown-item>
+            </p>
             <gl-loading-icon v-else />
           </div>
-        </gl-deprecated-dropdown>
+        </gl-dropdown>
       </div>
 
       <gl-loading-icon v-if="isUpdating" :inline="true" />

@@ -20,11 +20,8 @@ RSpec.describe MergeRequests::ReopenService do
 
     context 'valid params' do
       let(:service) { described_class.new(project, user, {}) }
-      let(:state_tracking) { true }
 
       before do
-        stub_feature_flags(track_resource_state_change_events: state_tracking)
-
         allow(service).to receive(:execute_hooks)
 
         perform_enqueued_jobs do
@@ -47,20 +44,9 @@ RSpec.describe MergeRequests::ReopenService do
       end
 
       context 'note creation' do
-        context 'when state event tracking is disabled' do
-          let(:state_tracking) { false }
-
-          it 'creates system note about merge_request reopen' do
-            note = merge_request.notes.last
-            expect(note.note).to include 'reopened'
-          end
-        end
-
-        context 'when state event tracking is enabled' do
-          it 'creates resource state event about merge_request reopen' do
-            event = merge_request.resource_state_events.last
-            expect(event.state).to eq('reopened')
-          end
+        it 'creates resource state event about merge_request reopen' do
+          event = merge_request.resource_state_events.last
+          expect(event.state).to eq('reopened')
         end
       end
     end

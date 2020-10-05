@@ -15,7 +15,24 @@ RSpec.describe Terraform::State do
   it { is_expected.to validate_presence_of(:project_id) }
 
   before do
-    stub_terraform_state_object_storage(Terraform::StateUploader)
+    stub_terraform_state_object_storage
+  end
+
+  describe 'scopes' do
+    describe '.ordered_by_name' do
+      let_it_be(:project) { create(:project) }
+      let(:names) { %w(state_d state_b state_a state_c) }
+
+      subject { described_class.ordered_by_name }
+
+      before do
+        names.each do |name|
+          create(:terraform_state, project: project, name: name)
+        end
+      end
+
+      it { expect(subject.map(&:name)).to eq(names.sort) }
+    end
   end
 
   describe '#file' do
@@ -43,7 +60,7 @@ RSpec.describe Terraform::State do
 
     context 'when file is stored locally' do
       before do
-        stub_terraform_state_object_storage(Terraform::StateUploader, enabled: false)
+        stub_terraform_state_object_storage(enabled: false)
       end
 
       it_behaves_like 'mounted file in local store'

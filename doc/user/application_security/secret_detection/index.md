@@ -9,8 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
 
-## Overview
-
 A recurring problem when developing applications is that developers may unintentionally commit
 secrets and credentials to their remote repositories. If other people have access to the source,
 or if the project is public, the sensitive information is then exposed and can be leveraged by
@@ -67,26 +65,27 @@ as shown in the following table:
 
 ## Configuration
 
-NOTE: **Note:**
-With GitLab 13.1 Secret Detection was split into its own CI/CD template.
+> GitLab 13.1 splits Secret Detection from the [SAST configuration](../sast#configuration) into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then Secret Detection is already enabled.
 
 Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml)
-during the `secret-detection` job. It runs regardless of the programming
-language of your app.
+during the `secret-detection` job. It runs regardless of your app's programming language.
 
-The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and
+[TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+
+Note that the Secret Detection analyzer ignores Password-in-URL vulnerabilities if the password
+begins with a dollar sign (`$`), as this likely indicates the password is an environment variable.
+For example, `https://username:$password@example.com/path/to/repo` isn't detected, while
+`https://username:password@example.com/path/to/repo` is.
 
 NOTE: **Note:**
-The Secret Detection analyzer will ignore "Password in URL" vulnerabilities if the password begins
-with a dollar sign (`$`) as this likely indicates the password being used is an environment
-variable. For example, `https://username:$password@example.com/path/to/repo` won't be
-detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
-
-NOTE: **Note:**
-You don't have to configure Secret Detection manually as shown in this section if you're using [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
+You don't have to configure Secret Detection manually as shown in this section if you're using
+[Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-To enable Secret Detection for GitLab 13.1 and later, you must include the `Secret-Detection.gitlab-ci.yml` template that’s provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
+To enable Secret Detection for GitLab 13.1 and later, you must include the
+`Secret-Detection.gitlab-ci.yml` template that's provided as a part of your GitLab installation. For
+GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
 
 Add the following to your `.gitlab-ci.yml` file:
 
@@ -102,30 +101,6 @@ The results are saved as a
 [Secret Detection report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
-
-### Using the SAST Template
-
-Prior to GitLab 13.1, Secret Detection was part of [SAST configuration](../sast#configuration).
-If you already have SAST enabled for your app configured before GitLab 13.1,
-you don't need to manually configure it.
-
-CAUTION: **Planned Deprecation:**
-In a future GitLab release, configuring Secret Detection with the SAST template will be deprecated. Please begin using `Secret-Detection.gitlab-ci.yml`
-to prevent future issues. We have made a
-[video to guide you through the process of transitioning](https://www.youtube.com/watch?v=W2tjcQreDwQ)
-to this new template.
-
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=W2tjcQreDwQ">Walkthrough of historical secret scan</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/W2tjcQreDwQ" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-
-When using the SAST template, Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml#L180)
-during the `sast` job. It runs regardless of the programming
-language of your app, and you don't need to change your
-CI/CD configuration file to enable it. Results are available in the SAST report.
 
 ### Customizing settings
 
@@ -197,3 +172,9 @@ We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showca
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
+
+## Troubleshooting
+
+### Getting warning message `gl-secret-detection-report.json: no matching files`
+
+For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).

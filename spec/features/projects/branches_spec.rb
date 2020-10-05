@@ -21,11 +21,11 @@ RSpec.describe 'Branches' do
       before do
         # Add 4 stale branches
         (1..4).reverse_each do |i|
-          Timecop.freeze((threshold + i).ago) { create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}") }
+          travel_to((threshold + i).ago) { create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}") }
         end
         # Add 6 active branches
         (1..6).each do |i|
-          Timecop.freeze((threshold - i).ago) { create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}") }
+          travel_to((threshold - i).ago) { create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}") }
         end
       end
 

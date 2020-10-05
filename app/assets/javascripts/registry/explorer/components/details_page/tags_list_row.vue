@@ -197,7 +197,8 @@ export default {
           v-if="tag.digest"
           :title="tag.digest"
           :text="tag.digest"
-          css-class="btn-default btn-transparent btn-clipboard gl-p-0"
+          category="tertiary"
+          size="small"
         />
       </details-row>
     </template>
@@ -212,7 +213,8 @@ export default {
           v-if="formattedRevision"
           :title="formattedRevision"
           :text="formattedRevision"
-          css-class="btn-default btn-transparent btn-clipboard gl-p-0"
+          category="tertiary"
+          size="small"
         />
       </details-row>
     </template>

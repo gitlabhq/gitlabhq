@@ -1,13 +1,19 @@
 import { __, sprintf } from '../../../locale';
+import { TestStatus } from '../../constants';
 
 export function iconForTestStatus(status) {
   switch (status) {
-    case 'success':
+    case TestStatus.SUCCESS:
       return 'status_success_borderless';
-    case 'failed':
+    case TestStatus.FAILED:
       return 'status_failed_borderless';
-    default:
+    case TestStatus.ERROR:
+      return 'status_warning_borderless';
+    case TestStatus.SKIPPED:
       return 'status_skipped_borderless';
+    case TestStatus.UNKNOWN:
+    default:
+      return 'status_notfound_borderless';
   }
 }
 

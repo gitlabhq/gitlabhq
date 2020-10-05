@@ -22,8 +22,7 @@
           pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
           title: s_('GroupSettings|Please choose a group URL with no special characters.'),
           "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-    .gl-display-flex.gl-justify-content-end
-      = f.submit s_('GroupSettings|Change group URL'), class: 'btn btn-warning'
+    = f.submit s_('GroupSettings|Change group URL'), class: 'btn btn-warning'
 
 .sub-section
   %h4.warning-title= s_('GroupSettings|Transfer group')
@@ -39,8 +38,7 @@
       %li= s_('GroupSettings|You can only transfer the group to a group you manage.')
       %li= s_('GroupSettings|You will need to update your local repositories to point to the new location.')
       %li= s_("GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
-    .gl-display-flex.gl-justify-content-end
-      = f.submit s_('GroupSettings|Transfer group'), class: 'btn btn-warning'
+    = f.submit s_('GroupSettings|Transfer group'), class: 'btn btn-warning'
 
 = render 'groups/settings/remove', group: @group
 = render_if_exists 'groups/settings/restore', group: @group

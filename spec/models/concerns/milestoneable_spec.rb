@@ -61,7 +61,7 @@ RSpec.describe Milestoneable do
 
       it 'returns true with a milestone from the the parent of the issue project group' do
         parent = create(:group)
-        group.update(parent: parent)
+        group.update!(parent: parent)
         milestone = create(:milestone, group: parent)
 
         expect(build_milestoneable(milestone.id).milestone_available?).to be_truthy

@@ -150,6 +150,16 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  shared_examples 'participating by reviewer notification' do
+    it 'emails the participant' do
+      issuable.reviewers << participant
+
+      notification_trigger
+
+      should_email(participant)
+    end
+  end
+
   shared_examples_for 'participating notifications' do
     it_behaves_like 'participating by note notification'
     it_behaves_like 'participating by author notification'
@@ -1778,6 +1788,60 @@ RSpec.describe NotificationService, :mailer do
       end
     end
 
+    describe '#changed_reviewer_of_merge_request' do
+      let(:merge_request) { create(:merge_request, author: author, source_project: project, reviewers: [reviewer], description: 'cc @participant') }
+
+      let_it_be(:current_user) { create(:user) }
+      let_it_be(:reviewer) { create(:user) }
+
+      before do
+        update_custom_notification(:change_reviewer_merge_request, @u_guest_custom, resource: project)
+        update_custom_notification(:change_reviewer_merge_request, @u_custom_global)
+      end
+
+      it 'sends emails to relevant users only', :aggregate_failures do
+        notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer])
+
+        merge_request.reviewers.each { |reviewer| should_email(reviewer) }
+        should_email(merge_request.author)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it 'adds "review requested" reason for new reviewer' do
+        notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer])
+
+        merge_request.reviewers.each do |assignee|
+          email = find_email_for(assignee)
+
+          expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::REVIEW_REQUESTED)
+        end
+      end
+
+      context 'participating notifications with reviewers' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
+
+        it_behaves_like 'participating notifications'
+        it_behaves_like 'participating by reviewer notification'
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
+      end
+    end
+
     describe '#push_to_merge_request' do
       before do
         update_custom_notification(:push_to_merge_request, @u_guest_custom, resource: project)
@@ -3018,32 +3082,25 @@ RSpec.describe NotificationService, :mailer do
 
   describe '#prometheus_alerts_fired' do
     let!(:project) { create(:project) }
-    let!(:prometheus_alert) { create(:prometheus_alert, project: project) }
     let!(:master) { create(:user) }
     let!(:developer) { create(:user) }
+    let(:alert_attributes) { build(:alert_management_alert, project: project).attributes }
 
     before do
       project.add_maintainer(master)
     end
 
     it 'sends the email to owners and masters' do
-      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, master.id, prometheus_alert).and_call_original
-      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, project.owner.id, prometheus_alert).and_call_original
-      expect(Notify).not_to receive(:prometheus_alert_fired_email).with(project.id, developer.id, prometheus_alert)
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, master.id, alert_attributes).and_call_original
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, project.owner.id, alert_attributes).and_call_original
+      expect(Notify).not_to receive(:prometheus_alert_fired_email).with(project.id, developer.id, alert_attributes)
 
-      subject.prometheus_alerts_fired(prometheus_alert.project, [prometheus_alert])
+      subject.prometheus_alerts_fired(project, [alert_attributes])
     end
 
     it_behaves_like 'project emails are disabled' do
-      before do
-        allow_next_instance_of(::Gitlab::Alerting::Alert) do |instance|
-          allow(instance).to receive(:valid?).and_return(true)
-        end
-      end
-
-      let(:alert_params) { { 'labels' => { 'gitlab_alert_id' => 'unknown' } } }
-      let(:notification_target)  { prometheus_alert.project }
-      let(:notification_trigger) { subject.prometheus_alerts_fired(prometheus_alert.project, [alert_params]) }
+      let(:notification_target)  { project }
+      let(:notification_trigger) { subject.prometheus_alerts_fired(project, [alert_attributes]) }
 
       around do |example|
         perform_enqueued_jobs { example.run }

@@ -1,0 +1,7 @@
+---
+name: vue_sidebar_labels
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41561
+rollout_issue_url:
+group: group::project management
+type: development
+default_enabled: false

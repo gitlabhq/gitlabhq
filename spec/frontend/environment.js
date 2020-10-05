@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import/no-commonjs, max-classes-per-file */
 
 const path = require('path');
 const { ErrorWithStack } = require('jest-util');
@@ -58,6 +58,14 @@ class CustomEnvironment extends JSDOMEnvironment {
       measure: () => null,
       getEntriesByName: () => [],
     });
+
+    this.global.PerformanceObserver = class {
+      /* eslint-disable no-useless-constructor, no-unused-vars, no-empty-function, class-methods-use-this */
+      constructor(callback) {}
+      disconnect() {}
+      observe(element, initObject) {}
+      /* eslint-enable no-useless-constructor, no-unused-vars, no-empty-function, class-methods-use-this */
+    };
   }
 
   async teardown() {

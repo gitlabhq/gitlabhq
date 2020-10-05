@@ -4,16 +4,24 @@ require 'spec_helper'
 
 RSpec.describe 'User views Release', :js do
   let(:project) { create(:project, :repository) }
-  let(:release) { create(:release, project: project, name: 'The first release' ) }
   let(:user) { create(:user) }
+
+  let(:release) do
+    create(:release,
+           project: project,
+           name: 'The first release',
+           description: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)')
+  end
 
   before do
     project.add_developer(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit project_release_path(project, release)
   end
+
+  it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
 
   it 'renders the breadcrumbs' do
     within('.breadcrumbs') do
@@ -31,7 +39,7 @@ RSpec.describe 'User views Release', :js do
       expect(page).to have_content(release.name)
       expect(page).to have_content(release.tag)
       expect(page).to have_content(release.commit.short_id)
-      expect(page).to have_content(release.description)
+      expect(page).to have_content('Lorem ipsum dolor sit amet')
     end
   end
 end

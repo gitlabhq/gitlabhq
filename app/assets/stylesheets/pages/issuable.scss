@@ -117,7 +117,8 @@
   }
 }
 
-.assignee {
+.assignee,
+.reviewer {
   .merge-icon {
     color: $orange-400;
     position: absolute;
@@ -239,16 +240,6 @@
 
     .avatar {
       margin-left: 0;
-    }
-
-    a.edit-link:not([href]):hover {
-      color: rgba($gray-normal, 0.2);
-    }
-
-    .confidential-edit,
-    .lock-edit,
-    .edit-link {
-      @extend .btn-link;
     }
   }
 

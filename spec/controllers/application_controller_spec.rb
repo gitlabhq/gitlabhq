@@ -416,13 +416,13 @@ RSpec.describe ApplicationController do
         end
 
         it 'returns false if the grace period has expired' do
-          Timecop.freeze(3.hours.from_now) do
+          travel_to(3.hours.from_now) do
             expect(subject).to be_falsey
           end
         end
 
         it 'returns true if the grace period is still active' do
-          Timecop.freeze(1.hour.from_now) do
+          travel_to(1.hour.from_now) do
             expect(subject).to be_truthy
           end
         end

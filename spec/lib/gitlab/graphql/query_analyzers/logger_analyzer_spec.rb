@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
       end
 
       it 'returns a duration in seconds' do
-        allow(GraphQL::Analysis).to receive(:analyze_query).and_return([4, 2])
+        allow(GraphQL::Analysis).to receive(:analyze_query).and_return([4, 2, [[], []]])
         allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
         allow(Gitlab::GraphqlLogger).to receive(:info)
 

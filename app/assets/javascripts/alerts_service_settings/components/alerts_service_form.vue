@@ -180,11 +180,9 @@ export default {
           />
         </span>
       </div>
-      <span class="gl-display-flex gl-justify-content-end">
-        <gl-button v-gl-modal.authKeyModal class="gl-mt-2" :disabled="isDisabled">{{
-          $options.RESET_KEY
-        }}</gl-button>
-      </span>
+      <gl-button v-gl-modal.authKeyModal class="gl-mt-2" :disabled="isDisabled">{{
+        $options.RESET_KEY
+      }}</gl-button>
       <gl-modal
         modal-id="authKeyModal"
         :title="$options.RESET_KEY"

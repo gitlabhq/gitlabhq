@@ -113,18 +113,6 @@ RSpec.describe Projects::Releases::EvidencesController do
 
         it_behaves_like 'does not show the issue in evidence'
 
-        context 'when the issue is confidential' do
-          let(:issue) { create(:issue, :confidential, project: project) }
-
-          it_behaves_like 'does not show the issue in evidence'
-        end
-
-        context 'when the user is the author of the confidential issue' do
-          let(:issue) { create(:issue, :confidential, project: project, author: user) }
-
-          it_behaves_like 'does not show the issue in evidence'
-        end
-
         context 'when project is private' do
           let(:project) { create(:project, :repository, :private) }
 
@@ -143,32 +131,16 @@ RSpec.describe Projects::Releases::EvidencesController do
 
         it_behaves_like 'does not show the issue in evidence'
 
-        context 'when the issue is confidential' do
-          let(:issue) { create(:issue, :confidential, project: project) }
-
-          it_behaves_like 'does not show the issue in evidence'
-        end
-
-        context 'when the user is the author of the confidential issue' do
-          let(:issue) { create(:issue, :confidential, project: project, author: user) }
-
-          it_behaves_like 'does not show the issue in evidence'
-        end
-
         context 'when project is private' do
           let(:project) { create(:project, :repository, :private) }
 
-          it 'returns evidence ' do
-            subject
-
-            expect(json_response).to eq(evidence.summary)
-          end
+          it_behaves_like 'does not show the issue in evidence'
         end
 
         context 'when project restricts the visibility of issues to project members only' do
           let(:project) { create(:project, :repository, :issues_private) }
 
-          it_behaves_like 'evidence not found'
+          it_behaves_like 'does not show the issue in evidence'
         end
       end
 

@@ -8,7 +8,8 @@ class SearchController < ApplicationController
 
   SCOPE_PRELOAD_METHOD = {
     projects: :with_web_entity_associations,
-    issues: :with_web_entity_associations
+    issues: :with_web_entity_associations,
+    epics: :with_web_entity_associations
   }.freeze
 
   track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users, feature_default_enabled: true
@@ -96,8 +97,6 @@ class SearchController < ApplicationController
   end
 
   def eager_load_user_status
-    return if Feature.disabled?(:users_search, default_enabled: true)
-
     @search_objects = @search_objects.eager_load(:status) # rubocop:disable CodeReuse/ActiveRecord
   end
 

@@ -124,9 +124,9 @@ each other over the network.
 ### Sentinel setup overview
 
 Sentinels watch both other Sentinels and Redis nodes. Whenever a Sentinel
-detects that a Redis node is not responding, it will announce that to the
-other Sentinels. They have to reach the **quorum**, that is the minimum amount
-of Sentinels that agrees a node is down, in order to be able to start a failover.
+detects that a Redis node isn't responding, it announces the node's status to
+the other Sentinels. The Sentinels have to reach a _quorum_ (the minimum amount
+of Sentinels agreeing a node is down) to be able to start a failover.
 
 Whenever the **quorum** is met, the **majority** of all known Sentinel nodes
 need to be available and reachable, so that they can elect the Sentinel **leader**

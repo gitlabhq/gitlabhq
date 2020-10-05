@@ -6,19 +6,22 @@ RSpec.describe "User comments on commit", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:comment_text) { "XML attached" }
+
+  before_all do
+    project.add_developer(user)
+  end
 
   before do
     sign_in(user)
-    project.add_developer(user)
-
-    visit(project_commit_path(project, sample_commit.id))
   end
 
   context "when adding new comment" do
     it "adds comment" do
+      visit(project_commit_path(project, sample_commit.id))
+
       emoji_code = ":+1:"
 
       page.within(".js-main-target-form") do
@@ -57,6 +60,8 @@ RSpec.describe "User comments on commit", :js do
 
   context "when editing comment" do
     before do
+      visit(project_commit_path(project, sample_commit.id))
+
       add_note(comment_text)
     end
 
@@ -87,6 +92,8 @@ RSpec.describe "User comments on commit", :js do
 
   context "when deleting comment" do
     before do
+      visit(project_commit_path(project, sample_commit.id))
+
       add_note(comment_text)
     end
 
@@ -106,6 +113,37 @@ RSpec.describe "User comments on commit", :js do
       end
 
       expect(page).not_to have_css(".note")
+    end
+  end
+
+  context 'when checking task lists' do
+    let(:note_with_task) do
+      <<-EOT.strip_heredoc
+
+      - [ ] Task 1
+      EOT
+    end
+
+    before do
+      create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
+      create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
+
+      visit(project_commit_path(project, sample_commit.id))
+    end
+
+    it 'allows the tasks to be checked' do
+      expect(page).to have_selector('li.task-list-item', count: 2)
+      expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
+
+      all('.task-list-item-checkbox').each do |checkbox|
+        checkbox.click
+      end
+      wait_for_requests
+
+      visit(project_commit_path(project, sample_commit.id))
+
+      expect(page).to have_selector('li.task-list-item', count: 2)
+      expect(page).to have_selector('li.task-list-item input[checked]', count: 2)
     end
   end
 end

@@ -107,6 +107,14 @@ class ContainerRepository < ApplicationRecord
     client.delete_repository_tag_by_name(self.path, name)
   end
 
+  def reset_expiration_policy_started_at!
+    update!(expiration_policy_started_at: nil)
+  end
+
+  def start_expiration_policy!
+    update!(expiration_policy_started_at: Time.zone.now)
+  end
+
   def self.build_from_path(path)
     self.new(project: path.repository_project,
              name: path.repository_name)

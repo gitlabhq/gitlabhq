@@ -118,10 +118,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     add_special_file_path(file_name: ci_config_path_or_default)
   end
 
-  def add_ci_yml_ide_path
-    ide_edit_path(project, default_branch_or_master, ci_config_path_or_default)
-  end
-
   def add_readme_path
     add_special_file_path(file_name: 'README.md')
   end
@@ -330,7 +326,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if cicd_missing?
       AnchorData.new(false,
                      statistic_icon + _('Set up CI/CD'),
-                     add_ci_yml_ide_path)
+                     add_ci_yml_path)
     elsif repository.gitlab_ci_yml.present?
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CI/CD configuration'),

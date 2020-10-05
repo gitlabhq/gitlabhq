@@ -16,7 +16,7 @@ module Gitlab
         ) do
           include Gitlab::Utils::StrongMemoize
 
-          def initialize(**params)
+          def initialize(params = {})
             params.each do |key, value|
               self[key] = value
             end

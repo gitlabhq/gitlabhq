@@ -29,4 +29,26 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
       ''
     end
   end
+
+  def target_type_name
+    if design?
+      'Design'
+    elsif wiki_page?
+      'Wiki Page'
+    elsif target_type.present?
+      target_type.titleize
+    else
+      "Project"
+    end.downcase
+  end
+
+  def note_target_type_name
+    return unless note?
+
+    if design_note?
+      'Design'
+    else
+      target.noteable_type.titleize
+    end.downcase
+  end
 end

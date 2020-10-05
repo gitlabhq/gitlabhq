@@ -16,10 +16,15 @@ type SavedContentMeta {
 
 type AppData {
   isSupportedContent: Boolean!
+  hasSubmittedChanges: Boolean!
   project: String!
   returnUrl: String
   sourcePath: String!
   username: String!
+}
+
+input HasSubmittedChangesInput {
+  hasSubmittedChanges: Boolean!
 }
 
 input SubmitContentChangesInput {
@@ -40,4 +45,5 @@ extend type Query {
 
 extend type Mutation {
   submitContentChanges(input: SubmitContentChangesInput!): SavedContentMeta
+  hasSubmittedChanges(input: HasSubmittedChangesInput!): AppData
 }

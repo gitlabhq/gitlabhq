@@ -447,8 +447,8 @@ Omnibus is the following:
 
 > **IMPORTANT**:
 With GitLab 9.0, the PostgreSQL version is updated to 9.6 and manual steps are
-required in order to update the **secondary** nodes and keep the Streaming
-Replication working. Downtime is required, so plan ahead.
+required to update the **secondary** nodes and keep the Streaming Replication
+working. Downtime is required, so plan ahead.
 
 The following steps apply only if you update from a 8.17 GitLab version to
 9.0+. For previous versions, update to GitLab 8.17 first before attempting to

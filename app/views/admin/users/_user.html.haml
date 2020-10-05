@@ -4,7 +4,12 @@
       = _('Name')
     .table-mobile-content
       = render 'user_detail', user: user
-  .table-section.section-25
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' }
+      = _('Projects')
+    .table-mobile-content.gl-str-truncated{ data: { testid: "user-project-count-#{user.id}" } }
+      = user.authorized_projects.length
+  .table-section.section-15
     .table-mobile-header{ role: 'rowheader' }
       = _('Created on')
     .table-mobile-content

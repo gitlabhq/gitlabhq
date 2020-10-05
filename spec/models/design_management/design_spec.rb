@@ -206,6 +206,15 @@ RSpec.describe DesignManagement::Design do
     end
   end
 
+  describe ".build_full_path" do
+    it "builds the full path for a design" do
+      design = build(:design, issue: issue, filename: "hello.jpg")
+      expected_path = "#{DesignManagement.designs_directory}/issue-#{design.issue.iid}/hello.jpg"
+
+      expect(described_class.build_full_path(issue, design)).to eq(expected_path)
+    end
+  end
+
   describe '#visible_in?' do
     let_it_be(:issue) { create(:issue, project: issue.project) }
 

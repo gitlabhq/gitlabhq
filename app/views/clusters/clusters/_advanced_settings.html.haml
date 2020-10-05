@@ -24,17 +24,18 @@
         .text-muted
           = html_escape(s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
           = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank'
-      .gl-display-flex.gl-justify-content-end
-        = field.submit _('Save changes'), class: 'btn btn-success'
+      = field.submit _('Save changes'), class: 'btn btn-success'
 
-  - if @cluster.managed?
-    .sub-section.form-group
-      %h4
-        = s_('ClusterIntegration|Clear cluster cache')
-      %p
-        = s_("ClusterIntegration|Clear the local cache of namespace and service accounts. This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts.")
-      .gl-display-flex.gl-justify-content-end
-        = link_to(s_('ClusterIntegration|Clear cluster cache'), clusterable.clear_cluster_cache_path(@cluster), method: :delete, class: 'btn btn-primary')
+  .sub-section.form-group
+    %h4
+      = s_('ClusterIntegration|Clear cluster cache')
+    %p
+      = s_("ClusterIntegration|Clear the local cache of namespace and service accounts.")
+      - if @cluster.managed?
+        = s_("ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts.")
+      - else
+        = s_("ClusterIntegration|This is necessary to clear existing environment-namespace associations from clusters previously managed by GitLab.")
+    = link_to(s_('ClusterIntegration|Clear cluster cache'), clusterable.clear_cluster_cache_path(@cluster), method: :delete, class: 'btn btn-primary')
 
   .sub-section.form-group
     %h4.text-danger

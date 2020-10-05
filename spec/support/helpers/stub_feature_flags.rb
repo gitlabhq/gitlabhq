@@ -62,4 +62,8 @@ module StubFeatureFlags
 
     StubFeatureGate.new(object)
   end
+
+  def skip_feature_flags_yaml_validation
+    allow(Feature::Definition).to receive(:valid_usage!)
+  end
 end

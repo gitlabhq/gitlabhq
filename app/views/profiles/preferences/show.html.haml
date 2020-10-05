@@ -2,7 +2,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 - Gitlab::Themes.each do |theme|
-  = stylesheet_link_tag "themes/theme_#{theme.css_class.gsub('ui-', '')}"
+  = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row gl-mt-3 js-preferences-form' } do |f|
   .col-lg-4.application-theme#navigation-theme

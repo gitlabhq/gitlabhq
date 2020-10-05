@@ -7,7 +7,10 @@ module Projects
 
       def execute(container_repository)
         @container_repository = container_repository
-        return error('access denied') unless can?(current_user, :destroy_container_image, project)
+
+        unless params[:container_expiration_policy]
+          return error('access denied') unless can?(current_user, :destroy_container_image, project)
+        end
 
         @tag_names = params[:tags]
         return error('not tags specified') if @tag_names.blank?
@@ -23,9 +26,7 @@ module Projects
       end
 
       def delete_service
-        fast_delete_enabled = Feature.enabled?(:container_registry_fast_tag_delete, default_enabled: true)
-
-        if fast_delete_enabled && @container_repository.client.supports_tag_delete?
+        if @container_repository.client.supports_tag_delete?
           ::Projects::ContainerRepository::Gitlab::DeleteTagsService.new(@container_repository, @tag_names)
         else
           ::Projects::ContainerRepository::ThirdParty::DeleteTagsService.new(@container_repository, @tag_names)

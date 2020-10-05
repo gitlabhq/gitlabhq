@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ServiceList
-  def initialize(batch_ids, service_hash, association)
-    @batch_ids = batch_ids
+  def initialize(batch, service_hash, association)
+    @batch = batch
     @service_hash = service_hash
     @association = association
   end
@@ -13,15 +13,15 @@ class ServiceList
 
   private
 
-  attr_reader :batch_ids, :service_hash, :association
+  attr_reader :batch, :service_hash, :association
 
   def columns
-    (service_hash.keys << "#{association}_id")
+    service_hash.keys << "#{association}_id"
   end
 
   def values
-    batch_ids.map do |id|
-      (service_hash.values << id)
+    batch.select(:id).map do |record|
+      service_hash.values << record.id
     end
   end
 end

@@ -11,7 +11,7 @@ class GitlabDanger
     karma
     database
     commit_messages
-    telemetry
+    product_analytics
     utility_css
     pajamas
   ].freeze

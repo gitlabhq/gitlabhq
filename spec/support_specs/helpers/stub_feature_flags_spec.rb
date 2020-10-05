@@ -3,12 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe StubFeatureFlags do
-  let(:feature_name) { :test_feature }
+  DUMMY_FEATURE_FLAG = :dummy_feature_flag # rubocop:disable RSpec/LeakyConstantDeclaration
+
+  # We inject dummy feature flag defintion
+  # to ensure that we strong validate it's usage
+  # as well
+  before(:all) do
+    definition = Feature::Definition.new(
+      nil,
+      name: DUMMY_FEATURE_FLAG,
+      type: 'development',
+      # we allow ambigious usage of `default_enabled:`
+      default_enabled: [false, true]
+    )
+
+    Feature::Definition.definitions[DUMMY_FEATURE_FLAG] = definition
+  end
+
+  after(:all) do
+    Feature::Definition.definitions.delete(DUMMY_FEATURE_FLAG)
+  end
 
   describe '#stub_feature_flags' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:feature_name) { :test_feature }
+    let(:feature_name) { DUMMY_FEATURE_FLAG }
 
     context 'when checking global state' do
       where(:feature_actors, :expected_result) do
@@ -121,14 +140,14 @@ RSpec.describe StubFeatureFlags do
 
   describe 'stub timing' do
     context 'let_it_be variable' do
-      let_it_be(:let_it_be_var) { Feature.enabled?(:any_feature_flag) }
+      let_it_be(:let_it_be_var) { Feature.enabled?(DUMMY_FEATURE_FLAG) }
 
       it { expect(let_it_be_var).to eq true }
     end
 
     context 'before_all variable' do
       before_all do
-        @suite_var = Feature.enabled?(:any_feature_flag)
+        @suite_var = Feature.enabled?(DUMMY_FEATURE_FLAG)
       end
 
       it { expect(@suite_var).to eq true }
@@ -136,14 +155,14 @@ RSpec.describe StubFeatureFlags do
 
     context 'before(:all) variable' do
       before(:all) do
-        @suite_var = Feature.enabled?(:any_feature_flag)
+        @suite_var = Feature.enabled?(DUMMY_FEATURE_FLAG)
       end
 
       it { expect(@suite_var).to eq true }
     end
 
     context 'with stub_feature_flags meta' do
-      let(:var) { Feature.enabled?(:any_feature_flag) }
+      let(:var) { Feature.enabled?(DUMMY_FEATURE_FLAG) }
 
       context 'as true', :stub_feature_flags do
         it { expect(var).to eq true }

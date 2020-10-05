@@ -19,11 +19,7 @@ module SafeZip
     def extract(opts = {})
       params = SafeZip::ExtractParams.new(**opts)
 
-      if Feature.enabled?(:safezip_use_rubyzip, default_enabled: true)
-        extract_with_ruby_zip(params)
-      else
-        legacy_unsafe_extract_with_system_zip(params)
-      end
+      extract_with_ruby_zip(params)
     end
 
     private
@@ -51,22 +47,6 @@ module SafeZip
       entries.count do |zip_entry|
         SafeZip::Entry.new(zip_archive, zip_entry, params)
           .extract
-      end
-    end
-
-    def legacy_unsafe_extract_with_system_zip(params)
-      # Requires UnZip at least 6.00 Info-ZIP.
-      # -n  never overwrite existing files
-      args = %W(unzip -n -qq #{archive_path})
-
-      # We add * to end of directory, because we want to extract directory and all subdirectories
-      args += params.directories_wildcard
-
-      # Target directory where we extract
-      args += %W(-d #{params.extract_path})
-
-      unless system(*args)
-        raise Error, 'archive failed to extract'
       end
     end
   end

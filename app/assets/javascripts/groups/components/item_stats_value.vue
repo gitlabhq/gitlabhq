@@ -57,6 +57,7 @@ export default {
     :title="title"
     data-container="body"
   >
-    <gl-icon :name="iconName" /> <span v-if="isValuePresent" class="stat-value"> {{ value }} </span>
+    <gl-icon :name="iconName" />
+    <span v-if="isValuePresent" class="stat-value" data-testid="itemStatValue"> {{ value }} </span>
   </span>
 </template>

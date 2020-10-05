@@ -88,12 +88,16 @@ RSpec.describe API::NpmPackages do
         it_behaves_like 'returning the npm package info'
 
         context 'with unknown package' do
+          subject { get api("/packages/npm/unknown") }
+
           it 'returns a redirect' do
-            get api("/packages/npm/unknown")
+            subject
 
             expect(response).to have_gitlab_http_status(:found)
             expect(response.headers['Location']).to eq('https://registry.npmjs.org/unknown')
           end
+
+          it_behaves_like 'a gitlab tracking event', described_class.name, 'npm_request_forward'
         end
       end
 
@@ -193,7 +197,7 @@ RSpec.describe API::NpmPackages do
         expect(response.media_type).to eq('application/octet-stream')
       end
 
-      it_behaves_like 'a gitlab tracking event', described_class.name, 'pull_package'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     end
 
     context 'private project' do
@@ -301,7 +305,7 @@ RSpec.describe API::NpmPackages do
         context 'with access token' do
           subject { upload_package_with_token(package_name, params) }
 
-          it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+          it_behaves_like 'a package tracking event', described_class.name, 'push_package'
 
           it 'creates npm package with file' do
             expect { subject }

@@ -1,7 +1,7 @@
 ---
 name: maintenance_mode
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28158
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/217895
+group: group::geo
 type: development
 default_enabled: false

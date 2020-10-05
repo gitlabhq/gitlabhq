@@ -12,7 +12,7 @@ GitLab has support for automatically detecting and monitoring Kubernetes metrics
 
 ## Requirements
 
-The [Prometheus](../prometheus.md) and [Kubernetes](../kubernetes.md)
+The [Prometheus](../prometheus.md) and [Kubernetes](../../clusters/index.md)
 integration services must be enabled.
 
 ## Metrics supported

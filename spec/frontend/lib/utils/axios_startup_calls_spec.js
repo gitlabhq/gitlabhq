@@ -111,21 +111,44 @@ describe('setupAxiosStartupCalls', () => {
     });
   });
 
-  it('removes GitLab Base URL from startup call', async () => {
-    const oldGon = window.gon;
-    window.gon = { gitlab_url: 'https://example.org/gitlab' };
+  describe('startup call', () => {
+    let oldGon;
 
-    window.gl.startup_calls = {
-      '/startup': {
-        fetchCall: mockFetchCall(200),
-      },
-    };
-    setupAxiosStartupCalls(axios);
+    beforeEach(() => {
+      oldGon = window.gon;
+      window.gon = { gitlab_url: 'https://example.org/gitlab' };
+    });
 
-    const { data } = await axios.get('https://example.org/gitlab/startup');
+    afterEach(() => {
+      window.gon = oldGon;
+    });
 
-    expect(data).toEqual(STARTUP_JS_RESPONSE);
+    it('removes GitLab Base URL from startup call', async () => {
+      window.gl.startup_calls = {
+        '/startup': {
+          fetchCall: mockFetchCall(200),
+        },
+      };
+      setupAxiosStartupCalls(axios);
 
-    window.gon = oldGon;
+      const { data } = await axios.get('https://example.org/gitlab/startup');
+
+      expect(data).toEqual(STARTUP_JS_RESPONSE);
+    });
+
+    it('sorts the params in the requested API url', async () => {
+      window.gl.startup_calls = {
+        '/startup?alpha=true&bravo=true': {
+          fetchCall: mockFetchCall(200),
+        },
+      };
+      setupAxiosStartupCalls(axios);
+
+      // Use a full url instead of passing options = { params: { ... } } to axios.get
+      // to ensure the params are listed in the specified order.
+      const { data } = await axios.get('https://example.org/gitlab/startup?bravo=true&alpha=true');
+
+      expect(data).toEqual(STARTUP_JS_RESPONSE);
+    });
   });
 });

@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { reduce } from 'lodash';
 import { s__ } from '~/locale';
 import {
   capitalizeFirstCharacter,
@@ -9,6 +10,22 @@ import {
 
 const thClass = 'gl-bg-transparent! gl-border-1! gl-border-b-solid! gl-border-gray-200!';
 const tdClass = 'gl-border-gray-100! gl-p-5!';
+const allowedFields = [
+  'iid',
+  'title',
+  'severity',
+  'status',
+  'startedAt',
+  'eventCount',
+  'monitoringTool',
+  'service',
+  'description',
+  'endedAt',
+  'details',
+  'environment',
+];
+
+const isAllowed = fieldName => allowedFields.includes(fieldName);
 
 export default {
   components: {
@@ -46,10 +63,16 @@ export default {
       if (!this.alert) {
         return [];
       }
-      return Object.entries(this.alert).map(([fieldName, value]) => ({
-        fieldName,
-        value,
-      }));
+      return reduce(
+        this.alert,
+        (allowedItems, value, fieldName) => {
+          if (isAllowed(fieldName)) {
+            return [...allowedItems, { fieldName, value }];
+          }
+          return allowedItems;
+        },
+        [],
+      );
     },
   },
 };

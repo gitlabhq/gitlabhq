@@ -20,7 +20,7 @@ RSpec.describe Issuable::Clone::AttributesRewriter do
       group_label = create(:group_label, title: 'group_label', group: group)
       create(:label, title: 'label3', project: project2)
 
-      original_issue.update(labels: [project1_label_1, project1_label_2, group_label])
+      original_issue.update!(labels: [project1_label_1, project1_label_2, group_label])
 
       subject.execute
 
@@ -48,7 +48,7 @@ RSpec.describe Issuable::Clone::AttributesRewriter do
     it 'sets milestone to nil when old issue milestone is not in the new project' do
       milestone = create(:milestone, title: 'milestone', project: project1)
 
-      original_issue.update(milestone: milestone)
+      original_issue.update!(milestone: milestone)
 
       subject.execute
 
@@ -59,7 +59,7 @@ RSpec.describe Issuable::Clone::AttributesRewriter do
       milestone_project1 = create(:milestone, title: 'milestone', project: project1)
       milestone_project2 = create(:milestone, title: 'milestone', project: project2)
 
-      original_issue.update(milestone: milestone_project1)
+      original_issue.update!(milestone: milestone_project1)
 
       subject.execute
 
@@ -69,7 +69,7 @@ RSpec.describe Issuable::Clone::AttributesRewriter do
     it 'copies the milestone when old issue milestone is a group milestone' do
       milestone = create(:milestone, title: 'milestone', group: group)
 
-      original_issue.update(milestone: milestone)
+      original_issue.update!(milestone: milestone)
 
       subject.execute
 
@@ -85,7 +85,7 @@ RSpec.describe Issuable::Clone::AttributesRewriter do
       let!(:milestone2_project2) { create(:milestone, title: 'milestone2', project: project2) }
 
       before do
-        original_issue.update(milestone: milestone2_project1)
+        original_issue.update!(milestone: milestone2_project1)
 
         create_event(milestone1_project1)
         create_event(milestone2_project1)

@@ -1,4 +1,3 @@
-import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Home from '~/static_site_editor/pages/home.vue';
@@ -7,6 +6,7 @@ import EditArea from '~/static_site_editor/components/edit_area.vue';
 import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
 import submitContentChangesMutation from '~/static_site_editor/graphql/mutations/submit_content_changes.mutation.graphql';
+import hasSubmittedChangesMutation from '~/static_site_editor/graphql/mutations/has_submitted_changes.mutation.graphql';
 import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
 import { TRACKING_ACTION_INITIALIZE_EDITOR } from '~/static_site_editor/constants';
 
@@ -17,14 +17,13 @@ import {
   sourceContentTitle as title,
   sourcePath,
   username,
+  mergeRequestMeta,
   savedContentMeta,
   submitChangesError,
   trackingCategory,
 } from '../mock_data';
 
 const localVue = createLocalVue();
-
-localVue.use(Vuex);
 
 describe('static_site_editor/pages/home', () => {
   let wrapper;
@@ -33,6 +32,19 @@ describe('static_site_editor/pages/home', () => {
   let $router;
   let mutateMock;
   let trackingSpy;
+  const defaultAppData = {
+    isSupportedContent: true,
+    hasSubmittedChanges: false,
+    returnUrl,
+    project,
+    username,
+    sourcePath,
+  };
+  const hasSubmittedChangesMutationPayload = {
+    data: {
+      appData: { ...defaultAppData, hasSubmittedChanges: true },
+    },
+  };
 
   const buildApollo = (queries = {}) => {
     mutateMock = jest.fn();
@@ -64,7 +76,7 @@ describe('static_site_editor/pages/home', () => {
       },
       data() {
         return {
-          appData: { isSupportedContent: true, returnUrl, project, username, sourcePath },
+          appData: { ...defaultAppData },
           sourceContent: { title, content },
           ...data,
         };
@@ -152,8 +164,14 @@ describe('static_site_editor/pages/home', () => {
   });
 
   describe('when submitting changes fails', () => {
+    const setupMutateMock = () => {
+      mutateMock
+        .mockResolvedValueOnce(hasSubmittedChangesMutationPayload)
+        .mockRejectedValueOnce(new Error(submitChangesError));
+    };
+
     beforeEach(() => {
-      mutateMock.mockRejectedValue(new Error(submitChangesError));
+      setupMutateMock();
 
       buildWrapper();
       findEditArea().vm.$emit('submit', { content });
@@ -166,6 +184,8 @@ describe('static_site_editor/pages/home', () => {
     });
 
     it('retries submitting changes when retry button is clicked', () => {
+      setupMutateMock();
+
       findSubmitChangesError().vm.$emit('retry');
 
       expect(mutateMock).toHaveBeenCalled();
@@ -190,7 +210,11 @@ describe('static_site_editor/pages/home', () => {
     const newContent = `new ${content}`;
 
     beforeEach(() => {
-      mutateMock.mockResolvedValueOnce({ data: { submitContentChanges: savedContentMeta } });
+      mutateMock.mockResolvedValueOnce(hasSubmittedChangesMutationPayload).mockResolvedValueOnce({
+        data: {
+          submitContentChanges: savedContentMeta,
+        },
+      });
 
       buildWrapper();
       findEditArea().vm.$emit('submit', { content: newContent });
@@ -198,8 +222,19 @@ describe('static_site_editor/pages/home', () => {
       return wrapper.vm.$nextTick();
     });
 
+    it('dispatches hasSubmittedChanges mutation', () => {
+      expect(mutateMock).toHaveBeenNthCalledWith(1, {
+        mutation: hasSubmittedChangesMutation,
+        variables: {
+          input: {
+            hasSubmittedChanges: true,
+          },
+        },
+      });
+    });
+
     it('dispatches submitContentChanges mutation', () => {
-      expect(mutateMock).toHaveBeenCalledWith({
+      expect(mutateMock).toHaveBeenNthCalledWith(2, {
         mutation: submitContentChangesMutation,
         variables: {
           input: {
@@ -207,6 +242,8 @@ describe('static_site_editor/pages/home', () => {
             project,
             sourcePath,
             username,
+            images: undefined,
+            mergeRequestMeta,
           },
         },
       });

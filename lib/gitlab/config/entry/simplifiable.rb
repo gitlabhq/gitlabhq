@@ -19,7 +19,7 @@ module Gitlab
 
           entry = self.class.entry_class(strategy)
 
-          @subject = entry.new(config, metadata, &blk)
+          @subject = entry.new(config, **metadata, &blk)
 
           super(@subject)
         end

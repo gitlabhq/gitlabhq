@@ -56,7 +56,7 @@ RSpec.describe Ci::PipelineSchedule do
     subject { described_class.runnable_schedules }
 
     let!(:pipeline_schedule) do
-      Timecop.freeze(1.day.ago) do
+      travel_to(1.day.ago) do
         create(:ci_pipeline_schedule, :hourly)
       end
     end
@@ -118,7 +118,7 @@ RSpec.describe Ci::PipelineSchedule do
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, :every_minute) }
 
       it "updates next_run_at to the sidekiq worker's execution time" do
-        Timecop.freeze(Time.zone.parse("2019-06-01 12:18:00+0000")) do
+        travel_to(Time.zone.parse("2019-06-01 12:18:00+0000")) do
           expect(pipeline_schedule.next_run_at).to eq(cron_worker_next_run_at)
         end
       end

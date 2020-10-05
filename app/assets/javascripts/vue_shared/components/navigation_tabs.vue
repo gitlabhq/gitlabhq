@@ -58,7 +58,12 @@ export default {
         active: tab.isActive,
       }"
     >
-      <a :class="`js-${scope}-tab-${tab.scope}`" role="button" @click="onTabClick(tab)">
+      <a
+        :class="`js-${scope}-tab-${tab.scope}`"
+        :data-testid="`${scope}-tab-${tab.scope}`"
+        role="button"
+        @click="onTabClick(tab)"
+      >
         {{ tab.name }}
 
         <span v-if="shouldRenderBadge(tab.count)" class="badge badge-pill"> {{ tab.count }} </span>

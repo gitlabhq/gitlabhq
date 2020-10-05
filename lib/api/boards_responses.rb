@@ -45,7 +45,7 @@ module API
         def destroy_list(list)
           destroy_conditionally!(list) do |list|
             service = ::Boards::Lists::DestroyService.new(board_parent, current_user)
-            unless service.execute(list)
+            if service.execute(list).error?
               render_api_error!({ error: 'List could not be deleted!' }, 400)
             end
           end

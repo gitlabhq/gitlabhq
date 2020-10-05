@@ -20,7 +20,7 @@ module IntegrationsActions
     respond_to do |format|
       format.html do
         if saved
-          PropagateIntegrationWorker.perform_async(integration.id, false)
+          PropagateIntegrationWorker.perform_async(integration.id)
           redirect_to scoped_edit_integration_path(integration), notice: success_message
         else
           render 'shared/integrations/edit'

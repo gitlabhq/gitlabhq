@@ -36,14 +36,14 @@ class IssuePlacementWorker
     Gitlab::ErrorTracking.log_exception(e, issue_id: issue_id, project_id: project_id)
     IssueRebalancingWorker.perform_async(nil, project_id.presence || issue.project_id)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def find_issue(issue_id, project_id)
-    return Issue.id_in(issue_id).first if issue_id
+    return Issue.id_in(issue_id).take if issue_id
 
-    project = Project.id_in(project_id).first
+    project = Project.id_in(project_id).take
     return unless project
 
-    project.issues.first
+    project.issues.take
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

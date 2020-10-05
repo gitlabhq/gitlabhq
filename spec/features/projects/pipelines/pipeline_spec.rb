@@ -172,10 +172,17 @@ RSpec.describe 'Pipeline', :js do
       end
     end
 
-    it_behaves_like 'showing user status' do
-      let(:user_with_status) { pipeline.user }
+    describe 'pipelines details view' do
+      let!(:status) { create(:user_status, user: pipeline.user, emoji: 'smirk', message: 'Authoring this object') }
 
-      subject { visit project_pipeline_path(project, pipeline) }
+      it 'pipeline header shows the user status and emoji' do
+        visit project_pipeline_path(project, pipeline)
+
+        within '[data-testid="pipeline-header-content"]' do
+          expect(page).to have_selector("[data-testid='#{status.message}']")
+          expect(page).to have_selector("[data-name='#{status.emoji}']")
+        end
+      end
     end
 
     describe 'pipeline graph' do
@@ -400,7 +407,7 @@ RSpec.describe 'Pipeline', :js do
 
       context 'when retrying' do
         before do
-          find('[data-testid="retryButton"]').click
+          find('[data-testid="retryPipeline"]').click
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do
@@ -902,7 +909,7 @@ RSpec.describe 'Pipeline', :js do
 
       context 'when retrying' do
         before do
-          find('[data-testid="retryButton"]').click
+          find('[data-testid="retryPipeline"]').click
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do

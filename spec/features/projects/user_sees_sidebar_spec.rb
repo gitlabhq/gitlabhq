@@ -145,11 +145,11 @@ RSpec.describe 'Projects > User sees sidebar' do
         expect(page).to have_content 'Project'
         expect(page).to have_content 'Issues'
         expect(page).to have_content 'Wiki'
+        expect(page).to have_content 'Operations'
 
         expect(page).not_to have_content 'Repository'
         expect(page).not_to have_content 'CI / CD'
         expect(page).not_to have_content 'Merge Requests'
-        expect(page).not_to have_content 'Operations'
       end
     end
 

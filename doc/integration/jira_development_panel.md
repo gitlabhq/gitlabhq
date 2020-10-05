@@ -148,7 +148,7 @@ GitLab. No other error messages appear in any logs.
 
 If there was an issue with SSL/TLS, this error message will be generated.
 
-- The [GitLab Jira integration](jira.md) requires GitLab to connect to Jira. Any
+- The [GitLab Jira integration](../user/project/integrations/jira.md) requires GitLab to connect to Jira. Any
   TLS issues that arise from a private certificate authority or self-signed
   certificate [are resolved on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl.html#other-certificate-authorities),
   as GitLab is the TLS client.

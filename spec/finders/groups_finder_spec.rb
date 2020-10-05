@@ -161,5 +161,61 @@ RSpec.describe GroupsFinder do
         end
       end
     end
+
+    context 'with include parent group descendants' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:parent_group) { create(:group, :public) }
+      let_it_be(:public_subgroup) { create(:group, :public, parent: parent_group) }
+      let_it_be(:internal_sub_subgroup) { create(:group, :internal, parent: public_subgroup) }
+      let_it_be(:private_sub_subgroup) { create(:group, :private, parent: public_subgroup) }
+      let_it_be(:public_sub_subgroup) { create(:group, :public, parent: public_subgroup) }
+      let(:params) { { include_parent_descendants: true, parent: parent_group } }
+
+      context 'with nil parent' do
+        it 'returns all accessible groups' do
+          params[:parent] = nil
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            parent_group,
+            public_subgroup,
+            internal_sub_subgroup,
+            public_sub_subgroup
+          )
+        end
+      end
+
+      context 'without a user' do
+        it 'only returns the group public descendants' do
+          expect(described_class.new(nil, params).execute).to contain_exactly(
+            public_subgroup,
+            public_sub_subgroup
+          )
+        end
+      end
+
+      context 'when a user is present' do
+        it 'returns the group public and internal descendants' do
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            public_subgroup,
+            public_sub_subgroup,
+            internal_sub_subgroup
+          )
+        end
+      end
+
+      context 'when a parent group member is present' do
+        before do
+          parent_group.add_developer(user)
+        end
+
+        it 'returns all group descendants' do
+          expect(described_class.new(user, params).execute).to contain_exactly(
+            public_subgroup,
+            public_sub_subgroup,
+            internal_sub_subgroup,
+            private_sub_subgroup
+          )
+        end
+      end
+    end
   end
 end

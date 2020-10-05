@@ -36,7 +36,7 @@ RSpec.describe API::MavenPackages do
     context 'with jar file' do
       let_it_be(:package_file) { jar_file }
 
-      it_behaves_like 'a gitlab tracking event', described_class.name, 'pull_package'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     end
   end
 
@@ -571,7 +571,7 @@ RSpec.describe API::MavenPackages do
       context 'event tracking' do
         subject { upload_file_with_token(params) }
 
-        it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+        it_behaves_like 'a package tracking event', described_class.name, 'push_package'
       end
 
       it 'creates package and stores package file' do

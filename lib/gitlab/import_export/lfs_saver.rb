@@ -21,10 +21,10 @@ module Gitlab
             save_lfs_object(lfs_object)
           end
 
-          append_lfs_json_for_batch(batch) if write_lfs_json_enabled?
+          append_lfs_json_for_batch(batch)
         end
 
-        write_lfs_json if write_lfs_json_enabled?
+        write_lfs_json
 
         true
       rescue => e
@@ -34,10 +34,6 @@ module Gitlab
       end
 
       private
-
-      def write_lfs_json_enabled?
-        ::Feature.enabled?(:export_lfs_objects_projects, default_enabled: true)
-      end
 
       def save_lfs_object(lfs_object)
         if lfs_object.local_store?

@@ -229,7 +229,7 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         expect(convert_json(trace)).to eq([
           {
             offset: 0,
-            content: [{ text: "section_end:1:2<div>hello</div>" }],
+            content: [{ text: 'section_end:1:2<div>hello</div>' }],
             section: 'prepare-script',
             section_header: true
           },
@@ -329,6 +329,32 @@ RSpec.describe Gitlab::Ci::Ansi2json do
             ])
         end
       end
+
+      context 'with section options' do
+        let(:option_section_start) { "section_start:#{section_start_time.to_i}:#{section_name}[collapsed=true,unused_option=123]\r\033[0K"}
+
+        it 'provides section options when set' do
+          trace = "#{option_section_start}hello#{section_end}"
+          expect(convert_json(trace)).to eq([
+            {
+              offset: 0,
+              content: [{ text: 'hello' }],
+              section: 'prepare-script',
+              section_header: true,
+              section_options: {
+                'collapsed' => 'true',
+                'unused_option' => '123'
+              }
+            },
+            {
+              offset: 83,
+              content: [],
+              section: 'prepare-script',
+              section_duration: '01:03'
+            }
+          ])
+        end
+      end
     end
 
     describe 'incremental updates' do
@@ -339,7 +365,7 @@ RSpec.describe Gitlab::Ci::Ansi2json do
 
       context 'with split word' do
         let(:pre_text) { "\e[1mHello " }
-        let(:text) { "World" }
+        let(:text) { 'World' }
 
         let(:lines) do
           [
@@ -355,7 +381,7 @@ RSpec.describe Gitlab::Ci::Ansi2json do
 
       context 'with split word on second line' do
         let(:pre_text) { "Good\nmorning " }
-        let(:text) { "World" }
+        let(:text) { 'World' }
 
         let(:lines) do
           [
@@ -514,7 +540,7 @@ RSpec.describe Gitlab::Ci::Ansi2json do
     end
 
     describe 'trucates' do
-      let(:text) { "Hello World" }
+      let(:text) { 'Hello World' }
       let(:stream) { StringIO.new(text) }
       let(:subject) { described_class.convert(stream) }
 
@@ -522,11 +548,11 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         stream.seek(3, IO::SEEK_SET)
       end
 
-      it "returns truncated output" do
+      it 'returns truncated output' do
         expect(subject.truncated).to be_truthy
       end
 
-      it "does not append output" do
+      it 'does not append output' do
         expect(subject.append).to be_falsey
       end
     end

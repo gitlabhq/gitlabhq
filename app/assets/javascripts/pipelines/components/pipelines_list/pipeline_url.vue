@@ -98,7 +98,7 @@ export default {
         placement="top"
       >
         <template #title>
-          <div class="autodevops-title">
+          <div class="gl-font-weight-normal gl-line-height-normal">
             <gl-sprintf
               :message="
                 __(
@@ -112,12 +112,7 @@ export default {
             </gl-sprintf>
           </div>
         </template>
-        <gl-link
-          class="autodevops-link"
-          :href="autoDevopsHelpPath"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-        >
+        <gl-link :href="autoDevopsHelpPath" target="_blank" rel="noopener noreferrer nofollow">
           {{ __('Learn more about Auto DevOps') }}
         </gl-link>
       </gl-popover>

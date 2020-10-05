@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Specs::ParallelRunner do
+RSpec.describe QA::Specs::ParallelRunner do
   include Helpers::StubENV
 
   before do

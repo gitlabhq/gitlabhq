@@ -1,11 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 import ProjectFindFile from '~/project_find_file';
 import axios from '~/lib/utils/axios_utils';
 
-jest.mock('dompurify', () => ({
+jest.mock('~/lib/dompurify', () => ({
+  addHook: jest.fn(),
   sanitize: jest.fn(val => val),
 }));
 

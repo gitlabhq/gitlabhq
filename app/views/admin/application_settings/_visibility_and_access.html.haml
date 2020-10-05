@@ -66,5 +66,4 @@
       .form-group
         = f.label field_name, "#{type.upcase} SSH keys", class: 'label-bold'
         = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
-  .gl-display-flex.gl-justify-content-end
-    = f.submit _('Save changes'), class: "btn btn-success"
+  = f.submit _('Save changes'), class: "btn btn-success"

@@ -126,5 +126,9 @@ export const convertGraphQLResponse = response => {
     ...convertMilestones(r),
   }));
 
-  return { data: releases };
+  const paginationInfo = {
+    ...response.data.project.releases.pageInfo,
+  };
+
+  return { data: releases, paginationInfo };
 };

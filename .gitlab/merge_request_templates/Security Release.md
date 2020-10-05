@@ -21,7 +21,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
   - [ ] Assign to a reviewer and maintainer, per our [Code Review process].
   - [ ] Ensure it's approved according to our [Approval Guidelines].
   - [ ] Ensure it's approved by an AppSec engineer.
-    - If you're unsure who should approve, find the AppSec engineer associated to the issue in the [Canonical repository], or ask #sec-appsec on Slack.
+    - Please see the security release [Code reviews and Approvals](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#code-reviews-and-approvals) documentation for details on which AppSec team member to ping for approval.
     - Trigger the [`package-and-qa` build]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`)
   - [ ] Ensure it's approved by a maintainer.

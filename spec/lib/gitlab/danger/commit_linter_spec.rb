@@ -323,6 +323,16 @@ RSpec.describe Gitlab::Danger::CommitLinter do
         end
       end
 
+      context 'when message includes a value that is surrounded by backticks' do
+        let(:commit_message) { "A commit message `%20`" }
+
+        it 'does not add a problem' do
+          expect(commit_linter).not_to receive(:add_problem)
+
+          commit_linter.lint
+        end
+      end
+
       context 'when message includes a short reference' do
         [
           'A commit message to fix #1234',
@@ -336,7 +346,9 @@ RSpec.describe Gitlab::Danger::CommitLinter do
           'A commit message to fix gitlab-org/gitlab#1234',
           'A commit message to fix gitlab-org/gitlab!1234',
           'A commit message to fix gitlab-org/gitlab&1234',
-          'A commit message to fix gitlab-org/gitlab%1234'
+          'A commit message to fix gitlab-org/gitlab%1234',
+          'A commit message to fix "gitlab-org/gitlab%1234"',
+          'A commit message to fix `gitlab-org/gitlab%1234'
         ].each do |message|
           let(:commit_message) { message }
 

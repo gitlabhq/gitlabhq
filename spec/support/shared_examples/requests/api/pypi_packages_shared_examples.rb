@@ -52,7 +52,7 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
       context 'with correct params' do
         it_behaves_like 'package workhorse uploads'
         it_behaves_like 'creating pypi package files'
-        it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+        it_behaves_like 'a package tracking event', described_class.name, 'push_package'
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.shared_examples 'PyPi package versions' do |user_type, status, add_member 
     end
 
     it_behaves_like 'returning response status', status
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'list_package'
+    it_behaves_like 'a package tracking event', described_class.name, 'list_package'
   end
 end
 
@@ -136,7 +136,7 @@ RSpec.shared_examples 'PyPi package download' do |user_type, status, add_member 
     end
 
     it_behaves_like 'returning response status', status
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'pull_package'
+    it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
   end
 end
 

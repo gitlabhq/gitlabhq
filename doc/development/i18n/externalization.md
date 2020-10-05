@@ -432,7 +432,7 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
 - In JavaScript:
 
   ```javascript
-  import { sanitize } from 'dompurify';
+  import { sanitize } from '~/lib/dompurify';
 
   const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hour'), { ALLOWED_TAGS: [] }) };
 

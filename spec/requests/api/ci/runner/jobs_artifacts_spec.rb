@@ -227,10 +227,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'authorize uploading of an lsif artifact' do
-          before do
-            stub_feature_flags(code_navigation: job.project)
-          end
-
           it 'adds ProcessLsif header' do
             authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
 
@@ -248,32 +244,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect { authorize_artifacts_with_token_in_headers(artifact_type: :lsif) }
               .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(tracking_params) }
               .by(1)
-          end
-
-          context 'code_navigation feature flag is disabled' do
-            before do
-              stub_feature_flags(code_navigation: false)
-            end
-
-            it 'responds with a forbidden error' do
-              authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
-
-              aggregate_failures do
-                expect(response).to have_gitlab_http_status(:forbidden)
-                expect(json_response['ProcessLsif']).to be_falsy
-              end
-            end
-
-            it 'does not track code_intelligence usage ping' do
-              tracking_params = {
-                event_names: 'i_source_code_code_intelligence',
-                start_date: Date.yesterday,
-                end_date: Date.today
-              }
-
-              expect { authorize_artifacts_with_token_in_headers(artifact_type: :lsif) }
-                .not_to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(tracking_params) }
-            end
           end
         end
 

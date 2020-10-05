@@ -44,20 +44,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
         expect(subject[:merge_pipeline]).to eq(pipeline_payload)
       end
 
-      context 'when merge_request_short_pipeline_serializer is disabled' do
-        it 'returns detailed info about pipeline' do
-          stub_feature_flags(merge_request_short_pipeline_serializer: false)
-
-          pipeline.reload
-          pipeline_payload =
-            PipelineDetailsEntity
-              .represent(pipeline, request: request)
-              .as_json
-
-          expect(subject[:merge_pipeline]).to eq(pipeline_payload)
-        end
-      end
-
       context 'when user cannot read pipelines on target project' do
         before do
           project.add_guest(user)
@@ -236,21 +222,16 @@ RSpec.describe MergeRequestPollWidgetEntity do
       context 'when is up to date' do
         let(:req) { double('request', current_user: user, project: project) }
 
-        it 'returns pipeline' do
-          pipeline_payload =
-            MergeRequests::PipelineEntity
-              .represent(pipeline, request: req)
-              .as_json
-
-          expect(subject[:pipeline]).to eq(pipeline_payload)
+        it 'does not return pipeline' do
+          expect(subject[:pipeline]).to be_nil
         end
 
-        context 'when merge_request_short_pipeline_serializer is disabled' do
+        context 'when merge_request_cached_pipeline_serializer is disabled' do
           it 'returns detailed info about pipeline' do
-            stub_feature_flags(merge_request_short_pipeline_serializer: false)
+            stub_feature_flags(merge_request_cached_pipeline_serializer: false)
 
             pipeline_payload =
-              PipelineDetailsEntity
+              MergeRequests::PipelineEntity
                 .represent(pipeline, request: req)
                 .as_json
 
@@ -275,10 +256,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
     context 'when user does not have access to pipelines' do
       let(:result) { false }
       let(:req) { double('request', current_user: user, project: project) }
-
-      it 'does not have pipeline' do
-        expect(subject[:pipeline]).to eq(nil)
-      end
 
       it 'does not return ci_status' do
         expect(subject[:ci_status]).to eq(nil)

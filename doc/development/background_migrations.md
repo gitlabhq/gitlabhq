@@ -1,4 +1,11 @@
-# Background Migrations
+---
+type: reference, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+---
+
+# Background migrations
 
 Background migrations can be used to perform data migrations that would
 otherwise take a very long time (hours, days, years, etc) to complete. For
@@ -90,6 +97,20 @@ bulk_migrate_async(
   [['BackgroundMigrationClassName', [1]],
    ['BackgroundMigrationClassName', [2]]]
 )
+```
+
+Note that this will queue a Sidekiq job immediately: if you have a large number
+of records, this may not be what you want. You can use the function
+`queue_background_migration_jobs_by_range_at_intervals` to split the job into
+batches:
+
+```ruby
+queue_background_migration_jobs_by_range_at_intervals(
+  ClassName,
+  BackgroundMigrationClassName,
+  2.minutes,
+  batch_size: 10_000
+  )
 ```
 
 You'll also need to make sure that newly created data is either migrated, or

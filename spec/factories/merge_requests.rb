@@ -286,5 +286,7 @@ FactoryBot.define do
         merge_request.update!(labels: evaluator.labels)
       end
     end
+
+    factory :merge_request_without_merge_request_diff, class: 'MergeRequestWithoutMergeRequestDiff'
   end
 end

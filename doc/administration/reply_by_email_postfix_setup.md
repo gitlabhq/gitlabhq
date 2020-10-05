@@ -71,7 +71,7 @@ The instructions make the assumption that you will be using the email address `i
    sudo postfix start
    ```
 
-1. Send the new `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
+1. Send the new `incoming` user an email to test SMTP, by entering the following into the SMTP prompt:
 
    ```plaintext
    ehlo localhost
@@ -251,7 +251,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
       If you get a `Connection refused` error instead, make sure your firewall is set up to allow inbound traffic on port 25.
 
-   1. Send the `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
+   1. Send the `incoming` user an email to test SMTP, by entering the following into the SMTP prompt:
 
       ```plaintext
       ehlo gitlab.example.com

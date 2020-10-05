@@ -1,0 +1,7 @@
+---
+name: debian_packages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/5835
+group: group::package
+type: development
+default_enabled: false

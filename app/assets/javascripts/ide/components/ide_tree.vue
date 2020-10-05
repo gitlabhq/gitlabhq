@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { modalTypes } from '../constants';
+import { modalTypes, viewerTypes } from '../constants';
 import IdeTreeList from './ide_tree_list.vue';
 import Upload from './new_dropdown/upload.vue';
 import NewEntryButton from './new_dropdown/button.vue';
@@ -18,15 +18,10 @@ export default {
     ...mapGetters(['currentProject', 'currentTree', 'activeFile', 'getUrlForPath']),
   },
   mounted() {
-    if (!this.activeFile) return;
-
-    if (this.activeFile.pending && !this.activeFile.deleted) {
-      this.$router.push(this.getUrlForPath(this.activeFile.path), () => {
-        this.updateViewer('editor');
-      });
-    } else if (this.activeFile.deleted) {
-      this.resetOpenFiles();
-    }
+    this.initialize();
+  },
+  activated() {
+    this.initialize();
   },
   methods: {
     ...mapActions(['updateViewer', 'createTempEntry', 'resetOpenFiles']),
@@ -36,12 +31,27 @@ export default {
     createNewFolder() {
       this.$refs.newModal.open(modalTypes.tree);
     },
+    initialize() {
+      this.$nextTick(() => {
+        this.updateViewer(viewerTypes.edit);
+      });
+
+      if (!this.activeFile) return;
+
+      if (this.activeFile.pending && !this.activeFile.deleted) {
+        this.$router.push(this.getUrlForPath(this.activeFile.path), () => {
+          this.updateViewer(viewerTypes.edit);
+        });
+      } else if (this.activeFile.deleted) {
+        this.resetOpenFiles();
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <ide-tree-list viewer-type="editor">
+  <ide-tree-list>
     <template #header>
       {{ __('Edit') }}
       <div class="ide-tree-actions ml-auto d-flex">

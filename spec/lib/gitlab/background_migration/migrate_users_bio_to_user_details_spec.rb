@@ -82,21 +82,4 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateUsersBioToUserDetails, :migra
 
     expect(user_detail).to be_nil
   end
-
-  context 'when `migrate_bio_to_user_details` feature flag is off' do
-    before do
-      stub_feature_flags(migrate_bio_to_user_details: false)
-    end
-
-    it 'does nothing' do
-      already_existing_user_details = user_details.where(user_id: [
-        user_has_different_details.id,
-        user_already_has_details.id
-      ])
-
-      subject
-
-      expect(user_details.all).to match_array(already_existing_user_details)
-    end
-  end
 end

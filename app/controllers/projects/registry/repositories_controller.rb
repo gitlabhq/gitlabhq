@@ -3,6 +3,8 @@
 module Projects
   module Registry
     class RepositoriesController < ::Projects::Registry::ApplicationController
+      include PackagesHelper
+
       before_action :authorize_update_container_image!, only: [:destroy]
       before_action :ensure_root_container_repository!, only: [:index]
 
@@ -13,7 +15,7 @@ module Projects
             @images = ContainerRepositoriesFinder.new(user: current_user, subject: project, params: params.slice(:name))
                                                  .execute
 
-            track_event(:list_repositories)
+            track_package_event(:list_repositories, :container)
 
             serializer = ContainerRepositoriesSerializer
               .new(project: project, current_user: current_user)
@@ -31,7 +33,7 @@ module Projects
       def destroy
         image.delete_scheduled!
         DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id) # rubocop:disable CodeReuse/Worker
-        track_event(:delete_repository)
+        track_package_event(:delete_repository, :container)
 
         respond_to do |format|
           format.json { head :no_content }

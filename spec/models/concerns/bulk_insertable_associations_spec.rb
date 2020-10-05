@@ -187,7 +187,7 @@ RSpec.describe BulkInsertableAssociations do
         it 'invalidates the parent and returns false' do
           build_invalid_items(parent: parent)
 
-          expect(save_with_bulk_inserts(parent, bangify: false)).to be false
+          expect(BulkInsertableAssociations.with_bulk_insert { parent.save }).to be false # rubocop:disable Rails/SaveBang
           expect(parent.errors[:bulk_foos].size).to eq(1)
 
           expect(BulkFoo.count).to eq(0)
@@ -211,8 +211,8 @@ RSpec.describe BulkInsertableAssociations do
 
   private
 
-  def save_with_bulk_inserts(entity, bangify: true)
-    BulkInsertableAssociations.with_bulk_insert { bangify ? entity.save! : entity.save }
+  def save_with_bulk_inserts(entity)
+    BulkInsertableAssociations.with_bulk_insert { entity.save! }
   end
 
   def build_items(parent:, relation: :bulk_foos, count: 10)

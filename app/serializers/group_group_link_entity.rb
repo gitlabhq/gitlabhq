@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
 class GroupGroupLinkEntity < Grape::Entity
+  include RequestAwareEntity
+
   expose :id
   expose :created_at
   expose :expires_at do |group_link|
     group_link.expires_at&.to_time
+  end
+
+  expose :can_update do |group_link|
+    can_manage?(group_link)
+  end
+
+  expose :can_remove do |group_link|
+    can_manage?(group_link)
   end
 
   expose :access_level do
@@ -22,5 +32,15 @@ class GroupGroupLinkEntity < Grape::Entity
     end
 
     expose :shared_with_group, merge: true, using: GroupBasicEntity
+  end
+
+  private
+
+  def current_user
+    options[:current_user]
+  end
+
+  def can_manage?(group_link)
+    can?(current_user, :admin_group_member, group_link.shared_group)
   end
 end

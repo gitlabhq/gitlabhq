@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 
 import UsersCache from './lib/utils/users_cache';
 import UserPopover from './vue_shared/components/user_popover/user_popover.vue';

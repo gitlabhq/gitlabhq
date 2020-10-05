@@ -1,15 +1,16 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import * as Sentry from '@sentry/browser';
 import {
   GlAlert,
   GlBadge,
   GlIcon,
+  GlLink,
   GlLoadingIcon,
   GlSprintf,
   GlTabs,
   GlTab,
   GlButton,
+  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import alertQuery from '../graphql/queries/details.query.graphql';
@@ -28,6 +29,7 @@ import SystemNote from './system_notes/system_note.vue';
 import AlertSidebar from './alert_sidebar.vue';
 import AlertMetrics from './alert_metrics.vue';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import AlertSummaryRow from './alert_summary_row.vue';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');
 
@@ -38,6 +40,9 @@ export default {
     ),
     reportedAt: s__('AlertManagement|Reported %{when}'),
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   severityLabels: ALERTS_SEVERITY_LABELS,
   tabsConfig: [
@@ -56,9 +61,11 @@ export default {
   ],
   components: {
     AlertDetailsTable,
+    AlertSummaryRow,
     GlBadge,
     GlAlert,
     GlIcon,
+    GlLink,
     GlLoadingIcon,
     GlSprintf,
     GlTab,
@@ -74,15 +81,12 @@ export default {
       default: '',
     },
     alertId: {
-      type: String,
       default: '',
     },
     projectId: {
-      type: String,
       default: '',
     },
     projectIssuesPath: {
-      type: String,
       default: '',
     },
   },
@@ -211,7 +215,7 @@ export default {
 <template>
   <div>
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="dismissError">
-      <p v-html="sidebarErrorMessage || $options.i18n.errorMsg"></p>
+      <p v-safe-html="sidebarErrorMessage || $options.i18n.errorMsg"></p>
     </gl-alert>
     <gl-alert
       v-if="createIncidentError"
@@ -283,54 +287,66 @@ export default {
       </div>
       <gl-tabs v-if="alert" v-model="currentTabIndex" data-testid="alertDetailsTabs">
         <gl-tab :data-testid="$options.tabsConfig[0].id" :title="$options.tabsConfig[0].title">
-          <div v-if="alert.severity" class="gl-mt-3 gl-mb-5 gl-display-flex">
-            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
-              {{ s__('AlertManagement|Severity') }}:
-            </div>
-            <div class="gl-pl-2" data-testid="severity">
-              <span>
-                <gl-icon
-                  class="gl-vertical-align-middle"
-                  :size="12"
-                  :name="`severity-${alert.severity.toLowerCase()}`"
-                  :class="`icon-${alert.severity.toLowerCase()}`"
-                />
-              </span>
+          <alert-summary-row v-if="alert.severity" :label="`${s__('AlertManagement|Severity')}:`">
+            <span data-testid="severity">
+              <gl-icon
+                class="gl-vertical-align-middle"
+                :size="12"
+                :name="`severity-${alert.severity.toLowerCase()}`"
+                :class="`icon-${alert.severity.toLowerCase()}`"
+              />
               {{ $options.severityLabels[alert.severity] }}
-            </div>
-          </div>
-          <div v-if="alert.startedAt" class="gl-my-5 gl-display-flex">
-            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
-              {{ s__('AlertManagement|Start time') }}:
-            </div>
-            <div class="gl-pl-2">
-              <time-ago-tooltip data-testid="startTimeItem" :time="alert.startedAt" />
-            </div>
-          </div>
-          <div v-if="alert.eventCount" class="gl-my-5 gl-display-flex">
-            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
-              {{ s__('AlertManagement|Events') }}:
-            </div>
-            <div class="gl-pl-2" data-testid="eventCount">{{ alert.eventCount }}</div>
-          </div>
-          <div v-if="alert.monitoringTool" class="gl-my-5 gl-display-flex">
-            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
-              {{ s__('AlertManagement|Tool') }}:
-            </div>
-            <div class="gl-pl-2" data-testid="monitoringTool">{{ alert.monitoringTool }}</div>
-          </div>
-          <div v-if="alert.service" class="gl-my-5 gl-display-flex">
-            <div class="bold gl-w-13 gl-text-right gl-pr-3">
-              {{ s__('AlertManagement|Service') }}:
-            </div>
-            <div class="gl-pl-2" data-testid="service">{{ alert.service }}</div>
-          </div>
-          <div v-if="alert.runbook" class="gl-my-5 gl-display-flex">
-            <div class="bold gl-w-13 gl-text-right gl-pr-3">
-              {{ s__('AlertManagement|Runbook') }}:
-            </div>
-            <div class="gl-pl-2" data-testid="runbook">{{ alert.runbook }}</div>
-          </div>
+            </span>
+          </alert-summary-row>
+          <alert-summary-row
+            v-if="alert.environment"
+            :label="`${s__('AlertManagement|Environment')}:`"
+          >
+            <gl-link
+              v-if="alert.environmentUrl"
+              class="gl-display-inline-block"
+              data-testid="environmentUrl"
+              :href="alert.environmentUrl"
+              target="_blank"
+            >
+              {{ alert.environment }}
+            </gl-link>
+            <span v-else data-testid="environment">{{ alert.environment }}</span>
+          </alert-summary-row>
+          <alert-summary-row
+            v-if="alert.startedAt"
+            :label="`${s__('AlertManagement|Start time')}:`"
+          >
+            <time-ago-tooltip data-testid="startTimeItem" :time="alert.startedAt" />
+          </alert-summary-row>
+          <alert-summary-row
+            v-if="alert.eventCount"
+            :label="`${s__('AlertManagement|Events')}:`"
+            data-testid="eventCount"
+          >
+            {{ alert.eventCount }}
+          </alert-summary-row>
+          <alert-summary-row
+            v-if="alert.monitoringTool"
+            :label="`${s__('AlertManagement|Tool')}:`"
+            data-testid="monitoringTool"
+          >
+            {{ alert.monitoringTool }}
+          </alert-summary-row>
+          <alert-summary-row
+            v-if="alert.service"
+            :label="`${s__('AlertManagement|Service')}:`"
+            data-testid="service"
+          >
+            {{ alert.service }}
+          </alert-summary-row>
+          <alert-summary-row
+            v-if="alert.runbook"
+            :label="`${s__('AlertManagement|Runbook')}:`"
+            data-testid="runbook"
+          >
+            {{ alert.runbook }}
+          </alert-summary-row>
           <alert-details-table :alert="alert" :loading="loading" />
         </gl-tab>
         <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">

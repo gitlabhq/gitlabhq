@@ -145,6 +145,23 @@ describe('Board Store Mutations', () => {
     expectNotImplemented(mutations.RECEIVE_REMOVE_LIST_ERROR);
   });
 
+  describe('RESET_ISSUES', () => {
+    it('should remove issues from issuesByListId state', () => {
+      const issuesByListId = {
+        'gid://gitlab/List/1': [mockIssue.id],
+      };
+
+      state = {
+        ...state,
+        issuesByListId,
+      };
+
+      mutations[types.RESET_ISSUES](state);
+
+      expect(state.issuesByListId).toEqual({ 'gid://gitlab/List/1': [] });
+    });
+  });
+
   describe('RECEIVE_ISSUES_FOR_LIST_SUCCESS', () => {
     it('updates issuesByListId and issues on state', () => {
       const listIssues = {
@@ -156,7 +173,6 @@ describe('Board Store Mutations', () => {
 
       state = {
         ...state,
-        isLoadingIssues: true,
         issuesByListId: {},
         issues: {},
         boardLists: mockListsWithModel,
@@ -169,16 +185,6 @@ describe('Board Store Mutations', () => {
 
       expect(state.issuesByListId).toEqual(listIssues);
       expect(state.issues).toEqual(issues);
-    });
-  });
-
-  describe('REQUEST_ISSUES_FOR_ALL_LISTS', () => {
-    it('sets isLoadingIssues to true', () => {
-      expect(state.isLoadingIssues).toBe(false);
-
-      mutations.REQUEST_ISSUES_FOR_ALL_LISTS(state);
-
-      expect(state.isLoadingIssues).toBe(true);
     });
   });
 
@@ -200,49 +206,8 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS', () => {
-    it('sets isLoadingIssues to false and updates issuesByListId object', () => {
-      const listIssues = {
-        'gid://gitlab/List/1': [mockIssue.id],
-      };
-      const issues = {
-        '1': mockIssue,
-      };
-
-      state = {
-        ...state,
-        isLoadingIssues: true,
-        issuesByListId: {},
-        issues: {},
-      };
-
-      mutations.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS(state, { listData: listIssues, issues });
-
-      expect(state.isLoadingIssues).toBe(false);
-      expect(state.issuesByListId).toEqual(listIssues);
-      expect(state.issues).toEqual(issues);
-    });
-  });
-
   describe('REQUEST_ADD_ISSUE', () => {
     expectNotImplemented(mutations.REQUEST_ADD_ISSUE);
-  });
-
-  describe('RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE', () => {
-    it('sets isLoadingIssues to false and sets error message', () => {
-      state = {
-        ...state,
-        isLoadingIssues: true,
-        error: undefined,
-      };
-
-      mutations.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE(state);
-
-      expect(state.isLoadingIssues).toBe(false);
-      expect(state.error).toEqual(
-        'An error occurred while fetching the board issues. Please reload the page.',
-      );
-    });
   });
 
   describe('UPDATE_ISSUE_BY_ID', () => {
@@ -254,7 +219,6 @@ describe('Board Store Mutations', () => {
     beforeEach(() => {
       state = {
         ...state,
-        isLoadingIssues: true,
         error: undefined,
         issues: {
           ...issue,

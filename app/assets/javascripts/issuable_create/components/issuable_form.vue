@@ -71,6 +71,7 @@ export default {
           :markdown-docs-path="descriptionHelpPath"
           :add-spacing-classes="false"
           :show-suggest-popover="true"
+          :textarea-value="issuableDescription"
         >
           <textarea
             id="issuable-description"

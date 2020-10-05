@@ -26,7 +26,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::QueueDurationLogger do
       end
 
       it 'returns the correct duration in seconds' do
-        Timecop.freeze(start_time) do
+        travel_to(start_time) do
           subject.before
 
           expect(subject.parameters(mock_request, nil)).to eq( { 'queue_duration_s': 1.hour.to_f })

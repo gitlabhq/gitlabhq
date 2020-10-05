@@ -14,8 +14,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   value, so the burndown chart considers them as closed on the milestone
 >  `start_date`. In that case, a warning will be displayed.
 
-## Overview
-
 Burndown Charts are visual representations of the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)

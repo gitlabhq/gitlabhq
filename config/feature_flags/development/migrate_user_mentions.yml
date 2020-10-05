@@ -1,7 +1,7 @@
 ---
 name: migrate_user_mentions
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34378
 rollout_issue_url: 
-group: 
+group: group::project management
 type: development
 default_enabled: true

@@ -2,6 +2,7 @@
 
 class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
+  include ShowInheritedLabelsChecker
 
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update, :destroy]
@@ -12,8 +13,9 @@ class Groups::LabelsController < Groups::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @labels = GroupLabelsFinder
-          .new(current_user, @group, params.merge(sort: sort)).execute
+        # at group level we do not want to list project labels,
+        # we only want `only_group_labels = false` when pulling labels for label filter dropdowns, fetched through json
+        @labels = available_labels(params.merge(only_group_labels: true)).page(params[:page])
       end
       format.json do
         render json: LabelSerializer.new.represent_appearance(available_labels)
@@ -60,13 +62,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def destroy
     @label.destroy
-
-    respond_to do |format|
-      format.html do
-        redirect_to group_labels_path(@group), status: :found, notice: "#{@label.name} deleted permanently"
-      end
-      format.js
-    end
+    redirect_to group_labels_path(@group), status: :found, notice: "#{@label.name} deleted permanently"
   end
 
   protected
@@ -80,7 +76,7 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def label
-    @label ||= @group.labels.find(params[:id])
+    @label ||= available_labels(params.merge(only_group_labels: true)).find(params[:id])
   end
   alias_method :subscribable_resource, :label
 
@@ -108,15 +104,17 @@ class Groups::LabelsController < Groups::ApplicationController
     session[:previous_labels_path] = URI(request.referer || '').path
   end
 
-  def available_labels
+  def available_labels(options = params)
     @available_labels ||=
       LabelsFinder.new(
         current_user,
         group_id: @group.id,
-        only_group_labels: params[:only_group_labels],
-        include_ancestor_groups: params[:include_ancestor_groups],
-        include_descendant_groups: params[:include_descendant_groups],
-        search: params[:search]).execute
+        only_group_labels: options[:only_group_labels],
+        include_ancestor_groups: show_inherited_labels?(params[:include_ancestor_groups]),
+        sort: sort,
+        subscribed: options[:subscribed],
+        include_descendant_groups: options[:include_descendant_groups],
+        search: options[:search]).execute
   end
 
   def sort

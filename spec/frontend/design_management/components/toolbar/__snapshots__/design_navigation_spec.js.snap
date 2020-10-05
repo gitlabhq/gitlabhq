@@ -4,15 +4,16 @@ exports[`Design management pagination component hides components when designs ar
 
 exports[`Design management pagination component renders navigation buttons 1`] = `
 <div
-  class="d-flex align-items-center"
+  class="gl-display-flex gl-align-items-center"
 >
   
   0 of 2
   
   <gl-button-group-stub
-    class="ml-3 mr-3"
+    class="gl-mx-5"
   >
     <gl-button-stub
+      buttontextclasses=""
       category="primary"
       class="js-previous-design"
       disabled="true"
@@ -23,6 +24,7 @@ exports[`Design management pagination component renders navigation buttons 1`] =
     />
      
     <gl-button-stub
+      buttontextclasses=""
       category="primary"
       class="js-next-design"
       icon="angle-right"

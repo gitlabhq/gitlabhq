@@ -26,7 +26,7 @@ export default {
   viewer: {
     name: 'text',
     error: null,
-    collapsed: false,
+    automaticallyCollapsed: false,
   },
   added_lines: 0,
   removed_lines: 0,

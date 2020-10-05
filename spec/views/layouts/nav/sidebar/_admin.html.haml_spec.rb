@@ -92,12 +92,30 @@ RSpec.describe 'layouts/nav/sidebar/_admin' do
   end
 
   context 'on settings' do
+    let(:gitlab_com?) { false }
+
     before do
+      allow(::Gitlab).to receive(:com?) { gitlab_com? }
+
       render
     end
 
     it 'includes General link' do
       expect(rendered).to have_link('General', href: general_admin_application_settings_path)
+    end
+
+    context 'when GitLab.com' do
+      let(:gitlab_com?) { true }
+
+      it 'does not include Integrations link' do
+        expect(rendered).not_to have_link('Integrations', href: integrations_admin_application_settings_path)
+      end
+    end
+
+    context 'when not GitLab.com' do
+      it 'includes Integrations link' do
+        expect(rendered).to have_link('Integrations', href: integrations_admin_application_settings_path)
+      end
     end
 
     context 'when GitLab FOSS' do

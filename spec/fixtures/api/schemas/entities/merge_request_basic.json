@@ -1,6 +1,7 @@
 {
   "type": "object",
   "properties" : {
+    "title": { "type": "string" },
     "state": { "type": "string" },
     "merge_status": { "type": "string" },
     "source_branch_exists": { "type": "boolean" },

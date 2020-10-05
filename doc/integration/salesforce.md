@@ -64,7 +64,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    - { name: 'salesforce',
        app_id: 'SALESFORCE_CLIENT_ID',
        app_secret: 'SALESFORCE_CLIENT_SECRET'
-     }
+   }
    ```
 
 1. Change `SALESFORCE_CLIENT_ID` to the Consumer Key from the Salesforce connected application page.

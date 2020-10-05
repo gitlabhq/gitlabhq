@@ -29,7 +29,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
 
     listModule.state.graphQlPageInfo = pageInfo;
 
-    listModule.actions.fetchReleasesGraphQl = jest.fn();
+    listModule.actions.fetchReleases = jest.fn();
 
     wrapper = mount(ReleasesPaginationGraphql, {
       store: createStore({
@@ -141,8 +141,8 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
         findNextButton().trigger('click');
       });
 
-      it('calls fetchReleasesGraphQl with the correct after cursor', () => {
-        expect(listModule.actions.fetchReleasesGraphQl.mock.calls).toEqual([
+      it('calls fetchReleases with the correct after cursor', () => {
+        expect(listModule.actions.fetchReleases.mock.calls).toEqual([
           [expect.anything(), { after: cursors.endCursor }],
         ]);
       });
@@ -159,8 +159,8 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
         findPrevButton().trigger('click');
       });
 
-      it('calls fetchReleasesGraphQl with the correct before cursor', () => {
-        expect(listModule.actions.fetchReleasesGraphQl.mock.calls).toEqual([
+      it('calls fetchReleases with the correct before cursor', () => {
+        expect(listModule.actions.fetchReleases.mock.calls).toEqual([
           [expect.anything(), { before: cursors.startCursor }],
         ]);
       });

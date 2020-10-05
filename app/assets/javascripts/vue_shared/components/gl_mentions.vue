@@ -1,5 +1,5 @@
 <script>
-import { escape } from 'lodash';
+import { escape, last } from 'lodash';
 import Tribute from 'tributejs';
 import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from '~/lib/utils/common_utils';
@@ -11,6 +11,8 @@ const AutoComplete = {
   Members: 'members',
   MergeRequests: 'mergeRequests',
 };
+
+const groupType = 'Group'; // eslint-disable-line @gitlab/require-i18n-strings
 
 function doesCurrentLineStartWith(searchString, fullText, selectionStart) {
   const currentLineNumber = fullText.slice(0, selectionStart).split('\n').length;
@@ -74,30 +76,40 @@ const autoCompleteMap = {
       return this.members;
     },
     menuItemTemplate({ original }) {
-      const rectAvatarClass = original.type === 'Group' ? 'rect-avatar' : '';
+      const commonClasses = 'gl-avatar gl-avatar-s24 gl-flex-shrink-0';
+      const noAvatarClasses = `${commonClasses} gl-rounded-small
+        gl-display-flex gl-align-items-center gl-justify-content-center`;
 
-      const avatarClasses = `avatar avatar-inline center s26 ${rectAvatarClass}
-        gl-display-inline-flex! gl-align-items-center gl-justify-content-center`;
+      const avatar = original.avatar_url
+        ? `<img class="${commonClasses} gl-avatar-circle" src="${original.avatar_url}" alt="" />`
+        : `<div class="${noAvatarClasses}" aria-hidden="true">
+            ${original.username.charAt(0).toUpperCase()}</div>`;
 
-      const avatarTag = original.avatar_url
-        ? `<img
-            src="${original.avatar_url}"
-            alt="${original.username}'s avatar"
-            class="${avatarClasses}"/>`
-        : `<div class="${avatarClasses}">${original.username.charAt(0).toUpperCase()}</div>`;
+      let displayName = original.name;
+      let parentGroupOrUsername = `@${original.username}`;
 
-      const name = escape(original.name);
+      if (original.type === groupType) {
+        const splitName = original.name.split(' / ');
+        displayName = splitName.pop();
+        parentGroupOrUsername = splitName.pop();
+      }
 
       const count = original.count && !original.mentionsDisabled ? ` (${original.count})` : '';
 
-      const icon = original.mentionsDisabled
-        ? spriteIcon('notifications-off', 's16 gl-vertical-align-middle gl-ml-3')
+      const disabledMentionsIcon = original.mentionsDisabled
+        ? spriteIcon('notifications-off', 's16 gl-ml-3')
         : '';
 
-      return `${avatarTag}
-        ${original.username}
-        <small class="gl-text-small gl-font-weight-normal gl-reset-color">${name}${count}</small>
-        ${icon}`;
+      return `
+        <div class="gl-display-flex gl-align-items-center">
+          ${avatar}
+          <div class="gl-font-sm gl-line-height-normal gl-ml-3">
+            <div>${escape(displayName)}${count}</div>
+            <div class="gl-text-gray-700">${escape(parentGroupOrUsername)}</div>
+          </div>
+          ${disabledMentionsIcon}
+        </div>
+      `;
     },
   },
   [AutoComplete.MergeRequests]: {
@@ -134,7 +146,8 @@ export default {
         {
           trigger: '@',
           fillAttr: 'username',
-          lookup: value => value.name + value.username,
+          lookup: value =>
+            value.type === groupType ? last(value.name.split(' / ')) : value.name + value.username,
           menuItemTemplate: autoCompleteMap[AutoComplete.Members].menuItemTemplate,
           values: this.getValues(AutoComplete.Members),
         },

@@ -31,10 +31,7 @@ describe('DeploymentAction component', () => {
       wrapper.destroy();
     }
 
-    wrapper = mount(DeploymentActions, {
-      ...options,
-      provide: { glFeatures: { deployFromFooter: true } },
-    });
+    wrapper = mount(DeploymentActions, options);
   };
 
   const findStopButton = () => wrapper.find('.js-stop-env');

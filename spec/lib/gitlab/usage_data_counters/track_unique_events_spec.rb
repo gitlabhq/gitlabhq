@@ -8,11 +8,11 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueEvents, :clean_gitlab_redis
   let(:time) { Time.zone.now }
 
   def track_event(params)
-    track_unique_events.track_event(params)
+    track_unique_events.track_event(**params)
   end
 
   def count_unique(params)
-    track_unique_events.count_unique_events(params)
+    track_unique_events.count_unique_events(**params)
   end
 
   context 'tracking an event' do

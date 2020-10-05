@@ -1,0 +1,5 @@
+---
+title: Do not show retried builds in the MR code coverage
+merge_request: 42402
+author: Simon Lenz @koala7
+type: fixed

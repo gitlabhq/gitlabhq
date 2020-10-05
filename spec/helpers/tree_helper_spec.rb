@@ -178,7 +178,7 @@ RSpec.describe TreeHelper do
 
     it 'returns a list of attributes related to the project' do
       expect(subject).to include(
-        ide_base_path: project.full_path,
+        web_ide_url_data: { path: project.full_path, is_fork: false },
         needs_to_fork: false,
         show_web_ide_button: true,
         show_gitpod_button: false,
@@ -200,9 +200,9 @@ RSpec.describe TreeHelper do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'includes ide_base_path: forked_project.full_path' do
+      it 'includes web_ide_url_data: forked_project.full_path' do
         expect(subject).to include(
-          ide_base_path: forked_project.full_path
+          web_ide_url_data: { path: forked_project.full_path, is_fork: true }
         )
       end
     end
@@ -216,9 +216,9 @@ RSpec.describe TreeHelper do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'includes ide_base_path: project.full_path' do
+      it 'includes web_ide_url_data: project.full_path' do
         expect(subject).to include(
-          ide_base_path: project.full_path
+          web_ide_url_data: { path: project.full_path, is_fork: false }
         )
       end
     end

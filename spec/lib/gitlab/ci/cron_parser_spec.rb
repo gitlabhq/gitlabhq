@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Ci::CronParser do
 
         context 'when PST (Pacific Standard Time)' do
           it 'converts time in server time zone' do
-            Timecop.freeze(Time.utc(2017, 1, 1)) do
+            travel_to(Time.utc(2017, 1, 1)) do
               expect(subject.hour).to eq(hour_in_utc)
             end
           end
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Ci::CronParser do
 
         context 'when PDT (Pacific Daylight Time)' do
           it 'converts time in server time zone' do
-            Timecop.freeze(Time.utc(2017, 6, 1)) do
+            travel_to(Time.utc(2017, 6, 1)) do
               expect(subject.hour).to eq(hour_in_utc)
             end
           end
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Ci::CronParser do
 
         context 'when CET (Central European Time)' do
           it 'converts time in server time zone' do
-            Timecop.freeze(Time.utc(2017, 1, 1)) do
+            travel_to(Time.utc(2017, 1, 1)) do
               expect(subject.hour).to eq(hour_in_utc)
             end
           end
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::Ci::CronParser do
 
         context 'when CEST (Central European Summer Time)' do
           it 'converts time in server time zone' do
-            Timecop.freeze(Time.utc(2017, 6, 1)) do
+            travel_to(Time.utc(2017, 6, 1)) do
               expect(subject.hour).to eq(hour_in_utc)
             end
           end
@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Ci::CronParser do
 
     context 'when EST (Eastern Standard Time)' do
       it 'converts time in server time zone' do
-        Timecop.freeze(Time.utc(2017, 1, 1)) do
+        travel_to(Time.utc(2017, 1, 1)) do
           expect(subject.hour).to eq(hour_in_utc)
         end
       end
@@ -160,7 +160,7 @@ RSpec.describe Gitlab::Ci::CronParser do
 
     context 'when EDT (Eastern Daylight Time)' do
       it 'converts time in server time zone' do
-        Timecop.freeze(Time.utc(2017, 6, 1)) do
+        travel_to(Time.utc(2017, 6, 1)) do
           expect(subject.hour).to eq(hour_in_utc)
         end
       end
@@ -174,7 +174,7 @@ RSpec.describe Gitlab::Ci::CronParser do
       # (e.g. America/Chicago) at the start of the test. Stubbing
       # TZ doesn't appear to be enough.
       it 'generates day without TZInfo::AmbiguousTime error' do
-        Timecop.freeze(Time.utc(2020, 1, 1)) do
+        travel_to(Time.utc(2020, 1, 1)) do
           expect(subject.year).to eq(year)
           expect(subject.month).to eq(12)
           expect(subject.day).to eq(1)

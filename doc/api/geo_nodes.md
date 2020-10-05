@@ -1,7 +1,7 @@
 # Geo Nodes API **(PREMIUM ONLY)**
 
-In order to interact with Geo node endpoints, you need to authenticate yourself
-as an admin.
+To interact with Geo node endpoints, you need to authenticate yourself as an
+admin.
 
 ## Create a new Geo node
 
@@ -460,12 +460,12 @@ Example response:
     "package_files_registry_count": 10,
     "package_files_synced_count": 6,
     "package_files_failed_count": 3,
-    "terraform_states_count": 10,
-    "terraform_states_checksummed_count": 10,
-    "terraform_states_checksum_failed_count": 0,
-    "terraform_states_registry_count": 10,
-    "terraform_states_synced_count": 6,
-    "terraform_states_failed_count": 3
+    "terraform_state_versions_count": 10,
+    "terraform_state_versions_checksummed_count": 10,
+    "terraform_state_versions_checksum_failed_count": 0,
+    "terraform_state_versions_registry_count": 10,
+    "terraform_state_versions_synced_count": 6,
+    "terraform_state_versions_failed_count": 3,
     "snippet_repositories_count": 10,
     "snippet_repositories_checksummed_count": 10,
     "snippet_repositories_checksum_failed_count": 0,

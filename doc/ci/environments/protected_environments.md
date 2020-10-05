@@ -9,8 +9,6 @@ type: concepts, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
-## Overview
-
 [Environments](../environments/index.md) can be used for different reasons:
 
 - Some of them are just for testing.

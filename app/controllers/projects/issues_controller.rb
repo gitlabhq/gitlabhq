@@ -56,7 +56,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   before_action only: :index do
-    push_frontend_feature_flag(:scoped_labels, @project)
+    push_frontend_feature_flag(:scoped_labels, @project, type: :licensed)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -239,7 +239,7 @@ class Projects::IssuesController < Projects::ApplicationController
     return @issue if defined?(@issue)
 
     # The Sortable default scope causes performance issues when used with find_by
-    @issuable = @noteable = @issue ||= @project.issues.includes(author: :status).where(iid: params[:id]).reorder(nil).take!
+    @issuable = @noteable = @issue ||= @project.issues.inc_relations_for_view.iid_in(params[:id]).without_order.take!
     @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)

@@ -83,11 +83,7 @@ export default {
             <span class="js-expanded monospace gl-pl-2">{{ sha(index) }}</span>
           </template>
         </expand-button>
-        <clipboard-button
-          :title="__('Copy evidence SHA')"
-          :text="sha(index)"
-          css-class="btn-default btn-transparent btn-clipboard"
-        />
+        <clipboard-button :title="__('Copy evidence SHA')" :text="sha(index)" category="tertiary" />
       </div>
 
       <div class="d-flex align-items-center text-muted">

@@ -19,7 +19,7 @@
             %h3.text-center
               = s_('AdminArea|Projects: %{number_of_projects}') % { number_of_projects: approximate_count_with_delimiters(@counts, Project) }
           %hr
-          = link_to(s_('AdminArea|New project'), new_project_path, class: "btn btn-success gl-w-full")
+          = link_to(s_('AdminArea|New project'), new_project_path, class: "btn gl-button btn-success gl-w-full")
     .col-sm-4
       .info-well.dark-well
         .well-segment.well-centered
@@ -28,8 +28,8 @@
               = s_('AdminArea|Users: %{number_of_users}') % { number_of_users: approximate_count_with_delimiters(@counts, User) }
           %hr
           .btn-group.d-flex{ role: 'group' }
-            = link_to s_('AdminArea|New user'), new_admin_user_path, class: "btn btn-success gl-w-full"
-            = link_to s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: 'btn btn-primary gl-w-full'
+            = link_to s_('AdminArea|New user'), new_admin_user_path, class: "btn gl-button btn-success gl-w-full"
+            = link_to s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: 'btn gl-button btn-info gl-w-full'
     .col-sm-4
       .info-well.dark-well
         .well-segment.well-centered
@@ -37,7 +37,7 @@
             %h3.text-center
               = s_('AdminArea|Groups: %{number_of_groups}') % { number_of_groups: approximate_count_with_delimiters(@counts, Group) }
           %hr
-          = link_to s_('AdminArea|New group'), new_admin_group_path, class: "btn btn-success gl-w-full"
+          = link_to s_('AdminArea|New group'), new_admin_group_path, class: "btn gl-button btn-success gl-w-full"
   .row
     .col-md-4
       #js-admin-statistics-container
@@ -51,7 +51,7 @@
 
           = feature_entry(_('LDAP'),
             enabled: Gitlab.config.ldap.enabled,
-            doc_href: help_page_path('administration/auth/ldap'))
+            doc_href: help_page_path('administration/auth/ldap/index.md'))
 
           = feature_entry(_('Gravatar'),
             href: general_admin_application_settings_path(anchor: 'js-account-settings'),

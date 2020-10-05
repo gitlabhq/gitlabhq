@@ -15,13 +15,16 @@ exports[`self monitor component When the self monitor project has not been creat
     
     </h4>
      
-    <gl-deprecated-button-stub
+    <gl-button-stub
+      buttontextclasses=""
+      category="primary"
       class="js-settings-toggle"
-      size="md"
-      variant="secondary"
+      icon=""
+      size="medium"
+      variant="default"
     >
       Expand
-    </gl-deprecated-button-stub>
+    </gl-button-stub>
      
     <p
       class="js-section-sub-header"
@@ -56,6 +59,7 @@ exports[`self monitor component When the self monitor project has not been creat
    
   <gl-modal-stub
     cancel-title="Cancel"
+    category="primary"
     modalclass=""
     modalid="delete-self-monitor-modal"
     ok-title="Delete project"

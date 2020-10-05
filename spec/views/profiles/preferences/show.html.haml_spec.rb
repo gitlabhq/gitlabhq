@@ -20,6 +20,14 @@ RSpec.describe 'profiles/preferences/show' do
     it 'has an id for anchoring' do
       expect(rendered).to have_css('#navigation-theme')
     end
+
+    it 'has correct stylesheet tags' do
+      Gitlab::Themes.each do |theme|
+        next unless theme.css_filename
+
+        expect(rendered).to have_selector("link[href*=\"themes/#{theme.css_filename}\"]", visible: false)
+      end
+    end
   end
 
   context 'syntax highlighting theme' do

@@ -4,12 +4,14 @@
   - data_endpoint = local_assigns.fetch(:data_endpoint, expose_path(api_v4_projects_issues_path(id: @project.id)))
   - default_empty_state_meta = { create_issue_path: new_project_issue_path(@project), svg_path: image_path('illustrations/issues.svg') }
   - data_empty_state_meta = local_assigns.fetch(:data_empty_state_meta, default_empty_state_meta)
-  - type = local_assigns.fetch(:type, '')
+  - type = local_assigns.fetch(:type, 'issues')
+  - if type == 'issues' && use_startup_call?
+    - add_page_startup_api_call(api_v4_projects_issues_path(id: @project.id, params: startup_call_params))
   .js-issuables-list{ data: { endpoint: data_endpoint,
     'empty-state-meta': data_empty_state_meta.to_json,
     'can-bulk-edit': @can_bulk_update.to_json,
     'sort-key': @sort,
-    'type': type } }
+    type: type } }
 - else
   - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
   %ul.content-list.issues-list.issuable-list{ class: ("manual-ordering" if @sort == 'relative_position') }

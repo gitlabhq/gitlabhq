@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
-    subject { described_class.new.parse!(junit, test_suite, args) }
+    subject { described_class.new.parse!(junit, test_suite, **args) }
 
     let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
     let(:test_cases) { flattened_test_cases(test_suite) }

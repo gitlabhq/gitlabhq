@@ -121,6 +121,20 @@ module Gitlab
                                                  result[:message]
                                                end
         end
+
+        desc _('Approve a merge request')
+        explanation _('Approve the current merge request.')
+        types MergeRequest
+        condition do
+          quick_action_target.persisted? && quick_action_target.can_be_approved_by?(current_user)
+        end
+        command :approve do
+          success = MergeRequests::ApprovalService.new(quick_action_target.project, current_user).execute(quick_action_target)
+
+          next unless success
+
+          @execution_message[:approve] = _('Approved the current merge request.')
+        end
       end
 
       def merge_orchestration_service

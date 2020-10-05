@@ -223,7 +223,7 @@ This is how an example usage can look like:
 ```yaml
 test:
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker pull $CI_REGISTRY/group/other-project:latest
     - docker run $CI_REGISTRY/group/other-project:latest
 ```
@@ -236,5 +236,4 @@ to projects and their project permissions.
 
 ### API
 
-GitLab API cannot be used via `CI_JOB_TOKEN` but there is a [proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/35067)
-to support it.
+GitLab API can be used via `CI_JOB_TOKEN`, see [the relevant documentation](../../api/README.md#gitlab-ci-job-token).

@@ -3,10 +3,11 @@
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37115) in GitLab 10.0.
 > - Generally available on GitLab 11.0.
 
-Auto DevOps provides pre-defined CI/CD configuration allowing you to automatically
-detect, build, test, deploy, and monitor your applications. Leveraging CI/CD
-best practices and tools, Auto DevOps aims to simplify the setup and execution
-of a mature and modern software development lifecycle.
+Auto DevOps are default CI/CD templates that auto-discover the source code you have. They
+enable GitLab to automatically detect, build, test, deploy, and monitor your applications.
+Leveraging [CI/CD best practices](../../ci/pipelines/pipeline_efficiency.md) and tools,
+Auto DevOps aims to simplify the setup and execution of a mature and modern software
+development lifecycle.
 
 ## Overview
 
@@ -83,9 +84,9 @@ project in a simple and automatic way:
 
 1. [Auto Build](stages.md#auto-build)
 1. [Auto Test](stages.md#auto-test)
-1. [Auto Code Quality](stages.md#auto-code-quality) **(STARTER)**
-1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast) **(ULTIMATE)**
-1. [Auto Secret Detection](stages.md#auto-secret-detection) **(ULTIMATE)**
+1. [Auto Code Quality](stages.md#auto-code-quality)
+1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast)
+1. [Auto Secret Detection](stages.md#auto-secret-detection)
 1. [Auto Dependency Scanning](stages.md#auto-dependency-scanning) **(ULTIMATE)**
 1. [Auto License Compliance](stages.md#auto-license-compliance) **(ULTIMATE)**
 1. [Auto Container Scanning](stages.md#auto-container-scanning) **(ULTIMATE)**
@@ -317,7 +318,7 @@ metadata:
   name: gitlab-managed-apps-default-proxy
   namespace: gitlab-managed-apps
 spec:
-   env:
+  env:
     - name: http_proxy
       value: "PUT_YOUR_HTTP_PROXY_HERE"
     - name: https_proxy

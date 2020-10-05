@@ -51,9 +51,7 @@ module API
           job_forbidden!(job, 'Job is not running') unless job.running?
         end
 
-        if Gitlab::Ci::Features.job_heartbeats_runner?(job.project)
-          job.runner&.heartbeat(get_runner_ip)
-        end
+        job.runner&.heartbeat(get_runner_ip)
 
         job
       end

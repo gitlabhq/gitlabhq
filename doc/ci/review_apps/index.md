@@ -33,7 +33,7 @@ In the above example:
 ## How Review Apps work
 
 A Review App is a mapping of a branch with an [environment](../environments/index.md).
-Access to the Review App is made available as a link on the [merge request](../../user/project/merge_requests.md) relevant to the branch.
+Access to the Review App is made available as a link on the [merge request](../../user/project/merge_requests/index.md) relevant to the branch.
 
 The following is an example of a merge request with an environment set dynamically.
 
@@ -188,20 +188,35 @@ Once you have the route mapping set up, it will take effect in the following loc
 
 ## Visual Reviews **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab Starter 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab Starter 12.0.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-visual-reviews). **(STARTER ONLY)**
 
-With Visual Reviews, you can provide a feedback form to your Review Apps so
-that reviewers can post comments directly from the app back to the merge request
-that spawned the Review App.
+With Visual Reviews, members of any team (Product, Design, Quality, and so on) can provide feedback comments through a form in your review apps. The comments are added to the merge request that triggered the review app.
 
-### Configuring Visual Reviews
+### Using Visual Reviews
 
-Ensure that the `anonymous_visual_review_feedback` feature flag is enabled.
-Administrators can enable with a Rails console as follows:
+After Visual Reviews has been [configured](#configure-review-apps-for-visual-reviews) for the
+Review App, the Visual Reviews feedback form is overlaid on the right side of every page.
 
-```ruby
-Feature.enable(:anonymous_visual_review_feedback)
-```
+![Visual review feedback form](img/toolbar_feedback_form_v13_5.png)
+
+To use the feedback form to make a comment in the merge request:
+
+1. Click the **Review** tab on the right side of a page.
+1. Make a comment on the visual review. You can make use of all the
+   [Markdown annotations](../../user/markdown.md) that are also available in
+   merge request comments.
+1. Enter your personal information:
+   - If [`data-require-auth`](#authentication-for-visual-reviews) is `true`, you must enter your [personal access token](../../user/profile/personal_access_tokens.md).
+   - Otherwise, enter your name, and optionally your email.
+1. Click **Send feedback**.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+To see Visual reviews in action, see the [Visual Reviews Walk through](https://youtu.be/1_tvWTlPfM4).
+
+### Configure Review Apps for Visual Reviews
 
 The feedback form is served through a script you add to pages in your Review App.
 If you have [Developer permissions](../../user/permissions.md) to the project,
@@ -212,18 +227,18 @@ if [route maps](#route-maps) are configured in the project.
 ![review button](img/review_button.png)
 
 The provided script should be added to the `<head>` of your application and
-consists of some project and merge request specific values. Here's what it
-looks like:
+consists of some project and merge request specific values. Here's how it
+looks for a project with code hosted in a project on GitLab.com:
 
 ```html
 <script
   data-project-id='11790219'
   data-merge-request-id='1'
-  data-mr-url='https://gitlab.example.com'
+  data-mr-url='https://gitlab.com'
   data-project-path='sarah/review-app-tester'
   data-require-auth='true'
   id='review-app-toolbar-script'
-  src='https://gitlab.example.com/assets/webpack/visual_review_toolbar.js'>
+  src='https://gitlab.com/assets/webpack/visual_review_toolbar.js'>
 </script>
 ```
 
@@ -239,21 +254,21 @@ to replace those values at runtime when each review app is created:
 - `data-mr-url` is the URL of the GitLab instance and will be the same for all
   review apps.
 - `data-project-path` is the project's path, which can be found by `CI_PROJECT_PATH`.
-- `data-require-auth` is optional for public projects but required for [private and internal ones](#visual-reviews-in-private-or-internal-projects). If this is set to `true`, the user will be required to enter their [personal access token](../../user/profile/personal_access_tokens.md) instead of their name and email.
+- `data-require-auth` is optional for public projects but required for [private and internal ones](#authentication-for-visual-reviews). If this is set to `true`, the user will be required to enter their [personal access token](../../user/profile/personal_access_tokens.md) instead of their name and email.
 - `id` is always `review-app-toolbar-script`, you don't need to change that.
 - `src` is the source of the review toolbar script, which resides in the
   respective GitLab instance and will be the same for all review apps.
 
-For example, in a Ruby application, you would need to have this script:
+For example, in a Ruby application with code hosted on in a project GitLab.com, you would need to have this script:
 
 ```html
 <script
   data-project-id="ENV['CI_PROJECT_ID']"
   data-merge-request-id="ENV['CI_MERGE_REQUEST_IID']"
-  data-mr-url='https://gitlab.example.com'
+  data-mr-url='https://gitlab.com'
   data-project-path="ENV['CI_PROJECT_PATH']"
   id='review-app-toolbar-script'
-  src='https://gitlab.example.com/assets/webpack/visual_review_toolbar.js'>
+  src='https://gitlab.com/assets/webpack/visual_review_toolbar.js'>
 </script>
 ```
 
@@ -273,33 +288,34 @@ can supply the ID by either:​​
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 
-### Visual Reviews in private or internal projects
+### Enable or disable Visual Reviews **(STARTER ONLY)**
+
+Visual Reviews is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it.
+
+To disable it:
+
+```ruby
+Feature.disable(:anonymous_visual_review_feedback)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:anonymous_visual_review_feedback)
+```
+
+### Authentication for Visual Reviews
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.
 
 To enable visual reviews for private and internal projects, set the
-[`data-require-auth` variable](#configuring-visual-reviews) to `true`. When enabled,
+[`data-require-auth` variable](#enable-or-disable-visual-reviews) to `true`. When enabled,
 the user must enter a [personal access token](../../user/profile/personal_access_tokens.md)
 with `api` scope before submitting feedback.
 
-### Using Visual Reviews
-
-After Visual Reviews has been [enabled](#configuring-visual-reviews) for the
-Review App, the Visual Reviews feedback form is overlaid on the app's pages at
-the bottom-right corner.
-
-![Visual review feedback form](img/toolbar_feeback_form.png)
-
-To use the feedback form:
-
-1. Make a comment on the visual review. You can make use of all the
-   [Markdown annotations](../../user/markdown.md) that are also available in
-   merge request comments.
-1. If `data-require-auth` is `true`, you must enter your [personal access token](../../user/profile/personal_access_tokens.md). Otherwise, you must enter your name, and optionally, your email.
-1. Finally, click **Send feedback**.
-
-After you make and submit a comment in the visual review box, it will appear
-automatically in the respective merge request.
+This same method can be used to require authentication for any public projects.
 
 ## Limitations
 

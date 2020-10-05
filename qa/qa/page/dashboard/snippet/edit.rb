@@ -5,10 +5,6 @@ module QA
     module Dashboard
       module Snippet
         class Edit < Page::Base
-          view 'app/views/shared/snippets/_form.html.haml' do
-            element :submit_button
-          end
-
           view 'app/assets/javascripts/snippets/components/edit.vue' do
             element :submit_button
           end

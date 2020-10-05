@@ -4,7 +4,10 @@ module IssuablesHelper
   include GitlabRoutingHelper
 
   def sidebar_gutter_toggle_icon
-    sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
+    content_tag(:span, class: 'js-sidebar-toggle-container', data: { is_expanded: !sidebar_gutter_collapsed? }) do
+      sprite_icon('chevron-double-lg-left', css_class: "js-sidebar-expand #{'hidden' unless sidebar_gutter_collapsed?}") +
+      sprite_icon('chevron-double-lg-right', css_class: "js-sidebar-collapse #{'hidden' if sidebar_gutter_collapsed?}")
+    end
   end
 
   def sidebar_gutter_collapsed_class
@@ -206,7 +209,7 @@ module IssuablesHelper
     end
 
     if access = project.team.human_max_access(issuable.author_id)
-      output << content_tag(:span, access, class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3 ", title: _("This user is a %{access} of the %{name} project.") % { access: access.downcase, name: project.name })
+      output << content_tag(:span, access, class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3 ", title: _("This user has the %{access} role in the %{name} project.") % { access: access.downcase, name: project.name })
     elsif project.team.contributor?(issuable.author_id)
       output << content_tag(:span, _("Contributor"), class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3", title: _("This user has previously committed to the %{name} project.") % { name: project.name })
     end
@@ -342,6 +345,12 @@ module IssuablesHelper
     issuable.closed? ^ should_inverse ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
   end
 
+  def toggle_draft_issuable_path(issuable)
+    wip_event = issuable.work_in_progress? ? 'unwip' : 'wip'
+
+    issuable_path(issuable, { merge_request: { wip_event: wip_event } })
+  end
+
   def issuable_path(issuable, *options)
     polymorphic_path(issuable, *options)
   end
@@ -383,6 +392,12 @@ module IssuablesHelper
   def assignee_sidebar_data(assignee, merge_request: nil)
     { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }.tap do |data|
       data[:can_merge] = merge_request.can_be_merged_by?(assignee) if merge_request
+    end
+  end
+
+  def reviewer_sidebar_data(reviewer, merge_request: nil)
+    { avatar_url: reviewer.avatar_url, name: reviewer.name, username: reviewer.username }.tap do |data|
+      data[:can_merge] = merge_request.can_be_merged_by?(reviewer) if merge_request
     end
   end
 

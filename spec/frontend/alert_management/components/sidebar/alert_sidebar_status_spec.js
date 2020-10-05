@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlDeprecatedDropdown, GlDeprecatedDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { trackAlertStatusUpdateOptions } from '~/alert_management/constants';
 import AlertSidebarStatus from '~/alert_management/components/sidebar/sidebar_status.vue';
 import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.mutation.graphql';
@@ -10,9 +10,10 @@ const mockAlert = mockAlerts[0];
 
 describe('Alert Details Sidebar Status', () => {
   let wrapper;
-  const findStatusDropdown = () => wrapper.find(GlDeprecatedDropdown);
-  const findStatusDropdownItem = () => wrapper.find(GlDeprecatedDropdownItem);
+  const findStatusDropdown = () => wrapper.find(GlDropdown);
+  const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
   const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findStatusDropdownHeader = () => wrapper.find('[data-testid="dropdown-header"]');
 
   function mountComponent({ data, sidebarCollapsed = true, loading = false, stubs = {} } = {}) {
     wrapper = mount(AlertSidebarStatus, {
@@ -56,11 +57,7 @@ describe('Alert Details Sidebar Status', () => {
     });
 
     it('displays the dropdown status header', () => {
-      expect(
-        findStatusDropdown()
-          .find('.dropdown-title')
-          .exists(),
-      ).toBe(true);
+      expect(findStatusDropdownHeader().exists()).toBe(true);
     });
 
     describe('updating the alert status', () => {

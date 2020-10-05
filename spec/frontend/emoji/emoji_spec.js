@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import axios from '~/lib/utils/axios_utils';
-import { initEmojiMap, glEmojiTag, EMOJI_VERSION } from '~/emoji';
+import { initEmojiMap, glEmojiTag, searchEmoji, EMOJI_VERSION } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isRainbowFlagEmoji,
@@ -31,25 +31,35 @@ const emptySupportMap = {
 };
 
 const emojiFixtureMap = {
+  atom: {
+    name: 'atom',
+    moji: '⚛',
+    description: 'atom symbol',
+    unicodeVersion: '4.1',
+  },
   bomb: {
     name: 'bomb',
     moji: '💣',
     unicodeVersion: '6.0',
+    description: 'bomb',
   },
   construction_worker_tone5: {
     name: 'construction_worker_tone5',
     moji: '👷🏿',
     unicodeVersion: '8.0',
+    description: 'construction worker tone 5',
   },
   five: {
     name: 'five',
     moji: '5️⃣',
     unicodeVersion: '3.0',
+    description: 'keycap digit five',
   },
   grey_question: {
     name: 'grey_question',
     moji: '❔',
     unicodeVersion: '6.0',
+    description: 'white question mark ornament',
   },
 };
 
@@ -57,8 +67,15 @@ describe('gl_emoji', () => {
   let mock;
 
   beforeEach(() => {
+    const emojiData = Object.fromEntries(
+      Object.values(emojiFixtureMap).map(m => {
+        const { name: n, moji: e, unicodeVersion: u, category: c, description: d } = m;
+        return [n, { c, e, d, u }];
+      }),
+    );
+
     mock = new MockAdapter(axios);
-    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200);
+    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, JSON.stringify(emojiData));
 
     return initEmojiMap().catch(() => {});
   });
@@ -377,5 +394,25 @@ describe('gl_emoji', () => {
 
       expect(isSupported).toBeFalsy();
     });
+  });
+
+  describe('searchEmoji', () => {
+    const { atom, grey_question } = emojiFixtureMap;
+    const contains = (e, term) =>
+      expect(searchEmoji(term).map(({ name }) => name)).toContain(e.name);
+
+    it('should match by full name', () => contains(grey_question, 'grey_question'));
+    it('should match by full alias', () => contains(atom, 'atom_symbol'));
+    it('should match by full description', () => contains(grey_question, 'ornament'));
+
+    it('should match by partial name', () => contains(grey_question, 'question'));
+    it('should match by partial alias', () => contains(atom, '_symbol'));
+    it('should match by partial description', () => contains(grey_question, 'ment'));
+
+    it('should fuzzy match by name', () => contains(grey_question, 'greion'));
+    it('should fuzzy match by alias', () => contains(atom, 'atobol'));
+    it('should fuzzy match by description', () => contains(grey_question, 'ornt'));
+
+    it('should match by character', () => contains(grey_question, '❔'));
   });
 });

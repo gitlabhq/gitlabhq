@@ -64,9 +64,9 @@ export default {
 </script>
 
 <template>
-  <div v-if="designsCount" class="d-flex align-items-center">
+  <div v-if="designsCount" class="gl-display-flex gl-align-items-center">
     {{ paginationText }}
-    <gl-button-group class="ml-3 mr-3">
+    <gl-button-group class="gl-mx-5">
       <gl-button
         :disabled="!previousDesign"
         :title="s__('DesignManagement|Go to previous design')"

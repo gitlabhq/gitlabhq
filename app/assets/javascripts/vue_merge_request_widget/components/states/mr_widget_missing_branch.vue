@@ -1,13 +1,12 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetMissingBranch',
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlIcon,
@@ -52,7 +51,7 @@ export default {
       <span class="bold js-branch-text">
         <span class="capitalize"> {{ missingBranchName }} </span>
         {{ s__('mrWidget|branch does not exist.') }} {{ missingBranchNameMessage }}
-        <gl-icon v-tooltip :title="message" :aria-label="message" name="question-o" />
+        <gl-icon v-gl-tooltip :title="message" :aria-label="message" name="question-o" />
       </span>
     </div>
   </div>

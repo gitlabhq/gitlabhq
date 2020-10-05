@@ -1,0 +1,5 @@
+---
+title: Fix button placement on pipeline graph
+merge_request: 43419
+author:
+type: fixed

@@ -15,7 +15,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :target_project_id
   expose :squash
   expose :rebase_in_progress?, as: :rebase_in_progress
-  expose :default_squash_commit_message, if: -> (merge_request, _) { merge_request.mergeable? }
+  expose :default_squash_commit_message
   expose :commits_count
   expose :merge_ongoing?, as: :merge_ongoing
   expose :work_in_progress?, as: :work_in_progress
@@ -25,10 +25,10 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :source_branch_exists?, as: :source_branch_exists
   expose :branch_missing?, as: :branch_missing
 
-  expose :commits_without_merge_commits, using: MergeRequestWidgetCommitEntity,
-    if: -> (merge_request, _) { merge_request.mergeable? } do |merge_request|
+  expose :commits_without_merge_commits, using: MergeRequestWidgetCommitEntity do |merge_request|
     merge_request.recent_commits.without_merge_commits
   end
+
   expose :diff_head_sha do |merge_request|
     merge_request.diff_head_sha.presence
   end
@@ -44,6 +44,12 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     else
       0
     end
+  end
+
+  expose :actual_head_pipeline, as: :pipeline, if: -> (mr, _) {
+    Feature.enabled?(:merge_request_cached_pipeline_serializer, mr.project) && presenter(mr).can_read_pipeline?
+  } do |merge_request, options|
+    MergeRequests::PipelineEntity.represent(merge_request.actual_head_pipeline, options)
   end
 
   # Paths

@@ -49,8 +49,8 @@ To create a Markdown file:
 
  1. Click the `+` button next to `master` and click **New file**.
  1. Add the name of your issue template to the **File name** text field next to `master`.
-    Make sure words are separated with underscores and that your file has the `.md` extension, for
-    example `feature_request.md`.
+    Make sure that your file has the `.md` extension, for
+    example `feature_request.md` or `Feature Request.md`.
  1. Commit and push to your default branch.
 
 If you don't have a `.gitlab/issue_templates` directory in your repository, you'll need to create it.
@@ -78,6 +78,9 @@ This will enable the `Bug` dropdown option when creating or editing issues. When
 `Bug` is selected, the content from the `Bug.md` template file will be copied
 to the issue description field. The 'Reset template' button will discard any
 changes you made after picking the template and return it to its initial status.
+
+TIP: **Tip:**
+You can create short-cut links to create an issue using a designated template. For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`.
 
 ![Description templates](img/description_templates.png)
 

@@ -4,6 +4,7 @@ class InvitesController < ApplicationController
   include Gitlab::Utils::StrongMemoize
 
   before_action :member
+  before_action :ensure_member_exists
   before_action :invite_details
   skip_before_action :authenticate_user!, only: :decline
 
@@ -12,13 +13,14 @@ class InvitesController < ApplicationController
   respond_to :html
 
   def show
-    track_experiment('opened')
+    track_new_user_invite_experiment('opened')
     accept if skip_invitation_prompt?
   end
 
   def accept
     if member.accept_invite!(current_user)
-      track_experiment('accepted')
+      track_new_user_invite_experiment('accepted')
+      track_invitation_reminders_experiment('accepted')
       redirect_to invite_details[:path], notice: _("You have been granted %{member_human_access} access to %{title} %{name}.") %
         { member_human_access: member.human_access, title: invite_details[:title], name: invite_details[:name] }
     else
@@ -28,6 +30,8 @@ class InvitesController < ApplicationController
 
   def decline
     if member.decline_invite!
+      return render layout: 'devise_experimental_onboarding_issues' if !current_user && member.invite_to_unknown_user? && member.created_by
+
       path =
         if current_user
           dashboard_projects_path
@@ -59,14 +63,16 @@ class InvitesController < ApplicationController
   end
 
   def member
-    return @member if defined?(@member)
+    strong_memoize(:member) do
+      @token = params[:id]
+      Member.find_by_invite_token(@token)
+    end
+  end
 
-    @token = params[:id]
-    @member = Member.find_by_invite_token(@token)
+  def ensure_member_exists
+    return if member
 
-    return render_404 unless @member
-
-    @member
+    render_404
   end
 
   def authenticate_user!
@@ -76,10 +82,7 @@ class InvitesController < ApplicationController
     notice << "or create an account" if Gitlab::CurrentSettings.allow_signup?
     notice = notice.join(' ') + "."
 
-    # this is temporary finder instead of using member method due to render_404 possibility
-    # will be resolved via https://gitlab.com/gitlab-org/gitlab/-/issues/245325
-    initial_member = Member.find_by_invite_token(params[:id])
-    redirect_params = initial_member ? { invite_email: initial_member.invite_email } : {}
+    redirect_params = member ? { invite_email: member.invite_email } : {}
 
     store_location_for :user, request.fullpath
 
@@ -87,31 +90,43 @@ class InvitesController < ApplicationController
   end
 
   def invite_details
-    @invite_details ||= case @member.source
+    @invite_details ||= case member.source
                         when Project
                           {
-                            name: @member.source.full_name,
-                            url: project_url(@member.source),
+                            name: member.source.full_name,
+                            url: project_url(member.source),
                             title: _("project"),
-                            path: project_path(@member.source)
+                            path: project_path(member.source)
                           }
                         when Group
                           {
-                            name: @member.source.name,
-                            url: group_url(@member.source),
+                            name: member.source.name,
+                            url: group_url(member.source),
                             title: _("group"),
-                            path: group_path(@member.source)
+                            path: group_path(member.source)
                           }
                         end
   end
 
-  def track_experiment(action)
+  def track_new_user_invite_experiment(action)
     return unless params[:new_user_invite]
 
     property = params[:new_user_invite] == 'experiment' ? 'experiment_group' : 'control_group'
 
+    track_experiment(:invite_email, action, property)
+  end
+
+  def track_invitation_reminders_experiment(action)
+    return unless Gitlab::Experimentation.enabled?(:invitation_reminders)
+
+    property = Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, member.invite_email) ? 'experimental_group' : 'control_group'
+
+    track_experiment(:invitation_reminders, action, property)
+  end
+
+  def track_experiment(experiment_key, action, property)
     Gitlab::Tracking.event(
-      Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category],
+      Gitlab::Experimentation.experiment(experiment_key).tracking_category,
       action,
       property: property,
       label: Digest::MD5.hexdigest(member.to_global_id.to_s)

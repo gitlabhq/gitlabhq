@@ -72,3 +72,4 @@ To disable it:
 
 ```ruby
 Feature.disable(:gitpod)
+```

@@ -64,12 +64,12 @@
         - else
           = _('Register Universal Two-Factor (U2F) Device')
       %p
-        = _('Use a hardware device to add the second factor of authentication.')
+        = _('Set up a hardware device as a second factor to sign in.')
       %p
         - if webauthn_enabled
-          = _("As WebAuthn devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a WebAuthn device. That way you'll always be able to log in - even when you're using an unsupported browser.")
+          = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even from an unsupported browser.")
         - else
-          = _("As U2F devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a U2F device. That way you'll always be able to log in - even when you're using an unsupported browser.")
+          = _("Not all browsers support U2F devices. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even when you're using an unsupported browser.")
     .col-lg-8
       - registration = webauthn_enabled ? @webauthn_registration : @u2f_registration
       - if registration.errors.present?
@@ -102,7 +102,12 @@
             %tbody
               - @registrations.each do |registration|
                 %tr
-                  %td= registration[:name].presence || html_escape_once(_("&lt;no name set&gt;")).html_safe
+                  %td
+                    - if registration[:name].present?
+                      = registration[:name]
+                    - else
+                      %span.gl-text-gray-500
+                        = _("no name set")
                   %td= registration[:created_at].to_date.to_s(:medium)
                   %td= link_to _('Delete'), registration[:delete_path], method: :delete, class: "btn btn-danger float-right", data: { confirm: _('Are you sure you want to delete this device? This action cannot be undone.') }
 

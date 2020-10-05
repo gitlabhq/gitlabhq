@@ -13,7 +13,7 @@ module Groups
       end
 
       def async_execute
-        group_import_state = GroupImportState.safe_find_or_create_by!(group: group)
+        group_import_state = GroupImportState.safe_find_or_create_by!(group: group, user: current_user)
         jid = GroupImportWorker.perform_async(current_user.id, group.id)
 
         if jid.present?

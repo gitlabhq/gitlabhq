@@ -2358,48 +2358,43 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
-    context 'when state event tracking is disabled' do
+    context 'when no metrics or merge event exists' do
+      let(:user) { create(:user) }
+      let(:merge_request) { create(:merge_request, :merged) }
+
       before do
-        stub_feature_flags(track_resource_state_change_events: false)
+        merge_request.metrics.destroy!
       end
 
-      context 'when merging note is persisted, but no metrics or merge event exists' do
-        let(:user) { create(:user) }
-        let(:merge_request) { create(:merge_request, :merged) }
-
+      context 'when resource event for the merge exists' do
         before do
-          merge_request.metrics.destroy!
-
           SystemNoteService.change_status(merge_request,
                                           merge_request.target_project,
                                           user,
                                           merge_request.state, nil)
         end
 
-        it 'returns merging note creation date' do
+        it 'returns the resource event creation date' do
+          expect(merge_request.reload.metrics).to be_nil
+          expect(merge_request.merge_event).to be_nil
+          expect(merge_request.resource_state_events.count).to eq(1)
+          expect(merge_request.merged_at).to eq(merge_request.resource_state_events.first.created_at)
+        end
+      end
+
+      context 'when system note for the merge exists' do
+        before do
+          # We do not create these system notes anymore but we need this to work for existing MRs
+          # that used system notes instead of resource state events
+          create(:note, :system, noteable: merge_request, note: 'merged')
+        end
+
+        it 'returns the merging note creation date' do
           expect(merge_request.reload.metrics).to be_nil
           expect(merge_request.merge_event).to be_nil
           expect(merge_request.notes.count).to eq(1)
           expect(merge_request.merged_at).to eq(merge_request.notes.first.created_at)
         end
-      end
-    end
-
-    context 'when state event tracking is enabled' do
-      let(:user) { create(:user) }
-      let(:merge_request) { create(:merge_request, :merged) }
-
-      before do
-        merge_request.metrics.destroy!
-
-        SystemNoteService.change_status(merge_request,
-                                        merge_request.target_project,
-                                        user,
-                                        merge_request.state, nil)
-      end
-
-      it 'does not create a system note' do
-        expect(merge_request.notes).to be_empty
       end
     end
   end
@@ -4261,24 +4256,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe '#allows_reviewers?' do
-    it 'returns false without merge_request_reviewers feature' do
-      stub_feature_flags(merge_request_reviewers: false)
-
-      merge_request = build_stubbed(:merge_request)
-
-      expect(merge_request.allows_reviewers?).to be(false)
-    end
-
-    it 'returns true with merge_request_reviewers feature' do
-      stub_feature_flags(merge_request_reviewers: true)
-
-      merge_request = build_stubbed(:merge_request)
-
-      expect(merge_request.allows_reviewers?).to be(true)
-    end
-  end
-
   describe '#merge_ref_head' do
     let(:merge_request) { create(:merge_request) }
 
@@ -4302,6 +4279,38 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it 'returns the commit based on cached merge_ref_sha' do
         expect(merge_request.merge_ref_head.id).to eq(merge_request.merge_ref_sha)
       end
+    end
+  end
+
+  describe '#allows_reviewers?' do
+    it 'returns false without merge_request_reviewers feature' do
+      stub_feature_flags(merge_request_reviewers: false)
+
+      merge_request = build_stubbed(:merge_request)
+
+      expect(merge_request.allows_reviewers?).to be(false)
+    end
+
+    it 'returns true with merge_request_reviewers feature' do
+      stub_feature_flags(merge_request_reviewers: true)
+
+      merge_request = build_stubbed(:merge_request)
+
+      expect(merge_request.allows_reviewers?).to be(true)
+    end
+  end
+
+  describe '#update_and_mark_in_progress_merge_commit_sha' do
+    let(:ref) { subject.target_project.repository.commit.id }
+
+    before do
+      expect(subject.target_project).to receive(:mark_primary_write_location)
+    end
+
+    it 'updates commit ID' do
+      expect { subject.update_and_mark_in_progress_merge_commit_sha(ref) }
+        .to change { subject.in_progress_merge_commit_sha }
+        .from(nil).to(ref)
     end
   end
 end

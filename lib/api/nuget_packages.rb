@@ -42,7 +42,7 @@ module API
       def package_finder(finder_params = {})
         ::Packages::Nuget::PackageFinder.new(
           authorized_user_project,
-          finder_params.merge(package_name: params[:package_name])
+          **finder_params.merge(package_name: params[:package_name])
         )
       end
     end
@@ -73,7 +73,7 @@ module API
         get 'index', format: :json do
           authorize_read_package!(authorized_user_project)
 
-          track_event('nuget_service_index')
+          track_package_event('cli_metadata', :nuget)
 
           present ::Packages::Nuget::ServiceIndexPresenter.new(authorized_user_project),
             with: ::API::Entities::Nuget::ServiceIndex
@@ -105,7 +105,7 @@ module API
           package_file = ::Packages::CreatePackageFileService.new(package, file_params)
                                                              .execute
 
-          package_event('push_package')
+          track_package_event('push_package', :nuget)
 
           ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
 
@@ -198,7 +198,7 @@ module API
 
             not_found!('Package') unless package_file
 
-            package_event('pull_package')
+            track_package_event('pull_package', :nuget)
 
             # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
             present_carrierwave_file!(package_file.file, supports_direct_download: false)
@@ -233,7 +233,7 @@ module API
               .new(authorized_user_project, params[:q], search_options)
               .execute
 
-            package_event('search_package')
+            track_package_event('search_package', :nuget)
 
             present ::Packages::Nuget::SearchResultsPresenter.new(search),
               with: ::API::Entities::Nuget::SearchResults

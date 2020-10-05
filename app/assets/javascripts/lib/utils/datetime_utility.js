@@ -743,3 +743,22 @@ export const differenceInMilliseconds = (startDate, endDate = Date.now()) => {
   const endDateInMS = endDate instanceof Date ? endDate.getTime() : endDate;
   return endDateInMS - startDateInMS;
 };
+
+/**
+ * A utility which returns a new date at the first day of the month for any given date.
+ *
+ * @param {Date} date
+ *
+ * @return {Date} the date at the first day of the month
+ */
+export const dateAtFirstDayOfMonth = date => new Date(newDate(date).setDate(1));
+
+/**
+ * A utility function which checks if two dates match.
+ *
+ * @param {Date|Int} date1 Can be either a date object or a unix timestamp.
+ * @param {Date|Int} date2 Can be either a date object or a unix timestamp.
+ *
+ * @return {Boolean} true if the dates match
+ */
+export const datesMatch = (date1, date2) => differenceInMilliseconds(date1, date2) === 0;

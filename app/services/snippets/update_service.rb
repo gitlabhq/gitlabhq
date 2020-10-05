@@ -37,7 +37,10 @@ module Snippets
       # is implemented.
       # Once we can perform different operations through this service
       # we won't need to keep track of the `content` and `file_name` fields
-      if snippet_actions.any?
+      #
+      # If the repository does not exist we don't need to update `params`
+      # because we need to commit the information from the database
+      if snippet_actions.any? && snippet.repository_exists?
         params[:content] = snippet_actions[0].content if snippet_actions[0].content
         params[:file_name] = snippet_actions[0].file_path
       end
@@ -52,7 +55,11 @@ module Snippets
       # the repository we can just return
       return true unless committable_attributes?
 
-      create_repository_for(snippet)
+      unless snippet.repository_exists?
+        create_repository_for(snippet)
+        create_first_commit_using_db_data(snippet)
+      end
+
       create_commit(snippet)
 
       true
@@ -72,13 +79,7 @@ module Snippets
       # If the commit action failed we remove it because
       # we don't want to leave empty repositories
       # around, to allow cloning them.
-      if repository_empty?(snippet)
-        snippet.repository.remove
-        snippet.snippet_repository&.delete
-      end
-
-      # Purge any existing value for repository_exists?
-      snippet.repository.expire_exists_cache
+      delete_repository(snippet) if repository_empty?(snippet)
 
       false
     end
@@ -89,15 +90,25 @@ module Snippets
       raise CreateRepositoryError, 'Repository could not be created' unless snippet.repository_exists?
     end
 
+    # If the user provides `snippet_actions` and the repository
+    # does not exist, we need to commit first the snippet info stored
+    # in the database.  Mostly because the content inside `snippet_actions`
+    # would assume that the file is already in the repository.
+    def create_first_commit_using_db_data(snippet)
+      return if snippet_actions.empty?
+
+      attrs = commit_attrs(snippet, INITIAL_COMMIT_MSG)
+      actions = [{ file_path: snippet.file_name, content: snippet.content }]
+
+      snippet.snippet_repository.multi_files_action(current_user, actions, **attrs)
+    end
+
     def create_commit(snippet)
       raise UpdateError unless snippet.snippet_repository
 
-      commit_attrs = {
-        branch_name: snippet.default_branch,
-        message: 'Update snippet'
-      }
+      attrs = commit_attrs(snippet, UPDATE_COMMIT_MSG)
 
-      snippet.snippet_repository.multi_files_action(current_user, files_to_commit(snippet), commit_attrs)
+      snippet.snippet_repository.multi_files_action(current_user, files_to_commit(snippet), **attrs)
     end
 
     # Because we are removing repositories we don't want to remove

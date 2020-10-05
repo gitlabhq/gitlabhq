@@ -941,4 +941,6 @@ RSpec.describe ProjectPolicy do
       end
     end
   end
+
+  it_behaves_like 'Self-managed Core resource access tokens'
 end

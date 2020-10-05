@@ -109,7 +109,7 @@ module Gitlab
       end
 
       def create_commit(snippet)
-        snippet.snippet_repository.multi_files_action(commit_author(snippet), snippet_action(snippet), commit_attrs)
+        snippet.snippet_repository.multi_files_action(commit_author(snippet), snippet_action(snippet), **commit_attrs)
       end
 
       # If the user is not allowed to access git or update the snippet

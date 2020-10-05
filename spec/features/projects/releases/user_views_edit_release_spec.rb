@@ -13,7 +13,7 @@ RSpec.describe 'User edits Release', :js do
 
     project.add_developer(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit edit_project_release_path(project, release)
 

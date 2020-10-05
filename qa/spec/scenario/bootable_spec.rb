@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Scenario::Bootable do
+RSpec.describe QA::Scenario::Bootable do
   subject do
     Class.new(QA::Scenario::Template)
       .include(described_class)

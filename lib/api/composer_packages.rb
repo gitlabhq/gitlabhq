@@ -123,7 +123,7 @@ module API
             bad_request!
           end
 
-          package_event('push_package')
+          track_package_event('push_package', :composer)
 
           ::Packages::Composer::CreatePackageService
             .new(authorized_user_project, current_user, declared_params)

@@ -23,10 +23,14 @@ module Issues
       # to receive service desk emails on the new moved issue.
       update_service_desk_sent_notifications
 
+      queue_copy_designs
+
       new_entity
     end
 
     private
+
+    attr_reader :target_project
 
     def update_service_desk_sent_notifications
       return unless original_entity.from_service_desk?
@@ -46,7 +50,7 @@ module Issues
       new_params = {
                      id: nil,
                      iid: nil,
-                     project: @target_project,
+                     project: target_project,
                      author: original_entity.author,
                      assignee_ids: original_entity.assignee_ids
                    }
@@ -56,6 +60,23 @@ module Issues
       # Skip creation of system notes for existing attributes of the issue. The system notes of the old
       # issue are copied over so we don't want to end up with duplicate notes.
       CreateService.new(@target_project, @current_user, new_params).execute(skip_system_notes: true)
+    end
+
+    def queue_copy_designs
+      return unless copy_designs_enabled? && original_entity.designs.present?
+
+      response = DesignManagement::CopyDesignCollection::QueueService.new(
+        current_user,
+        original_entity,
+        new_entity
+      ).execute
+
+      log_error(response.message) if response.error?
+    end
+
+    def copy_designs_enabled?
+      Feature.enabled?(:design_management_copy_designs, old_project) &&
+        Feature.enabled?(:design_management_copy_designs, target_project)
     end
 
     def mark_as_moved
@@ -75,7 +96,7 @@ module Issues
     end
 
     def add_note_from
-      SystemNoteService.noteable_moved(new_entity, @target_project,
+      SystemNoteService.noteable_moved(new_entity, target_project,
                                        original_entity, current_user,
                                        direction: :from)
     end

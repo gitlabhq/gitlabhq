@@ -17,6 +17,13 @@ unless Gitlab::Runtime.sidekiq?
       data[:duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:duration)) if data[:duration]
       data.merge!(::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload)
 
+      # Remove empty hashes to prevent type mismatches
+      # These are set to empty hashes in Lograge's ActionCable subscriber
+      # https://github.com/roidrage/lograge/blob/v0.11.2/lib/lograge/log_subscribers/action_cable.rb#L14-L16
+      %i(method path format).each do |key|
+        data[key] = nil if data[key] == {}
+      end
+
       data
     end
 

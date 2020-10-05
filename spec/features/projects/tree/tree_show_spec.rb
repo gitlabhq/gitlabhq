@@ -69,7 +69,7 @@ RSpec.describe 'Projects tree', :js do
 
       # Check last commit
       expect(find('.commit-content').text).to include(message)
-      expect(find('.commit-sha-group').text).to eq(short_newrev)
+      expect(find('.js-commit-sha-group').text).to eq(short_newrev)
     end
   end
 

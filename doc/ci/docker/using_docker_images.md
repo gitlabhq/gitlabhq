@@ -138,7 +138,6 @@ still succeeds even if that warning was printed. For example:
 As it was mentioned before, this feature is designed to provide **network accessible**
 services. A database is the simplest example of such a service.
 
-NOTE: **Note:**
 The services feature is not designed to, and does not add any software from the
 defined `services` image(s) to the job's container.
 
@@ -186,7 +185,6 @@ access to it from your build container under two hostnames to choose from:
 - `tutum-wordpress`
 - `tutum__wordpress`
 
-NOTE: **Note:**
 Hostnames with underscores are not RFC valid and may cause problems in 3rd party
 applications.
 
@@ -364,10 +362,9 @@ For example, the following two definitions are equal:
 | `name`       | yes, when used with any other option  | 9.4 | Full name of the image that should be used. It should contain the Registry part if needed. |
 | `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It's translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
 | `command`    | no       | 9.4 |Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/engine/reference/builder/#cmd) directive, where each shell token is a separate string in the array. |
-| `alias`      | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+| `alias` (1)     | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
-NOTE: **Note:**
-Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
+(1) Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
 
 ### Starting multiple services from the same image
 
@@ -532,7 +529,6 @@ To define which should be used, the GitLab Runner process reads the configuratio
   If the `--user` flag is provided to run the GitLab Runner child processes as unprivileged user,
   the home directory of the main GitLab Runner process user is used.
 
-NOTE: **Note:**
 GitLab Runner reads this configuration **only** from `config.toml` and ignores it if
 it's provided as an environment variable. This is because GitLab Runner uses **only**
 `config.toml` configuration and does not interpolate **ANY** environment variables at
@@ -547,6 +543,7 @@ runtime.
   at least version **1.8** if you want to use private registries.
 - Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
   in GitLab Runner 13.1 and later.
+- [Credentials Store](#using-credentials-store) and [Credential Helpers](#using-credential-helpers) require binaries to be added to the GitLab Runner's `$PATH`, and require access to do so. Therefore, these features are not available on shared runners or any other runner where the user does not have access to the environment where the runner is installed.
 
 ### Using statically-defined credentials
 
@@ -600,7 +597,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   Open a terminal and execute the following command:
 
   ```shell
-  # Note the use of "-n" - it prevents encoding a newline in the password.
+  # The use of "-n" - prevents encoding a newline in the password.
   echo -n "my_username:my_password" | base64
 
   # Example output to copy
@@ -650,7 +647,6 @@ follow these steps:
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
 
-NOTE: **Note:**
 The full `hostname:port` combination is required everywhere
 for the runner to match the `DOCKER_AUTH_CONFIG`. For example, if
 `registry.example.com:5000/namespace/image:tag` is specified in `.gitlab-ci.yml`,
@@ -679,17 +675,14 @@ To add `DOCKER_AUTH_CONFIG` to a runner:
      environment = ["DOCKER_AUTH_CONFIG={\"auths\":{\"registry.example.com:5000\":{\"auth\":\"bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=\"}}}"]
    ```
 
+   - The double quotes included in the `DOCKER_AUTH_CONFIG`
+     data must be escaped with backslashes. This prevents them from being
+     interpreted as TOML.
+   - The `environment` option is a list. Your runner may
+     have existing entries and you should add this to the list, not replace
+     it.
+
 1. Restart the runner service.
-
-NOTE: **Note:**
-The double quotes included in the `DOCKER_AUTH_CONFIG`
-data must be escaped with backslashes. This prevents them from being
-interpreted as TOML.
-
-NOTE: **Note:**
-The `environment` option is a list. So your runner may
-have existing entries and you should add this to the list, not replace
-it.
 
 ### Using Credentials Store
 
@@ -717,10 +710,9 @@ To configure credentials store, follow these steps:
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner reads this configuration file
      and uses the needed helper for this specific repository.
 
-NOTE: **Note:**
 `credsStore` is used to access ALL the registries.
-If you want to use both images from private registry and public images from DockerHub,
-pulling from DockerHub would fail, because Docker daemon tries to use the same credentials for **ALL** the registries.
+If you want to use both images from private registry and public images from Docker Hub,
+pulling from Docker Hub would fail, because Docker daemon tries to use the same credentials for **ALL** the registries.
 
 ### Using Credential Helpers
 
@@ -732,10 +724,8 @@ image which is private and requires you to log in into a private container regis
 To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow these steps:
 
 1. Make sure `docker-credential-ecr-login` is available in GitLab Runner's `$PATH`.
-
 1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
    Make sure that GitLab Runner can access the credentials.
-
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
    - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)
@@ -791,7 +781,6 @@ service containers.
 For all possible configuration variables check the documentation of each image
 provided in their corresponding Docker hub page.
 
-NOTE: **Note:**
 All variables are passed to all services containers. It's not
 designed to distinguish which variable should go where.
 

@@ -197,6 +197,21 @@ RSpec.describe 'Dashboard Todos' do
         end
       end
     end
+
+    context 'review request todo' do
+      let(:merge_request) { create(:merge_request, title: "Fixes issue") }
+
+      before do
+        create(:todo, :review_requested, user: user, project: project, target: merge_request, author: user)
+        visit dashboard_todos_path
+      end
+
+      it 'shows you set yourself as an reviewer message' do
+        page.within('.js-todos-all') do
+          expect(page).to have_content("You requested a review of merge request #{merge_request.to_reference} \"Fixes issue\" at #{project.namespace.owner_name} / #{project.name} from yourself")
+        end
+      end
+    end
   end
 
   context 'User has done todos', :js do

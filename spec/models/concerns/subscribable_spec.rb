@@ -20,13 +20,13 @@ RSpec.describe Subscribable, 'Subscribable' do
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        resource.subscriptions.create(user: user_1, subscribed: true)
+        resource.subscriptions.create!(user: user_1, subscribed: true)
 
         expect(resource.subscribed?(user_1)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        resource.subscriptions.create(user: user_1, subscribed: false)
+        resource.subscriptions.create!(user: user_1, subscribed: false)
 
         expect(resource.subscribed?(user_1)).to be_falsey
       end
@@ -38,13 +38,13 @@ RSpec.describe Subscribable, 'Subscribable' do
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        resource.subscriptions.create(user: user_1, project: project, subscribed: true)
+        resource.subscriptions.create!(user: user_1, project: project, subscribed: true)
 
         expect(resource.subscribed?(user_1, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        resource.subscriptions.create(user: user_1, project: project, subscribed: false)
+        resource.subscriptions.create!(user: user_1, project: project, subscribed: false)
 
         expect(resource.subscribed?(user_1, project)).to be_falsey
       end
@@ -58,9 +58,9 @@ RSpec.describe Subscribable, 'Subscribable' do
 
     it 'returns the subscribed users' do
       user_2 = create(:user)
-      resource.subscriptions.create(user: user_1, subscribed: true)
-      resource.subscriptions.create(user: user_2, project: project, subscribed: true)
-      resource.subscriptions.create(user: create(:user), project: project, subscribed: false)
+      resource.subscriptions.create!(user: user_1, subscribed: true)
+      resource.subscriptions.create!(user: user_2, project: project, subscribed: true)
+      resource.subscriptions.create!(user: create(:user), project: project, subscribed: false)
 
       expect(resource.subscribers(project)).to contain_exactly(user_1, user_2)
     end
@@ -113,7 +113,7 @@ RSpec.describe Subscribable, 'Subscribable' do
   describe '#unsubscribe' do
     context 'without project' do
       it 'unsubscribes the given current user' do
-        resource.subscriptions.create(user: user_1, subscribed: true)
+        resource.subscriptions.create!(user: user_1, subscribed: true)
         expect(resource.subscribed?(user_1)).to be_truthy
 
         resource.unsubscribe(user_1)
@@ -124,7 +124,7 @@ RSpec.describe Subscribable, 'Subscribable' do
 
     context 'with project' do
       it 'unsubscribes the given current user' do
-        resource.subscriptions.create(user: user_1, project: project, subscribed: true)
+        resource.subscriptions.create!(user: user_1, project: project, subscribed: true)
         expect(resource.subscribed?(user_1, project)).to be_truthy
 
         resource.unsubscribe(user_1, project)
@@ -139,7 +139,7 @@ RSpec.describe Subscribable, 'Subscribable' do
       context 'when desired_state is set to true' do
         context 'when a user is subscribed to the resource' do
           it 'keeps the user subscribed' do
-            resource.subscriptions.create(user: user_1, subscribed: true, project: resource_project)
+            resource.subscriptions.create!(user: user_1, subscribed: true, project: resource_project)
 
             resource.set_subscription(user_1, true, resource_project)
 
@@ -159,7 +159,7 @@ RSpec.describe Subscribable, 'Subscribable' do
       context 'when desired_state is set to false' do
         context 'when a user is subscribed to the resource' do
           it 'unsubscribes the user from the resource' do
-            resource.subscriptions.create(user: user_1, subscribed: true, project: resource_project)
+            resource.subscriptions.create!(user: user_1, subscribed: true, project: resource_project)
 
             expect { resource.set_subscription(user_1, false, resource_project) }
               .to change { resource.subscribed?(user_1, resource_project) }

@@ -5,6 +5,7 @@
 class NotificationReason
   OWN_ACTIVITY = 'own_activity'
   ASSIGNED = 'assigned'
+  REVIEW_REQUESTED = 'review_requested'
   MENTIONED = 'mentioned'
   SUBSCRIBED = 'subscribed'
 
@@ -12,6 +13,7 @@ class NotificationReason
   REASON_PRIORITY = [
     OWN_ACTIVITY,
     ASSIGNED,
+    REVIEW_REQUESTED,
     MENTIONED,
     SUBSCRIBED
   ].freeze

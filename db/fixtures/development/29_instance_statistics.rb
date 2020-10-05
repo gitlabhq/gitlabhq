@@ -6,9 +6,9 @@ Gitlab::Seeder.quiet do
   model_class = Analytics::InstanceStatistics::Measurement
   recorded_at = Date.today
 
-  # Insert random counts for the last 10 weeks
-  measurements = 10.times.flat_map do
-    recorded_at = (recorded_at - 1.week).end_of_week.end_of_day - 5.minutes
+  # Insert random counts for the last 60 days
+  measurements = 60.times.flat_map do
+    recorded_at = (recorded_at - 1.day).end_of_day - 5.minutes
 
     model_class.identifiers.map do |_, id|
       {
