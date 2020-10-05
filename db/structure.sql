@@ -11437,7 +11437,8 @@ CREATE TABLE design_management_designs (
     project_id integer NOT NULL,
     issue_id integer,
     filename character varying NOT NULL,
-    relative_position integer
+    relative_position integer,
+    CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255))
 );
 
 CREATE SEQUENCE design_management_designs_id_seq
@@ -18197,9 +18198,6 @@ ALTER TABLE ONLY chat_names
 
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
-
-ALTER TABLE design_management_designs
-    ADD CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)) NOT VALID;
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
