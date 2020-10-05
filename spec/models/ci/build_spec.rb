@@ -1109,7 +1109,8 @@ RSpec.describe Ci::Build do
     let(:environment) { deployment.environment }
 
     before do
-      allow(Deployments::FinishedWorker).to receive(:perform_async)
+      allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
+      allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
     end
 
     it 'has deployments record with created status' do
@@ -1129,7 +1130,8 @@ RSpec.describe Ci::Build do
 
     context 'when transits to success' do
       before do
-        allow(Deployments::SuccessWorker).to receive(:perform_async)
+        allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
+        allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
         build.success!
       end
 

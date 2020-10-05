@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Deployments::AfterCreateService do
+RSpec.describe Deployments::UpdateEnvironmentService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:options) { { name: 'production' } }
@@ -31,7 +31,8 @@ RSpec.describe Deployments::AfterCreateService do
   subject(:service) { described_class.new(deployment) }
 
   before do
-    allow(Deployments::FinishedWorker).to receive(:perform_async)
+    allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
+    allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
     job.success! # Create/Succeed deployment
   end
 
@@ -100,8 +101,8 @@ RSpec.describe Deployments::AfterCreateService do
       end
 
       before do
-        environment.update(name: 'review-apps/master')
-        job.update(environment: 'review-apps/$CI_COMMIT_REF_NAME')
+        environment.update!(name: 'review-apps/master')
+        job.update!(environment: 'review-apps/$CI_COMMIT_REF_NAME')
       end
 
       it 'does not create a new environment' do
@@ -241,7 +242,7 @@ RSpec.describe Deployments::AfterCreateService do
         end
 
         it 'does not raise errors if the merge request does not have a metrics record' do
-          merge_request.metrics.destroy
+          merge_request.metrics.destroy!
 
           expect(merge_request.reload.metrics).to be_nil
           expect { service.execute }.not_to raise_error

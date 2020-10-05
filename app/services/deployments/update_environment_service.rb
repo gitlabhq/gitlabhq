@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Deployments
-  class AfterCreateService
+  class UpdateEnvironmentService
     attr_reader :deployment
     attr_reader :deployable
 
@@ -64,4 +64,4 @@ module Deployments
   end
 end
 
-Deployments::AfterCreateService.prepend_if_ee('EE::Deployments::AfterCreateService')
+Deployments::UpdateEnvironmentService.prepend_if_ee('EE::Deployments::UpdateEnvironmentService')

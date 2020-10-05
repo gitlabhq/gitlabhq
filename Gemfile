@@ -25,7 +25,9 @@ gem 'faraday', '~> 1.0'
 gem 'marginalia', '~> 1.9.0'
 
 # Authentication libraries
-gem 'devise', '~> 4.6'
+gem 'devise', '~> 4.7.2'
+# TODO: verify ARM compile issue on 3.1.13+ version (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18828)
+gem 'bcrypt', '3.1.12'
 gem 'doorkeeper', '~> 5.3.0'
 gem 'doorkeeper-openid_connect', '~> 1.7.4'
 gem 'omniauth', '~> 1.8'
@@ -120,7 +122,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
-gem 'gitlab-fog-azure-rm', '~> 0.9', require: false
+gem 'gitlab-fog-azure-rm', '~> 1.0', require: false
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'

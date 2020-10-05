@@ -98,15 +98,35 @@ RSpec.describe Deployment do
     context 'when deployment runs' do
       let(:deployment) { create(:deployment) }
 
-      before do
-        deployment.run!
-      end
-
       it 'starts running' do
         freeze_time do
+          deployment.run!
+
           expect(deployment).to be_running
           expect(deployment.finished_at).to be_nil
         end
+      end
+
+      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
+        expect(Deployments::ExecuteHooksWorker)
+            .to receive(:perform_async).with(deployment.id)
+
+        deployment.run!
+      end
+
+      it 'does not execute Deployments::ExecuteHooksWorker when feature is disabled' do
+        stub_feature_flags(ci_send_deployment_hook_when_start: false)
+        expect(Deployments::ExecuteHooksWorker)
+            .not_to receive(:perform_async).with(deployment.id)
+
+        deployment.run!
+      end
+
+      it 'executes Deployments::ForwardDeploymentWorker asynchronously' do
+        expect(Deployments::ForwardDeploymentWorker)
+            .to receive(:perform_async).once.with(deployment.id)
+
+        deployment.run!
       end
     end
 
@@ -122,15 +142,15 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::SuccessWorker asynchronously' do
-        expect(Deployments::SuccessWorker)
+      it 'executes Deployments::UpdateEnvironmentWorker asynchronously' do
+        expect(Deployments::UpdateEnvironmentWorker)
           .to receive(:perform_async).with(deployment.id)
 
         deployment.succeed!
       end
 
-      it 'executes Deployments::FinishedWorker asynchronously' do
-        expect(Deployments::FinishedWorker)
+      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
+        expect(Deployments::ExecuteHooksWorker)
           .to receive(:perform_async).with(deployment.id)
 
         deployment.succeed!
@@ -149,9 +169,16 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::FinishedWorker asynchronously' do
-        expect(Deployments::FinishedWorker)
+      it 'executes Deployments::LinkMergeRequestWorker asynchronously' do
+        expect(Deployments::LinkMergeRequestWorker)
           .to receive(:perform_async).with(deployment.id)
+
+        deployment.drop!
+      end
+
+      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
+        expect(Deployments::ExecuteHooksWorker)
+            .to receive(:perform_async).with(deployment.id)
 
         deployment.drop!
       end
@@ -169,9 +196,16 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::FinishedWorker asynchronously' do
-        expect(Deployments::FinishedWorker)
+      it 'executes Deployments::LinkMergeRequestWorker asynchronously' do
+        expect(Deployments::LinkMergeRequestWorker)
           .to receive(:perform_async).with(deployment.id)
+
+        deployment.cancel!
+      end
+
+      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
+        expect(Deployments::ExecuteHooksWorker)
+            .to receive(:perform_async).with(deployment.id)
 
         deployment.cancel!
       end
@@ -580,9 +614,10 @@ RSpec.describe Deployment do
       expect(deploy).to be_success
     end
 
-    it 'schedules SuccessWorker and FinishedWorker when finishing a deploy' do
-      expect(Deployments::SuccessWorker).to receive(:perform_async)
-      expect(Deployments::FinishedWorker).to receive(:perform_async)
+    it 'schedules workers when finishing a deploy' do
+      expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
+      expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
+      expect(Deployments::ExecuteHooksWorker).to receive(:perform_async)
 
       deploy.update_status('success')
     end

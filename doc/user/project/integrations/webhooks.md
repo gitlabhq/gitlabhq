@@ -1303,7 +1303,12 @@ Note that `commit.id` is the ID of the pipeline, not the ID of the commit.
 
 ### Deployment events
 
-Triggered when deployment is finished/failed/canceled.
+Triggered when a deployment:
+
+- Starts ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41214) in GitLab 13.5.)
+- Succeeds
+- Fails
+- Is cancelled
 
 **Request Header**:
 

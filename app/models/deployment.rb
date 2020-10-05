@@ -46,6 +46,8 @@ class Deployment < ApplicationRecord
   scope :older_than, -> (deployment) { where('id < ?', deployment.id) }
   scope :with_deployable, -> { includes(:deployable).where('deployable_id IS NOT NULL') }
 
+  FINISHED_STATUSES = %i[success failed canceled].freeze
+
   state_machine :status, initial: :created do
     event :run do
       transition created: :running
@@ -63,20 +65,8 @@ class Deployment < ApplicationRecord
       transition any - [:canceled] => :canceled
     end
 
-    before_transition any => [:success, :failed, :canceled] do |deployment|
+    before_transition any => FINISHED_STATUSES do |deployment|
       deployment.finished_at = Time.current
-    end
-
-    after_transition any => :success do |deployment|
-      deployment.run_after_commit do
-        Deployments::SuccessWorker.perform_async(id)
-      end
-    end
-
-    after_transition any => [:success, :failed, :canceled] do |deployment|
-      deployment.run_after_commit do
-        Deployments::FinishedWorker.perform_async(id)
-      end
     end
 
     after_transition any => :running do |deployment|
@@ -84,6 +74,32 @@ class Deployment < ApplicationRecord
 
       deployment.run_after_commit do
         Deployments::ForwardDeploymentWorker.perform_async(id)
+      end
+    end
+
+    after_transition any => :running do |deployment|
+      deployment.run_after_commit do
+        next unless Feature.enabled?(:ci_send_deployment_hook_when_start, deployment.project)
+
+        Deployments::ExecuteHooksWorker.perform_async(id)
+      end
+    end
+
+    after_transition any => :success do |deployment|
+      deployment.run_after_commit do
+        Deployments::UpdateEnvironmentWorker.perform_async(id)
+      end
+    end
+
+    after_transition any => FINISHED_STATUSES do |deployment|
+      deployment.run_after_commit do
+        Deployments::LinkMergeRequestWorker.perform_async(id)
+      end
+    end
+
+    after_transition any => FINISHED_STATUSES do |deployment|
+      deployment.run_after_commit do
+        Deployments::ExecuteHooksWorker.perform_async(id)
       end
     end
   end
@@ -273,7 +289,7 @@ class Deployment < ApplicationRecord
     SQL
   end
 
-  # Changes the status of a deployment and triggers the correspinding state
+  # Changes the status of a deployment and triggers the corresponding state
   # machine events.
   def update_status(status)
     case status

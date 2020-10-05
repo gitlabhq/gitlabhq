@@ -159,6 +159,8 @@ merge_requests:
 - assignees
 - reviews
 - approval_rules
+- approval_merge_request_rule_sources
+- approval_project_rules
 - approvals
 - approvers
 - approver_users
@@ -467,6 +469,8 @@ project:
 - feature_usage
 - approval_rules
 - approval_merge_request_rules
+- approval_merge_request_rule_sources
+- approval_project_rules
 - approvers
 - approver_users
 - audit_events
