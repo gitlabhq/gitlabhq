@@ -71,7 +71,7 @@ export default {
         </gl-sprintf>
       </p>
       <a
-        href="https://docs.gitlab.com/ee/ci/environments.html#stopping-an-environment"
+        href="https://docs.gitlab.com/ee/ci/environments/#stopping-an-environment"
         target="_blank"
         rel="noopener noreferrer"
         >{{ s__('Environments|Learn more about stopping environments') }}</a

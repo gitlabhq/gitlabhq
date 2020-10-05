@@ -55,6 +55,14 @@ export default {
     };
   },
   computed: {
+    prefilledForm() {
+      return {
+        ...this.value,
+        cadence: this.findDefaultOption('cadence'),
+        keepN: this.findDefaultOption('keepN'),
+        olderThan: this.findDefaultOption('olderThan'),
+      };
+    },
     showLoadingIcon() {
       return this.isLoading || this.mutationLoading;
     },
@@ -77,6 +85,9 @@ export default {
     },
   },
   methods: {
+    findDefaultOption(option) {
+      return this.value[option] || this.$options.formOptions[option].find(f => f.default)?.key;
+    },
     reset() {
       this.track('reset_form');
       this.apiErrors = null;
@@ -135,7 +146,7 @@ export default {
       </template>
       <template #default>
         <expiration-policy-fields
-          :value="value"
+          :value="prefilledForm"
           :form-options="$options.formOptions"
           :is-loading="isLoading"
           :api-errors="apiErrors"

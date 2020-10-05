@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual, get } from 'lodash';
 import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.graphql';
 import { FETCH_SETTINGS_ERROR_MESSAGE } from '../../shared/constants';
 
@@ -35,7 +35,7 @@ export default {
       },
       update: data => data.project?.containerExpirationPolicy,
       result({ data }) {
-        this.workingCopy = { ...data.project?.containerExpirationPolicy };
+        this.workingCopy = { ...get(data, 'project.containerExpirationPolicy', {}) };
       },
       error(e) {
         this.fetchSettingsError = e;
@@ -74,7 +74,7 @@ export default {
 <template>
   <div>
     <settings-form
-      v-if="containerExpirationPolicy"
+      v-if="!isDisabled"
       v-model="workingCopy"
       :is-loading="$apollo.queries.containerExpirationPolicy.loading"
       :is-edited="isEdited"

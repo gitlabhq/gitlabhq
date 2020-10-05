@@ -10,11 +10,19 @@ const notImplemented = () => {
   throw new Error('Not implemented!');
 };
 
-const removeIssueFromList = (state, listId, issueId) => {
-  Vue.set(state.issuesByListId, listId, pull(state.issuesByListId[listId], issueId));
+const getListById = ({ state, listId }) => {
+  const listIndex = state.boardLists.findIndex(l => l.id === listId);
+  const list = state.boardLists[listIndex];
+  return { listIndex, list };
 };
 
-const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atIndex }) => {
+export const removeIssueFromList = ({ state, listId, issueId }) => {
+  Vue.set(state.issuesByListId, listId, pull(state.issuesByListId[listId], issueId));
+  const { listIndex, list } = getListById({ state, listId });
+  Vue.set(state.boardLists, listIndex, { ...list, issuesSize: list.issuesSize - 1 });
+};
+
+export const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atIndex }) => {
   const listIssues = state.issuesByListId[listId];
   let newIndex = atIndex || 0;
   if (moveBeforeId) {
@@ -24,6 +32,8 @@ const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atI
   }
   listIssues.splice(newIndex, 0, issueId);
   Vue.set(state.issuesByListId, listId, listIssues);
+  const { listIndex, list } = getListById({ state, listId });
+  Vue.set(state.boardLists, listIndex, { ...list, issuesSize: list.issuesSize + 1 });
 };
 
 export default {
@@ -142,7 +152,7 @@ export default {
     const issue = moveIssueListHelper(originalIssue, fromList, toList);
     Vue.set(state.issues, issue.id, issue);
 
-    removeIssueFromList(state, fromListId, issue.id);
+    removeIssueFromList({ state, listId: fromListId, issueId: issue.id });
     addIssueToList({ state, listId: toListId, issueId: issue.id, moveBeforeId, moveAfterId });
   },
 
@@ -157,7 +167,7 @@ export default {
   ) => {
     state.error = s__('Boards|An error occurred while moving the issue. Please try again.');
     Vue.set(state.issues, originalIssue.id, originalIssue);
-    removeIssueFromList(state, toListId, originalIssue.id);
+    removeIssueFromList({ state, listId: toListId, issueId: originalIssue.id });
     addIssueToList({
       state,
       listId: fromListId,
@@ -187,7 +197,7 @@ export default {
 
   [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issue }) => {
     state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
-    removeIssueFromList(state, list.id, issue.id);
+    removeIssueFromList({ state, listId: list.id, issueId: issue.id });
   },
 
   [mutationTypes.SET_CURRENT_PAGE]: () => {

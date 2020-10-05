@@ -123,6 +123,15 @@ describe('Settings Form', () => {
       findFields().vm.$emit('input', { newValue: 'foo', modified: 'baz' });
       expect(findFields().props('apiErrors')).toEqual({});
     });
+
+    it('shows the default option when none are selected', () => {
+      mountComponent({ props: { value: {} } });
+      expect(findFields().props('value')).toEqual({
+        cadence: 'EVERY_DAY',
+        keepN: 'TEN_TAGS',
+        olderThan: 'NINETY_DAYS',
+      });
+    });
   });
 
   describe('form', () => {

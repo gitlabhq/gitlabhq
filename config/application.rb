@@ -189,7 +189,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/boards.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/ide.css"
-    config.assets.precompile << "page_bundles/issues.css"
+    config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/todos.css"

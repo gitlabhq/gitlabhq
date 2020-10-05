@@ -11,7 +11,7 @@ import {
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/registry/settings/constants';
 
-import { expirationPolicyPayload } from '../mock_data';
+import { expirationPolicyPayload, emptyExpirationPolicyPayload } from '../mock_data';
 
 const localVue = createLocalVue();
 
@@ -113,6 +113,25 @@ describe('Registry Settings App', () => {
 
     it('shows an alert', () => {
       expect(findAlert().html()).toContain(FETCH_SETTINGS_ERROR_MESSAGE);
+    });
+  });
+
+  describe('empty API response', () => {
+    it.each`
+      enableHistoricEntries | isShown
+      ${true}               | ${true}
+      ${false}              | ${false}
+    `('is $isShown that the form is shown', async ({ enableHistoricEntries, isShown }) => {
+      const requests = mountComponentWithApollo({
+        provide: {
+          ...defaultProvidedValues,
+          enableHistoricEntries,
+        },
+        resolver: jest.fn().mockResolvedValue(emptyExpirationPolicyPayload()),
+      });
+      await Promise.all(requests);
+
+      expect(findSettingsComponent().exists()).toBe(isShown);
     });
   });
 });

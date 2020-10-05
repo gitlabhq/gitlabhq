@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import Translate from '~/vue_shared/translate';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import RegistrySettingsApp from './components/registry_settings_app.vue';
 import { apolloProvider } from './graphql/index';
 
@@ -21,9 +22,9 @@ export default () => {
     },
     provide: {
       projectPath,
-      isAdmin,
+      isAdmin: parseBoolean(isAdmin),
       adminSettingsPath,
-      enableHistoricEntries,
+      enableHistoricEntries: parseBoolean(enableHistoricEntries),
     },
     render(createElement) {
       return createElement('registry-settings-app', {});

@@ -5,19 +5,19 @@ require "spec_helper"
 RSpec.describe NotesHelper do
   include RepoHelpers
 
-  let(:owner) { create(:owner) }
-  let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
-  let(:maintainer) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:guest) { create(:user) }
+  let_it_be(:owner) { create(:owner) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
 
-  let(:owner_note) { create(:note, author: owner, project: project) }
-  let(:maintainer_note) { create(:note, author: maintainer, project: project) }
-  let(:reporter_note) { create(:note, author: reporter, project: project) }
+  let_it_be(:owner_note) { create(:note, author: owner, project: project) }
+  let_it_be(:maintainer_note) { create(:note, author: maintainer, project: project) }
+  let_it_be(:reporter_note) { create(:note, author: reporter, project: project) }
   let!(:notes) { [owner_note, maintainer_note, reporter_note] }
 
-  before do
+  before_all do
     group.add_owner(owner)
     project.add_maintainer(maintainer)
     project.add_reporter(reporter)
@@ -72,14 +72,14 @@ RSpec.describe NotesHelper do
   end
 
   describe '#discussion_path' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:anchor) { discussion.line_code }
 
     context 'for a merge request discusion' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
-      let!(:merge_request_diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-      let!(:merge_request_diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: nil) }
-      let!(:merge_request_diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
+      let_it_be(:merge_request_diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+      let_it_be(:merge_request_diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: nil) }
+      let_it_be(:merge_request_diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
       context 'for a diff discussion' do
         context 'when the discussion is active' do
@@ -229,20 +229,18 @@ RSpec.describe NotesHelper do
     end
 
     it 'return project notes path for project snippet' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:project, path: 'test', namespace: namespace)
+      @project = project
       @snippet = create(:project_snippet, project: @project)
       @noteable = @snippet
 
-      expect(helper.notes_url).to eq("/nm/test/noteable/project_snippet/#{@noteable.id}/notes")
+      expect(helper.notes_url).to eq("/#{project.full_path}/noteable/project_snippet/#{@noteable.id}/notes")
     end
 
     it 'return project notes path for other noteables' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:project, path: 'test', namespace: namespace)
+      @project = project
       @noteable = create(:issue, project: @project)
 
-      expect(helper.notes_url).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes")
+      expect(helper.notes_url).to eq("/#{@project.full_path}/noteable/issue/#{@noteable.id}/notes")
     end
   end
 
@@ -254,19 +252,17 @@ RSpec.describe NotesHelper do
     end
 
     it 'return project notes path for project snippet' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:project, path: 'test', namespace: namespace)
+      @project = project
       note = create(:note_on_project_snippet, project: @project)
 
-      expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
+      expect(helper.note_url(note)).to eq("/#{project.full_path}/notes/#{note.id}")
     end
 
     it 'return project notes path for other noteables' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:project, path: 'test', namespace: namespace)
+      @project = project
       note = create(:note_on_issue, project: @project)
 
-      expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
+      expect(helper.note_url(note)).to eq("/#{project.full_path}/notes/#{note.id}")
     end
   end
 
@@ -279,8 +275,7 @@ RSpec.describe NotesHelper do
     end
 
     it 'returns namespace, project and note for project snippet' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:project, path: 'test', namespace: namespace)
+      @project = project
       @snippet = create(:project_snippet, project: @project)
       @note = create(:note_on_personal_snippet)
 
@@ -288,8 +283,7 @@ RSpec.describe NotesHelper do
     end
 
     it 'returns namespace, project and note path for other noteables' do
-      namespace = create(:namespace, path: 'nm')
-      @project = create(:project, path: 'test', namespace: namespace)
+      @project = project
       @note = create(:note_on_issue, project: @project)
 
       expect(helper.form_resources).to eq([@project, @note])
@@ -297,7 +291,6 @@ RSpec.describe NotesHelper do
   end
 
   describe '#noteable_note_url' do
-    let(:project) { create(:project) }
     let(:issue) { create(:issue, project: project) }
     let(:note) { create(:note_on_issue, noteable: issue, project: project) }
 

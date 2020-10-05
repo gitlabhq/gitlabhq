@@ -13,6 +13,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   let_it_be(:merge_request_b) { create(:merge_request, :closed, :unique_branches, source_project: project) }
   let_it_be(:merge_request_c) { create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label]) }
   let_it_be(:merge_request_d) { create(:merge_request, :locked, :unique_branches, source_project: project) }
+  let_it_be(:merge_request_e) { create(:merge_request, :unique_branches, source_project: project) }
 
   let(:results) { graphql_data.dig('project', 'mergeRequests', 'nodes') }
 
@@ -118,7 +119,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
   context 'there are no search params' do
     let(:search_params) { nil }
-    let(:mrs) { [merge_request_a, merge_request_b, merge_request_c, merge_request_d] }
+    let(:mrs) { [merge_request_a, merge_request_b, merge_request_c, merge_request_d, merge_request_e] }
 
     it_behaves_like 'searching with parameters'
   end
@@ -241,15 +242,49 @@ RSpec.describe 'getting merge request listings nested in a project' do
         let(:expected_results) do
           [
             merge_request_b,
-            merge_request_c,
             merge_request_d,
+            merge_request_c,
+            merge_request_e,
             merge_request_a
           ].map(&:to_gid).map(&:to_s)
         end
 
         before do
-          merge_request_c.metrics.update!(merged_at: 5.days.ago)
+          five_days_ago = 5.days.ago
+
+          merge_request_d.metrics.update!(merged_at: five_days_ago)
+
+          # same merged_at, the second order column will decide (merge_request.id)
+          merge_request_c.metrics.update!(merged_at: five_days_ago)
+
           merge_request_b.metrics.update!(merged_at: 1.day.ago)
+        end
+
+        context 'when paginating backwards' do
+          let(:params) { 'first: 2, sort: MERGED_AT_DESC' }
+          let(:page_info) { 'pageInfo { startCursor endCursor }' }
+
+          before do
+            post_graphql(pagination_query(params, page_info), current_user: current_user)
+          end
+
+          it 'paginates backwards correctly' do
+            # first page
+            first_page_response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
+            end_cursor = graphql_dig_at(Gitlab::Json.parse(response.body), :data, :project, :mergeRequests, :pageInfo, :endCursor)
+
+            # second page
+            params = "first: 2, after: \"#{end_cursor}\", sort: MERGED_AT_DESC"
+            post_graphql(pagination_query(params, page_info), current_user: current_user)
+            start_cursor = graphql_dig_at(Gitlab::Json.parse(response.body), :data, :project, :mergeRequests, :pageInfo, :start_cursor)
+
+            # going back to the first page
+
+            params = "last: 2, before: \"#{start_cursor}\", sort: MERGED_AT_DESC"
+            post_graphql(pagination_query(params, page_info), current_user: current_user)
+            backward_paginated_response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
+            expect(first_page_response_data).to eq(backward_paginated_response_data)
+          end
         end
       end
     end

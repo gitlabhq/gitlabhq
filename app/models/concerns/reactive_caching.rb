@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # The usage of the ReactiveCaching module is documented here:
-# https://docs.gitlab.com/ee/development/utilities.html#reactivecaching
+# https://docs.gitlab.com/ee/development/reactive_caching.md
 module ReactiveCaching
   extend ActiveSupport::Concern
 

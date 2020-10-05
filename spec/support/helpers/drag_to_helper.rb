@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module DragTo
-  def drag_to(list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0, selector: '', scrollable: 'body', duration: 1000, perform_drop: true)
+  # rubocop:disable Metrics/ParameterLists
+  def drag_to(list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0, selector: '', scrollable: 'body', duration: 1000, perform_drop: true, extra_height: 0)
     js = <<~JS
       simulateDrag({
         scrollable: document.querySelector('#{scrollable}'),
@@ -14,7 +15,8 @@ module DragTo
           el: document.querySelectorAll('#{selector}')[#{list_to_index}],
           index: #{to_index}
         },
-        performDrop: #{perform_drop}
+        performDrop: #{perform_drop},
+        extraHeight: #{extra_height}
       });
     JS
     evaluate_script(js)
@@ -23,6 +25,7 @@ module DragTo
       loop while drag_active?
     end
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def drag_active?
     page.evaluate_script('window.SIMULATE_DRAG_ACTIVE').nonzero?

@@ -29,8 +29,8 @@ module StubbedFeature
     end
 
     # Replace #enabled? method with the optional stubbed/unstubbed version.
-    def enabled?(*args)
-      feature_flag = super(*args)
+    def enabled?(*args, **kwargs)
+      feature_flag = super
       return feature_flag unless stub?
 
       # If feature flag is not persisted we mark the feature flag as enabled

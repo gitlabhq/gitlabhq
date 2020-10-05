@@ -42,7 +42,7 @@ RSpec.describe LabelsFinder do
 
         finder = described_class.new(user)
 
-        expect(finder.execute).to eq [group_label_2, group_label_3, project_label_1, group_label_1, project_label_2, project_label_4]
+        expect(finder.execute).to match_array([group_label_2, group_label_3, project_label_1, group_label_1, project_label_2, project_label_4])
       end
 
       it 'returns labels available if nil title is supplied' do
@@ -50,7 +50,7 @@ RSpec.describe LabelsFinder do
         # params[:title] will return `nil` regardless whether it is specified
         finder = described_class.new(user, title: nil)
 
-        expect(finder.execute).to eq [group_label_2, group_label_3, project_label_1, group_label_1, project_label_2, project_label_4]
+        expect(finder.execute).to match_array([group_label_2, group_label_3, project_label_1, group_label_1, project_label_2, project_label_4])
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe LabelsFinder do
         ::Projects::UpdateService.new(project_1, user, archived: true).execute
         finder = described_class.new(user, **group_params(group_1))
 
-        expect(finder.execute).to eq [group_label_2, group_label_1, project_label_5]
+        expect(finder.execute).to match_array([group_label_2, group_label_1, project_label_5])
       end
 
       context 'when only_group_labels is true' do
@@ -69,7 +69,7 @@ RSpec.describe LabelsFinder do
 
           finder = described_class.new(user, only_group_labels: true, **group_params(group_1))
 
-          expect(finder.execute).to eq [group_label_2, group_label_1]
+          expect(finder.execute).to match_array([group_label_2, group_label_1])
         end
       end
 
@@ -86,7 +86,7 @@ RSpec.describe LabelsFinder do
           it 'returns group labels' do
             finder = described_class.new(user, **group_params(empty_group))
 
-            expect(finder.execute).to eq [empty_group_label_1, empty_group_label_2]
+            expect(finder.execute).to match_array([empty_group_label_1, empty_group_label_2])
           end
         end
       end
@@ -98,7 +98,7 @@ RSpec.describe LabelsFinder do
 
           finder = described_class.new(user, **group_params(private_subgroup_1), only_group_labels: true, include_ancestor_groups: true)
 
-          expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
+          expect(finder.execute).to match_array([private_group_label_1, private_subgroup_label_1])
         end
 
         it 'ignores labels from groups which user can not read' do
@@ -106,7 +106,7 @@ RSpec.describe LabelsFinder do
 
           finder = described_class.new(user, **group_params(private_subgroup_1), only_group_labels: true, include_ancestor_groups: true)
 
-          expect(finder.execute).to eq [private_subgroup_label_1]
+          expect(finder.execute).to match_array([private_subgroup_label_1])
         end
       end
 
@@ -117,7 +117,7 @@ RSpec.describe LabelsFinder do
 
           finder = described_class.new(user, **group_params(private_group_1), only_group_labels: true, include_descendant_groups: true)
 
-          expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
+          expect(finder.execute).to match_array([private_group_label_1, private_subgroup_label_1])
         end
 
         it 'ignores labels from groups which user can not read' do
@@ -125,7 +125,7 @@ RSpec.describe LabelsFinder do
 
           finder = described_class.new(user, **group_params(private_group_1), only_group_labels: true, include_descendant_groups: true)
 
-          expect(finder.execute).to eq [private_subgroup_label_1]
+          expect(finder.execute).to match_array([private_subgroup_label_1])
         end
       end
 
@@ -140,13 +140,13 @@ RSpec.describe LabelsFinder do
 
         shared_examples 'with full visibility' do
           it 'returns all projects labels' do
-            expect(finder.execute).to eq [group_label_1, limited_visibility_label, visible_label]
+            expect(finder.execute).to match_array([group_label_1, limited_visibility_label, visible_label])
           end
         end
 
         shared_examples 'with limited visibility' do
           it 'returns only authorized projects labels' do
-            expect(finder.execute).to eq [group_label_1, visible_label]
+            expect(finder.execute).to match_array([group_label_1, visible_label])
           end
         end
 
@@ -249,7 +249,7 @@ RSpec.describe LabelsFinder do
       it 'returns labels available for the project' do
         finder = described_class.new(user, project_id: project_1.id)
 
-        expect(finder.execute).to eq [group_label_2, project_label_1, group_label_1]
+        expect(finder.execute).to match_array([group_label_2, project_label_1, group_label_1])
       end
 
       context 'as an administrator' do
@@ -272,13 +272,13 @@ RSpec.describe LabelsFinder do
       it 'returns label with that title' do
         finder = described_class.new(user, title: 'Group Label 2')
 
-        expect(finder.execute).to eq [group_label_2]
+        expect(finder.execute).to match_array([group_label_2])
       end
 
       it 'returns label with title alias' do
         finder = described_class.new(user, name: 'Group Label 2')
 
-        expect(finder.execute).to eq [group_label_2]
+        expect(finder.execute).to match_array([group_label_2])
       end
 
       it 'returns no labels if empty title is supplied' do
@@ -304,19 +304,19 @@ RSpec.describe LabelsFinder do
       it 'returns labels with a partially matching title' do
         finder = described_class.new(user, search: '(group)')
 
-        expect(finder.execute).to eq [group_label_1]
+        expect(finder.execute).to match_array([group_label_1])
       end
 
       it 'returns labels with a partially matching description' do
         finder = described_class.new(user, search: 'awesome')
 
-        expect(finder.execute).to eq [project_label_1]
+        expect(finder.execute).to match_array([project_label_1])
       end
 
       it 'returns labels matching a single character' do
         finder = described_class.new(user, search: '(')
 
-        expect(finder.execute).to eq [group_label_1]
+        expect(finder.execute).to match_array([group_label_1])
       end
     end
 
@@ -326,7 +326,7 @@ RSpec.describe LabelsFinder do
 
         finder = described_class.new(user, subscribed: 'true')
 
-        expect(finder.execute).to eq [project_label_1]
+        expect(finder.execute).to match_array([project_label_1])
       end
     end
 

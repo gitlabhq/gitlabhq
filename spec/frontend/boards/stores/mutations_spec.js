@@ -322,6 +322,7 @@ describe('Board Store Mutations', () => {
       state = {
         ...state,
         issuesByListId: listIssues,
+        boardLists: mockListsWithModel,
       };
 
       mutations.MOVE_ISSUE_FAILURE(state, {
@@ -389,6 +390,7 @@ describe('Board Store Mutations', () => {
         ...state,
         issuesByListId: listIssues,
         issues,
+        boardLists: mockListsWithModel,
       };
 
       mutations.ADD_ISSUE_TO_LIST_FAILURE(state, { list: mockLists[0], issue: mockIssue2 });
