@@ -477,7 +477,7 @@ export default {
                     <label class="sr-only" :for="rolloutPercentageId(index)">
                       {{ s__('FeatureFlags|Rollout Percentage') }}
                     </label>
-                    <div class="w-3rem">
+                    <div class="gl-w-9">
                       <input
                         :id="rolloutPercentageId(index)"
                         v-model="scope.rolloutPercentage"

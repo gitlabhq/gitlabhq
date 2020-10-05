@@ -7349,7 +7349,7 @@ type Group {
   isTemporaryStorageIncreaseEnabled: Boolean!
 
   """
-  Issues of the group
+  Issues for projects in this group
   """
   issues(
     """
@@ -7418,7 +7418,7 @@ type Group {
     iids: [String!]
 
     """
-    Include issues belonging to subgroups.
+    Include issues belonging to subgroups
     """
     includeSubgroups: Boolean = false
 
@@ -7584,6 +7584,91 @@ type Group {
   Indicates if a group is disabled from getting mentioned
   """
   mentionsDisabled: Boolean
+
+  """
+  Merge requests for projects in this group
+  """
+  mergeRequests(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Username of the assignee
+    """
+    assigneeUsername: String
+
+    """
+    Username of the author
+    """
+    authorUsername: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Array of IIDs of merge requests, for example `[1, 2]`
+    """
+    iids: [String!]
+
+    """
+    Include merge requests belonging to subgroups
+    """
+    includeSubgroups: Boolean = false
+
+    """
+    Array of label names. All resolved merge requests will have all of these labels.
+    """
+    labels: [String!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
+
+    """
+    Title of the milestone
+    """
+    milestoneTitle: String
+
+    """
+    Sort merge requests by this criteria
+    """
+    sort: MergeRequestSort = created_desc
+
+    """
+    Array of source branch names. All resolved merge requests will have one of these branches as their source.
+    """
+    sourceBranches: [String!]
+
+    """
+    A merge request state. If provided, all resolved merge requests will have this state.
+    """
+    state: MergeRequestState
+
+    """
+    Array of target branch names. All resolved merge requests will have one of these branches as their target.
+    """
+    targetBranches: [String!]
+  ): MergeRequestConnection
 
   """
   Milestones of the group
@@ -9851,6 +9936,11 @@ type Label {
 The connection type for Label.
 """
 type LabelConnection {
+  """
+  Total count of collection
+  """
+  count: Int!
+
   """
   A list of edges.
   """
@@ -19176,6 +19266,11 @@ type User {
     after: String
 
     """
+    Username of the author
+    """
+    authorUsername: String
+
+    """
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
@@ -19254,6 +19349,11 @@ type User {
     Returns the elements in the list that come after the specified cursor.
     """
     after: String
+
+    """
+    Username of the assignee
+    """
+    assigneeUsername: String
 
     """
     Returns the elements in the list that come before the specified cursor.

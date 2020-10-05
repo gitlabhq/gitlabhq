@@ -447,6 +447,12 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
+msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch; %{default_branch_link_start}search on %{default_branch} instead%{default_branch_link_end}."
+msgstr ""
+
+msgid "%{doc_link_start}Advanced search%{doc_link_end} is enabled."
+msgstr ""
+
 msgid "%{due_date} (Past due)"
 msgstr ""
 
@@ -2195,9 +2201,6 @@ msgstr ""
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
 msgstr ""
 
-msgid "Advanced search functionality"
-msgstr ""
-
 msgid "After a successful password update you will be redirected to login screen."
 msgstr ""
 
@@ -2546,9 +2549,6 @@ msgid "All security scans are enabled because %{linkStart}Auto DevOps%{linkEnd} 
 msgstr ""
 
 msgid "All threads resolved"
-msgstr ""
-
-msgid "All users"
 msgstr ""
 
 msgid "All users must have a name."
@@ -9182,6 +9182,9 @@ msgstr ""
 msgid "Documentation for popular identity providers"
 msgstr ""
 
+msgid "Documentation pages URL"
+msgstr ""
+
 msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
 msgstr ""
 
@@ -11129,6 +11132,9 @@ msgid "FeatureFlag|Percentage"
 msgstr ""
 
 msgid "FeatureFlag|Select a user list"
+msgstr ""
+
+msgid "FeatureFlag|Select the environment scope for this feature flag."
 msgstr ""
 
 msgid "FeatureFlag|There are no configured user lists"
@@ -14076,6 +14082,48 @@ msgid "InviteMembersModal|You're inviting members to the %{group_name} group"
 msgstr ""
 
 msgid "InviteMembers|Invite team members"
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter} is still waiting for you to join GitLab"
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter} is waiting for you to join GitLab"
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter} is waiting for you to join the %{strong_start}%{project_or_group_name}%{strong_end} %{project_or_group} as a %{role}."
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter}'s invitation to GitLab is pending"
+msgstr ""
+
+msgid "InviteReminderEmail|Accept invitation"
+msgstr ""
+
+msgid "InviteReminderEmail|Accept invitation: %{invite_url}"
+msgstr ""
+
+msgid "InviteReminderEmail|Decline invitation"
+msgstr ""
+
+msgid "InviteReminderEmail|Decline invitation: %{decline_url}"
+msgstr ""
+
+msgid "InviteReminderEmail|Hey there %{wave_emoji}"
+msgstr ""
+
+msgid "InviteReminderEmail|Hey there!"
+msgstr ""
+
+msgid "InviteReminderEmail|In case you missed it..."
+msgstr ""
+
+msgid "InviteReminderEmail|Invitation pending"
+msgstr ""
+
+msgid "InviteReminderEmail|It's been %{invitation_age} days since %{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end} %{project_or_group} as a %{role}. What would you like to do?"
+msgstr ""
+
+msgid "InviteReminderEmail|This is a friendly reminder that %{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end} %{project_or_group} as a %{role}."
 msgstr ""
 
 msgid "Invited"
@@ -17844,9 +17892,6 @@ msgstr ""
 msgid "OnDemandScans|Scanner profile"
 msgstr ""
 
-msgid "OnDemandScans|Scanner settings"
-msgstr ""
-
 msgid "OnDemandScans|Schedule or run scans immediately against target sites. Currently available on-demand scan type: DAST. %{helpLinkStart}More information%{helpLinkEnd}"
 msgstr ""
 
@@ -17854,9 +17899,6 @@ msgid "OnDemandScans|Select one of the existing profiles"
 msgstr ""
 
 msgid "OnDemandScans|Site profile"
-msgstr ""
-
-msgid "OnDemandScans|Site profiles"
 msgstr ""
 
 msgid "OnDemandScans|Use existing scanner profile"
@@ -18582,9 +18624,6 @@ msgid "People without permission will never get a notification and won't be able
 msgstr ""
 
 msgid "People without permission will never get a notification."
-msgstr ""
-
-msgid "Percent of users"
 msgstr ""
 
 msgid "Percentage"
@@ -23133,9 +23172,6 @@ msgid "Select the branch you want to set as the default for this project. All me
 msgstr ""
 
 msgid "Select the custom project template source group."
-msgstr ""
-
-msgid "Select the environment scope for this feature flag."
 msgstr ""
 
 msgid "Select timezone"
@@ -27980,12 +28016,6 @@ msgstr ""
 msgid "User %{username} was successfully removed."
 msgstr ""
 
-msgid "User IDs"
-msgstr ""
-
-msgid "User List"
-msgstr ""
-
 msgid "User OAuth applications"
 msgstr ""
 
@@ -30577,9 +30607,6 @@ msgstr ""
 msgid "is blocked by"
 msgstr ""
 
-msgid "is enabled."
-msgstr ""
-
 msgid "is invalid because there is downstream lock"
 msgstr ""
 
@@ -30611,6 +30638,9 @@ msgid "is read only"
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."
+msgstr ""
+
+msgid "is too long (maximum is %{count} characters)"
 msgstr ""
 
 msgid "is too long (maximum is 100 entries)"

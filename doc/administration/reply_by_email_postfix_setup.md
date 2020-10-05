@@ -112,7 +112,7 @@ The instructions make the assumption that you will be using the email address `i
    q
    ```
 
-1. Log out of the `incoming` account and go back to being `root`:
+1. Sign out of the `incoming` account, and go back to being `root`:
 
    ```shell
    logout
@@ -164,7 +164,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
    try the above steps again, substituting `heirloom-mailx` for the `mail`
    command._
 
-1. Log out of the `incoming` account and go back to being `root`:
+1. Sign out of the `incoming` account, and go back to being `root`:
 
    ```shell
    logout
@@ -288,7 +288,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
       q
       ```
 
-   1. Log out of the `incoming` account and go back to being `root`:
+   1. Sign out of the `incoming` account, and go back to being `root`:
 
       ```shell
       logout

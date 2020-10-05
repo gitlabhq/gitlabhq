@@ -230,20 +230,6 @@
   }
 }
 
-.label-link {
-  display: inline-flex;
-  vertical-align: text-bottom;
-
-  &:hover .color-label {
-    text-decoration: underline;
-  }
-
-  .label {
-    vertical-align: inherit;
-    font-size: $label-font-size;
-  }
-}
-
 .labels-container {
   background-color: $gray-light;
   border-radius: $border-radius-default;

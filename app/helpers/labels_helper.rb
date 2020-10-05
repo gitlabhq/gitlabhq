@@ -61,7 +61,7 @@ module LabelsHelper
     render_label_text(
       label.name,
       suffix: suffix,
-      css_class: text_color_class_for_bg(label.color),
+      css_class: "gl-label-text #{text_color_class_for_bg(label.color)}",
       bg_color: label.color
     )
   end
@@ -281,7 +281,7 @@ module LabelsHelper
   def render_label_text(name, suffix: '', css_class: nil, bg_color: nil)
     <<~HTML.chomp.html_safe
       <span
-        class="gl-label-text #{css_class}"
+        class="#{css_class}"
         data-container="body"
         data-html="true"
         #{"style=\"background-color: #{bg_color}\"" if bg_color}

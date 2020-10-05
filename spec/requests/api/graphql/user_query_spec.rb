@@ -29,15 +29,15 @@ RSpec.describe 'getting user information' do
     let_it_be(:unauthorized_user) { create(:user) }
 
     let_it_be(:assigned_mr) do
-      create(:merge_request, :unique_branches,
+      create(:merge_request, :unique_branches, :unique_author,
              source_project: project_a, assignees: [user])
     end
     let_it_be(:assigned_mr_b) do
-      create(:merge_request, :unique_branches,
+      create(:merge_request, :unique_branches, :unique_author,
              source_project: project_b, assignees: [user])
     end
     let_it_be(:assigned_mr_c) do
-      create(:merge_request, :unique_branches,
+      create(:merge_request, :unique_branches, :unique_author,
              source_project: project_b, assignees: [user])
     end
     let_it_be(:authored_mr) do
@@ -133,6 +133,17 @@ RSpec.describe 'getting user information' do
               )
             end
           end
+
+          context 'filtering by author' do
+            let(:author) { assigned_mr_b.author }
+            let(:mr_args) { { author_username: author.username } }
+
+            it 'finds the authored mrs' do
+              expect(assigned_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(assigned_mr_b))
+              )
+            end
+          end
         end
 
         context 'the current user does not have access' do
@@ -169,6 +180,23 @@ RSpec.describe 'getting user information' do
 
             it 'return an argument error that mentions the missing fields' do
               expect_graphql_errors_to_include(/projectPath/)
+            end
+          end
+
+          context 'filtering by assignee' do
+            let(:assignee) { create(:user) }
+            let(:mr_args) { { assignee_username: assignee.username } }
+
+            it 'finds the assigned mrs' do
+              authored_mr.assignees << assignee
+              authored_mr_c.assignees << assignee
+
+              post_graphql(query, current_user: current_user)
+
+              expect(authored_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(authored_mr)),
+                a_hash_including('id' => global_id_of(authored_mr_c))
+              )
             end
           end
 
@@ -253,8 +281,10 @@ RSpec.describe 'getting user information' do
           let(:current_user) { user }
 
           it 'can be found' do
-            expect(assigned_mrs).to include(
-              a_hash_including('id' => global_id_of(assigned_mr))
+            expect(assigned_mrs).to contain_exactly(
+              a_hash_including('id' => global_id_of(assigned_mr)),
+              a_hash_including('id' => global_id_of(assigned_mr_b)),
+              a_hash_including('id' => global_id_of(assigned_mr_c))
             )
           end
         end

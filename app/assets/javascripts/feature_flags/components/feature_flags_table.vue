@@ -3,7 +3,7 @@ import { GlBadge, GlButton, GlTooltipDirective, GlModal, GlToggle, GlIcon } from
 import { sprintf, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ROLLOUT_STRATEGY_PERCENT_ROLLOUT, NEW_VERSION_FLAG, LEGACY_FLAG } from '../constants';
-import labelForStrategy from '../utils';
+import { labelForStrategy } from '../utils';
 
 export default {
   components: {

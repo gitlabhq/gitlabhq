@@ -737,8 +737,8 @@ To run an on-demand DAST scan, you need:
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
 1. Click **Create new DAST scan**.
-1. In **Scanner settings**, select a scanner profile from the dropdown.
-1. In **Site profiles**, select a site profile from the dropdown.
+1. In **Scanner profile**, select a scanner profile from the dropdown.
+1. In **Site profile**, select a site profile from the dropdown.
 1. Click **Run scan**.
 
 The on-demand DAST scan runs and the project's dashboard shows the results.

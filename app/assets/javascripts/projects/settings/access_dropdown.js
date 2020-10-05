@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import { escape, find, countBy } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { n__, s__, __, sprintf } from '~/locale';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
@@ -328,15 +328,15 @@ export default class AccessDropdown {
         })
         .catch(() => {
           if (this.deployKeysOnProtectedBranchesEnabled) {
-            Flash(__('Failed to load groups, users and deploy keys.'));
+            createFlash({ message: __('Failed to load groups, users and deploy keys.') });
           } else {
-            Flash(__('Failed to load groups & users.'));
+            createFlash({ message: __('Failed to load groups & users.') });
           }
         });
     } else {
       this.getDeployKeys(query)
         .then(deployKeysResponse => callback(this.consolidateData(deployKeysResponse.data)))
-        .catch(() => Flash(__('Failed to load deploy keys.')));
+        .catch(() => createFlash({ message: __('Failed to load deploy keys.') }));
     }
   }
 

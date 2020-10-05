@@ -15,7 +15,7 @@ From left to right, it displays:
 
 - **Current Host**: the current host serving the page.
 - **Database queries**: the time taken (in milliseconds) and the total number
-  of database queries, displayed in the format `00ms / 00pg`. Click to display
+  of database queries, displayed in the format `00ms / 00 (00 cached) pg`. Click to display
   a modal window with more details:
   ![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of

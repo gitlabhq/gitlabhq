@@ -1,6 +1,8 @@
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+  ROLLOUT_STRATEGY_GITLAB_USER_LIST,
+  ROLLOUT_STRATEGY_USER_ID,
 } from '~/feature_flags/constants';
 
 export const featureFlag = {
@@ -100,6 +102,25 @@ export const userList = {
   updated_at: '2020-02-04T08:13:10.507Z',
   path: '/path/to/user/list',
   edit_path: '/path/to/user/list/edit',
+};
+
+export const userListStrategy = {
+  name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
+  parameters: {},
+  scopes: [],
+  userListId: userList.id,
+};
+
+export const percentRolloutStrategy = {
+  name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+  parameters: { percentage: '50', groupId: 'default' },
+  scopes: [],
+};
+
+export const usersWithIdStrategy = {
+  name: ROLLOUT_STRATEGY_USER_ID,
+  parameters: { userIds: '1,2,3' },
+  scopes: [],
 };
 
 export const allUsersStrategy = {

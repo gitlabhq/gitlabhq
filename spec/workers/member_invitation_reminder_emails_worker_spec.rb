@@ -6,13 +6,19 @@ RSpec.describe MemberInvitationReminderEmailsWorker do
   describe '#perform' do
     subject { described_class.new.perform }
 
+    before do
+      create(:group_member, :invited, created_at: 2.days.ago)
+    end
+
     context 'feature flag disabled' do
       before do
         stub_experiment(invitation_reminders: false)
       end
 
-      it 'does not raise an error' do
-        expect { subject }.not_to raise_error
+      it 'does not attempt to execute the invitation reminder service' do
+        expect(Members::InvitationReminderEmailService).not_to receive(:new)
+
+        subject
       end
     end
 
@@ -21,8 +27,12 @@ RSpec.describe MemberInvitationReminderEmailsWorker do
         stub_experiment(invitation_reminders: true)
       end
 
-      it 'does not raise an error' do
-        expect { subject }.not_to raise_error
+      it 'executes the invitation reminder email service' do
+        expect_next_instance_of(Members::InvitationReminderEmailService) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        subject
       end
     end
   end

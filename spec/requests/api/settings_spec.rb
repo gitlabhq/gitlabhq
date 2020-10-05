@@ -96,6 +96,7 @@ RSpec.describe API::Settings, 'Settings' do
             help_page_text: 'custom help text',
             help_page_hide_commercial_content: true,
             help_page_support_url: 'http://example.com/help',
+            help_page_documentation_base_url: 'https://docs.gitlab.com',
             project_export_enabled: false,
             rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE,
             dsa_key_restriction: 2048,
@@ -138,6 +139,7 @@ RSpec.describe API::Settings, 'Settings' do
         expect(json_response['help_page_text']).to eq('custom help text')
         expect(json_response['help_page_hide_commercial_content']).to be_truthy
         expect(json_response['help_page_support_url']).to eq('http://example.com/help')
+        expect(json_response['help_page_documentation_base_url']).to eq('https://docs.gitlab.com')
         expect(json_response['project_export_enabled']).to be_falsey
         expect(json_response['rsa_key_restriction']).to eq(ApplicationSetting::FORBIDDEN_KEY_VALUE)
         expect(json_response['dsa_key_restriction']).to eq(2048)

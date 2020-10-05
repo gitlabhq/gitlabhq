@@ -60,6 +60,7 @@ module Gitlab
           }.merge(upload_action['header'] || {})
         }
 
+        authenticated = true if params[:headers].key?('Authorization')
         params[:basic_auth] = basic_auth unless authenticated
 
         rsp = Gitlab::HTTP.put(upload_action['href'], params)
@@ -75,6 +76,7 @@ module Gitlab
           headers: build_request_headers(verify_action['header'])
         }
 
+        authenticated = true if params[:headers].key?('Authorization')
         params[:basic_auth] = basic_auth unless authenticated
 
         rsp = Gitlab::HTTP.post(verify_action['href'], params)

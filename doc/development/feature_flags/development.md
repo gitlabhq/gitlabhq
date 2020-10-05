@@ -440,6 +440,21 @@ Feature.enabled?(:my_feature2) # => false
 Feature.enabled?(:my_feature2, project1) # => true
 ```
 
+### `have_pushed_frontend_feature_flags`
+
+Use `have_pushed_frontend_feature_flags` to test if [`push_frontend_feature_flag`](#frontend)
+has added the feature flag to the HTML.
+
+For example,
+
+```ruby
+stub_feature_flags(value_stream_analytics_path_navigation: false)
+
+visit group_analytics_cycle_analytics_path(group)
+
+expect(page).to have_pushed_frontend_feature_flags(valueStreamAnalyticsPathNavigation: false)
+```
+
 ### `stub_feature_flags` vs `Feature.enable*`
 
 It is preferred to use `stub_feature_flags` to enable feature flags
@@ -494,6 +509,14 @@ stub_feature_flags(ci_live_trace: gate)
 
 Feature.enabled?(:ci_live_trace) # => false
 Feature.enabled?(:ci_live_trace, gate) # => true
+```
+
+You can also disable a feature flag for a specific actor:
+
+```ruby
+gate = stub_feature_flag_gate('CustomActor')
+
+stub_feature_flags(ci_live_trace: false, thing: gate)
 ```
 
 ### Controlling feature flags engine in tests

@@ -82,6 +82,7 @@ module ApplicationSettingImplementation
         group_import_limit: 6,
         help_page_hide_commercial_content: false,
         help_page_text: nil,
+        help_page_documentation_base_url: nil,
         hide_third_party_offers: false,
         housekeeping_bitmaps_enabled: true,
         housekeeping_enabled: true,

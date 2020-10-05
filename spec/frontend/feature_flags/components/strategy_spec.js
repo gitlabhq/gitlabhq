@@ -1,5 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlFormSelect, GlFormTextarea, GlFormInput, GlLink, GlToken, GlButton } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { last } from 'lodash';
+import { GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
 import {
   PERCENT_ROLLOUT_GROUP_ID,
   ROLLOUT_STRATEGY_ALL_USERS,
@@ -9,6 +10,7 @@ import {
 } from '~/feature_flags/constants';
 import Strategy from '~/feature_flags/components/strategy.vue';
 import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';
+import StrategyParameters from '~/feature_flags/components/strategy_parameters.vue';
 
 import { userList } from '../mock_data';
 
@@ -20,7 +22,7 @@ const provide = {
 describe('Feature flags strategy', () => {
   let wrapper;
 
-  const findStrategy = () => wrapper.find('[data-testid="strategy"]');
+  const findStrategyParameters = () => wrapper.find(StrategyParameters);
   const findDocsLinks = () => wrapper.findAll(GlLink);
 
   const factory = (
@@ -38,7 +40,7 @@ describe('Feature flags strategy', () => {
       wrapper.destroy();
       wrapper = null;
     }
-    wrapper = shallowMount(Strategy, opts);
+    wrapper = mount(Strategy, opts);
   };
 
   afterEach(() => {
@@ -61,101 +63,31 @@ describe('Feature flags strategy', () => {
   });
 
   describe.each`
-    name                                | parameter       | value    | newValue   | input
-    ${ROLLOUT_STRATEGY_ALL_USERS}       | ${null}         | ${null}  | ${null}    | ${null}
-    ${ROLLOUT_STRATEGY_PERCENT_ROLLOUT} | ${'percentage'} | ${'50'}  | ${'20'}    | ${GlFormInput}
-    ${ROLLOUT_STRATEGY_USER_ID}         | ${'userIds'}    | ${'1,2'} | ${'1,2,3'} | ${GlFormTextarea}
-  `('with strategy $name', ({ name, parameter, value, newValue, input }) => {
+    name
+    ${ROLLOUT_STRATEGY_ALL_USERS}
+    ${ROLLOUT_STRATEGY_PERCENT_ROLLOUT}
+    ${ROLLOUT_STRATEGY_USER_ID}
+    ${ROLLOUT_STRATEGY_GITLAB_USER_LIST}
+  `('with strategy $name', ({ name }) => {
     let propsData;
     let strategy;
+
     beforeEach(() => {
-      const parameters = {};
-      if (parameter !== null) {
-        parameters[parameter] = value;
-      }
-      strategy = { name, parameters };
+      strategy = { name, parameters: {}, scopes: [] };
       propsData = { strategy, index: 0, endpoint: '' };
       factory({ propsData, provide });
+      return wrapper.vm.$nextTick();
     });
 
     it('should set the select to match the strategy name', () => {
-      expect(wrapper.find(GlFormSelect).attributes('value')).toBe(name);
+      expect(wrapper.find(GlFormSelect).element.value).toBe(name);
     });
 
-    it('should not show inputs for other parameters', () => {
-      [GlFormTextarea, GlFormInput, GlFormSelect]
-        .filter(component => component !== input)
-        .map(component => findStrategy().findAll(component))
-        .forEach(inputWrapper => expect(inputWrapper).toHaveLength(0));
-    });
-
-    if (parameter !== null) {
-      it(`should show the input for ${parameter} with the correct value`, () => {
-        const inputWrapper = findStrategy().find(input);
-        expect(inputWrapper.exists()).toBe(true);
-        expect(inputWrapper.attributes('value')).toBe(value);
-      });
-
-      it(`should emit a change event when altering ${parameter}`, () => {
-        const inputWrapper = findStrategy().find(input);
-        inputWrapper.vm.$emit('input', newValue);
-        expect(wrapper.emitted('change')).toEqual([
-          [{ name, parameters: expect.objectContaining({ [parameter]: newValue }), scopes: [] }],
-        ]);
-      });
-    }
-  });
-
-  describe('with strategy gitlabUserList', () => {
-    let propsData;
-    let strategy;
-    beforeEach(() => {
-      strategy = { name: ROLLOUT_STRATEGY_GITLAB_USER_LIST, userListId: '2', parameters: {} };
-      propsData = { strategy, index: 0, endpoint: '', userLists: [userList] };
-      factory({ propsData, provide });
-    });
-
-    it('should set the select to match the strategy name', () => {
-      expect(wrapper.find(GlFormSelect).attributes('value')).toBe(
-        ROLLOUT_STRATEGY_GITLAB_USER_LIST,
-      );
-    });
-
-    it('should not show inputs for other parameters', () => {
-      expect(
-        findStrategy()
-          .find(GlFormTextarea)
-          .exists(),
-      ).toBe(false);
-      expect(
-        findStrategy()
-          .find(GlFormInput)
-          .exists(),
-      ).toBe(false);
-    });
-
-    it('should show the input for userListId with the correct value', () => {
-      const inputWrapper = findStrategy().find(GlFormSelect);
-      expect(inputWrapper.exists()).toBe(true);
-      expect(inputWrapper.attributes('value')).toBe('2');
-    });
-
-    it('should emit a change event when altering the userListId', () => {
-      const inputWrapper = findStrategy().find(GlFormSelect);
-      inputWrapper.vm.$emit('input', '3');
-      inputWrapper.vm.$emit('change', '3');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('change')).toEqual([
-          [
-            {
-              name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
-              userListId: '3',
-              scopes: [],
-              parameters: {},
-            },
-          ],
-        ]);
-      });
+    it('should emit a change if the parameters component does', () => {
+      findStrategyParameters().vm.$emit('change', { name, parameters: { test: 'parameters' } });
+      expect(last(wrapper.emitted('change'))).toEqual([
+        { name, parameters: { test: 'parameters' } },
+      ]);
     });
   });
 
@@ -166,7 +98,7 @@ describe('Feature flags strategy', () => {
       beforeEach(() => {
         strategy = {
           name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-          parameters: { percentage: '50' },
+          parameters: { percentage: '50', groupId: 'default' },
           scopes: [{ environmentScope: 'production' }],
         };
         const propsData = { strategy, index: 0, endpoint: '' };
@@ -178,14 +110,12 @@ describe('Feature flags strategy', () => {
         token.vm.$emit('close');
         return wrapper.vm.$nextTick().then(() => {
           expect(wrapper.findAll(GlToken)).toHaveLength(0);
-          expect(wrapper.emitted('change')).toEqual([
-            [
-              {
-                name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-                parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
-                scopes: [{ environmentScope: '*' }],
-              },
-            ],
+          expect(last(wrapper.emitted('change'))).toEqual([
+            {
+              name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+              parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+              scopes: [{ environmentScope: '*' }],
+            },
           ]);
         });
       });
@@ -197,7 +127,7 @@ describe('Feature flags strategy', () => {
       beforeEach(() => {
         strategy = {
           name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-          parameters: { percentage: '50' },
+          parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
           scopes: [{ environmentScope: '*' }],
         };
         const propsData = { strategy, index: 0, endpoint: '' };
@@ -206,18 +136,14 @@ describe('Feature flags strategy', () => {
 
       it('should change the parameters if a different strategy is chosen', () => {
         const select = wrapper.find(GlFormSelect);
-        select.vm.$emit('input', ROLLOUT_STRATEGY_ALL_USERS);
-        select.vm.$emit('change', ROLLOUT_STRATEGY_ALL_USERS);
+        select.setValue(ROLLOUT_STRATEGY_ALL_USERS);
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.find(GlFormInput).exists()).toBe(false);
-          expect(wrapper.emitted('change')).toEqual([
-            [
-              {
-                name: ROLLOUT_STRATEGY_ALL_USERS,
-                parameters: {},
-                scopes: [{ environmentScope: '*' }],
-              },
-            ],
+          expect(last(wrapper.emitted('change'))).toEqual([
+            {
+              name: ROLLOUT_STRATEGY_ALL_USERS,
+              parameters: {},
+              scopes: [{ environmentScope: '*' }],
+            },
           ]);
         });
       });
@@ -247,17 +173,15 @@ describe('Feature flags strategy', () => {
         const dropdown = wrapper.find(NewEnvironmentsDropdown);
         dropdown.vm.$emit('add', 'production');
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted('change')).toEqual([
-            [
-              {
-                name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-                parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
-                scopes: [
-                  { environmentScope: '*', shouldBeDestroyed: true },
-                  { environmentScope: 'production' },
-                ],
-              },
-            ],
+          expect(last(wrapper.emitted('change'))).toEqual([
+            {
+              name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+              parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+              scopes: [
+                { environmentScope: '*', shouldBeDestroyed: true },
+                { environmentScope: 'production' },
+              ],
+            },
           ]);
         });
       });
@@ -272,7 +196,7 @@ describe('Feature flags strategy', () => {
       beforeEach(() => {
         const strategy = {
           name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-          parameters: { percentage: '50' },
+          parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
           scopes: [],
         };
         const propsData = { strategy, index: 0, endpoint: '' };
@@ -304,14 +228,12 @@ describe('Feature flags strategy', () => {
         const dropdown = wrapper.find(NewEnvironmentsDropdown);
         dropdown.vm.$emit('add', 'production');
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted('change')).toEqual([
-            [
-              {
-                name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-                parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
-                scopes: [{ environmentScope: 'production' }],
-              },
-            ],
+          expect(last(wrapper.emitted('change'))).toEqual([
+            {
+              name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+              parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+              scopes: [{ environmentScope: 'production' }],
+            },
           ]);
         });
       });

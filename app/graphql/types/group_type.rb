@@ -46,8 +46,14 @@ module Types
     field :issues,
           Types::IssueType.connection_type,
           null: true,
-          description: 'Issues of the group',
+          description: 'Issues for projects in this group',
           resolver: Resolvers::GroupIssuesResolver
+
+    field :merge_requests,
+          Types::MergeRequestType.connection_type,
+          null: true,
+          description: 'Merge requests for projects in this group',
+          resolver: Resolvers::GroupMergeRequestsResolver
 
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones of the group',

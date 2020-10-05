@@ -2,12 +2,13 @@ import { mount } from '@vue/test-utils';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import fieldComponent from '~/vue_shared/components/markdown/field.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import axios from '~/lib/utils/axios_utils';
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
 const textareaValue = 'testing\n123';
+const uploadsPath = 'test/uploads';
 
 function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
   expect(writeLink.element.parentNode.classList.contains('active')).toBe(isWrite);
@@ -15,54 +16,81 @@ function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
   expect(wrapper.find('.md-preview-holder').element.style.display).toBe(isWrite ? 'none' : '');
 }
 
-function createComponent() {
-  const wrapper = mount(fieldComponent, {
-    propsData: {
-      markdownDocsPath,
-      markdownPreviewPath,
-      isSubmitting: false,
-      textareaValue,
-    },
-    slots: {
-      textarea: `<textarea>${textareaValue}</textarea>`,
-    },
-  });
-  return wrapper;
-}
-
-const getPreviewLink = wrapper => wrapper.find('.nav-links .js-preview-link');
-const getWriteLink = wrapper => wrapper.find('.nav-links .js-write-link');
-const getMarkdownButton = wrapper => wrapper.find('.js-md');
-const getAllMarkdownButtons = wrapper => wrapper.findAll('.js-md');
-const getVideo = wrapper => wrapper.find('video');
-
 describe('Markdown field component', () => {
   let axiosMock;
+  let subject;
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
+    // window.uploads_path is needed for dropzone to initialize
+    window.uploads_path = uploadsPath;
   });
 
   afterEach(() => {
+    subject.destroy();
+    subject = null;
     axiosMock.restore();
   });
 
+  function createSubject() {
+    // We actually mount a wrapper component so that we can force Vue to rerender classes in order to test a regression
+    // caused by mixing Vanilla JS and Vue.
+    subject = mount(
+      {
+        components: {
+          MarkdownField,
+        },
+        props: {
+          wrapperClasses: {
+            type: String,
+            required: false,
+            default: '',
+          },
+        },
+        template: `
+<markdown-field :class="wrapperClasses" v-bind="$attrs">
+  <template #textarea>
+    <textarea class="js-gfm-input" :value="$attrs.textareaValue"></textarea>
+  </template>
+</markdown-field>`,
+      },
+      {
+        propsData: {
+          markdownDocsPath,
+          markdownPreviewPath,
+          isSubmitting: false,
+          textareaValue,
+        },
+      },
+    );
+  }
+
+  const getPreviewLink = () => subject.find('.nav-links .js-preview-link');
+  const getWriteLink = () => subject.find('.nav-links .js-write-link');
+  const getMarkdownButton = () => subject.find('.js-md');
+  const getAllMarkdownButtons = () => subject.findAll('.js-md');
+  const getVideo = () => subject.find('video');
+  const getAttachButton = () => subject.find('.button-attach-file');
+  const clickAttachButton = () => getAttachButton().trigger('click');
+  const findDropzone = () => subject.find('.div-dropzone');
+
   describe('mounted', () => {
-    let wrapper;
     const previewHTML = `
     <p>markdown preview</p>
     <video src="${FIXTURES_PATH}/static/mock-video.mp4" muted="muted"></video>
   `;
     let previewLink;
     let writeLink;
+    let dropzoneSpy;
 
-    afterEach(() => {
-      wrapper.destroy();
+    beforeEach(() => {
+      dropzoneSpy = jest.fn();
+      createSubject();
+      findDropzone().element.addEventListener('click', dropzoneSpy);
     });
 
     it('renders textarea inside backdrop', () => {
-      wrapper = createComponent();
-      expect(wrapper.find('.zen-backdrop textarea').element).not.toBeNull();
+      expect(subject.find('.zen-backdrop textarea').element).not.toBeNull();
     });
 
     describe('markdown preview', () => {
@@ -71,44 +99,40 @@ describe('Markdown field component', () => {
       });
 
       it('sets preview link as active', () => {
-        wrapper = createComponent();
-        previewLink = getPreviewLink(wrapper);
+        previewLink = getPreviewLink();
         previewLink.trigger('click');
 
-        return wrapper.vm.$nextTick().then(() => {
+        return subject.vm.$nextTick().then(() => {
           expect(previewLink.element.parentNode.classList.contains('active')).toBeTruthy();
         });
       });
 
       it('shows preview loading text', () => {
-        wrapper = createComponent();
-        previewLink = getPreviewLink(wrapper);
+        previewLink = getPreviewLink();
         previewLink.trigger('click');
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.find('.md-preview-holder').element.textContent.trim()).toContain(
+        return subject.vm.$nextTick(() => {
+          expect(subject.find('.md-preview-holder').element.textContent.trim()).toContain(
             'Loading…',
           );
         });
       });
 
       it('renders markdown preview and GFM', () => {
-        wrapper = createComponent();
         const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
 
-        previewLink = getPreviewLink(wrapper);
+        previewLink = getPreviewLink();
 
         previewLink.trigger('click');
 
         return axios.waitFor(markdownPreviewPath).then(() => {
-          expect(wrapper.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
+          expect(subject.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
           expect(renderGFMSpy).toHaveBeenCalled();
         });
       });
 
       it('calls video.pause() on comment input when isSubmitting is changed to true', () => {
-        wrapper = createComponent();
-        previewLink = getPreviewLink(wrapper);
+        previewLink = getPreviewLink();
         previewLink.trigger('click');
 
         let callPause;
@@ -116,78 +140,106 @@ describe('Markdown field component', () => {
         return axios
           .waitFor(markdownPreviewPath)
           .then(() => {
-            const video = getVideo(wrapper);
+            const video = getVideo();
             callPause = jest.spyOn(video.element, 'pause').mockImplementation(() => true);
 
-            wrapper.setProps({
-              isSubmitting: true,
-              markdownPreviewPath,
-              markdownDocsPath,
-            });
+            subject.setProps({ isSubmitting: true });
 
-            return wrapper.vm.$nextTick();
+            return subject.vm.$nextTick();
           })
           .then(() => {
             expect(callPause).toHaveBeenCalled();
           });
       });
 
-      it('clicking already active write or preview link does nothing', () => {
-        wrapper = createComponent();
-        writeLink = getWriteLink(wrapper);
-        previewLink = getPreviewLink(wrapper);
+      it('clicking already active write or preview link does nothing', async () => {
+        writeLink = getWriteLink();
+        previewLink = getPreviewLink();
 
         writeLink.trigger('click');
-        return wrapper.vm
-          .$nextTick()
-          .then(() => assertMarkdownTabs(true, writeLink, previewLink, wrapper))
-          .then(() => writeLink.trigger('click'))
-          .then(() => wrapper.vm.$nextTick())
-          .then(() => assertMarkdownTabs(true, writeLink, previewLink, wrapper))
-          .then(() => previewLink.trigger('click'))
-          .then(() => wrapper.vm.$nextTick())
-          .then(() => assertMarkdownTabs(false, writeLink, previewLink, wrapper))
-          .then(() => previewLink.trigger('click'))
-          .then(() => wrapper.vm.$nextTick())
-          .then(() => assertMarkdownTabs(false, writeLink, previewLink, wrapper));
+        await subject.vm.$nextTick();
+
+        assertMarkdownTabs(true, writeLink, previewLink, subject);
+        writeLink.trigger('click');
+        await subject.vm.$nextTick();
+
+        assertMarkdownTabs(true, writeLink, previewLink, subject);
+        previewLink.trigger('click');
+        await subject.vm.$nextTick();
+
+        assertMarkdownTabs(false, writeLink, previewLink, subject);
+        previewLink.trigger('click');
+        await subject.vm.$nextTick();
+
+        assertMarkdownTabs(false, writeLink, previewLink, subject);
       });
     });
 
     describe('markdown buttons', () => {
       it('converts single words', () => {
-        wrapper = createComponent();
-        const textarea = wrapper.find('textarea').element;
+        const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 7);
-        const markdownButton = getMarkdownButton(wrapper);
+        const markdownButton = getMarkdownButton();
         markdownButton.trigger('click');
 
-        return wrapper.vm.$nextTick(() => {
+        return subject.vm.$nextTick(() => {
           expect(textarea.value).toContain('**testing**');
         });
       });
 
       it('converts a line', () => {
-        wrapper = createComponent();
-        const textarea = wrapper.find('textarea').element;
+        const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 0);
-        const markdownButton = getAllMarkdownButtons(wrapper).wrappers[5];
+        const markdownButton = getAllMarkdownButtons().wrappers[5];
         markdownButton.trigger('click');
 
-        return wrapper.vm.$nextTick(() => {
+        return subject.vm.$nextTick(() => {
           expect(textarea.value).toContain('- testing');
         });
       });
 
       it('converts multiple lines', () => {
-        wrapper = createComponent();
-        const textarea = wrapper.find('textarea').element;
+        const textarea = subject.find('textarea').element;
         textarea.setSelectionRange(0, 50);
-        const markdownButton = getAllMarkdownButtons(wrapper).wrappers[5];
+        const markdownButton = getAllMarkdownButtons().wrappers[5];
         markdownButton.trigger('click');
 
-        return wrapper.vm.$nextTick(() => {
+        return subject.vm.$nextTick(() => {
           expect(textarea.value).toContain('- testing\n- 123');
         });
+      });
+    });
+
+    it('should render attach a file button', () => {
+      expect(getAttachButton().text()).toBe('Attach a file');
+    });
+
+    it('should trigger dropzone when attach button is clicked', () => {
+      expect(dropzoneSpy).not.toHaveBeenCalled();
+
+      clickAttachButton();
+
+      expect(dropzoneSpy).toHaveBeenCalled();
+    });
+
+    describe('when textarea has changed', () => {
+      beforeEach(async () => {
+        // Do something to trigger rerendering the class
+        subject.setProps({ wrapperClasses: 'foo' });
+
+        await subject.vm.$nextTick();
+      });
+
+      it('should have rerendered classes and kept gfm-form', () => {
+        expect(subject.classes()).toEqual(expect.arrayContaining(['gfm-form', 'foo']));
+      });
+
+      it('should trigger dropzone when attach button is clicked', () => {
+        expect(dropzoneSpy).not.toHaveBeenCalled();
+
+        clickAttachButton();
+
+        expect(dropzoneSpy).toHaveBeenCalled();
       });
     });
   });

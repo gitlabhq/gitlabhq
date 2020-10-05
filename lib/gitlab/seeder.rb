@@ -87,7 +87,9 @@ module Gitlab
 
       SeedFu.quiet = true
 
-      yield
+      without_statement_timeout do
+        yield
+      end
 
       SeedFu.quiet = false
       ActiveRecord::Base.logger = old_logger
@@ -113,6 +115,13 @@ module Gitlab
 
     def self.mute_mailer
       ActionMailer::MessageDelivery.prepend(DeliverNever)
+    end
+
+    def self.without_statement_timeout
+      ActiveRecord::Base.connection.execute('SET statement_timeout=0')
+      yield
+    ensure
+      ActiveRecord::Base.connection.execute('RESET statement_timeout')
     end
   end
 end

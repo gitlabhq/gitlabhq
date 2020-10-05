@@ -91,6 +91,11 @@ class ApplicationSetting < ApplicationRecord
             addressable_url: true,
             if: :help_page_support_url_column_exists?
 
+  validates :help_page_documentation_base_url,
+            length: { maximum: 255, message: _("is too long (maximum is %{count} characters)") },
+            allow_blank: true,
+            addressable_url: true
+
   validates :after_sign_out_path,
             allow_blank: true,
             addressable_url: true

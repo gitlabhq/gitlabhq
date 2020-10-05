@@ -112,6 +112,35 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value(nil).for(:repository_storages_weighted_default) }
     it { is_expected.not_to allow_value({ default: 100, shouldntexist: 50 }).for(:repository_storages_weighted) }
 
+    context 'help_page_documentation_base_url validations' do
+      it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
+      it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }
+      it { is_expected.to allow_value('http://127.0.0.1').for(:help_page_documentation_base_url) }
+      it { is_expected.not_to allow_value('docs.gitlab.com').for(:help_page_documentation_base_url) }
+
+      context 'when url length validation' do
+        let(:value) { 'http://'.ljust(length, 'A') }
+
+        context 'when value string length is 255 characters' do
+          let(:length) { 255 }
+
+          it 'allows the value' do
+            is_expected.to allow_value(value).for(:help_page_documentation_base_url)
+          end
+        end
+
+        context 'when value string length exceeds 255 characters' do
+          let(:length) { 256 }
+
+          it 'does not allow the value' do
+            is_expected.not_to allow_value(value)
+                                 .for(:help_page_documentation_base_url)
+                                 .with_message('is too long (maximum is 255 characters)')
+          end
+        end
+      end
+    end
+
     context 'grafana_url validations' do
       before do
         subject.instance_variable_set(:@parsed_grafana_url, nil)

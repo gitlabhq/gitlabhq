@@ -2,6 +2,8 @@
 
 module Resolvers
   class AssignedMergeRequestsResolver < UserMergeRequestsResolver
+    accept_author
+
     def user_role
       :assignee
     end

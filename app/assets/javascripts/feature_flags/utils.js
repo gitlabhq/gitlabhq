@@ -30,7 +30,7 @@ const badgeTextByType = {
 const scopeName = ({ environment_scope: scope }) =>
   scope === ALL_ENVIRONMENTS_NAME ? s__('FeatureFlags|All Environments') : scope;
 
-export default strategy => {
+export const labelForStrategy = strategy => {
   const { name, parameters } = badgeTextByType[strategy.name];
 
   if (parameters) {

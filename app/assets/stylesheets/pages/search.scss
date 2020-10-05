@@ -281,6 +281,10 @@ input[type='checkbox']:hover {
   }
 }
 
+.ref-truncated {
+  @include str-truncated(10em);
+}
+
 // Disable webkit input icons, link to solution: https://stackoverflow.com/questions/9421551/how-do-i-remove-all-default-webkit-search-field-styling
 /* stylelint-disable property-no-vendor-prefix */
 input[type='search']::-webkit-search-decoration,

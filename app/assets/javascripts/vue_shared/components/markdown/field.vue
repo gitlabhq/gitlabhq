@@ -167,17 +167,21 @@ export default {
   },
   mounted() {
     // GLForm class handles all the toolbar buttons
-    return new GLForm($(this.$refs['gl-form']), {
-      emojis: this.enableAutocomplete,
-      members: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-      issues: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-      mergeRequests: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-      epics: this.enableAutocomplete,
-      milestones: this.enableAutocomplete,
-      labels: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-      snippets: this.enableAutocomplete,
-      vulnerabilities: this.enableAutocomplete,
-    });
+    return new GLForm(
+      $(this.$refs['gl-form']),
+      {
+        emojis: this.enableAutocomplete,
+        members: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
+        issues: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
+        mergeRequests: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
+        epics: this.enableAutocomplete,
+        milestones: this.enableAutocomplete,
+        labels: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
+        snippets: this.enableAutocomplete,
+        vulnerabilities: this.enableAutocomplete,
+      },
+      true,
+    );
   },
   beforeDestroy() {
     const glForm = $(this.$refs['gl-form']).data('glForm');
@@ -230,7 +234,7 @@ export default {
   <div
     ref="gl-form"
     :class="{ 'gl-mt-3 gl-mb-3': addSpacingClasses }"
-    class="js-vue-markdown-field md-area position-relative"
+    class="js-vue-markdown-field md-area position-relative gfm-form"
   >
     <markdown-header
       :preview-markdown="previewMarkdown"

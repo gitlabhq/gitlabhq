@@ -26,3 +26,24 @@ export const NEW_FLAG_ALERT = s__(
 
 export const FEATURE_FLAG_SCOPE = 'featureFlags';
 export const USER_LIST_SCOPE = 'userLists';
+
+export const EMPTY_PARAMETERS = { parameters: {}, userListId: undefined };
+
+export const STRATEGY_SELECTIONS = [
+  {
+    value: ROLLOUT_STRATEGY_ALL_USERS,
+    text: s__('FeatureFlags|All users'),
+  },
+  {
+    value: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+    text: s__('FeatureFlags|Percent of users'),
+  },
+  {
+    value: ROLLOUT_STRATEGY_USER_ID,
+    text: s__('FeatureFlags|User IDs'),
+  },
+  {
+    value: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
+    text: s__('FeatureFlags|User List'),
+  },
+];

@@ -2293,6 +2293,25 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  describe '#invite_member_reminder' do
+    let_it_be(:group_member) { create(:group_member) }
+
+    subject { notification.invite_member_reminder(group_member, 'token', 0) }
+
+    it 'calls the Notify.invite_member_reminder method with the right params' do
+      expect(Notify).to receive(:member_invited_reminder_email).with('Group', group_member.id, 'token', 0).at_least(:once).and_call_original
+
+      subject
+    end
+
+    it 'sends exactly one email' do
+      subject
+
+      expect_delivery_jobs_count(1)
+      expect_enqueud_email('Group', group_member.id, 'token', 0, mail: 'member_invited_reminder_email')
+    end
+  end
+
   describe 'GroupMember', :deliver_mails_inline do
     let(:added_user) { create(:user) }
 

@@ -699,6 +699,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
           expect(model).to receive(:copy_indexes).with(:users, :old, :new)
           expect(model).to receive(:copy_foreign_keys).with(:users, :old, :new)
+          expect(model).to receive(:copy_check_constraints).with(:users, :old, :new)
 
           model.rename_column_concurrently(:users, :old, :new)
         end
@@ -760,6 +761,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           it 'copies the default to the new column' do
             expect(model).to receive(:change_column_default)
               .with(:users, :new, old_column.default)
+
+            expect(model).to receive(:copy_check_constraints)
+              .with(:users, :old, :new)
 
             model.rename_column_concurrently(:users, :old, :new)
           end
@@ -856,6 +860,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         expect(model).to receive(:copy_indexes).with(:users, :new, :old)
         expect(model).to receive(:copy_foreign_keys).with(:users, :new, :old)
+        expect(model).to receive(:copy_check_constraints).with(:users, :new, :old)
 
         model.undo_cleanup_concurrent_column_rename(:users, :old, :new)
       end
@@ -893,6 +898,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         it 'copies the default to the old column' do
           expect(model).to receive(:change_column_default)
             .with(:users, :old, new_column.default)
+
+          expect(model).to receive(:copy_check_constraints)
+            .with(:users, :new, :old)
 
           model.undo_cleanup_concurrent_column_rename(:users, :old, :new)
         end
@@ -2169,6 +2177,103 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(model).to receive(:execute).with(drop_sql)
 
       model.remove_check_constraint(:test_table, 'check_name')
+    end
+  end
+
+  describe '#copy_check_constraints' do
+    context 'inside a transaction' do
+      it 'raises an error' do
+        expect(model).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          model.copy_check_constraints(:test_table, :old_column, :new_column)
+        end.to raise_error(RuntimeError)
+      end
+    end
+
+    context 'outside a transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:column_exists?).and_return(true)
+      end
+
+      let(:old_column_constraints) do
+        [
+          {
+            'schema_name' => 'public',
+            'table_name' => 'test_table',
+            'column_name' => 'old_column',
+            'constraint_name' => 'check_d7d49d475d',
+            'constraint_def' => '(old_column IS NOT NULL)'
+          },
+          {
+            'schema_name' => 'public',
+            'table_name' => 'test_table',
+            'column_name' => 'old_column',
+            'constraint_name' => 'check_48560e521e',
+            'constraint_def' => '(char_length(old_column) <= 255)'
+          },
+          {
+            'schema_name' => 'public',
+            'table_name' => 'test_table',
+            'column_name' => 'old_column',
+            'constraint_name' => 'custom_check_constraint',
+            'constraint_def' => '((old_column IS NOT NULL) AND (another_column IS NULL))'
+          }
+        ]
+      end
+
+      it 'copies check constraints from one column to another' do
+        allow(model).to receive(:check_constraints_for)
+        .with(:test_table, :old_column, schema: nil)
+          .and_return(old_column_constraints)
+
+        allow(model).to receive(:not_null_constraint_name).with(:test_table, :new_column)
+          .and_return('check_1')
+
+        allow(model).to receive(:text_limit_name).with(:test_table, :new_column)
+          .and_return('check_2')
+
+        allow(model).to receive(:check_constraint_name)
+          .with(:test_table, :new_column, 'copy_check_constraint')
+          .and_return('check_3')
+
+        expect(model).to receive(:add_check_constraint)
+          .with(
+            :test_table,
+            '(new_column IS NOT NULL)',
+            'check_1',
+            validate: true
+          ).once
+
+        expect(model).to receive(:add_check_constraint)
+          .with(
+            :test_table,
+            '(char_length(new_column) <= 255)',
+            'check_2',
+            validate: true
+          ).once
+
+        expect(model).to receive(:add_check_constraint)
+          .with(
+            :test_table,
+            '((new_column IS NOT NULL) AND (another_column IS NULL))',
+            'check_3',
+            validate: true
+          ).once
+
+        model.copy_check_constraints(:test_table, :old_column, :new_column)
+      end
+
+      it 'does nothing if there are no constraints defined for the old column' do
+        allow(model).to receive(:check_constraints_for)
+        .with(:test_table, :old_column, schema: nil)
+          .and_return([])
+
+        expect(model).not_to receive(:add_check_constraint)
+
+        model.copy_check_constraints(:test_table, :old_column, :new_column)
+      end
     end
   end
 

@@ -352,6 +352,20 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.get_write_location' do
+    it 'returns a string' do
+      connection = ActiveRecord::Base.connection
+
+      expect(described_class.get_write_location(connection)).to be_a(String)
+    end
+
+    it 'returns nil if there are no results' do
+      connection = double(select_all: [])
+
+      expect(described_class.get_write_location(connection)).to be_nil
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"

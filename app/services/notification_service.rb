@@ -435,6 +435,10 @@ class NotificationService
     mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
+  def invite_member_reminder(group_member, token, reminder_index)
+    mailer.member_invited_reminder_email(group_member.real_source_type, group_member.id, token, reminder_index).deliver_later
+  end
+
   def accept_group_invite(group_member)
     mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
   end

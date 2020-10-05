@@ -230,6 +230,7 @@ module ApplicationSettingsHelper
       :hashed_storage_enabled,
       :help_page_hide_commercial_content,
       :help_page_support_url,
+      :help_page_documentation_base_url,
       :help_page_text,
       :hide_third_party_offers,
       :home_page_url,
@@ -388,6 +389,10 @@ module ApplicationSettingsHelper
       'self_monitoring_project_full_path' =>
         Gitlab::CurrentSettings.self_monitoring_project&.full_path
     }
+  end
+
+  def show_documentation_base_url_field?
+    Feature.enabled?(:help_page_documentation_redirect)
   end
 end
 

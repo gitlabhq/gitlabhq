@@ -241,7 +241,11 @@ All tests expect to be able to log in at the start of the test.
 
 For an example see: <https://gitlab.com/gitlab-org/gitlab/-/issues/34736>
 
-Ideally, any actions performed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-the-ui-in-beforecontext-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
+Ideally, actions performed in an `after(:context)` (or
+[`before(:context)`](#limit-the-use-of-the-ui-in-beforecontext-and-after-hooks))
+block are performed using the API. If it's necessary to do so with the user
+interface (for example, if API functionality doesn't exist), be sure to sign
+out at the end of the block.
 
 ```ruby
 after(:all) do

@@ -182,7 +182,7 @@ export const mapStrategiesToViewModel = strategiesFromRails =>
 
 const mapStrategiesParametersToRails = params => {
   if (params.userIds) {
-    return { ...params, userIds: params.userIds.split(', ').join(',') };
+    return { ...params, userIds: params.userIds.replace(/\s*,\s*/g, ',') };
   }
   return params;
 };
