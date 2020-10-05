@@ -428,14 +428,12 @@ RSpec.describe Gitlab::GitAccess do
     end
 
     context 'when the project repository does not exist' do
-      it 'returns not found' do
+      before do
         project.add_guest(user)
-        repo = project.repository
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access { FileUtils.rm_rf(repo.path) }
+        allow(project.repository).to receive(:exists?).and_return(false)
+      end
 
-        # Sanity check for rm_rf
-        expect(repo.exists?).to eq(false)
-
+      it 'returns not found' do
         expect { pull_access_check }.to raise_error(Gitlab::GitAccess::NotFoundError, 'A repository for this project does not exist yet.')
       end
     end

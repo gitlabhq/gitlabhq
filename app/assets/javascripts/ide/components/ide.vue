@@ -25,49 +25,21 @@ import ErrorMessage from './error_message.vue';
 import CommitEditorHeader from './commit_sidebar/editor_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-const markPerformance = params => {
-  performanceMarkAndMeasure(params);
-};
-const markTreePerformance = () => {
-  markPerformance({
-    mark: WEBIDE_MARK_TREE_FINISH,
-    measures: [
-      {
-        name: WEBIDE_MEASURE_TREE_FROM_REQUEST,
-        start: undefined,
-        end: WEBIDE_MARK_TREE_FINISH,
-      },
-    ],
-  });
-};
-const markEditorLoadPerformance = () => {
-  markPerformance({
-    mark: WEBIDE_MARK_FILE_FINISH,
-    measures: [
-      {
-        name: WEBIDE_MEASURE_FILE_FROM_REQUEST,
-        start: undefined,
-        end: WEBIDE_MARK_FILE_FINISH,
-      },
-    ],
-  });
-};
-const markEditorInteractionPerformance = () => {
-  markPerformance({
-    mark: WEBIDE_MARK_FILE_FINISH,
-    measures: [
-      {
-        name: WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
-        start: WEBIDE_MARK_FILE_CLICKED,
-        end: WEBIDE_MARK_FILE_FINISH,
-      },
-    ],
-  });
-};
+import { measurePerformance } from '../utils';
 
-eventHub.$on(WEBIDE_MEASURE_TREE_FROM_REQUEST, markTreePerformance);
-eventHub.$on(WEBIDE_MEASURE_FILE_FROM_REQUEST, markEditorLoadPerformance);
-eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, markEditorInteractionPerformance);
+eventHub.$on(WEBIDE_MEASURE_TREE_FROM_REQUEST, () =>
+  measurePerformance(WEBIDE_MARK_TREE_FINISH, WEBIDE_MEASURE_TREE_FROM_REQUEST),
+);
+eventHub.$on(WEBIDE_MEASURE_FILE_FROM_REQUEST, () =>
+  measurePerformance(WEBIDE_MARK_FILE_FINISH, WEBIDE_MEASURE_FILE_FROM_REQUEST),
+);
+eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, () =>
+  measurePerformance(
+    WEBIDE_MARK_FILE_FINISH,
+    WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+    WEBIDE_MARK_FILE_CLICKED,
+  ),
+);
 
 export default {
   components: {
@@ -115,7 +87,7 @@ export default {
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
   },
   beforeCreate() {
-    performance.mark(WEBIDE_MARK_APP_START);
+    performanceMarkAndMeasure({ mark: WEBIDE_MARK_APP_START });
   },
   methods: {
     ...mapActions(['toggleFileFinder']),

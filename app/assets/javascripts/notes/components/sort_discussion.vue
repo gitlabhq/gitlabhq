@@ -20,7 +20,7 @@ export default {
   },
   mixins: [Tracking.mixin()],
   computed: {
-    ...mapGetters(['sortDirection', 'noteableType']),
+    ...mapGetters(['sortDirection', 'persistSortOrder', 'noteableType']),
     selectedOption() {
       return SORT_OPTIONS.find(({ key }) => this.sortDirection === key);
     },
@@ -38,7 +38,7 @@ export default {
         return;
       }
 
-      this.setDiscussionSortDirection(direction);
+      this.setDiscussionSortDirection({ direction });
       this.track('change_discussion_sort_direction', { property: direction });
     },
     isDropdownItemActive(sortDir) {
@@ -53,7 +53,8 @@ export default {
     <local-storage-sync
       :value="sortDirection"
       :storage-key="storageKey"
-      @input="setDiscussionSortDirection"
+      :persist="persistSortOrder"
+      @input="setDiscussionSortDirection({ direction: $event })"
     />
     <gl-dropdown
       :text="dropdownText"

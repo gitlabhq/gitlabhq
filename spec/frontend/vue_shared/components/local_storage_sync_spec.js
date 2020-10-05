@@ -126,6 +126,34 @@ describe('Local Storage Sync', () => {
         expect(localStorage.getItem(storageKey)).toBe(newValue);
       });
     });
+
+    it('persists the value by default', async () => {
+      const persistedValue = 'persisted';
+
+      createComponent({
+        props: {
+          storageKey,
+        },
+      });
+
+      wrapper.setProps({ value: persistedValue });
+      await wrapper.vm.$nextTick();
+      expect(localStorage.getItem(storageKey)).toBe(persistedValue);
+    });
+
+    it('does not save a value if persist is set to false', async () => {
+      const notPersistedValue = 'notPersisted';
+
+      createComponent({
+        props: {
+          storageKey,
+        },
+      });
+
+      wrapper.setProps({ persist: false, value: notPersistedValue });
+      await wrapper.vm.$nextTick();
+      expect(localStorage.getItem(storageKey)).not.toBe(notPersistedValue);
+    });
   });
 
   describe('with "asJson" prop set to "true"', () => {

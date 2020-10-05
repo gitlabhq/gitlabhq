@@ -2688,7 +2688,7 @@ RSpec.describe Repository do
         expect(subject).to be_a(Gitlab::Git::Repository)
         expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
         expect(subject.gl_repository).to eq("wiki-#{project.id}")
-        expect(subject.gl_project_path).to eq(project.full_path)
+        expect(subject.gl_project_path).to eq(project.wiki.full_path)
       end
     end
   end
@@ -2941,12 +2941,19 @@ RSpec.describe Repository do
       expect(snippet.repository.project).to be_nil
     end
 
+    it 'returns the project for a project wiki' do
+      wiki = create(:project_wiki)
+
+      expect(wiki.project).to be(wiki.repository.project)
+    end
+
     it 'returns the container if it is a project' do
       expect(repository.project).to be(project)
     end
 
     it 'returns nil if the container is not a project' do
-      expect(repository).to receive(:container).and_return(Group.new)
+      repository.container = Group.new
+
       expect(repository.project).to be_nil
     end
   end
@@ -2981,16 +2988,10 @@ RSpec.describe Repository do
     context 'for a project wiki repository' do
       let(:repository) { project.wiki.repository }
 
-      it 'returns true when LFS is enabled' do
-        stub_lfs_setting(enabled: true)
+      it 'delegates to the project' do
+        expect(project).to receive(:lfs_enabled?).and_return(true)
 
         is_expected.to be_truthy
-      end
-
-      it 'returns false when LFS is disabled' do
-        stub_lfs_setting(enabled: false)
-
-        is_expected.to be_falsy
       end
     end
 

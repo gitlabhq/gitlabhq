@@ -21,6 +21,11 @@ module Gitlab
       @authentication_abilities &= [:download_code, :push_code]
     end
 
+    override :project
+    def project
+      container.project if container.is_a?(ProjectSnippet)
+    end
+
     override :check
     def check(cmd, changes)
       check_snippet_accessibility!
@@ -46,16 +51,6 @@ module Gitlab
       # snippets never return custom actions, such as geo replication.
     end
 
-    override :project?
-    def project?
-      project_snippet?
-    end
-
-    override :project
-    def project
-      snippet&.project
-    end
-
     override :check_valid_actor!
     def check_valid_actor!
       # TODO: Investigate if expanding actor/authentication types are needed.
@@ -69,10 +64,6 @@ module Gitlab
 
     def allowed_actor?
       actor.is_a?(User) || actor.instance_of?(Key)
-    end
-
-    def project_snippet?
-      snippet.is_a?(ProjectSnippet)
     end
 
     override :check_push_access!

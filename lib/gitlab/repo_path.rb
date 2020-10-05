@@ -35,6 +35,10 @@ module Gitlab
         snippet, redirected_path = find_snippet(full_path)
 
         [snippet, snippet&.project, redirected_path]
+      elsif type.wiki?
+        wiki, redirected_path = find_wiki(full_path)
+
+        [wiki, wiki.try(:project), redirected_path]
       else
         project, redirected_path = find_project(full_path)
 
@@ -65,6 +69,17 @@ module Gitlab
       project, redirected_path = find_project(project_path)
 
       [Snippet.find_by_id_and_project(id: snippet_id, project: project), redirected_path]
+    end
+
+    # Wiki path can be either:
+    # - namespace/project
+    # - group/subgroup/project
+    def self.find_wiki(wiki_path)
+      return [nil, nil] if wiki_path.blank?
+
+      project, redirected_path = find_project(wiki_path)
+
+      [project&.wiki, redirected_path]
     end
 
     def self.extract_snippet_info(snippet_path)

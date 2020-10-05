@@ -71,6 +71,10 @@ module HasRepository
     raise NotImplementedError
   end
 
+  def lfs_enabled?
+    false
+  end
+
   def empty_repo?
     repository.empty?
   end

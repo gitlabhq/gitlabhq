@@ -143,15 +143,15 @@ RSpec.describe Projects::Settings::AccessTokensController do
 
     it_behaves_like 'feature unavailable'
 
-    context 'when feature is available' do
+    context 'when feature is available', :sidekiq_inline do
       before do
         enable_feature
       end
 
-      it 'revokes token access' do
-        subject
+      it 'calls delete user worker' do
+        expect(DeleteUserWorker).to receive(:perform_async).with(user.id, bot_user.id, skip_authorization: true)
 
-        expect(project_access_token.reload.revoked?).to be true
+        subject
       end
 
       it 'removed membership of bot user' do
@@ -160,18 +160,18 @@ RSpec.describe Projects::Settings::AccessTokensController do
         expect(project.reload.bots).not_to include(bot_user)
       end
 
-      it 'blocks project bot user' do
-        subject
-
-        expect(bot_user.reload.blocked?).to be true
-      end
-
       it 'converts issuables of the bot user to ghost user' do
         issue = create(:issue, author: bot_user)
 
         subject
 
         expect(issue.reload.author.ghost?).to be true
+      end
+
+      it 'deletes project bot user' do
+        subject
+
+        expect(User.exists?(bot_user.id)).to be_falsy
       end
     end
   end

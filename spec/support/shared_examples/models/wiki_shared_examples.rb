@@ -4,21 +4,99 @@ RSpec.shared_examples 'wiki model' do
   let_it_be(:user) { create(:user, :commit_email) }
   let(:wiki_container) { raise NotImplementedError }
   let(:wiki_container_without_repo) { raise NotImplementedError }
+  let(:wiki_lfs_enabled) { false }
   let(:wiki) { described_class.new(wiki_container, user) }
   let(:commit) { subject.repository.head_commit }
 
   subject { wiki }
+
+  it 'container class includes HasWiki' do
+    # NOTE: This is not enforced at runtime, since we also need to support Geo::DeletedProject
+    expect(wiki_container).to be_kind_of(HasWiki)
+    expect(wiki_container_without_repo).to be_kind_of(HasWiki)
+  end
 
   it_behaves_like 'model with repository' do
     let(:container) { wiki }
     let(:stubbed_container) { described_class.new(wiki_container_without_repo, user) }
     let(:expected_full_path) { "#{container.container.full_path}.wiki" }
     let(:expected_web_url_path) { "#{container.container.web_url(only_path: true).sub(%r{^/}, '')}/-/wikis/home" }
+    let(:expected_lfs_enabled) { wiki_lfs_enabled }
+  end
+
+  describe '.container_class' do
+    it 'is set to the container class' do
+      expect(described_class.container_class).to eq(wiki_container.class)
+    end
+  end
+
+  describe '.find_by_id' do
+    it 'returns a wiki instance if the container is found' do
+      wiki = described_class.find_by_id(wiki_container.id)
+
+      expect(wiki).to be_a(described_class)
+      expect(wiki.container).to eq(wiki_container)
+    end
+
+    it 'returns nil if the container is not found' do
+      expect(described_class.find_by_id(-1)).to be_nil
+    end
+  end
+
+  describe '#initialize' do
+    it 'accepts a valid user' do
+      expect do
+        described_class.new(wiki_container, user)
+      end.not_to raise_error
+    end
+
+    it 'accepts a blank user' do
+      expect do
+        described_class.new(wiki_container, nil)
+      end.not_to raise_error
+    end
+
+    it 'raises an error for invalid users' do
+      expect do
+        described_class.new(wiki_container, Object.new)
+      end.to raise_error(ArgumentError, 'user must be a User, got Object')
+    end
+  end
+
+  describe '#run_after_commit' do
+    it 'delegates to the container' do
+      expect(wiki_container).to receive(:run_after_commit)
+
+      wiki.run_after_commit
+    end
+  end
+
+  describe '#==' do
+    it 'returns true for wikis from the same container' do
+      expect(wiki).to eq(described_class.new(wiki_container))
+    end
+
+    it 'returns false for wikis from different containers' do
+      expect(wiki).not_to eq(described_class.new(wiki_container_without_repo))
+    end
+  end
+
+  describe '#id' do
+    it 'returns the ID of the container' do
+      expect(wiki.id).to eq(wiki_container.id)
+    end
+  end
+
+  describe '#to_global_id' do
+    it 'returns a global ID' do
+      expect(wiki.to_global_id.to_s).to eq("gid://gitlab/#{wiki.class.name}/#{wiki.id}")
+    end
   end
 
   describe '#repository' do
     it 'returns a wiki repository' do
       expect(subject.repository.repo_type).to be_wiki
+      expect(subject.repository.container).to be(subject)
     end
   end
 

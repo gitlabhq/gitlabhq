@@ -4,9 +4,7 @@ export const performanceMarkAndMeasure = ({ mark, measures = [] } = {}) => {
       performance.mark(mark);
     }
     measures.forEach(measure => {
-      window.requestAnimationFrame(() =>
-        performance.measure(measure.name, measure.start, measure.end),
-      );
+      performance.measure(measure.name, measure.start, measure.end);
     });
   });
 };

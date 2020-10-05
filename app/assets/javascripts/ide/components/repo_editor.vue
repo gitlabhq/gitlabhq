@@ -300,13 +300,11 @@ export default {
       });
 
       this.$emit('editorSetup');
-      this.$nextTick(() => {
-        if (performance.getEntriesByName(WEBIDE_MARK_FILE_CLICKED).length) {
-          eventHub.$emit(WEBIDE_MEASURE_FILE_AFTER_INTERACTION);
-        } else {
-          eventHub.$emit(WEBIDE_MEASURE_FILE_FROM_REQUEST);
-        }
-      });
+      if (performance.getEntriesByName(WEBIDE_MARK_FILE_CLICKED).length) {
+        eventHub.$emit(WEBIDE_MEASURE_FILE_AFTER_INTERACTION);
+      } else {
+        eventHub.$emit(WEBIDE_MEASURE_FILE_FROM_REQUEST);
+      }
     },
     refreshEditorDimensions() {
       if (this.showEditor) {

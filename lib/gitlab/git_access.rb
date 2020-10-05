@@ -137,6 +137,10 @@ module Gitlab
     private
 
     def check_container!
+      # Strict nil check, to avoid any surprises with Object#present?
+      # which can delegate to #empty?
+      raise NotFoundError, not_found_message if container.nil?
+
       check_project! if project?
     end
 
@@ -204,9 +208,7 @@ module Gitlab
     end
 
     def check_project_accessibility!
-      if project.blank? || !can_read_project?
-        raise NotFoundError, not_found_message
-      end
+      raise NotFoundError, not_found_message unless can_read_project?
     end
 
     def not_found_message
@@ -279,10 +281,10 @@ module Gitlab
       error_message(:download)
     end
 
-    # We assume that all git-access classes are in project context by default.
-    # Override this method to be more specific.
     def project?
-      true
+      # Strict nil check, to avoid any surprises with Object#present?
+      # which can delegate to #empty?
+      !project.nil?
     end
 
     def project
@@ -290,7 +292,7 @@ module Gitlab
     end
 
     def check_push_access!
-      if container.repository_read_only?
+      if project&.repository_read_only?
         raise ForbiddenError, error_message(:read_only)
       end
 

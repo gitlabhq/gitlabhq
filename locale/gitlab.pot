@@ -2683,6 +2683,9 @@ msgstr ""
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
+msgid "An empty index will be created if one does not already exist"
+msgstr ""
+
 msgid "An error has occurred"
 msgstr ""
 
@@ -26852,6 +26855,12 @@ msgid "Timeago|just now"
 msgstr ""
 
 msgid "Timeago|right now"
+msgstr ""
+
+msgid "Timeline|Turn timeline view off"
+msgstr ""
+
+msgid "Timeline|Turn timeline view on"
 msgstr ""
 
 msgid "Timeout"

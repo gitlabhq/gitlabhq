@@ -5,6 +5,7 @@ import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,
+  COMMENTS_ONLY_FILTER_VALUE,
   DISCUSSION_TAB_LABEL,
   DISCUSSION_FILTER_TYPES,
   NOTE_UNDERSCORE,
@@ -38,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNotesDataByProp']),
+    ...mapGetters(['getNotesDataByProp', 'timelineEnabled']),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
       return this.filters.find(filter => filter.value === this.currentValue);
@@ -63,11 +64,20 @@ export default {
     window.removeEventListener('hashchange', this.handleLocationHash);
   },
   methods: {
-    ...mapActions(['filterDiscussion', 'setCommentsDisabled', 'setTargetNoteHash']),
+    ...mapActions([
+      'filterDiscussion',
+      'setCommentsDisabled',
+      'setTargetNoteHash',
+      'setTimelineView',
+    ]),
     selectFilter(value, persistFilter = true) {
       const filter = parseInt(value, 10);
 
       if (filter === this.currentValue) return;
+
+      if (this.timelineEnabled && filter !== COMMENTS_ONLY_FILTER_VALUE) {
+        this.setTimelineView(false);
+      }
       this.currentValue = filter;
       this.filterDiscussion({
         path: this.getNotesDataByProp('discussionsPath'),

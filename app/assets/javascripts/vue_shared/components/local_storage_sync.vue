@@ -17,6 +17,11 @@ export default {
       required: false,
       default: false,
     },
+    persist: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   watch: {
     value(newVal) {
@@ -52,6 +57,8 @@ export default {
       }
     },
     saveValue(val) {
+      if (!this.persist) return;
+
       localStorage.setItem(this.storageKey, val);
     },
     serialize(val) {

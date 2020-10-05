@@ -44,11 +44,7 @@ module Gitlab
       end
 
       def url_to_repo
-        protocol == 'ssh' ? message_subject.ssh_url_to_repo : message_subject.http_url_to_repo
-      end
-
-      def message_subject
-        repository.repo_type.wiki? ? project.wiki : container
+        protocol == 'ssh' ? container.ssh_url_to_repo : container.http_url_to_repo
       end
     end
   end

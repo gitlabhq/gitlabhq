@@ -2,8 +2,10 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 - if current_user.ldap_user?
-  .alert.alert-info
-    = s_('Profiles|Some options are unavailable for LDAP accounts')
+  .gl-alert.gl-alert-info.gl-my-5
+    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-body
+      = s_('Profiles|Some options are unavailable for LDAP accounts')
 
 .row.gl-mt-3
   .col-lg-4.profile-settings-sidebar

@@ -37,9 +37,7 @@ export default {
   },
   updated() {
     if (this.currentTree?.tree?.length) {
-      this.$nextTick(() => {
-        eventHub.$emit(WEBIDE_MEASURE_TREE_FROM_REQUEST);
-      });
+      eventHub.$emit(WEBIDE_MEASURE_TREE_FROM_REQUEST);
     }
   },
   methods: {

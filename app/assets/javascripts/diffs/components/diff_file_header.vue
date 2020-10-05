@@ -136,13 +136,9 @@ export default {
     },
     viewReplacedFileButtonText() {
       const truncatedBaseSha = escape(truncateSha(this.diffFile.diff_refs.base_sha));
-      return sprintf(
-        s__('MergeRequests|View replaced file @ %{commitId}'),
-        {
-          commitId: `<span class="commit-sha">${truncatedBaseSha}</span>`,
-        },
-        false,
-      );
+      return sprintf(s__('MergeRequests|View replaced file @ %{commitId}'), {
+        commitId: truncatedBaseSha,
+      });
     },
     gfmCopyText() {
       return `\`${this.diffFile.file_path}\``;
@@ -311,10 +307,11 @@ export default {
           <gl-dropdown-item
             v-if="diffFile.replaced_view_path"
             ref="replacedFileButton"
-            v-safe-html="viewReplacedFileButtonText"
             :href="diffFile.replaced_view_path"
             target="_blank"
-          />
+          >
+            {{ viewReplacedFileButtonText }}
+          </gl-dropdown-item>
           <gl-dropdown-item ref="viewButton" :href="diffFile.view_path" target="_blank">
             {{ viewFileButtonText }}
           </gl-dropdown-item>

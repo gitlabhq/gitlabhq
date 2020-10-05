@@ -24,7 +24,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
     post_received = Gitlab::GitPostReceive.new(container, identifier, changes, push_options)
 
     if repo_type.wiki?
-      process_wiki_changes(post_received, container.wiki)
+      process_wiki_changes(post_received, container)
     elsif repo_type.project?
       process_project_changes(post_received, container)
     elsif repo_type.snippet?

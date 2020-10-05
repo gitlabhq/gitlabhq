@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlTooltip } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlTooltip } from '@gitlab/ui';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
@@ -20,7 +20,7 @@ export default {
     TimeagoTooltip,
     UserAvatarImage,
     GlLink,
-    GlDeprecatedButton,
+    GlButton,
     GlTooltip,
   },
   directives: {
@@ -141,14 +141,12 @@ export default {
     <section v-if="$slots.default" data-testid="headerButtons" class="gl-display-flex">
       <slot></slot>
     </section>
-    <gl-deprecated-button
+    <gl-button
       v-if="hasSidebarButton"
-      id="toggleSidebar"
-      class="d-block d-sm-none
-sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+      class="d-sm-none js-sidebar-build-toggle gl-ml-auto"
+      icon="angle-double-left"
+      :aria-label="__('Toggle sidebar')"
       @click="onClickSidebarButton"
-    >
-      <i class="fa fa-angle-double-left" aria-hidden="true" aria-labelledby="toggleSidebar"> </i>
-    </gl-deprecated-button>
+    />
   </header>
 </template>

@@ -1,12 +1,9 @@
 <script>
 import { debounce } from 'lodash';
 import { initEditorLite } from '~/blob/utils';
-import {
-  SNIPPET_MARK_BLOBS_CONTENT,
-  SNIPPET_MARK_EDIT_APP_START,
-  SNIPPET_MEASURE_BLOBS_CONTENT,
-  SNIPPET_MEASURE_BLOBS_CONTENT_WITHIN_APP,
-} from '~/performance_constants';
+import { SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance_constants';
+
+import eventHub from './eventhub';
 
 export default {
   props: {
@@ -48,13 +45,7 @@ export default {
 
     this.editor.onDidChangeModelContent(debounce(this.onFileChange.bind(this), 250));
 
-    window.requestAnimationFrame(() => {
-      if (!performance.getEntriesByName(SNIPPET_MARK_BLOBS_CONTENT).length) {
-        performance.mark(SNIPPET_MARK_BLOBS_CONTENT);
-        performance.measure(SNIPPET_MEASURE_BLOBS_CONTENT);
-        performance.measure(SNIPPET_MEASURE_BLOBS_CONTENT_WITHIN_APP, SNIPPET_MARK_EDIT_APP_START);
-      }
-    });
+    eventHub.$emit(SNIPPET_MEASURE_BLOBS_CONTENT);
   },
   beforeDestroy() {
     this.editor.dispose();

@@ -91,6 +91,7 @@
       .js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .new-branch-col
+        = render_if_exists "projects/issues/timeline_toggle", issue: @issue
         #js-vue-sort-issue-discussions
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?

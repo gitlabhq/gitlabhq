@@ -174,6 +174,23 @@ describe('note_app', () => {
     });
   });
 
+  describe('timeline view', () => {
+    beforeEach(() => {
+      setFixtures('<div class="js-discussions-count"></div>');
+
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
+      store.state.commentsDisabled = false;
+      store.state.isTimelineEnabled = true;
+
+      wrapper = mountComponent();
+      return waitForDiscussionsRequest();
+    });
+
+    it('should not render comments form', () => {
+      expect(wrapper.find('.js-main-target-form').exists()).toBe(false);
+    });
+  });
+
   describe('while fetching data', () => {
     beforeEach(() => {
       setFixtures('<div class="js-discussions-count"></div>');

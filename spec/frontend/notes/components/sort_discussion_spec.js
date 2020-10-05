@@ -46,7 +46,7 @@ describe('Sort Discussion component', () => {
     it('calls setDiscussionSortDirection when update is emitted', () => {
       findLocalStorageSync().vm.$emit('input', ASC);
 
-      expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', ASC);
+      expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', { direction: ASC });
     });
   });
 
@@ -57,7 +57,9 @@ describe('Sort Discussion component', () => {
 
         wrapper.find('.js-newest-first').vm.$emit('click');
 
-        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', DESC);
+        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
+          direction: DESC,
+        });
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
           property: DESC,
         });
@@ -81,7 +83,9 @@ describe('Sort Discussion component', () => {
       it('calls the right actions', () => {
         wrapper.find('.js-oldest-first').vm.$emit('click');
 
-        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', ASC);
+        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
+          direction: ASC,
+        });
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
           property: ASC,
         });

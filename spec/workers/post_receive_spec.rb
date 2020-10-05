@@ -281,7 +281,7 @@ RSpec.describe PostReceive do
 
     before do
       # Need to mock here so we can expect calls on project
-      allow(Gitlab::GlRepository).to receive(:parse).and_return([project, project, Gitlab::GlRepository::WIKI])
+      allow(Gitlab::GlRepository).to receive(:parse).and_return([project.wiki, project, Gitlab::GlRepository::WIKI])
     end
 
     it 'updates project activity' do

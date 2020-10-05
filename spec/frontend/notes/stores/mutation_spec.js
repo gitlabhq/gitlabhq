@@ -680,9 +680,10 @@ describe('Notes Store mutations', () => {
     });
 
     it('sets sort order', () => {
-      mutations.SET_DISCUSSIONS_SORT(state, DESC);
+      mutations.SET_DISCUSSIONS_SORT(state, { direction: DESC, persist: false });
 
       expect(state.discussionSortOrder).toBe(DESC);
+      expect(state.persistSortOrder).toBe(false);
     });
   });
 

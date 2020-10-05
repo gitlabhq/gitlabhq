@@ -4,7 +4,7 @@ module APIInternalBaseHelpers
   def gl_repository_for(container)
     case container
     when ProjectWiki
-      Gitlab::GlRepository::WIKI.identifier_for_container(container.project)
+      Gitlab::GlRepository::WIKI.identifier_for_container(container)
     when Project
       Gitlab::GlRepository::PROJECT.identifier_for_container(container)
     when Snippet

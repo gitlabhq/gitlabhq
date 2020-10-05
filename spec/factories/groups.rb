@@ -14,6 +14,8 @@ FactoryBot.define do
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/43292
         raise "Don't set owner for groups, use `group.add_owner(user)` instead"
       end
+
+      create(:namespace_settings, namespace: group)
     end
 
     trait :public do

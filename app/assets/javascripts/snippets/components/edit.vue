@@ -6,7 +6,12 @@ import { __, sprintf } from '~/locale';
 import TitleField from '~/vue_shared/components/form/title.vue';
 import { redirectTo, joinPaths } from '~/lib/utils/url_utility';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
-import { SNIPPET_MARK_EDIT_APP_START } from '~/performance_constants';
+import {
+  SNIPPET_MARK_EDIT_APP_START,
+  SNIPPET_MEASURE_BLOBS_CONTENT,
+} from '~/performance_constants';
+import eventHub from '~/blob/components/eventhub';
+import { performanceMarkAndMeasure } from '~/performance_utils';
 
 import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
@@ -17,10 +22,13 @@ import {
   SNIPPET_VISIBILITY_PRIVATE,
 } from '../constants';
 import defaultVisibilityQuery from '../queries/snippet_visibility.query.graphql';
+import { markBlobPerformance } from '../utils/blob';
 
 import SnippetBlobActionsEdit from './snippet_blob_actions_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 import SnippetDescriptionEdit from './snippet_description_edit.vue';
+
+eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 
 export default {
   components: {
@@ -119,7 +127,7 @@ export default {
     },
   },
   beforeCreate() {
-    performance.mark(SNIPPET_MARK_EDIT_APP_START);
+    performanceMarkAndMeasure({ mark: SNIPPET_MARK_EDIT_APP_START });
   },
   created() {
     window.addEventListener('beforeunload', this.onBeforeUnload);

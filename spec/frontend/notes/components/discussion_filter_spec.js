@@ -25,6 +25,8 @@ describe('DiscussionFilter component', () => {
 
   const filterDiscussion = jest.fn();
 
+  const findFilter = filterType => wrapper.find(`.dropdown-item[data-filter-type="${filterType}"]`);
+
   const mountComponent = () => {
     const discussions = [
       {
@@ -89,9 +91,7 @@ describe('DiscussionFilter component', () => {
   });
 
   it('updates to the selected item', () => {
-    const filterItem = wrapper.find(
-      `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"]`,
-    );
+    const filterItem = findFilter(DISCUSSION_FILTER_TYPES.ALL);
 
     filterItem.trigger('click');
 
@@ -99,29 +99,27 @@ describe('DiscussionFilter component', () => {
   });
 
   it('only updates when selected filter changes', () => {
-    wrapper
-      .find(
-        `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"]`,
-      )
-      .trigger('click');
+    findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
 
     expect(filterDiscussion).not.toHaveBeenCalled();
   });
 
+  it('disables timeline view if it was enabled', () => {
+    store.state.isTimelineEnabled = true;
+
+    findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
+
+    expect(wrapper.vm.$store.state.isTimelineEnabled).toBe(false);
+  });
+
   it('disables commenting when "Show history only" filter is applied', () => {
-    const filterItem = wrapper.find(
-      `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.HISTORY}"]`,
-    );
-    filterItem.trigger('click');
+    findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
 
     expect(wrapper.vm.$store.state.commentsDisabled).toBe(true);
   });
 
   it('enables commenting when "Show history only" filter is not applied', () => {
-    const filterItem = wrapper.find(
-      `.discussion-filter-container .dropdown-item[data-filter-type="${DISCUSSION_FILTER_TYPES.ALL}"]`,
-    );
-    filterItem.trigger('click');
+    findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
 
     expect(wrapper.vm.$store.state.commentsDisabled).toBe(false);
   });

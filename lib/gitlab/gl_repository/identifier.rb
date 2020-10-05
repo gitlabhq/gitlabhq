@@ -53,12 +53,13 @@ module Gitlab
         private
 
         def container_class
-          case @container_type
-          when 'project'
-            Project
-          when 'group'
-            Group
-          end
+          # NOTE: This is currently only used and supported for group wikis
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/219192
+          return unless @repo_type_name == 'wiki'
+
+          "#{@container_type}_#{@repo_type_name}".classify.constantize
+        rescue NameError
+          nil
         end
       end
 

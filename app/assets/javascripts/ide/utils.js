@@ -1,6 +1,7 @@
 import { languages } from 'monaco-editor';
 import { flatten, isString } from 'lodash';
 import { SIDE_LEFT, SIDE_RIGHT } from './constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
 
 const toLowerCase = x => x.toLowerCase();
 
@@ -137,3 +138,21 @@ export function readFileAsDataURL(file) {
 export function getFileEOL(content = '') {
   return content.includes('\r\n') ? 'CRLF' : 'LF';
 }
+
+export const measurePerformance = (
+  mark,
+  measureName,
+  measureStart = undefined,
+  measureEnd = mark,
+) => {
+  performanceMarkAndMeasure({
+    mark,
+    measures: [
+      {
+        name: measureName,
+        start: measureStart,
+        end: measureEnd,
+      },
+    ],
+  });
+};

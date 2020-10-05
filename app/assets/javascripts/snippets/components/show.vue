@@ -5,11 +5,18 @@ import SnippetHeader from './snippet_header.vue';
 import SnippetTitle from './snippet_title.vue';
 import SnippetBlob from './snippet_blob_view.vue';
 import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
+import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import {
+  SNIPPET_MARK_VIEW_APP_START,
+  SNIPPET_MEASURE_BLOBS_CONTENT,
+} from '~/performance_constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
+import eventHub from '~/blob/components/eventhub';
 
 import { getSnippetMixin } from '../mixins/snippets';
-import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
+import { markBlobPerformance } from '../utils/blob';
 
-import { SNIPPET_MARK_VIEW_APP_START } from '~/performance_constants';
+eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 
 export default {
   components: {
@@ -30,7 +37,7 @@ export default {
     },
   },
   beforeCreate() {
-    performance.mark(SNIPPET_MARK_VIEW_APP_START);
+    performanceMarkAndMeasure({ mark: SNIPPET_MARK_VIEW_APP_START });
   },
 };
 </script>

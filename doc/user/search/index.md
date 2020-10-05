@@ -209,7 +209,8 @@ You can also type in this search bar to see autocomplete suggestions for:
 - Project feature pages (try and type **milestones**)
 - Various settings pages (try and type **user settings**)
 - Recently viewed issues (try and type some word from the title of a recently viewed issue)
-- Recently viewed merge requests (try and type some word from the title of a recently merge request)
+- Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
+- Recently viewed epics (try and type some word from the title of a recently viewed epic)
 
 ## Basic search
 

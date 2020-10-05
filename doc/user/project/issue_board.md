@@ -13,7 +13,7 @@ organize, and visualize a workflow for a feature or product release.
 It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) or a
 [Scrum](https://en.wikipedia.org/wiki/Scrum_(software_development)) board.
 
-It pairs issue tracking and project management, keeping everything in the same place,
+It pairs issue tracking and project management, keeping everything together,
 so that you don't need to jump between different platforms to organize your workflow.
 
 Issue boards build on the existing [issue tracking functionality](issues/index.md#issues-list) and
@@ -24,8 +24,8 @@ Issue boards help you to visualize and manage your entire process in GitLab.
 You add your labels, and then create the corresponding list for your existing issues.
 When you're ready, you can drag your issue cards from one step to another one.
 
-An issue board can show you what issues your team is working on, who is assigned to each,
-and where in the workflow those issues are.
+An issue board can show you the issues your team is working on, who is assigned to each,
+and where the issues are in the workflow.
 
 To let your team members organize their own workflows, use
 [multiple issue boards](#use-cases-for-multiple-issue-boards). This allows creating multiple issue
@@ -58,8 +58,8 @@ Here are some common use cases for issue boards.
 
 ### Use cases for a single issue board
 
-With the GitLab Workflow you can discuss proposals in issues, categorize them
-with labels, and from there, organize and prioritize them with issue boards.
+With the GitLab Workflow you can discuss proposals in issues, label 
+them, and organize and prioritize them with issue boards.
 
 For example, let's consider this simplified development workflow:
 
@@ -153,7 +153,7 @@ card includes:
 ## Permissions
 
 Users with the [Reporter and higher roles](../permissions.md) can use all the functionality of the
-Issue Board feature to create or delete lists and drag issues from one list to another.
+Issue Board feature to create or delete lists. They can also drag issues from one list to another.
 
 ## How GitLab orders issues in a list
 
@@ -162,20 +162,19 @@ that order by dragging the issues. The changed order is saved, so that anybody w
 board later sees the reordering, with some exceptions.
 
 The first time a given issue appears in any board (that is, the first time a user
-loads a board containing that issue), it is ordered in relation to other issues in that list
-according to [label priority](labels.md#label-priority).
+loads a board containing that issue), it is ordered in relation to other issues in that list.
+The order is done according to [label priority](labels.md#label-priority).
 
 At this point, that issue is assigned a relative order value by the system,
-representing its relative order with respect to the other issues in the list. Any time
-you reorder that issue by dragging, its relative order value changes accordingly.
+with respect to the other issues in the list. Any time
+you drag and reorder the issue, its relative order value changes accordingly.
 
-Also, any time that issue appears in any board when it's loaded by a user,
-the updated relative order value is used for the ordering. It's only the first
-time an issue appears that it takes from the priority order mentioned above. This means that
-if issue `A` is reordered by dragging to be above issue `B` by any user in
-a given board inside your GitLab instance, any time those two issues are subsequently
-loaded in any board in the same instance (could be a different project board or a different group
-board, for example), that ordering is maintained.
+Also, any time that issue appears in any board, the ordering is done according to 
+the updated relative order value. It's only the first
+time an issue appears that it takes from the priority order mentioned above. If a user in your GitLab instance 
+drags issue `A` above issue `B`, the ordering is maintained when these two issues are subsequently
+loaded in any board in the same instance. This could be a different project board or a different group
+board, for example.
 
 This ordering also affects [issue lists](issues/sorting_issue_lists.md).
 Changing the order in an issue board changes the ordering in an issue list,
@@ -193,8 +192,7 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 > - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Multiple issue boards allow for more than one issue board for a given project or group.
-This is great for large projects with more than one team or in situations where a repository is used
-to host the code of multiple products.
+This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.
 

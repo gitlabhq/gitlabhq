@@ -1,0 +1,5 @@
+---
+title: Delete project bot when token is revoked
+merge_request: 43373
+author:
+type: fixed

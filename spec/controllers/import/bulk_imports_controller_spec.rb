@@ -51,6 +51,28 @@ RSpec.describe Import::BulkImportsController do
       end
 
       describe 'GET status' do
+        let(:client) { Gitlab::BulkImport::Client.new(uri: 'http://gitlab.example', token: 'token') }
+
+        describe 'serialized group data' do
+          let(:client_response) do
+            [
+              { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1' },
+              { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2' }
+            ]
+          end
+
+          before do
+            allow(controller).to receive(:client).and_return(client)
+            allow(client).to receive(:get).with('groups', top_level_only: true).and_return(client_response)
+          end
+
+          it 'returns serialized group data' do
+            get :status, format: :json
+
+            expect(response.parsed_body).to eq({ importable_data: client_response }.as_json)
+          end
+        end
+
         context 'when host url is local or not http' do
           %w[https://localhost:3000 http://192.168.0.1 ftp://testing].each do |url|
             before do
@@ -83,6 +105,26 @@ RSpec.describe Import::BulkImportsController do
                 expect(response).to have_gitlab_http_status(:ok)
               end
             end
+          end
+        end
+
+        context 'when connection error occurs' do
+          before do
+            allow(controller).to receive(:client).and_return(client)
+            allow(client).to receive(:get).and_raise(Gitlab::BulkImport::Client::ConnectionError)
+          end
+
+          it 'returns 422' do
+            get :status, format: :json
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+
+          it 'clears session' do
+            get :status, format: :json
+
+            expect(session[:gitlab_url]).to be_nil
+            expect(session[:gitlab_access_token]).to be_nil
           end
         end
       end

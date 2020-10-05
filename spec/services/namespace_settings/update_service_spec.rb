@@ -11,6 +11,10 @@ RSpec.describe NamespaceSettings::UpdateService do
 
   describe "#execute" do
     context "group has no namespace_settings" do
+      before do
+        group.namespace_settings.destroy!
+      end
+
       it "builds out a new namespace_settings record" do
         expect do
           service.execute
@@ -20,8 +24,6 @@ RSpec.describe NamespaceSettings::UpdateService do
 
     context "group has a namespace_settings" do
       before do
-        create(:namespace_settings, namespace: group)
-
         service.execute
       end
 

@@ -14,18 +14,15 @@ module ResourceAccessTokens
     end
 
     def execute
+      return error("#{current_user.name} cannot delete #{bot_user.name}") unless can_destroy_bot_member?
       return error("Failed to find bot user") unless find_member
 
-      PersonalAccessToken.transaction do
-        access_token.revoke!
+      access_token.revoke!
 
-        raise RevokeAccessTokenError, "Failed to remove #{bot_user.name} member from: #{resource.name}" unless remove_member
+      destroy_bot_user
 
-        raise RevokeAccessTokenError, "Migration to ghost user failed" unless migrate_to_ghost_user
-      end
-
-      success("Revoked access token: #{access_token.name}")
-    rescue ActiveRecord::ActiveRecordError, RevokeAccessTokenError => error
+      success("Access token #{access_token.name} has been revoked and the bot user has been scheduled for deletion.")
+    rescue StandardError => error
       log_error("Failed to revoke access token for #{bot_user.name}: #{error.message}")
       error(error.message)
     end
@@ -34,12 +31,18 @@ module ResourceAccessTokens
 
     attr_reader :current_user, :access_token, :bot_user, :resource
 
-    def remove_member
-      ::Members::DestroyService.new(current_user).execute(find_member, destroy_bot: true)
+    def destroy_bot_user
+      DeleteUserWorker.perform_async(current_user.id, bot_user.id, skip_authorization: true)
     end
 
-    def migrate_to_ghost_user
-      ::Users::MigrateToGhostUserService.new(bot_user).execute
+    def can_destroy_bot_member?
+      if resource.is_a?(Project)
+        can?(current_user, :admin_project_member, @resource)
+      elsif resource.is_a?(Group)
+        can?(current_user, :admin_group_member, @resource)
+      else
+        false
+      end
     end
 
     def find_member

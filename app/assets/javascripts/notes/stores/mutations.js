@@ -313,8 +313,13 @@ export default {
     discussion.truncated_diff_lines = utils.prepareDiffLines(diffLines);
   },
 
-  [types.SET_DISCUSSIONS_SORT](state, sort) {
-    state.discussionSortOrder = sort;
+  [types.SET_DISCUSSIONS_SORT](state, { direction, persist }) {
+    state.discussionSortOrder = direction;
+    state.persistSortOrder = persist;
+  },
+
+  [types.SET_TIMELINE_VIEW](state, value) {
+    state.isTimelineEnabled = value;
   },
 
   [types.SET_SELECTED_COMMENT_POSITION](state, position) {

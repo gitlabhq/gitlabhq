@@ -11,7 +11,7 @@
   %aside#js-vue-issuable-sidebar{ data: { signed_in: signed_in,
     sidebar_status_class: sidebar_gutter_collapsed_class } }
 - else
-  %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+  %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in }, issuable_type: issuable_type }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
     .issuable-sidebar
       .block.issuable-sidebar-header
         - if signed_in

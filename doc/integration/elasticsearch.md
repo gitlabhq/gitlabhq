@@ -178,22 +178,11 @@ To enable Advanced Search, you need to have admin access to GitLab:
    [license](../user/admin_area/license.md).
 
 1. Configure the [Advanced Search settings](#advanced-search-configuration) for
-   your Elasticsearch cluster. Do not enable **Elasticsearch indexing** or
-   **Search with Elasticsearch enabled** yet.
-1. Click **Save changes** for the changes to take effect.
-1. Before enabling **Elasticsearch indexing** you need to create an index by
-   running the Rake task:
-
-   ```shell
-   # Omnibus installations
-   sudo gitlab-rake gitlab:elastic:create_empty_index
-
-   # Installations from source
-   bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
-   ```
-
-1. Now enable `Elasticsearch indexing` in **Admin Area > Settings >
-   General > Advanced Search** and click **Save changes**.
+   your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled** 
+   yet.
+1. Now enable **Elasticsearch indexing** in **Admin Area > Settings >
+   General > Advanced Search** and click **Save changes**. This will create
+   an empty index if one does not already exist.
 1. Click **Index all projects**.
 1. Click **Check progress** in the confirmation message to see the status of
    the background jobs.
@@ -217,7 +206,7 @@ The following Elasticsearch settings are available:
 
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
-| `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
+| `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until unpaused. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
 | `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |

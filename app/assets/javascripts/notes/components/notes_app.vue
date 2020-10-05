@@ -73,6 +73,7 @@ export default {
       'userCanReply',
       'discussionTabCounter',
       'sortDirection',
+      'timelineEnabled',
     ]),
     sortDirDesc() {
       return this.sortDirection === constants.DESC;
@@ -95,7 +96,7 @@ export default {
       return this.discussions;
     },
     canReply() {
-      return this.userCanReply && !this.commentsDisabled;
+      return this.userCanReply && !this.commentsDisabled && !this.timelineEnabled;
     },
     slotKeys() {
       return this.sortDirDesc ? ['form', 'comments'] : ['comments', 'form'];
@@ -252,7 +253,7 @@ export default {
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form
-          v-if="!commentsDisabled"
+          v-if="!(commentsDisabled || timelineEnabled)"
           class="js-comment-form"
           :noteable-type="noteableType"
         />

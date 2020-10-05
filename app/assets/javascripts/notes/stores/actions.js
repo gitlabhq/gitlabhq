@@ -99,8 +99,12 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
   return utils.findNoteObjectById(state.discussions, discussion.id);
 };
 
-export const setDiscussionSortDirection = ({ commit }, direction) => {
-  commit(types.SET_DISCUSSIONS_SORT, direction);
+export const setDiscussionSortDirection = ({ commit }, { direction, persist = true }) => {
+  commit(types.SET_DISCUSSIONS_SORT, { direction, persist });
+};
+
+export const setTimelineView = ({ commit }, enabled) => {
+  commit(types.SET_TIMELINE_VIEW, enabled);
 };
 
 export const setSelectedCommentPosition = ({ commit }, position) => {

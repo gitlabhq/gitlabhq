@@ -73,7 +73,7 @@ RSpec.describe SearchHelper do
         expect(result.keys).to match_array(%i[category id label url avatar_url])
       end
 
-      it 'includes the first 5 of the users recent issues' do
+      it 'includes the users recently viewed issues' do
         recent_issues = instance_double(::Gitlab::Search::RecentIssues)
         expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
         project1 = create(:project, :with_avatar, namespace: user.namespace)
@@ -81,13 +81,11 @@ RSpec.describe SearchHelper do
         issue1 = create(:issue, title: 'issue 1', project: project1)
         issue2 = create(:issue, title: 'issue 2', project: project2)
 
-        other_issues = create_list(:issue, 5)
-
-        expect(recent_issues).to receive(:search).with('the search term').and_return(Issue.id_in_ordered([issue1.id, issue2.id, *other_issues.map(&:id)]))
+        expect(recent_issues).to receive(:search).with('the search term').and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
 
         results = search_autocomplete_opts("the search term")
 
-        expect(results.count).to eq(5)
+        expect(results.count).to eq(2)
 
         expect(results[0]).to include({
           category: 'Recent issues',
@@ -106,7 +104,7 @@ RSpec.describe SearchHelper do
         })
       end
 
-      it 'includes the first 5 of the users recent merge requests' do
+      it 'includes the users recently viewed merge requests' do
         recent_merge_requests = instance_double(::Gitlab::Search::RecentMergeRequests)
         expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(recent_merge_requests)
         project1 = create(:project, :with_avatar, namespace: user.namespace)
@@ -114,13 +112,11 @@ RSpec.describe SearchHelper do
         merge_request1 = create(:merge_request, :unique_branches, title: 'Merge request 1', target_project: project1, source_project: project1)
         merge_request2 = create(:merge_request, :unique_branches, title: 'Merge request 2', target_project: project2, source_project: project2)
 
-        other_merge_requests = create_list(:merge_request, 5)
-
-        expect(recent_merge_requests).to receive(:search).with('the search term').and_return(MergeRequest.id_in_ordered([merge_request1.id, merge_request2.id, *other_merge_requests.map(&:id)]))
+        expect(recent_merge_requests).to receive(:search).with('the search term').and_return(MergeRequest.id_in_ordered([merge_request1.id, merge_request2.id]))
 
         results = search_autocomplete_opts("the search term")
 
-        expect(results.count).to eq(5)
+        expect(results.count).to eq(2)
 
         expect(results[0]).to include({
           category: 'Recent merge requests',

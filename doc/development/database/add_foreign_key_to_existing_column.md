@@ -1,3 +1,9 @@
+---
+stage: Enablement
+group: Database
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Adding foreign key constraint to an existing column
 
 Foreign keys help ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](../foreign_keys.md) when creating tables that reference records from other tables.

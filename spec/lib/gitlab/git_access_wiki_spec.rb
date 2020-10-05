@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccessWiki do
-  let(:access) { described_class.new(user, project, 'web', authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
-  let_it_be(:project) { create(:project, :wiki_repo) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :wiki_repo) }
+  let_it_be(:wiki) { create(:project_wiki, project: project) }
   let(:changes) { ['6f6d7e7ed 570e7b2ab refs/heads/master'] }
+  let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
-  let(:authentication_abilities) do
-    [
-      :read_project,
-      :download_code,
-      :push_code
-    ]
+
+  let(:access) do
+    described_class.new(user, wiki, 'web',
+                        authentication_abilities: authentication_abilities,
+                        redirected_path: redirected_path)
   end
 
   describe '#push_access_check' do
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::GitAccessWiki do
 
       context 'when the repository does not exist' do
         before do
-          allow(project.wiki).to receive(:repository).and_return(double('Repository', exists?: false))
+          allow(wiki.repository).to receive(:exists?).and_return(false)
         end
 
         it_behaves_like 'not-found git access' do
