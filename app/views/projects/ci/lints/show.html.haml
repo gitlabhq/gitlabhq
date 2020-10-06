@@ -7,7 +7,7 @@
 %h2.pt-3.pb-3= _("Validate your GitLab CI configuration")
 
 - if Feature.enabled?(:ci_lint_vue, @project)
-  #js-ci-lint{ data: { endpoint: project_ci_lint_path(@project) } }
+  #js-ci-lint{ data: { endpoint: project_ci_lint_path(@project), help_page_path: help_page_path('ci/lint', anchor: 'pipeline-simulation') } }
 
 - else
   .project-ci-linter

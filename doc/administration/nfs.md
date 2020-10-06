@@ -336,6 +336,28 @@ sudo ufw allow from <client_ip_address> to any port nfs
 
 ## Known issues
 
+### Upgrade to Gitaly Cluster or disable caching if experiencing data loss
+
+CAUTION: **Caution:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+[Gitaly Cluster](gitaly/praefect.md) as soon as possible.
+
+Customers and users have reported data loss on high-traffic repositories when using NFS for Git repositories.
+For example, we have seen [inconsistent updates after a push](https://gitlab.com/gitlab-org/gitaly/-/issues/2589). The problem may be partially mitigated by adjusting caching using the following NFS client mount options:
+
+| Setting | Description |
+| ------- | ----------- |
+| `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
+| `actimeo=0` | Sets the time to zero that the NFS client caches files and directories before requesting fresh information from a server. |
+| `noac` | Tells the NFS client not to cache file attributes and forces application writes to become synchronous so that local changes to a file become visible on the server immediately. |
+
+CAUTION: **Caution:**
+The `actimeo=0` and `noac` options both result in a significant reduction in performance, possibly leading to timeouts.
+You may be able to avoid timeouts and data loss using `actimeo=0` and `lookupcache=positive` _without_ `noac`, however
+we expect the performance reduction will still be significant. As noted above, we strongly recommend upgrading to
+[Gitaly Cluster](gitaly/praefect.md) as soon as possible.
+
 ### Avoid using AWS's Elastic File System (EFS)
 
 GitLab strongly recommends against using AWS Elastic File System (EFS).

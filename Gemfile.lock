@@ -1353,6 +1353,7 @@ DEPENDENCIES
   haml_lint (~> 0.34.0)
   hamlit (~> 2.11.0)
   hangouts-chat (~> 0.0.5)
+  hashie
   hashie-forbidden_attributes
   health_check (~> 3.0)
   hipchat (~> 1.5.0)

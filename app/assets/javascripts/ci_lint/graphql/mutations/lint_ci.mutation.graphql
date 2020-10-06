@@ -1,0 +1,22 @@
+mutation lintCI($endpoint: String, $content: String, $dry: Boolean) {
+  lintCI(endpoint: $endpoint, content: $content, dry_run: $dry) @client {
+    valid
+    errors
+    warnings
+    jobs {
+      afterScript
+      allowFailure
+      beforeScript
+      environment
+      except
+      name
+      only {
+        refs
+      }
+      afterScript
+      stage
+      tagList
+      when
+    }
+  }
+}
