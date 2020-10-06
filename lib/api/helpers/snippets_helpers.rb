@@ -93,7 +93,7 @@ module API
     def validate_params_for_multiple_files(snippet)
       return unless params[:content] || params[:file_name]
 
-      if Feature.enabled?(:snippet_multiple_files, current_user) && snippet.multiple_files?
+      if snippet.multiple_files?
         render_api_error!({ error: _('To update Snippets with multiple files, you must use the `files` parameter') }, 400)
       end
     end

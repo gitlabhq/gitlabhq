@@ -40,7 +40,7 @@ Snowplow is an enterprise-grade marketing and product analytics platform which h
 We have many definitions of Snowplow's schema. We have an active issue to [standardize this schema](https://gitlab.com/gitlab-org/gitlab/-/issues/207930) including the following definitions:
 
 - Frontend and backend taxonomy as listed below
-- [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy)
+- [Structured event taxonomy](#structured-event-taxonomy)
 - [Self describing events](https://github.com/snowplow/snowplow/wiki/Custom-events#self-describing-events)
 - [Iglu schema](https://gitlab.com/gitlab-org/iglu/)
 - [Snowplow authored events](https://github.com/snowplow/snowplow/wiki/Snowplow-authored-events)
@@ -96,15 +96,29 @@ sequenceDiagram
     Snowflake DW->>Sisense Dashboards: Data available for querying
 ```
 
+## Structured event taxonomy
+
+When adding new click events, we should add them in a way that's internally consistent. If we don't, it'll be very painful to perform analysis across features since each feature will be capturing events differently.
+
+The current method provides several attributes that are sent on each click event. Please try to follow these guidelines when specifying events to capture:
+
+| attribute | type    | required | description |
+| --------- | ------- | -------- | ----------- |
+| category  | text    | true     | The page or backend area of the application. Unless infeasible, please use the Rails page attribute by default in the frontend, and namespace + classname on the backend. |
+| action    | text    | true     | The action the user is taking, or aspect that's being instrumented. The first word should always describe the action or aspect: clicks should be `click`, activations should be `activate`, creations should be `create`, etc. Use underscores to describe what was acted on; for example, activating a form field would be `activate_form_input`. An interface action like clicking on a dropdown would be `click_dropdown`, while a behavior like creating a project record from the backend would be `create_project` |
+| label     | text    | false    | The specific element, or object that's being acted on. This is either the label of the element (e.g. a tab labeled 'Create from template' may be `create_from_template`) or a unique identifier if no text is available (e.g. closing the Groups dropdown in the top navbar might be `groups_dropdown_close`), or it could be the name or title attribute of a record being created. |
+| property  | text    | false    | Any additional property of the element, or object being acted on. |
+| value     | decimal | false    | Describes a numeric value or something directly related to the event. This could be the value of an input (e.g. `10` when clicking `internal` visibility). |
+
 ## Implementing Snowplow JS (Frontend) tracking
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy).
+GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Structured event taxonomy](#structured-event-taxonomy).
 
 | field      | type   | default value              | description                                                                                                                                                                                                    |
 |:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `category` | string | document.body.dataset.page | Page or subsection of a page that events are being captured within.                                                                                                                                            |
 | `action`   | string | 'generic'                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
-| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy). |
+| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 
 ### Tracking in HAML (or Vue Templates)
 
@@ -131,10 +145,10 @@ Below is a list of supported `data-track-*` attributes:
 | attribute             | required | description |
 |:----------------------|:---------|:------------|
 | `data-track-event`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field would be `activate_form_input` and clicking a button would be `click_button`. |
-| `data-track-label`    | false    | The `label` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy). |
-| `data-track-property` | false    | The `property` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy). |
-| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
-| `data-track-context`  | false    | The `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy). |
+| `data-track-label`    | false    | The `label` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
+| `data-track-property` | false    | The `property` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
+| `data-track-value`    | false    | The `value` as described in our [Structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
+| `data-track-context`  | false    | The `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 
 ### Tracking within Vue components
 
@@ -278,7 +292,7 @@ Custom event tracking and instrumentation can be added by directly calling the `
 |:-----------|:-------|:--------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `category` | string | 'application' | Area or aspect of the application. This could be `HealthCheckController` or `Lfs::FileTransformer` for instance.                                                                                                                                                       |
 | `action`   | string | 'generic'     | The action being taken, which can be anything from a controller action like `create` to something like an Active Record callback.                                                                                                                                      |
-| `data`     | object | {}            | Additional data such as `label`, `property`, `value`, and `context` as described in [Instrumentation at GitLab](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#sts=Taxonomy). These are set as empty strings if you don't provide them. |
+| `data`     | object | {}            | Additional data such as `label`, `property`, `value`, and `context` as described in [Structured event taxonomy](#structured-event-taxonomy). These are set as empty strings if you don't provide them. |
 
 Tracking can be viewed as either tracking user behavior, or can be utilized for instrumentation to monitor and visualize performance over time in an area or aspect of code.
 

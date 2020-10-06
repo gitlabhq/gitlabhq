@@ -8,7 +8,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 # Gitpod Integration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228893) in GitLab 13.4.
-> - It's [deployed behind a feature flag](#enable-or-disable-the-gitpod-integration), disabled by default.
+> - It was [deployed behind a feature flag](#enable-or-disable-the-gitpod-integration), disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/258206) in GitLab 13.5.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#configure-your-gitlab-instance-with-gitpod). **(CORE ONLY)**
@@ -57,19 +58,18 @@ and get your instance up and running.
 
 ## Enable or disable the Gitpod integration **(CORE ONLY)**
 
-The Gitpod integration is under development and not ready for production use. It is deployed behind a
-feature flag that is **disabled by default**.
+The Gitpod integration is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:gitpod)
-```
+can enable or disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:gitpod)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:gitpod)
 ```

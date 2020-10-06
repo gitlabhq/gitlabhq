@@ -24,6 +24,7 @@ RSpec.describe ObjectStoreSettings do
           'lfs' => { 'enabled' => true },
           'artifacts' => { 'enabled' => true },
           'external_diffs' => { 'enabled' => false },
+          'pages' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -39,6 +40,9 @@ RSpec.describe ObjectStoreSettings do
               'external_diffs' => {
                 'bucket' => 'external_diffs',
                 'enabled' => false
+              },
+              'pages' => {
+                'bucket' => 'pages'
               }
             }
           }
@@ -64,6 +68,11 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.lfs['object_store']['proxy_download']).to be true
         expect(settings.lfs['object_store']['remote_directory']).to eq('lfs-objects')
 
+        expect(settings.pages['enabled']).to be true
+        expect(settings.pages['object_store']['enabled']).to be true
+        expect(settings.pages['object_store']['connection']).to eq(connection)
+        expect(settings.pages['object_store']['remote_directory']).to eq('pages')
+
         expect(settings.external_diffs['enabled']).to be false
         expect(settings.external_diffs['object_store']['enabled']).to be false
         expect(settings.external_diffs['object_store']['remote_directory']).to eq('external_diffs')
@@ -73,6 +82,12 @@ RSpec.describe ObjectStoreSettings do
         config['object_store']['objects']['lfs'].delete('bucket')
 
         expect { subject }.to raise_error(/Object storage for lfs must have a bucket specified/)
+      end
+
+      it 'does not raise error if pages bucket is missing' do
+        config['object_store']['objects']['pages'].delete('bucket')
+
+        expect { subject }.not_to raise_error
       end
 
       context 'with legacy config' do

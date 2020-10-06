@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative 'boot'
 
 # Based on https://github.com/rails/rails/blob/v6.0.1/railties/lib/rails/all.rb
@@ -188,6 +189,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/boards.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
+    config.assets.precompile << "page_bundles/environments.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/jira_connect.css"

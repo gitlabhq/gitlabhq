@@ -11,7 +11,7 @@ export const initGroupMembersApp = (el, tableFields) => {
 
   Vue.use(Vuex);
 
-  const { members, groupId } = el.dataset;
+  const { members, groupId, memberPath } = el.dataset;
 
   const store = new Vuex.Store({
     ...membersModule({
@@ -19,6 +19,7 @@ export const initGroupMembersApp = (el, tableFields) => {
       sourceId: parseInt(groupId, 10),
       currentUserId: gon.current_user_id || null,
       tableFields,
+      memberPath,
     }),
   });
 

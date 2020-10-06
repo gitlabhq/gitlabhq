@@ -75,11 +75,9 @@ RSpec.describe Clusters::Kubernetes::FetchKubernetesTokenService do
         before do
           stub_kubeclient_get_secret_missing_token_then_with_token(
             api_url,
-            {
-              metadata_name: service_account_token_name,
-              namespace: namespace,
-              token: token
-            }
+            metadata_name: service_account_token_name,
+            namespace: namespace,
+            token: token
           )
         end
 

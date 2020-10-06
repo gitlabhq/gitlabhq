@@ -2,7 +2,6 @@
 import { GlButton } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { s__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SnippetBlobEdit from './snippet_blob_edit.vue';
 import { SNIPPET_MAX_BLOBS } from '../constants';
 import { createBlob, decorateBlob, diffAll } from '../utils/blob';
@@ -12,7 +11,6 @@ export default {
     SnippetBlobEdit,
     GlButton,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     initBlobs: {
       type: Array,
@@ -51,12 +49,6 @@ export default {
     },
     canAdd() {
       return this.count < SNIPPET_MAX_BLOBS;
-    },
-    hasMultiFilesEnabled() {
-      return this.glFeatures.snippetMultipleFiles;
-    },
-    filesLabel() {
-      return this.hasMultiFilesEnabled ? s__('Snippets|Files') : s__('Snippets|File');
     },
     firstInputId() {
       const blobId = this.blobIds[0];
@@ -132,19 +124,17 @@ export default {
 </script>
 <template>
   <div class="form-group file-editor">
-    <label :for="firstInputId">{{ filesLabel }}</label>
+    <label :for="firstInputId">{{ s__('Snippets|Files') }}</label>
     <snippet-blob-edit
       v-for="(blobId, index) in blobIds"
       :key="blobId"
       :class="{ 'gl-mt-3': index > 0 }"
       :blob="blobs[blobId]"
       :can-delete="canDelete"
-      :show-delete="hasMultiFilesEnabled"
       @blob-updated="updateBlob(blobId, $event)"
       @delete="deleteBlob(blobId)"
     />
     <gl-button
-      v-if="hasMultiFilesEnabled"
       :disabled="!canAdd"
       data-testid="add_button"
       class="gl-my-3"

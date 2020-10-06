@@ -1,16 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :requires_admin do
+  RSpec.describe 'Create' do
     describe 'Multiple file snippet' do
-      before do
-        Runtime::Feature.enable('snippet_multiple_files')
-      end
-
-      after do
-        Runtime::Feature.disable('snippet_multiple_files')
-      end
-
       it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/842' do
         Flow::Login.sign_in
 

@@ -19,16 +19,11 @@ const TEST_BLOBS_UNLOADED = TEST_BLOBS.map(blob => ({ ...blob, content: '', isLo
 describe('snippets/components/snippet_blob_actions_edit', () => {
   let wrapper;
 
-  const createComponent = (props = {}, snippetMultipleFiles = true) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(SnippetBlobActionsEdit, {
       propsData: {
         initBlobs: TEST_BLOBS,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          snippetMultipleFiles,
-        },
       },
     });
   };
@@ -69,28 +64,24 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
     wrapper = null;
   });
 
-  describe.each`
-    featureFlag | label      | showDelete | showAdd
-    ${true}     | ${'Files'} | ${true}    | ${true}
-    ${false}    | ${'File'}  | ${false}   | ${false}
-  `('with feature flag = $featureFlag', ({ featureFlag, label, showDelete, showAdd }) => {
+  describe('multi-file snippets rendering', () => {
     beforeEach(() => {
-      createComponent({}, featureFlag);
+      createComponent();
     });
 
     it('renders label', () => {
-      expect(findLabel().text()).toBe(label);
+      expect(findLabel().text()).toBe('Files');
     });
 
-    it(`renders delete button (show=${showDelete})`, () => {
+    it(`renders delete button (show=true)`, () => {
       expect(findFirstBlobEdit().props()).toMatchObject({
-        showDelete,
+        showDelete: true,
         canDelete: true,
       });
     });
 
-    it(`renders add button (show=${showAdd})`, () => {
-      expect(findAddButton().exists()).toBe(showAdd);
+    it(`renders add button (show=true)`, () => {
+      expect(findAddButton().exists()).toBe(true);
     });
   });
 

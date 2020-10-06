@@ -495,7 +495,7 @@ addresses and names, do use:
 - **Email addresses**: Use an email address ending in `example.com`.
 - **Names**: Use strings like `example_username`. Alternatively, use diverse or
   non-gendered names with common surnames, such as `Sidney Jones`, `Zhang Wei`,
-  or `Maria Garcia`.
+  or `Alex Garcia`.
 
 ### Fake URLs
 

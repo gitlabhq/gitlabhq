@@ -156,7 +156,7 @@ describe('Snippet Blob Edit component', () => {
     });
 
     it('shows blob header', () => {
-      const { canDelete = true, showDelete = false } = props;
+      const { canDelete = true, showDelete = true } = props;
 
       expect(findHeader().props()).toMatchObject({
         canDelete,

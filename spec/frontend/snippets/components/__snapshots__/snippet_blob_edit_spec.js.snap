@@ -9,6 +9,7 @@ exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
     candelete="true"
     data-qa-selector="file_name_field"
     id="blob_local_7_file_path"
+    showdelete="true"
     value="foo/bar/test.md"
   />
    

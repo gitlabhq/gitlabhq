@@ -1,5 +1,5 @@
 import Autosize from 'autosize';
-import { waitForCSSLoaded } from '../helpers/startup_css_helper';
+import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 
 document.addEventListener('DOMContentLoaded', () => {
   waitForCSSLoaded(() => {

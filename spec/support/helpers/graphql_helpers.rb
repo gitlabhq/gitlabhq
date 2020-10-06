@@ -23,7 +23,7 @@ module GraphqlHelpers
 
     return early_return unless ready
 
-    resolver.resolve(args)
+    resolver.resolve(**args)
   end
 
   # Eagerly run a loader's named resolver

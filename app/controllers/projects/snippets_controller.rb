@@ -14,10 +14,6 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
   before_action :authorize_update_snippet!, only: [:edit, :update]
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  before_action do
-    push_frontend_feature_flag(:snippet_multiple_files, current_user)
-  end
-
   def index
     @snippet_counts = ::Snippets::CountService
       .new(current_user, project: @project)

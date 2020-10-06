@@ -19,9 +19,12 @@ and learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (
 in a few clicks.
 
 TIP: **Tip:**
-Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
-and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
-Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form) and apply for credit.
+Every new Google Cloud Platform (GCP) account receives
+[$300 in credit upon sign up](https://console.cloud.google.com/freetrial).
+In partnership with Google, GitLab is able to offer an additional $200 for new GCP
+accounts to get started with GitLab's Google Kubernetes Engine Integration.
+[Follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form)
+to apply for credit.
 
 ## Before you begin
 
@@ -30,7 +33,7 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
 - GitLab itself. Either:
   - A [GitLab.com account](https://about.gitlab.com/pricing/#gitlab-com).
   - A [self-managed installation](https://about.gitlab.com/pricing/#self-managed) with GitLab version
-    12.5 or later. This will ensure the GitLab UI can be used for cluster creation.
+    12.5 or later. This ensures the GitLab UI can be used for cluster creation.
 - The following GitLab access:
   - [Maintainer access to a project](../../permissions.md#project-members-permissions) for a
     project-level cluster.
@@ -41,13 +44,11 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
 
 ## Access controls
 
-When creating a cluster in GitLab, you will be asked if you would like to create either:
+When creating a cluster in GitLab, you are asked if you would like to create either:
 
-- A [Role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) cluster.
+- A [Role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+  cluster, which is the GitLab default and recommended option.
 - An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/reference/access-authn-authz/abac/) cluster.
-
-NOTE: **Note:**
-[RBAC](#rbac-cluster-resources) is recommended and the GitLab default.
 
 GitLab creates the necessary service accounts and privileges to install and run
 [GitLab managed applications](index.md#installing-applications). When GitLab creates the cluster,
@@ -59,10 +60,10 @@ Restricted service account for deployment was [introduced](https://gitlab.com/gi
 
 The first time you install an application into your cluster, the `tiller` service
 account is created with `cluster-admin` privileges in the
-`gitlab-managed-apps` namespace. This service account will be used by Helm to
+`gitlab-managed-apps` namespace. This service account is used by Helm to
 install and run [GitLab managed applications](index.md#installing-applications).
 
-Helm will also create additional service accounts and other resources for each
+Helm also creates additional service accounts and other resources for each
 installed application. Consult the documentation of the Helm charts for each application
 for details.
 
@@ -77,7 +78,7 @@ Note the following about access controls:
 
 - Environment-specific resources are only created if your cluster is
   [managed by GitLab](index.md#gitlab-managed-clusters).
-- If your cluster was created before GitLab 12.2, it will use a single namespace for all project
+- If your cluster was created before GitLab 12.2, it uses a single namespace for all project
   environments.
 
 ### RBAC cluster resources
@@ -181,7 +182,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
       ```
 
-   1. **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the cluster. We will use the certificate created by default.
+   1. **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the cluster. We use the certificate created by default.
       1. List the secrets with `kubectl get secrets`, and one should be named similar to
          `default-token-xxxxx`. Copy that token name for use below.
       1. Get the certificate by running this command:
@@ -193,17 +194,17 @@ To add a Kubernetes cluster to your project, group, or instance:
          NOTE: **Note:**
          If the command returns the entire certificate chain, you must copy the Root CA
          certificate and any intermediate certificates at the bottom of the chain.
-         A chain file has following structure:  
+         A chain file has following structure:
 
          ```plaintext
-            -----BEGIN MY CERTIFICATE-----  
-            -----END MY CERTIFICATE-----  
-            -----BEGIN INTERMEDIATE CERTIFICATE-----  
-            -----END INTERMEDIATE CERTIFICATE-----  
-            -----BEGIN INTERMEDIATE CERTIFICATE-----  
-            -----END INTERMEDIATE CERTIFICATE-----  
-            -----BEGIN ROOT CERTIFICATE-----  
-            -----END ROOT CERTIFICATE-----  
+            -----BEGIN MY CERTIFICATE-----
+            -----END MY CERTIFICATE-----
+            -----BEGIN INTERMEDIATE CERTIFICATE-----
+            -----END INTERMEDIATE CERTIFICATE-----
+            -----BEGIN INTERMEDIATE CERTIFICATE-----
+            -----END INTERMEDIATE CERTIFICATE-----
+            -----BEGIN ROOT CERTIFICATE-----
+            -----END ROOT CERTIFICATE-----
          ```
 
    1. **Token** -
@@ -241,10 +242,10 @@ To add a Kubernetes cluster to your project, group, or instance:
          kubectl apply -f gitlab-admin-service-account.yaml
          ```
 
-         You will need the `container.clusterRoleBindings.create` permission
+         You need the `container.clusterRoleBindings.create` permission
          to create cluster-level roles. If you do not have this permission,
          you can alternatively enable Basic Authentication and then run the
-         `kubectl apply` command as an admin:
+         `kubectl apply` command as an administrator:
 
          ```shell
          kubectl apply -f gitlab-admin-service-account.yaml --username=admin --password=<password>
@@ -286,7 +287,7 @@ To add a Kubernetes cluster to your project, group, or instance:
          ```
 
       NOTE: **Note:**
-      For GKE clusters, you will need the
+      For GKE clusters, you need the
       `container.clusterRoleBindings.create` permission to create a cluster
       role binding. You can follow the [Google Cloud
       documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
@@ -295,7 +296,7 @@ To add a Kubernetes cluster to your project, group, or instance:
    1. **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
       See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
    1. **Project namespace** (optional) - You don't have to fill it in; by leaving
-      it blank, GitLab will create one for you. Also:
+      it blank, GitLab creates one for you. Also:
       - Each project should have a unique namespace.
       - The project namespace is not necessarily the namespace of the secret, if
         you're using a secret with broader permissions, like the secret from `default`.
@@ -306,19 +307,19 @@ To add a Kubernetes cluster to your project, group, or instance:
 
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After a couple of minutes, your cluster will be ready to go. You can now proceed
+After a couple of minutes, your cluster is ready. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
 
 #### Disable Role-Based Access Control (RBAC) (optional)
 
 When connecting a cluster via GitLab integration, you may specify whether the
-cluster is RBAC-enabled or not. This will affect how GitLab interacts with the
+cluster is RBAC-enabled or not. This affects how GitLab interacts with the
 cluster for certain operations. If you did *not* check the **RBAC-enabled cluster**
-checkbox at creation time, GitLab will assume RBAC is disabled for your cluster
+checkbox at creation time, GitLab assumes RBAC is disabled for your cluster
 when interacting with it. If so, you must disable RBAC on your cluster for the
 integration to work properly.
 
-![rbac](img/rbac_v13_1.png)
+![RBAC](img/rbac_v13_1.png)
 
 NOTE: **Note:**
 Disabling RBAC means that any application running in the cluster,
@@ -368,3 +369,12 @@ When removing the cluster integration, note:
 
 To learn more on automatically deploying your applications,
 read about [Auto DevOps](../../../topics/autodevops/index.md).
+
+## Troubleshooting
+
+### There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid
+
+If you encounter this error while adding a Kubernetes cluster, ensure you're
+properly pasting the service token. Some shells may add a line break to the
+service token, making it invalid. Ensure that there are no line breaks by
+pasting your token into an editor and removing any additional spaces.

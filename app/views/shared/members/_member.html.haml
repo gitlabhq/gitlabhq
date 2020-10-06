@@ -40,10 +40,11 @@
             = _("Requested %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.requested_at) }
           - else
             = _("Given access %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.created_at) }
-          - if member.expires?
-            ·
-            %span{ class: "#{"text-warning" if member.expires_soon?} has-tooltip", title: member.expires_at.to_time.in_time_zone.to_s(:medium) }
-              = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(member.expires_at) }
+          %span.js-expires-in{ class: ('gl-display-none' unless member.expires?) }
+            &middot;
+            %span.js-expires-in-text{ class: "has-tooltip#{' text-warning' if member.expires_soon?}", title: (member.expires_at.to_time.in_time_zone.to_s(:medium) if member.expires?) }
+              - if member.expires?
+                = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(member.expires_at) }
 
     - else
       = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''

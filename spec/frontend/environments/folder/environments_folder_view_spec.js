@@ -1,10 +1,10 @@
+import { GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { removeBreakLine, removeWhitespace } from 'helpers/text_helper';
-import { GlPagination } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
-import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
+import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
+import axios from '~/lib/utils/axios_utils';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
@@ -89,9 +89,9 @@ describe('Environments Folder View', () => {
     });
 
     it('should render parent folder name', () => {
-      expect(removeBreakLine(removeWhitespace(wrapper.find('.js-folder-name').text()))).toContain(
-        'Environments / review',
-      );
+      expect(
+        removeBreakLine(removeWhitespace(wrapper.find('[data-testid="folder-name"]').text())),
+      ).toContain('Environments / review');
     });
 
     describe('pagination', () => {

@@ -17,6 +17,7 @@ describe('initGroupMembersApp', () => {
     el = document.createElement('div');
     el.setAttribute('data-members', membersJsonString);
     el.setAttribute('data-group-id', '234');
+    el.setAttribute('data-member-path', '/groups/foo-bar/-/group_members/:id');
 
     window.gon = { current_user_id: 123 };
 
@@ -68,5 +69,11 @@ describe('initGroupMembersApp', () => {
     setup();
 
     expect(vm.$store.state.tableFields).toEqual(['account']);
+  });
+
+  it('sets `memberPath` in Vuex store', () => {
+    setup();
+
+    expect(vm.$store.state.memberPath).toBe('/groups/foo-bar/-/group_members/:id');
   });
 });

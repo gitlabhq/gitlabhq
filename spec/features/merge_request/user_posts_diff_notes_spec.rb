@@ -186,7 +186,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
       it 'adds as discussion' do
         should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
         expect(page).to have_css('.notes_holder .note.note-discussion', count: 1)
-        expect(page).to have_button('Reply...')
+        expect(page).to have_button('Reply')
       end
     end
   end

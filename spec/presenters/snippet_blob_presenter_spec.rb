@@ -133,28 +133,6 @@ RSpec.describe SnippetBlobPresenter do
       subject { described_class.new(snippet.blobs.first, current_user: user).raw_path }
 
       it_behaves_like 'snippet blob raw path'
-
-      context 'with snippet_multiple_files feature disabled' do
-        before do
-          stub_feature_flags(snippet_multiple_files: false)
-        end
-
-        context 'with ProjectSnippet' do
-          let(:snippet) { project_snippet }
-
-          it 'returns the raw path' do
-            expect(subject).to eq "/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw"
-          end
-        end
-
-        context 'with PersonalSnippet' do
-          let(:snippet) { personal_snippet }
-
-          it 'returns the raw path' do
-            expect(subject).to eq "/-/snippets/#{snippet.id}/raw"
-          end
-        end
-      end
     end
 
     describe '#raw_url' do
@@ -165,28 +143,6 @@ RSpec.describe SnippetBlobPresenter do
       end
 
       it_behaves_like 'snippet blob raw url'
-
-      context 'with snippet_multiple_files feature disabled' do
-        before do
-          stub_feature_flags(snippet_multiple_files: false)
-        end
-
-        context 'with ProjectSnippet' do
-          let(:snippet) { project_snippet }
-
-          it 'returns the raw project snippet url' do
-            expect(subject).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
-          end
-        end
-
-        context 'with PersonalSnippet' do
-          let(:snippet) { personal_snippet }
-
-          it 'returns the raw personal snippet url' do
-            expect(subject).to eq("http://test.host/-/snippets/#{personal_snippet.id}/raw")
-          end
-        end
-      end
     end
   end
 

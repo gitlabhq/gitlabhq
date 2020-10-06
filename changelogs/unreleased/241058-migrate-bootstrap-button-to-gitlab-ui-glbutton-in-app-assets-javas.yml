@@ -1,0 +1,6 @@
+---
+title: Replacing deprecated Bootstrap button with GlButton and updating btn-text-field
+  class to align with styles
+merge_request: 41430
+author:
+type: other

@@ -1,4 +1,5 @@
 - page_title _("Environments")
+- add_page_specific_style 'page_bundles/environments'
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-read-environment" => can?(current_user, :read_environment, @project).to_s,

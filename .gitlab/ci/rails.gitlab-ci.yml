@@ -9,6 +9,9 @@
 .rspec-base:
   extends: .rails-job-base
   stage: test
+  variables:
+    RUBY_GC_MALLOC_LIMIT: 67108864
+    RUBY_GC_MALLOC_LIMIT_MAX: 134217728
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   script:
     # Only install knapsack after bundle install! Otherwise oddly some native

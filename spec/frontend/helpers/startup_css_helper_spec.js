@@ -1,4 +1,4 @@
-import { waitForCSSLoaded } from '../../../app/assets/javascripts/helpers/startup_css_helper';
+import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 
 describe('waitForCSSLoaded', () => {
   let mockedCallback;

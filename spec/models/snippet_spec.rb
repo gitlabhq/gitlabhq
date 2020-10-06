@@ -717,18 +717,10 @@ RSpec.describe Snippet do
   end
 
   describe '.max_file_limit' do
-    subject { described_class.max_file_limit(nil) }
+    subject { described_class.max_file_limit }
 
     it "returns #{Snippet::MAX_FILE_COUNT}" do
       expect(subject).to eq Snippet::MAX_FILE_COUNT
-    end
-
-    context 'when feature flag :snippet_multiple_files is disabled' do
-      it "returns #{described_class::MAX_SINGLE_FILE_COUNT}" do
-        stub_feature_flags(snippet_multiple_files: false)
-
-        expect(subject).to eq described_class::MAX_SINGLE_FILE_COUNT
-      end
     end
   end
 

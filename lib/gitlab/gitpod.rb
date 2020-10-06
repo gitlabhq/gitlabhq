@@ -3,17 +3,13 @@
 module Gitlab
   class Gitpod
     class << self
-      def feature_conditional?
-        feature.conditional?
-      end
-
       def feature_available?
         # The gitpod_bundle feature could be conditionally applied, so check if `!off?`
-        !feature.off?
+        !feature.off? || feature_enabled?
       end
 
       def feature_enabled?(actor = nil)
-        feature.enabled?(actor)
+        Feature.enabled?(:gitpod, actor, default_enabled: true)
       end
 
       def feature_and_settings_enabled?(actor = nil)

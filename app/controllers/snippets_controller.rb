@@ -17,10 +17,6 @@ class SnippetsController < Snippets::ApplicationController
 
   layout 'snippets'
 
-  before_action do
-    push_frontend_feature_flag(:snippet_multiple_files, current_user)
-  end
-
   def index
     if params[:username].present?
       @user = UserFinder.new(params[:username]).find_by_username!

@@ -18,4 +18,4 @@
           .modal-text
             = html_escape(_('The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment.')) % { email: @current_user.notification_email, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
         .modal-footer
-          = link_to _('Export issues'), export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success float-left', title: _('Export issues'), data: { track_label: "export_issues_csv", track_event: "click_button", track_value: "", qa_selector: "export_issues_button" }
+          = link_to _('Export issues'), export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn gl-button btn-success float-left', title: _('Export issues'), data: { track_label: "export_issues_csv", track_event: "click_button", track_value: "", qa_selector: "export_issues_button" }

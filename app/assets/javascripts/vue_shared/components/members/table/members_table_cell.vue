@@ -38,12 +38,18 @@ export default {
     isCurrentUser() {
       return this.member.user?.id === this.currentUserId;
     },
+    canRemove() {
+      return this.isDirectMember && this.member.canRemove;
+    },
   },
   render() {
     return this.$scopedSlots.default({
       memberType: this.memberType,
       isDirectMember: this.isDirectMember,
       isCurrentUser: this.isCurrentUser,
+      permissions: {
+        canRemove: this.canRemove,
+      },
     });
   },
 };

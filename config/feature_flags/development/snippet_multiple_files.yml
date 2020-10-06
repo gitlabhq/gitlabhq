@@ -1,7 +1,0 @@
----
-name: snippet_multiple_files
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32416
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/217809
-group: group::editor
-type: development
-default_enabled: false

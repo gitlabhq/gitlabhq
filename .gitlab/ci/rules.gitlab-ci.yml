@@ -132,7 +132,10 @@
 
 .db-patterns: &db-patterns
   - "{,ee/}{,spec/}{db,migrations}/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database{,_spec}.rb"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration{,_spec}.rb"
   - "config/prometheus/common_metrics.yml" # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/}app/models/project_statistics.rb" # Used to calculate sizes in migration specs
 

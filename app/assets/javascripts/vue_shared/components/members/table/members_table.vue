@@ -7,6 +7,7 @@ import MemberAvatar from './member_avatar.vue';
 import MemberSource from './member_source.vue';
 import CreatedAt from './created_at.vue';
 import ExpiresAt from './expires_at.vue';
+import MemberActionButtons from './member_action_buttons.vue';
 import MembersTableCell from './members_table_cell.vue';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     ExpiresAt,
     MembersTableCell,
     MemberSource,
+    MemberActionButtons,
   },
   computed: {
     ...mapState(['members', 'tableFields']),
@@ -73,6 +75,17 @@ export default {
 
     <template #cell(expires)="{ item: { expiresAt } }">
       <expires-at :date="expiresAt" />
+    </template>
+
+    <template #cell(actions)="{ item: member }">
+      <members-table-cell #default="{ memberType, isCurrentUser, permissions }" :member="member">
+        <member-action-buttons
+          :member-type="memberType"
+          :is-current-user="isCurrentUser"
+          :permissions="permissions"
+          :member="member"
+        />
+      </members-table-cell>
     </template>
 
     <template #head(actions)="{ label }">

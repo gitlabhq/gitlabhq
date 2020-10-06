@@ -1,13 +1,4 @@
-@include media-breakpoint-down(md) {
-  .deployments-container {
-    width: 100%;
-    overflow: auto;
-  }
-}
-
-.environments-folder-name {
-  font-weight: $gl-font-weight-normal;
-}
+@import 'page_bundles/mixins_and_variables_and_functions';
 
 .environments-container {
   .ci-table {

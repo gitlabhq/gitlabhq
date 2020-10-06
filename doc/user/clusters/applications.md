@@ -1126,7 +1126,7 @@ to how much it can scale, and as it is a single instance deployment, you will ex
 when upgrading the Vault application.
 
 To optimally use Vault in a production environment, it's ideal to have a good understanding
-of the internals of Vault and how to configure it. This can be done by reading the
+of the internals of Vault and how to configure it. This can be done by reading the [Vault Configuration guide](../../ci/secrets/#configure-your-vault-server),
 [the Vault documentation](https://www.vaultproject.io/docs/internals) as well as
 the Vault Helm chart [`values.yaml` file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
 

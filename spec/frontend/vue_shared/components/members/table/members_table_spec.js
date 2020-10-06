@@ -9,6 +9,7 @@ import MemberAvatar from '~/vue_shared/components/members/table/member_avatar.vu
 import MemberSource from '~/vue_shared/components/members/table/member_source.vue';
 import ExpiresAt from '~/vue_shared/components/members/table/expires_at.vue';
 import CreatedAt from '~/vue_shared/components/members/table/created_at.vue';
+import MemberActionButtons from '~/vue_shared/components/members/table/member_action_buttons.vue';
 import * as initUserPopovers from '~/user_popovers';
 import { member as memberMock, invite, accessRequest } from '../mock_data';
 
@@ -32,7 +33,13 @@ describe('MemberList', () => {
     wrapper = mount(MembersTable, {
       localVue,
       store: createStore(state),
-      stubs: ['member-avatar', 'member-source', 'expires-at', 'created-at'],
+      stubs: [
+        'member-avatar',
+        'member-source',
+        'expires-at',
+        'created-at',
+        'member-action-buttons',
+      ],
     });
   };
 
@@ -77,12 +84,18 @@ describe('MemberList', () => {
     });
 
     it('renders "Actions" field for screen readers', () => {
-      createComponent({ tableFields: ['actions'] });
+      createComponent({ members: [memberMock], tableFields: ['actions'] });
 
       const actionField = getByTestId('col-actions');
 
       expect(actionField.exists()).toBe(true);
       expect(actionField.classes('gl-sr-only')).toBe(true);
+      expect(
+        wrapper
+          .find(`[data-label="Actions"][role="cell"]`)
+          .find(MemberActionButtons)
+          .exists(),
+      ).toBe(true);
     });
   });
 

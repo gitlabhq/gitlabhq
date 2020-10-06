@@ -4338,6 +4338,9 @@ msgstr ""
 msgid "Burndown chart"
 msgstr ""
 
+msgid "Burndown charts are now fixed. This means that removing issues from a milestone after it has expired won't affect the chart. You can view the old chart using the %{strongStart}Legacy burndown chart%{strongEnd} button."
+msgstr ""
+
 msgid "BurndownChartLabel|Open issue weight"
 msgstr ""
 
@@ -11347,6 +11350,9 @@ msgstr ""
 msgid "First seen"
 msgstr ""
 
+msgid "Fixed burndown chart"
+msgstr ""
+
 msgid "Fixed date"
 msgstr ""
 
@@ -15013,6 +15019,9 @@ msgstr ""
 msgid "Leave zen mode"
 msgstr ""
 
+msgid "Legacy burndown chart"
+msgstr ""
+
 msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
 
@@ -15840,6 +15849,21 @@ msgstr ""
 msgid "Members|%{time} by %{user}"
 msgstr ""
 
+msgid "Members|Are you sure you want to deny %{usersName}'s request to join \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to remove %{usersName} from \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to remove this orphaned member from \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to revoke the invitation for %{inviteEmail} to join \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to withdraw your access request for \"%{source}\""
+msgstr ""
+
 msgid "Members|Expired"
 msgstr ""
 
@@ -15847,6 +15871,15 @@ msgid "Members|No expiration set"
 msgstr ""
 
 msgid "Members|in %{time}"
+msgstr ""
+
+msgid "Member|Deny access"
+msgstr ""
+
+msgid "Member|Remove member"
+msgstr ""
+
+msgid "Member|Revoke invite"
 msgstr ""
 
 msgid "Memory Usage"
@@ -16008,7 +16041,7 @@ msgstr ""
 msgid "MergeRequests|Jump to next unresolved thread"
 msgstr ""
 
-msgid "MergeRequests|Reply..."
+msgid "MergeRequests|Reply"
 msgstr ""
 
 msgid "MergeRequests|Resolve this thread in a new issue"

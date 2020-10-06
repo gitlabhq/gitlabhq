@@ -356,6 +356,13 @@ with your personal access token or deploy token):
 //gitlab.com/api/v4/projects/:_authToken=<your_token>
 ```
 
+You can also use `yarn config` instead of `npm config` when setting your auth-token dynamically:
+
+```shell
+yarn config set '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
+yarn config set '//gitlab.com/api/v4/packages/npm/:_authToken' "<your_token>"
+```
+
 ### `npm publish` targets default NPM registry (`registry.npmjs.org`)
 
 Ensure that your package scope is set consistently in your `package.json` and `.npmrc` files.

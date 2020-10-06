@@ -116,10 +116,6 @@ RSpec.describe API::ProjectSnippets do
         let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123", user) }
       end
     end
-
-    it_behaves_like 'snippet_multiple_files feature disabled' do
-      subject { get api("/projects/#{project.id}/snippets/#{snippet.id}", user) }
-    end
   end
 
   describe 'POST /projects/:project_id/snippets/' do

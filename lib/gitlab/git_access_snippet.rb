@@ -115,7 +115,7 @@ module Gitlab
     override :check_single_change_access
     def check_single_change_access(change, _skip_lfs_integrity_check: false)
       Checks::SnippetCheck.new(change, default_branch: snippet.default_branch, logger: logger).validate!
-      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit(user), logger: logger).validate!
+      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit, logger: logger).validate!
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message
     end

@@ -4,30 +4,29 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Gitpod do
   let_it_be(:user) { create(:user) }
-  let(:feature_scope) { true }
 
   before do
     stub_feature_flags(gitpod: feature_scope)
   end
 
-  describe '.feature_conditional?' do
-    subject { described_class.feature_conditional? }
-
-    context 'when feature is enabled globally' do
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when feature is enabled only to a resource' do
-      let(:feature_scope) { user }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
   describe '.feature_available?' do
     subject { described_class.feature_available? }
 
+    context 'when feature has not been set' do
+      let(:feature_scope) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when feature is disabled' do
+      let(:feature_scope) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
     context 'when feature is enabled globally' do
+      let(:feature_scope) { true }
+
       it { is_expected.to be_truthy }
     end
 
@@ -43,7 +42,15 @@ RSpec.describe Gitlab::Gitpod do
 
     subject { described_class.feature_enabled?(current_user) }
 
+    context 'when feature has not been set' do
+      let(:feature_scope) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
     context 'when feature is enabled globally' do
+      let(:feature_scope) { true }
+
       it { is_expected.to be_truthy }
     end
 

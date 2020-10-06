@@ -77,12 +77,18 @@ export default class Members {
 
       $expiresInText.text(sprintf(__('Expires in %{expires_at}'), { expires_at: expiresIn }));
 
-      const { expires_soon: expiresSoon } = data;
+      const { expires_soon: expiresSoon, expires_at_formatted: expiresAtFormatted } = data;
 
       if (expiresSoon) {
         $expiresInText.addClass('text-warning');
       } else {
         $expiresInText.removeClass('text-warning');
+      }
+
+      // Update tooltip
+      if (expiresAtFormatted) {
+        $expiresInText.attr('title', expiresAtFormatted);
+        $expiresInText.attr('data-original-title', expiresAtFormatted);
       }
     } else {
       $expiresIn.addClass('gl-display-none');

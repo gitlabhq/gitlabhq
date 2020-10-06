@@ -260,7 +260,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
         service = double
 
         expect(service).to receive(:validate!).and_return(nil)
-        expect(Snippet).to receive(:max_file_limit).with(user).and_return(5)
+        expect(Snippet).to receive(:max_file_limit).and_return(5)
         expect(Gitlab::Checks::PushFileCountCheck).to receive(:new).with(anything, hash_including(limit: 5)).and_return(service)
 
         push_access_check

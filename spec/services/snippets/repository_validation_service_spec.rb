@@ -40,7 +40,7 @@ RSpec.describe Snippets::RepositoryValidationService do
     end
 
     it 'returns error when the repository has more file than the limit' do
-      limit = Snippet.max_file_limit(user) + 1
+      limit = Snippet.max_file_limit + 1
       files = Array.new(limit) { FFaker::Filesystem.file_name }
       allow(repository).to receive(:ls_files).and_return(files)
 

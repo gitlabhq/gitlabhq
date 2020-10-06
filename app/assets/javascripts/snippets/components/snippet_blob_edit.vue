@@ -28,7 +28,7 @@ export default {
     showDelete: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
   },
   computed: {

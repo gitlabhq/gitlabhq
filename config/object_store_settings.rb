@@ -1,7 +1,11 @@
 # Set default values for object_store settings
 class ObjectStoreSettings
-  SUPPORTED_TYPES = %w(artifacts external_diffs lfs uploads packages dependency_proxy terraform_state).freeze
+  SUPPORTED_TYPES = %w(artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages).freeze
   ALLOWED_OBJECT_STORE_OVERRIDES = %w(bucket enabled proxy_download).freeze
+
+  # pages may be enabled but use legacy disk storage
+  # we don't need to raise an error in that case
+  ALLOWED_INCOMPLETE_TYPES = %w(pages).freeze
 
   attr_accessor :settings
 
@@ -115,7 +119,9 @@ class ObjectStoreSettings
 
       next unless section
 
-      raise "Object storage for #{store_type} must have a bucket specified" if section['enabled'] && target_config['bucket'].blank?
+      if section['enabled'] && target_config['bucket'].blank?
+        missing_bucket_for(store_type)
+      end
 
       # Map bucket (external name) -> remote_directory (internal representation)
       target_config['remote_directory'] = target_config.delete('bucket')
@@ -151,5 +157,15 @@ class ObjectStoreSettings
     end
 
     true
+  end
+
+  def missing_bucket_for(store_type)
+    message = "Object storage for #{store_type} must have a bucket specified"
+
+    if ALLOWED_INCOMPLETE_TYPES.include?(store_type)
+      warn "[WARNING] #{message}"
+    else
+      raise message
+    end
   end
 end

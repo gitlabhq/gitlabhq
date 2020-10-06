@@ -167,8 +167,6 @@ RSpec.describe API::Snippets do
     it_behaves_like 'snippet access with different users' do
       let(:path) { "/snippets/#{snippet.id}" }
     end
-
-    it_behaves_like 'snippet_multiple_files feature disabled'
   end
 
   describe 'POST /snippets/' do
@@ -250,10 +248,6 @@ RSpec.describe API::Snippets do
     end
 
     it_behaves_like 'snippet creation'
-
-    it_behaves_like 'snippet_multiple_files feature disabled' do
-      let(:snippet) { Snippet.find(json_response["id"]) }
-    end
 
     context 'with an external user' do
       let(:user) { create(:user, :external) }
