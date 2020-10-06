@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
-      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env do
+      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238186', type: :investigating } do
         let(:praefect_manager) { Service::PraefectManager.new }
         let(:project) do
           Resource::Project.fabricate! do |project|
@@ -22,7 +22,7 @@ module QA
           praefect_manager.reset_primary_to_original
         end
 
-        it 'recovers from dataloss', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238186', type: :investigating }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/978' do
+        it 'recovers from dataloss', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/978' do
           # Create a new project with a commit and wait for it to replicate
           praefect_manager.wait_for_replication(project.id)
 

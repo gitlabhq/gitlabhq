@@ -47,6 +47,16 @@ module Gitlab
                 :cmd, :changes
     attr_accessor :container
 
+    def self.error_message(key)
+      self.ancestors.each do |cls|
+        return cls.const_get('ERROR_MESSAGES', false).fetch(key)
+      rescue NameError, KeyError
+        next
+      end
+
+      raise ArgumentError, "No error message defined for #{key}"
+    end
+
     def initialize(actor, container, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor     = actor
       @container = container
@@ -413,13 +423,7 @@ module Gitlab
     protected
 
     def error_message(key)
-      self.class.ancestors.each do |cls|
-        return cls.const_get('ERROR_MESSAGES', false).fetch(key)
-      rescue NameError, KeyError
-        next
-      end
-
-      raise ArgumentError, "No error message defined for #{key}"
+      self.class.error_message(key)
     end
 
     def success_result

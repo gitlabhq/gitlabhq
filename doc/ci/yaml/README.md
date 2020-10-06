@@ -4132,34 +4132,40 @@ Read more on [GitLab Pages user documentation](../../user/project/pages/index.md
 
 > Introduced in GitLab Runner v0.5.0.
 
-NOTE: **Note:**
-Integers (as well as strings) are legal both for variable's name and value.
-Floats are not legal and can't be used.
+Variables are configurable values that are passed to jobs. They can be set
+globally and per-job.
 
-Variables are configurable values in `.gitlab-ci.yml` that are passed to jobs.
-They can be set globally and per-job.
-When you use the `variables` keyword in jobs, it overrides the global
-YAML variables and predefined ones of the same name.
+There are two types of variables.
 
-Variables are stored in the Git repository and are meant for non-sensitive
-project configuration, for example:
+- [Custom variables](../variables/README.md#custom-environment-variables):
+  You can define their values in the `.gitlab-ci.yml` file, in the GitLab UI,
+  or by using the API.
+- [Predefined variables](../variables/predefined_variables.md):
+  These values are set by the runner itself.
+  One example is `CI_COMMIT_REF_NAME`, which is the branch or tag the project is built for.
+
+After you define a variable, you can use it in all executed commands and scripts.
+
+Variables are meant for non-sensitive project configuration, for example:
 
 ```yaml
 variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
-You can use these variables later in all executed commands and scripts.
-The YAML-defined variables are also set to all created service containers,
-so that you can fine tune them.
+You can use integers and strings for the variable's name and value.
+You cannot use floats.
 
-Except for the user-defined variables, there are also variables [set up by the
-runner itself](../variables/README.md#predefined-environment-variables).
-One example would be `CI_COMMIT_REF_NAME`, which has the value of
-the branch or tag name the project is built for. Apart from the variables
-you can set in `.gitlab-ci.yml`, there are also environment
-[variables](../variables/README.md#gitlab-cicd-environment-variables),
-which can be set in the GitLab UI.
+If you define a variable at the top level of the `gitlab-ci.yml` file, it is global,
+meaning it applies to all jobs.
+
+If you define a variable within a job, it's available to that job only.
+
+If a variable of the same name is defined globally and for a specific job, the
+[job-specific variable is used](../variables/README.md#priority-of-environment-variables).
+
+All YAML-defined variables are also set to any linked
+[service containers](../docker/using_docker_images.md#what-is-a-service).
 
 [YAML anchors for variables](#yaml-anchors-for-variables) are available.
 

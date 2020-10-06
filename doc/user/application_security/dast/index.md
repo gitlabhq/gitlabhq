@@ -438,7 +438,6 @@ When using `DAST_PATHS`, note the following:
 
 - The `DAST_PATHS` environment variable has a limit of about 130kb. If you have a list or paths
   greater than this, you should create multiple DAST jobs and split the paths over each job.
-- The `DAST_AUTH_EXCLUDE_URLS` environment variable is ignored when `DAST_PATHS` is set.
 
 #### Full Scan
 

@@ -22,7 +22,7 @@ module QA
         end
       end
 
-      after(:context) do
+      after(:context, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }) do
         # Leave the cluster in a suitable state for subsequent tests,
         # if there was a problem during the tests here
         praefect_manager.reset_primary_to_original
