@@ -16,7 +16,9 @@ export default {
 
 <template>
   <div class="clipboard-group">
-    <div class="url-text-field label label-monospace monospace">{{ uri }}</div>
+    <div class="gl-cursor-text label label-monospace monospace" data-testid="url-text-field">
+      {{ uri }}
+    </div>
     <clipboard-button
       :text="uri"
       :title="s__('ServerlessURL|Copy URL')"

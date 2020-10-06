@@ -5567,32 +5567,6 @@ RSpec.describe Project do
     end
   end
 
-  describe '.for_repository_storage' do
-    it 'returns the projects for a given repository storage' do
-      stub_storage_settings('test_second_storage' => {
-        'path' => TestEnv::SECOND_STORAGE_PATH,
-        'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address
-      })
-      expected_project = create(:project, repository_storage: 'default')
-      create(:project, repository_storage: 'test_second_storage')
-
-      expect(described_class.for_repository_storage('default')).to eq([expected_project])
-    end
-  end
-
-  describe '.excluding_repository_storage' do
-    it 'returns the projects excluding the given repository storage' do
-      stub_storage_settings('test_second_storage' => {
-        'path' => TestEnv::SECOND_STORAGE_PATH,
-        'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address
-      })
-      expected_project = create(:project, repository_storage: 'test_second_storage')
-      create(:project, repository_storage: 'default')
-
-      expect(described_class.excluding_repository_storage('default')).to eq([expected_project])
-    end
-  end
-
   describe '.deployments' do
     subject { project.deployments }
 

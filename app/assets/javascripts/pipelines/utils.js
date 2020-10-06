@@ -18,6 +18,13 @@ export const validateParams = params => {
 export const preparePipelineGraphData = jsonData => {
   const jsonKeys = Object.keys(jsonData);
   const jobNames = jsonKeys.filter(job => jsonData[job]?.stage);
+  // Creates an object with only the valid jobs
+  const jobs = jsonKeys.reduce((acc, val) => {
+    if (jobNames.includes(val)) {
+      return { ...acc, [val]: { ...jsonData[val] } };
+    }
+    return { ...acc };
+  }, {});
 
   // We merge both the stages from the "stages" key in the yaml and the stage associated
   // with each job to show the user both the stages they explicitly defined, and those
@@ -45,5 +52,7 @@ export const preparePipelineGraphData = jsonData => {
     };
   });
 
-  return { stages: pipelineData };
+  return { stages: pipelineData, jobs };
 };
+
+export const createUniqueJobId = (stageName, jobName) => `${stageName}-${jobName}`;

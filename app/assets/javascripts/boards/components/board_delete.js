@@ -1,7 +1,7 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { hide } from '~/tooltips';
 
 export default Vue.extend({
   components: {
@@ -19,7 +19,7 @@ export default Vue.extend({
   },
   methods: {
     deleteBoard() {
-      $(this.$el).tooltip('hide');
+      hide(this.$el);
 
       // eslint-disable-next-line no-alert
       if (window.confirm(__('Are you sure you want to delete this list?'))) {

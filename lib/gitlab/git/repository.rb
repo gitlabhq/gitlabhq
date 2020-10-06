@@ -610,7 +610,7 @@ module Gitlab
         }
 
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_revert(args)
+          gitaly_operation_client.user_revert(**args)
         end
       end
 
@@ -626,7 +626,7 @@ module Gitlab
         }
 
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_cherry_pick(args)
+          gitaly_operation_client.user_cherry_pick(**args)
         end
       end
 
@@ -640,7 +640,7 @@ module Gitlab
         }
 
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_update_submodule(args)
+          gitaly_operation_client.user_update_submodule(**args)
         end
       end
 

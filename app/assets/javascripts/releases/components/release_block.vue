@@ -11,7 +11,6 @@ import EvidenceBlock from './evidence_block.vue';
 import ReleaseBlockAssets from './release_block_assets.vue';
 import ReleaseBlockFooter from './release_block_footer.vue';
 import ReleaseBlockHeader from './release_block_header.vue';
-import ReleaseBlockMetadata from './release_block_metadata.vue';
 import ReleaseBlockMilestoneInfo from './release_block_milestone_info.vue';
 
 export default {
@@ -21,7 +20,6 @@ export default {
     ReleaseBlockAssets,
     ReleaseBlockFooter,
     ReleaseBlockHeader,
-    ReleaseBlockMetadata,
     ReleaseBlockMilestoneInfo,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -57,19 +55,13 @@ export default {
     shouldShowEvidence() {
       return this.glFeatures.releaseEvidenceCollection;
     },
-    shouldShowFooter() {
-      return this.glFeatures.releaseIssueSummary;
-    },
     shouldRenderAssets() {
       return Boolean(
         this.assets.links.length || (this.assets.sources && this.assets.sources.length),
       );
     },
-    shouldRenderReleaseMetaData() {
-      return !this.glFeatures.releaseIssueSummary;
-    },
     shouldRenderMilestoneInfo() {
-      return Boolean(this.glFeatures.releaseIssueSummary && !isEmpty(this.release.milestones));
+      return Boolean(!isEmpty(this.release.milestones));
     },
   },
 
@@ -105,7 +97,6 @@ export default {
         <hr class="mb-3 mt-0" />
       </div>
 
-      <release-block-metadata v-if="shouldRenderReleaseMetaData" :release="release" />
       <release-block-assets v-if="shouldRenderAssets" :assets="assets" />
       <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
@@ -115,7 +106,6 @@ export default {
     </div>
 
     <release-block-footer
-      v-if="shouldShowFooter"
       class="card-footer"
       :commit="release.commit"
       :commit-path="release.commitPath"

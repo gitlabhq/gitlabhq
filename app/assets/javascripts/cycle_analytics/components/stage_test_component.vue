@@ -1,8 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
-import iconBuildStatus from '../svg/icon_build_status.svg';
-import iconBranch from '../svg/icon_branch.svg';
 import limitWarning from './limit_warning_component.vue';
 import totalTime from './total_time_component.vue';
 
@@ -24,14 +21,6 @@ export default {
       required: false,
     },
   },
-  computed: {
-    iconBuildStatus() {
-      return iconBuildStatus;
-    },
-    iconBranch() {
-      return iconBranch;
-    },
-  },
 };
 </script>
 <template>
@@ -44,12 +33,16 @@ export default {
       <li v-for="(build, i) in items" :key="i" class="stage-event-item item-build-component">
         <div class="item-details">
           <h5 class="item-title">
-            <span class="icon-build-status" v-html="iconBuildStatus"> </span>
+            <span class="icon-build-status gl-text-green-500">
+              <gl-icon name="status_success" :size="14" />
+            </span>
             <a :href="build.url" class="item-build-name"> {{ build.name }} </a> &middot;
             <a :href="build.url" class="pipeline-id"> #{{ build.id }} </a>
             <gl-icon :size="16" name="fork" />
             <a :href="build.branch.url" class="ref-name"> {{ build.branch.name }} </a>
-            <span class="icon-branch" v-html="iconBranch"> </span>
+            <span class="icon-branch gl-text-gray-400">
+              <gl-icon name="commit" :size="14" />
+            </span>
             <a :href="build.commitUrl" class="commit-sha"> {{ build.shortSha }} </a>
           </h5>
           <span>

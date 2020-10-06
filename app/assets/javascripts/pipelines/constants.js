@@ -27,6 +27,7 @@ export const RAW_TEXT_WARNING = s__(
 /* Error constants shared across graphs */
 export const DEFAULT = 'default';
 export const DELETE_FAILURE = 'delete_pipeline_failure';
+export const DRAW_FAILURE = 'draw_failure';
 export const LOAD_FAILURE = 'load_failure';
 export const PARSE_FAILURE = 'parse_failure';
 export const POST_FAILURE = 'post_failure';

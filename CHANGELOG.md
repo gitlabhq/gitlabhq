@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.4.3 (2020-10-06)
+
+### Fixed (3 changes)
+
+- Exclude 2FA from upload#show routes and 404s. !42784
+- use create_wiki method on ensure_wiki_exists in update_service. !42910
+- Fix large backups not working with Azure Blob storage. !44233
+
+
 ## 13.4.0 (2020-09-22)
 
 ### Security (2 changes, 1 of them is from the community)

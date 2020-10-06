@@ -202,7 +202,7 @@ GEM
     css_parser (1.7.0)
       addressable
     daemons (1.2.6)
-    danger (8.0.5)
+    danger (8.0.6)
       claide (~> 1.0)
       claide-plugins (>= 0.9.2)
       colored2 (~> 3.1)
@@ -1277,7 +1277,7 @@ DEPENDENCIES
   connection_pool (~> 2.0)
   countries (~> 3.0)
   creole (~> 0.5.0)
-  danger (~> 8.0)
+  danger (~> 8.0.6)
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.3.1)
   default_value_for (~> 3.3.0)

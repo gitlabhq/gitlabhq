@@ -7,7 +7,7 @@ import getDagVisData from '../../graphql/queries/get_dag_vis_data.query.graphql'
 import DagGraph from './dag_graph.vue';
 import DagAnnotations from './dag_annotations.vue';
 import { ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from './constants';
-import { parseData } from './parsing_utils';
+import { parseData } from '../parsing_utils';
 import { DEFAULT, PARSE_FAILURE, LOAD_FAILURE, UNSUPPORTED_DATA } from '../../constants';
 
 export default {

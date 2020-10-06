@@ -1,0 +1,5 @@
+---
+title: Replace in-repo SVGs with @gitlab/svgs in Cycle Analytics
+merge_request: 43823
+author: Takuya Noguchi
+type: other

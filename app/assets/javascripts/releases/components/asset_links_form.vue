@@ -10,7 +10,6 @@ import {
   GlFormInput,
   GlFormSelect,
 } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT_ASSET_LINK_TYPE, ASSET_LINK_TYPE } from '../constants';
 import { s__ } from '~/locale';
 
@@ -26,7 +25,6 @@ export default {
     GlFormSelect,
   },
   directives: { GlTooltip: GlTooltipDirective },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState('detail', ['release', 'releaseAssetsDocsPath']),
     ...mapGetters('detail', ['validationErrors']),
@@ -195,7 +193,6 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        v-if="glFeatures.releaseAssetLinkType"
         class="link-type-field col-auto px-sm-2"
         :label="__('Type')"
         :label-for="`asset-type-${index}`"

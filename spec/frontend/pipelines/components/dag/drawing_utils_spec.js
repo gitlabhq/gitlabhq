@@ -1,5 +1,5 @@
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
-import { parseData } from '~/pipelines/components/dag/parsing_utils';
+import { parseData } from '~/pipelines/components/parsing_utils';
 import { mockParsedGraphQLNodes } from './mock_data';
 
 describe('DAG visualization drawing utilities', () => {

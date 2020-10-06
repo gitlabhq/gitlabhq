@@ -276,32 +276,14 @@ describe('Release detail actions', () => {
 
     describe('receiveSaveReleaseSuccess', () => {
       it(`commits ${types.RECEIVE_SAVE_RELEASE_SUCCESS}`, () =>
-        testAction(actions.receiveSaveReleaseSuccess, undefined, { ...state, featureFlags: {} }, [
+        testAction(actions.receiveSaveReleaseSuccess, release, state, [
           { type: types.RECEIVE_SAVE_RELEASE_SUCCESS },
         ]));
 
-      describe('when the releaseShowPage feature flag is enabled', () => {
-        beforeEach(() => {
-          const rootState = { featureFlags: { releaseShowPage: true } };
-          actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state, rootState }, release);
-        });
-
-        it("redirects to the release's dedicated page", () => {
-          expect(redirectTo).toHaveBeenCalledTimes(1);
-          expect(redirectTo).toHaveBeenCalledWith(release._links.self);
-        });
-      });
-
-      describe('when the releaseShowPage feature flag is disabled', () => {
-        beforeEach(() => {
-          const rootState = { featureFlags: { releaseShowPage: false } };
-          actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state, rootState }, release);
-        });
-
-        it("redirects to the project's main Releases page", () => {
-          expect(redirectTo).toHaveBeenCalledTimes(1);
-          expect(redirectTo).toHaveBeenCalledWith(state.releasesPagePath);
-        });
+      it("redirects to the release's dedicated page", () => {
+        actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state }, release);
+        expect(redirectTo).toHaveBeenCalledTimes(1);
+        expect(redirectTo).toHaveBeenCalledWith(release._links.self);
       });
     });
 

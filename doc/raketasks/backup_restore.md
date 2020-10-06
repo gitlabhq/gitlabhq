@@ -54,6 +54,7 @@ including:
 - LFS objects
 - Container Registry images
 - GitLab Pages content
+- Snippets
 
 CAUTION: **Warning:**
 GitLab does not back up any configuration files, SSL certificates, or system
@@ -1081,7 +1082,7 @@ For more information, see:
 - PostgreSQL issue tracker:
   - [Not being a superuser](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com).
   - [Having different owners](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us).
-  
+
 - Stack Overflow: [Resulting errors](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### When the secrets file is lost

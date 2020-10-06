@@ -56,11 +56,6 @@ describe('Release edit component', () => {
     wrapper = mount(AssetLinksForm, {
       localVue,
       store,
-      provide: {
-        glFeatures: {
-          releaseAssetLinkType: true,
-        },
-      },
     });
   };
 

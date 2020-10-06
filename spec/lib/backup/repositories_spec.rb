@@ -21,15 +21,19 @@ RSpec.describe Backup::Repositories do
 
     RSpec.shared_examples 'creates repository bundles' do
       specify :aggregate_failures do
-        # Add data to the wiki and design repositories, so they will be included in the dump.
+        # Add data to the wiki, design repositories, and snippets, so they will be included in the dump.
         create(:wiki_page, container: project)
         create(:design, :with_file, issue: create(:issue, project: project))
+        project_snippet = create(:project_snippet, :repository, project: project)
+        personal_snippet = create(:personal_snippet, :repository, author: project.owner)
 
         subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
 
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.wiki' + '.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.design' + '.bundle'))
+        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', personal_snippet.disk_path + '.bundle'))
+        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project_snippet.disk_path + '.bundle'))
       end
     end
 

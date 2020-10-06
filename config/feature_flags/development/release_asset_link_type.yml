@@ -1,7 +1,0 @@
----
-name: release_asset_link_type
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33643
-rollout_issue_url:
-group: group::release management
-type: development
-default_enabled: true

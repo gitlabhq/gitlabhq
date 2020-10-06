@@ -68,9 +68,9 @@ export const removeAssetLink = ({ commit }, linkIdToRemove) => {
   commit(types.REMOVE_ASSET_LINK, linkIdToRemove);
 };
 
-export const receiveSaveReleaseSuccess = ({ commit, state, rootState }, release) => {
+export const receiveSaveReleaseSuccess = ({ commit }, release) => {
   commit(types.RECEIVE_SAVE_RELEASE_SUCCESS);
-  redirectTo(rootState.featureFlags.releaseShowPage ? release._links.self : state.releasesPagePath);
+  redirectTo(release._links.self);
 };
 
 export const saveRelease = ({ commit, dispatch, getters }) => {

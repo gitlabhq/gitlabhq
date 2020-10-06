@@ -22,9 +22,6 @@ describe('Release block assets', () => {
 
   const createComponent = (propsData = defaultProps) => {
     wrapper = mount(ReleaseBlockAssets, {
-      provide: {
-        glFeatures: { releaseAssetLinkType: true },
-      },
       propsData,
     });
   };

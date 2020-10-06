@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Releases
-  class UpdateService < BaseService
-    include Releases::Concerns
-
+  class UpdateService < Releases::BaseService
     def execute
       return error('Tag does not exist', 404) unless existing_tag
       return error('Release does not exist', 404) unless release

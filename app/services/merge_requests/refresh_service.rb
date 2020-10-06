@@ -85,18 +85,13 @@ module MergeRequests
 
       return if merge_requests.empty?
 
-      commit_analyze_enabled = Feature.enabled?(:branch_push_merge_commit_analyze, @project, default_enabled: true)
-      if commit_analyze_enabled
-        analyzer = Gitlab::BranchPushMergeCommitAnalyzer.new(
-          @commits.reverse,
-          relevant_commit_ids: merge_requests.map(&:diff_head_sha)
-        )
-      end
+      analyzer = Gitlab::BranchPushMergeCommitAnalyzer.new(
+        @commits.reverse,
+        relevant_commit_ids: merge_requests.map(&:diff_head_sha)
+      )
 
       merge_requests.each do |merge_request|
-        if commit_analyze_enabled
-          merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
-        end
+        merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
 
         MergeRequests::PostMergeService
           .new(merge_request.target_project, @current_user)

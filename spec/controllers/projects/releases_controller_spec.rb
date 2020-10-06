@@ -194,14 +194,6 @@ RSpec.describe Projects::ReleasesController do
       end
     end
 
-    context 'when feature flag `release_show_page` is disabled' do
-      before do
-        stub_feature_flags(release_show_page: false)
-      end
-
-      it_behaves_like 'not found'
-    end
-
     context 'when release does not exist' do
       let(:tag) { 'non-existent-tag' }
 

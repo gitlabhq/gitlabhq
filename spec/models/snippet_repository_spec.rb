@@ -13,6 +13,11 @@ RSpec.describe SnippetRepository do
     it { is_expected.to belong_to(:snippet) }
   end
 
+  it_behaves_like 'shardable scopes' do
+    let_it_be(:record_1) { create(:snippet_repository) }
+    let_it_be(:record_2, reload: true) { create(:snippet_repository) }
+  end
+
   describe '.find_snippet' do
     it 'finds snippet by disk path' do
       snippet = create(:snippet, author: user)

@@ -1,5 +1,0 @@
----
-title: use create_wiki method on ensure_wiki_exists in update_service
-merge_request: 42910
-author:
-type: fixed

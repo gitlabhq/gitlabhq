@@ -19,7 +19,7 @@ describe('urlComponent', () => {
     expect(vm.$el.classList.contains('clipboard-group')).toBe(true);
     expect(wrapper.find(ClipboardButton).attributes('text')).toEqual(uri);
 
-    expect(vm.$el.querySelector('.url-text-field').innerHTML).toEqual(uri);
+    expect(vm.$el.querySelector('[data-testid="url-text-field"]').innerHTML).toContain(uri);
 
     vm.$destroy();
   });

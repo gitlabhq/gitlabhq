@@ -1,7 +1,7 @@
 import { preparePipelineGraphData } from '~/pipelines/utils';
 
 describe('preparePipelineGraphData', () => {
-  const emptyResponse = { stages: [] };
+  const emptyResponse = { stages: [], jobs: {} };
   const jobName1 = 'build_1';
   const jobName2 = 'build_2';
   const jobName3 = 'test_1';
@@ -11,7 +11,7 @@ describe('preparePipelineGraphData', () => {
   const job3 = { [jobName3]: { script: 'echo test', stage: 'test' } };
   const job4 = { [jobName4]: { script: 'echo deploy', stage: 'deploy' } };
 
-  describe('returns an object with an empty array of stages if', () => {
+  describe('returns an empty array of stages and empty job objects if', () => {
     it('no data is passed', () => {
       expect(preparePipelineGraphData({})).toEqual(emptyResponse);
     });
@@ -23,7 +23,7 @@ describe('preparePipelineGraphData', () => {
     });
   });
 
-  describe('returns the correct array of stages', () => {
+  describe('returns the correct array of stages and object of jobs', () => {
     it('when multiple jobs are in the same stage', () => {
       const expectedData = {
         stages: [
@@ -41,6 +41,7 @@ describe('preparePipelineGraphData', () => {
             ],
           },
         ],
+        jobs: { ...job1, ...job2 },
       };
 
       expect(preparePipelineGraphData({ ...job1, ...job2 })).toEqual(expectedData);
@@ -61,6 +62,7 @@ describe('preparePipelineGraphData', () => {
             groups: [],
           },
         ],
+        jobs: {},
       };
 
       expect(preparePipelineGraphData({ stages: [userDefinedStage, userDefinedStage2] })).toEqual(
@@ -110,6 +112,12 @@ describe('preparePipelineGraphData', () => {
             ],
           },
         ],
+        jobs: {
+          ...job1,
+          ...job2,
+          ...job3,
+          ...job4,
+        },
       };
 
       expect(
@@ -136,6 +144,9 @@ describe('preparePipelineGraphData', () => {
             ],
           },
         ],
+        jobs: {
+          ...job1,
+        },
       };
 
       expect(

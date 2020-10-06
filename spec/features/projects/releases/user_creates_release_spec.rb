@@ -11,11 +11,8 @@ RSpec.describe 'User creates release', :js do
   let_it_be(:user) { create(:user) }
 
   let(:new_page_url) { new_project_release_path(project) }
-  let(:show_feature_flag) { true }
 
   before do
-    stub_feature_flags(release_show_page: show_feature_flag)
-
     project.add_developer(user)
 
     sign_in(user)
@@ -74,14 +71,6 @@ RSpec.describe 'User creates release', :js do
       release = project.releases.last
 
       expect(page).to have_current_path(project_release_path(project, release))
-    end
-
-    context 'when the release_show_page feature flag is disabled' do
-      let(:show_feature_flag) { false }
-
-      it 'redirects to the main "Releases" page' do
-        expect(page).to have_current_path(project_releases_path(project))
-      end
     end
   end
 

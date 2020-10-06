@@ -2,6 +2,6 @@
   - unless @service.activated?
     .row
       .col-sm-9.offset-sm-3
-        = link_to new_project_mattermost_path(@project), class: 'btn btn-lg' do
+        = link_to new_project_mattermost_path(@project), class: 'btn gl-button btn-lg' do
           = custom_icon('mattermost_logo', size: 15)
           = s_("MattermostService|Add to Mattermost")

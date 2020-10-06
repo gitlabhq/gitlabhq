@@ -17,9 +17,7 @@ module Backup
         return dump_consecutive
       end
 
-      if Project.excluding_repository_storage(Gitlab.config.repositories.storages.keys).exists?
-        raise Error, 'repositories.storages in gitlab.yml is misconfigured'
-      end
+      check_valid_storages!
 
       semaphore = Concurrent::Semaphore.new(max_concurrency)
       errors = Queue.new
@@ -53,16 +51,16 @@ module Backup
 
     private
 
-    def restore_repository(container, type)
-      BackupRestore.new(
-        progress,
-        type.repository_for(container),
-        backup_repos_path
-      ).restore(always_create: type.project?)
+    def check_valid_storages!
+      [ProjectRepository, SnippetRepository].each do |klass|
+        if klass.excluding_repository_storage(Gitlab.config.repositories.storages.keys).exists?
+          raise Error, "repositories.storages in gitlab.yml does not include all storages used by #{klass}"
+        end
+      end
     end
 
     def backup_repos_path
-      File.join(Gitlab.config.backup.path, 'repositories')
+      @backup_repos_path ||= File.join(Gitlab.config.backup.path, 'repositories')
     end
 
     def prepare
@@ -72,9 +70,18 @@ module Backup
     end
 
     def dump_consecutive
-      Project.includes(:route, :group, namespace: :owner).find_each(batch_size: 1000) do |project|
+      dump_consecutive_projects
+      dump_consecutive_snippets
+    end
+
+    def dump_consecutive_projects
+      project_relation.find_each(batch_size: 1000) do |project|
         dump_project(project)
       end
+    end
+
+    def dump_consecutive_snippets
+      Snippet.find_each(batch_size: 1000) { |snippet| dump_snippet(snippet) }
     end
 
     def dump_storage(storage, semaphore, max_storage_concurrency:)
@@ -84,13 +91,18 @@ module Backup
       threads = Array.new(max_storage_concurrency) do
         Thread.new do
           Rails.application.executor.wrap do
-            while project = queue.pop
+            while container = queue.pop
               ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
                 semaphore.acquire
               end
 
               begin
-                dump_project(project)
+                case container
+                when Project
+                  dump_project(container)
+                when Snippet
+                  dump_snippet(container)
+                end
               rescue => e
                 errors << e
                 break
@@ -102,11 +114,7 @@ module Backup
         end
       end
 
-      Project.for_repository_storage(storage).includes(:route, :group, namespace: :owner).find_each(batch_size: 100) do |project|
-        break unless errors.empty?
-
-        queue.push(project)
-      end
+      enqueue_records_for_storage(storage, queue, errors)
 
       raise errors.pop unless errors.empty?
     ensure
@@ -122,12 +130,50 @@ module Backup
       backup_repository(project, Gitlab::GlRepository::DESIGN)
     end
 
+    def dump_snippet(snippet)
+      backup_repository(snippet, Gitlab::GlRepository::SNIPPET)
+    end
+
+    def enqueue_records_for_storage(storage, queue, errors)
+      records_to_enqueue(storage).each do |relation|
+        relation.find_each(batch_size: 100) do |project|
+          break unless errors.empty?
+
+          queue.push(project)
+        end
+      end
+    end
+
+    def records_to_enqueue(storage)
+      [projects_in_storage(storage), snippets_in_storage(storage)]
+    end
+
+    def projects_in_storage(storage)
+      project_relation.id_in(ProjectRepository.for_repository_storage(storage).select(:project_id))
+    end
+
+    def project_relation
+      Project.includes(:route, :group, namespace: :owner)
+    end
+
+    def snippets_in_storage(storage)
+      Snippet.id_in(SnippetRepository.for_repository_storage(storage).select(:snippet_id))
+    end
+
     def backup_repository(container, type)
       BackupRestore.new(
         progress,
         type.repository_for(container),
         backup_repos_path
       ).backup
+    end
+
+    def restore_repository(container, type)
+      BackupRestore.new(
+        progress,
+        type.repository_for(container),
+        backup_repos_path
+      ).restore(always_create: type.project?)
     end
 
     def restore_object_pools

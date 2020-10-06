@@ -10,7 +10,7 @@ import {
   toggleLinkHighlight,
   togglePathHighlights,
 } from './interactions';
-import { getMaxNodes, removeOrphanNodes } from './parsing_utils';
+import { getMaxNodes, removeOrphanNodes } from '../parsing_utils';
 import { calculateClip, createLinkPath, createSankey, labelPosition } from './drawing_utils';
 import { PARSE_FAILURE } from '../../constants';
 

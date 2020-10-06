@@ -953,9 +953,6 @@ msgstr ""
 msgid "(deleted)"
 msgstr ""
 
-msgid "(external source)"
-msgstr ""
-
 msgid "(line: %{startLine})"
 msgstr ""
 
@@ -7325,6 +7322,9 @@ msgstr ""
 msgid "Could not delete wiki page"
 msgstr ""
 
+msgid "Could not draw the lines for job relationships"
+msgstr ""
+
 msgid "Could not find design."
 msgstr ""
 
@@ -8176,6 +8176,12 @@ msgid "DastProfiles|Validating..."
 msgstr ""
 
 msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the choosen method."
+msgstr ""
+
+msgid "DastProfiles|Validation failed. Please try again."
+msgstr ""
+
+msgid "DastProfiles|Validation is in progress..."
 msgstr ""
 
 msgid "DastProfiles|Validation must be turned off to change the target URL"
@@ -9240,9 +9246,6 @@ msgid "Download as"
 msgstr ""
 
 msgid "Download as CSV"
-msgstr ""
-
-msgid "Download asset"
 msgstr ""
 
 msgid "Download codes"
@@ -24336,9 +24339,6 @@ msgstr ""
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"
 msgstr ""
 
-msgid "Source code"
-msgstr ""
-
 msgid "Source code (%{fileExtension})"
 msgstr ""
 
@@ -30091,9 +30091,6 @@ msgstr ""
 msgid "by"
 msgstr ""
 
-msgid "by %{user}"
-msgstr ""
-
 msgid "cannot be a date in the past"
 msgstr ""
 
@@ -30266,9 +30263,6 @@ msgid "ciReport|Found %{issuesWithCount}"
 msgstr ""
 
 msgid "ciReport|Investigate this vulnerability by creating an issue"
-msgstr ""
-
-msgid "ciReport|Learn more about interacting with security reports"
 msgstr ""
 
 msgid "ciReport|Load performance test metrics: "
@@ -31214,9 +31208,6 @@ msgstr ""
 msgid "relates to"
 msgstr ""
 
-msgid "released %{time}"
-msgstr ""
-
 msgid "remaining"
 msgstr ""
 
@@ -31472,9 +31463,6 @@ msgid "was scheduled to merge after pipeline succeeds by"
 msgstr ""
 
 msgid "wiki page"
-msgstr ""
-
-msgid "will be released %{time}"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
