@@ -271,7 +271,12 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
-      it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
+
+      context 'nuget package' do
+        it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
+
+        it { is_expected.to allow_value('1.2.3.4').for(:version) }
+      end
     end
 
     describe '#package_already_taken' do

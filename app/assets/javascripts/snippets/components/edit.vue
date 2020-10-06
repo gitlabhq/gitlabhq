@@ -112,12 +112,6 @@ export default {
       }
       return this.snippet.webUrl;
     },
-    titleFieldId() {
-      return `${this.isProjectSnippet ? 'project' : 'personal'}_snippet_title`;
-    },
-    descriptionFieldId() {
-      return `${this.isProjectSnippet ? 'project' : 'personal'}_snippet_description`;
-    },
     newSnippetSchema() {
       return {
         title: '',
@@ -228,14 +222,13 @@ export default {
     />
     <template v-else>
       <title-field
-        :id="titleFieldId"
+        id="snippet-title"
         v-model="snippet.title"
         data-qa-selector="snippet_title_field"
         required
         :autofocus="true"
       />
       <snippet-description-edit
-        :id="descriptionFieldId"
         v-model="snippet.description"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"

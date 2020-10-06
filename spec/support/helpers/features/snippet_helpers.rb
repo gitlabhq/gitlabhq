@@ -10,39 +10,69 @@ module Spec
           include ActionView::Helpers::JavaScriptHelper
           include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
 
+          def snippet_description_locator
+            'snippet-description'
+          end
+
+          def snippet_blob_path_locator
+            'snippet_file_name'
+          end
+
+          def snippet_description_view_selector
+            '.snippet-header .snippet-description'
+          end
+
+          def snippet_description_field_collapsed
+            find('.js-description-input').find('input,textarea')
+          end
+
           def snippet_get_first_blob_path
-            page.find_field(snippet_blob_path_field, match: :first).value
+            page.find_field('snippet_file_name', match: :first).value
           end
 
           def snippet_get_first_blob_value
-            page.find(snippet_blob_content_selector, match: :first)
+            page.find('.file-content', match: :first)
           end
 
           def snippet_description_value
-            page.find_field(snippet_description_field).value
+            page.find_field(snippet_description_locator).value
           end
 
-          def snippet_fill_in_form(title:, content:, description: '')
-            # fill_in snippet_title_field, with: title
-            # editor_set_value(content)
-            fill_in snippet_title_field, with: title
+          def snippet_fill_in_visibility(text)
+            page.find('#visibility-level-setting').choose(text)
+          end
 
-            if description
-              # Click placeholder first to expand full description field
-              description_field.click
-              fill_in snippet_description_field, with: description
-            end
+          def snippet_fill_in_title(value)
+            fill_in 'snippet-title', with: value
+          end
 
+          def snippet_fill_in_description(value)
+            # Click placeholder first to expand full description field
+            snippet_description_field_collapsed.click
+            fill_in snippet_description_locator, with: value
+          end
+
+          def snippet_fill_in_content(value)
             page.within('.file-editor') do
               el = find('.inputarea')
-              el.send_keys content
+              el.send_keys value
             end
           end
 
-          private
+          def snippet_fill_in_file_name(value)
+            fill_in(snippet_blob_path_locator, match: :first, with: value)
+          end
 
-          def description_field
-            find('.js-description-input').find('input,textarea')
+          def snippet_fill_in_form(title: nil, content: nil, file_name: nil, description: nil, visibility: nil)
+            snippet_fill_in_title(title) if title
+
+            snippet_fill_in_description(description) if description
+
+            snippet_fill_in_file_name(file_name) if file_name
+
+            snippet_fill_in_content(content) if content
+
+            snippet_fill_in_visibility(visibility) if visibility
           end
         end
       end

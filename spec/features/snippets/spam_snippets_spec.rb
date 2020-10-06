@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples_for 'snippet editor' do
+RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://gitlab.com/gitlab-org/gitlab/-/issues/217722" do
   include_context 'includes Spam constants'
+
+  let_it_be(:user) { create(:user) }
 
   def description_field
     find('.js-description-input').find('input,textarea')
@@ -117,26 +119,5 @@ RSpec.shared_examples_for 'snippet editor' do
       expect(page).not_to have_css('.recaptcha')
       expect(page).to have_content('My Snippet Title')
     end
-  end
-end
-
-RSpec.describe 'User creates snippet', :js do
-  let_it_be(:user) { create(:user) }
-
-  context 'Vue application' do
-    before do
-      stub_feature_flags(snippets_edit_vue: false)
-    end
-
-    it_behaves_like "snippet editor"
-  end
-
-  context 'non-Vue application' do
-    before do
-      stub_feature_flags(snippets_vue: false)
-      stub_feature_flags(snippets_edit_vue: false)
-    end
-
-    it_behaves_like "snippet editor"
   end
 end

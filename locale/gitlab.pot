@@ -23976,16 +23976,10 @@ msgstr ""
 msgid "Snippets|Description (optional)"
 msgstr ""
 
-msgid "Snippets|File"
-msgstr ""
-
 msgid "Snippets|Files"
 msgstr ""
 
 msgid "Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"
-msgstr ""
-
-msgid "Snippets|Optionally add a description about what your snippet does or how to use it..."
 msgstr ""
 
 msgid "Snippets|Optionally add a description about what your snippet does or how to use it…"
