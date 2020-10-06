@@ -6,6 +6,8 @@ module Groups
 
     skip_cross_project_access_check :show, :update
 
+    feature_category :continuous_integration
+
     def show
       respond_to do |format|
         format.json do

@@ -367,6 +367,7 @@ class Project < ApplicationRecord
                                 allow_destroy: true,
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
+  accepts_nested_attributes_for :tracing_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
   accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true

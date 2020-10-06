@@ -22,7 +22,7 @@ module DesignManagement
     end
 
     def self.instantiate(attrs)
-      new(attrs).tap { |obj| obj.validate! }
+      new(**attrs).tap { |obj| obj.validate! }
     end
 
     # The ID, needed by GraphQL types and as part of the Lazy-fetch

@@ -173,9 +173,9 @@ module Gitlab
 
         gitaly_pages =
           if load_content
-            gitaly_wiki_client.load_all_pages(params)
+            gitaly_wiki_client.load_all_pages(**params)
           else
-            gitaly_wiki_client.list_all_pages(params)
+            gitaly_wiki_client.list_all_pages(**params)
           end
 
         gitaly_pages.map do |wiki_page, version|

@@ -75,7 +75,7 @@ RSpec.describe 'profiles/preferences/show' do
     end
 
     def have_integrations_section
-      have_css('#integrations.profile-settings-sidebar', { text: 'Integrations' })
+      have_css('#integrations.profile-settings-sidebar', text: 'Integrations')
     end
 
     before do

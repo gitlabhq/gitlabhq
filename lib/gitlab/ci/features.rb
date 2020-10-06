@@ -59,6 +59,10 @@ module Gitlab
           ::Feature.enabled?(:ci_accept_trace, project, type: :ops, default_enabled: false)
       end
 
+      def self.log_invalid_trace_chunks?(project)
+        ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
+      end
+
       def self.new_artifact_file_reader_enabled?(project)
         ::Feature.enabled?(:ci_new_artifact_file_reader, project, default_enabled: true)
       end

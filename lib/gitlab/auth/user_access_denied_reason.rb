@@ -11,6 +11,8 @@ module Gitlab
         case rejection_type
         when :internal
           "This action cannot be performed by internal users"
+        when :blocked_pending_approval
+          "Your account is pending approval from your administrator and hence blocked."
         when :terms_not_accepted
           "You (#{@user.to_reference}) must accept the Terms of Service in order to perform this action. "\
           "Please access GitLab from a web browser to accept these terms."
@@ -31,6 +33,8 @@ module Gitlab
       def rejection_type
         if @user.internal?
           :internal
+        elsif @user.blocked_pending_approval?
+          :blocked_pending_approval
         elsif @user.required_terms_not_accepted?
           :terms_not_accepted
         elsif @user.deactivated?

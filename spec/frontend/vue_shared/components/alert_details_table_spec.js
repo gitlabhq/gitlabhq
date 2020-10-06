@@ -14,6 +14,7 @@ const mockAlert = {
   assignees: { nodes: [] },
   notes: { nodes: [] },
   todos: { nodes: [] },
+  hosts: ['host1', 'host2'],
   __typename: 'AlertManagementAlert',
 };
 
@@ -83,6 +84,7 @@ describe('AlertDetails', () => {
         expect(findTableField(fields, 'Severity').exists()).toBe(true);
         expect(findTableField(fields, 'Status').exists()).toBe(true);
         expect(findTableField(fields, 'Environment').exists()).toBe(true);
+        expect(findTableField(fields, 'Hosts').exists()).toBe(true);
       });
 
       it('should not show disallowed alert fields', () => {

@@ -444,8 +444,6 @@ exports[`packages_list_app renders 1`] = `
           </div>
         </template>
       </b-tab-stub>
-       
-      <!---->
     </template>
     <template>
       <div

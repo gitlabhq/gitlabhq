@@ -7,7 +7,7 @@ class AddGroupWikiRepositoriesShardIdForeignKey < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :group_wiki_repositories, :shards, on_delete: :restrict # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :group_wiki_repositories, :shards, on_delete: :restrict
     end
   end
 

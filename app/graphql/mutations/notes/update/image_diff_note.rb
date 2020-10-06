@@ -28,7 +28,7 @@ module Mutations
                   'body or position arguments are required'
           end
 
-          super(args)
+          super(**args)
         end
 
         private

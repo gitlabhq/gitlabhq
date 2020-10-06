@@ -112,7 +112,7 @@ module AlertManagement
       def filter_status
         return unless params[:status]
 
-        status_event = AlertManagement::Alert::STATUS_EVENTS[status_key]
+        status_event = alert.status_event_for(status_key)
 
         unless status_event
           param_errors << _('Invalid status')

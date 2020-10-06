@@ -29,7 +29,7 @@ RSpec.describe Mutations::DesignManagement::Move do
         next_design: next_design&.to_global_id
       }.compact
 
-      mutation.resolve(args)
+      mutation.resolve(**args)
     end
 
     shared_examples "resource not available" do

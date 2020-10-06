@@ -30,12 +30,14 @@ module Gitlab
         end
 
         def state_crc32
-          strong_memoize(:crc32) { build.pending_state&.crc32 }
+          strong_memoize(:state_crc32) { build.pending_state&.crc32 }
         end
 
         def chunks_crc32
-          trace_chunks.reduce(0) do |crc32, chunk|
-            Zlib.crc32_combine(crc32, chunk.crc32, chunk_size(chunk))
+          strong_memoize(:chunks_crc32) do
+            trace_chunks.reduce(0) do |crc32, chunk|
+              Zlib.crc32_combine(crc32, chunk.crc32, chunk_size(chunk))
+            end
           end
         end
 
@@ -60,6 +62,10 @@ module Gitlab
             build.trace_chunks.persisted
               .select(::Ci::BuildTraceChunk.metadata_attributes)
           end
+        end
+
+        def chunks_count
+          trace_chunks.to_a.size
         end
 
         private

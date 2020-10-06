@@ -51,38 +51,4 @@ RSpec.describe PackagesHelper do
       expect(url).to eq("#{base_url}group/1/-/packages/composer/packages.json")
     end
   end
-
-  describe 'packages_coming_soon_enabled?' do
-    it 'returns false when the feature flag is disabled' do
-      stub_feature_flags(packages_coming_soon: false)
-
-      expect(helper.packages_coming_soon_enabled?(project)).to eq(false)
-    end
-
-    it 'returns false when not on dev or gitlab.com' do
-      expect(helper.packages_coming_soon_enabled?(project)).to eq(false)
-    end
-  end
-
-  describe 'packages_coming_soon_data' do
-    let_it_be(:group) { create(:group) }
-
-    before do
-      allow(Gitlab).to receive(:dev_env_or_com?) { true }
-    end
-
-    it 'returns the gitlab project on gitlab.com' do
-      allow(Gitlab).to receive(:com?) { true }
-
-      expect(helper.packages_coming_soon_data(project)).to include({ project_path: 'gitlab-org/gitlab' })
-    end
-
-    it 'returns the test project when not on gitlab.com' do
-      expect(helper.packages_coming_soon_data(project)).to include({ project_path: 'gitlab-org/gitlab-test' })
-    end
-
-    it 'works correctly with a group' do
-      expect(helper.packages_coming_soon_data(group)).to include({ project_path: 'gitlab-org/gitlab-test' })
-    end
-  end
 end

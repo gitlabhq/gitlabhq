@@ -4,6 +4,8 @@ class Groups::GroupLinksController < Groups::ApplicationController
   before_action :authorize_admin_group!
   before_action :group_link, only: [:update, :destroy]
 
+  feature_category :subgroups
+
   def create
     shared_with_group = Group.find(params[:shared_with_group_id]) if params[:shared_with_group_id].present?
 

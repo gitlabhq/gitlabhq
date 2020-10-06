@@ -46,6 +46,17 @@ class GroupsController < Groups::ApplicationController
 
   layout :determine_layout
 
+  feature_category :subgroups, [
+                     :index, :new, :create, :show, :edit, :update,
+                     :destroy, :details, :transfer
+                   ]
+
+  feature_category :audit_events, [:activity]
+  feature_category :issue_tracking, [:issues, :issues_calendar, :preview_markdown]
+  feature_category :code_review, [:merge_requests]
+  feature_category :projects, [:projects]
+  feature_category :importers, [:export, :download_export]
+
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
   end

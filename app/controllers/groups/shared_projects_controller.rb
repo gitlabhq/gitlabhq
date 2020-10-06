@@ -6,6 +6,8 @@ module Groups
     before_action :group
     skip_cross_project_access_check :index
 
+    feature_category :subgroups
+
     def index
       shared_projects = GroupProjectsFinder.new(
         group: group,

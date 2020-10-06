@@ -86,14 +86,16 @@ module Gitlab
         batch_start = start
 
         while batch_start <= finish
+          batch_relation = build_relation_batch(batch_start, batch_start + batch_size, mode)
           begin
-            results = merge_results(results, batch_fetch(batch_start, batch_start + batch_size, mode))
+            results = merge_results(results, batch_relation.send(@operation, *@operation_args)) # rubocop:disable GitlabSecurity/PublicSend
             batch_start += batch_size
-          rescue ActiveRecord::QueryCanceled
+          rescue ActiveRecord::QueryCanceled => error
             # retry with a safe batch size & warmer cache
             if batch_size >= 2 * MIN_REQUIRED_BATCH_SIZE
               batch_size /= 2
             else
+              log_canceled_batch_fetch(batch_start, mode, batch_relation.to_sql, error)
               return FALLBACK
             end
           end
@@ -113,12 +115,11 @@ module Gitlab
         end
       end
 
-      def batch_fetch(start, finish, mode)
-        # rubocop:disable GitlabSecurity/PublicSend
-        @relation.select(@column).public_send(mode).where(between_condition(start, finish)).send(@operation, *@operation_args)
-      end
-
       private
+
+      def build_relation_batch(start, finish, mode)
+        @relation.select(@column).public_send(mode).where(between_condition(start, finish)) # rubocop:disable GitlabSecurity/PublicSend
+      end
 
       def batch_size_for_mode_and_operation(mode, operation)
         return DEFAULT_SUM_BATCH_SIZE if operation == :sum
@@ -144,6 +145,20 @@ module Gitlab
         raise "The mode #{mode.inspect} is not supported" unless ALLOWED_MODES.include?(mode)
         raise 'Use distinct count for optimized distinct counting' if @relation.limit(1).distinct_value.present? && mode != :distinct
         raise 'Use distinct count only with non id fields' if @column == :id && mode == :distinct
+      end
+
+      def log_canceled_batch_fetch(batch_start, mode, query, error)
+        Gitlab::AppJsonLogger
+          .error(
+            event: 'batch_count',
+            relation: @relation.table_name,
+            operation: @operation,
+            operation_args: @operation_args,
+            start: batch_start,
+            mode: mode,
+            query: query,
+            message: "Query has been canceled with message: #{error.message}"
+          )
       end
     end
   end

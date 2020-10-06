@@ -15,7 +15,7 @@ FactoryBot.define do
 
     # Associations
     namespace
-    creator { group ? create(:user) : namespace&.owner }
+    creator { group ? association(:user) : namespace&.owner }
 
     transient do
       # Nest Project Feature attributes

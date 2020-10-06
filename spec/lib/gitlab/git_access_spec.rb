@@ -420,6 +420,13 @@ RSpec.describe Gitlab::GitAccess do
       expect { pull_access_check }.to raise_forbidden('Your account has been blocked.')
     end
 
+    it 'disallows users that are blocked pending approval to pull' do
+      project.add_maintainer(user)
+      user.block_pending_approval
+
+      expect { pull_access_check }.to raise_forbidden('Your account is pending approval from your administrator and hence blocked.')
+    end
+
     it 'disallows deactivated users to pull' do
       project.add_maintainer(user)
       user.deactivate!
@@ -913,6 +920,12 @@ RSpec.describe Gitlab::GitAccess do
 
       before do
         project.add_developer(user)
+      end
+
+      it 'disallows users that are blocked pending approval to push' do
+        user.block_pending_approval
+
+        expect { push_access_check }.to raise_forbidden('Your account is pending approval from your administrator and hence blocked.')
       end
 
       it 'does not allow deactivated users to push' do

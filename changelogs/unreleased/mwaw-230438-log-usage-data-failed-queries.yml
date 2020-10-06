@@ -1,0 +1,5 @@
+---
+title: Log failed BatchCount queries
+merge_request: 41552
+author:
+type: added

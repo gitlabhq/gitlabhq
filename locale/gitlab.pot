@@ -6456,9 +6456,6 @@ msgstr ""
 msgid "ComboSearch is not defined"
 msgstr ""
 
-msgid "Coming soon"
-msgstr ""
-
 msgid "Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr ""
 
@@ -18305,9 +18302,6 @@ msgstr ""
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file."
 msgstr ""
 
-msgid "PackageRegistry|Is your favorite package manager missing? We'd love your help in building first-class support for it into GitLab! %{contributionLinkStart}Visit the contribution documentation%{contributionLinkEnd} to learn more about how to build support for new package managers into GitLab. Below is a list of package managers that are on our radar."
-msgstr ""
-
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
@@ -18327,9 +18321,6 @@ msgid "PackageRegistry|Maven XML"
 msgstr ""
 
 msgid "PackageRegistry|NPM"
-msgstr ""
-
-msgid "PackageRegistry|No upcoming issues"
 msgstr ""
 
 msgid "PackageRegistry|NuGet"
@@ -18377,9 +18368,6 @@ msgstr ""
 msgid "PackageRegistry|There are no packages yet"
 msgstr ""
 
-msgid "PackageRegistry|There are no upcoming issues to display."
-msgstr ""
-
 msgid "PackageRegistry|There was a problem fetching the details for this package."
 msgstr ""
 
@@ -18393,9 +18381,6 @@ msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
-msgstr ""
-
-msgid "PackageRegistry|Upcoming package managers"
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?"

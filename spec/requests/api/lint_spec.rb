@@ -79,7 +79,6 @@ RSpec.describe API::Lint do
   describe 'GET /projects/:id/ci/lint' do
     subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run } }
 
-    let_it_be(:api_user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:dry_run) { nil }
 
@@ -111,6 +110,8 @@ RSpec.describe API::Lint do
     end
 
     context 'when unauthenticated' do
+      let_it_be(:api_user) { nil }
+
       it 'returns authentication error' do
         ci_lint
 
@@ -118,7 +119,95 @@ RSpec.describe API::Lint do
       end
     end
 
-    context 'when authenticated as project member' do
+    context 'when authenticated as non-member' do
+      let_it_be(:api_user) { create(:user) }
+
+      let(:yaml_content) do
+        { include: { local: 'another-gitlab-ci.yml' }, test: { stage: 'test', script: 'echo 1' } }.to_yaml
+      end
+
+      context 'when project is private' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          stub_ci_pipeline_yaml_file(yaml_content)
+        end
+
+        it 'returns authentication error' do
+          ci_lint
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when project is public' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        context 'when running as dry run' do
+          let(:dry_run) { true }
+
+          before do
+            stub_ci_pipeline_yaml_file(yaml_content)
+          end
+
+          it 'returns pipeline creation error' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['merged_yaml']).to eq(nil)
+            expect(json_response['valid']).to eq(false)
+            expect(json_response['errors']).to eq(['Insufficient permissions to create a new pipeline'])
+          end
+        end
+
+        context 'when running static validation' do
+          let(:dry_run) { false }
+
+          let(:included_content) do
+            { another_test: { stage: 'test', script: 'echo 1' } }.to_yaml
+          end
+
+          before do
+            project.repository.create_file(
+              project.creator,
+              '.gitlab-ci.yml',
+              yaml_content,
+              message: 'Automatically created .gitlab-ci.yml',
+              branch_name: 'master'
+            )
+
+            project.repository.create_file(
+              project.creator,
+              'another-gitlab-ci.yml',
+              included_content,
+              message: 'Automatically created another-gitlab-ci.yml',
+              branch_name: 'master'
+            )
+          end
+
+          it_behaves_like 'valid config'
+        end
+      end
+    end
+
+    context 'when authenticated as project guest' do
+      let_it_be(:api_user) { create(:user) }
+
+      before do
+        project.add_guest(api_user)
+      end
+
+      it 'returns authentication error' do
+        ci_lint
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated as project developer' do
+      let_it_be(:api_user) { create(:user) }
+
       before do
         project.add_developer(api_user)
       end

@@ -18,6 +18,7 @@ module Projects
           .merge(grafana_integration_params)
           .merge(prometheus_integration_params)
           .merge(incident_management_setting_params)
+          .merge(tracing_setting_params)
       end
 
       def alerting_setting_params
@@ -120,6 +121,15 @@ module Projects
         end
 
         { incident_management_setting_attributes: attrs }
+      end
+
+      def tracing_setting_params
+        attr = params[:tracing_setting_attributes]
+        return {} unless attr
+
+        destroy = attr[:external_url].blank?
+
+        { tracing_setting_attributes: attr.merge(_destroy: destroy) }
       end
     end
   end

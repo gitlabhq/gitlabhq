@@ -9,7 +9,7 @@ class AddForeignKeyFromWebauthnRegistrationsToUsers < ActiveRecord::Migration[6.
 
   def up
     with_lock_retries do
-      add_foreign_key :webauthn_registrations, :users, column: :user_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :webauthn_registrations, :users, column: :user_id, on_delete: :cascade
     end
   end
 

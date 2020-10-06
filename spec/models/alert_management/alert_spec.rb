@@ -133,7 +133,7 @@ RSpec.describe AlertManagement::Alert do
             let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project) }
 
             before do
-              existing_alert.public_send(described_class::STATUS_EVENTS[existing_status])
+              existing_alert.change_status_to(existing_status)
             end
 
             if params[:valid]
@@ -451,6 +451,56 @@ RSpec.describe AlertManagement::Alert do
 
     it 'increments the events count by 1' do
       expect { subject }.to change { alert.events }.by(1)
+    end
+  end
+
+  describe '#status_event_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:for_status, :event) do
+      :triggered     | :trigger
+      'triggered'    | :trigger
+      :acknowledged  | :acknowledge
+      'acknowledged' | :acknowledge
+      :resolved      | :resolve
+      'resolved'     | :resolve
+      :ignored       | :ignore
+      'ignored'      | :ignore
+      :unknown       | nil
+      nil            | nil
+      ''             | nil
+      1              | nil
+    end
+
+    with_them do
+      let(:alert) { build(:alert_management_alert, project: project) }
+
+      it 'returns event by status name' do
+        expect(alert.status_event_for(for_status)).to eq(event)
+      end
+    end
+  end
+
+  describe '#change_status_to' do
+    let_it_be_with_reload(:alert) { create(:alert_management_alert, project: project) }
+
+    context 'with valid statuses' do
+      it 'changes the status to triggered' do
+        alert.acknowledge! # change to non-triggered status
+        expect { alert.change_status_to(:triggered) }.to change { alert.triggered? }.to(true)
+      end
+
+      %i(acknowledged resolved ignored).each do |status|
+        it "changes the status to #{status}" do
+          expect { alert.change_status_to(status) }.to change { alert.public_send(:"#{status}?") }.to(true)
+        end
+      end
+    end
+
+    context 'with invalid status' do
+      it 'does not change the current status' do
+        expect { alert.change_status_to(nil) }.not_to change { alert.status }
+      end
     end
   end
 end

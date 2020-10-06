@@ -7,7 +7,7 @@ class AddAuthorForeignKeyToTestReports < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :requirements_management_test_reports, :users, column: :author_id, on_delete: :nullify # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :requirements_management_test_reports, :users, column: :author_id, on_delete: :nullify
     end
   end
 

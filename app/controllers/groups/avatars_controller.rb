@@ -5,6 +5,8 @@ class Groups::AvatarsController < Groups::ApplicationController
 
   skip_cross_project_access_check :destroy
 
+  feature_category :subgroups
+
   def destroy
     @group.remove_avatar!
     @group.save

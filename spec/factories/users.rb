@@ -23,6 +23,14 @@ FactoryBot.define do
       after(:build) { |user, _| user.block! }
     end
 
+    trait :blocked_pending_approval do
+      after(:build) { |user, _| user.block_pending_approval! }
+    end
+
+    trait :ldap_blocked do
+      after(:build) { |user, _| user.ldap_block! }
+    end
+
     trait :bot do
       user_type { :alert_bot }
     end

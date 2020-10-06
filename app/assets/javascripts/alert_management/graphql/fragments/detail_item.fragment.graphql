@@ -10,6 +10,7 @@ fragment AlertDetailItem on AlertManagementAlert {
   description
   updatedAt
   endedAt
+  hosts
   details
   runbook
   todos {

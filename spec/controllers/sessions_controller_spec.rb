@@ -100,6 +100,16 @@ RSpec.describe SessionsController do
         end
       end
 
+      context 'a `blocked pending approval` user' do
+        it 'does not authenticate the user' do
+          user.block_pending_approval!
+          post_action
+
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(flash[:alert]).to include('Your account is pending approval from your GitLab administrator and hence blocked')
+        end
+      end
+
       context 'an internal user' do
         it 'does not authenticate the user' do
           user.ghost!

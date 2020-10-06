@@ -13,6 +13,8 @@ module Groups
       end
       before_action :define_variables, only: [:show]
 
+      feature_category :continuous_integration
+
       NUMBER_OF_RUNNERS_PER_PAGE = 4
 
       def show

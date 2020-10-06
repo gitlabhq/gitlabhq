@@ -146,7 +146,7 @@ describe('Wikis', () => {
       expect(Tracking.event).toHaveBeenCalledWith(trackingPage, 'view_wiki_page', {
         label: 'view_wiki_page',
         context: {
-          schema: 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-0',
+          schema: 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-1',
           data: trackingContext,
         },
       });

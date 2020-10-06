@@ -300,7 +300,7 @@ include Gitlab::Database::MigrationHelpers
 
 def up
   with_lock_retries do
-    add_foreign_key :imports, :projects, column: :project_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+    add_foreign_key :imports, :projects, column: :project_id, on_delete: :cascade
   end
 end
 
@@ -318,7 +318,7 @@ include Gitlab::Database::MigrationHelpers
 
 def up
   with_lock_retries do
-    add_foreign_key :imports, :users, column: :user_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+    add_foreign_key :imports, :users, column: :user_id, on_delete: :cascade
   end
 end
 

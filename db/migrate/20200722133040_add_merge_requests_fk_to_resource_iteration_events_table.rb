@@ -7,7 +7,7 @@ class AddMergeRequestsFkToResourceIterationEventsTable < ActiveRecord::Migration
 
   def up
     with_lock_retries do
-      add_foreign_key :resource_iteration_events, :merge_requests, column: :merge_request_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :resource_iteration_events, :merge_requests, column: :merge_request_id, on_delete: :cascade
     end
   end
 

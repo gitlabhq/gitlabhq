@@ -18,6 +18,7 @@ en:
       unconfirmed: "You have to confirm your email address before continuing. Please check your email for the link we sent you, or click 'Resend confirmation email'."
       blocked: "Your account has been blocked. Please contact your GitLab administrator if you think this is an error."
       forbidden: "Your account does not have the required permission to login. Please contact your GitLab administrator if you think this is an error."
+      blocked_pending_approval: "Your account is pending approval from your GitLab administrator and hence blocked. Please contact your GitLab administrator if you think this is an error."
     mailer:
       confirmation_instructions:
         subject: "Confirmation instructions"

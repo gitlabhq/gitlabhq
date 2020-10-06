@@ -23,6 +23,7 @@ const allowedFields = [
   'endedAt',
   'details',
   'environment',
+  'hosts',
 ];
 
 const isAllowed = fieldName => allowedFields.includes(fieldName);

@@ -9,6 +9,8 @@ class Groups::MilestonesController < Groups::ApplicationController
     push_frontend_feature_flag(:burnup_charts, @group)
   end
 
+  feature_category :issue_tracking
+
   def index
     respond_to do |format|
       format.html do

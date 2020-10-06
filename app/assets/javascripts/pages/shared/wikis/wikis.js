@@ -10,7 +10,7 @@ const MARKDOWN_LINK_TEXT = {
 };
 
 const TRACKING_EVENT_NAME = 'view_wiki_page';
-const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-0';
+const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-1';
 
 export default class Wikis {
   constructor() {

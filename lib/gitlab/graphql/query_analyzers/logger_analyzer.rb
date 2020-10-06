@@ -25,7 +25,7 @@ module Gitlab
         end
 
         def call(memo, visit_type, irep_node)
-          memo
+          RequestStore.store[:graphql_logs] = memo
         end
 
         def final_value(memo)
@@ -35,6 +35,8 @@ module Gitlab
 
           memo[:depth] = depth
           memo[:complexity] = complexity
+          # This duration is not the execution time of the
+          # query but the execution time of the analyzer.
           memo[:duration_s] = duration(memo[:time_started]).round(1)
           memo[:used_fields] = field_usages.first
           memo[:used_deprecated_fields] = field_usages.second

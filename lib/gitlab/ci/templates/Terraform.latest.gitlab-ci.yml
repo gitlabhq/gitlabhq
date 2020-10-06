@@ -1,0 +1,22 @@
+include:
+  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml
+
+stages:
+  - init
+  - validate
+  - build
+  - deploy
+
+init:
+  extends: .init
+
+validate:
+  extends: .validate
+
+build:
+  extends: .build
+
+deploy:
+  extends: .deploy
+  dependencies:
+    - build

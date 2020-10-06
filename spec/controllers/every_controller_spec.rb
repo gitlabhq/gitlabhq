@@ -29,7 +29,7 @@ RSpec.describe "Every controller" do
                                                 'H', 'I', 'J', 'K', 'L',
                                                 'M', 'N', 'O', 'Q', 'R',
                                                 'S', 'T', 'U', 'V', 'W',
-                                                'X', 'Y', 'Z', 'A',
+                                                'X', 'Y', 'Z', 'A', 'G',
                                                 'Projects::MergeRequestsController')
 
         "#{controller}##{action}"

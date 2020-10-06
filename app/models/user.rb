@@ -304,13 +304,18 @@ class User < ApplicationRecord
       transition deactivated: :active
       transition blocked: :active
       transition ldap_blocked: :active
+      transition blocked_pending_approval: :active
+    end
+
+    event :block_pending_approval do
+      transition active: :blocked_pending_approval
     end
 
     event :deactivate do
       transition active: :deactivated
     end
 
-    state :blocked, :ldap_blocked do
+    state :blocked, :ldap_blocked, :blocked_pending_approval do
       def blocked?
         true
       end
@@ -333,7 +338,7 @@ class User < ApplicationRecord
 
   # Scopes
   scope :admins, -> { where(admin: true) }
-  scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
+  scope :blocked, -> { with_states(:blocked, :ldap_blocked, :blocked_pending_approval) }
   scope :external, -> { where(external: true) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
@@ -378,7 +383,9 @@ class User < ApplicationRecord
 
   # The messages for these keys are defined in `devise.en.yml`
   def inactive_message
-    if blocked?
+    if blocked_pending_approval?
+      :blocked_pending_approval
+    elsif blocked?
       :blocked
     elsif internal?
       :forbidden

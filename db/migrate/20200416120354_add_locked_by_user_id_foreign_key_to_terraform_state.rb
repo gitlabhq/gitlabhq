@@ -7,7 +7,7 @@ class AddLockedByUserIdForeignKeyToTerraformState < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :terraform_states, :users, column: :locked_by_user_id # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :terraform_states, :users, column: :locked_by_user_id
     end
   end
 

@@ -1,0 +1,7 @@
+---
+name: ci_trace_log_invalid_chunks
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44409
+rollout_issue_url:
+type: ops
+group: group::continuous integration
+default_enabled: false

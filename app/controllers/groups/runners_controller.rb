@@ -7,6 +7,8 @@ class Groups::RunnersController < Groups::ApplicationController
 
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
+  feature_category :continuous_integration
+
   def show
     render 'shared/runners/show'
   end

@@ -135,7 +135,8 @@ RSpec.describe WikiHelper do
         'wiki-format'               => :markdown,
         'wiki-title-size'           => 9,
         'wiki-content-size'         => 4,
-        'wiki-directory-nest-level' => 2
+        'wiki-directory-nest-level' => 2,
+        'wiki-container-type'       => 'Project'
       )
     end
 

@@ -6,6 +6,8 @@ module GoogleApi
 
     before_action :validate_session_key!
 
+    feature_category :kubernetes_management
+
     def callback
       token, expires_at = GoogleApi::CloudPlatform::Client
         .new(nil, callback_google_api_auth_url)

@@ -11,7 +11,11 @@ module RuboCop
         MSG = '`add_foreign_key` requires downtime, use `add_concurrent_foreign_key` instead'.freeze
 
         def_node_matcher :false_node?, <<~PATTERN
-        (false)
+          (false)
+        PATTERN
+
+        def_node_matcher :with_lock_retries?, <<~PATTERN
+          (:send nil? :with_lock_retries)
         PATTERN
 
         def on_send(node)
@@ -19,9 +23,11 @@ module RuboCop
 
           name = node.children[1]
 
-          if name == :add_foreign_key && !not_valid_fk?(node)
-            add_offense(node, location: :selector)
-          end
+          return unless name == :add_foreign_key
+          return if in_with_lock_retries?(node)
+          return if not_valid_fk?(node)
+
+          add_offense(node, location: :selector)
         end
 
         def method_name(node)
@@ -31,6 +37,12 @@ module RuboCop
         def not_valid_fk?(node)
           node.each_node(:pair).any? do |pair|
             pair.children[0].children[0] == :validate && false_node?(pair.children[1])
+          end
+        end
+
+        def in_with_lock_retries?(node)
+          node.each_ancestor(:block).any? do |parent|
+            with_lock_retries?(parent.to_a.first)
           end
         end
       end
