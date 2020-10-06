@@ -76,6 +76,8 @@ RSpec.describe 'Creating a Snippet' do
 
         expect(mutation_response['snippet']).to be_nil
       end
+
+      it_behaves_like 'spam flag is present'
     end
 
     shared_examples 'creates snippet' do
@@ -103,6 +105,10 @@ RSpec.describe 'Creating a Snippet' do
       end
 
       it_behaves_like 'snippet edit usage data counters'
+      it_behaves_like 'spam flag is present'
+      it_behaves_like 'can raise spam flag' do
+        let(:service) { Snippets::CreateService }
+      end
     end
 
     context 'with PersonalSnippet' do
@@ -142,6 +148,9 @@ RSpec.describe 'Creating a Snippet' do
 
       it_behaves_like 'a mutation that returns errors in the response', errors: ["Title can't be blank"]
       it_behaves_like 'does not create snippet'
+      it_behaves_like 'can raise spam flag' do
+        let(:service) { Snippets::CreateService }
+      end
     end
 
     context 'when there non ActiveRecord errors' do

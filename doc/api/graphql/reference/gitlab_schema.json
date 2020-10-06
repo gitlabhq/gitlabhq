@@ -9438,6 +9438,20 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "spam",
+              "description": "Indicates whether the operation returns a record detected as spam",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -9839,6 +9853,12 @@
               "description": "Passive DAST scan. This scan will not make active attacks against the target site.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ACTIVE",
+              "description": "Active DAST scan. This scan will make active attacks against the target site.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -9913,6 +9933,38 @@
               "deprecationReason": null
             },
             {
+              "name": "scanType",
+              "description": "Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "DastScanTypeEnum",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "showDebugMessages",
+              "description": "Indicates if debug messages should be included in DAST console output. True to include the debug messages.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "spiderTimeout",
               "description": "The maximum number of minutes allowed for the spider to traverse the site",
               "args": [
@@ -9936,6 +9988,24 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "useAjaxSpider",
+              "description": "Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -10068,6 +10138,36 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "scanType",
+              "description": "Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan.",
+              "type": {
+                "kind": "ENUM",
+                "name": "DastScanTypeEnum",
+                "ofType": null
+              },
+              "defaultValue": "PASSIVE"
+            },
+            {
+              "name": "useAjaxSpider",
+              "description": "Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "false"
+            },
+            {
+              "name": "showDebugMessages",
+              "description": "Indicates if debug messages should be included in DAST console output. True to include the debug messages.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "false"
             },
             {
               "name": "clientMutationId",
@@ -10395,6 +10495,36 @@
                   "name": "Int",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "scanType",
+              "description": "Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan.",
+              "type": {
+                "kind": "ENUM",
+                "name": "DastScanTypeEnum",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "useAjaxSpider",
+              "description": "Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "showDebugMessages",
+              "description": "Indicates if debug messages should be included in DAST console output. True to include the debug messages.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -25783,6 +25913,29 @@
             {
               "name": "all",
               "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "IssueStateEvent",
+          "description": "Values for issue state events",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "REOPEN",
+              "description": "Reopens the issue",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CLOSE",
+              "description": "Closes the issue",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -55397,6 +55550,16 @@
               "defaultValue": null
             },
             {
+              "name": "stateEvent",
+              "description": "Close or reopen an issue.",
+              "type": {
+                "kind": "ENUM",
+                "name": "IssueStateEvent",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "healthStatus",
               "description": "The desired health status",
               "type": {
@@ -56069,6 +56232,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Snippet",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "spam",
+              "description": "Indicates whether the operation returns a record detected as spam",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,

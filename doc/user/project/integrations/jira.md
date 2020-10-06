@@ -23,7 +23,7 @@ Features include:
 - **View a list of Jira issues directly in GitLab** **(PREMIUM)**
 
 For additional features, you can install the
-[Jira Development Panel integration](../../../integration/jira_development_panel.md) **(PREMIUM)**.
+[Jira Development Panel integration](../../../integration/jira_development_panel.md).
 This enables you to:
 
 - In a Jira issue, display relevant GitLab information in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/), including related branches, commits, and merge requests.

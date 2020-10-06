@@ -3504,6 +3504,11 @@ type CreateSnippetPayload {
   The snippet after mutation
   """
   snippet: Snippet
+
+  """
+  Indicates whether the operation returns a record detected as spam
+  """
+  spam: Boolean
 }
 
 """
@@ -3635,6 +3640,11 @@ type DastOnDemandScanCreatePayload {
 
 enum DastScanTypeEnum {
   """
+  Active DAST scan. This scan will make active attacks against the target site.
+  """
+  ACTIVE
+
+  """
   Passive DAST scan. This scan will not make active attacks against the target site.
   """
   PASSIVE
@@ -3665,6 +3675,16 @@ type DastScannerProfile {
   profileName: String
 
   """
+  Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan.
+  """
+  scanType: DastScanTypeEnum
+
+  """
+  Indicates if debug messages should be included in DAST console output. True to include the debug messages.
+  """
+  showDebugMessages: Boolean!
+
+  """
   The maximum number of minutes allowed for the spider to traverse the site
   """
   spiderTimeout: Int
@@ -3673,6 +3693,13 @@ type DastScannerProfile {
   The maximum number of seconds allowed for the site under test to respond to a request
   """
   targetTimeout: Int
+
+  """
+  Indicates if the AJAX spider should be used to crawl the target site. True to
+  run the AJAX spider in addition to the traditional spider, and false to run
+  only the traditional spider.
+  """
+  useAjaxSpider: Boolean!
 }
 
 """
@@ -3715,6 +3742,16 @@ input DastScannerProfileCreateInput {
   profileName: String!
 
   """
+  Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan.
+  """
+  scanType: DastScanTypeEnum = PASSIVE
+
+  """
+  Indicates if debug messages should be included in DAST console output. True to include the debug messages.
+  """
+  showDebugMessages: Boolean = false
+
+  """
   The maximum number of minutes allowed for the spider to traverse the site.
   """
   spiderTimeout: Int
@@ -3723,6 +3760,13 @@ input DastScannerProfileCreateInput {
   The maximum number of seconds allowed for the site under test to respond to a request.
   """
   targetTimeout: Int
+
+  """
+  Indicates if the AJAX spider should be used to crawl the target site. True to
+  run the AJAX spider in addition to the traditional spider, and false to run
+  only the traditional spider.
+  """
+  useAjaxSpider: Boolean = false
 }
 
 """
@@ -3830,6 +3874,16 @@ input DastScannerProfileUpdateInput {
   profileName: String!
 
   """
+  Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan.
+  """
+  scanType: DastScanTypeEnum
+
+  """
+  Indicates if debug messages should be included in DAST console output. True to include the debug messages.
+  """
+  showDebugMessages: Boolean
+
+  """
   The maximum number of minutes allowed for the spider to traverse the site.
   """
   spiderTimeout: Int!
@@ -3838,6 +3892,13 @@ input DastScannerProfileUpdateInput {
   The maximum number of seconds allowed for the site under test to respond to a request.
   """
   targetTimeout: Int!
+
+  """
+  Indicates if the AJAX spider should be used to crawl the target site. True to
+  run the AJAX spider in addition to the traditional spider, and false to run
+  only the traditional spider.
+  """
+  useAjaxSpider: Boolean
 }
 
 """
@@ -9427,6 +9488,21 @@ enum IssueState {
   closed
   locked
   opened
+}
+
+"""
+Values for issue state events
+"""
+enum IssueStateEvent {
+  """
+  Closes the issue
+  """
+  CLOSE
+
+  """
+  Reopens the issue
+  """
+  REOPEN
 }
 
 """
@@ -19013,6 +19089,11 @@ input UpdateIssueInput {
   removeLabelIds: [ID!]
 
   """
+  Close or reopen an issue.
+  """
+  stateEvent: IssueStateEvent
+
+  """
   Title of the issue
   """
   title: String
@@ -19256,6 +19337,11 @@ type UpdateSnippetPayload {
   The snippet after mutation
   """
   snippet: Snippet
+
+  """
+  Indicates whether the operation returns a record detected as spam
+  """
+  spam: Boolean
 }
 
 scalar Upload

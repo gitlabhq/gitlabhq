@@ -5,20 +5,21 @@ class RemoveAnalyticsRepositoryFilesFkOnOtherAnalyticsTables < ActiveRecord::Mig
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
+    # Requires ExclusiveLock on all tables. analytics_* tables are empty
     with_lock_retries do
-      # Requires ExclusiveLock on all tables. analytics_* tables are empty
-      remove_foreign_key :analytics_repository_file_edits, :analytics_repository_files if table_exists?(:analytics_repository_file_edits) # this table might be already dropped on development environment
-      remove_foreign_key :analytics_repository_file_commits, :analytics_repository_files
+      remove_foreign_key_if_exists(:analytics_repository_file_edits, :analytics_repository_files) if table_exists?(:analytics_repository_file_edits) # this table might be already dropped on development environment
+    end
+
+    with_lock_retries do
+      remove_foreign_key_if_exists(:analytics_repository_file_commits, :analytics_repository_files)
     end
   end
 
   def down
-    with_lock_retries do
-      # rubocop:disable Migration/AddConcurrentForeignKey
-      add_foreign_key :analytics_repository_file_edits, :analytics_repository_files, on_delete: :cascade
-      add_foreign_key :analytics_repository_file_commits, :analytics_repository_files, on_delete: :cascade
-      # rubocop:enable Migration/AddConcurrentForeignKey
-    end
+    add_concurrent_foreign_key(:analytics_repository_file_edits, :analytics_repository_files, column: :analytics_repository_file_id, on_delete: :cascade)
+    add_concurrent_foreign_key(:analytics_repository_file_commits, :analytics_repository_files, column: :analytics_repository_file_id, on_delete: :cascade)
   end
 end

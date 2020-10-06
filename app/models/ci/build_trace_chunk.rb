@@ -126,12 +126,18 @@ module Ci
       Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
 
-    def persisted?
-      !redis?
-    end
-
-    def live?
-      redis?
+    ##
+    # It is possible that we run into two concurrent migrations. It might
+    # happen that a chunk gets migrated after being loaded by another worker
+    # but before the worker acquires a lock to perform the migration.
+    #
+    # We want to reset a chunk in that case and retry migration. If it fails
+    # again, we want to re-raise the exception.
+    #
+    def flush!
+      persist_data!
+    rescue FailedToPersistDataError
+      self.reset.persist_data!
     end
 
     ##
@@ -141,6 +147,14 @@ module Ci
     #
     def final?
       build.pending_state.present? && chunks_max_index == chunk_index
+    end
+
+    def persisted?
+      !redis?
+    end
+
+    def live?
+      redis?
     end
 
     def <=>(other)

@@ -114,7 +114,6 @@ This is a brief overview. Please refer to the above instructions for more contex
 1. Enable writes to the `authorized_keys` file in Application Settings
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Omnibus Docker.
 1. Reload `sshd`: `sudo service sshd reload`
-1. Remove the `/opt/gitlab-shell/authorized_keys` file
 
 ## Compiling a custom version of OpenSSH for CentOS 6
 

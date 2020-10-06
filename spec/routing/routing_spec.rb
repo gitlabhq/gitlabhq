@@ -119,9 +119,9 @@ RSpec.describe HelpController, "routing" do
                                   path: 'user/markdown',
                                   format: 'md')
 
-    path = '/help/workflow/protected_branches/protected_branches1.png'
+    path = '/help/user/markdown/markdown_logo.png'
     expect(get(path)).to route_to('help#show',
-                                  path: 'workflow/protected_branches/protected_branches1',
+                                  path: 'user/markdown/markdown_logo',
                                   format: 'png')
   end
 end

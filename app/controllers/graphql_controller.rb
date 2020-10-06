@@ -81,7 +81,7 @@ class GraphqlController < ApplicationController
   end
 
   def context
-    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user? }
+    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user?, request: request }
   end
 
   def build_variables(variable_info)

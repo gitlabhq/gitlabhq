@@ -5,8 +5,6 @@ module API
   class Snippets < Grape::API::Instance
     include PaginationParams
 
-    before { authenticate! }
-
     resource :snippets do
       helpers Helpers::SnippetsHelpers
       helpers do
@@ -23,7 +21,7 @@ module API
         end
       end
 
-      desc 'Get a snippets list for authenticated user' do
+      desc 'Get a snippets list for an authenticated user' do
         detail 'This feature was introduced in GitLab 8.15.'
         success Entities::Snippet
       end
@@ -31,6 +29,8 @@ module API
         use :pagination
       end
       get do
+        authenticate!
+
         present paginate(snippets_for_current_user), with: Entities::Snippet, current_user: current_user
       end
 
@@ -42,6 +42,8 @@ module API
         use :pagination
       end
       get 'public' do
+        authenticate!
+
         present paginate(public_snippets), with: Entities::PersonalSnippet, current_user: current_user
       end
 
@@ -74,6 +76,8 @@ module API
         use :create_file_params
       end
       post do
+        authenticate!
+
         authorize! :create_snippet
 
         attrs = process_create_params(declared_params(include_missing: false))
@@ -109,6 +113,8 @@ module API
         use :minimum_update_params
       end
       put ':id' do
+        authenticate!
+
         snippet = snippets_for_current_user.find_by_id(params.delete(:id))
         break not_found!('Snippet') unless snippet
 
@@ -139,6 +145,8 @@ module API
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
       delete ':id' do
+        authenticate!
+
         snippet = snippets_for_current_user.find_by_id(params.delete(:id))
         break not_found!('Snippet') unless snippet
 

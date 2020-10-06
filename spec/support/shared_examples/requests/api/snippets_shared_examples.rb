@@ -7,14 +7,6 @@ RSpec.shared_examples 'raw snippet files' do
   let(:file_path)  { '%2Egitattributes' }
   let(:ref)        { 'master' }
 
-  context 'with no user' do
-    it 'requires authentication' do
-      get api(api_path)
-
-      expect(response).to have_gitlab_http_status(:unauthorized)
-    end
-  end
-
   shared_examples 'not found' do
     it 'returns 404' do
       get api(api_path, user)
@@ -214,5 +206,60 @@ RSpec.shared_examples 'invalid snippet updates' do
 
     expect(response).to have_gitlab_http_status(:bad_request)
     expect(json_response['error']).to eq 'title is empty'
+  end
+end
+
+RSpec.shared_examples 'snippet access with different users' do
+  using RSpec::Parameterized::TableSyntax
+
+  where(:requester, :visibility, :status) do
+    :admin   | :public   | :ok
+    :admin   | :private  | :ok
+    :admin   | :internal | :ok
+    :author  | :public   | :ok
+    :author  | :private  | :ok
+    :author  | :internal | :ok
+    :other   | :public   | :ok
+    :other   | :private  | :not_found
+    :other   | :internal | :ok
+    nil      | :public   | :ok
+    nil      | :private  | :not_found
+    nil      | :internal | :not_found
+  end
+
+  with_them do
+    let(:snippet) { snippet_for(visibility) }
+
+    it 'returns the correct response' do
+      request_user = user_for(requester)
+
+      get api(path, request_user)
+
+      expect(response).to have_gitlab_http_status(status)
+    end
+  end
+
+  def user_for(user_type)
+    case user_type
+    when :author
+      user
+    when :other
+      other_user
+    when :admin
+      admin
+    else
+      nil
+    end
+  end
+
+  def snippet_for(snippet_type)
+    case snippet_type
+    when :private
+      private_snippet
+    when :internal
+      internal_snippet
+    when :public
+      public_snippet
+    end
   end
 end

@@ -11216,6 +11216,9 @@ CREATE TABLE dast_scanner_profiles (
     spider_timeout smallint,
     target_timeout smallint,
     name text NOT NULL,
+    scan_type smallint DEFAULT 1 NOT NULL,
+    use_ajax_spider boolean DEFAULT false NOT NULL,
+    show_debug_messages boolean DEFAULT false NOT NULL,
     CONSTRAINT check_568568fabf CHECK ((char_length(name) <= 255))
 );
 
@@ -19475,6 +19478,8 @@ CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_
 CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
 
 CREATE INDEX idx_merge_requests_on_id_and_merge_jid ON merge_requests USING btree (id, merge_jid) WHERE ((merge_jid IS NOT NULL) AND (state_id = 4));
+
+CREATE INDEX idx_merge_requests_on_merged_state ON merge_requests USING btree (id) WHERE (state_id = 3);
 
 CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON merge_requests USING btree (source_project_id, source_branch) WHERE (state_id = 1);
 

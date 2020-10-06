@@ -331,7 +331,7 @@ end
 
 **Usage with `disable_ddl_transaction!`**
 
-Generally the `with_lock_retries` helper should work with `disabled_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
+Generally the `with_lock_retries` helper should work with `disable_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
 
 ```ruby
 disable_ddl_transaction!
@@ -348,7 +348,7 @@ end
 The RuboCop rule generally allows standard Rails migration methods, listed below. This example will cause a Rubocop offense:
 
 ```ruby
-disabled_ddl_transaction!
+disable_ddl_transaction!
 
 def up
   with_lock_retries do

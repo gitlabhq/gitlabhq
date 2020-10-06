@@ -70,6 +70,23 @@ RSpec.describe Mutations::Issues::Update do
         end
       end
 
+      context 'when changing state' do
+        let_it_be_with_refind(:issue) { create(:issue, project: project, state: :opened) }
+
+        it 'closes issue' do
+          mutation_params[:state_event] = 'close'
+
+          expect { subject }.to change { issue.reload.state }.from('opened').to('closed')
+        end
+
+        it 'reopens issue' do
+          issue.close
+          mutation_params[:state_event] = 'reopen'
+
+          expect { subject }.to change { issue.reload.state }.from('closed').to('opened')
+        end
+      end
+
       context 'when changing labels' do
         let_it_be(:label_1) { create(:label, project: project) }
         let_it_be(:label_2) { create(:label, project: project) }

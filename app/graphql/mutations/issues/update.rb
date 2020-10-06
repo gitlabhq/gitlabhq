@@ -46,6 +46,10 @@ module Mutations
                required: false,
                description: 'The ID of the milestone to be assigned, milestone will be removed if set to null.'
 
+      argument :state_event, Types::IssueStateEventEnum,
+               description: 'Close or reopen an issue.',
+               required: false
+
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project

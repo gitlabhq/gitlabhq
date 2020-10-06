@@ -780,6 +780,51 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '#flush!' do
+    context 'when chunk can be flushed without problems' do
+      before do
+        allow(build_trace_chunk).to receive(:persist_data!)
+      end
+
+      it 'completes migration successfully' do
+        expect { build_trace_chunk.flush! }.not_to raise_error
+      end
+    end
+
+    context 'when the flush operation fails at first' do
+      it 'retries reloads the chunk' do
+        expect(build_trace_chunk)
+          .to receive(:persist_data!)
+          .and_raise(described_class::FailedToPersistDataError)
+          .ordered
+        expect(build_trace_chunk).to receive(:reset)
+          .and_return(build_trace_chunk)
+          .ordered
+        expect(build_trace_chunk)
+          .to receive(:persist_data!)
+          .ordered
+
+        build_trace_chunk.flush!
+      end
+    end
+
+    context 'when the flush constatly fails' do
+      before do
+        allow(build_trace_chunk)
+          .to receive(:persist_data!)
+          .and_raise(described_class::FailedToPersistDataError)
+      end
+
+      it 'attems to reset the chunk but eventually fails too' do
+        expect(build_trace_chunk).to receive(:reset)
+          .and_return(build_trace_chunk)
+
+        expect { build_trace_chunk.flush! }
+          .to raise_error(described_class::FailedToPersistDataError)
+      end
+    end
+  end
+
   describe 'comparable build trace chunks' do
     describe '#<=>' do
       context 'when chunks are associated with different builds' do

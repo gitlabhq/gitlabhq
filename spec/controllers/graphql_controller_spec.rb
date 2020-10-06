@@ -98,6 +98,12 @@ RSpec.describe GraphqlController do
         expect(assigns(:context)[:is_sessionless_user]).to be false
       end
     end
+
+    it 'includes request object in context' do
+      post :execute
+
+      expect(assigns(:context)[:request]).to eq request
+    end
   end
 
   describe 'Admin Mode' do

@@ -816,8 +816,6 @@ module Gitlab
         clear_memoization(:unique_visit_service)
         clear_memoization(:deployment_minimum_id)
         clear_memoization(:deployment_maximum_id)
-        clear_memoization(:approval_merge_request_rule_minimum_id)
-        clear_memoization(:approval_merge_request_rule_maximum_id)
         clear_memoization(:project_minimum_id)
         clear_memoization(:project_maximum_id)
         clear_memoization(:auth_providers)

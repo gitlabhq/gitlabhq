@@ -1,0 +1,7 @@
+---
+name: snippet_spam
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44010
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/262013
+type: development
+group: group::editor
+default_enabled: false

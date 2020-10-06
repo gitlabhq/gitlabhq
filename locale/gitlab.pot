@@ -29237,9 +29237,6 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
-msgid "Workflow Help"
-msgstr ""
-
 msgid "Would you like to create a new branch?"
 msgstr ""
 

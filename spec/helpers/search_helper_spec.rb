@@ -29,7 +29,7 @@ RSpec.describe SearchHelper do
       end
 
       it "includes Help sections" do
-        expect(search_autocomplete_opts("hel").size).to eq(9)
+        expect(search_autocomplete_opts("hel").size).to eq(8)
       end
 
       it "includes default sections" do

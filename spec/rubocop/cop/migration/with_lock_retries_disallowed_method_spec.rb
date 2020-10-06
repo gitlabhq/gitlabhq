@@ -53,6 +53,22 @@ RSpec.describe RuboCop::Cop::Migration::WithLockRetriesDisallowedMethod, type: :
 
       expect(cop.offenses.size).to eq(0)
     end
+
+    describe 'for `add_foreign_key`' do
+      it 'registers an offense when more than two FKs are added' do
+        message = described_class::MSG_ONLY_ONE_FK_ALLOWED
+
+        expect_offense <<~RUBY
+          with_lock_retries do
+            add_foreign_key :imports, :projects, column: :project_id, on_delete: :cascade
+            ^^^^^^^^^^^^^^^ #{message}
+            add_column :projects, :name, :text
+            add_foreign_key :imports, :users, column: :user_id, on_delete: :cascade
+            ^^^^^^^^^^^^^^^ #{message}
+          end
+        RUBY
+      end
+    end
   end
 
   context 'outside of migration' do

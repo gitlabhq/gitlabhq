@@ -28,9 +28,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
                     project_minimum_id project_maximum_id
                     user_minimum_id user_maximum_id unique_visit_service
                     deployment_minimum_id deployment_maximum_id
-                    approval_merge_request_rule_minimum_id
-                    approval_merge_request_rule_maximum_id
                     auth_providers)
+
+        if Gitlab.ee?
+          values << %i(approval_merge_request_rule_minimum_id
+                       approval_merge_request_rule_maximum_id
+                       merge_request_minimum_id
+                       merge_request_maximum_id)
+          values.flatten!
+        end
+
         values.each do |key|
           expect(described_class).to receive(:clear_memoization).with(key)
         end

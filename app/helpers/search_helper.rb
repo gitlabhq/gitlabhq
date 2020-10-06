@@ -131,8 +131,7 @@ module SearchHelper
       { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/README") },
       { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("ssh/README") },
       { category: "Help", label: _("System Hooks Help"),  url: help_page_path("system_hooks/system_hooks") },
-      { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") },
-      { category: "Help", label: _("Workflow Help"),      url: help_page_path("workflow/README") }
+      { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") }
     ]
   end
 
