@@ -267,7 +267,7 @@ spotbugs-sast:
     - build
   variables:
     MAVEN_REPO_PATH: ./.m2/repository
-    COMPILE: false
+    COMPILE: "false"
   artifacts:
     reports:
       sast: gl-sast-report.json

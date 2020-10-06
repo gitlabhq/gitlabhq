@@ -838,7 +838,7 @@ include:
   template: DAST.gitlab-ci.yml
 
 variables:
-  DAST_INCLUDE_ALPHA_VULNERABILITIES: true
+  DAST_INCLUDE_ALPHA_VULNERABILITIES: "true"
 ```
 
 ## Interacting with the vulnerabilities

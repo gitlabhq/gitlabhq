@@ -2855,6 +2855,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "issueFilters",
+                  "description": "Filters applied when getting issue metadata in the board list",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "BoardIssueInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {

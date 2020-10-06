@@ -12,10 +12,11 @@ affect the way running processes behave on an operating
 system.
 
 Environment variables are part of the environment in which a process runs.
-For example, a running process can query the value of the
-`TEMP` environment variable to discover a suitable location
-to store temporary files, or to define a `URL` for a database
-that can be reused in different scripts.
+For example, a running process could:
+
+- Use the value of a `TEMP` environment variable to know the correct location
+  to store temporary files.
+- Use a `DATABASE_URL` variable for the URL to a database that can be reused in different scripts.
 
 Variables are useful for customizing your jobs in GitLab CI/CD.
 When you use variables, you don't have to hard-code values.
@@ -61,22 +62,6 @@ In this case, the runner outputs the `stage` for the
 job `test_variable`, which is `test`:
 
 ![Output `$CI_JOB_STAGE`](img/ci_job_stage_output_example.png)
-
-As another example, let's say you're using your own GitLab
-instance and you want to know what domain your GitLab Pages are
-served under. You can call it by using the predefined
-variable `$CI_PAGES_DOMAIN` in your script:
-
-```yaml
-pages:
-  script:
-    - ...
-    - echo $CI_PAGES_DOMAIN
-```
-
-For GitLab.com users, the output is `gitlab.io`. For your
-private instance, the output is whatever your sysadmin has
-defined.
 
 ## Custom environment variables
 
@@ -181,8 +166,8 @@ You can use tools like [the AWS CLI](https://docs.aws.amazon.com/cli/latest/user
 and [`kubectl`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable)
 to customize your configuration by using **File** type variables.
 
-In the past, a common pattern was to read the value of a CI variable, save it in a file, and then
-use the newly created file in your script:
+Previously, a common pattern was to read the value of a CI variable, save it in a file, and then
+use that file in your script:
 
 ```shell
 # Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
@@ -288,11 +273,11 @@ job_name:
 
 ### PowerShell
 
-To access environment variables in a **Windows PowerShell** environment, prefix
-the variable name with (`$env:`). For environment variables set by GitLab CI, including those set by [`variables`](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/ci/yaml/README.md#variables)
-parameter, they can also be accessed by prefixing the variable name with (`$`)
-as of [GitLab Runner 1.0.0](https://gitlab.com/gitlab-org/gitlab-runner/-/commit/abc44bb158008cd3a49c0d8173717c38dadb29ae#47afd7e8f12afdb8f0246262488f24e6dd071a22).
-System set environment variables however must be accessed using (`$env:`).
+To access variables in a **Windows PowerShell** environment, including system set
+environment variables, prefix the variable name with (`$env:`). Environment variables
+set by GitLab CI can also be accessed by prefixing the variable name with (`$`) with
+[GitLab Runner 1.0.0](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/68)
+and later.
 
 ```yaml
 job_name:

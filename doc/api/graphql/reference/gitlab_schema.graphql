@@ -1097,6 +1097,11 @@ type Board {
     id: ID
 
     """
+    Filters applied when getting issue metadata in the board list
+    """
+    issueFilters: BoardIssueInput
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int

@@ -1,22 +1,15 @@
 <script>
-import {
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
-  GlDeprecatedDropdownDivider,
-  GlSearchBoxByType,
-  GlIcon,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlDropdownDivider, GlSearchBoxByType } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 
 export default {
   name: 'CiEnvironmentsDropdown',
   components: {
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
-    GlDeprecatedDropdownDivider,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownDivider,
     GlSearchBoxByType,
-    GlIcon,
   },
   props: {
     value: {
@@ -66,28 +59,25 @@ export default {
 };
 </script>
 <template>
-  <gl-deprecated-dropdown :text="value">
+  <gl-dropdown :text="value">
     <gl-search-box-by-type v-model.trim="searchTerm" class="gl-m-3" />
-    <gl-deprecated-dropdown-item
+    <gl-dropdown-item
       v-for="environment in filteredResults"
       :key="environment"
+      :is-checked="isSelected(environment)"
+      is-check-item
       @click="selectEnvironment(environment)"
     >
-      <gl-icon
-        :class="{ invisible: !isSelected(environment) }"
-        name="mobile-issue-close"
-        class="vertical-align-middle"
-      />
       {{ environment }}
-    </gl-deprecated-dropdown-item>
-    <gl-deprecated-dropdown-item v-if="!filteredResults.length" ref="noMatchingResults">{{
+    </gl-dropdown-item>
+    <gl-dropdown-item v-if="!filteredResults.length" ref="noMatchingResults">{{
       __('No matching results')
-    }}</gl-deprecated-dropdown-item>
+    }}</gl-dropdown-item>
     <template v-if="shouldRenderCreateButton">
-      <gl-deprecated-dropdown-divider />
-      <gl-deprecated-dropdown-item @click="createClicked">
+      <gl-dropdown-divider />
+      <gl-dropdown-item @click="createClicked">
         {{ composedCreateButtonLabel }}
-      </gl-deprecated-dropdown-item>
+      </gl-dropdown-item>
     </template>
-  </gl-deprecated-dropdown>
+  </gl-dropdown>
 </template>

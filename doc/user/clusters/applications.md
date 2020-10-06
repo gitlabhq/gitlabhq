@@ -1108,7 +1108,10 @@ used in your applications, GitLab CI/CD jobs, and more. It could also serve as a
 providing SSL/TLS certificates to systems and deployments in your infrastructure. Leveraging
 Vault as a single source for all these credentials allows greater security by having
 a single source of access, control, and auditability around all your sensitive
-credentials and certificates.
+credentials and certificates. This feature requires giving GitLab the highest level of access and
+control. Therefore, if GitLab is compromised, the security of this Vault instance is as well. To
+avoid this security risk, GitLab recommends using your own HashiCorp Vault to leverage
+[external secrets with CI](../../ci/secrets/index.md).
 
 To install Vault, enable it in the `.gitlab/managed-apps/config.yaml` file:
 
