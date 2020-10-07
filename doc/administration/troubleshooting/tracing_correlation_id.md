@@ -122,5 +122,5 @@ If you have done some horizontal scaling in your GitLab infrastructure, then
 you will need to search across _all_ of your GitLab nodes. You can do this with
 some sort of log aggregation software like Loki, ELK, Splunk, or others.
 
-You can use a tool like Ansible or PSSH (parellel SSH) that can execute identical commands across your servers in
+You can use a tool like Ansible or PSSH (parallel SSH) that can execute identical commands across your servers in
 parallel, or craft your own solution.

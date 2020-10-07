@@ -121,7 +121,7 @@ passing to fluentd (and ultimately Elasticsearch).
 The [Redis Keyspace
 Analyzer](https://gitlab.com/gitlab-com/gl-infra/redis-keyspace-analyzer)
 project contains tools for dumping the full key list and memory usage of a Redis
-instance, and then analyzing those lists while elimating potentially sensitive
+instance, and then analyzing those lists while eliminating potentially sensitive
 data from the results. It can be used to find the most frequent key patterns, or
 those that use the most memory.
 

@@ -202,7 +202,7 @@ recommends encrypting plan output or modifying the project visibility settings.
 
 ## Example project
 
-See [this reference project](https://gitlab.com/nicholasklick/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 within a custom VPC.
+See [this reference project](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 within a custom VPC.
 
 ## Copy Terraform state between backends
 

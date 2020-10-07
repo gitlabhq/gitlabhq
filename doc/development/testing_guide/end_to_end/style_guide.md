@@ -141,7 +141,7 @@ end
 ```
 
 ```ruby
-Page::Project::New.peform do |new_page|
+Page::Project::New.perform do |new_page|
   new_page.do_something
 end
 ```
@@ -155,7 +155,7 @@ end
 ```
 
 ```ruby
-Page::Project::New.peform do |page|
+Page::Project::New.perform do |page|
   page.do_something
 end
 ```

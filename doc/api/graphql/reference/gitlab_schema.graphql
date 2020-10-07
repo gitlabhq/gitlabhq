@@ -15010,6 +15010,11 @@ type Query {
     Include namespace in project search
     """
     searchNamespaces: Boolean
+
+    """
+    Sort order of results
+    """
+    sort: String
   ): ProjectConnection
 
   """

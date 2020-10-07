@@ -111,7 +111,7 @@ to include older template versions. If other templates are included with `includ
 they can be combined with the `include: remote`:
 
 ```yaml
-# To use the v13 stable template, which is not included in v14, fetch the specifc
+# To use the v13 stable template, which is not included in v14, fetch the specific
 # template from the remote template repository with the `include:remote:` keyword.
 # If you fetch from the GitLab canonical project, use the following URL format:
 # https://gitlab.com/gitlab-org/gitlab/-/raw/<version>/lib/gitlab/ci/templates/<template-name>

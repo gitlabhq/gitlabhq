@@ -142,6 +142,7 @@ Facebook
 failover
 failovers
 failsafe
+Falco
 fastlane
 favicon
 Filebeat
@@ -513,6 +514,9 @@ unprioritized
 unprotect
 unprotected
 unprotects
+unprovision
+unprovisioned
+unprovisions
 unpublish
 unpublished
 unpublishes

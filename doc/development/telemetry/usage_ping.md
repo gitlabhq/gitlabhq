@@ -650,7 +650,7 @@ build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://
 1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
 1. Open the job logs and locate the full container name including the version. It will take the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
 1. On your local machine, make sure you are logged in to the GitLab Docker registry. You can find the instructions for this in
-[Authenticating to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticating-to-the-gitlab-container-registry).
+[Authenticate to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
 1. Once logged in, download the new image via `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
 1. For more information about working with and running Omnibus GitLab containers in Docker, please refer to [GitLab Docker images](https://docs.gitlab.com/omnibus/docker/README.html) in the Omnibus documentation.
 

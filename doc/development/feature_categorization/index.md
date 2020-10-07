@@ -23,7 +23,7 @@ product categories. When this occurs, you can automatically update
 and generate a new version of the file, which needs to be committed to
 the repository.
 
-The [Scalabilitity
+The [Scalability
 team](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
 currently maintains the `stages.yml` file. They will automatically be
 notified on Slack when the file becomes outdated.

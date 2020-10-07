@@ -492,8 +492,8 @@ include:
     file: '/templates/.gitlab-ci-template.yml'
 ```
 
-All [nested includes](#nested-includes) are executed in the scope of the target project,
-so it's possible to use local (relative to target project), project, remote
+All [nested includes](#nested-includes) are executed in the scope of the target project.
+This means you can use local (relative to target project), project, remote,
 or template includes.
 
 #### `include:remote`
@@ -632,10 +632,9 @@ job:
     - bundle exec rspec
 ```
 
-NOTE: **Note:**
 Sometimes, `script` commands must be wrapped in single or double quotes.
-For example, commands that contain a colon (`:`) must be wrapped in quotes so
-that the YAML parser knows to interpret the whole thing as a string rather than
+For example, commands that contain a colon (`:`) must be wrapped in quotes.
+The YAML parser needs to interpret the text as a string rather than
 a "key: value" pair. Be careful when using special characters:
 `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
 
@@ -741,11 +740,11 @@ using [`|` (literal) and `>` (folded) YAML multi-line block scalar indicators](h
 
 CAUTION: **Warning:**
 If multiple commands are combined into one command string, only the last command's
-failure or success is reported,
-[incorrectly ignoring failures from earlier commands due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).
-If the success of the job depends on the success or failure of these commands,
-you can run the commands as separate `script:` items, or add `exit 1` commands
-as appropriate to the command string where needed.
+failure or success is reported. 
+[Failures from earlier commands are ignored due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).
+To work around this,
+run each command as a separate `script:` item, or add an `exit 1` command
+to each command string.
 
 You can use the `|` (literal) YAML multiline block scalar indicator to write
 commands over multiple lines in the `script` section of a job description.

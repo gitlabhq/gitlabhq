@@ -855,7 +855,7 @@ exist, you should see something like:
 
 ### Environment incident management
 
-You have successfuly setup a Continous Delivery/Deployment workflow in your project.
+You have successfully setup a Continuous Delivery/Deployment workflow in your project.
 Production environments can go down unexpectedly, including for reasons outside
 of your own control. For example, issues with external dependencies, infrastructure,
 or human error can cause major issues with an environment. This could include:

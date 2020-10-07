@@ -85,7 +85,7 @@ ORDER BY created_at DESC
 LIMIT 100
 ```
 
-If the table is partioned on the `created_at` column the base table would
+If the table is partitioned on the `created_at` column the base table would
 look like:
 
 ```sql

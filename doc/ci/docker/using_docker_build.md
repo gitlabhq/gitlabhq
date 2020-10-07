@@ -503,7 +503,7 @@ and [using the OverlayFS storage driver](https://docs.docker.com/engine/userguid
 ## Using the GitLab Container Registry
 
 Once you've built a Docker image, you can push it up to the built-in
-[GitLab Container Registry](../../user/packages/container_registry/index.md#build-and-push-images-using-gitlab-cicd).
+[GitLab Container Registry](../../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd).
 
 ## Troubleshooting
 

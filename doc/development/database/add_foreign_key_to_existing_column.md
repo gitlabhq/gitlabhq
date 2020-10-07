@@ -109,7 +109,7 @@ class RemoveRecordsWithoutUserFromEmailsTable < ActiveRecord::Migration[5.2]
   end
 
   def down
-    # Can be a no-op when data inconsistency is not affecting the pre and post deploymnet version of the application.
+    # Can be a no-op when data inconsistency is not affecting the pre and post deployment version of the application.
     # In this case we might have records in the `emails` table where the associated record in the `users` table is not there anymore.
   end
 end

@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Integration do
-  let!(:project_1) { create(:project) }
-  let!(:project_2) { create(:project) }
-  let!(:project_3) { create(:project) }
-  let(:instance_integration) { create(:jira_service, :instance) }
+  let_it_be(:project_1) { create(:project) }
+  let_it_be(:project_2) { create(:project) }
+  let_it_be(:project_3) { create(:project) }
+  let_it_be(:instance_integration) { create(:jira_service, :instance) }
 
   before do
     create(:jira_service, project: project_1, inherit_from_id: instance_integration.id)

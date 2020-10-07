@@ -8,7 +8,7 @@
  -->
 
 <!--
-We generally recommend events be tracked using a [structured event](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/out-of-the-box-vs-custom-events-and-entities/#structured-events) which has 5 properties you can use. There may be instances where structured events are not sufficient. You may want to track an event where the property changes frequently or is general something very unique. In those cases, use a [self-decribing event](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/out-of-the-box-vs-custom-events-and-entities/#self-describing-events)
+We generally recommend events be tracked using a [structured event](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/out-of-the-box-vs-custom-events-and-entities/#structured-events) which has 5 properties you can use. There may be instances where structured events are not sufficient. You may want to track an event where the property changes frequently or is general something very unique. In those cases, use a [self-describing event](https://docs.snowplowanalytics.com/docs/understanding-tracking-design/out-of-the-box-vs-custom-events-and-entities/#self-describing-events)
 
 -->
 

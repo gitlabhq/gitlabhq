@@ -16,7 +16,7 @@ Please add information here about why you're planning on migrating. Include any 
 <!-- Please complete as many items in this list as possible. If you're not sure yet, add "TBD" (To be Decided) or "Unknown" -->
 
  * **Timeline.** - 
- * **Product.** - GitLab Gold/Ultimate or Commnunity Edition
+ * **Product.** - GitLab Gold/Ultimate or Community Edition
  * **Project's License.** What kind of OSI-approved license does your project use? 
 
 ## Current Tooling and Replacements

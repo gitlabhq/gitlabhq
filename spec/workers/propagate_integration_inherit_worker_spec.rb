@@ -9,18 +9,12 @@ RSpec.describe PropagateIntegrationInheritWorker do
     let_it_be(:integration2) { create(:bugzilla_service, inherit_from_id: integration.id) }
     let_it_be(:integration3) { create(:redmine_service) }
 
-    before do
-      allow(BulkUpdateIntegrationService).to receive(:new)
-        .with(integration, match_array(integration1))
-        .and_return(double(execute: nil))
-    end
-
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [integration.id, integration1.id, integration3.id] }
 
       it 'calls to BulkCreateIntegrationService' do
         expect(BulkUpdateIntegrationService).to receive(:new)
-          .with(integration, match_array(integration1))
+          .with(integration, match_array(integration1)).twice
           .and_return(double(execute: nil))
 
         subject

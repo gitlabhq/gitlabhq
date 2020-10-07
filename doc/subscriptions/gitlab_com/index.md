@@ -149,17 +149,6 @@ as the number of _users over license_, you must pay for the excess number of
 users either before renewal, or at the time of renewal. This is also known the
 _true up_ process.
 
-There is no self-service option for purchasing additional seats. You must
-request a quotation from GitLab Sales. To do so, contact GitLab via our
-[support form](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
-
-The amount charged per seat is calculated by one of the following methods:
-
-- If paid before renewal, the amount per seat is calculated on a prorated basis.
-  For example, if the user was added 3 months before the end of the subscription
-  period, the amount owing is calculated as: (3 / 12) x annual fee.
-- If paid on renewal, the amount per seat is the standard annual fee.
-
 ### Renew or change a GitLab.com subscription
 
 NOTE: **Note:**
@@ -187,12 +176,35 @@ generated for the renewal and available for viewing or download in the
 during the renewal process, contact our
 [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
+## Add users to your subscription
+
+You can add users to your subscription at any time during the subscription period. The cost of
+additional users added during the subscription period is prorated from the date of purchase through
+the end of the subscription period.
+
+To add users to a subscription:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/).
+1. Navigate to the **Manage Purchases** page.
+1. Select **Add more seats** on the relevant subscription card.
+1. Enter the number of additional users.
+1. Select **Proceed to checkout**.
+1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the
+   system and a credit for what you've already paid. You will only be charged for the net change.
+1. Select **Confirm Upgrade**.
+
+The following will be emailed to you:
+
+- A payment receipt. You can also access this information in the Customers Portal under
+  [**View invoices**](https://customers.gitlab.com/receipts).
+
 ## Upgrade your GitLab.com subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **Upgrade** button on the relevant subscription card on the [Manage purchases](https://customers.gitlab.com/subscriptions) page.
+1. Select **Upgrade** on the relevant subscription card on the
+   [Manage purchases](https://customers.gitlab.com/subscriptions) page.
 1. Select the desired upgrade.
 1. Confirm the active form of payment, or add a new form of payment.
 1. Check the **I accept the Privacy Policy and Terms of Service** checkbox.

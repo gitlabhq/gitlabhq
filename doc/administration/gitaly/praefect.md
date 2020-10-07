@@ -356,7 +356,7 @@ application server, or a Gitaly node.
    If you want to use a TLS client certificate, the options below can be used:
 
    ```ruby
-   # Connect to PostreSQL using a TLS client certificate
+   # Connect to PostgreSQL using a TLS client certificate
    # praefect['database_sslcert'] = '/path/to/client-cert'
    # praefect['database_sslkey'] = '/path/to/client-key'
 

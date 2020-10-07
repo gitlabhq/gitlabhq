@@ -10,7 +10,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41174) in GitLab 10.7.
 
 Badges are a unified way to present condensed pieces of information about your
-projects. They consist of a small image and additionally a URL that the image
+projects. They consist of a small image and a URL that the image
 points to. Examples for badges can be the [pipeline status](../../ci/pipelines/settings.md#pipeline-status-badge),
 [test coverage](../../ci/pipelines/settings.md#test-coverage-report-badge), or ways to contact the
 project maintainers.

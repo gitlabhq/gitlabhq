@@ -50,7 +50,7 @@ the browser to use. You will need to have Chrome (or Chromium) and
     - [Best practices](../doc/development/testing_guide/best_practices.md)
     - [Using page objects](../doc/development/testing_guide/end_to_end/page_objects.md)
     - [Guidelines](../doc/development/testing_guide/index.md)
-    - [Tests with special setup for local environemnts](../doc/development/testing_guide/end_to_end/running_tests_that_require_special_setup.md)
+    - [Tests with special setup for local environments](../doc/development/testing_guide/end_to_end/running_tests_that_require_special_setup.md)
 
 ### Run the end-to-end tests in a local development environment
 

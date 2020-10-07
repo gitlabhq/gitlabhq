@@ -19,4 +19,4 @@ Better use this:
 issues = IssuesFinder.new(project, user, filter).execute
 ```
 
-It will help keep models thiner.
+It will help keep models thinner.
