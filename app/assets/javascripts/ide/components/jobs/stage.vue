@@ -1,12 +1,11 @@
 <script>
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import tooltip from '../../../vue_shared/directives/tooltip';
+import { GlLoadingIcon, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Item from './item.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlIcon,
@@ -67,7 +66,7 @@ export default {
       <ci-icon :status="stage.status" :size="24" />
       <strong
         ref="stageTitle"
-        v-tooltip="showTooltip"
+        v-gl-tooltip="showTooltip"
         :title="showTooltip ? stage.name : null"
         data-container="body"
         class="gl-ml-3 text-truncate"

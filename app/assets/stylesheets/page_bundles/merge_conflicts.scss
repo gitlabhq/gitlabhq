@@ -1,3 +1,4 @@
+@import 'mixins_and_variables_and_functions';
 // Disabled to use the color map for creating color schemes
 // scss-lint:disable ColorVariable
 $colors: (
@@ -240,14 +241,14 @@ $colors: (
       right: 10px;
       padding: 0;
       outline: none;
-      color: $white;
+      color: var(--white, $white);
       width: 75px; // static width to make 2 buttons have same width
       height: 19px;
     }
   }
 
   .btn-success .fa-spinner {
-    color: $white;
+    color: var(--white, $white);
   }
 
   .editor-wrap {
@@ -263,7 +264,7 @@ $colors: (
 
     &.saved {
       .editor {
-        border-top: solid 2px $green-300;
+        border-top: solid 2px var(--green-300, $green-300);
       }
     }
 
@@ -282,10 +283,10 @@ $colors: (
   }
 
   .discard-changes-alert {
-    background-color: $gray-light;
+    background-color: var(--gray-10, $gray-10);
     text-align: right;
     padding: $gl-padding-top $gl-padding;
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
 
     .discard-actions {
       display: inline-block;

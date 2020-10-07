@@ -6,7 +6,6 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :release, only: %i[edit show update downloads]
   before_action :authorize_read_release!
   before_action do
-    push_frontend_feature_flag(:release_evidence_collection, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_release_data, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_milestone_stats, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_releases_page, project, default_enabled: true)

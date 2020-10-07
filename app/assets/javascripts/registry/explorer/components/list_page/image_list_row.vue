@@ -10,6 +10,7 @@ import {
   LIST_DELETE_BUTTON_DISABLED,
   REMOVE_REPOSITORY_LABEL,
   ROW_SCHEDULED_FOR_DELETION,
+  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
 } from '../../constants/index';
 
 export default {
@@ -34,7 +35,6 @@ export default {
     LIST_DELETE_BUTTON_DISABLED,
     REMOVE_REPOSITORY_LABEL,
     ROW_SCHEDULED_FOR_DELETION,
-    ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
   },
   computed: {
     encodedItem() {
@@ -55,6 +55,14 @@ export default {
         'ContainerRegistry|%{count} Tags',
         this.item.tags_count,
       );
+    },
+    warningIconText() {
+      if (this.item.failedDelete) {
+        return ASYNC_DELETE_IMAGE_ERROR_MESSAGE;
+      } else if (this.item.cleanup_policy_started_at) {
+        return CLEANUP_TIMED_OUT_ERROR_MESSAGE;
+      }
+      return null;
     },
   },
 };
@@ -86,8 +94,9 @@ export default {
         category="tertiary"
       />
       <gl-icon
-        v-if="item.failedDelete"
-        v-gl-tooltip="{ title: $options.i18n.ASYNC_DELETE_IMAGE_ERROR_MESSAGE }"
+        v-if="warningIconText"
+        v-gl-tooltip="{ title: warningIconText }"
+        data-testid="warning-icon"
         name="warning"
         class="gl-text-orange-500"
       />

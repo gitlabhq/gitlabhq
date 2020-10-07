@@ -785,10 +785,15 @@ Settings['gitaly'] ||= Settingslogic.new({})
 # Webpack settings
 #
 Settings['webpack'] ||= Settingslogic.new({})
+Settings.webpack['config_file'] ||= 'config/webpack.config.js'
+Settings.webpack['output_dir']  ||= 'public/assets/webpack'
+Settings.webpack['public_path'] ||= 'assets/webpack'
+Settings.webpack['manifest_filename'] ||= 'manifest.json'
 Settings.webpack['dev_server'] ||= Settingslogic.new({})
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
+Settings.webpack.dev_server['https']   ||= false
 
 #
 # Monitoring settings

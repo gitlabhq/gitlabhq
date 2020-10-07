@@ -5185,6 +5185,11 @@ type DestroySnippetPayload {
 
 type DetailedStatus {
   """
+  Action information for the status. This includes method, button title, icon, path, and title
+  """
+  action: StatusAction
+
+  """
   Path of the details for the pipeline status
   """
   detailsPath: String!
@@ -17715,6 +17720,33 @@ enum Sort {
   Updated at descending order
   """
   updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5")
+}
+
+type StatusAction {
+  """
+  Title for the button, for example: Retry this job
+  """
+  buttonTitle: String
+
+  """
+  Icon used in the action button
+  """
+  icon: String
+
+  """
+  Method for the action, for example: :post
+  """
+  method: String
+
+  """
+  Path for the action
+  """
+  path: String
+
+  """
+  Title for the action, for example: Retry
+  """
+  title: String
 }
 
 type Submodule implements Entry {

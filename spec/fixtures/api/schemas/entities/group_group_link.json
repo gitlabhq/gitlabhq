@@ -1,6 +1,14 @@
 {
   "type": "object",
-  "required": ["id", "created_at", "expires_at", "can_update", "can_remove", "access_level"],
+  "required": [
+    "id",
+    "created_at",
+    "expires_at",
+    "can_update",
+    "can_remove",
+    "access_level",
+    "valid_roles"
+  ],
   "properties": {
     "id": { "type": "integer" },
     "created_at": { "type": "date-time" },
@@ -15,6 +23,7 @@
         "string_value": { "type": "string" }
       }
     },
+    "valid_roles": { "type": "object" },
     "shared_with_group": {
       "type": "object",
       "required": ["id", "name", "full_name", "full_path", "avatar_url", "web_url"],

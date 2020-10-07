@@ -52,9 +52,6 @@ export default {
     milestones() {
       return this.release.milestones || [];
     },
-    shouldShowEvidence() {
-      return this.glFeatures.releaseEvidenceCollection;
-    },
     shouldRenderAssets() {
       return Boolean(
         this.assets.links.length || (this.assets.sources && this.assets.sources.length),
@@ -98,7 +95,7 @@ export default {
       </div>
 
       <release-block-assets v-if="shouldRenderAssets" :assets="assets" />
-      <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
+      <evidence-block v-if="hasEvidence" :release="release" />
 
       <div ref="gfm-content" class="card-text gl-mt-3">
         <div class="md" v-html="release.descriptionHtml"></div>

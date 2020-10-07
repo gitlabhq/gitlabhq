@@ -44,7 +44,8 @@ module Groups::GroupMembersHelper
           id: source.id,
           name: source.full_name,
           web_url: Gitlab::UrlBuilder.build(source)
-        }
+        },
+        valid_roles: member.valid_level_roles
       }.merge(member_created_by_data(member.created_by))
 
       if member.invite?

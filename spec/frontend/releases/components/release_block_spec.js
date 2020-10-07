@@ -131,18 +131,14 @@ describe('Release block', () => {
   });
 
   describe('evidence block', () => {
-    it('renders the evidence block when the evidence is available and the feature flag is true', () =>
-      factory(release, { releaseEvidenceCollection: true }).then(() =>
-        expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
-      ));
-
-    it('does not render the evidence block when the evidence is available but the feature flag is false', () =>
-      factory(release, { releaseEvidenceCollection: true }).then(() =>
-        expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
-      ));
+    it('renders the evidence block when the evidence is available', () => {
+      return factory(release).then(() => {
+        expect(wrapper.find(EvidenceBlock).exists()).toBe(true);
+      });
+    });
 
     it('does not render the evidence block when there is no evidence', () => {
-      release.evidenceSha = null;
+      release.evidences = [];
 
       return factory(release).then(() => {
         expect(wrapper.find(EvidenceBlock).exists()).toBe(false);

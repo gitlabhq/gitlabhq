@@ -22,6 +22,10 @@ class GroupGroupLinkEntity < Grape::Entity
     expose :group_access, as: :integer_value
   end
 
+  expose :valid_roles do |group_link|
+    group_link.class.access_options
+  end
+
   expose :shared_with_group do
     expose :avatar_url do |group_link|
       group_link.shared_with_group.avatar_url(only_path: false)

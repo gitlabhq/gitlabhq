@@ -14211,6 +14211,20 @@
           "description": null,
           "fields": [
             {
+              "name": "action",
+              "description": "Action information for the status. This includes method, button title, icon, path, and title",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "StatusAction",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "detailsPath",
               "description": "Path of the details for the pipeline status",
               "args": [
@@ -51485,6 +51499,89 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "StatusAction",
+          "description": null,
+          "fields": [
+            {
+              "name": "buttonTitle",
+              "description": "Title for the button, for example: Retry this job",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "icon",
+              "description": "Icon used in the action button",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "method",
+              "description": "Method for the action, for example: :post",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "path",
+              "description": "Path for the action",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Title for the action, for example: Retry",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

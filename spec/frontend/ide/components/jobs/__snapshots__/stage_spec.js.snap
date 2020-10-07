@@ -16,8 +16,6 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
     <strong
       class="gl-ml-3 text-truncate"
       data-container="body"
-      data-original-title=""
-      title=""
     >
       
       build

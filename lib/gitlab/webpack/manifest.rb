@@ -9,7 +9,7 @@ module Gitlab
       # Raised if we can't read our webpack manifest for whatever reason
       class ManifestLoadError < StandardError
         def initialize(message, orig)
-          super "#{message} (original error #{orig})"
+          super "#{message}\n\n(original error #{orig.class.name}: #{orig})"
         end
       end
 
@@ -35,7 +35,7 @@ module Gitlab
             # Can be either a string or an array of strings.
             # Do not include source maps as they are not javascript
             [dll_assets, entrypoint["assets"]].flatten.reject { |p| p =~ /.*\.map$/ }.map do |p|
-              "/#{::Rails.configuration.webpack.public_path}/#{p}"
+              "/#{Gitlab.config.webpack.public_path}/#{p}"
             end
           else
             raise AssetMissingError, "Can't find asset '#{source}' in webpack manifest"
@@ -50,7 +50,7 @@ module Gitlab
             # Can be either a string or an array of strings.
             # Do not include source maps as they are not javascript
             [paths].flatten.reject { |p| p =~ /.*\.map$/ }.map do |p|
-              "/#{::Rails.configuration.webpack.public_path}/#{p}"
+              "/#{Gitlab.config.webpack.public_path}/#{p}"
             end
           else
             raise AssetMissingError, "Can't find entry point '#{source}' in webpack manifest"
@@ -68,7 +68,7 @@ module Gitlab
         end
 
         def manifest
-          if ::Rails.configuration.webpack.dev_server.enabled
+          if Gitlab.config.webpack.dev_server.enabled
             # Don't cache if we're in dev server mode, manifest may change ...
             load_manifest
           else
@@ -78,7 +78,7 @@ module Gitlab
         end
 
         def load_manifest
-          data = if ::Rails.configuration.webpack.dev_server.enabled
+          data = if Gitlab.config.webpack.dev_server.enabled
                    load_dev_server_manifest
                  else
                    load_static_manifest
@@ -88,9 +88,10 @@ module Gitlab
         end
 
         def load_dev_server_manifest
-          host = ::Rails.configuration.webpack.dev_server.manifest_host
-          port = ::Rails.configuration.webpack.dev_server.manifest_port
-          uri = Addressable::URI.new(scheme: 'http', host: host, port: port, path: dev_server_path)
+          host = Gitlab.config.webpack.dev_server.host
+          port = Gitlab.config.webpack.dev_server.port
+          scheme = Gitlab.config.webpack.dev_server.https ? 'https' : 'http'
+          uri = Addressable::URI.new(scheme: scheme, host: host, port: port, path: dev_server_path)
 
           # localhost could be blocked via Gitlab::HTTP
           response = HTTParty.get(uri.to_s, verify: false) # rubocop:disable Gitlab/HTTParty
@@ -98,25 +99,28 @@ module Gitlab
           return response.body if response.code == 200
 
           raise "HTTP error #{response.code}"
+        rescue OpenSSL::SSL::SSLError, EOFError => e
+          ssl_status = Gitlab.config.webpack.dev_server.https ? ' over SSL' : ''
+          raise ManifestLoadError.new("Could not connect to webpack-dev-server at #{uri}#{ssl_status}.\n\nIs SSL enabled? Check that settings in `gitlab.yml` and webpack-dev-server match.", e)
         rescue => e
-          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{uri} - is it running, and is stats-webpack-plugin loaded?", e)
+          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{uri}.\n\nIs webpack-dev-server running? Try running `gdk status webpack` or `gdk tail webpack`.", e)
         end
 
         def load_static_manifest
           File.read(static_manifest_path)
         rescue => e
-          raise ManifestLoadError.new("Could not load compiled manifest from #{static_manifest_path} - have you run `rake webpack:compile`?", e)
+          raise ManifestLoadError.new("Could not load compiled manifest from #{static_manifest_path}.\n\nHave you run `rake gitlab:assets:compile`?", e)
         end
 
         def static_manifest_path
           ::Rails.root.join(
-            ::Rails.configuration.webpack.output_dir,
-            ::Rails.configuration.webpack.manifest_filename
+            Gitlab.config.webpack.output_dir,
+            Gitlab.config.webpack.manifest_filename
           )
         end
 
         def dev_server_path
-          "/#{::Rails.configuration.webpack.public_path}/#{::Rails.configuration.webpack.manifest_filename}"
+          "/#{Gitlab.config.webpack.public_path}/#{Gitlab.config.webpack.manifest_filename}"
         end
       end
     end

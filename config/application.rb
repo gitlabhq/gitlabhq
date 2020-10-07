@@ -152,20 +152,6 @@ module Gitlab
     # like if you have constraints or database-specific column types
     config.active_record.schema_format = :sql
 
-    # Configure webpack
-    config.webpack = ActiveSupport::OrderedOptions.new
-    config.webpack.config_file = "config/webpack.config.js"
-    config.webpack.output_dir  = "public/assets/webpack"
-    config.webpack.public_path = "assets/webpack"
-    config.webpack.manifest_filename = "manifest.json"
-
-    # Webpack dev server configuration is handled in initializers/static_files.rb
-    config.webpack.dev_server = ActiveSupport::OrderedOptions.new
-    config.webpack.dev_server.enabled = false
-    config.webpack.dev_server.host = 'localhost'
-    config.webpack.dev_server.port = 3808
-    config.webpack.dev_server.https = false
-
     config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
 
     # Enable the asset pipeline
@@ -193,6 +179,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
+    config.assets.precompile << "page_bundles/merge_conflicts.css"
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/todos.css"

@@ -6885,6 +6885,9 @@ msgstr ""
 msgid "ContainerRegistry|Cleanup policy:"
 msgstr ""
 
+msgid "ContainerRegistry|Cleanup timed out before it could delete all tags"
+msgstr ""
+
 msgid "ContainerRegistry|Configuration digest: %{digest}"
 msgstr ""
 

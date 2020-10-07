@@ -449,21 +449,6 @@ In the API:
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.
 
-### Disable release evidence display **(CORE ONLY)**
-
-The `:release_evidence_collection` feature flag is enabled by default in GitLab
-self-managed instances. To turn it off, ask a GitLab administrator with Rails console
-access to run the following command:
-
-```ruby
-Feature.disable(:release_evidence_collection)
-```
-
-NOTE: **Note:**
-Release evidence is collected regardless of this feature flag,
-which only enables or disables the display of the data on the
-Releases page.
-
 ## GitLab Releaser
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-releaser/-/merge_requests/6) in GitLab 12.10.

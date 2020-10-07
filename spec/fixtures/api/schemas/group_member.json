@@ -7,6 +7,7 @@
     "access_level",
     "requested_at",
     "source",
+    "valid_roles",
     "can_update",
     "can_remove",
     "can_override"
@@ -36,6 +37,7 @@
         "web_url": { "type": "string" }
       }
     },
+    "valid_roles": { "type": "object" },
     "created_by": {
       "type": "object",
       "required": ["name", "web_url"],

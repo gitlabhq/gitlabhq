@@ -40,18 +40,15 @@ RSpec.describe Gitlab::Webpack::Manifest do
 
   before do
     # Test that config variables work while we're here
-    ::Rails.configuration.webpack.dev_server.host = 'hostname'
-    ::Rails.configuration.webpack.dev_server.port = 1999
-    ::Rails.configuration.webpack.dev_server.manifest_host = 'hostname'
-    ::Rails.configuration.webpack.dev_server.manifest_port = 2000
-    ::Rails.configuration.webpack.manifest_filename = "my_manifest.json"
-    ::Rails.configuration.webpack.public_path = "public_path"
-    ::Rails.configuration.webpack.output_dir = "manifest_output"
+    allow(Gitlab.config.webpack.dev_server).to receive_messages(host: 'hostname', port: 2000, https: false)
+    allow(Gitlab.config.webpack).to receive(:manifest_filename).and_return('my_manifest.json')
+    allow(Gitlab.config.webpack).to receive(:public_path).and_return('public_path')
+    allow(Gitlab.config.webpack).to receive(:output_dir).and_return('manifest_output')
   end
 
   context "with dev server enabled" do
     before do
-      ::Rails.configuration.webpack.dev_server.enabled = true
+      allow(Gitlab.config.webpack.dev_server).to receive(:enabled).and_return(true)
 
       stub_request(:get, "http://hostname:2000/public_path/my_manifest.json").to_return(body: manifest, status: 200)
     end
@@ -60,7 +57,7 @@ RSpec.describe Gitlab::Webpack::Manifest do
       it_behaves_like "a valid manifest"
 
       it "errors if we can't find the manifest" do
-        ::Rails.configuration.webpack.manifest_filename = "broken.json"
+        allow(Gitlab.config.webpack).to receive(:manifest_filename).and_return('broken.json')
         stub_request(:get, "http://hostname:2000/public_path/broken.json").to_raise(SocketError)
 
         expect { Gitlab::Webpack::Manifest.asset_paths("entry1") }.to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError)
@@ -99,7 +96,7 @@ RSpec.describe Gitlab::Webpack::Manifest do
 
   context "with dev server disabled" do
     before do
-      ::Rails.configuration.webpack.dev_server.enabled = false
+      allow(Gitlab.config.webpack.dev_server).to receive(:enabled).and_return(false)
       allow(File).to receive(:read).with(::Rails.root.join("manifest_output/my_manifest.json")).and_return(manifest)
     end
 
@@ -107,7 +104,7 @@ RSpec.describe Gitlab::Webpack::Manifest do
       it_behaves_like "a valid manifest"
 
       it "errors if we can't find the manifest" do
-        ::Rails.configuration.webpack.manifest_filename = "broken.json"
+        allow(Gitlab.config.webpack).to receive(:manifest_filename).and_return('broken.json')
         allow(File).to receive(:read).with(::Rails.root.join("manifest_output/broken.json")).and_raise(Errno::ENOENT)
         expect { Gitlab::Webpack::Manifest.asset_paths("entry1") }.to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError)
       end

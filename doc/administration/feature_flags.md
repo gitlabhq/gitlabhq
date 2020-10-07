@@ -79,10 +79,10 @@ To enable a feature, run:
 Feature.enable(:<feature flag>)
 ```
 
-Example, to enable Evidence Collection:
+Example, to enable a fictional feature flag named `my_awesome_feature`:
 
 ```ruby
-Feature.enable(:release_evidence_collection)
+Feature.enable(:my_awesome_feature)
 ```
 
 To disable a feature, run:
@@ -91,10 +91,10 @@ To disable a feature, run:
 Feature.disable(:<feature flag>)
 ```
 
-Example, to disable Evidence Collection:
+Example, to disable a fictional feature flag named `my_awesome_feature`:
 
 ```ruby
-Feature.disable(:release_evidence_collection)
+Feature.disable(:my_awesome_feature)
 ```
 
 Some feature flags can be enabled or disabled on a per project basis:
@@ -112,18 +112,18 @@ Feature.enable(:product_analytics, Project.find(1234))
 `Feature.enable` and `Feature.disable` always return `nil`, this is not an indication that the command failed:
 
 ```ruby
-irb(main):001:0> Feature.enable(:release_evidence_collection)
+irb(main):001:0> Feature.enable(:my_awesome_feature)
 => nil
 ```
 
-To check if a flag is enabled or disabled you can use `Feature.enabled?` or `Feature.disabled?`:
+To check if a flag is enabled or disabled you can use `Feature.enabled?` or `Feature.disabled?`. For example, for a fictional feature flag named `my_awesome_feature`:
 
 ```ruby
-Feature.enable(:release_evidence_collection)
+Feature.enable(:my_awesome_feature)
 => nil
-Feature.enabled?(:release_evidence_collection)
+Feature.enabled?(:my_awesome_feature)
 => true
-Feature.disabled?(:release_evidence_collection)
+Feature.disabled?(:my_awesome_feature)
 => false
 ```
 
