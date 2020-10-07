@@ -629,8 +629,9 @@ describe('GfmAutoComplete', () => {
     let $textarea;
 
     beforeEach(() => {
+      setFixtures('<textarea></textarea>');
       autocomplete = new GfmAutoComplete(dataSources);
-      $textarea = $('<textarea></textarea>');
+      $textarea = $('textarea');
       autocomplete.setup($textarea, { labels: true });
     });
 

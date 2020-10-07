@@ -2246,6 +2246,7 @@ Represents summary of a security report.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `apiFuzzing` | SecurityReportSummarySection | Aggregated counts for the api_fuzzing scan |
 | `containerScanning` | SecurityReportSummarySection | Aggregated counts for the container_scanning scan |
 | `coverageFuzzing` | SecurityReportSummarySection | Aggregated counts for the coverage_fuzzing scan |
 | `dast` | SecurityReportSummarySection | Aggregated counts for the dast scan |
@@ -2817,7 +2818,7 @@ Represents a vulnerability.
 | `location` | VulnerabilityLocation | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability |
 | `primaryIdentifier` | VulnerabilityIdentifier | Primary identifier of the vulnerability. |
 | `project` | Project | The project on which the vulnerability was found |
-| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING) |
+| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING) |
 | `resolvedOnDefaultBranch` | Boolean! | Indicates whether the vulnerability is fixed on the default branch or not |
 | `scanner` | VulnerabilityScanner | Scanner metadata for the vulnerability. |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
@@ -3551,6 +3552,7 @@ The type of the security scanner.
 
 | Value | Description |
 | ----- | ----------- |
+| `API_FUZZING` |  |
 | `CONTAINER_SCANNING` |  |
 | `COVERAGE_FUZZING` |  |
 | `DAST` |  |
@@ -3735,6 +3737,7 @@ The type of the security scan that found the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
+| `API_FUZZING` |  |
 | `CONTAINER_SCANNING` |  |
 | `COVERAGE_FUZZING` |  |
 | `DAST` |  |

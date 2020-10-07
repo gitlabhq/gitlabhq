@@ -23,7 +23,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
   end
 
   def fill_in_sign_up_form(new_user)
-    fill_in 'new_user_name', with: new_user.name
+    fill_in 'new_user_first_name', with: new_user.first_name
+    fill_in 'new_user_last_name', with: new_user.last_name
     fill_in 'new_user_username', with: new_user.username
     fill_in 'new_user_email', with: new_user.email
     fill_in 'new_user_password', with: new_user.password

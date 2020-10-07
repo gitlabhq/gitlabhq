@@ -11,6 +11,8 @@ module QA
 
       attribute :id
       attribute :name
+      attribute :first_name
+      attribute :last_name
       attribute :email
 
       def initialize
@@ -32,6 +34,14 @@ module QA
 
       def name
         @name ||= api_resource&.dig(:name) || "QA User #{unique_id}"
+      end
+
+      def first_name
+        name.split(' ').first
+      end
+
+      def last_name
+        name.split(' ').drop(1).join(' ')
       end
 
       def email

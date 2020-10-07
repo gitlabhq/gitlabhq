@@ -16655,6 +16655,11 @@ Represents summary of a security report
 """
 type SecurityReportSummary {
   """
+  Aggregated counts for the api_fuzzing scan
+  """
+  apiFuzzing: SecurityReportSummarySection
+
+  """
   Aggregated counts for the container_scanning scan
   """
   containerScanning: SecurityReportSummarySection
@@ -16734,6 +16739,7 @@ type SecurityReportSummarySection {
 The type of the security scanner
 """
 enum SecurityScannerType {
+  API_FUZZING
   CONTAINER_SCANNING
   COVERAGE_FUZZING
   DAST
@@ -20173,7 +20179,7 @@ type Vulnerability implements Noteable {
   """
   Type of the security report that found the vulnerability (SAST,
   DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION,
-  COVERAGE_FUZZING)
+  COVERAGE_FUZZING, API_FUZZING)
   """
   reportType: VulnerabilityReportType
 
@@ -20636,6 +20642,7 @@ type VulnerabilityPermissions {
 The type of the security scan that found the vulnerability
 """
 enum VulnerabilityReportType {
+  API_FUZZING
   CONTAINER_SCANNING
   COVERAGE_FUZZING
   DAST

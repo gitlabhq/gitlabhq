@@ -361,7 +361,7 @@ POST /projects/:id/releases
 | `tag_name`         | string          | yes                         | The tag where the release will be created from.                                                                                  |
 | `description`      | string          | no                          | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
 | `ref`              | string          | yes, if `tag_name` doesn't exist | If a tag specified in `tag_name` doesn't exist, the release will be created from `ref` and tagged with `tag_name`. It can be a commit SHA, another tag name, or a branch name. |
-| `milestones`       | array of string | no                          | The title of each milestone the release is associated with.                                                                      |
+| `milestones`       | array of string | no                          | The title of each milestone the release is associated with. [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify group milestones.                                                                      |
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link.                                                                                                            |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link.                                                                                                             |
@@ -484,6 +484,15 @@ Example response:
 }
 ```
 
+### Group milestones **(PREMIUM ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+
+Group milestones associated with the project may be specified in the `milestones`
+array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
+API calls. Only milestones associated with the project's group may be specified, and
+adding milestones for ancestor groups will raise an error.
+
 ## Collect release evidence **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
@@ -525,7 +534,7 @@ PUT /projects/:id/releases/:tag_name
 | `tag_name`    | string          | yes      | The tag where the release will be created from.                                                             |
 | `name`        | string          | no       | The release name.                                                                                           |
 | `description` | string          | no       | The description of the release. You can use [Markdown](../../user/markdown.md).                             |
-| `milestones`  | array of string | no       | The title of each milestone to associate with the release (`[]` to remove all milestones from the release). |
+| `milestones`  | array of string | no       | The title of each milestone to associate with the release. [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify group milestones. To remove all milestones from the release, specify `[]`. |
 | `released_at` | datetime        | no       | The date when the release will be/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).          |
 
 Example request:

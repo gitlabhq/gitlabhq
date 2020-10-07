@@ -282,8 +282,9 @@ RSpec.shared_examples 'wiki model' do
       expect(page.title).to eq('index page')
     end
 
-    it 'returns nil if the page does not exist' do
-      expect(subject.find_page('non-existent')).to eq(nil)
+    it 'returns nil if the page or version does not exist' do
+      expect(subject.find_page('non-existent')).to be_nil
+      expect(subject.find_page('index page', 'non-existent')).to be_nil
     end
 
     it 'can find a page by slug' do

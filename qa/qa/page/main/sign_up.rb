@@ -5,7 +5,8 @@ module QA
     module Main
       class SignUp < Page::Base
         view 'app/views/devise/shared/_signup_box.html.haml' do
-          element :new_user_name_field
+          element :new_user_first_name_field
+          element :new_user_last_name_field
           element :new_user_username_field
           element :new_user_email_field
           element :new_user_password_field
@@ -18,7 +19,8 @@ module QA
         end
 
         def sign_up!(user)
-          fill_element :new_user_name_field, user.name
+          fill_element :new_user_first_name_field, user.first_name
+          fill_element :new_user_last_name_field, user.last_name
           fill_element :new_user_username_field, user.username
           fill_element :new_user_email_field, user.email
           fill_element :new_user_password_field, user.password

@@ -1305,6 +1305,9 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
+msgid "API Fuzzing"
+msgstr ""
+
 msgid "API Help"
 msgstr ""
 
@@ -11365,6 +11368,9 @@ msgstr ""
 msgid "Find File"
 msgstr ""
 
+msgid "Find bugs in your code with API fuzzing."
+msgstr ""
+
 msgid "Find bugs in your code with coverage-guided fuzzing."
 msgstr ""
 
@@ -11398,9 +11404,6 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
-msgid "First Name is too long (maximum is %{max_length} characters)."
-msgstr ""
-
 msgid "First Seen"
 msgstr ""
 
@@ -11408,6 +11411,9 @@ msgid "First day of the week"
 msgstr ""
 
 msgid "First name"
+msgstr ""
+
+msgid "First name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "First seen"
@@ -14893,9 +14899,6 @@ msgstr ""
 msgid "Last Accessed On"
 msgstr ""
 
-msgid "Last Name is too long (maximum is %{max_length} characters)."
-msgstr ""
-
 msgid "Last Pipeline"
 msgstr ""
 
@@ -14927,6 +14930,9 @@ msgid "Last item before this page loaded in your browser:"
 msgstr ""
 
 msgid "Last name"
+msgstr ""
+
+msgid "Last name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "Last reply by"
@@ -23918,9 +23924,6 @@ msgstr ""
 msgid "SignUp|Last Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
-msgid "SignUp|Name is too long (maximum is %{max_length} characters)."
-msgstr ""
-
 msgid "SignUp|Username is too long (maximum is %{max_length} characters)."
 msgstr ""
 
@@ -28019,6 +28022,12 @@ msgid "UsageQuota|Storage"
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which use shared runners"
+msgstr ""
+
+msgid "UsageQuota|This project is at risk of being locked."
+msgstr ""
+
+msgid "UsageQuota|This project is locked."
 msgstr ""
 
 msgid "UsageQuota|Unlimited"

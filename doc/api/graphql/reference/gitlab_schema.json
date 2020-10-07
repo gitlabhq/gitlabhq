@@ -48144,6 +48144,20 @@
           "description": "Represents summary of a security report",
           "fields": [
             {
+              "name": "apiFuzzing",
+              "description": "Aggregated counts for the api_fuzzing scan",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecurityReportSummarySection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "containerScanning",
               "description": "Aggregated counts for the container_scanning scan",
               "args": [
@@ -48383,6 +48397,12 @@
             },
             {
               "name": "COVERAGE_FUZZING",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "API_FUZZING",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null
@@ -58532,7 +58552,7 @@
             },
             {
               "name": "reportType",
-              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING)",
+              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING)",
               "args": [
 
               ],
@@ -59980,6 +60000,12 @@
             },
             {
               "name": "COVERAGE_FUZZING",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "API_FUZZING",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null

@@ -11,7 +11,7 @@
     autofocus: local_assigns[:autofocus]
 
   - if local_assigns[:icon]
-    = icon("search", class: "search-icon")
+    = sprite_icon('search', css_class: 'search-icon')
 
   - if params[:sort].present?
     = hidden_field_tag :sort, params[:sort]

@@ -80,7 +80,7 @@ RSpec.describe RegistrationsController do
   end
 
   describe '#create' do
-    let(:base_user_params) { { name: 'new_user', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
+    let(:base_user_params) { { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
     let(:user_params) { { user: base_user_params } }
 
     context 'email confirmation' do
@@ -370,21 +370,12 @@ RSpec.describe RegistrationsController do
       expect(subject.current_user).not_to be_nil
     end
 
-    context 'with the experimental signup flow enabled and the user is part of the experimental group' do
-      before do
-        stub_experiment(signup_flow: true)
-        stub_experiment_for_user(signup_flow: true)
-      end
+    it 'sets name from first and last name' do
+      post :create, params: { new_user: base_user_params }
 
-      let(:base_user_params) { { first_name: 'First', last_name: 'Last', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
-
-      it 'sets name from first and last name' do
-        post :create, params: { new_user: base_user_params }
-
-        expect(User.last.first_name).to eq(base_user_params[:first_name])
-        expect(User.last.last_name).to eq(base_user_params[:last_name])
-        expect(User.last.name).to eq("#{base_user_params[:first_name]} #{base_user_params[:last_name]}")
-      end
+      expect(User.last.first_name).to eq(base_user_params[:first_name])
+      expect(User.last.last_name).to eq(base_user_params[:last_name])
+      expect(User.last.name).to eq("#{base_user_params[:first_name]} #{base_user_params[:last_name]}")
     end
   end
 

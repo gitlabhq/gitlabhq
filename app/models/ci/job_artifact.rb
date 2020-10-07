@@ -46,7 +46,8 @@ module Ci
       terraform: 'tfplan.json',
       cluster_applications: 'gl-cluster-applications.json',
       requirements: 'requirements.json',
-      coverage_fuzzing: 'gl-coverage-fuzzing.json'
+      coverage_fuzzing: 'gl-coverage-fuzzing.json',
+      api_fuzzing: 'gl-api-fuzzing-report.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -82,11 +83,13 @@ module Ci
       load_performance: :raw,
       terraform: :raw,
       requirements: :raw,
-      coverage_fuzzing: :raw
+      coverage_fuzzing: :raw,
+      api_fuzzing: :raw
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[
       accessibility
+      api_fuzzing
       archive
       cobertura
       codequality
@@ -194,7 +197,8 @@ module Ci
       requirements: 22, ## EE-specific
       coverage_fuzzing: 23, ## EE-specific
       browser_performance: 24, ## EE-specific
-      load_performance: 25 ## EE-specific
+      load_performance: 25, ## EE-specific
+      api_fuzzing: 26 ## EE-specific
     }
 
     # `file_location` indicates where actual files are stored.

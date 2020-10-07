@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Users::BuildService do
   describe '#execute' do
-    let(:params) do
-      { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass' }
-    end
+    let(:params) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
 
     context 'with an admin user' do
+      let(:params) { build_stubbed(:user).slice(:name, :username, :email, :password) }
+
       let(:admin_user) { create(:admin) }
       let(:service) { described_class.new(admin_user, ActionController::Parameters.new(params).permit!) }
 

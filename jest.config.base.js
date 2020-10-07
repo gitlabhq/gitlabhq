@@ -12,7 +12,7 @@ module.exports = path => {
     reporters.push([
       'jest-junit',
       {
-        output: './junit_jest.xml',
+        outputName: './junit_jest.xml',
       },
     ]);
   }

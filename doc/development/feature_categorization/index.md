@@ -25,7 +25,7 @@ the repository.
 
 The [Scalability
 team](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
-currently maintains the `stages.yml` file. They will automatically be
+currently maintains the `feature_categories.yml` file. They will automatically be
 notified on Slack when the file becomes outdated.
 
 ## Sidekiq workers

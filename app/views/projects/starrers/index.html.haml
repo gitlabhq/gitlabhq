@@ -11,7 +11,7 @@
           .position-relative
             = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
             %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
-              = icon("search")
+              = sprite_icon('search')
           .dropdown.inline.user-sort-dropdown
             = dropdown_toggle(starrers_sort_options_hash[@sort], { toggle: 'dropdown' })
             %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
