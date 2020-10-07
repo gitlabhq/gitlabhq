@@ -2488,6 +2488,12 @@ msgstr ""
 msgid "Alerts endpoint"
 msgstr ""
 
+msgid "AlertsIntegrations|Alerts will be created through this integration"
+msgstr ""
+
+msgid "AlertsIntegrations|Alerts will not be created through this integration"
+msgstr ""
+
 msgid "AlertsIntegrations|Current integrations"
 msgstr ""
 
@@ -22814,7 +22820,7 @@ msgstr ""
 msgid "SecurityApprovals|One or more of the security scanners must be enabled. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "SecurityApprovals|Requires approval for vulnerabilties of Critical, High, or Unknown severity. %{linkStart}More information%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for vulnerabilities of Critical, High, or Unknown severity. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "SecurityApprovals|Requires license policy rules for licenses of Allowed, or Denied. %{linkStart}More information%{linkEnd}"

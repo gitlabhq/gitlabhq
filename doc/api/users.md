@@ -980,7 +980,8 @@ Example response:
 
 ## Get a specific GPG key for a given user
 
-Get a specific GPG key for a given user. Available only for admins.
+Get a specific GPG key for a given user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43693)
+in GitLab 13.5, this endpoint can be accessed without admin authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys/:key_id

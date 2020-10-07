@@ -271,6 +271,22 @@ Example response:
 }
 ```
 
+### Pause a runner
+
+Pause a specific runner.
+
+```plaintext
+PUT --form "active=false"  /runners/:runner_id
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `runner_id` | integer | yes      | The ID of a runner  |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
+```
+
 ## List runner's jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.

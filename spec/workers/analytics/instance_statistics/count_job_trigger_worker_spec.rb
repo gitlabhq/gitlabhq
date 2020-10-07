@@ -14,16 +14,4 @@ RSpec.describe Analytics::InstanceStatistics::CountJobTriggerWorker do
       expect(Analytics::InstanceStatistics::CounterJobWorker.jobs.count).to eq(expected_count)
     end
   end
-
-  context 'when the `store_instance_statistics_measurements` feature flag is off' do
-    before do
-      stub_feature_flags(store_instance_statistics_measurements: false)
-    end
-
-    it 'does not trigger any CounterJobWorker job' do
-      subject.perform
-
-      expect(Analytics::InstanceStatistics::CounterJobWorker.jobs.count).to eq(0)
-    end
-  end
 end

@@ -2240,44 +2240,46 @@ module Gitlab
       end
 
       describe 'with parent-child pipeline' do
+        let(:config) do
+          YAML.dump({
+            build1: { stage: 'build', script: 'test' },
+            test1: {
+              stage: 'test',
+              trigger: {
+                include: includes
+              }
+            }
+          })
+        end
+
         context 'when artifact and job are specified' do
-          let(:config) do
-            YAML.dump({
-              build1: { stage: 'build', script: 'test' },
-              test1: { stage: 'test', trigger: {
-                include: [{ artifact: 'generated.yml', job: 'build1' }]
-              } }
-            })
+          let(:includes) { [{ artifact: 'generated.yml', job: 'build1' }] }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when job is not specified while artifact is' do
+          let(:includes) { [{ artifact: 'generated.yml' }] }
+
+          it_behaves_like 'returns errors', /include config must specify the job where to fetch the artifact from/
+        end
+
+        context 'when project and file are specified' do
+          let(:includes) do
+            [{ file: 'generated.yml', project: 'my-namespace/my-project' }]
           end
 
           it { is_expected.to be_valid }
         end
 
-        context 'when job is not specified specified while artifact is' do
-          let(:config) do
-            YAML.dump({
-              build1: { stage: 'build', script: 'test' },
-              test1: { stage: 'test', trigger: {
-                include: [{ artifact: 'generated.yml' }]
-              } }
-            })
-          end
+        context 'when file is not specified while project is' do
+          let(:includes) { [{ project: 'something' }] }
 
-          it_behaves_like 'returns errors', /include config must specify the job where to fetch the artifact from/
+          it_behaves_like 'returns errors', /include config must specify the file where to fetch the config from/
         end
 
         context 'when include is a string' do
-          let(:config) do
-            YAML.dump({
-              build1: { stage: 'build', script: 'test' },
-              test1: {
-                stage: 'test',
-                trigger: {
-                  include: 'generated.yml'
-                }
-              }
-            })
-          end
+          let(:includes) { 'generated.yml' }
 
           it { is_expected.to be_valid }
         end

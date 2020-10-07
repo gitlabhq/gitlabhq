@@ -17,7 +17,7 @@
 
   .nav-controls.pb-md-3.pb-lg-0
     - if @page.persisted?
-      = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn" do
+      = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn gl-button" do
         = s_("Wiki|Page history")
       - if can?(current_user, :admin_wiki, @wiki.container)
         #delete-wiki-modal-wrapper{ data: { delete_wiki_url: wiki_page_path(@wiki, @page), page_title: @page.human_title } }

@@ -418,6 +418,54 @@ DANGER: **Danger:**
 Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
 channel 1 database for your environment.
 
+### Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"
+
+After upgrading your Kubernetes cluster to [v1.16+](stages.md#kubernetes-116),
+you may encounter this message when deploying with Auto DevOps:
+
+```plaintext
+UPGRADE FAILED
+Error: failed decoding reader into objects: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"
+```
+
+This can occur if your current deployments on the environment namespace were deployed with a
+deprecated/removed API that doesn't exist in Kubernetes v1.16+. For example,
+if [your in-cluster PostgreSQL was installed in a legacy way](#detected-an-existing-postgresql-database),
+the resource was created via the `extensions/v1beta1` API. However, the deployment resource
+was moved to the `app/v1` API in v1.16.
+
+To recover such outdated resources, you must convert the current deployments by mapping legacy APIs
+to newer APIs. There is a helper tool called [`mapkubeapis`](https://github.com/hickeyma/helm-mapkubeapis)
+that works for this problem. Follow these steps to use the tool in Auto DevOps:
+
+1. Modify your `.gitlab-ci.yml` with:
+
+   ```yaml
+   include:
+     - template: Auto-DevOps.gitlab-ci.yml
+     - remote: https://gitlab.com/shinya.maeda/ci-templates/-/raw/master/map-deprecated-api.gitlab-ci.yml
+
+   variables:
+     HELM_VERSION_FOR_MAPKUBEAPIS: "v2" # If you're using auto-depoy-image v2 or above, please specify "v3".
+   ```
+
+1. Run the job `<environment-name>:map-deprecated-api`. Ensure that this job succeeds before moving
+   to the next step. You should see something like the following output:
+
+   ```shell
+   2020/10/06 07:20:49 Found deprecated or removed Kubernetes API:
+   "apiVersion: extensions/v1beta1
+   kind: Deployment"
+   Supported API equivalent:
+   "apiVersion: apps/v1
+   kind: Deployment"
+   ```
+
+1. Revert your `.gitlab-ci.yml` to the previous version. You no longer need to include the
+   supplemental template `map-deprecated-api`.
+
+1. Continue the deployments as usual.
+
 ## Development guides
 
 [Development guide for Auto DevOps](../../development/auto_devops.md)

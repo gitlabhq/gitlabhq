@@ -130,6 +130,10 @@ RSpec.describe API::Snippets do
     it_behaves_like 'raw snippet files' do
       let(:api_path) { "/snippets/#{snippet_id}/files/#{ref}/#{file_path}/raw" }
     end
+
+    it_behaves_like 'snippet access with different users' do
+      let(:path) { "/snippets/#{snippet.id}/files/master/%2Egitattributes/raw" }
+    end
   end
 
   describe 'GET /snippets/:id' do

@@ -854,6 +854,12 @@ production: &base
     # (default: accept any service name in keytab file)
     # service_principal_name: HTTP/gitlab.example.com@EXAMPLE.COM
 
+    # Kerberos realms/domains that are allowed to automatically link LDAP identities.
+    # By default, GitLab accepts a realm that matches the domain derived from the
+    # LDAP `base` DN. For example, `ou=users,dc=example,dc=com` would allow users
+    # with a realm matching `example.com`.
+    # simple_ldap_linking_allowed_realms: ['example.com','kerberos.example.com']
+
     # Dedicated port: Git before 2.4 does not fall back to Basic authentication if Negotiate fails.
     # To support both Basic and Negotiate methods with older versions of Git, configure
     # nginx to proxy GitLab on an extra port (e.g. 8443) and uncomment the following lines

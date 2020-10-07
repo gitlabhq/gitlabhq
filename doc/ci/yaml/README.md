@@ -3733,6 +3733,22 @@ child-pipeline:
 The `generated-config.yml` is extracted from the artifacts and used as the configuration
 for triggering the child pipeline.
 
+##### Trigger child pipeline with files from another project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
+
+To trigger child pipelines with files from another private project under the same
+GitLab instance, use [`include:file`](#includefile):
+
+```yaml
+child-pipeline:
+  trigger:
+    include:
+      - project: 'my-group/my-pipeline-library'
+        ref: 'master'
+        file: '/path/to/child-pipeline.yml'
+```
+
 #### Linking pipelines with `trigger:strategy`
 
 By default, the `trigger` job completes with the `success` status

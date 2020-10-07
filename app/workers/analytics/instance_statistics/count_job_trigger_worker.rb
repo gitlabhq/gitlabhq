@@ -14,8 +14,6 @@ module Analytics
       idempotent!
 
       def perform
-        return if Feature.disabled?(:store_instance_statistics_measurements, default_enabled: true)
-
         recorded_at = Time.zone.now
 
         worker_arguments = Gitlab::Analytics::InstanceStatistics::WorkersArgumentBuilder.new(

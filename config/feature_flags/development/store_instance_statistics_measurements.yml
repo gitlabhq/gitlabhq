@@ -1,7 +1,0 @@
----
-name: store_instance_statistics_measurements
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41300
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247871
-group: group::analytics
-type: development
-default_enabled: true

@@ -1479,6 +1479,31 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
     end
   end
 
+  describe 'GET /user/:id/gpg_keys/:key_id' do
+    it 'returns 404 for non-existing user' do
+      get api('/users/0/gpg_keys/1')
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns 404 for non-existing key' do
+      get api("/users/#{user.id}/gpg_keys/0")
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 GPG Key Not Found')
+    end
+
+    it 'returns a single GPG key' do
+      user.gpg_keys << gpg_key
+
+      get api("/users/#{user.id}/gpg_keys/#{gpg_key.id}")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['key']).to eq(gpg_key.key)
+    end
+  end
+
   describe 'DELETE /user/:id/gpg_keys/:key_id' do
     context 'when unauthenticated' do
       it 'returns authentication error' do

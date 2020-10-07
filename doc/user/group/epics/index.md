@@ -22,7 +22,7 @@ An epic's page contains the following tabs:
   - Hover over the total counts to see a breakdown of open and closed items.
 
   NOTE: **Note:**
-  The number provided here includes all epics associated with this project. The number includes epics for which users may not currently have permission.
+  The number provided here includes all epics associated with this project. The number includes epics for which users may not yet have permission.
 
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
 
@@ -100,7 +100,7 @@ steps to create, move, reorder, or delete child epics.
 To set a **Start date** and **Due date** for an epic, select one of the following:
 
 - **Fixed**: Enter a fixed value.
-- **From milestones**: Inherit a dynamic value from the milestones currently assigned to the epic's issues.
+- **From milestones**: Inherit a dynamic value from the milestones that are assigned to the epic's issues.
   Note that GitLab 12.5 replaced this option with **Inherited**.
 - **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**).
 
@@ -109,9 +109,9 @@ To set a **Start date** and **Due date** for an epic, select one of the followin
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 by **Inherited**.
 
 If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
-start date across all milestones that are currently assigned to the issues that are added to the epic.
+start date across all milestones that are assigned to the issues that are added to the epic.
 Similarly, if you select **From milestones** for the due date, GitLab will set it to be the latest due date across
-all milestones that are currently assigned to those issues.
+all milestones that are assigned to those issues.
 
 These are dynamic dates which are recalculated if any of the following occur:
 

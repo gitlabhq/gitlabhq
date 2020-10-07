@@ -9911,7 +9911,8 @@ CREATE TABLE ci_build_trace_chunks (
     chunk_index integer NOT NULL,
     data_store integer NOT NULL,
     raw_data bytea,
-    checksum bytea
+    checksum bytea,
+    lock_version integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE ci_build_trace_chunks_id_seq
@@ -20500,8 +20501,6 @@ CREATE UNIQUE INDEX index_issues_on_project_id_and_external_key ON issues USING 
 CREATE UNIQUE INDEX index_issues_on_project_id_and_iid ON issues USING btree (project_id, iid);
 
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
-
-CREATE INDEX index_issues_on_relative_position ON issues USING btree (relative_position);
 
 CREATE INDEX index_issues_on_sprint_id ON issues USING btree (sprint_id);
 

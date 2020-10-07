@@ -29,16 +29,17 @@ to the desired destination:
 cd <destination folder>
 ```
 
-[Create a branch](create-branch.md) to add your file to, before it's added to the master
-(main) branch of the project. It's not strictly necessary, but working directly in
-the `master` branch is not recommended unless your project is very small, and you're
-the only person working on it. You can [switch to an existing branch](start-using-git.md#work-on-an-existing-branch),
-if you've one already.
+[Create a new branch](create-branch.md) to add your file into. Submitting changes directly
+to the default branch should be avoided unless your project is very small and you're the
+only person working on it. 
+
+You can also [switch to an existing branch](start-using-git.md#work-on-an-existing-branch)
+if you have one already.
 
 Using your standard tool for copying files (for example, Finder in macOS, or File Explorer
-in Windows), put the file into a directory within the GitLab project.
+on Windows), put the file into a directory within the GitLab project.
 
-Check if your file is actually present in the directory (if you're in Windows,
+Check if your file is actually present in the directory (if you're on Windows,
 use `dir` instead):
 
 ```shell

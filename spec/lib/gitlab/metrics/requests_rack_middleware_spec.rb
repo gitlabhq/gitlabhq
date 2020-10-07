@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware do
       end
 
       it 'increments requests count' do
-        expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get')
+        expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get', status: 200)
 
         subject.call(env)
       end
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware do
             end
 
             it 'increments health endpoint counter rather than overall counter' do
-              expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
+              expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: 200)
               expect(described_class).not_to receive(:http_request_total)
 
               subject.call(env)
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware do
             end
 
             it 'increments overall counter rather than health endpoint counter' do
-              expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get')
+              expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get', status: 200)
               expect(described_class).not_to receive(:http_health_requests_total)
 
               subject.call(env)
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware do
       end
 
       it 'increments requests count' do
-        expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get')
+        expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get', status: 'undefined')
 
         expect { subject.call(env) }.to raise_error(StandardError)
       end

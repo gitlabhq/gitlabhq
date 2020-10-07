@@ -10,14 +10,14 @@
       = s_("Wiki|Wiki Pages")
 
   .nav-controls.pb-md-3.pb-lg-0
-    = link_to wiki_path(@wiki, action: :git_access), class: 'btn' do
+    = link_to wiki_path(@wiki, action: :git_access), class: 'btn gl-button' do
       = sprite_icon('download')
       = _("Clone repository")
 
     .dropdown.inline.wiki-sort-dropdown
       .btn-group{ role: 'group' }
         .btn-group{ role: 'group' }
-          %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn btn-default' }
+          %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn gl-button btn-default' }
             = sort_title
             = sprite_icon('chevron-down')
           %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable.dropdown-menu-sort

@@ -1,0 +1,5 @@
+---
+title: Fix instance statistics GraphQL query with identifier
+merge_request: 44475
+author:
+type: fixed

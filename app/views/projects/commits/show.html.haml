@@ -17,16 +17,16 @@
       .tree-controls
         - if @merge_request.present?
           .control.d-none.d-md-block
-            = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn'
+            = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn gl-button'
         - elsif create_mr_button?(@repository.root_ref, @ref)
           .control.d-none.d-md-block
-            = link_to _("Create merge request"), create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success'
+            = link_to _("Create merge request"), create_mr_path(@repository.root_ref, @ref), class: 'btn gl-button btn-success'
 
         .control
           = form_tag(project_commits_path(@project, @id), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path }) do
             = search_field_tag :search, params[:search], { placeholder: _('Search by message'), id: 'commits-search', class: 'form-control search-text-input input-short gl-mt-3 gl-sm-mt-0 gl-min-w-full', spellcheck: false }
         .control.d-none.d-md-block
-          = link_to project_commits_path(@project, @ref, rss_url_options), title: _("Commits feed"), class: 'btn btn-svg' do
+          = link_to project_commits_path(@project, @ref, rss_url_options), title: _("Commits feed"), class: 'btn gl-button btn-svg' do
             = sprite_icon('rss', css_class: 'qa-rss-icon')
 
   = render_if_exists 'projects/commits/mirror_status'

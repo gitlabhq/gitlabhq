@@ -4,7 +4,6 @@ module API
   class ProjectSnippets < Grape::API::Instance
     include PaginationParams
 
-    before { authenticate! }
     before { check_snippets_enabled }
 
     params do
@@ -37,6 +36,8 @@ module API
         use :pagination
       end
       get ":id/snippets" do
+        authenticate!
+
         present paginate(snippets_for_current_user), with: Entities::ProjectSnippet, current_user: current_user
       end
 
@@ -48,6 +49,9 @@ module API
       end
       get ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find(params[:snippet_id])
+
+        not_found!('Snippet') unless snippet
+
         present snippet, with: Entities::ProjectSnippet, current_user: current_user
       end
 
@@ -63,6 +67,8 @@ module API
         use :create_file_params
       end
       post ":id/snippets" do
+        authenticate!
+
         authorize! :create_snippet, user_project
 
         snippet_params = process_create_params(declared_params(include_missing: false))
@@ -97,6 +103,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do
+        authenticate!
+
         snippet = snippets_for_current_user.find_by(id: params.delete(:snippet_id))
         not_found!('Snippet') unless snippet
 
@@ -125,6 +133,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/snippets/:snippet_id" do
+        authenticate!
+
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
 

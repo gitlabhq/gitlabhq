@@ -71,6 +71,18 @@ microservice_a:
       - template: Security/SAST.gitlab-ci.yml
 ```
 
+In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) and later,
+you can use [`include:file`](yaml/README.md#includefile) to trigger child pipelines
+with a configuration file in a different project:
+
+```yaml
+microservice_a:
+  trigger:
+    include:
+      - project: 'my-group/my-pipeline-library'
+        file: 'path/to/ci-config.yml'
+```
+
 NOTE: **Note:**
 The max number of entries that are accepted for `trigger:include:` is three.
 
