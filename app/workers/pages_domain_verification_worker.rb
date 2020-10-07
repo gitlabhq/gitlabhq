@@ -4,6 +4,7 @@ class PagesDomainVerificationWorker # rubocop:disable Scalability/IdempotentWork
   include ApplicationWorker
 
   feature_category :pages
+  tags :requires_disk_io
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(domain_id)

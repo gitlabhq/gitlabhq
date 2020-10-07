@@ -617,7 +617,7 @@ during deployment before all Rails and Sidekiq nodes have the updated code.
 
 #### Deprecate and remove an argument
 
-**Before you remove arguments from the `perform_async` and `perform` methods.**, deprecate them. The 
+**Before you remove arguments from the `perform_async` and `perform` methods.**, deprecate them. The
 following example deprecates and then removes `arg2` from the `perform_async` method:
 
 1. Provide a default value (usually `nil`) and use a comment to mark the

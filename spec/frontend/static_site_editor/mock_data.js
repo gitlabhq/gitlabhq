@@ -2,11 +2,17 @@ export const sourceContentHeaderYAML = `---
 layout: handbook-page-toc
 title: Handbook
 twitter_image: /images/tweets/handbook-gitlab.png
+suppress_header: true
+extra_css:
+  - sales-and-free-trial-common.css
+  - form-to-resource.css
 ---`;
 export const sourceContentHeaderObjYAML = {
   layout: 'handbook-page-toc',
   title: 'Handbook',
   twitter_image: '/images/tweets/handbook-gitlab.png',
+  suppress_header: true,
+  extra_css: ['sales-and-free-trial-common.css', 'form-to-resource.css'],
 };
 export const sourceContentSpacing = `\n`;
 export const sourceContentBody = `## On this page

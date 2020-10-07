@@ -152,7 +152,7 @@ module API
       end
 
       def authorize_create_evidence!
-        # This is a separate method so that EE can extend its behaviour
+        # extended in EE
       end
 
       def release
@@ -160,15 +160,15 @@ module API
       end
 
       def log_release_created_audit_event(release)
-        # This is a separate method so that EE can extend its behaviour
+        # extended in EE
       end
 
       def log_release_updated_audit_event
-        # This is a separate method so that EE can extend its behaviour
+        # extended in EE
       end
 
       def log_release_milestones_updated_audit_event
-        # This is a separate method so that EE can extend its behaviour
+        # extended in EE
       end
     end
   end

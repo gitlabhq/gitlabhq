@@ -23,15 +23,14 @@ For instances that aren't offline or on a closed network, the maximum number of
 simultaneous users in the self-managed installation is checked each quarter,
 using [Seat Link](#seat-link).
 
-Every occupied seat, whether by person, job, or bot is counted in the subscription,
-with the following exceptions:
+Every occupied seat is counted in the subscription, with the following exceptions:
 
 - [Deactivated](../../user/admin_area/activating_deactivating_users.md#deactivating-a-user) and
   [blocked](../../user/admin_area/blocking_unblocking_users.md) users who are restricted prior to the
   renewal of a subscription won't be counted as active users for the renewal subscription. They may
   count as active users in the subscription period in which they were originally added.
 - Members with Guest permissions on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User`, `Support Bot` and [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users).
+- GitLab-created service accounts: `Ghost User` and bots (`Support Bot`, [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), etc.).
 
 ### Users statistics
 

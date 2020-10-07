@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state do
-  let(:build) { create(:ci_build) }
+RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_default: :keep do
+  let_it_be(:project) { create_default(:project) }
+  let_it_be_with_reload(:build) { create(:ci_build) }
   let(:trace) { described_class.new(build) }
 
   describe "associations" do

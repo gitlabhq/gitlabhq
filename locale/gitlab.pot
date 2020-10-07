@@ -2410,10 +2410,10 @@ msgstr ""
 msgid "AlertSettings|Add URL and auth key to your Prometheus config file"
 msgstr ""
 
-msgid "AlertSettings|Alert test payload"
+msgid "AlertSettings|Add new integrations"
 msgstr ""
 
-msgid "AlertSettings|Alerts endpoint successfully activated."
+msgid "AlertSettings|Alert test payload"
 msgstr ""
 
 msgid "AlertSettings|Authorization key"
@@ -2431,10 +2431,10 @@ msgstr ""
 msgid "AlertSettings|External Prometheus"
 msgstr ""
 
-msgid "AlertSettings|Generic"
+msgid "AlertSettings|HTTP Endpoint"
 msgstr ""
 
-msgid "AlertSettings|Integrations"
+msgid "AlertSettings|HTTP endpoint"
 msgstr ""
 
 msgid "AlertSettings|Learn more about our %{linkStart}upcoming integrations%{linkEnd}"
@@ -2479,13 +2479,28 @@ msgstr ""
 msgid "AlertSettings|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
 msgstr ""
 
-msgid "AlertSettings|Your changes were successfully updated."
+msgid "AlertSettings|Your integration was successfully updated."
 msgstr ""
 
 msgid "Alerts"
 msgstr ""
 
 msgid "Alerts endpoint"
+msgstr ""
+
+msgid "AlertsIntegrations|Current integrations"
+msgstr ""
+
+msgid "AlertsIntegrations|HTTP endpoint"
+msgstr ""
+
+msgid "AlertsIntegrations|Integration Name"
+msgstr ""
+
+msgid "AlertsIntegrations|No integrations have been added yet"
+msgstr ""
+
+msgid "AlertsIntegrations|Prometheus"
 msgstr ""
 
 msgid "Algorithm"
@@ -3811,6 +3826,12 @@ msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
+msgstr ""
+
+msgid "AutoRemediation|If you're using dependency and/or container scanning, and auto-fix is enabled, auto-fix automatically creates merge requests with fixes to vulnerabilities."
+msgstr ""
+
+msgid "AutoRemediation|Introducing GitLab auto-fix"
 msgstr ""
 
 msgid "Autocomplete"
@@ -23027,6 +23048,11 @@ msgstr ""
 msgid "SecurityReports|There was an error deleting the comment."
 msgstr ""
 
+msgid "SecurityReports|There was an error dismissing %d vulnerability. Please try again later."
+msgid_plural "SecurityReports|There was an error dismissing %d vulnerabilities. Please try again later."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityReports|There was an error dismissing the vulnerabilities."
 msgstr ""
 
@@ -23205,6 +23231,9 @@ msgid "Select projects you want to import."
 msgstr ""
 
 msgid "Select required regulatory standard"
+msgstr ""
+
+msgid "Select reviewer(s)"
 msgstr ""
 
 msgid "Select shards to replicate"

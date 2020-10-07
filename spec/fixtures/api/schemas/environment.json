@@ -41,8 +41,11 @@
         { "type": "null" },
         { "$ref": "deployment.json" },
         {
-          "name": { "type": "string" },
-          "build_path": { "type": "string" }
+          "type": "object",
+          "properties" : {
+            "name": { "type": "string" },
+            "build_path": { "type": "string" }
+          }
         }
       ]
     },

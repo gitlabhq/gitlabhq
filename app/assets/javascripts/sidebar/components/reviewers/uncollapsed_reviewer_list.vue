@@ -75,9 +75,9 @@ export default {
     :root-path="rootPath"
     :issuable-type="issuableType"
   >
-    <div class="ml-2">
-      <span class="author"> {{ user.name }} </span>
-      <span class="username"> {{ username }} </span>
+    <div class="gl-ml-3 gl-line-height-normal">
+      <div class="author">{{ user.name }}</div>
+      <div class="username">{{ username }}</div>
     </div>
   </reviewer-avatar-link>
   <div v-else>

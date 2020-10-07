@@ -946,7 +946,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pipeline_background:ci_build_report_result
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -954,7 +955,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pipeline_background:ci_build_trace_chunk_flush
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1034,7 +1036,8 @@
   :resource_boundary: :unknown
   :weight: 3
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pipeline_default:build_trace_sections
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1042,7 +1045,8 @@
   :resource_boundary: :unknown
   :weight: 3
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pipeline_default:ci_create_cross_project_pipeline
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1299,7 +1303,8 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: create_commit_signature
   :feature_category: :source_code_management
   :has_external_dependencies:
@@ -1419,7 +1424,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: export_csv
   :feature_category: :issue_tracking
   :has_external_dependencies:
@@ -1483,7 +1489,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: group_export
   :feature_category: :importers
   :has_external_dependencies:
@@ -1635,7 +1642,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pages_domain_ssl_renewal
   :feature_category: :pages
   :has_external_dependencies:
@@ -1643,7 +1651,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pages_domain_verification
   :feature_category: :pages
   :has_external_dependencies:
@@ -1651,7 +1660,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pages_remove
   :feature_category: :pages
   :has_external_dependencies:
@@ -1723,7 +1733,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: project_export
   :feature_category: :importers
   :has_external_dependencies:

@@ -411,6 +411,9 @@ user.skip_reconfirmation!
 # Active users on the instance, now
 User.active.count
 
+# Users taking a seat on the instance
+License.current.current_active_users_count
+
 # The historical max on the instance as of the past year
 ::HistoricalData.max_historical_user_count
 ```

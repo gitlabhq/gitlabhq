@@ -39,8 +39,7 @@ subscription according to the maximum number of users enabled at once. You can
 add and remove users during the subscription period, as long as the total users
 at any given time is within your subscription count.
 
-Every occupied seat, whether by person, job, or bot is counted in the subscription,
-with the following exception:
+Every occupied seat is counted in the subscription, with the following exception:
 
 - Members with Guest permissions on a Gold subscription.
 

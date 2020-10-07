@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlAlert } from '@gitlab/ui';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
+import IntegrationsList from '~/alerts_settings/components/alerts_integrations_list.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 
 const PROMETHEUS_URL = '/prometheus/alerts/notify.json';
@@ -74,6 +75,11 @@ describe('AlertsSettingsForm', () => {
     it('renders the initial template', () => {
       expect(wrapper.html()).toMatchSnapshot();
     });
+  });
+
+  it('renders alerts integrations list', () => {
+    createComponent();
+    expect(wrapper.find(IntegrationsList).exists()).toBe(true);
   });
 
   describe('reset key', () => {

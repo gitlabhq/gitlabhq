@@ -31,6 +31,12 @@ RSpec.describe User do
       end
     end
 
+    describe '.without_bots' do
+      it 'includes everyone except bots' do
+        expect(described_class.without_bots).to match_array(everyone - bots)
+      end
+    end
+
     describe '.bots_without_project_bot' do
       it 'includes all bots except project_bot' do
         expect(described_class.bots_without_project_bot).to match_array(bots - [project_bot])

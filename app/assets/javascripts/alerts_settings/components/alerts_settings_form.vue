@@ -14,9 +14,12 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import { s__ } from '~/locale';
+import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
+import IntegrationsList from './alerts_integrations_list.vue';
 import csrf from '~/lib/utils/csrf';
 import service from '../services';
 import {
@@ -25,7 +28,9 @@ import {
   JSON_VALIDATE_DELAY,
   targetPrometheusUrlPlaceholder,
   targetOpsgenieUrlPlaceholder,
+  sectionHash,
 } from '../constants';
+import createFlash, { FLASH_TYPES } from '~/flash';
 
 export default {
   i18n,
@@ -46,6 +51,7 @@ export default {
     GlSprintf,
     ClipboardButton,
     ToggleButton,
+    IntegrationsList,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -148,6 +154,20 @@ export default {
         ? this.$options.targetOpsgenieUrlPlaceholder
         : this.$options.targetPrometheusUrlPlaceholder;
     },
+    integrations() {
+      return [
+        {
+          name: s__('AlertSettings|HTTP endpoint'),
+          type: s__('AlertsIntegrations|HTTP endpoint'),
+          status: this.generic.activated,
+        },
+        {
+          name: s__('AlertSettings|External Prometheus'),
+          type: s__('AlertsIntegrations|Prometheus'),
+          status: this.prometheus.activated,
+        },
+      ];
+    },
   },
   watch: {
     'testAlert.json': debounce(function debouncedJsonValidate() {
@@ -245,25 +265,7 @@ export default {
             ? { service: { opsgenie_mvc_target_url: this.targetUrl, opsgenie_mvc_enabled: value } }
             : { service: { active: value } },
         })
-        .then(() => {
-          this.active = value;
-          this.toggleSuccess(value);
-
-          if (!this.isOpsgenie && value) {
-            if (!this.selectedService.authKey) {
-              return window.location.reload();
-            }
-
-            return this.removeOpsGenieOption();
-          }
-
-          if (this.isOpsgenie && value) {
-            return this.setOpsgenieAsDefault();
-          }
-
-          // eslint-disable-next-line no-return-assign
-          return (this.options = serviceOptions);
-        })
+        .then(() => this.notifySuccessAndReload())
         .catch(({ response: { data: { errors } = {} } = {} }) => {
           this.createUserErrorMessage(errors);
           this.setFeedback({
@@ -275,6 +277,12 @@ export default {
           this.loading = false;
           this.canSaveForm = false;
         });
+    },
+    reload() {
+      if (!doesHashExistInUrl(sectionHash)) {
+        window.location.hash = sectionHash;
+      }
+      window.location.reload();
     },
     togglePrometheusActive(value) {
       this.loading = true;
@@ -288,11 +296,7 @@ export default {
             redirect: window.location,
           },
         })
-        .then(() => {
-          this.active = value;
-          this.toggleSuccess(value);
-          this.removeOpsGenieOption();
-        })
+        .then(() => this.notifySuccessAndReload())
         .catch(({ response: { data: { errors } = {} } = {} }) => {
           this.createUserErrorMessage(errors);
           this.setFeedback({
@@ -305,18 +309,9 @@ export default {
           this.canSaveForm = false;
         });
     },
-    toggleSuccess(value) {
-      if (value) {
-        this.setFeedback({
-          feedbackMessage: this.$options.i18n.endPointActivated,
-          variant: 'info',
-        });
-      } else {
-        this.setFeedback({
-          feedbackMessage: this.$options.i18n.changesSaved,
-          variant: 'info',
-        });
-      }
+    notifySuccessAndReload() {
+      createFlash({ message: this.$options.i18n.changesSaved, type: FLASH_TYPES.NOTICE });
+      setTimeout(() => this.reload(), 1000);
     },
     setFeedback({ feedbackMessage, variant }) {
       this.feedback = { feedbackMessage, variant };
@@ -389,21 +384,22 @@ export default {
         {{ __('Save anyway') }}
       </gl-button>
     </gl-alert>
-    <div data-testid="alert-settings-description" class="gl-mt-5">
-      <p v-for="section in sections" :key="section.text">
-        <gl-sprintf :message="section.text">
-          <template #link="{ content }">
-            <gl-link :href="section.url" target="_blank">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </div>
+
+    <integrations-list :integrations="integrations" />
+
     <gl-form @submit.prevent="onSubmit" @reset.prevent="onReset">
-      <gl-form-group
-        :label="$options.i18n.integrationsLabel"
-        label-for="integrations"
-        label-class="label-bold"
-      >
+      <h5 class="gl-font-lg">{{ $options.i18n.integrationsLabel }}</h5>
+
+      <gl-form-group label-for="integrations" label-class="gl-font-weight-bold">
+        <div data-testid="alert-settings-description" class="gl-mt-5">
+          <p v-for="section in sections" :key="section.text">
+            <gl-sprintf :message="section.text">
+              <template #link="{ content }">
+                <gl-link :href="section.url" target="_blank">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </p>
+        </div>
         <gl-form-select
           v-model="selectedEndpoint"
           :options="options"
@@ -426,7 +422,7 @@ export default {
       <gl-form-group
         :label="$options.i18n.activeLabel"
         label-for="activated"
-        label-class="label-bold"
+        label-class="gl-font-weight-bold"
       >
         <toggle-button
           id="activated"
@@ -440,7 +436,7 @@ export default {
         v-if="isOpsgenie || isPrometheus"
         :label="$options.i18n.apiBaseUrlLabel"
         label-for="api-url"
-        label-class="label-bold"
+        label-class="gl-font-weight-bold"
       >
         <gl-form-input
           id="api-url"
@@ -454,7 +450,11 @@ export default {
         </span>
       </gl-form-group>
       <template v-if="!isOpsgenie">
-        <gl-form-group :label="$options.i18n.urlLabel" label-for="url" label-class="label-bold">
+        <gl-form-group
+          :label="$options.i18n.urlLabel"
+          label-for="url"
+          label-class="gl-font-weight-bold"
+        >
           <gl-form-input-group id="url" readonly :value="selectedService.url">
             <template #append>
               <clipboard-button
@@ -471,7 +471,7 @@ export default {
         <gl-form-group
           :label="$options.i18n.authKeyLabel"
           label-for="authorization-key"
-          label-class="label-bold"
+          label-class="gl-font-weight-bold"
         >
           <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="authKey">
             <template #append>
@@ -498,7 +498,7 @@ export default {
         <gl-form-group
           :label="$options.i18n.alertJson"
           label-for="alert-json"
-          label-class="label-bold"
+          label-class="gl-font-weight-bold"
           :invalid-feedback="testAlert.error"
         >
           <gl-form-textarea

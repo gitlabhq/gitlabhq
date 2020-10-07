@@ -51,7 +51,14 @@ To access your profile settings:
 
 From there, you can:
 
-- Update your personal information
+- Update your personal information, including:
+  - Full name
+  - Primary email, public email, and commit email
+  - Social media handles
+  - Website URL
+  - Location
+  - Job title
+  - Bio
 - Change your [password](#changing-your-password)
 - Set a [custom status](#current-status) for your profile
 - Manage your [commit email](#commit-email) for your profile
