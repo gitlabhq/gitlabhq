@@ -5,6 +5,21 @@ module HooksExecution
 
   private
 
+  def destroy_hook(hook)
+    result = WebHooks::DestroyService.new(current_user).execute(hook)
+
+    if result[:status] == :success
+      flash[:notice] =
+        if result[:async]
+          _("%{hook_type} was scheduled for deletion") % { hook_type: hook.model_name.human }
+        else
+          _("%{hook_type} was deleted") % { hook_type: hook.model_name.human }
+        end
+    else
+      flash[:alert] = result[:message]
+    end
+  end
+
   def set_hook_execution_notice(result)
     http_status = result[:http_status]
     message = result[:message]

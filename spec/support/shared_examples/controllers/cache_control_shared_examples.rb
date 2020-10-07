@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'project cache control headers' do
   before do
-    project.update(visibility_level: visibility_level)
+    project.update!(visibility_level: visibility_level)
   end
 
   context 'when project is public' do

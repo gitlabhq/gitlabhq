@@ -12464,7 +12464,7 @@ enum PackageTypeEnum {
   MAVEN
 
   """
-  Packages from the Npm package manager
+  Packages from the NPM package manager
   """
   NPM
 
@@ -12474,7 +12474,7 @@ enum PackageTypeEnum {
   NUGET
 
   """
-  Packages from the Pypi package manager
+  Packages from the PyPI package manager
   """
   PYPI
 }

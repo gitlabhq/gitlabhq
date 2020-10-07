@@ -19,7 +19,6 @@ import Api from '~/api';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { s__, __ } from '~/locale';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
@@ -113,7 +112,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'projectPath',
     'newIssuePath',
@@ -335,10 +333,7 @@ export default {
       return Boolean(assignees.nodes?.length);
     },
     navigateToIncidentDetails({ iid }) {
-      const path = this.glFeatures.issuesIncidentDetails
-        ? joinPaths(this.issuePath, INCIDENT_DETAILS_PATH)
-        : this.issuePath;
-      return visitUrl(joinPaths(path, iid));
+      return visitUrl(joinPaths(this.issuePath, INCIDENT_DETAILS_PATH, iid));
     },
     handlePageChange(page) {
       const { startCursor, endCursor } = this.incidents.pageInfo;

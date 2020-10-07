@@ -83,14 +83,6 @@ RSpec.describe Projects::IncidentsController do
       expect(assigns(:noteable)).to eq(assigns(:incident))
     end
 
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(issues_incident_details: false)
-      end
-
-      it_behaves_like 'not found'
-    end
-
     context 'with non existing id' do
       let(:resource) { non_existing_record_id }
 

@@ -82,7 +82,7 @@ RSpec.shared_examples 'an editable merge request' do
   end
 
   it 'warns about version conflict' do
-    merge_request.update(title: "New title")
+    merge_request.update!(title: "New title")
 
     fill_in 'merge_request_title', with: 'bug 345'
     fill_in 'merge_request_description', with: 'bug description'

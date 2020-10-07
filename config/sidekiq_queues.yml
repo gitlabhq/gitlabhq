@@ -310,5 +310,7 @@
   - 1
 - - web_hook
   - 1
+- - web_hooks_destroy
+  - 1
 - - x509_certificate_revoke
   - 1

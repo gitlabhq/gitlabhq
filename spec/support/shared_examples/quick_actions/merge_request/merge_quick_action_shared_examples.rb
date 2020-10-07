@@ -52,7 +52,7 @@ RSpec.shared_examples 'merge quick action' do
     context 'when the head diff changes in the meanwhile' do
       before do
         merge_request.source_branch = 'another_branch'
-        merge_request.save
+        merge_request.save!
         sign_in(user)
         visit project_merge_request_path(project, merge_request)
       end

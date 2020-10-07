@@ -50,7 +50,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def destroy
-    hook.destroy
+    destroy_hook(hook)
 
     redirect_to action: :index, status: :found
   end

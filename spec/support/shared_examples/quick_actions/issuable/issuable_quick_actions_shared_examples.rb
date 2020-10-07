@@ -109,7 +109,7 @@ RSpec.shared_examples 'issuable quick actions' do
       QuickAction.new(
         action_text: "/unlock",
         before_action: -> {
-          issuable.update(discussion_locked: true)
+          issuable.update!(discussion_locked: true)
         },
         expectation: ->(noteable, can_use_quick_action) {
           if can_use_quick_action
@@ -128,7 +128,7 @@ RSpec.shared_examples 'issuable quick actions' do
       QuickAction.new(
         action_text: "/remove_milestone",
         before_action: -> {
-          issuable.update(milestone_id: milestone.id)
+          issuable.update!(milestone_id: milestone.id)
         },
         expectation: ->(noteable, can_use_quick_action) {
           if can_use_quick_action
@@ -171,7 +171,7 @@ RSpec.shared_examples 'issuable quick actions' do
       QuickAction.new(
         action_text: "/remove_estimate",
         before_action: -> {
-          issuable.update(time_estimate: 30000)
+          issuable.update!(time_estimate: 30000)
         },
         expectation: ->(noteable, can_use_quick_action) {
           if can_use_quick_action
@@ -228,7 +228,7 @@ RSpec.shared_examples 'issuable quick actions' do
 
   before do
     project.add_developer(old_assignee)
-    issuable.update(assignees: [old_assignee])
+    issuable.update!(assignees: [old_assignee])
   end
 
   context 'when user can update issuable' do

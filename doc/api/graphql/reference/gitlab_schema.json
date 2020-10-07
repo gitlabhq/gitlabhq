@@ -36751,7 +36751,7 @@
             },
             {
               "name": "NPM",
-              "description": "Packages from the Npm package manager",
+              "description": "Packages from the NPM package manager",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -36769,7 +36769,7 @@
             },
             {
               "name": "PYPI",
-              "description": "Packages from the Pypi package manager",
+              "description": "Packages from the PyPI package manager",
               "isDeprecated": false,
               "deprecationReason": null
             },

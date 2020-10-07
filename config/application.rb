@@ -128,12 +128,12 @@ module Gitlab
       /^description$/,
       /^note$/,
       /^text$/,
-      /^title$/
+      /^title$/,
+      /^hook$/
     ]
     config.filter_parameters += %i(
       certificate
       encrypted_key
-      hook
       import_url
       elasticsearch_url
       otp_attempt

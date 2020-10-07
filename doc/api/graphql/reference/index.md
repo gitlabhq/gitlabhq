@@ -3458,9 +3458,9 @@ Values for sorting projects.
 | `GENERIC` | Packages from the Generic package manager |
 | `GOLANG` | Packages from the Golang package manager |
 | `MAVEN` | Packages from the Maven package manager |
-| `NPM` | Packages from the Npm package manager |
+| `NPM` | Packages from the NPM package manager |
 | `NUGET` | Packages from the Nuget package manager |
-| `PYPI` | Packages from the Pypi package manager |
+| `PYPI` | Packages from the PyPI package manager |
 
 ### PipelineConfigSourceEnum
 

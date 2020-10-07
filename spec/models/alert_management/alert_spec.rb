@@ -363,6 +363,24 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
+  describe '.open_status?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :is_open_status) do
+      :triggered    | true
+      :acknowledged | true
+      :resolved     | false
+      :ignored      | false
+      nil           | false
+    end
+
+    with_them do
+      it 'returns true when the status is open status' do
+        expect(described_class.open_status?(status)).to eq(is_open_status)
+      end
+    end
+  end
+
   describe '#to_reference' do
     it { expect(triggered_alert.to_reference).to eq("^alert##{triggered_alert.iid}") }
   end

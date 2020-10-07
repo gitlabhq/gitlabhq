@@ -48,6 +48,14 @@ RSpec.describe Projects::HooksController do
     end
   end
 
+  describe 'DELETE #destroy' do
+    let!(:hook) { create(:project_hook, project: project) }
+    let!(:log) { create(:web_hook_log, web_hook: hook) }
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: hook } }
+
+    it_behaves_like 'Web hook destroyer'
+  end
+
   describe '#test' do
     let(:hook) { create(:project_hook, project: project) }
 

@@ -21,11 +21,6 @@ module AlertManagement
       ignored: 3
     }.freeze
 
-    OPEN_STATUSES = [
-      :triggered,
-      :acknowledged
-    ].freeze
-
     belongs_to :project
     belongs_to :issue, optional: true
     belongs_to :prometheus_alert, optional: true
@@ -118,7 +113,7 @@ module AlertManagement
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
     scope :for_environment, -> (environment) { where(environment: environment) }
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
-    scope :open, -> { with_status(OPEN_STATUSES) }
+    scope :open, -> { with_status(open_statuses) }
     scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
 
@@ -181,6 +176,14 @@ module AlertManagement
 
     def self.reference_valid?(reference)
       reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
+    end
+
+    def self.open_statuses
+      [:triggered, :acknowledged]
+    end
+
+    def self.open_status?(status)
+      open_statuses.include?(status)
     end
 
     def status_event_for(status)

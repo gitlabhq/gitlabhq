@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Style/SignalException
 
 PATTERNS = %w[
   createFlash
@@ -10,6 +11,9 @@ PATTERNS = %w[
   gl-deprecated-dropdown-header
   gl-deprecated-dropdown-item
   initDeprecatedJQueryDropdown
+].freeze
+
+BLOCKING_PATTERNS = %w[
 ].freeze
 
 def get_added_lines(files)
@@ -25,19 +29,34 @@ changed_vue_haml_files = helper.changed_files(/.vue$|.haml$/)
 return if changed_vue_haml_files.empty?
 
 changed_lines_in_mr = get_added_lines(changed_vue_haml_files)
-has_deprecated_components = changed_lines_in_mr.select { |i| i[/#{PATTERNS.join("|")}/] }
-deprecated_components_in_mr = PATTERNS.select { |s| has_deprecated_components.join(" ")[s] }
+deprecated_components_in_mr = PATTERNS.select { |pattern| changed_lines_in_mr.any? { |line| line[pattern] } }
+blocking_components_in_mr = BLOCKING_PATTERNS.select { |pattern| changed_lines_in_mr.any? { |line| line[pattern] } }
 
-return if deprecated_components_in_mr.empty?
-
-warn "This merge request contains deprecated components. Please consider using Pajamas components instead."
+return if (deprecated_components_in_mr + blocking_components_in_mr).empty?
 
 markdown(<<~MARKDOWN)
   ## Deprecated components
 
-  The following components are deprecated:
-
-  * #{deprecated_components_in_mr.join("\n* ")}
-
-  Please consider using [Pajamas components](https://design.gitlab.com/components/status/) instead.
 MARKDOWN
+
+if blocking_components_in_mr.any?
+  markdown(<<~MARKDOWN)
+    These deprecated components have already been migrated and can no longer be used. Please use [Pajamas components](https://design.gitlab.com/components/status/) instead.
+
+    * #{blocking_components_in_mr.join("\n* ")}
+
+  MARKDOWN
+
+  fail "This merge request contains deprecated components that have been migrated and can no longer be used. Please use Pajamas components instead."
+end
+
+if deprecated_components_in_mr.any?
+  markdown(<<~MARKDOWN)
+    These deprecated components are in the process of being migrated. Please consider using [Pajamas components](https://design.gitlab.com/components/status/) instead.
+
+    * #{deprecated_components_in_mr.join("\n* ")}
+
+  MARKDOWN
+
+  warn "This merge request contains deprecated components. Please consider using Pajamas components instead."
+end

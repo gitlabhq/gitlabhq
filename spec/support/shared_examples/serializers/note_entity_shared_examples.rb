@@ -24,7 +24,7 @@ RSpec.shared_examples 'note entity' do
 
   context 'when note was edited' do
     before do
-      note.update(updated_at: 1.minute.from_now, updated_by: user)
+      note.update!(updated_at: 1.minute.from_now, updated_by: user)
     end
 
     it 'exposes last_edited_at and last_edited_by elements' do
@@ -34,7 +34,7 @@ RSpec.shared_examples 'note entity' do
 
   context 'when note is a system note' do
     before do
-      note.update(system: true)
+      note.update!(system: true)
     end
 
     it 'exposes system_note_icon_name element' do

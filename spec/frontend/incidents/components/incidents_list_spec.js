@@ -87,7 +87,6 @@ describe('Incidents List', () => {
         textQuery: '',
         authorUsernamesQuery: '',
         assigneeUsernamesQuery: '',
-        issuesIncidentDetails: false,
       },
       stubs: {
         GlButton: true,
@@ -194,22 +193,7 @@ describe('Incidents List', () => {
       expect(findSeverity().length).toBe(mockIncidents.length);
     });
 
-    it('contains a link to the issue details page', () => {
-      findTableRows()
-        .at(0)
-        .trigger('click');
-      expect(visitUrl).toHaveBeenCalledWith(joinPaths(`/project/issues/`, mockIncidents[0].iid));
-    });
-
     it('contains a link to the incident details page', async () => {
-      beforeEach(() =>
-        mountComponent({
-          data: { incidents: { list: mockIncidents }, incidentsCount: {} },
-          loading: false,
-          provide: { glFeatures: { issuesIncidentDetails: true } },
-        }),
-      );
-
       findTableRows()
         .at(0)
         .trigger('click');
