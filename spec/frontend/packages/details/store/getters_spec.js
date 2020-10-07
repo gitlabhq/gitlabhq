@@ -31,7 +31,6 @@ import {
   registryUrl,
   pypiSetupCommandStr,
 } from '../mock_data';
-import { generateConanRecipe } from '~/packages/details/utils';
 import { NpmManager } from '~/packages/details/constants';
 
 describe('Getters PackageDetails Store', () => {
@@ -53,8 +52,7 @@ describe('Getters PackageDetails Store', () => {
     };
   };
 
-  const recipe = generateConanRecipe(conanPackage);
-  const conanInstallationCommandStr = `conan install ${recipe} --remote=gitlab`;
+  const conanInstallationCommandStr = `conan install ${conanPackage.name} --remote=gitlab`;
   const conanSetupCommandStr = `conan remote add gitlab ${registryUrl}`;
 
   const mavenCommandStr = generateMavenCommand(packageWithoutBuildInfo.maven_metadatum);

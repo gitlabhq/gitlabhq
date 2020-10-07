@@ -8,6 +8,7 @@
 - suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
 - number_of_pipelines = @pipelines.size
 - mr_action = j(params[:tab].presence || 'show')
+- add_page_specific_style 'page_bundles/pipelines'
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"

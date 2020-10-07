@@ -8028,6 +8028,15 @@ msgstr ""
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
 msgstr ""
 
+msgid "DastProfiles|AJAX spider"
+msgstr ""
+
+msgid "DastProfiles|Active"
+msgstr ""
+
+msgid "DastProfiles|Active scan will make active attacks against the target site while Passive scan will not"
+msgstr ""
+
 msgid "DastProfiles|Are you sure you want to delete this profile?"
 msgstr ""
 
@@ -8067,6 +8076,9 @@ msgstr ""
 msgid "DastProfiles|Could not update the site profile. Please try again."
 msgstr ""
 
+msgid "DastProfiles|Debug messages"
+msgstr ""
+
 msgid "DastProfiles|Do you want to discard this scanner profile?"
 msgstr ""
 
@@ -8085,7 +8097,16 @@ msgstr ""
 msgid "DastProfiles|Edit site profile"
 msgstr ""
 
+msgid "DastProfiles|Enable it to include the debug messages in DAST console output"
+msgstr ""
+
+msgid "DastProfiles|Enable it to run the AJAX spider (in addition to the traditional spider) to crawl the target site"
+msgstr ""
+
 msgid "DastProfiles|Error Details"
+msgstr ""
+
+msgid "DastProfiles|Hide debug messages"
 msgstr ""
 
 msgid "DastProfiles|Manage Profiles"
@@ -8139,6 +8160,9 @@ msgstr ""
 msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
+msgid "DastProfiles|Show debug messages"
+msgstr ""
+
 msgid "DastProfiles|Site Profile"
 msgstr ""
 
@@ -8176,6 +8200,9 @@ msgid "DastProfiles|The maximum number of minutes allowed for the spider to trav
 msgstr ""
 
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
+msgstr ""
+
+msgid "DastProfiles|Turn on AJAX spider"
 msgstr ""
 
 msgid "DastProfiles|Validate"
@@ -16050,7 +16077,7 @@ msgstr ""
 msgid "MergeRequests|Jump to next unresolved thread"
 msgstr ""
 
-msgid "MergeRequests|Reply"
+msgid "MergeRequests|Reply..."
 msgstr ""
 
 msgid "MergeRequests|Resolve this thread in a new issue"
@@ -17890,6 +17917,9 @@ msgid "OmniAuth"
 msgstr ""
 
 msgid "Omnibus Protected Paths throttle is active, and takes priority over these settings. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
+msgstr ""
+
+msgid "On"
 msgstr ""
 
 msgid "On track"
@@ -28716,7 +28746,13 @@ msgstr ""
 msgid "Vulnerability|Comments"
 msgstr ""
 
-msgid "Vulnerability|Crash Address"
+msgid "Vulnerability|Crash address"
+msgstr ""
+
+msgid "Vulnerability|Crash state"
+msgstr ""
+
+msgid "Vulnerability|Crash type"
 msgstr ""
 
 msgid "Vulnerability|Description"

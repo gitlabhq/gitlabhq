@@ -1,6 +1,7 @@
+# Make sure to update the docs if this file moves. Docs URL: https://docs.gitlab.com/ce/development/migration_style_guide.html#when-to-use-the-helper-method
 Migration/UpdateLargeTable:
   Enabled: true
-  DeniedTables: &denied_tables # size in GB (>= 10 GB on GitLab.com as of 02/2020) and/or number of records
+  HighTrafficTables: &high_traffic_tables # size in GB (>= 10 GB on GitLab.com as of 02/2020) and/or number of records
     - :audit_events
     - :ci_build_trace_sections
     - :ci_builds

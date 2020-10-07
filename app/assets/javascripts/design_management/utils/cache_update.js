@@ -1,6 +1,6 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 
-import { groupBy } from 'lodash';
+import { differenceBy } from 'lodash';
 import produce from 'immer';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { extractCurrentDiscussion, extractDesign, extractDesigns } from './design_management_utils';
@@ -132,10 +132,13 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
 
   const data = produce(sourceData, draftData => {
     const currentDesigns = extractDesigns(draftData);
-    const existingDesigns = groupBy(currentDesigns, 'filename');
-    const newDesigns = currentDesigns.concat(
-      designManagementUpload.designs.filter(d => !existingDesigns[d.filename]),
-    );
+    const difference = differenceBy(designManagementUpload.designs, currentDesigns, 'filename');
+
+    const newDesigns = currentDesigns
+      .map(design => {
+        return designManagementUpload.designs[design.filename] || design;
+      })
+      .concat(difference);
 
     let newVersionNode;
     const findNewVersions = designManagementUpload.designs.find(design => design.versions);

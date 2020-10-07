@@ -13,8 +13,8 @@ module NotificationRecipients
       NotificationRecipient.new(user, *args).notifiable?
     end
 
-    def self.build_recipients(*args)
-      ::NotificationRecipients::Builder::Default.new(*args).notification_recipients
+    def self.build_recipients(target, current_user, **args)
+      ::NotificationRecipients::Builder::Default.new(target, current_user, **args).notification_recipients
     end
 
     def self.build_new_note_recipients(*args)
@@ -25,8 +25,8 @@ module NotificationRecipients
       ::NotificationRecipients::Builder::MergeRequestUnmergeable.new(*args).notification_recipients
     end
 
-    def self.build_project_maintainers_recipients(*args)
-      ::NotificationRecipients::Builder::ProjectMaintainers.new(*args).notification_recipients
+    def self.build_project_maintainers_recipients(target, **args)
+      ::NotificationRecipients::Builder::ProjectMaintainers.new(target, **args).notification_recipients
     end
 
     def self.build_new_release_recipients(*args)

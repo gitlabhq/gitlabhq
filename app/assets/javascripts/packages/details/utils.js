@@ -8,16 +8,3 @@ export const trackInstallationTabChange = {
     },
   },
 };
-
-export function generateConanRecipe(packageEntity = {}) {
-  const {
-    name = '',
-    version = '',
-    conan_metadatum: {
-      package_username: packageUsername = '',
-      package_channel: packageChannel = '',
-    } = {},
-  } = packageEntity;
-
-  return `${name}/${version}@${packageUsername}/${packageChannel}`;
-}

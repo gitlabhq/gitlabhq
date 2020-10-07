@@ -321,7 +321,11 @@ export default {
       </div>
     </div>
 
-    <pipelines-timeago :duration="pipelineDuration" :finished-time="pipelineFinishedAt" />
+    <pipelines-timeago
+      class="gl-text-right"
+      :duration="pipelineDuration"
+      :finished-time="pipelineFinishedAt"
+    />
 
     <div
       v-if="displayPipelineActions"

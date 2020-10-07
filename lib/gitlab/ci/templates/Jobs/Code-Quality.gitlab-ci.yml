@@ -9,9 +9,8 @@ code_quality:
     DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10-gitlab.1"
   needs: []
-  before_script:
-    - export SOURCE_CODE=$PWD
   script:
+    - export SOURCE_CODE=$PWD
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then

@@ -70,7 +70,7 @@ module Ci
         push_options: params[:push_options] || {},
         chat_data: params[:chat_data],
         bridge: bridge,
-        **extra_options(options))
+        **extra_options(**options))
 
       # Ensure we never persist the pipeline when dry_run: true
       @pipeline.readonly! if command.dry_run?

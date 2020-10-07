@@ -33,7 +33,7 @@ module Ci
         pipeline_params.fetch(:target_revision))
 
       downstream_pipeline = service.execute(
-        pipeline_params.fetch(:source), pipeline_params[:execute_params]) do |pipeline|
+        pipeline_params.fetch(:source), **pipeline_params[:execute_params]) do |pipeline|
           pipeline.variables.build(@bridge.downstream_variables)
         end
 

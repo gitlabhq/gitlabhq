@@ -76,7 +76,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
 
     context 'with conan metadata' do
       let(:package) { create(:conan_package, project: project) }
-      let(:expected_package_details) { super().merge(conan_metadatum: package.conan_metadatum) }
+      let(:expected_package_details) { super().merge(conan_metadatum: package.conan_metadatum, conan_package_name: package.name, name: package.conan_recipe) }
 
       it 'returns conan_metadatum' do
         expect(presenter.detail_view).to eq expected_package_details

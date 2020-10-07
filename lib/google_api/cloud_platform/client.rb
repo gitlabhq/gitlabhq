@@ -66,7 +66,7 @@ module GoogleApi
 
         cluster_options = make_cluster_options(cluster_name, cluster_size, machine_type, legacy_abac, enable_addons)
 
-        request_body = Google::Apis::ContainerV1beta1::CreateClusterRequest.new(cluster_options)
+        request_body = Google::Apis::ContainerV1beta1::CreateClusterRequest.new(**cluster_options)
 
         service.create_cluster(project_id, zone, request_body, options: user_agent_header)
       end

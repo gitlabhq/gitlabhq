@@ -364,17 +364,7 @@ standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
 
 Using the `with_lock_retries` helper method is advised when a database
-migration involves one of the high-traffic tables:
-
-- `users`
-- `projects`
-- `namespaces`
-- `gitlab_subscriptions`
-- `issues`
-- `merge_requests`
-- `ci_pipelines`
-- `ci_builds`
-- `notes`
+migration involves one of the [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3).
 
 Example changes:
 

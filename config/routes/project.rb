@@ -373,9 +373,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :feature_flags, param: :iid do
-          resources :feature_flag_issues, only: [:index, :create, :destroy], as: 'issues', path: 'issues'
-        end
+        resources :feature_flags, param: :iid
         resource :feature_flags_client, only: [] do
           post :reset_token
         end

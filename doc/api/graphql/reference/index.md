@@ -2135,6 +2135,7 @@ Represents a requirement.
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
 | `id` | ID! | ID of the requirement |
 | `iid` | ID! | Internal ID of the requirement |
+| `lastTestReportManuallyCreated` | Boolean | Indicates if latest test report was created by user |
 | `lastTestReportState` | TestReportState | Latest requirement test report state |
 | `project` | Project! | Project to which the requirement belongs |
 | `state` | RequirementState! | State of the requirement |
@@ -2820,7 +2821,7 @@ Represents a vulnerability.
 | `resolvedOnDefaultBranch` | Boolean! | Indicates whether the vulnerability is fixed on the default branch or not |
 | `scanner` | VulnerabilityScanner | Scanner metadata for the vulnerability. |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
-| `state` | VulnerabilityState | State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED) |
+| `state` | VulnerabilityState | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED) |
 | `title` | String | Title of the vulnerability |
 | `userNotesCount` | Int! | Number of user notes attached to the vulnerability |
 | `userPermissions` | VulnerabilityPermissions! | Permissions for the current user on the resource |
@@ -3766,6 +3767,8 @@ Vulnerability sort values.
 | `report_type_desc` | Report Type in descending order |
 | `severity_asc` | Severity in ascending order |
 | `severity_desc` | Severity in descending order |
+| `state_asc` | State in ascending order |
+| `state_desc` | State in descending order |
 | `title_asc` | Title in ascending order |
 | `title_desc` | Title in descending order |
 

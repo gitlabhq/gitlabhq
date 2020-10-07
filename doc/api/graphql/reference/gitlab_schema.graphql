@@ -15889,6 +15889,11 @@ type Requirement {
   iid: ID!
 
   """
+  Indicates if latest test report was created by user
+  """
+  lastTestReportManuallyCreated: Boolean
+
+  """
   Latest requirement test report state
   """
   lastTestReportState: TestReportState
@@ -20153,7 +20158,7 @@ type Vulnerability implements Noteable {
   severity: VulnerabilitySeverity
 
   """
-  State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED)
+  State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED)
   """
   state: VulnerabilityState
 
@@ -20814,6 +20819,16 @@ enum VulnerabilitySort {
   Severity in descending order
   """
   severity_desc
+
+  """
+  State in ascending order
+  """
+  state_asc
+
+  """
+  State in descending order
+  """
+  state_desc
 
   """
   Title in ascending order

@@ -142,7 +142,7 @@ In GitLab 13.2 and later versions, promoting a secondary node to a primary while
    If you have already run the [preflight checks](planned_failover.md#preflight-checks) separately or don't want to run them, you can skip preflight checks with:
 
    ```shell
-   gitlab-ctl promote-to-primary-node --skip-preflight-check
+   gitlab-ctl promote-to-primary-node --skip-preflight-checks
    ```
 
    You can also promote the secondary node to primary **without any further confirmation**, even when preflight checks fail:

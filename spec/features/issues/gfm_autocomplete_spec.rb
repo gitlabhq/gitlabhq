@@ -834,7 +834,7 @@ RSpec.describe 'GFM autocomplete', :js do
       end
 
       def start_and_cancel_discussion
-        click_button('Reply')
+        click_button('Reply...')
 
         fill_in('note_note', with: 'Whoops!')
 

@@ -171,9 +171,7 @@ Checking integrity of Uploads
 Done!
 ```
 
-To delete these references to remote uploads that were deleted externally, open the [GitLab Rails Console](../troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session)
-and run:
-[Rails Console](../troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session):
+To delete these references to remote uploads that were deleted externally, open the [GitLab Rails Console](../troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session) and run:
 
 ```ruby
 uploads_deleted=0

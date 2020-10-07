@@ -46,6 +46,10 @@ module Backup
         restore_repository(project, Gitlab::GlRepository::DESIGN)
       end
 
+      Snippet.find_each(batch_size: 1000) do |snippet|
+        restore_repository(snippet, Gitlab::GlRepository::SNIPPET)
+      end
+
       restore_object_pools
     end
 

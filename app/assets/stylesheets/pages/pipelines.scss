@@ -1,92 +1,3 @@
-.pipelines {
-  .stage {
-    max-width: 90px;
-    width: 90px;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .table-holder {
-    overflow: unset;
-    width: 100%;
-  }
-
-  .commit-title {
-    margin: 0;
-    white-space: normal;
-
-    @include media-breakpoint-down(sm) {
-      justify-content: flex-end;
-    }
-  }
-
-  .ci-table {
-    .badge {
-      margin-bottom: 3px;
-    }
-
-    .pipeline-id {
-      color: $black;
-    }
-
-    .pipelines-time-ago {
-      text-align: right;
-    }
-
-    .pipeline-actions {
-      min-width: 170px; //Guarantees buttons don't break in several lines.
-
-      .btn-default {
-        color: $gl-text-color-secondary;
-      }
-
-      .btn.btn-retry:hover,
-      .btn.btn-retry:focus {
-        border-color: $dropdown-toggle-active-border-color;
-        background-color: $white-normal;
-      }
-
-      svg path {
-        fill: $gl-text-color-secondary;
-      }
-
-      .dropdown-menu {
-        max-height: $dropdown-max-height;
-        overflow-y: auto;
-      }
-
-      .dropdown-toggle,
-      .dropdown-menu {
-        color: $gl-text-color-secondary;
-
-        .fa {
-          color: $gl-text-color-secondary;
-          font-size: 14px;
-        }
-      }
-
-      .btn-group.open .btn-default {
-        background-color: $white-normal;
-        border-color: $border-white-normal;
-      }
-
-      .btn .text-center {
-        display: inline;
-      }
-
-      .tooltip {
-        white-space: nowrap;
-      }
-    }
-
-    .pipeline-tags .label-container {
-      white-space: normal;
-    }
-  }
-}
-
 @include media-breakpoint-down(md) {
   .content-list {
     &.builds-content-list {
@@ -244,11 +155,6 @@
       min-width: 120px;
     }
   }
-}
-
-// Pipeline visualization
-.pipeline-actions {
-  border-bottom: 0;
 }
 
 .ci-build-text,

@@ -39,7 +39,7 @@ RSpec.describe 'User edits Release', :js do
   it 'renders the edit Release form' do
     expect(page).to have_content('Releases are based on Git tags. We recommend tags that use semantic versioning, for example v1.0, v2.0-pre.')
 
-    expect(find_field('Tag name', { disabled: true }).value).to eq(release.tag)
+    expect(find_field('Tag name', disabled: true).value).to eq(release.tag)
     expect(find_field('Release title').value).to eq(release.name)
     expect(find_field('Release notes').value).to eq(release.description)
 

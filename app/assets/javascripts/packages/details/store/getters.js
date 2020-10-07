@@ -1,4 +1,3 @@
-import { generateConanRecipe } from '../utils';
 import { PackageType } from '../../shared/constants';
 import { getPackageTypeLabel } from '../../shared/utils';
 import { NpmManager } from '../constants';
@@ -20,10 +19,8 @@ export const packageIcon = ({ packageEntity }) => {
 };
 
 export const conanInstallationCommand = ({ packageEntity }) => {
-  const recipe = generateConanRecipe(packageEntity);
-
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  return `conan install ${recipe} --remote=gitlab`;
+  return `conan install ${packageEntity.name} --remote=gitlab`;
 };
 
 export const conanSetupCommand = ({ conanPath }) =>

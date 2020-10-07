@@ -154,8 +154,6 @@ Performance/Count:
     - 'app/helpers/groups_helper.rb'
     - 'app/services/merge_requests/add_context_service.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
-    - 'ee/spec/controllers/projects/feature_flags_controller_spec.rb'
-    - 'ee/spec/requests/api/feature_flags_spec.rb'
     - 'lib/gitlab/sidekiq_status.rb'
     - 'spec/lib/gitlab/conflict/file_spec.rb'
     - 'spec/lib/gitlab/git/tree_spec.rb'
@@ -167,7 +165,6 @@ Performance/Count:
 Performance/Detect:
   Exclude:
     - 'ee/spec/controllers/projects/dependencies_controller_spec.rb'
-    - 'ee/spec/controllers/projects/feature_flags_controller_spec.rb'
     - 'spec/lib/gitlab/git/tree_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/models/event_spec.rb'

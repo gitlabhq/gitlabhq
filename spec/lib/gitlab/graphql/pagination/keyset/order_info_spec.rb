@@ -69,8 +69,20 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::OrderInfo do
 
       it 'assigns the right attribute name, named function, and direction' do
         expect(order_list.count).to eq 1
-        expect(order_list.first.attribute_name).to eq 'pending_delete'
+        expect(order_list.first.attribute_name).to eq 'case_order_value'
         expect(order_list.first.named_function).to be_kind_of(Arel::Nodes::Case)
+        expect(order_list.first.sort_direction).to eq :asc
+      end
+    end
+
+    context 'when ordering by ARRAY_POSITION', :aggregate_failuers do
+      let(:array_position) { Arel::Nodes::NamedFunction.new('ARRAY_POSITION', [Arel.sql("ARRAY[1,0]::smallint[]"), Project.arel_table[:auto_cancel_pending_pipelines]]) }
+      let(:relation) { Project.order(array_position.asc) }
+
+      it 'assigns the right attribute name, named function, and direction' do
+        expect(order_list.count).to eq 1
+        expect(order_list.first.attribute_name).to eq 'array_position'
+        expect(order_list.first.named_function).to be_kind_of(Arel::Nodes::NamedFunction)
         expect(order_list.first.sort_direction).to eq :asc
       end
     end

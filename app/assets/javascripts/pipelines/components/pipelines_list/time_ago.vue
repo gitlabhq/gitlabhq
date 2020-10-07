@@ -50,7 +50,7 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-15 pipelines-time-ago">
+  <div class="table-section section-15">
     <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Duration') }}</div>
     <div class="table-mobile-content">
       <p v-if="hasDuration" class="duration">

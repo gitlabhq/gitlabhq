@@ -83,10 +83,7 @@ RSpec.describe Clusters::Gcp::FinalizeCreationService, '#execute' do
   shared_context 'kubernetes information successfully fetched' do
     before do
       stub_cloud_platform_get_zone_cluster(
-        provider.gcp_project_id, provider.zone, cluster.name,
-        endpoint: endpoint,
-        username: username,
-        password: password
+        provider.gcp_project_id, provider.zone, cluster.name, { endpoint: endpoint, username: username, password: password }
       )
 
       stub_kubeclient_discover(api_url)

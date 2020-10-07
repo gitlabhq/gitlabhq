@@ -182,6 +182,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/merge_conflicts.css"
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/pipeline.css"
+    config.assets.precompile << "page_bundles/pipelines.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
