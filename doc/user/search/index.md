@@ -223,6 +223,7 @@ backed by the database and allows searching in:
 - Merge requests
 - Milestones
 - Users
+- Epics (Group only)
 - Code (Project only)
 - Comments (Project only)
 - Commits (Project only)

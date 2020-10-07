@@ -604,7 +604,7 @@ class Project < ApplicationRecord
     return public_to_user unless user
 
     if user.is_a?(DeployToken)
-      user.projects
+      user.accessible_projects
     else
       where('EXISTS (?) OR projects.visibility_level IN (?)',
             user.authorizations_for_projects(min_access_level: min_access_level),

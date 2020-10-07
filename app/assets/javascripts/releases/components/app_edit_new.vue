@@ -6,7 +6,6 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import AssetLinksForm from './asset_links_form.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
 import TagField from './tag_field.vue';
 
@@ -22,7 +21,6 @@ export default {
     MilestoneCombobox,
     TagField,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState('detail', [
       'isFetchingRelease',
@@ -67,9 +65,6 @@ export default {
     },
     cancelPath() {
       return getParameterByName(BACK_URL_PARAM) || this.releasesPagePath;
-    },
-    showAssetLinksForm() {
-      return this.glFeatures.releaseAssetLinkEditing;
     },
     saveButtonLabel() {
       return this.isExistingRelease ? __('Save changes') : __('Create release');
@@ -176,7 +171,7 @@ export default {
         </div>
       </gl-form-group>
 
-      <asset-links-form v-if="showAssetLinksForm" />
+      <asset-links-form />
 
       <div class="d-flex pt-3">
         <gl-button

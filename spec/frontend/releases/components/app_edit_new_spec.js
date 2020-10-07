@@ -20,7 +20,7 @@ describe('Release edit/new component', () => {
   let state;
   let mock;
 
-  const factory = ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
+  const factory = async ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
     state = {
       release,
       markdownDocsPath: 'path/to/markdown/docs',
@@ -68,6 +68,8 @@ describe('Release edit/new component', () => {
       },
     });
 
+    await wrapper.vm.$nextTick();
+
     wrapper.element.querySelectorAll('input').forEach(input => jest.spyOn(input, 'focus'));
   };
 
@@ -89,7 +91,9 @@ describe('Release edit/new component', () => {
   const findForm = () => wrapper.find('form');
 
   describe(`basic functionality tests: all tests unrelated to the "${BACK_URL_PARAM}" parameter`, () => {
-    beforeEach(factory);
+    beforeEach(async () => {
+      await factory();
+    });
 
     it('calls initializeRelease when the component is created', () => {
       expect(actions.initializeRelease).toHaveBeenCalledTimes(1);
@@ -131,7 +135,9 @@ describe('Release edit/new component', () => {
   });
 
   describe(`when the URL does not contain a "${BACK_URL_PARAM}" parameter`, () => {
-    beforeEach(factory);
+    beforeEach(async () => {
+      await factory();
+    });
 
     it(`renders a "Cancel" button with an href pointing to "${BACK_URL_PARAM}"`, () => {
       const cancelButton = wrapper.find('.js-cancel-button');
@@ -142,12 +148,12 @@ describe('Release edit/new component', () => {
   describe(`when the URL contains a "${BACK_URL_PARAM}" parameter`, () => {
     const backUrl = 'https://example.gitlab.com/back/url';
 
-    beforeEach(() => {
+    beforeEach(async () => {
       commonUtils.getParameterByName = jest
         .fn()
         .mockImplementation(paramToGet => ({ [BACK_URL_PARAM]: backUrl }[paramToGet]));
 
-      factory();
+      await factory();
     });
 
     it('renders a "Cancel" button with an href pointing to the main Releases page', () => {
@@ -157,8 +163,8 @@ describe('Release edit/new component', () => {
   });
 
   describe('when creating a new release', () => {
-    beforeEach(() => {
-      factory({
+    beforeEach(async () => {
+      await factory({
         store: {
           modules: {
             detail: {
@@ -177,7 +183,9 @@ describe('Release edit/new component', () => {
   });
 
   describe('when editing an existing release', () => {
-    beforeEach(factory);
+    beforeEach(async () => {
+      await factory();
+    });
 
     it('renders the submit button with the text "Save changes"', () => {
       expect(findSubmitButton().text()).toBe('Save changes');
@@ -185,33 +193,17 @@ describe('Release edit/new component', () => {
   });
 
   describe('asset links form', () => {
-    const findAssetLinksForm = () => wrapper.find(AssetLinksForm);
+    beforeEach(factory);
 
-    describe('when the release_asset_link_editing feature flag is disabled', () => {
-      beforeEach(() => {
-        factory({ featureFlags: { releaseAssetLinkEditing: false } });
-      });
-
-      it('does not render the asset links portion of the form', () => {
-        expect(findAssetLinksForm().exists()).toBe(false);
-      });
-    });
-
-    describe('when the release_asset_link_editing feature flag is enabled', () => {
-      beforeEach(() => {
-        factory({ featureFlags: { releaseAssetLinkEditing: true } });
-      });
-
-      it('renders the asset links portion of the form', () => {
-        expect(findAssetLinksForm().exists()).toBe(true);
-      });
+    it('renders the asset links portion of the form', () => {
+      expect(wrapper.find(AssetLinksForm).exists()).toBe(true);
     });
   });
 
   describe('validation', () => {
     describe('when the form is valid', () => {
-      beforeEach(() => {
-        factory({
+      beforeEach(async () => {
+        await factory({
           store: {
             modules: {
               detail: {
@@ -230,8 +222,8 @@ describe('Release edit/new component', () => {
     });
 
     describe('when the form is invalid', () => {
-      beforeEach(() => {
-        factory({
+      beforeEach(async () => {
+        await factory({
           store: {
             modules: {
               detail: {

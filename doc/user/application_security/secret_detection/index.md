@@ -38,7 +38,7 @@ To run Secret Detection jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 CAUTION: **Caution:**
-Our Secret Detection jobs currently expect a Linux container type. Windows containers are not yet supported.
+Our Secret Detection jobs expect a Linux container type. Windows containers are not supported.
 
 CAUTION: **Caution:**
 If you use your own runners, make sure the Docker version installed
@@ -139,7 +139,7 @@ Secret Detection can be customized by defining available variables:
 |-------------------------|---------------|-------------|
 | `SECRET_DETECTION_COMMIT_FROM` | -     | The commit a Gitleaks scan starts at. |
 | `SECRET_DETECTION_COMMIT_TO` | -       | The commit a Gitleaks scan ends at. |
-| `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories will also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
+| `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
 
 ### Logging level

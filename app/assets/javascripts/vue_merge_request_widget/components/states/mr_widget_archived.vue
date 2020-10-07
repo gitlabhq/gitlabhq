@@ -1,9 +1,11 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetArchived',
   components: {
+    GlButton,
     statusIcon,
   },
 };
@@ -12,9 +14,9 @@ export default {
   <div class="mr-widget-body media">
     <div class="space-children">
       <status-icon status="warning" />
-      <button type="button" class="btn btn-success btn-sm" disabled="true">
+      <gl-button category="secondary" variant="success" :disabled="true">
         {{ s__('mrWidget|Merge') }}
-      </button>
+      </gl-button>
     </div>
     <div class="media-body">
       <span class="bold">

@@ -4,7 +4,6 @@ module Projects
   module ContainerRepository
     class CleanupTagsService < BaseService
       def execute(container_repository)
-        return error('feature disabled') unless can_use?
         return error('access denied') unless can_destroy?
         return error('invalid regex') unless valid_regex?
 
@@ -72,10 +71,6 @@ module Projects
         return true if params['container_expiration_policy']
 
         can?(current_user, :destroy_container_image, project)
-      end
-
-      def can_use?
-        Feature.enabled?(:container_registry_cleanup, project, default_enabled: true)
       end
 
       def valid_regex?
