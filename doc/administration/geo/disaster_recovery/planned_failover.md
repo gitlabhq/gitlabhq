@@ -54,7 +54,7 @@ gitlab-ctl promotion-preflight-checks
 You can run this command in `force` mode to promote to primary even if preflight checks fail:
 
 ```shell
-sudo gitlab-ctl promotion-preflight-checks --force
+sudo gitlab-ctl promote-to-primary-node --force
 ```
 
 Each step is described in more detail below.

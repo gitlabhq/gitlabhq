@@ -112,7 +112,7 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
    AWS access key and secret access key/value pairs. For example:
 
    ```ruby
-   gitlab_rails['object_store_connection'] = {
+   gitlab_rails['object_store']['connection'] = {
      'provider' => 'AWS',
      'region' => '<eu-central-1>',
      'use_iam_profile' => true
