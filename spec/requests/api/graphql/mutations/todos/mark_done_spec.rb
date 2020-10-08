@@ -76,8 +76,8 @@ RSpec.describe 'Marking todos done' do
   end
 
   context 'when using an invalid gid' do
-    let(:input) { { id: 'invalid_gid' } }
-    let(:invalid_gid_error) { 'invalid_gid is not a valid GitLab ID.' }
+    let(:input) { { id: GitlabSchema.id_from_object(author).to_s } }
+    let(:invalid_gid_error) { "\"#{input[:id]}\" does not represent an instance of #{todo1.class}" }
 
     it 'contains the expected error' do
       post_graphql_mutation(mutation, current_user: current_user)

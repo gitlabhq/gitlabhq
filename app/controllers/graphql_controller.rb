@@ -48,6 +48,10 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :unprocessable_entity)
   end
 
+  rescue_from ::GraphQL::CoercionError do |exception|
+    render_error(exception.message, status: :unprocessable_entity)
+  end
+
   private
 
   def set_user_last_activity

@@ -9,7 +9,7 @@ module Mutations
         authorize :create_note
 
         argument :noteable_id,
-                  GraphQL::ID_TYPE,
+                 ::Types::GlobalIDType[::Noteable],
                   required: true,
                   description: 'The global id of the resource to add a note to'
 
@@ -41,6 +41,13 @@ module Mutations
         end
 
         private
+
+        def find_object(id:)
+          # TODO: remove explicit coercion once compatibility layer has been removed
+          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+          id = ::Types::GlobalIDType[::Noteable].coerce_isolated_input(id)
+          GitlabSchema.find_by_gid(id)
+        end
 
         def create_note_params(noteable, args)
           {

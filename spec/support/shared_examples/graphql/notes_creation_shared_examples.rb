@@ -52,11 +52,15 @@ RSpec.shared_examples 'a Note mutation when the given resource id is not for a N
 
   it_behaves_like 'a Note mutation that does not create a Note'
 
-  it_behaves_like 'a mutation that returns top-level errors', errors: ['Cannot add notes to this resource']
+  it_behaves_like 'a mutation that returns top-level errors' do
+    let(:match_errors) { include(/ does not represent an instance of Noteable/) }
+  end
 end
 
 RSpec.shared_examples 'a Note mutation when the given resource id is not for a Note' do
   let(:note) { create(:issue) }
 
-  it_behaves_like 'a mutation that returns top-level errors', errors: ['Resource is not a note']
+  it_behaves_like 'a mutation that returns top-level errors' do
+    let(:match_errors) { include(/does not represent an instance of Note/) }
+  end
 end

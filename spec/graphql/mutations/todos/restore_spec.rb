@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Todos::Restore do
+  include GraphqlHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }
@@ -49,8 +51,9 @@ RSpec.describe Mutations::Todos::Restore do
       expect(other_user_todo.reload.state).to eq('done')
     end
 
-    it 'ignores invalid GIDs' do
-      expect { mutation.resolve(id: 'invalid_gid') }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+    it 'raises error for invalid GID' do
+      expect { mutation.resolve(id: author.to_global_id.to_s) }
+        .to raise_error(::GraphQL::CoercionError)
 
       expect(todo1.reload.state).to eq('done')
       expect(todo2.reload.state).to eq('pending')
@@ -60,9 +63,5 @@ RSpec.describe Mutations::Todos::Restore do
 
   def restore_mutation(todo)
     mutation.resolve(id: global_id_of(todo))
-  end
-
-  def global_id_of(todo)
-    todo.to_global_id.to_s
   end
 end

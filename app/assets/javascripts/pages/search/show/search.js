@@ -4,6 +4,7 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
+import { visitUrl } from '~/lib/utils/url_utility';
 import refreshCounts from './refresh_counts';
 import setHighlightClass from './highlight_blob_search_result';
 
@@ -86,6 +87,10 @@ export default class Search {
     $(document)
       .off('click', this.searchClear)
       .on('click', this.searchClear, this.clearSearchField.bind(this));
+
+    $('a.js-search-clear')
+      .off('click', this.clearSearchFilter)
+      .on('click', this.clearSearchFilter);
   }
 
   static submitSearch() {
@@ -106,6 +111,17 @@ export default class Search {
       .val('')
       .trigger('keyup')
       .focus();
+  }
+
+  // We need to manually follow the link on the anchors
+  // that have this event bound, as their `click` default
+  // behavior is prevented by the toggle logic.
+  /* eslint-disable-next-line class-methods-use-this */
+  clearSearchFilter(ev) {
+    const $target = $(ev.currentTarget);
+
+    visitUrl($target.href);
+    ev.stopPropagation();
   }
 
   getProjectsData(term) {

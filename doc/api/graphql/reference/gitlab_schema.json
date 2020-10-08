@@ -111,7 +111,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "AwardableID",
                   "ofType": null
                 }
               },
@@ -227,7 +227,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "ProjectID",
                   "ofType": null
                 }
               },
@@ -1993,7 +1993,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "AwardableID",
                   "ofType": null
                 }
               },
@@ -2109,7 +2109,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "AwardableID",
                   "ofType": null
                 }
               },
@@ -2225,7 +2225,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "AwardableID",
                   "ofType": null
                 }
               },
@@ -2342,6 +2342,16 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "AwardableID",
+          "description": "Identifier of Awardable",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -6674,6 +6684,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "ClustersClusterID",
+          "description": "Identifier of Clusters::Cluster",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "Commit",
           "description": null,
@@ -8039,7 +8059,7 @@
               "description": "The global id of the environment to add an annotation to",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "EnvironmentID",
                 "ofType": null
               },
               "defaultValue": null
@@ -8049,7 +8069,7 @@
               "description": "The global id of the cluster to add an annotation to",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "ClustersClusterID",
                 "ofType": null
               },
               "defaultValue": null
@@ -8448,7 +8468,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "NoteableID",
                   "ofType": null
                 }
               },
@@ -8796,7 +8816,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "NoteableID",
                   "ofType": null
                 }
               },
@@ -9084,7 +9104,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "NoteableID",
                   "ofType": null
                 }
               },
@@ -14068,7 +14088,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "NoteID",
                   "ofType": null
                 }
               },
@@ -15517,7 +15537,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "VulnerabilityID",
                   "ofType": null
                 }
               },
@@ -15996,6 +16016,16 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "EnvironmentID",
+          "description": "Identifier of Environment",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -19077,7 +19107,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "EpicTreeSortingID",
                   "ofType": null
                 }
               },
@@ -19088,7 +19118,7 @@
               "description": "The id of the epic_issue or issue that the actual epic or issue is switched with",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "EpicTreeSortingID",
                 "ofType": null
               },
               "defaultValue": null
@@ -19108,7 +19138,7 @@
               "description": "ID of the new parent epic",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "EpicID",
                 "ofType": null
               },
               "defaultValue": null
@@ -19132,7 +19162,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "EpicID",
                   "ofType": null
                 }
               },
@@ -19217,6 +19247,16 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "EpicTreeSortingID",
+          "description": "Identifier of EpicTreeSorting",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -35420,6 +35460,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "NamespaceID",
+          "description": "Identifier of Namespace",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "NamespaceIncreaseStorageTemporarilyInput",
           "description": "Autogenerated input type of NamespaceIncreaseStorageTemporarily",
@@ -35433,7 +35483,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "NamespaceID",
                   "ofType": null
                 }
               },
@@ -36041,6 +36091,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "NoteID",
+          "description": "Identifier of Note",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "NotePermissions",
           "description": null,
@@ -36313,6 +36373,16 @@
               "ofType": null
             }
           ]
+        },
+        {
+          "kind": "SCALAR",
+          "name": "NoteableID",
+          "description": "Identifier of Noteable",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
         },
         {
           "kind": "OBJECT",
@@ -41986,6 +42056,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "ProjectID",
+          "description": "Identifier of Project",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "ProjectMember",
           "description": "Represents a Project Membership",
@@ -45596,7 +45676,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "AwardableID",
                   "ofType": null
                 }
               },
@@ -53289,6 +53369,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "TodoID",
+          "description": "Identifier of Todo",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "TodoMarkDoneInput",
           "description": "Autogenerated input type of TodoMarkDone",
@@ -53449,7 +53539,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "TodoID",
                       "ofType": null
                     }
                   }
@@ -53858,7 +53948,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "AwardableID",
                   "ofType": null
                 }
               },
@@ -54776,7 +54866,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "BoardID",
                   "ofType": null
                 }
               },
@@ -54817,7 +54907,7 @@
               "description": "The id of user to be assigned to the board.",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "UserID",
                 "ofType": null
               },
               "defaultValue": null
@@ -54827,7 +54917,7 @@
               "description": "The id of milestone to be assigned to the board.",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "MilestoneID",
                 "ofType": null
               },
               "defaultValue": null
@@ -58883,7 +58973,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "VulnerabilityID",
                   "ofType": null
                 }
               },

@@ -293,7 +293,7 @@ Gitlab/AvoidFeatureGet:
   Enabled: true
 
 RSpec/TimecopFreeze:
-  Enabled: false
+  Enabled: true
   AutoCorrect: true
   Include:
     - 'spec/**/*.rb'

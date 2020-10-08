@@ -1698,20 +1698,17 @@ while just `/issue/` would also match a branch called `severe-issues`.
 
 #### Supported `only`/`except` regexp syntax
 
-CAUTION: **Warning:**
-This is a breaking change that was introduced with GitLab 11.9.4.
-
-In GitLab 11.9.4, GitLab begun internally converting regexp used
+In GitLab 11.9.4, GitLab began internally converting the regexp used
 in `only` and `except` parameters to [RE2](https://github.com/google/re2/wiki/Syntax).
 
-This means that only subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Regexp.html)
-is supported. [RE2](https://github.com/google/re2/wiki/Syntax) limits the set of features
-provided due to computational complexity, which means some features became unavailable in GitLab 11.9.4.
-For example, negative lookaheads.
+[RE2](https://github.com/google/re2/wiki/Syntax) limits the set of available features
+due to computational complexity, and some features, like negative lookaheads, became unavailable.
+Only a subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Regexp.html)
+are now supported.
 
-For GitLab versions from 11.9.7 and up to GitLab 12.0, GitLab provides a feature flag that can be
-enabled by administrators that allows users to use unsafe regexp syntax. This brings compatibility
-with previously allowed syntax version and allows users to gracefully migrate to the new syntax.
+From GitLab 11.9.7 to GitLab 12.0, GitLab provided a feature flag to
+let you use the unsafe regexp syntax. This flag allowed
+compatibility with the previous syntax version so you could gracefully migrate to the new syntax.
 
 ```ruby
 Feature.enable(:allow_unsafe_ruby_regexp)
@@ -1767,7 +1764,7 @@ added if the following is true:
 
 - `(any listed refs are true) OR (any listed variables are true) OR (any listed changes are true) OR (a chosen Kubernetes status matches)`
 
-In the example below, the `test` job will **not** be created when **any** of the following are true:
+In the example below, the `test` job is **not** created when **any** of the following are true:
 
 - The pipeline runs for the `master` branch.
 - There are changes to the `README.md` file in the root directory of the repository.
@@ -1819,12 +1816,11 @@ deploy:
 
 > `variables` policy introduced in GitLab 10.7.
 
-The `variables` keyword defines variables expressions. In other words,
-you can use predefined variables / project / group or
-environment-scoped variables to define an expression that GitLab
-evaluates to decide whether a job should be created or not.
+The `variables` keyword defines variable expressions.
 
-Examples of using variables expressions:
+These expressions determine whether or not a job should be created.
+
+Examples of using variable expressions:
 
 ```yaml
 deploy:
@@ -1894,22 +1890,21 @@ docker build:
       - more_scripts/*.{rb,py,sh}
 ```
 
-In the scenario above, when pushing commits to an existing branch in GitLab,
-it creates and triggers the `docker build` job, provided that one of the
-commits contains changes to any of the following:
+When you push commits to an existing branch,
+the `docker build` job is created, but only if changes were made to any of the following:
 
 - The `Dockerfile` file.
-- Any of the files inside `docker/scripts/` directory.
-- Any of the files and subdirectories inside the `dockerfiles` directory.
-- Any of the files with `rb`, `py`, `sh` extensions inside the `more_scripts` directory.
+- Any of the files in the `docker/scripts/` directory.
+- Any of the files and subdirectories in the `dockerfiles` directory.
+- Any of the files with `rb`, `py`, `sh` extensions in the `more_scripts` directory.
 
 CAUTION: **Warning:**
-If using `only:changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
-undesired behavior could result if you don't [also use `only:merge_requests`](#using-onlychanges-with-pipelines-for-merge-requests).
+If you use `only:changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
+undesired behavior can result if you don't [also use `only:merge_requests`](#using-onlychanges-with-pipelines-for-merge-requests).
 
 You can also use glob patterns to match multiple files in either the root directory
-of the repository, or in _any_ directory within the repository, but they must be wrapped
-in double quotes or GitLab can't parse the `.gitlab-ci.yml`. For example:
+of the repository, or in _any_ directory within the repository. However, they must be wrapped
+in double quotes or GitLab can't parse them. For example:
 
 ```yaml
 test:
@@ -1922,10 +1917,8 @@ test:
       - "**/*.sql"
 ```
 
-The following example skips the `build` job if a change is detected in any file
-with a `.md` extension in the root directory of the repository. This means that if you change multiple files,
-but only one file is a `.md` file, the `build` job is still skipped and does
-not run for the other files.
+You can skip a job if a change is detected in any file with a
+`.md` extension in the root directory of the repository:
 
 ```yaml
 build:
@@ -1935,13 +1928,13 @@ build:
       - "*.md"
 ```
 
-CAUTION: **Warning:**
-There are some points to be aware of when
-[using this feature with new branches or tags *without* pipelines for merge requests](#using-onlychanges-without-pipelines-for-merge-requests).
+If you change multiple files, but only one file ends in `.md`,
+the `build` job is still skipped. The job does not run for any of the files.
 
-CAUTION: **Warning:**
-There are some points to be aware of when
-[using this feature with scheduled pipelines](#using-onlychanges-with-scheduled-pipelines).
+Read more about how to use this feature with:
+
+- [New branches or tags *without* pipelines for merge requests](#using-onlychanges-without-pipelines-for-merge-requests).
+- [Scheduled pipelines](#using-onlychanges-with-scheduled-pipelines).
 
 ##### Using `only:changes` with pipelines for merge requests
 

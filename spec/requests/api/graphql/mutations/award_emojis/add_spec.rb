@@ -45,8 +45,9 @@ RSpec.describe 'Adding an AwardEmoji' do
 
       it_behaves_like 'a mutation that does not create an AwardEmoji'
 
-      it_behaves_like 'a mutation that returns top-level errors',
-                      errors: ['Cannot award emoji to this resource']
+      it_behaves_like 'a mutation that returns top-level errors' do
+        let(:match_errors) { include(/was provided invalid value for awardableId/) }
+      end
     end
 
     context 'when the given awardable is an Awardable but still cannot be awarded an emoji' do

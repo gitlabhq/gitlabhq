@@ -10,7 +10,7 @@
       .position-relative
         = search_field_tag :search, params[:search], placeholder: _("Search for projects, issues, etc."), class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
         = sprite_icon('search', css_class: 'search-icon')
-        %button.search-clear.js-search-clear{ class: ("hidden" if !params[:search].present?), type: "button", tabindex: "-1" }
+        %button.search-clear.js-search-clear{ class: [("hidden" if params[:search].blank?), "has-tooltip"], type: "button", tabindex: "-1", title: _('Clear') }
           = sprite_icon('clear')
           %span.sr-only
             = _("Clear search")

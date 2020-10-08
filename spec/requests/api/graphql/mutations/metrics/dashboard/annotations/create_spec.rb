@@ -101,7 +101,9 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
           graphql_mutation(:create_annotation, variables)
         end
 
-        it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab ID.']
+        it_behaves_like 'a mutation that returns top-level errors' do
+          let(:match_errors) { include(/is not a valid Global ID/) }
+        end
       end
     end
   end
@@ -109,7 +111,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
   context 'when annotation source is cluster' do
     let(:mutation) do
       variables = {
-        cluster_id: GitlabSchema.id_from_object(cluster).to_s,
+        cluster_id: cluster.to_global_id.to_s,
         starting_at: starting_at,
         ending_at: ending_at,
         dashboard_path: dashboard_path,
@@ -188,15 +190,17 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
         graphql_mutation(:create_annotation, variables)
       end
 
-      it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab ID.']
+      it_behaves_like 'a mutation that returns top-level errors' do
+        let(:match_errors) { include(/is not a valid Global ID/) }
+      end
     end
   end
 
   context 'when both environment_id and cluster_id are provided' do
     let(:mutation) do
       variables = {
-        environment_id: GitlabSchema.id_from_object(environment).to_s,
-        cluster_id: GitlabSchema.id_from_object(cluster).to_s,
+        environment_id: environment.to_global_id.to_s,
+        cluster_id: cluster.to_global_id.to_s,
         starting_at: starting_at,
         ending_at: ending_at,
         dashboard_path: dashboard_path,
@@ -210,14 +214,14 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
   end
 
   context 'when a non-cluster or environment id is provided' do
+    let(:gid) { { environment_id: project.to_global_id.to_s } }
     let(:mutation) do
       variables = {
-        environment_id: GitlabSchema.id_from_object(project).to_s,
         starting_at: starting_at,
         ending_at: ending_at,
         dashboard_path: dashboard_path,
         description: description
-      }
+      }.merge!(gid)
 
       graphql_mutation(:create_annotation, variables)
     end
@@ -226,6 +230,18 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
       project.add_developer(current_user)
     end
 
-    it_behaves_like 'a mutation that returns top-level errors', errors: [described_class::INVALID_ANNOTATION_SOURCE_ERROR]
+    describe 'non-environment id' do
+      it_behaves_like 'a mutation that returns top-level errors' do
+        let(:match_errors) { include(/does not represent an instance of Environment/) }
+      end
+    end
+
+    describe 'non-cluster id' do
+      let(:gid) { { cluster_id: project.to_global_id.to_s } }
+
+      it_behaves_like 'a mutation that returns top-level errors' do
+        let(:match_errors) { include(/does not represent an instance of Clusters::Cluster/) }
+      end
+    end
   end
 end

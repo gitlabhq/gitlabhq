@@ -997,6 +997,12 @@ msgstr[1] ""
 msgid "+%{approvers} more approvers"
 msgstr ""
 
+msgid "+%{more_reviewers_count}"
+msgstr ""
+
+msgid "+%{more_reviewers_count} more reviewers"
+msgstr ""
+
 msgid "+%{tags} more"
 msgstr ""
 
@@ -22194,6 +22200,9 @@ msgid "Review App|View app"
 msgstr ""
 
 msgid "Review App|View latest app"
+msgstr ""
+
+msgid "Review requested from %{name}"
 msgstr ""
 
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."

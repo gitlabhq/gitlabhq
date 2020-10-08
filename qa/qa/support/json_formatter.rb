@@ -50,7 +50,8 @@ module QA
           pending_message: example.execution_result.pending_message,
           testcase: example.metadata[:testcase],
           quarantine: example.metadata[:quarantine],
-          screenshot: example.metadata[:screenshot]
+          screenshot: example.metadata[:screenshot],
+          ci_job_id: QA::Runtime::Env.ci_job_id
         }
       end
 

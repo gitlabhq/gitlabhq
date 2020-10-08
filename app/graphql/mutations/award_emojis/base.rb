@@ -6,7 +6,7 @@ module Mutations
       authorize :award_emoji
 
       argument :awardable_id,
-               GraphQL::ID_TYPE,
+               ::Types::GlobalIDType[::Awardable],
                required: true,
                description: 'The global id of the awardable resource'
 
@@ -23,7 +23,10 @@ module Mutations
       private
 
       def find_object(id:)
-        GitlabSchema.object_from_id(id)
+        # TODO: remove this line when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        id = ::Types::GlobalIDType[::Awardable].coerce_isolated_input(id)
+        GitlabSchema.find_by_gid(id)
       end
 
       # Called by mutations methods after performing an authorization check

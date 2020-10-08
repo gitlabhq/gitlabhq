@@ -52,7 +52,8 @@ RSpec.describe Mutations::Todos::MarkDone do
     end
 
     it 'ignores invalid GIDs' do
-      expect { mutation.resolve(id: 'invalid_gid') }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      expect { mutation.resolve(id: author.to_global_id.to_s) }
+        .to raise_error(::GraphQL::CoercionError)
 
       expect(todo1.reload.state).to eq('pending')
       expect(todo2.reload.state).to eq('done')
