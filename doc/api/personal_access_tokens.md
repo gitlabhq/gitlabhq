@@ -24,7 +24,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 ```json
-[  
+[
     {
         "id": 4,
         "name": "Test Token",
@@ -45,7 +45,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 ```json
-[  
+[
     {
         "id": 4,
         "name": "Test Token",

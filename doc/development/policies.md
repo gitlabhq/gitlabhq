@@ -171,7 +171,7 @@ class ParentPolicy < BasePolicy
   condition(:speaks_spanish) { @subject.spoken_languages.include?(:es) }
   condition(:has_license) { @subject.driving_license.present? }
   condition(:enjoys_broccoli) { @subject.enjoyment_of(:broccoli) > 0 }
-  
+
   rule { speaks_spanish }.enable :read_spanish
   rule { has_license }.enable :drive_car
   rule { enjoys_broccoli }.enable :eat_broccoli
@@ -190,7 +190,7 @@ child policy, for example:
 ```ruby
 class ChildPolicy < BasePolicy
   delegate { @subject.parent }
-  
+
   rule { default }.prevent :drive_car
 end
 ```
@@ -211,11 +211,11 @@ The solution it to override the `:eat_broccoli` ability in the child policy:
 ```ruby
 class ChildPolicy < BasePolicy
   delegate { @subject.parent }
-  
+
   overrides :eat_broccoli
-  
+
   condition(:good_kid) { @subject.behavior_level >= Child::GOOD }
-  
+
   rule { good_kid }.enable :eat_broccoli
 end
 ```

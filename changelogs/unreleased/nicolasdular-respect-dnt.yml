@@ -1,0 +1,5 @@
+---
+title: Respect DNT when tracking experiments
+merge_request: 44420
+author:
+type: fixed

@@ -57,7 +57,7 @@ of using this type instead of `ID` are:
 - it parses it into a `GlobalID` before passing it to user code
 - it can be parameterized on the type of the object (e.g.
   `GlobalIDType[Project]`) which offers even better validation and security.
-  
+
 Consider using this type for all new arguments and result types. Remember that
 it is perfectly possible to parameterize this type with a concern or a
 supertype, if you want to accept a wider range of objects (e.g.

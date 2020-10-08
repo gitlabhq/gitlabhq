@@ -72,9 +72,7 @@ to add an issue to an epic, reorder issues, move issues between epics, or promot
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199184) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 > - The health status of a closed issue [will be hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
 
-You can report on and quickly respond to the health of individual issues and epics by setting a
-red, amber, or green [health status on an issue](../../project/issues/index.md#health-status),
-which will appear on your Epic tree.
+Report or respond to the health of issues and epics by setting a red, amber, or green [health status](../../project/issues/index.md#health-status), which then appears on your Epic tree.
 
 ### Disable Issue health status in Epic tree
 

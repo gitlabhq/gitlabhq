@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Experimentation do
+RSpec.describe Gitlab::Experimentation, :snowplow do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
       test_experiment: {
@@ -141,13 +141,14 @@ RSpec.describe Gitlab::Experimentation do
           end
 
           it 'tracks the event with the right parameters' do
-            expect(Gitlab::Tracking).to receive(:event).with(
-              'Team',
-              'start',
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_snowplow_event(
+              category: 'Team',
+              action: 'start',
               property: 'experimental_group',
-              value: 'team_id'
+              value: 1
             )
-            controller.track_experiment_event(:test_experiment, 'start', 'team_id')
           end
         end
 
@@ -157,13 +158,43 @@ RSpec.describe Gitlab::Experimentation do
           end
 
           it 'tracks the event with the right parameters' do
-            expect(Gitlab::Tracking).to receive(:event).with(
-              'Team',
-              'start',
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_snowplow_event(
+              category: 'Team',
+              action: 'start',
               property: 'control_group',
-              value: 'team_id'
+              value: 1
             )
-            controller.track_experiment_event(:test_experiment, 'start', 'team_id')
+          end
+        end
+
+        context 'do not track is disabled' do
+          before do
+            request.headers['DNT'] = '0'
+          end
+
+          it 'does track the event' do
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_snowplow_event(
+              category: 'Team',
+              action: 'start',
+              property: 'control_group',
+              value: 1
+            )
+          end
+        end
+
+        context 'do not track enabled' do
+          before do
+            request.headers['DNT'] = '1'
+          end
+
+          it 'does not track the event' do
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_no_snowplow_event
           end
         end
       end
@@ -174,8 +205,9 @@ RSpec.describe Gitlab::Experimentation do
         end
 
         it 'does not track the event' do
-          expect(Gitlab::Tracking).not_to receive(:event)
           controller.track_experiment_event(:test_experiment, 'start')
+
+          expect_no_snowplow_event
         end
       end
     end
@@ -232,6 +264,36 @@ RSpec.describe Gitlab::Experimentation do
                 property: 'control_group'
               }
             )
+          end
+        end
+
+        context 'do not track disabled' do
+          before do
+            request.headers['DNT'] = '0'
+          end
+
+          it 'pushes the right parameters to gon' do
+            controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
+
+            expect(Gon.tracking_data).to eq(
+              {
+                category: 'Team',
+                action: 'start',
+                property: 'control_group'
+              }
+            )
+          end
+        end
+
+        context 'do not track enabled' do
+          before do
+            request.headers['DNT'] = '1'
+          end
+
+          it 'does not push data to gon' do
+            controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
+
+            expect(Gon.method_defined?(:tracking_data)).to be_falsey
           end
         end
       end
@@ -306,6 +368,39 @@ RSpec.describe Gitlab::Experimentation do
           expect(::Experiment).not_to receive(:add_user)
 
           controller.record_experiment_user(:test_experiment)
+        end
+      end
+
+      context 'do not track' do
+        before do
+          allow(controller).to receive(:current_user).and_return(user)
+          allow_next_instance_of(described_class) do |instance|
+            allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
+          end
+        end
+
+        context 'is disabled' do
+          before do
+            request.headers['DNT'] = '0'
+          end
+
+          it 'calls add_user on the Experiment model' do
+            expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user)
+
+            controller.record_experiment_user(:test_experiment)
+          end
+        end
+
+        context 'is enabled' do
+          before do
+            request.headers['DNT'] = '1'
+          end
+
+          it 'does not call add_user on the Experiment model' do
+            expect(::Experiment).not_to receive(:add_user)
+
+            controller.record_experiment_user(:test_experiment)
+          end
         end
       end
     end

@@ -13,7 +13,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ## Architecture overview
 
-![Geo multi-node diagram](../../high_availability/img/geo-ha-diagram.png)
+![Geo multi-node diagram](img/geo-ha-diagram.png)
 
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 

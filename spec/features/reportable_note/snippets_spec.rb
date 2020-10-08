@@ -7,7 +7,6 @@ RSpec.describe 'Reportable note on snippets', :js do
   let_it_be(:project) { create(:project) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
   end

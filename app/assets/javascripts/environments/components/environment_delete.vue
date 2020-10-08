@@ -4,7 +4,6 @@
  * Used in the environments table and the environment detail view.
  */
 
-import $ from 'jquery';
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
@@ -42,7 +41,7 @@ export default {
   },
   methods: {
     onClick() {
-      $(this.$el).tooltip('dispose');
+      this.$root.$emit('bv::hide::tooltip', this.$options.deleteEnvironmentTooltipId);
       eventHub.$emit('requestDeleteEnvironment', this.environment);
     },
     onDeleteEnvironment(environment) {
@@ -51,11 +50,12 @@ export default {
       }
     },
   },
+  deleteEnvironmentTooltipId: 'delete-environment-button-tooltip',
 };
 </script>
 <template>
   <loading-button
-    v-gl-tooltip
+    v-gl-tooltip="{ id: $options.deleteEnvironmentTooltipId }"
     :loading="isLoading"
     :title="title"
     :aria-label="title"

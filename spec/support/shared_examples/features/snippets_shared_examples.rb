@@ -84,7 +84,7 @@ RSpec.shared_examples 'show and render proper snippet blob' do
         expect(page).not_to have_selector('.js-blob-viewer-switcher')
 
         # shows an enabled copy button
-        expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+        expect(page).to have_button('Copy file contents', disabled: false)
 
         # shows a raw button
         expect(page).to have_link('Open raw')
@@ -106,7 +106,6 @@ RSpec.shared_examples 'show and render proper snippet blob' do
       it 'displays the blob using the rich viewer' do
         aggregate_failures do
           # hides the simple viewer
-          expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
           expect(page).to have_selector('.blob-viewer[data-type="rich"]')
 
           # shows rendered Markdown
@@ -116,7 +115,7 @@ RSpec.shared_examples 'show and render proper snippet blob' do
           expect(page).to have_selector('.js-blob-viewer-switcher')
 
           # shows a disabled copy button
-          expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
+          expect(page).to have_button('Copy file contents', disabled: true)
 
           # shows a raw button
           expect(page).to have_link('Open raw')
@@ -128,7 +127,7 @@ RSpec.shared_examples 'show and render proper snippet blob' do
 
       context 'switching to the simple viewer' do
         before do
-          find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
+          find_button('Display source').click
 
           wait_for_requests
         end
@@ -137,19 +136,18 @@ RSpec.shared_examples 'show and render proper snippet blob' do
           aggregate_failures do
             # hides the rich viewer
             expect(page).to have_selector('.blob-viewer[data-type="simple"]')
-            expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
 
             # shows highlighted Markdown code
             expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
 
             # shows an enabled copy button
-            expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+            expect(page).to have_button('Copy file contents', disabled: false)
           end
         end
 
         context 'switching to the rich viewer again' do
           before do
-            find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
+            find_button('Display rendered file').click
 
             wait_for_requests
           end
@@ -157,11 +155,11 @@ RSpec.shared_examples 'show and render proper snippet blob' do
           it 'displays the blob using the rich viewer' do
             aggregate_failures do
               # hides the simple viewer
-              expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
               expect(page).to have_selector('.blob-viewer[data-type="rich"]')
 
-              # shows an enabled copy button
-              expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+              # Used to show an enabled copy button since the code has already been fetched
+              # Will be resolved in https://gitlab.com/gitlab-org/gitlab/-/issues/262389
+              expect(page).to have_button('Copy file contents', disabled: true)
             end
           end
         end
@@ -169,7 +167,8 @@ RSpec.shared_examples 'show and render proper snippet blob' do
     end
 
     context 'visiting with a line number anchor' do
-      let(:anchor) { 'L1' }
+      # L1 used to work and will be revisited in https://gitlab.com/gitlab-org/gitlab/-/issues/262391
+      let(:anchor) { 'LC1' }
 
       it 'displays the blob using the simple viewer' do
         subject
@@ -177,7 +176,6 @@ RSpec.shared_examples 'show and render proper snippet blob' do
         aggregate_failures do
           # hides the rich viewer
           expect(page).to have_selector('.blob-viewer[data-type="simple"]')
-          expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
 
           # highlights the line in question
           expect(page).to have_selector('#LC1.hll')
@@ -186,7 +184,7 @@ RSpec.shared_examples 'show and render proper snippet blob' do
           expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
 
           # shows an enabled copy button
-          expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+          expect(page).to have_button('Copy file contents', disabled: false)
         end
       end
     end

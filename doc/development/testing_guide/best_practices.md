@@ -240,7 +240,7 @@ end
 
 it 'schedules a background job' do
   expect(BackgroundJob).to receive(:perform_async)
-  
+
   subject.execute
 end
 ```
@@ -252,7 +252,7 @@ combining the examples:
 ```ruby
 it 'performs the expected side-effects' do
   expect(BackgroundJob).to receive(:perform_async)
-  
+
   expect { subject.execute }
     .to change(Event, :count).by(1)
     .and change { arg_0.frobulance }.to('wibble')

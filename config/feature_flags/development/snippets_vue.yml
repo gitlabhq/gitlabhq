@@ -1,7 +1,0 @@
----
-name: snippets_vue
-introduced_by_url:
-rollout_issue_url:
-group: group::editor
-type: development
-default_enabled: true

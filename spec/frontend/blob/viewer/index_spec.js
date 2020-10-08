@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import { setTestTimeout } from 'helpers/timeout';
 import BlobViewer from '~/blob/viewer/index';
 import axios from '~/lib/utils/axios_utils';
 
@@ -13,26 +14,22 @@ describe('Blob viewer', () => {
     tooltip: jest.fn(),
   };
 
-  preloadFixtures('snippets/show.html');
+  setTestTimeout(2000);
+
+  preloadFixtures('blob/show_readme.html');
 
   beforeEach(() => {
     $.fn.extend(jQueryMock);
     mock = new MockAdapter(axios);
 
-    loadFixtures('snippets/show.html');
+    loadFixtures('blob/show_readme.html');
     $('#modal-upload-blob').remove();
 
+    mock.onGet(/blob\/master\/README\.md/).reply(200, {
+      html: '<div>testing</div>',
+    });
+
     blob = new BlobViewer();
-
-    mock.onGet('http://test.host/-/snippets/1.json?viewer=rich').reply(200, {
-      html: '<div>testing</div>',
-    });
-
-    mock.onGet('http://test.host/-/snippets/1.json?viewer=simple').reply(200, {
-      html: '<div>testing</div>',
-    });
-
-    jest.spyOn(axios, 'get');
   });
 
   afterEach(() => {
@@ -71,12 +68,11 @@ describe('Blob viewer', () => {
   });
 
   it('doesnt reload file if already loaded', () => {
-    const asyncClick = () =>
-      new Promise(resolve => {
-        document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
+    const asyncClick = async () => {
+      document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
-        setImmediate(resolve);
-      });
+      await axios.waitForAll();
+    };
 
     return asyncClick()
       .then(() => asyncClick())
@@ -163,17 +159,30 @@ describe('Blob viewer', () => {
       expect(simpleBtn.blur).toHaveBeenCalled();
     });
 
-    it('sends AJAX request when switching to simple view', () => {
-      blob.switchToViewer('simple');
-
-      expect(axios.get).toHaveBeenCalled();
+    it('makes request for initial view', () => {
+      expect(mock.history).toMatchObject({
+        get: [{ url: expect.stringMatching(/README\.md\?.*viewer=rich/) }],
+      });
     });
 
-    it('does not send AJAX request when switching to rich view', () => {
-      blob.switchToViewer('simple');
-      blob.switchToViewer('rich');
+    describe.each`
+      views
+      ${['simple']}
+      ${['simple', 'rich']}
+    `('when view switches to $views', ({ views }) => {
+      beforeEach(async () => {
+        views.forEach(view => blob.switchToViewer(view));
+        await axios.waitForAll();
+      });
 
-      expect(axios.get.mock.calls.length).toBe(1);
+      it('sends 1 AJAX request for new view', async () => {
+        expect(mock.history).toMatchObject({
+          get: [
+            { url: expect.stringMatching(/README\.md\?.*viewer=rich/) },
+            { url: expect.stringMatching(/README\.md\?.*viewer=simple/) },
+          ],
+        });
+      });
     });
   });
 });

@@ -226,13 +226,13 @@ To delete the currently active issue board:
 
 An issue board can be associated with a GitLab [Milestone](milestones/index.md#milestones),
 [Labels](labels.md), Assignee and Weight
-which will automatically filter the Board issues according to these fields.
+which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.
 
 ![Create scoped board](img/issue_board_creation.png)
 
 You can define the scope of your board when creating it or by clicking the "Edit board" button.
-Once a milestone, assignee or weight is assigned to an issue board, you will no longer be able to
+Once a milestone, assignee or weight is assigned to an issue board, you can no longer 
 filter through these in the search bar. In order to do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
@@ -270,16 +270,14 @@ especially in combination with [assignee lists](#assignee-lists).
 
 ### Group issue boards **(PREMIUM)**
 
-> [Introduced](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
+> - One group issue board per group introduced in GitLab 10.6.
+> - Multiple group issue boards [introduced](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
 
-Accessible at the group navigation level, a group issue board offers the same features as a project-level board,
-but it can display issues from all projects in that
+Accessible at the group navigation level, a group issue board offers the same features as a project-level board.
+It can display issues from all projects in that
 group and its descendant subgroups. Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
-
-NOTE: **Note:**
-Multiple group issue boards were originally [introduced](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0, and one group issue board per group was made available in GitLab Core 10.6.
 
 ![Group issue board](img/group_issue_board.png)
 
@@ -287,7 +285,7 @@ Multiple group issue boards were originally [introduced](https://about.gitlab.co
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5784) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
 
-Like in a regular list that shows all issues with a chosen label, you can add
+As in a regular list showing all issues with a chosen label, you can add
 an assignee list that shows all issues assigned to a user.
 You can have a board with both label lists and assignee lists. To add an
 assignee list:
@@ -313,7 +311,7 @@ milestone, giving you more freedom and visibility on the issue board. To add a m
 1. Select the **Milestone** tab.
 1. Search and click the milestone.
 
-Similar to the assignee lists, you're now able to [drag issues](#drag-issues-between-lists)
+Like the assignee lists, you're able to [drag issues](#drag-issues-between-lists)
 to and from a milestone list to manipulate the milestone of the dragged issues.
 As in other list types, click the trash icon to remove a list.
 
@@ -329,7 +327,7 @@ You cannot set a WIP limit on the default lists (**Open** and **Closed**).
 
 Examples:
 
-- You have a list with four issues, and a limit of five, the header will show **4/5**.
+- When you have a list with four issues and a limit of five, the header shows **4/5**.
   If you exceed the limit, the current number of issues is shown in red.
 - You have a list with five issues with a limit of five. When you move another issue to that list,
   the list's header displays **6/5**, with the six shown in red.
@@ -387,7 +385,7 @@ Create a new list by clicking the **Add list** button in the upper right corner 
 
 ![creating a new list in an issue board](img/issue_board_add_list.png)
 
-Then, choose the label or user to create the list from. The new list will be inserted
+Then, choose the label or user to create the list from. The new list is inserted
 at the end of the lists, before **Done**. Moving and reordering lists is as
 easy as dragging them around.
 
@@ -398,15 +396,15 @@ You can now choose it to create a list.
 ### Delete a list
 
 To delete a list from the issue board, use the small trash icon present
-in the list's heading. A confirmation dialog will appear for you to confirm.
+in the list's heading. A confirmation dialog appears for you to confirm.
 
-Deleting a list doesn't have any effect in issues and labels, it's just the
-list view that is removed. You can always add it back later if you need.
+Deleting a list doesn't have any effect on issues and labels, as it's just the
+list view that's removed. You can always restore it later if you need.
 
 ### Add issues to a list
 
 You can add issues to a list by clicking the **Add issues** button
-present in the upper right corner of the issue board. This will open up a modal
+present in the upper right corner of the issue board. This opens up a modal
 window where you can see all the issues that do not belong to any list.
 
 Select one or more issues by clicking the cards and then click **Add issues**
@@ -426,7 +424,7 @@ respective label is removed.
 ### Filter issues
 
 You should be able to use the filters on top of your issue board to show only
-the results you want. This is similar to the filtering used in the issue tracker
+the results you want. It's similar to the filtering used in the issue tracker
 since the metadata from the issues and labels are re-used in the issue board.
 
 You can filter by author, assignee, milestone, and label.
@@ -460,12 +458,12 @@ For example, you can create a list based on the label of **Frontend** and one fo
 worked on by the designers.
 
 Then, once they're done, all they have to do is
-drag it to the next list, **Backend**, where a backend developer can
+drag it to the next list, **Backend**. Then, a backend developer can
 eventually pick it up. Once they’re done, they move it to **Done**, to close the
 issue.
 
-This process can be seen clearly when visiting an issue since with every move
-to another list the label changes and a system note is recorded.
+This process can be seen clearly when visiting an issue. With every move
+to another list, the label changes and a system note is recorded.
 
 ![issue board system notes](img/issue_board_system_notes.png)
 

@@ -1,7 +1,0 @@
----
-name: design_management_copy_designs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41714
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247062
-group: group::knowledge
-type: development
-default_enabled: false

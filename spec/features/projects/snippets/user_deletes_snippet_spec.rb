@@ -2,13 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Snippets > User deletes a snippet' do
+RSpec.describe 'Projects > Snippets > User deletes a snippet', :js do
   let(:project) { create(:project) }
-  let!(:snippet) { create(:project_snippet, project: project, author: user) }
+  let!(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     project.add_maintainer(user)
     sign_in(user)
 
@@ -16,7 +15,11 @@ RSpec.describe 'Projects > Snippets > User deletes a snippet' do
   end
 
   it 'deletes a snippet' do
-    first(:link, 'Delete').click
+    expect(page).to have_content(snippet.title)
+
+    click_button('Delete')
+    click_button('Delete snippet')
+    wait_for_requests
 
     expect(page).not_to have_content(snippet.title)
   end

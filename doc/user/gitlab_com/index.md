@@ -608,6 +608,11 @@ dropped and users get
 
 To help avoid abuse, project and group imports, exports, and export downloads are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits) for details.
 
+### Non-configurable limits
+
+See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits) for information on
+rate limits that are not configurable, and therefore also used on GitLab.com.
+
 ## GitLab.com Logging
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to

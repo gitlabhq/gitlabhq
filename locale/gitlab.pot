@@ -8427,9 +8427,6 @@ msgstr ""
 msgid "Delete Comment"
 msgstr ""
 
-msgid "Delete Snippet"
-msgstr ""
-
 msgid "Delete Value Stream"
 msgstr ""
 
@@ -24059,9 +24056,6 @@ msgstr ""
 msgid "Snippets|Add another file %{num}/%{total}"
 msgstr ""
 
-msgid "Snippets|Authored %{time_ago} by %{author}"
-msgstr ""
-
 msgid "Snippets|Delete file"
 msgstr ""
 
@@ -24876,9 +24870,6 @@ msgid "Submit %{humanized_resource_name}"
 msgstr ""
 
 msgid "Submit a review"
-msgstr ""
-
-msgid "Submit as spam"
 msgstr ""
 
 msgid "Submit changes"

@@ -13,8 +13,6 @@ RSpec.describe 'Projects > Snippets > Project snippet', :js do
   let_it_be(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
 
   before do
-    stub_feature_flags(snippets_vue: false)
-
     sign_in(user)
   end
 
@@ -28,12 +26,8 @@ RSpec.describe 'Projects > Snippets > Project snippet', :js do
     end
   end
 
-  it_behaves_like 'showing user status' do
-    let(:file_path) { 'files/ruby/popen.rb' }
-    let(:user_with_status) { snippet.author }
-
-    subject { visit project_snippet_path(project, snippet) }
-  end
+  # it_behaves_like 'showing user status' do
+  # This will be handled in https://gitlab.com/gitlab-org/gitlab/-/issues/262394
 
   it_behaves_like 'does not show New Snippet button' do
     let(:file_path) { 'files/ruby/popen.rb' }

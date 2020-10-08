@@ -234,14 +234,6 @@ RSpec.describe Issues::MoveService do
           subject
         end
 
-        it 'does not call QueueService when the feature flag is disabled' do
-          stub_feature_flags(design_management_copy_designs: false)
-
-          expect(DesignManagement::CopyDesignCollection::QueueService).not_to receive(:new)
-
-          subject
-        end
-
         # Perform a small integration test to ensure the services and worker
         # can correctly create designs.
         it 'copies the design and its notes', :sidekiq_inline, :aggregate_failures do

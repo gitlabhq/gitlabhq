@@ -79,7 +79,7 @@ test:
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java uses [Maven](https://maven.apache.org/)
 to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
-generate the coverage artifact.  
+generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
 
 GitLab expects the artifact in the Cobertura format, so you have to execute a few
@@ -119,7 +119,7 @@ coverage-jdk11:
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java uses [Gradle](https://gradle.org/)
 to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
-generate the coverage artifact.  
+generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
 
 GitLab expects the artifact in the Cobertura format, so you have to execute a few

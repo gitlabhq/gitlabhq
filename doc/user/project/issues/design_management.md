@@ -56,8 +56,7 @@ Support for [PDF](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned 
 - From GitLab 13.1, Design filenames are limited to 255 characters.
 - Design Management data
   [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429) yet.
-- Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/-/issues/13426)
-  when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427)
+- Design Management data [won't be deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427)
   when an issue is deleted.
 - From GitLab 12.7, Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
   by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/-/issues/32467).

@@ -3,11 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Internal Snippets', :js do
-  let(:internal_snippet) { create(:personal_snippet, :internal) }
-
-  before do
-    stub_feature_flags(snippets_vue: false)
-  end
+  let(:internal_snippet) { create(:personal_snippet, :internal, :repository) }
+  let(:content) { internal_snippet.blobs.first.data.strip! }
 
   describe 'normal user' do
     before do
@@ -17,13 +14,13 @@ RSpec.describe 'Internal Snippets', :js do
     it 'sees internal snippets' do
       visit snippet_path(internal_snippet)
 
-      expect(page).to have_content(internal_snippet.content)
+      expect(page).to have_content(content)
     end
 
     it 'sees raw internal snippets' do
       visit raw_snippet_path(internal_snippet)
 
-      expect(page).to have_content(internal_snippet.content)
+      expect(page).to have_content(content)
     end
   end
 end
