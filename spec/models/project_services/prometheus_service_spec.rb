@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching do
+RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowplow do
   include PrometheusHelpers
   include ReactiveCachingHelpers
 
@@ -421,18 +421,16 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching do
     context "enabling manual_configuration" do
       it "tracks enable event" do
         service.update!(manual_configuration: false)
-
-        expect(Gitlab::Tracking).to receive(:event).with('cluster:services:prometheus', 'enabled_manual_prometheus')
-
         service.update!(manual_configuration: true)
+
+        expect_snowplow_event(category: 'cluster:services:prometheus', action: 'enabled_manual_prometheus')
       end
 
       it "tracks disable event" do
         service.update!(manual_configuration: true)
-
-        expect(Gitlab::Tracking).to receive(:event).with('cluster:services:prometheus', 'disabled_manual_prometheus')
-
         service.update!(manual_configuration: false)
+
+        expect_snowplow_event(category: 'cluster:services:prometheus', action: 'disabled_manual_prometheus')
       end
     end
   end

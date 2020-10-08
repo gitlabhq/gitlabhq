@@ -7261,6 +7261,16 @@ type GrafanaIntegration {
 
 type Group {
   """
+  Size limit for repositories in the namespace in bytes
+  """
+  actualRepositorySizeLimit: Float
+
+  """
+  Additional storage purchased for the root namespace in bytes
+  """
+  additionalPurchasedStorageSize: Float
+
+  """
   Indicates whether Auto DevOps is enabled for all projects within this group
   """
   autoDevopsEnabled: Boolean
@@ -7309,6 +7319,11 @@ type Group {
     """
     last: Int
   ): BoardConnection
+
+  """
+  Includes at least one project where the repository size exceeds the limit
+  """
+  containsLockedProjects: Boolean!
 
   """
   Description of the namespace
@@ -7969,6 +7984,11 @@ type Group {
   ): ProjectConnection!
 
   """
+  Number of projects in the root namespace where the repository size exceeds the limit
+  """
+  repositorySizeExcessProjectCount: Int!
+
+  """
   Indicates if users can request access to namespace
   """
   requestAccessEnabled: Boolean
@@ -8047,6 +8067,16 @@ type Group {
     """
     startTime: Time
   ): TimelogConnection!
+
+  """
+  Total repository size of all projects in the root namespace in bytes
+  """
+  totalRepositorySize: Float
+
+  """
+  Total excess repository size of all projects in the root namespace in bytes
+  """
+  totalRepositorySizeExcess: Float
 
   """
   Time before two-factor authentication is enforced
@@ -11955,6 +11985,21 @@ enum MutationOperationMode {
 
 type Namespace {
   """
+  Size limit for repositories in the namespace in bytes
+  """
+  actualRepositorySizeLimit: Float
+
+  """
+  Additional storage purchased for the root namespace in bytes
+  """
+  additionalPurchasedStorageSize: Float
+
+  """
+  Includes at least one project where the repository size exceeds the limit
+  """
+  containsLockedProjects: Boolean!
+
+  """
   Description of the namespace
   """
   description: String
@@ -12045,6 +12090,11 @@ type Namespace {
   ): ProjectConnection!
 
   """
+  Number of projects in the root namespace where the repository size exceeds the limit
+  """
+  repositorySizeExcessProjectCount: Int!
+
+  """
   Indicates if users can request access to namespace
   """
   requestAccessEnabled: Boolean
@@ -12063,6 +12113,16 @@ type Namespace {
   Date until the temporary storage increase is active
   """
   temporaryStorageIncreaseEndsOn: Time
+
+  """
+  Total repository size of all projects in the root namespace in bytes
+  """
+  totalRepositorySize: Float
+
+  """
+  Total excess repository size of all projects in the root namespace in bytes
+  """
+  totalRepositorySizeExcess: Float
 
   """
   Visibility of the namespace
@@ -12933,6 +12993,11 @@ enum PipelineStatusEnum {
 }
 
 type Project {
+  """
+  Size limit for the repository in bytes
+  """
+  actualRepositorySizeLimit: Float
+
   """
   A single Alert Management alert of the project
   """
@@ -14120,6 +14185,11 @@ type Project {
   Git repository of the project
   """
   repository: Repository
+
+  """
+  Size of repository that exceeds the limit in bytes
+  """
+  repositorySizeExcess: Float
 
   """
   Indicates if users can request member access to the project
@@ -16250,6 +16320,11 @@ type RootStorageStatistics {
   The packages size in bytes
   """
   packagesSize: Float!
+
+  """
+  The CI pipeline artifacts size in bytes
+  """
+  pipelineArtifactsSize: Float!
 
   """
   The Git repository size in bytes

@@ -13,5 +13,6 @@ module Types
     field :packages_size, GraphQL::FLOAT_TYPE, null: false, description: 'The packages size in bytes'
     field :wiki_size, GraphQL::FLOAT_TYPE, null: false, description: 'The wiki size in bytes'
     field :snippets_size, GraphQL::FLOAT_TYPE, null: false, description: 'The snippets size in bytes'
+    field :pipeline_artifacts_size, GraphQL::FLOAT_TYPE, null: false, description: 'The CI pipeline artifacts size in bytes'
   end
 end

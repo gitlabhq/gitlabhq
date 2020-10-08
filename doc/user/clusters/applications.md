@@ -6,13 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Managed Apps
 
-GitLab provides **GitLab Managed Apps**, a one-click install for various
+GitLab provides **GitLab Managed Apps** for various
 applications which can be added directly to your configured cluster. These
 applications are needed for [Review Apps](../../ci/review_apps/index.md) and
 [deployments](../../ci/environments/index.md) when using [Auto DevOps](../../topics/autodevops/index.md).
-You can install them after you [create a cluster](../project/clusters/add_remove_clusters.md).
+You can install them after you [create a cluster](../project/clusters/add_remove_clusters.md). GitLab provides
+GitLab Managed Apps that can installed with [one-click](#install-with-one-click) or [using CI/CD](#install-using-gitlab-cicd-alpha). 
 
-## Installing applications
+## Install with one click
 
 Applications managed by GitLab are installed onto the `gitlab-managed-apps`
 namespace. This namespace:
@@ -28,7 +29,7 @@ To view a list of available applications to install for a:
 - [Group-level cluster](../group/clusters/index.md), navigate to your group's
   **Kubernetes** page.
 
-You can install the following applications:
+You can install the following applications with one click:
 
 - [Helm](#helm)
 - [Ingress](#ingress)
