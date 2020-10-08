@@ -10,6 +10,8 @@ class Projects::MattermostsController < Projects::ApplicationController
   before_action :service
   before_action :teams, only: [:new]
 
+  feature_category :integrations
+
   def new
   end
 

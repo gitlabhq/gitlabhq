@@ -14,6 +14,7 @@ module Types
     mount_mutation Mutations::AwardEmojis::Add
     mount_mutation Mutations::AwardEmojis::Remove
     mount_mutation Mutations::AwardEmojis::Toggle
+    mount_mutation Mutations::Boards::Create
     mount_mutation Mutations::Boards::Destroy
     mount_mutation Mutations::Boards::Issues::IssueMoveList
     mount_mutation Mutations::Boards::Lists::Create

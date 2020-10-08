@@ -5,6 +5,8 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
 
   before_action :proxyable
 
+  feature_category :metrics
+
   private
 
   def proxyable

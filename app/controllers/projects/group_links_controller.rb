@@ -5,6 +5,8 @@ class Projects::GroupLinksController < Projects::ApplicationController
   before_action :authorize_admin_project!
   before_action :authorize_admin_project_member!, only: [:update]
 
+  feature_category :subgroups
+
   def create
     group = Group.find(params[:link_group_id]) if params[:link_group_id].present?
 

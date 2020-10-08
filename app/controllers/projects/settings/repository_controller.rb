@@ -10,6 +10,9 @@ module Projects
         push_frontend_feature_flag(:deploy_keys_on_protected_branches, @project)
       end
 
+      feature_category :source_code_management, [:show, :cleanup]
+      feature_category :continuous_delivery, [:create_deploy_token]
+
       def show
         render_show
       end

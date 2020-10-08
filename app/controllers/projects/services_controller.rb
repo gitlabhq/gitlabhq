@@ -19,6 +19,8 @@ class Projects::ServicesController < Projects::ApplicationController
 
   layout "project_settings"
 
+  feature_category :integrations
+
   def edit
     @default_integration = Service.default_integration(service.type, project)
   end

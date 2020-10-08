@@ -15,6 +15,10 @@ to use this endpoint.
 
 ## Configuration
 
+You can either configure alerts to integrate with an [external Prometheus server](#external-prometheus-integration),
+or provide a [generic HTTP endpoint](#generic-http-endpoint) to receive alerts
+from other services.
+
 ### Generic HTTP Endpoint
 
 Enabling the Generic HTTP Endpoint creates a unique HTTP endpoint that can receive alert payloads in JSON format. You can always

@@ -12,6 +12,8 @@ module Projects
 
     before_action :authorize_update_environment!
 
+    feature_category :tracing
+
     def show
     end
 

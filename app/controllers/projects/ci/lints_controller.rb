@@ -6,6 +6,8 @@ class Projects::Ci::LintsController < Projects::ApplicationController
     push_frontend_feature_flag(:ci_lint_vue, project)
   end
 
+  feature_category :pipeline_authoring
+
   def show
   end
 

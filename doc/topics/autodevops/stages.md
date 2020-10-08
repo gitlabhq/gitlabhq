@@ -195,7 +195,7 @@ see the documentation.
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
 License Compliance uses the
-[License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
+[License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
 to search the project dependencies for their license. The Auto License Compliance stage
 is skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 

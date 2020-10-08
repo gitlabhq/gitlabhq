@@ -58,7 +58,7 @@ sequenceDiagram
 
 ## Usage Ping **(CORE ONLY)**
 
-See [Usage Ping guide](../../../development/telemetry/usage_ping.md).
+See [Usage Ping guide](../../../development/product_analytics/usage_ping.md).
 
 ## Instance-level statistics **(CORE ONLY)**
 

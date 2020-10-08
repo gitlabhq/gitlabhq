@@ -8,6 +8,8 @@ class Projects::TriggersController < Projects::ApplicationController
 
   layout 'project_settings'
 
+  feature_category :continuous_integration
+
   def index
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
   end

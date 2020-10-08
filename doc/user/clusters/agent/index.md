@@ -111,7 +111,7 @@ gitops:
 ### Create an Agent record in GitLab
 
 Next, create an GitLab Rails Agent record so the Agent can associate itself with
-a GitLab project. Creating this record also creates a Secret needed to configure
+the configuration repository project. Creating this record also creates a Secret needed to configure
 the Agent in subsequent steps. You can create an Agent record either:
 
 - Through the Rails console, by running `rails c`:

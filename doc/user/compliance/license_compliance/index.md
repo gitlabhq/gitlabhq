@@ -121,7 +121,7 @@ The results will be saved as a
 [License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
-[GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
+[GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
 The License Compliance settings can be changed through [environment variables](#available-variables) by using the
@@ -634,7 +634,7 @@ import the following default License Compliance analyzer images from `registry.g
 offline [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/gitlab-org/security-products/license-management:latest
+registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:latest
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

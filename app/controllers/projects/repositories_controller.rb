@@ -18,6 +18,8 @@ class Projects::RepositoriesController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: :create
   before_action :redirect_to_external_storage, only: :archive, if: :static_objects_external_storage_enabled?
 
+  feature_category :source_code_management
+
   def create
     @project.create_repository
 

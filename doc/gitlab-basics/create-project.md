@@ -18,7 +18,7 @@ To create a project in GitLab:
    icon in the navigation bar. This opens the **New project** page.
 1. On the **New project** page, choose if you want to:
    - Create a [blank project](#blank-projects).
-   - Create a project using with one of the available [project templates](#project-templates).
+   - Create a project using one of the available [project templates](#project-templates).
    - [Import a project](../user/project/import/index.md) from a different repository,
      if enabled on your GitLab instance. Contact your GitLab administrator if this is unavailable.
    - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**

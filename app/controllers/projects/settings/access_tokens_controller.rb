@@ -7,6 +7,8 @@ module Projects
 
       before_action :check_feature_availability
 
+      feature_category :authentication_and_authorization
+
       def index
         @project_access_token = PersonalAccessToken.new
         set_index_vars

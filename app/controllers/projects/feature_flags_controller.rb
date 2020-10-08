@@ -19,6 +19,8 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
     push_frontend_feature_flag(:feature_flags_legacy_read_only_override, project)
   end
 
+  feature_category :feature_flags
+
   def index
     @feature_flags = FeatureFlagsFinder
       .new(project, current_user, scope: params[:scope])

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
+  feature_category :authentication_and_authorization
+
   def index
     set_index_vars
     @personal_access_token = finder.build

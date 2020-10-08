@@ -15,6 +15,8 @@ class Projects::LabelsController < Projects::ApplicationController
 
   respond_to :js, :html
 
+  feature_category :issue_tracking
+
   def index
     @prioritized_labels = @available_labels.prioritized(@project)
     @labels = @available_labels.unprioritized(@project).page(params[:page])

@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
   let(:api_url) { 'https://kubernetes.example.com/prefix' }
   let(:kubeclient_options) { { auth_options: { bearer_token: 'xyz' } } }
 
-  let(:client) { described_class.new(api_url, kubeclient_options) }
+  let(:client) { described_class.new(api_url, **kubeclient_options) }
 
   before do
     stub_kubeclient_discover(api_url)
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     end
 
     it 'falls back to default options, but allows overriding' do
-      client = Gitlab::Kubernetes::KubeClient.new(api_url, {})
+      client = described_class.new(api_url)
       defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS
       expect(client.kubeclient_options[:timeouts]).to eq(defaults[:timeouts])
 

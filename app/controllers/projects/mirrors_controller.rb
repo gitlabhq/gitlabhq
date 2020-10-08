@@ -10,6 +10,8 @@ class Projects::MirrorsController < Projects::ApplicationController
 
   layout "project_settings"
 
+  feature_category :source_code_management
+
   def show
     redirect_to_repository_settings(project, anchor: 'js-push-remote-settings')
   end

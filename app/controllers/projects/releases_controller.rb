@@ -13,6 +13,8 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :authorize_update_release!, only: %i[edit update]
   before_action :authorize_create_release!, only: :new
 
+  feature_category :release_orchestration
+
   def index
     respond_to do |format|
       format.html do

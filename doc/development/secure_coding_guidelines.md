@@ -1,3 +1,10 @@
+---
+type: reference, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+---
+
 # Secure Coding Guidelines
 
 This document contains descriptions and guidelines for addressing security
@@ -393,5 +400,34 @@ In order to prevent Path Traversal vulnerabilities, user-controlled filenames or
 
 #### GitLab specific validations
 
-- [`Gitlab::Utils.check_path_traversal`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/gitlab/utils.rb#L12-24) can be used to validate user input against Path Traversal vulnerabilities. Remember to add further validation when setting the `allowed_absolute` option to `true`.
-- [`file_path` API validator](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/api/validations/validators/file_path.rb) to validate user input when working with the Grape gem.
+The methods `Gitlab::Utils.check_path_traversal!()` and `Gitlab::Utils.check_allowed_absolute_path!()`
+can be used to validate user-supplied paths and prevent vulnerabilities.
+`check_path_traversal!()` will detect their Path Traversal payloads and accepts URL-encoded paths.
+`check_allowed_absolute_path!()` will check if a path is absolute and whether it is inside the allowed path list. By default, absolute
+paths are not allowed, so you need to pass a list of allowed absolute paths to the `path_allowlist`
+parameter when using `check_allowed_absolute_path!()`.
+
+To use a combination of both checks, follow the example below:
+
+```ruby
+path = Gitlab::Utils.check_path_traversal!(path)
+Gitlab::Utils.check_allowed_absolute_path!(path, path_allowlist)
+```
+
+In the REST API, we have the [`FilePath`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/api/validations/validators/file_path.rb)
+validator that can be used to perform the checking on any file path argument the endpoints have.
+It can be used as follows:
+
+```ruby
+requires :file_path, type: String, file_path: { allowlist: ['/foo/bar/', '/home/foo/', '/app/home'] }
+```
+
+The Path Traversal check can also be used to forbid any absolute path:
+
+```ruby
+requires :file_path, type: String, file_path: true
+```
+
+NOTE: **Note:**
+Absolute paths are not allowed by default. If allowing an absolute path is required, you
+need to provide an array of paths to the parameter `allowlist`.  

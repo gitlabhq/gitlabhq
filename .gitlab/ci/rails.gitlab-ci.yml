@@ -6,6 +6,14 @@
     - .default-before_script
     - .rails-cache
 
+.base-script: &base-script
+  # Only install knapsack after bundle install! Otherwise oddly some native
+  # gems could not be found under some circumstance. No idea why, hours wasted.
+  - run_timed_command "gem install knapsack --no-document"
+  - run_timed_command "scripts/gitaly-test-build"
+  - run_timed_command "scripts/gitaly-test-spawn"
+  - source ./scripts/rspec_helpers.sh
+
 .rspec-base:
   extends: .rails-job-base
   stage: test
@@ -14,12 +22,7 @@
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   script:
-    # Only install knapsack after bundle install! Otherwise oddly some native
-    # gems could not be found under some circumstance. No idea why, hours wasted.
-    - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
   artifacts:
     expire_in: 31d
@@ -38,12 +41,7 @@
 .rspec-base-migration:
   extends: .rails:rules:ee-and-foss-migration
   script:
-    # Only install knapsack after bundle install! Otherwise oddly some native
-    # gems could not be found under some circumstance. No idea why, hours wasted.
-    - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
 
 .rspec-base-pg11:
@@ -76,12 +74,7 @@
 .rspec-ee-base-geo:
   extends: .rspec-base
   script:
-    # Only install knapsack after bundle install! Otherwise oddly some native
-    # gems could not be found under some circumstance. No idea why, hours wasted.
-    - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag geo"
 
 .rspec-ee-base-geo-pg11:
@@ -318,8 +311,7 @@ gitlab:setup:
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
+    - *base-script
     - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
   artifacts:
     when: on_failure
@@ -542,9 +534,7 @@ rspec fail-fast:
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_fail_fast tmp/matching_tests.txt "--tag ~quarantine"
   artifacts:
     expire_in: 7d
@@ -557,9 +547,7 @@ rspec foss-impact:
     - .rails:rules:rspec-foss-impact
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests as-if-foss"]
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_matched_foss_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
   artifacts:
     expire_in: 7d

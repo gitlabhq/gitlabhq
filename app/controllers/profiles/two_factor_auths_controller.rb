@@ -6,6 +6,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     push_frontend_feature_flag(:webauthn)
   end
 
+  feature_category :authentication_and_authorization
+
   def show
     unless current_user.two_factor_enabled?
       current_user.otp_secret = User.generate_otp_secret(32)

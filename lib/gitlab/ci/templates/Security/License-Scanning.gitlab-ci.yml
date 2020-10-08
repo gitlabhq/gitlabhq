@@ -1,7 +1,7 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/license_compliance/
 #
 # Configure the scanning tool through the environment variables.
-# List of the variables: https://gitlab.com/gitlab-org/security-products/license-management#settings
+# List of the variables: https://gitlab.com/gitlab-org/security-products/analyzers/license-finder#settings
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
 variables:

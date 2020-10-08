@@ -65,6 +65,17 @@ class Projects::IssuesController < Projects::ApplicationController
 
   alias_method :designs, :show
 
+  feature_category :issue_tracking, [
+                     :index, :calendar, :show, :new, :create, :edit, :update,
+                     :destroy, :move, :reorder, :designs, :toggle_subscription,
+                     :discussions, :bulk_update, :realtime_changes,
+                     :toggle_award_emoji, :mark_as_spam, :related_branches,
+                     :can_create_branch, :create_merge_request
+                   ]
+
+  feature_category :service_desk, [:service_desk]
+  feature_category :importers, [:import_csv, :export_csv]
+
   def index
     @issues = @issuables
 

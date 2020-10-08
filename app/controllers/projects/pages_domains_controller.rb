@@ -9,6 +9,8 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
   helper_method :domain_presenter
 
+  feature_category :pages
+
   def show
   end
 

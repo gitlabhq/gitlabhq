@@ -12,6 +12,8 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   track_unique_visits :show, target_id: 'p_analytics_valuestream'
 
+  feature_category :planning_analytics
+
   def show
     @cycle_analytics = ::CycleAnalytics::ProjectLevel.new(@project, options: options(cycle_analytics_project_params))
 

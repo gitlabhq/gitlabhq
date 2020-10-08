@@ -9,6 +9,8 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   before_action :authorize_read_build_report_results!
   before_action :validate_param_type!
 
+  feature_category :continuous_integration
+
   def index
     respond_to do |format|
       format.csv { send_data(render_csv(report_results), type: 'text/csv; charset=utf-8') }

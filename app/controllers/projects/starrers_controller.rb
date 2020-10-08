@@ -3,6 +3,8 @@
 class Projects::StarrersController < Projects::ApplicationController
   include SortingHelper
 
+  feature_category :projects
+
   def index
     @starrers = UsersStarProjectsFinder.new(@project, params, current_user: @current_user).execute
     @sort = params[:sort].presence || sort_value_name

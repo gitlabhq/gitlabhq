@@ -3,6 +3,8 @@
 class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 
+  feature_category :users
+
   def show
     render(locals: show_view_variables)
   end

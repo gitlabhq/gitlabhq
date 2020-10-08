@@ -1,4 +1,5 @@
 <script>
+import { mapState } from 'vuex';
 import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '~/locale';
@@ -11,50 +12,27 @@ export default {
     GlDropdownDivider,
   },
   props: {
-    initialFilter: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    filters: {
+    filterData: {
       type: Object,
-      required: true,
-    },
-    filtersArray: {
-      type: Array,
-      required: true,
-    },
-    header: {
-      type: String,
-      required: true,
-    },
-    param: {
-      type: String,
-      required: true,
-    },
-    scope: {
-      type: String,
-      required: true,
-    },
-    supportedScopes: {
-      type: Array,
       required: true,
     },
   },
   computed: {
+    ...mapState(['query']),
+    scope() {
+      return this.query.scope;
+    },
+    supportedScopes() {
+      return Object.values(this.filterData.scopes);
+    },
+    initialFilter() {
+      return this.query[this.filterData.filterParam];
+    },
     filter() {
-      return this.initialFilter || this.filters.ANY.value;
+      return this.initialFilter || this.filterData.filters.ANY.value;
     },
-    selectedFilterText() {
-      const f = this.filtersArray.find(({ value }) => value === this.selectedFilter);
-      if (!f || f === this.filters.ANY) {
-        return sprintf(s__('Any %{header}'), { header: this.header });
-      }
-
-      return f.label;
-    },
-    showDropdown() {
-      return this.supportedScopes.includes(this.scope);
+    filtersArray() {
+      return this.filterData.filterByScope[this.scope];
     },
     selectedFilter: {
       get() {
@@ -62,18 +40,29 @@ export default {
           return this.filter;
         }
 
-        return this.filters.ANY.value;
+        return this.filterData.filters.ANY.value;
       },
       set(filter) {
-        visitUrl(setUrlParams({ [this.param]: filter }));
+        visitUrl(setUrlParams({ [this.filterData.filterParam]: filter }));
       },
+    },
+    selectedFilterText() {
+      const f = this.filtersArray.find(({ value }) => value === this.selectedFilter);
+      if (!f || f === this.filterData.filters.ANY) {
+        return sprintf(s__('Any %{header}'), { header: this.filterData.header });
+      }
+
+      return f.label;
+    },
+    showDropdown() {
+      return this.supportedScopes.includes(this.scope);
     },
   },
   methods: {
     dropDownItemClass(filter) {
       return {
         'gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2! gl-mb-2':
-          filter === this.filters.ANY,
+          filter === this.filterData.filters.ANY,
       };
     },
     isFilterSelected(filter) {
@@ -94,7 +83,7 @@ export default {
     menu-class="gl-w-full! gl-pl-0"
   >
     <header class="gl-text-center gl-font-weight-bold gl-font-lg">
-      {{ header }}
+      {{ filterData.header }}
     </header>
     <gl-dropdown-divider />
     <gl-dropdown-item

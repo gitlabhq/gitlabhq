@@ -21,6 +21,8 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   respond_to :html
 
+  feature_category :issue_tracking
+
   def index
     @sort = params[:sort] || 'due_date_asc'
     @milestones = milestones.sort_by_attribute(@sort)

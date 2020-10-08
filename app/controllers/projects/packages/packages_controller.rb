@@ -5,6 +5,8 @@ module Projects
     class PackagesController < Projects::ApplicationController
       include PackagesAccess
 
+      feature_category :package_registry
+
       def show
         @package = project.packages.find(params[:id])
         @package_files = @package.package_files.recent

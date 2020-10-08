@@ -4,6 +4,8 @@ class Projects::FeatureFlagsUserListsController < Projects::ApplicationControlle
   before_action :authorize_admin_feature_flags_user_lists!
   before_action :user_list, only: [:edit, :show]
 
+  feature_category :feature_flags
+
   def new
   end
 

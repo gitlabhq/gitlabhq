@@ -19,6 +19,8 @@ class Projects::CompareController < Projects::ApplicationController
   # Validation
   before_action :validate_refs!
 
+  feature_category :source_code_management
+
   def index
   end
 

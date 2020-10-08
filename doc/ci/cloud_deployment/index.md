@@ -200,3 +200,81 @@ deploy:
   script:
     - aws ecs register-task-definition ...
 ```
+
+### Provision and deploy to your AWS Elastic Compute Cloud (EC2)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
+
+You can use the `AWS/CF-Provision-and-Deploy-EC2` CI template to perform the
+following actions within the same pipeline:
+
+1. **Create stack**: Provision your own infrastructure by leveraging the [AWS CloudFormation](https://aws.amazon.com/cloudformation/) API.
+1. **Push to S3**: Push your previously-built artifact to an [AWS S3](https://aws.amazon.com/s3/) bucket.
+1. **Deploy to EC2**: Deploy this pushed content onto an [AWS EC2](https://aws.amazon.com/ec2/) instance.
+
+![CF-Provision-and-Deploy-EC2 diagram](../img/cf_ec2_diagram_v13_5.png)
+
+#### Run the `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template
+
+To run the `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template, you must
+pass three JSON input objects, based on existing templates:
+
+1. The AWS documentation provides templates for the _Create stack_ and _Deploy to EC2_ steps (links
+   below). We provide the template for the remaining step, _Push to S3_:
+
+   - [Template for the _Create stack_ step on AWS](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html).
+   - Template for the _Push to S3_ step. Note that `source` is where a preceding `build` job built
+     your application, exporting the build through [`artifacts:paths`](../yaml/README.md#artifactspaths):
+
+     ```json
+     {
+       "applicationName": "string",
+       "source": "string",
+       "s3Location": "s3://your/bucket/project_built_file...]"
+     }
+     ```
+
+   - [Template for the _Deploy to EC2_ step on AWS](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html).
+
+1. Once you have completed these three templates based on your requirements, you
+   have two ways to pass in these JSON objects:
+
+   - They can be three actual files located in your project. You must specify their path relative to
+     your project root in your `.gitlab-ci.yml` file, using the following variables. For example, if
+     your files are in a `<project_root>/aws` folder:
+
+     ```yaml
+     variables:
+       CI_AWS_CF_CREATE_STACK_FILE: 'aws/cf_create_stack.json'
+       CI_AWS_S3_PUSH_FILE: 'aws/s3_push.json'
+       CI_AWS_EC2_DEPLOYMENT_FILE: 'aws/create_deployment.json'
+     ```
+
+   - Alternatively, you can provide these JSON objects as [file-typed environment variables](../variables/README.md#custom-environment-variables-of-type-file).
+   In your project, go to **Settings > CI / CD > Variables** and add
+   the three variables listed above as file-typed environment variables.
+   For each variable, set the value to its corresponding JSON object.
+
+1. Provide the name of the stack you're creating and/or targeting, as an environment variable:
+
+   ```yaml
+   variables:
+     CI_AWS_CF_STACK_NAME: 'YourStackName'
+   ```
+
+1. Add this CI template to your `.gitlab-ci.yml`:
+
+   ```yaml
+   include:
+     - template: AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml
+   ```
+
+When running your project pipeline at this point:
+
+- Your AWS CloudFormation stack is created based on the content of your
+  `CI_AWS_CF_CREATE_STACK_FILE` file/variable.
+  If your stack already exists, this step is skipped, but the `provision` job it belongs to still
+  runs.
+- Your built application is pushed to your S3 bucket then and deployed to your EC2 instance, based
+  on the related JSON object's content. The deployment job finishes whenever the deployment to EC2
+  is done or has failed.

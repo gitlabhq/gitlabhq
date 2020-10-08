@@ -4,6 +4,8 @@ class Projects::Snippets::ApplicationController < Projects::ApplicationControlle
   include FindSnippet
   include SnippetAuthorizations
 
+  feature_category :snippets
+
   private
 
   # This overrides the default snippet create authorization

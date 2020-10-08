@@ -1,10 +1,7 @@
 import Search from './search';
-import initStateFilter from '~/search/state_filter';
-import initConfidentialFilter from '~/search/confidential_filter';
+import initSearchApp from '~/search';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initStateFilter();
-  initConfidentialFilter();
-
+  initSearchApp();
   return new Search();
 });

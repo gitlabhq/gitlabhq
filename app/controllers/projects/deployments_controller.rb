@@ -3,6 +3,8 @@
 class Projects::DeploymentsController < Projects::ApplicationController
   before_action :authorize_read_deployment!
 
+  feature_category :continuous_delivery
+
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     deployments = environment.deployments.reorder(created_at: :desc)

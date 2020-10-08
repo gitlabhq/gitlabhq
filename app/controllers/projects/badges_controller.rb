@@ -6,6 +6,8 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :no_cache_headers, only: [:pipeline, :coverage]
   before_action :authorize_read_build!, only: [:pipeline, :coverage]
 
+  feature_category :continuous_integration
+
   def pipeline
     pipeline_status = Gitlab::Badge::Pipeline::Status
       .new(project, params[:ref], opts: {

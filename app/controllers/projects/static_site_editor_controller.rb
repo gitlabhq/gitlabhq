@@ -13,6 +13,8 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
     push_frontend_feature_flag(:sse_image_uploads)
   end
 
+  feature_category :static_site_editor
+
   def show
     service_response = ::StaticSiteEditor::ConfigService.new(
       container: project,

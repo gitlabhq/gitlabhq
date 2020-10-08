@@ -39,6 +39,8 @@ class Projects::BlobController < Projects::ApplicationController
 
   track_redis_hll_event :create, :update, name: 'g_edit_by_sfe', feature: :track_editor_edit_actions, feature_default_enabled: true
 
+  feature_category :source_code_management
+
   def new
     commit unless @repository.empty?
   end

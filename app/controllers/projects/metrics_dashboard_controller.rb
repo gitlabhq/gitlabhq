@@ -14,6 +14,8 @@ module Projects
       push_frontend_feature_flag(:disable_metric_dashboard_refresh_rate)
     end
 
+    feature_category :metrics
+
     def show
       if environment
         render 'projects/environments/metrics'

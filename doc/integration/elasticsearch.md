@@ -66,14 +66,12 @@ source. You must [install it separately](https://www.elastic.co/guide/en/elastic
 Be sure to select your version. Providing detailed information on installing
 Elasticsearch is out of the scope of this document.
 
-NOTE: **Note:**
 Elasticsearch should be installed on a separate server, whether you install
 it yourself or use a cloud hosted offering like Elastic's [Elasticsearch Service](https://www.elastic.co/elasticsearch/service)
 (available on AWS, GCP, or Azure) or the [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html)
 service. Running Elasticsearch on the same server as GitLab is not recommended
 and can cause a degradation in GitLab instance performance.
 
-NOTE: **Note:**
 **For a single node Elasticsearch cluster the functional cluster health status
 will be yellow** (will never be green) because the primary shard is allocated but
 replicas can not be as there is no other node to which Elasticsearch can assign a
@@ -164,7 +162,6 @@ may need to set the `production -> elasticsearch -> indexer_path` setting in you
 
 ## Enabling Advanced Search
 
-NOTE: **Note:**
 For GitLab instances with more than 50GB repository data you can follow the instructions for [Indexing large
 instances](#indexing-large-instances) below.
 
@@ -309,7 +306,6 @@ CAUTION: **Caution:**
 It is highly recommended that you take a snapshot of your cluster to ensure
 there is a recovery path if anything goes wrong.
 
-NOTE: **Note:**
 Due to a technical limitation, there will be a slight downtime because of the
 fact that we need to reclaim the current `primary` index to be used as the alias.
 
@@ -407,7 +403,6 @@ To trigger the re-index from `primary` index:
 
 Under **Admin Area > Settings > General > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
 
-NOTE: **Note:**
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
 
 CAUTION: **Caution:**

@@ -8,6 +8,8 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!, except: [:download]
 
+  feature_category :continuous_integration
+
   def download
     redirect_to download_project_job_artifacts_path(project, job, params: request.query_parameters)
   end

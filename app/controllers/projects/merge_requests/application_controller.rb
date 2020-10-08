@@ -5,6 +5,8 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   before_action :merge_request
   before_action :authorize_read_merge_request!
 
+  feature_category :code_review
+
   private
 
   def merge_request

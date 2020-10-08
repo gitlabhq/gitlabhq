@@ -10,6 +10,8 @@ class ProfilesController < Profiles::ApplicationController
     push_frontend_feature_flag(:webauthn)
   end
 
+  feature_category :users
+
   def show
   end
 

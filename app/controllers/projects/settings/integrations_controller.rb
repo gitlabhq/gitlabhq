@@ -6,6 +6,8 @@ module Projects
       before_action :authorize_admin_project!
       layout "project_settings"
 
+      feature_category :integrations
+
       def show
         @services = @project.find_or_initialize_services
       end

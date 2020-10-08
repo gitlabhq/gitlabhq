@@ -10,6 +10,9 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
 
+  feature_category :source_code_management, [:index, :show, :new, :destroy]
+  feature_category :release_evidence, [:create]
+
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     params[:sort] = params[:sort].presence || sort_value_recently_updated

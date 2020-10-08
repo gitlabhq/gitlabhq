@@ -25,13 +25,6 @@ RSpec.describe "Every controller" do
       controller_actions.map do |controller, action|
         next if controller.feature_category_for_action(action)
 
-        next unless controller.to_s.start_with?('B', 'C', 'D', 'E', 'F',
-                                                'H', 'I', 'J', 'K', 'L',
-                                                'M', 'N', 'O', 'Q', 'R',
-                                                'S', 'T', 'U', 'V', 'W',
-                                                'X', 'Y', 'Z', 'A', 'G',
-                                                'Projects::MergeRequestsController')
-
         "#{controller}##{action}"
       end.compact
     end

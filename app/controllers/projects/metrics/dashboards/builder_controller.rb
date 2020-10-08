@@ -6,6 +6,8 @@ module Projects
       class BuilderController < Projects::ApplicationController
         before_action :authorize_metrics_dashboard!
 
+        feature_category :metrics
+
         def panel_preview
           respond_to do |format|
             format.json do

@@ -3,6 +3,8 @@
 class Profiles::PreferencesController < Profiles::ApplicationController
   before_action :user
 
+  feature_category :users
+
   def show
   end
 

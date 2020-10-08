@@ -11,6 +11,8 @@ module Projects
       helper_method :error_tracking_setting
       helper_method :tracing_setting
 
+      feature_category :incident_management
+
       def update
         result = ::Projects::Operations::UpdateService.new(project, current_user, update_params).execute
 

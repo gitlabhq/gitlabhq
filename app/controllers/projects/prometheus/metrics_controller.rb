@@ -6,6 +6,8 @@ module Projects
       before_action :authorize_admin_project!
       before_action :require_prometheus_metrics!
 
+      feature_category :metrics
+
       def active_common
         respond_to do |format|
           format.json do

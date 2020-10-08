@@ -5,6 +5,8 @@ class Profiles::EmailsController < Profiles::ApplicationController
   before_action -> { rate_limit!(:profile_add_new_email) }, only: [:create]
   before_action -> { rate_limit!(:profile_resend_email_confirmation) }, only: [:resend_confirmation_instructions]
 
+  feature_category :users
+
   def index
     @primary_email = current_user.email
     @emails = current_user.emails.order_id_desc

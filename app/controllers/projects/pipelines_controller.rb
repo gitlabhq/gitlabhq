@@ -31,6 +31,8 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   POLLING_INTERVAL = 10_000
 
+  feature_category :continuous_integration
+
   def index
     @pipelines = Ci::PipelinesFinder
       .new(project, current_user, index_params)

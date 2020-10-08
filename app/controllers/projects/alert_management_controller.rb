@@ -3,6 +3,8 @@
 class Projects::AlertManagementController < Projects::ApplicationController
   before_action :authorize_read_alert_management_alert!
 
+  feature_category :alert_management
+
   def index
   end
 

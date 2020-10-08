@@ -123,7 +123,7 @@ export default {
           v-if="tag.location"
           :title="tag.location"
           :text="tag.location"
-          css-class="btn-default btn-transparent btn-clipboard"
+          category="tertiary"
         />
 
         <gl-icon

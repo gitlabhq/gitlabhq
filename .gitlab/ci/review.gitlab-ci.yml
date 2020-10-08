@@ -16,6 +16,11 @@ review-cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
+.base-before_script: &base-before_script
+  - source ./scripts/utils.sh
+  - source ./scripts/review_apps/review-apps.sh
+  - install_api_client_dependencies_with_apk
+
 review-build-cng:
   extends:
     - .default-retry
@@ -23,7 +28,7 @@ review-build-cng:
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
-    - source scripts/utils.sh
+    - source ./scripts/utils.sh
     - install_api_client_dependencies_with_apk
     - install_gitlab_gem
   needs:
@@ -62,9 +67,7 @@ review-deploy:
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
     - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
-    - source ./scripts/utils.sh
-    - install_api_client_dependencies_with_apk
-    - source scripts/review_apps/review-apps.sh
+    - *base-before_script
   script:
     - check_kube_domain
     - ensure_namespace
@@ -97,9 +100,7 @@ review-deploy:
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
   before_script:
-    - apk add --update openssl
-    - source ./scripts/utils.sh
-    - source ./scripts/review_apps/review-apps.sh
+    - *base-before_script
 
 review-stop-failed-deployment:
   extends:
@@ -142,8 +143,7 @@ review-stop:
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - echo "${QA_IMAGE}"
-    - source scripts/utils.sh
-    - install_api_client_dependencies_with_apk
+    - *base-before_script
     - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
   artifacts:
     paths:
@@ -231,6 +231,6 @@ danger-review:
   stage: test
   needs: []
   script:
-    - source scripts/utils.sh
-    - retry yarn install --frozen-lockfile
+    - source ./scripts/utils.sh
+    - run_timed_command "retry yarn install --frozen-lockfile"
     - danger --fail-on-errors=true --verbose

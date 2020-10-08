@@ -8,6 +8,8 @@ class Projects::PagesController < Projects::ApplicationController
   before_action :authorize_update_pages!, except: [:show, :destroy]
   before_action :authorize_remove_pages!, only: [:destroy]
 
+  feature_category :pages
+
   # rubocop: disable CodeReuse/ActiveRecord
   def show
     @domains = @project.pages_domains.order(:domain).present(current_user: current_user)

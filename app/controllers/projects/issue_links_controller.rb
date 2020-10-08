@@ -7,6 +7,8 @@ module Projects
     before_action :authorize_admin_issue_link!, only: [:create, :destroy]
     before_action :authorize_issue_link_association!, only: :destroy
 
+    feature_category :issue_tracking
+
     private
 
     def authorize_admin_issue_link!

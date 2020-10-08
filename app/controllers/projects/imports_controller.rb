@@ -11,6 +11,8 @@ class Projects::ImportsController < Projects::ApplicationController
   before_action :redirect_if_progress, except: :show
   before_action :redirect_if_no_import, only: :show
 
+  feature_category :importers
+
   def new
   end
 

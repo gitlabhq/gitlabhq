@@ -205,7 +205,7 @@ For the static text strings we suggest two patterns for using these translations
 
   When possible, you should opt for this pattern, as this allows you to import these strings directly into your component specs for re-use during testing.
 
-- Internal component `$options` object `:
+- Internal component `$options` object:
 
   ```javascript
   <script>

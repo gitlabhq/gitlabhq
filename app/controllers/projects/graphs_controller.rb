@@ -11,6 +11,8 @@ class Projects::GraphsController < Projects::ApplicationController
 
   track_unique_visits :charts, target_id: 'p_analytics_repo'
 
+  feature_category :source_code_management
+
   def show
     respond_to do |format|
       format.html

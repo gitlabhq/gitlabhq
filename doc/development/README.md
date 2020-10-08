@@ -164,11 +164,11 @@ See [database guidelines](database/index.md).
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
 
-## Telemetry guides
+## Product Analytics guides
 
-- [Telemetry guide](telemetry/index.md)
-- [Usage Ping guide](telemetry/usage_ping.md)
-- [Snowplow guide](telemetry/snowplow.md)
+- [Product Analytics guide](product_analytics/index.md)
+- [Usage Ping guide](product_analytics/usage_ping.md)
+- [Snowplow guide](product_analytics/snowplow.md)
 
 ## Experiment guide
 

@@ -8,6 +8,8 @@ class Projects::Tags::ReleasesController < Projects::ApplicationController
   before_action :tag
   before_action :release
 
+  feature_category :release_evidence
+
   def edit
   end
 

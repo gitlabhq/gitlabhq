@@ -5,6 +5,8 @@ class Projects::TemplatesController < Projects::ApplicationController
   before_action :authorize_can_read_issuable!
   before_action :get_template_class
 
+  feature_category :templates
+
   def show
     template = @template_type.find(params[:key], project)
 

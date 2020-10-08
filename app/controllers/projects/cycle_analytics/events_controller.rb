@@ -11,6 +11,8 @@ module Projects
       before_action :authorize_read_issue!, only: [:issue, :production]
       before_action :authorize_read_merge_request!, only: [:code, :review]
 
+      feature_category :planning_analytics
+
       def issue
         render_events(cycle_analytics[:issue].events)
       end

@@ -40,7 +40,7 @@ the `author` field. GitLab team members **should not**.
   and with `type` set to `security`.
 - Any user-facing change **should** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
 - Performance improvements **should** have a changelog entry.
-- Changes that need to be documented in the Telemetry [Event Dictionary](telemetry/event_dictionary.md)
+- Changes that need to be documented in the Product Analytics [Event Dictionary](product_analytics/event_dictionary.md)
   also require a changelog entry.
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.

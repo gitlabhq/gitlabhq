@@ -14,14 +14,17 @@
     SIZE: 0  # number of external projects to fork, requires network connection
     # SEED_NESTED_GROUPS: "false" # requires network connection
 
+.run-dev-fixtures-script: &run-dev-fixtures-script
+  - run_timed_command "scripts/gitaly-test-build"
+  - run_timed_command "scripts/gitaly-test-spawn"
+  - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"
+
 run-dev-fixtures:
   extends:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-and-foss
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"
+    - *run-dev-fixtures-script
 
 run-dev-fixtures-ee:
   extends:
@@ -29,7 +32,5 @@ run-dev-fixtures-ee:
     - .dev-fixtures:rules:ee-only
     - .use-pg11-ee
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
     - cp ee/db/fixtures/development/* $FIXTURE_PATH
-    - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"
+    - *run-dev-fixtures-script
