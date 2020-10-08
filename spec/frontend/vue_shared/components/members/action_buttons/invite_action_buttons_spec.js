@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import InviteActionButtons from '~/vue_shared/components/members/action_buttons/invite_action_buttons.vue';
 import RemoveMemberButton from '~/vue_shared/components/members/action_buttons/remove_member_button.vue';
+import ResendInviteButton from '~/vue_shared/components/members/action_buttons/resend_invite_button.vue';
 import { invite as member } from '../mock_data';
 
 describe('InviteActionButtons', () => {
@@ -16,6 +17,7 @@ describe('InviteActionButtons', () => {
   };
 
   const findRemoveMemberButton = () => wrapper.find(RemoveMemberButton);
+  const findResendInviteButton = () => wrapper.find(ResendInviteButton);
 
   afterEach(() => {
     wrapper.destroy();
@@ -54,6 +56,30 @@ describe('InviteActionButtons', () => {
       });
 
       expect(findRemoveMemberButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when user has `canResend` permissions', () => {
+    it('renders resend invite button', () => {
+      createComponent({
+        permissions: {
+          canResend: true,
+        },
+      });
+
+      expect(findResendInviteButton().exists()).toBe(true);
+    });
+  });
+
+  describe('when user does not have `canResend` permissions', () => {
+    it('does not render resend invite button', () => {
+      createComponent({
+        permissions: {
+          canResend: false,
+        },
+      });
+
+      expect(findResendInviteButton().exists()).toBe(false);
     });
   });
 });

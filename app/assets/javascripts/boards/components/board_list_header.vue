@@ -176,7 +176,6 @@ export default {
   <header
     :class="{
       'has-border': list.label && list.label.color,
-      'gl-relative': list.isExpanded,
       'gl-h-full': !list.isExpanded,
       'board-inner gl-rounded-top-left-base gl-rounded-top-right-base': isSwimlanesHeader,
     }"

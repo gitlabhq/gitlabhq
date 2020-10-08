@@ -56,22 +56,22 @@ FactoryBot.define do
     end
 
     trait :triggered do
-      status { AlertManagement::Alert::STATUSES[:triggered] }
+      status { AlertManagement::Alert.status_value(:triggered) }
       without_ended_at
     end
 
     trait :acknowledged do
-      status { AlertManagement::Alert::STATUSES[:acknowledged] }
+      status { AlertManagement::Alert.status_value(:acknowledged) }
       without_ended_at
     end
 
     trait :resolved do
-      status { AlertManagement::Alert::STATUSES[:resolved] }
+      status { AlertManagement::Alert.status_value(:resolved) }
       with_ended_at
     end
 
     trait :ignored do
-      status { AlertManagement::Alert::STATUSES[:ignored] }
+      status { AlertManagement::Alert.status_value(:ignored) }
       without_ended_at
     end
 

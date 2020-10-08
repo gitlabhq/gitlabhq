@@ -40,7 +40,8 @@ module Types
       field :status,
             AlertManagement::StatusEnum,
             null: true,
-            description: 'Status of the alert'
+            description: 'Status of the alert',
+            method: :status_name
 
       field :service,
             GraphQL::STRING_TYPE,

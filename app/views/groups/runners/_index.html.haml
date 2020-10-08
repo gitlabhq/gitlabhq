@@ -7,6 +7,8 @@
 .row
   .col-sm-6
     = render 'groups/runners/group_runners'
+  .col-sm-6
+    = render 'groups/runners/shared_runners'
 
 %h4.underlined-title
   = _('Available Runners: %{runners}').html_safe % { runners: limited_counter_with_delimiter(@all_group_runners) }

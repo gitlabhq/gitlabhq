@@ -171,7 +171,7 @@ export default {
       />
     </template>
 
-    <template v-if="!invalidTag" #details_published>
+    <template v-if="!invalidTag" #details-published>
       <details-row icon="clock" data-testid="published-date-detail">
         <gl-sprintf :message="$options.i18n.PUBLISHED_DETAILS_ROW_TEXT">
           <template #repositoryPath>
@@ -186,7 +186,7 @@ export default {
         </gl-sprintf>
       </details-row>
     </template>
-    <template v-if="!invalidTag" #details_manifest_digest>
+    <template v-if="!invalidTag" #details-manifest-digest>
       <details-row icon="log" data-testid="manifest-detail">
         <gl-sprintf :message="$options.i18n.MANIFEST_DETAILS_ROW_TEST">
           <template #digest>
@@ -202,7 +202,7 @@ export default {
         />
       </details-row>
     </template>
-    <template v-if="!invalidTag" #details_configuration_digest>
+    <template v-if="!invalidTag" #details-configuration-digest>
       <details-row icon="cloud-gear" data-testid="configuration-detail">
         <gl-sprintf :message="$options.i18n.CONFIGURATION_DETAILS_ROW_TEST">
           <template #digest>

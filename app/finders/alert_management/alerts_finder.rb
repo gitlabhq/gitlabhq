@@ -2,8 +2,8 @@
 
 module AlertManagement
   class AlertsFinder
-    # @return [Hash<Integer,Integer>] Mapping of status id to count
-    #          ex) { 0: 6, ...etc }
+    # @return [Hash<Symbol,Integer>] Mapping of status id to count
+    #          ex) { triggered: 6, ...etc }
     def self.counts_by_status(current_user, project, params = {})
       new(current_user, project, params).execute.counts_by_status
     end
@@ -35,7 +35,7 @@ module AlertManagement
     end
 
     def by_status(collection)
-      values = AlertManagement::Alert::STATUSES.values & Array(params[:status])
+      values = AlertManagement::Alert.status_names & Array(params[:status])
 
       values.present? ? collection.for_status(values) : collection
     end

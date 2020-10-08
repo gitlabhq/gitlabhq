@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { sortBy, pull } from 'lodash';
+import { sortBy, pull, union } from 'lodash';
 import { formatIssue, moveIssueListHelper } from '../boards_util';
 import * as mutationTypes from './mutation_types';
 import { s__ } from '~/locale';
@@ -99,20 +99,30 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.RECEIVE_ISSUES_FOR_LIST_SUCCESS]: (state, { listIssues, listId }) => {
+  [mutationTypes.REQUEST_ISSUES_FOR_LIST]: (state, { listId, fetchNext }) => {
+    Vue.set(state.listsFlags, listId, { [fetchNext ? 'isLoadingMore' : 'isLoading']: true });
+  },
+
+  [mutationTypes.RECEIVE_ISSUES_FOR_LIST_SUCCESS]: (
+    state,
+    { listIssues, listPageInfo, listId },
+  ) => {
     const { listData, issues } = listIssues;
     Vue.set(state, 'issues', { ...state.issues, ...issues });
-    Vue.set(state.issuesByListId, listId, listData[listId]);
-    const listIndex = state.boardLists.findIndex(l => l.id === listId);
-    Vue.set(state.boardLists[listIndex], 'loading', false);
+    Vue.set(
+      state.issuesByListId,
+      listId,
+      union(state.issuesByListId[listId] || [], listData[listId]),
+    );
+    Vue.set(state.pageInfoByListId, listId, listPageInfo[listId]);
+    Vue.set(state.listsFlags, listId, { isLoading: false, isLoadingMore: false });
   },
 
   [mutationTypes.RECEIVE_ISSUES_FOR_LIST_FAILURE]: (state, listId) => {
     state.error = s__(
       'Boards|An error occurred while fetching the board issues. Please reload the page.',
     );
-    const listIndex = state.boardLists.findIndex(l => l.id === listId);
-    Vue.set(state.boardLists[listIndex], 'loading', false);
+    Vue.set(state.listsFlags, listId, { isLoading: false, isLoadingMore: false });
   },
 
   [mutationTypes.RESET_ISSUES]: state => {

@@ -300,6 +300,14 @@ RSpec/TimecopFreeze:
     - 'ee/spec/**/*.rb'
     - 'qa/spec/**/*.rb'
 
+RSpec/TimecopTravel:
+  Enabled: false
+  AutoCorrect: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'qa/spec/**/*.rb'
+
 Naming/PredicateName:
   Enabled: true
   Exclude:

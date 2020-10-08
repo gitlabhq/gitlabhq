@@ -60,6 +60,25 @@ RSpec.describe Gitlab::SearchResults do
       end
     end
 
+    describe '#highlight_map' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:scope, :expected) do
+        'projects'       | {}
+        'issues'         | {}
+        'merge_requests' | {}
+        'milestones'     | {}
+        'users'          | {}
+        'unknown'        | {}
+      end
+
+      with_them do
+        it 'returns the expected highlight_map' do
+          expect(results.highlight_map(scope)).to eq(expected)
+        end
+      end
+    end
+
     describe '#formatted_limited_count' do
       using RSpec::Parameterized::TableSyntax
 

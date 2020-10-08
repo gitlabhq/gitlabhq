@@ -67,15 +67,15 @@
             - unless @user.skype.blank?
               .profile-link-holder.middle-dot-divider
                 = link_to "skype:#{@user.skype}", title: "Skype" do
-                  = icon('skype')
+                  = sprite_icon('skype')
             - unless @user.linkedin.blank?
               .profile-link-holder.middle-dot-divider
                 = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = icon('linkedin-square')
+                  = sprite_icon('linkedin')
             - unless @user.twitter.blank?
               .profile-link-holder.middle-dot-divider-sm
                 = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = icon('twitter-square')
+                  = sprite_icon('twitter')
             - unless @user.website_url.blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
                 = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'

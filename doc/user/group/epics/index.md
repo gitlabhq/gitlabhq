@@ -65,7 +65,12 @@ graph TD
 ```
 
 See [Manage issues assigned to an epic](manage_epics.md#manage-issues-assigned-to-an-epic) for steps
-to add an issue to an epic, reorder issues, move issues between epics, or promote an issue to an epic.
+to:
+
+- Add an issue to an epic
+- Reorder issues
+- Move an issue between epics
+- Promote an issue to an epic
 
 ## Issue health status in Epic tree **(ULTIMATE)**
 

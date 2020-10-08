@@ -53,4 +53,25 @@ RSpec.describe Ci::RunnersHelper do
       end
     end
   end
+
+  describe '#group_shared_runners_settings_data' do
+    let(:group) { create(:group, parent: parent, shared_runners_enabled: false) }
+    let(:parent) { create(:group) }
+
+    it 'returns group data for top level group' do
+      data = group_shared_runners_settings_data(parent)
+
+      expect(data[:update_path]).to eq("/api/v4/groups/#{parent.id}")
+      expect(data[:shared_runners_availability]).to eq('enabled')
+      expect(data[:parent_shared_runners_availability]).to eq(nil)
+    end
+
+    it 'returns group data for child group' do
+      data = group_shared_runners_settings_data(group)
+
+      expect(data[:update_path]).to eq("/api/v4/groups/#{group.id}")
+      expect(data[:shared_runners_availability]).to eq('disabled_and_unoverridable')
+      expect(data[:parent_shared_runners_availability]).to eq('enabled')
+    end
+  end
 end

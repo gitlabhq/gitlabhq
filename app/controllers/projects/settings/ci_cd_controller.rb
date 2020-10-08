@@ -12,6 +12,8 @@ module Projects
         push_frontend_feature_flag(:ajax_new_deploy_token, @project)
       end
 
+      helper_method :highlight_badge
+
       def show
         if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
           @triggers_json = ::Ci::TriggerSerializer.new.represent(
@@ -59,6 +61,10 @@ module Projects
       end
 
       private
+
+      def highlight_badge(name, content, language = nil)
+        Gitlab::Highlight.highlight(name, content, language: language)
+      end
 
       def update_params
         params.require(:project).permit(*permitted_project_params)

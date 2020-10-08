@@ -54,15 +54,15 @@ export default {
       </gl-sprintf>
     </template>
 
-    <template v-if="packageTypeDisplay" #metadata_type>
+    <template v-if="packageTypeDisplay" #metadata-type>
       <metadata-item data-testid="package-type" icon="package" :text="packageTypeDisplay" />
     </template>
 
-    <template #metadata_size>
+    <template #metadata-size>
       <metadata-item data-testid="package-size" icon="disk" :text="totalSize" />
     </template>
 
-    <template v-if="packagePipeline" #metadata_pipeline>
+    <template v-if="packagePipeline" #metadata-pipeline>
       <metadata-item
         data-testid="pipeline-project"
         icon="review-list"
@@ -71,11 +71,11 @@ export default {
       />
     </template>
 
-    <template v-if="packagePipeline" #metadata_ref>
+    <template v-if="packagePipeline" #metadata-ref>
       <metadata-item data-testid="package-ref" icon="branch" :text="packagePipeline.ref" />
     </template>
 
-    <template v-if="hasTagsToDisplay" #metadata_tags>
+    <template v-if="hasTagsToDisplay" #metadata-tags>
       <package-tags :tag-display-limit="2" :tags="packageEntity.tags" hide-label />
     </template>
 

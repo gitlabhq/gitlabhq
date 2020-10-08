@@ -3,16 +3,15 @@ import { sortBy, pick } from 'lodash';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import createDefaultClient from '~/lib/graphql';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { BoardType, ListType, inactiveId } from '~/boards/constants';
 import * as types from './mutation_types';
-import { formatListIssues, fullBoardId } from '../boards_util';
+import { formatListIssues, fullBoardId, formatListsPageInfo } from '../boards_util';
 import boardStore from '~/boards/stores/boards_store';
 
 import listsIssuesQuery from '../queries/lists_issues.query.graphql';
-import projectBoardQuery from '../queries/project_board.query.graphql';
-import groupBoardQuery from '../queries/group_board.query.graphql';
+import boardListsQuery from '../queries/board_lists.query.graphql';
 import createBoardListMutation from '../queries/board_list_create.mutation.graphql';
 import updateBoardListMutation from '../queries/board_list_update.mutation.graphql';
 import issueMoveListMutation from '../queries/issue_move_list.mutation.graphql';
@@ -22,7 +21,12 @@ const notImplemented = () => {
   throw new Error('Not implemented!');
 };
 
-export const gqlClient = createDefaultClient();
+export const gqlClient = createGqClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);
 
 export default {
   setInitialBoardData: ({ commit }, data) => {
@@ -50,27 +54,20 @@ export default {
   },
 
   fetchLists: ({ commit, state, dispatch }) => {
-    const { endpoints, boardType } = state;
+    const { endpoints, boardType, filterParams } = state;
     const { fullPath, boardId } = endpoints;
-
-    let query;
-    if (boardType === BoardType.group) {
-      query = groupBoardQuery;
-    } else if (boardType === BoardType.project) {
-      query = projectBoardQuery;
-    } else {
-      createFlash(__('Invalid board'));
-      return Promise.reject();
-    }
 
     const variables = {
       fullPath,
       boardId: fullBoardId(boardId),
+      filters: filterParams,
+      isGroup: boardType === BoardType.group,
+      isProject: boardType === BoardType.project,
     };
 
     return gqlClient
       .query({
-        query,
+        query: boardListsQuery,
         variables,
       })
       .then(({ data }) => {
@@ -197,7 +194,9 @@ export default {
     notImplemented();
   },
 
-  fetchIssuesForList: ({ state, commit }, listId) => {
+  fetchIssuesForList: ({ state, commit }, { listId, fetchNext = false }) => {
+    commit(types.REQUEST_ISSUES_FOR_LIST, { listId, fetchNext });
+
     const { endpoints, boardType, filterParams } = state;
     const { fullPath, boardId } = endpoints;
 
@@ -208,6 +207,8 @@ export default {
       filters: filterParams,
       isGroup: boardType === BoardType.group,
       isProject: boardType === BoardType.project,
+      first: 20,
+      after: fetchNext ? state.pageInfoByListId[listId].endCursor : undefined,
     };
 
     return gqlClient
@@ -221,7 +222,8 @@ export default {
       .then(({ data }) => {
         const { lists } = data[boardType]?.board;
         const listIssues = formatListIssues(lists);
-        commit(types.RECEIVE_ISSUES_FOR_LIST_SUCCESS, { listIssues, listId });
+        const listPageInfo = formatListsPageInfo(lists);
+        commit(types.RECEIVE_ISSUES_FOR_LIST_SUCCESS, { listIssues, listPageInfo, listId });
       })
       .catch(() => commit(types.RECEIVE_ISSUES_FOR_LIST_FAILURE, listId));
   },

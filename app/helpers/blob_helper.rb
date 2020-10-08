@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 module BlobHelper
-  def highlight(file_name, file_content, language: nil, plain: false)
-    highlighted = Gitlab::Highlight.highlight(file_name, file_content, plain: plain, language: language)
-
-    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
-  end
-
   def no_highlight_files
     %w(credits changelog news copying copyright license authors)
   end
@@ -148,7 +142,7 @@ module BlobHelper
   # mode - File unix mode
   # mode - File name
   def blob_icon(mode, name)
-    icon("#{file_type_icon_class('file', mode, name)} fw")
+    sprite_icon(file_type_icon_class('file', mode, name))
   end
 
   def blob_raw_url(**kwargs)

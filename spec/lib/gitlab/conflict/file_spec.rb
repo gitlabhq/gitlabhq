@@ -262,7 +262,7 @@ RSpec.describe Gitlab::Conflict::File do
     end
 
     it 'includes the blob icon for the file' do
-      expect(conflict_file.as_json[:blob_icon]).to eq('file-text-o')
+      expect(conflict_file.as_json[:blob_icon]).to eq('doc-text')
     end
 
     context 'with the full_content option passed' do

@@ -58,9 +58,9 @@ describe('list item', () => {
 
   describe.each`
     slotNames
-    ${['details_foo']}
-    ${['details_foo', 'details_bar']}
-    ${['details_foo', 'details_bar', 'details_baz']}
+    ${['details-foo']}
+    ${['details-foo', 'details-bar']}
+    ${['details-foo', 'details-bar', 'details-baz']}
   `('$slotNames details slots', ({ slotNames }) => {
     const slotMocks = slotNames.reduce((acc, current) => {
       acc[current] = `<div data-testid="${current}" />`;
@@ -89,7 +89,7 @@ describe('list item', () => {
 
   describe('details toggle button', () => {
     it('is visible when at least one details slot exists', async () => {
-      mountComponent({}, { details_foo: '<span></span>' });
+      mountComponent({}, { 'details-foo': '<span></span>' });
       await wrapper.vm.$nextTick();
       expect(findToggleDetailsButton().exists()).toBe(true);
     });

@@ -108,6 +108,11 @@ module Gitlab
       UsersFinder.new(current_user, search: query).execute
     end
 
+    # highlighting is only performed by Elasticsearch backed results
+    def highlight_map(scope)
+      {}
+    end
+
     private
 
     def collection_for(scope)

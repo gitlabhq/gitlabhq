@@ -20,6 +20,7 @@ module AlertManagement
       resolved: 2,
       ignored: 3
     }.freeze
+    private_constant :STATUSES
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -109,7 +110,7 @@ module AlertManagement
     delegate :details_url, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
-    scope :for_status, -> (status) { where(status: status) }
+    scope :for_status, -> (status) { with_status(status) }
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
     scope :for_environment, -> (environment) { where(environment: environment) }
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
@@ -130,12 +131,32 @@ module AlertManagement
     # Ascending sort order sorts statuses: Ignored > Resolved > Acknowledged > Triggered
     # Descending sort order sorts statuses: Triggered > Acknowledged > Resolved > Ignored
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
-    scope :order_status,        -> (sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
+    scope :order_status, -> (sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
 
-    scope :counts_by_status, -> { group(:status).count }
     scope :counts_by_project_id, -> { group(:project_id).count }
 
     alias_method :state, :status_name
+
+    def self.state_machine_statuses
+      @state_machine_statuses ||= state_machines[:status].states.to_h { |s| [s.name, s.value] }
+    end
+    private_class_method :state_machine_statuses
+
+    def self.status_value(name)
+      state_machine_statuses[name]
+    end
+
+    def self.status_name(raw_status)
+      state_machine_statuses.key(raw_status)
+    end
+
+    def self.counts_by_status
+      group(:status).count.transform_keys { |k| status_name(k) }
+    end
+
+    def self.status_names
+      @status_names ||= state_machine_statuses.keys
+    end
 
     def self.sort_by_attribute(method)
       case method.to_s

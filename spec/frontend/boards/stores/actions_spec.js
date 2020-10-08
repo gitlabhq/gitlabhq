@@ -250,6 +250,13 @@ describe('fetchIssuesForList', () => {
     boardType: 'group',
   };
 
+  const mockIssuesNodes = mockIssues.map(issue => ({ node: issue }));
+
+  const pageInfo = {
+    endCursor: '',
+    hasNextPage: false,
+  };
+
   const queryResponse = {
     data: {
       group: {
@@ -259,7 +266,8 @@ describe('fetchIssuesForList', () => {
               {
                 id: listId,
                 issues: {
-                  nodes: mockIssues,
+                  edges: mockIssuesNodes,
+                  pageInfo,
                 },
               },
             ],
@@ -271,17 +279,25 @@ describe('fetchIssuesForList', () => {
 
   const formattedIssues = formatListIssues(queryResponse.data.group.board.lists);
 
-  it('should commit mutation RECEIVE_ISSUES_FOR_LIST_SUCCESS on success', done => {
+  const listPageInfo = {
+    [listId]: pageInfo,
+  };
+
+  it('should commit mutations REQUEST_ISSUES_FOR_LIST and RECEIVE_ISSUES_FOR_LIST_SUCCESS on success', done => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     testAction(
       actions.fetchIssuesForList,
-      listId,
+      { listId },
       state,
       [
         {
+          type: types.REQUEST_ISSUES_FOR_LIST,
+          payload: { listId, fetchNext: false },
+        },
+        {
           type: types.RECEIVE_ISSUES_FOR_LIST_SUCCESS,
-          payload: { listIssues: formattedIssues, listId },
+          payload: { listIssues: formattedIssues, listPageInfo, listId },
         },
       ],
       [],
@@ -289,14 +305,20 @@ describe('fetchIssuesForList', () => {
     );
   });
 
-  it('should commit mutation RECEIVE_ISSUES_FOR_LIST_FAILURE on failure', done => {
+  it('should commit mutations REQUEST_ISSUES_FOR_LIST and RECEIVE_ISSUES_FOR_LIST_FAILURE on failure', done => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(Promise.reject());
 
     testAction(
       actions.fetchIssuesForList,
-      listId,
+      { listId },
       state,
-      [{ type: types.RECEIVE_ISSUES_FOR_LIST_FAILURE, payload: listId }],
+      [
+        {
+          type: types.REQUEST_ISSUES_FOR_LIST,
+          payload: { listId, fetchNext: false },
+        },
+        { type: types.RECEIVE_ISSUES_FOR_LIST_FAILURE, payload: listId },
+      ],
       [],
       done,
     );

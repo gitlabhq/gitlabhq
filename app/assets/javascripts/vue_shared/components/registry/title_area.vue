@@ -31,7 +31,7 @@ export default {
     };
   },
   mounted() {
-    this.metadataSlots = Object.keys(this.$slots).filter(k => k.startsWith('metadata_'));
+    this.metadataSlots = Object.keys(this.$slots).filter(k => k.startsWith('metadata-'));
   },
 };
 </script>

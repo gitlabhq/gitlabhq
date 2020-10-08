@@ -88,15 +88,13 @@ parts of the company. The developer responsible needs to determine
 whether this is necessary and the appropriate level of communication.
 This depends on the feature and what sort of impact it might have.
 
-As a guideline:
+Guidelines:
 
-- For simple features that are low-risk, and easily rolled back, then
-  just proceed to [enabling the feature in `#production`](#process).
-- For features that will impact user experience consider notifying
+1. If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
+1. For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
+1. For features that impact the user experience, consider notifying
+  `#support_gitlab-com` first.
   `#support_gitlab-com` beforehand.
-- For features with significant downstream effects (e.g.: turning on/off
-  Elasticsearch indexing) consider coordinating with `#production`
-  beforehand.
 
 #### Process
 

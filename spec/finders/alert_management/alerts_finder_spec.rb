@@ -39,19 +39,19 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       end
 
       context 'status given' do
-        let(:params) { { status: AlertManagement::Alert::STATUSES[:resolved] } }
+        let(:params) { { status: :resolved } }
 
         it { is_expected.to match_array(resolved_alert) }
 
         context 'with an array of statuses' do
           let(:triggered_alert) { create(:alert_management_alert) }
-          let(:params) { { status: [AlertManagement::Alert::STATUSES[:resolved]] } }
+          let(:params) { { status: [:resolved] } }
 
           it { is_expected.to match_array(resolved_alert) }
         end
 
         context 'with no alerts of status' do
-          let(:params) { { status: AlertManagement::Alert::STATUSES[:acknowledged] } }
+          let(:params) { { status: :acknowledged } }
 
           it { is_expected.to be_empty }
         end
@@ -169,12 +169,6 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
         end
 
         context 'when sorting by status' do
-          let(:statuses) { AlertManagement::Alert::STATUSES }
-          let(:triggered) { statuses[:triggered] }
-          let(:acknowledged) { statuses[:acknowledged] }
-          let(:resolved) { statuses[:resolved] }
-          let(:ignored) { statuses[:ignored] }
-
           let_it_be(:alert_triggered) { create(:alert_management_alert, project: project) }
           let_it_be(:alert_acknowledged) { create(:alert_management_alert, :acknowledged, project: project) }
           let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
@@ -184,7 +178,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
             let(:params) { { sort: 'status_asc' } }
 
             it 'sorts by status: Ignored > Resolved > Acknowledged > Triggered' do
-              expect(execute.map(&:status).uniq).to eq([ignored, resolved, acknowledged, triggered])
+              expect(execute.map(&:status_name).uniq).to eq([:ignored, :resolved, :acknowledged, :triggered])
             end
           end
 
@@ -192,7 +186,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
             let(:params) { { sort: 'status_desc' } }
 
             it 'sorts by status: Triggered > Acknowledged > Resolved > Ignored' do
-              expect(execute.map(&:status).uniq).to eq([triggered, acknowledged, resolved, ignored])
+              expect(execute.map(&:status_name).uniq).to eq([:triggered, :acknowledged, :resolved, :ignored])
             end
           end
         end
@@ -261,12 +255,12 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       project.add_developer(current_user)
     end
 
-    it { is_expected.to match({ 2 => 1, 3 => 1 }) } # one resolved and one ignored
+    it { is_expected.to match(resolved: 1, ignored: 1) }
 
     context 'when filtering params are included' do
-      let(:params) { { status: AlertManagement::Alert::STATUSES[:resolved] } }
+      let(:params) { { status: :resolved } }
 
-      it { is_expected.to match({ 2 => 1 }) } # one resolved
+      it { is_expected.to match(resolved: 1) }
     end
   end
 end

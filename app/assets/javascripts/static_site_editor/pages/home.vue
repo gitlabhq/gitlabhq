@@ -1,10 +1,10 @@
 <script>
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 
 import SkeletonLoader from '../components/skeleton_loader.vue';
 import EditArea from '../components/edit_area.vue';
+import EditMetaModal from '../components/edit_meta_modal.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
@@ -18,6 +18,7 @@ export default {
   components: {
     SkeletonLoader,
     EditArea,
+    EditMetaModal,
     InvalidContentMessage,
     SubmitChangesError,
   },
@@ -51,6 +52,7 @@ export default {
   data() {
     return {
       content: null,
+      images: null,
       submitChangesError: null,
       isSavingChanges: false,
     };
@@ -67,16 +69,21 @@ export default {
     Tracking.event(document.body.dataset.page, TRACKING_ACTION_INITIALIZE_EDITOR);
   },
   methods: {
+    onHideModal() {
+      this.isSavingChanges = false;
+      this.$refs.editMetaModal.hide();
+    },
     onDismissError() {
       this.submitChangesError = null;
     },
-    onSubmit({ content, images }) {
+    onPrepareSubmit({ content, images }) {
       this.content = content;
-      this.submitChanges(images);
-    },
-    submitChanges(images) {
-      this.isSavingChanges = true;
+      this.images = images;
 
+      this.isSavingChanges = true;
+      this.$refs.editMetaModal.show();
+    },
+    onSubmit(mergeRequestMeta) {
       // eslint-disable-next-line promise/catch-or-return
       this.$apollo
         .mutate({
@@ -100,13 +107,8 @@ export default {
               username: this.appData.username,
               sourcePath: this.appData.sourcePath,
               content: this.content,
-              images,
-              mergeRequestMeta: {
-                title: sprintf(s__(`StaticSiteEditor|Update %{sourcePath} file`), {
-                  sourcePath: this.appData.sourcePath,
-                }),
-                description: s__('StaticSiteEditor|Copy update'),
-              },
+              images: this.images,
+              mergeRequestMeta,
             },
           },
         })
@@ -127,7 +129,7 @@ export default {
       <submit-changes-error
         v-if="submitChangesError"
         :error="submitChangesError"
-        @retry="submitChanges"
+        @retry="onSubmit"
         @dismiss="onDismissError"
       />
       <edit-area
@@ -136,7 +138,13 @@ export default {
         :content="sourceContent.content"
         :saving-changes="isSavingChanges"
         :return-url="appData.returnUrl"
-        @submit="onSubmit"
+        @submit="onPrepareSubmit"
+      />
+      <edit-meta-modal
+        ref="editMetaModal"
+        :source-path="appData.sourcePath"
+        @primary="onSubmit"
+        @hide="onHideModal"
       />
     </template>
 

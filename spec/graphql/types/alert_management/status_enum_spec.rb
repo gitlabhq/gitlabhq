@@ -9,10 +9,10 @@ RSpec.describe GitlabSchema.types['AlertManagementStatus'] do
     using RSpec::Parameterized::TableSyntax
 
     where(:status_name, :status_value) do
-      'TRIGGERED'    | 0
-      'ACKNOWLEDGED' | 1
-      'RESOLVED'     | 2
-      'IGNORED'      | 3
+      'TRIGGERED'    | :triggered
+      'ACKNOWLEDGED' | :acknowledged
+      'RESOLVED'     | :resolved
+      'IGNORED'      | :ignored
     end
 
     with_them do

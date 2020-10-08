@@ -114,128 +114,128 @@ RSpec.describe IconsHelper do
   end
 
   describe 'file_type_icon_class' do
-    it 'returns folder class' do
-      expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder'
+    it 'returns folder-o class' do
+      expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder-o'
     end
 
     it 'returns share class' do
       expect(file_type_icon_class('file', '120000', 'link')).to eq 'share'
     end
 
-    it 'returns file-pdf-o class with .pdf' do
-      expect(file_type_icon_class('file', 0, 'filename.pdf')).to eq 'file-pdf-o'
+    it 'returns document class with .pdf' do
+      expect(file_type_icon_class('file', 0, 'filename.pdf')).to eq 'document'
     end
 
-    it 'returns file-image-o class with .jpg' do
-      expect(file_type_icon_class('file', 0, 'filename.jpg')).to eq 'file-image-o'
+    it 'returns doc-image class with .jpg' do
+      expect(file_type_icon_class('file', 0, 'filename.jpg')).to eq 'doc-image'
     end
 
-    it 'returns file-image-o class with .JPG' do
-      expect(file_type_icon_class('file', 0, 'filename.JPG')).to eq 'file-image-o'
+    it 'returns doc-image class with .JPG' do
+      expect(file_type_icon_class('file', 0, 'filename.JPG')).to eq 'doc-image'
     end
 
-    it 'returns file-image-o class with .png' do
-      expect(file_type_icon_class('file', 0, 'filename.png')).to eq 'file-image-o'
+    it 'returns doc-image class with .png' do
+      expect(file_type_icon_class('file', 0, 'filename.png')).to eq 'doc-image'
     end
 
-    it 'returns file-image-o class with .apng' do
-      expect(file_type_icon_class('file', 0, 'filename.apng')).to eq 'file-image-o'
+    it 'returns doc-image class with .apng' do
+      expect(file_type_icon_class('file', 0, 'filename.apng')).to eq 'doc-image'
     end
 
-    it 'returns file-image-o class with .webp' do
-      expect(file_type_icon_class('file', 0, 'filename.webp')).to eq 'file-image-o'
+    it 'returns doc-image class with .webp' do
+      expect(file_type_icon_class('file', 0, 'filename.webp')).to eq 'doc-image'
     end
 
-    it 'returns file-archive-o class with .tar' do
-      expect(file_type_icon_class('file', 0, 'filename.tar')).to eq 'file-archive-o'
+    it 'returns doc-compressed class with .tar' do
+      expect(file_type_icon_class('file', 0, 'filename.tar')).to eq 'doc-compressed'
     end
 
-    it 'returns file-archive-o class with .TAR' do
-      expect(file_type_icon_class('file', 0, 'filename.TAR')).to eq 'file-archive-o'
+    it 'returns doc-compressed class with .TAR' do
+      expect(file_type_icon_class('file', 0, 'filename.TAR')).to eq 'doc-compressed'
     end
 
-    it 'returns file-archive-o class with .tar.gz' do
-      expect(file_type_icon_class('file', 0, 'filename.tar.gz')).to eq 'file-archive-o'
+    it 'returns doc-compressed class with .tar.gz' do
+      expect(file_type_icon_class('file', 0, 'filename.tar.gz')).to eq 'doc-compressed'
     end
 
-    it 'returns file-audio-o class with .mp3' do
-      expect(file_type_icon_class('file', 0, 'filename.mp3')).to eq 'file-audio-o'
+    it 'returns volume-up class with .mp3' do
+      expect(file_type_icon_class('file', 0, 'filename.mp3')).to eq 'volume-up'
     end
 
-    it 'returns file-audio-o class with .MP3' do
-      expect(file_type_icon_class('file', 0, 'filename.MP3')).to eq 'file-audio-o'
+    it 'returns volume-up class with .MP3' do
+      expect(file_type_icon_class('file', 0, 'filename.MP3')).to eq 'volume-up'
     end
 
-    it 'returns file-audio-o class with .m4a' do
-      expect(file_type_icon_class('file', 0, 'filename.m4a')).to eq 'file-audio-o'
+    it 'returns volume-up class with .m4a' do
+      expect(file_type_icon_class('file', 0, 'filename.m4a')).to eq 'volume-up'
     end
 
-    it 'returns file-audio-o class with .wav' do
-      expect(file_type_icon_class('file', 0, 'filename.wav')).to eq 'file-audio-o'
+    it 'returns volume-up class with .wav' do
+      expect(file_type_icon_class('file', 0, 'filename.wav')).to eq 'volume-up'
     end
 
-    it 'returns file-video-o class with .avi' do
-      expect(file_type_icon_class('file', 0, 'filename.avi')).to eq 'file-video-o'
+    it 'returns live-preview class with .avi' do
+      expect(file_type_icon_class('file', 0, 'filename.avi')).to eq 'live-preview'
     end
 
-    it 'returns file-video-o class with .AVI' do
-      expect(file_type_icon_class('file', 0, 'filename.AVI')).to eq 'file-video-o'
+    it 'returns live-preview class with .AVI' do
+      expect(file_type_icon_class('file', 0, 'filename.AVI')).to eq 'live-preview'
     end
 
-    it 'returns file-video-o class with .mp4' do
-      expect(file_type_icon_class('file', 0, 'filename.mp4')).to eq 'file-video-o'
+    it 'returns live-preview class with .mp4' do
+      expect(file_type_icon_class('file', 0, 'filename.mp4')).to eq 'live-preview'
     end
 
-    it 'returns file-word-o class with .odt' do
-      expect(file_type_icon_class('file', 0, 'filename.odt')).to eq 'file-word-o'
+    it 'returns doc-text class with .odt' do
+      expect(file_type_icon_class('file', 0, 'filename.odt')).to eq 'doc-text'
     end
 
-    it 'returns file-word-o class with .doc' do
-      expect(file_type_icon_class('file', 0, 'filename.doc')).to eq 'file-word-o'
+    it 'returns doc-text class with .doc' do
+      expect(file_type_icon_class('file', 0, 'filename.doc')).to eq 'doc-text'
     end
 
-    it 'returns file-word-o class with .DOC' do
-      expect(file_type_icon_class('file', 0, 'filename.DOC')).to eq 'file-word-o'
+    it 'returns doc-text class with .DOC' do
+      expect(file_type_icon_class('file', 0, 'filename.DOC')).to eq 'doc-text'
     end
 
-    it 'returns file-word-o class with .docx' do
-      expect(file_type_icon_class('file', 0, 'filename.docx')).to eq 'file-word-o'
+    it 'returns doc-text class with .docx' do
+      expect(file_type_icon_class('file', 0, 'filename.docx')).to eq 'doc-text'
     end
 
-    it 'returns file-excel-o class with .xls' do
-      expect(file_type_icon_class('file', 0, 'filename.xls')).to eq 'file-excel-o'
+    it 'returns document class with .xls' do
+      expect(file_type_icon_class('file', 0, 'filename.xls')).to eq 'document'
     end
 
-    it 'returns file-excel-o class with .XLS' do
-      expect(file_type_icon_class('file', 0, 'filename.XLS')).to eq 'file-excel-o'
+    it 'returns document class with .XLS' do
+      expect(file_type_icon_class('file', 0, 'filename.XLS')).to eq 'document'
     end
 
-    it 'returns file-excel-o class with .xlsx' do
-      expect(file_type_icon_class('file', 0, 'filename.xlsx')).to eq 'file-excel-o'
+    it 'returns document class with .xlsx' do
+      expect(file_type_icon_class('file', 0, 'filename.xlsx')).to eq 'document'
     end
 
-    it 'returns file-excel-o class with .odp' do
-      expect(file_type_icon_class('file', 0, 'filename.odp')).to eq 'file-powerpoint-o'
+    it 'returns doc-chart class with .odp' do
+      expect(file_type_icon_class('file', 0, 'filename.odp')).to eq 'doc-chart'
     end
 
-    it 'returns file-excel-o class with .ppt' do
-      expect(file_type_icon_class('file', 0, 'filename.ppt')).to eq 'file-powerpoint-o'
+    it 'returns doc-chart class with .ppt' do
+      expect(file_type_icon_class('file', 0, 'filename.ppt')).to eq 'doc-chart'
     end
 
-    it 'returns file-excel-o class with .PPT' do
-      expect(file_type_icon_class('file', 0, 'filename.PPT')).to eq 'file-powerpoint-o'
+    it 'returns doc-chart class with .PPT' do
+      expect(file_type_icon_class('file', 0, 'filename.PPT')).to eq 'doc-chart'
     end
 
-    it 'returns file-excel-o class with .pptx' do
-      expect(file_type_icon_class('file', 0, 'filename.pptx')).to eq 'file-powerpoint-o'
+    it 'returns doc-chart class with .pptx' do
+      expect(file_type_icon_class('file', 0, 'filename.pptx')).to eq 'doc-chart'
     end
 
-    it 'returns file-text-o class with .unknow' do
-      expect(file_type_icon_class('file', 0, 'filename.unknow')).to eq 'file-text-o'
+    it 'returns doc-text class with .unknow' do
+      expect(file_type_icon_class('file', 0, 'filename.unknow')).to eq 'doc-text'
     end
 
-    it 'returns file-text-o class with no extension' do
-      expect(file_type_icon_class('file', 0, 'CHANGELOG')).to eq 'file-text-o'
+    it 'returns doc-text class with no extension' do
+      expect(file_type_icon_class('file', 0, 'CHANGELOG')).to eq 'doc-text'
     end
   end
 

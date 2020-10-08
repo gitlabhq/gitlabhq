@@ -6,8 +6,8 @@ module Types
       graphql_name 'AlertManagementStatus'
       description 'Alert status values'
 
-      ::AlertManagement::Alert::STATUSES.each do |name, value|
-        value name.upcase, value: value, description: "#{name.to_s.titleize} status"
+      ::AlertManagement::Alert.status_names.each do |status|
+        value status.to_s.upcase, value: status, description: "#{status.to_s.titleize} status"
       end
     end
   end

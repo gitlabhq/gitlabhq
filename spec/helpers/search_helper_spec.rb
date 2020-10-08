@@ -408,4 +408,44 @@ RSpec.describe SearchHelper do
       it { is_expected.to eq('111111') }
     end
   end
+
+  describe '#highlight_and_truncate_issue' do
+    let(:description) { 'hello world' }
+    let(:issue) { create(:issue, description: description) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+    end
+
+    subject { highlight_and_truncate_issue(issue, 'test', {}) }
+
+    context 'when description is not present' do
+      let(:description) { nil }
+
+      it 'does nothing' do
+        expect(self).not_to receive(:simple_search_highlight_and_truncate)
+
+        subject
+      end
+    end
+
+    context 'when description present' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:description, :expected) do
+        'test'                                                                 | '<span class="gl-text-black-normal gl-font-weight-bold">test</span>'
+        '<span style="color: blue;">this test should not be blue</span>'       | '<span>this <span class="gl-text-black-normal gl-font-weight-bold">test</span> should not be blue</span>'
+        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <span class="gl-text-black-normal gl-font-weight-bold">test</span></a>'
+        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <span class="gl-text-black-normal gl-font-weight-bold">test</span>'
+        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <span class="gl-text-black-normal gl-font-weight-bold">test</span> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
+      end
+
+      with_them do
+        it 'sanitizes, truncates, and highlights the search term' do
+          expect(subject).to eq(expected)
+        end
+      end
+    end
+  end
 end

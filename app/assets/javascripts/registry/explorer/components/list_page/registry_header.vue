@@ -96,7 +96,7 @@ export default {
     <template #right-actions>
       <slot name="commands"></slot>
     </template>
-    <template #metadata_count>
+    <template #metadata-count>
       <metadata-item
         v-if="imagesCount"
         data-testid="images-count"
@@ -104,7 +104,7 @@ export default {
         :text="imagesCountText"
       />
     </template>
-    <template #metadata_exp_policies>
+    <template #metadata-exp-policies>
       <metadata-item
         v-if="!hideExpirationPolicyData"
         data-testid="expiration-policy"

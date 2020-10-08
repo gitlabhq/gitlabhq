@@ -18,7 +18,7 @@ RSpec.describe Gitlab::AlertManagement::AlertStatusCounts do
         expect(counts.open).to eq(0)
         expect(counts.all).to eq(0)
 
-        AlertManagement::Alert::STATUSES.each_key do |status|
+        ::AlertManagement::Alert.status_names.each do |status|
           expect(counts.send(status)).to eq(0)
         end
       end
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::AlertManagement::AlertStatusCounts do
       end
 
       context 'when filtering params are included' do
-        let(:params) { { status: AlertManagement::Alert::STATUSES[:resolved] } }
+        let(:params) { { status: :resolved } }
 
         it 'returns the correct counts for each status' do
           expect(counts.open).to eq(0)

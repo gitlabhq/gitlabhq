@@ -11,20 +11,18 @@ import initIssuablesList from '~/issues_list';
 import initManualOrdering from '~/manual_ordering';
 import { showLearnGitLabIssuesPopover } from '~/onboarding_issues';
 
-document.addEventListener('DOMContentLoaded', () => {
-  IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
+IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
 
-  initFilteredSearch({
-    page: FILTERED_SEARCH.ISSUES,
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-    useDefaultState: true,
-  });
-
-  new IssuableIndex(ISSUABLE_INDEX.ISSUE);
-  new ShortcutsNavigation();
-  new UsersSelect();
-
-  initManualOrdering();
-  initIssuablesList();
-  showLearnGitLabIssuesPopover();
+initFilteredSearch({
+  page: FILTERED_SEARCH.ISSUES,
+  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+  useDefaultState: true,
 });
+
+new IssuableIndex(ISSUABLE_INDEX.ISSUE);
+new ShortcutsNavigation();
+new UsersSelect();
+
+initManualOrdering();
+initIssuablesList();
+showLearnGitLabIssuesPopover();

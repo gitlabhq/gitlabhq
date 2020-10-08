@@ -169,5 +169,39 @@ describe('MemberList', () => {
         });
       });
     });
+
+    describe('canResend', () => {
+      describe('when member type is `invite`', () => {
+        it('returns `true` when `canResend` is `true`', () => {
+          createComponent({
+            member: invite,
+          });
+
+          expect(findWrappedComponent().props('permissions').canResend).toBe(true);
+        });
+
+        it('returns `false` when `canResend` is `false`', () => {
+          createComponent({
+            member: {
+              ...invite,
+              invite: {
+                ...invite,
+                canResend: false,
+              },
+            },
+          });
+
+          expect(findWrappedComponent().props('permissions').canResend).toBe(false);
+        });
+      });
+
+      describe('when member type is not `invite`', () => {
+        it('returns `false`', () => {
+          createComponent({ member: memberMock });
+
+          expect(findWrappedComponent().props('permissions').canResend).toBe(false);
+        });
+      });
+    });
   });
 });

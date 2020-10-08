@@ -8,18 +8,16 @@ import initManualOrdering from '~/manual_ordering';
 
 const ISSUE_BULK_UPDATE_PREFIX = 'issue_';
 
-document.addEventListener('DOMContentLoaded', () => {
-  IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
-  issuableInitBulkUpdateSidebar.init(ISSUE_BULK_UPDATE_PREFIX);
+IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
+issuableInitBulkUpdateSidebar.init(ISSUE_BULK_UPDATE_PREFIX);
 
-  initIssuablesList();
+initIssuablesList();
 
-  initFilteredSearch({
-    page: FILTERED_SEARCH.ISSUES,
-    isGroupDecendent: true,
-    useDefaultState: true,
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-  });
-  projectSelect();
-  initManualOrdering();
+initFilteredSearch({
+  page: FILTERED_SEARCH.ISSUES,
+  isGroupDecendent: true,
+  useDefaultState: true,
+  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
 });
+projectSelect();
+initManualOrdering();

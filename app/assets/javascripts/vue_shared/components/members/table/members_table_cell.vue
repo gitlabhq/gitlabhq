@@ -41,6 +41,9 @@ export default {
     canRemove() {
       return this.isDirectMember && this.member.canRemove;
     },
+    canResend() {
+      return Boolean(this.member.invite?.canResend);
+    },
   },
   render() {
     return this.$scopedSlots.default({
@@ -49,6 +52,7 @@ export default {
       isCurrentUser: this.isCurrentUser,
       permissions: {
         canRemove: this.canRemove,
+        canResend: this.canResend,
       },
     });
   },

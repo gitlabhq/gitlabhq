@@ -156,7 +156,7 @@ RSpec.describe Projects::MergeRequests::ConflictsController do
 
         expect(json_response).to include('old_path' => path,
                                          'new_path' => path,
-                                         'blob_icon' => 'file-text-o',
+                                         'blob_icon' => 'doc-text',
                                          'blob_path' => a_string_ending_with(path),
                                          'content' => content)
       end

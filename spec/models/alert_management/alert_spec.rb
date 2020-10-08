@@ -189,14 +189,14 @@ RSpec.describe AlertManagement::Alert do
     end
 
     describe '.for_status' do
-      let(:status) { AlertManagement::Alert::STATUSES[:resolved] }
+      let(:status) { :resolved }
 
       subject { AlertManagement::Alert.for_status(status) }
 
       it { is_expected.to match_array(resolved_alert) }
 
       context 'with multiple statuses' do
-        let(:status) { AlertManagement::Alert::STATUSES.values_at(:resolved, :ignored) }
+        let(:status) { [:resolved, :ignored] }
 
         it { is_expected.to match_array([resolved_alert, ignored_alert]) }
       end
@@ -241,19 +241,6 @@ RSpec.describe AlertManagement::Alert do
       it { is_expected.to eq([triggered_critical_alert, triggered_high_alert]) }
     end
 
-    describe '.counts_by_status' do
-      subject { described_class.counts_by_status }
-
-      it do
-        is_expected.to eq(
-          triggered_alert.status => 1,
-          acknowledged_alert.status => 1,
-          resolved_alert.status => 1,
-          ignored_alert.status => 1
-        )
-      end
-    end
-
     describe '.counts_by_project_id' do
       subject { described_class.counts_by_project_id }
 
@@ -275,6 +262,55 @@ RSpec.describe AlertManagement::Alert do
       subject { described_class.not_resolved }
 
       it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert, ignored_alert) }
+    end
+  end
+
+  describe '.status_value' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :status_value) do
+      :triggered    | 0
+      :acknowledged | 1
+      :resolved     | 2
+      :ignored      | 3
+      :unknown      | nil
+    end
+
+    with_them do
+      it 'returns status value by its name' do
+        expect(described_class.status_value(status)).to eq(status_value)
+      end
+    end
+  end
+
+  describe '.status_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:raw_status, :status) do
+      0  | :triggered
+      1  | :acknowledged
+      2  | :resolved
+      3  | :ignored
+      -1 | nil
+    end
+
+    with_them do
+      it 'returns status name by its values' do
+        expect(described_class.status_name(raw_status)).to eq(status)
+      end
+    end
+  end
+
+  describe '.counts_by_status' do
+    subject { described_class.counts_by_status }
+
+    it do
+      is_expected.to eq(
+        triggered: 1,
+        acknowledged: 1,
+        resolved: 1,
+        ignored: 1
+      )
     end
   end
 

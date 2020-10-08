@@ -1,0 +1,33 @@
+- @content_class = "limit-container-width" unless fluid_layout
+- page_title _("Tracing")
+
+- if @project.tracing_external_url.present?
+  %h3.page-title= _('Tracing')
+  .gl-alert.gl-alert-info.alert.flex-alert
+    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .alert-message
+      = _("Your password isn't required to view this page. If a password or any other personal details are requested, please contact your administrator to report abuse.")
+  - jaeger_link = link_to('Jaeger tracing', 'https://www.jaegertracing.io/', target: "_blank", rel: "noreferrer")
+  %p.light= _("GitLab uses %{jaeger_link} to monitor distributed systems.").html_safe % { jaeger_link: jaeger_link }
+
+
+  .card
+    - iframe_permissions = "allow-forms allow-scripts allow-same-origin allow-popups"
+    %iframe.border-0{ src: sanitize(@project.tracing_external_url, scrubber: Rails::Html::TextOnlyScrubber.new), width: '100%', height: 970, sandbox: iframe_permissions }
+- else
+  .row.empty-state
+    .col-12
+      .svg-content
+        = image_tag 'illustrations/monitoring/tracing.svg'
+
+    .col-12
+      .text-content
+        %h4.text-left= _('Troubleshoot and monitor your application with tracing')
+        %p
+          - jaeger_help_url = "https://www.jaegertracing.io/docs/1.7/getting-started/"
+          - link_start_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jaeger_help_url }
+          - link_end_tag = "#{sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')}</a>".html_safe
+          = _('To get started, link this page to your Jaeger server, or find out how to %{link_start_tag}install Jaeger%{link_end_tag}').html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
+
+          .text-center
+            = render 'tracing_button'

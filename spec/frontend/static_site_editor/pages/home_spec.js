@@ -3,6 +3,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Home from '~/static_site_editor/pages/home.vue';
 import SkeletonLoader from '~/static_site_editor/components/skeleton_loader.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
+import EditMetaModal from '~/static_site_editor/components/edit_meta_modal.vue';
 import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
 import submitContentChangesMutation from '~/static_site_editor/graphql/mutations/submit_content_changes.mutation.graphql';
@@ -21,6 +22,7 @@ import {
   savedContentMeta,
   submitChangesError,
   trackingCategory,
+  images,
 } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -85,6 +87,7 @@ describe('static_site_editor/pages/home', () => {
   };
 
   const findEditArea = () => wrapper.find(EditArea);
+  const findEditMetaModal = () => wrapper.find(EditMetaModal);
   const findInvalidContentMessage = () => wrapper.find(InvalidContentMessage);
   const findSkeletonLoader = () => wrapper.find(SkeletonLoader);
   const findSubmitChangesError = () => wrapper.find(SubmitChangesError);
@@ -152,15 +155,36 @@ describe('static_site_editor/pages/home', () => {
   });
 
   it('displays invalid content message when content is not supported', () => {
-    buildWrapper({ appData: { isSupportedContent: false } });
+    buildWrapper({ appData: { ...defaultAppData, isSupportedContent: false } });
 
     expect(findInvalidContentMessage().exists()).toBe(true);
   });
 
   it('does not display invalid content message when content is supported', () => {
-    buildWrapper({ appData: { isSupportedContent: true } });
+    buildWrapper();
 
     expect(findInvalidContentMessage().exists()).toBe(false);
+  });
+
+  it('renders an EditMetaModal component', () => {
+    buildWrapper();
+
+    expect(findEditMetaModal().exists()).toBe(true);
+  });
+
+  describe('when preparing submission', () => {
+    it('calls the show method when the edit-area submit event is emitted', () => {
+      buildWrapper();
+
+      const mockInstance = { show: jest.fn() };
+      wrapper.vm.$refs.editMetaModal = mockInstance;
+
+      findEditArea().vm.$emit('submit', { content });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(mockInstance.show).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when submitting changes fails', () => {
@@ -173,8 +197,8 @@ describe('static_site_editor/pages/home', () => {
     beforeEach(() => {
       setupMutateMock();
 
-      buildWrapper();
-      findEditArea().vm.$emit('submit', { content });
+      buildWrapper({ content });
+      findEditMetaModal().vm.$emit('primary', mergeRequestMeta);
 
       return wrapper.vm.$nextTick();
     });
@@ -200,12 +224,6 @@ describe('static_site_editor/pages/home', () => {
     });
   });
 
-  it('does not display submit changes error when an error does not exist', () => {
-    buildWrapper();
-
-    expect(findSubmitChangesError().exists()).toBe(false);
-  });
-
   describe('when submitting changes succeeds', () => {
     const newContent = `new ${content}`;
 
@@ -216,8 +234,8 @@ describe('static_site_editor/pages/home', () => {
         },
       });
 
-      buildWrapper();
-      findEditArea().vm.$emit('submit', { content: newContent });
+      buildWrapper({ content: newContent, images });
+      findEditMetaModal().vm.$emit('primary', mergeRequestMeta);
 
       return wrapper.vm.$nextTick();
     });
@@ -242,7 +260,7 @@ describe('static_site_editor/pages/home', () => {
             project,
             sourcePath,
             username,
-            images: undefined,
+            images,
             mergeRequestMeta,
           },
         },
@@ -252,6 +270,12 @@ describe('static_site_editor/pages/home', () => {
     it('transitions to the SUCCESS route', () => {
       expect($router.push).toHaveBeenCalledWith(SUCCESS_ROUTE);
     });
+  });
+
+  it('does not display submit changes error when an error does not exist', () => {
+    buildWrapper();
+
+    expect(findSubmitChangesError().exists()).toBe(false);
   });
 
   it('tracks when editor is initialized on the mounted lifecycle hook', () => {

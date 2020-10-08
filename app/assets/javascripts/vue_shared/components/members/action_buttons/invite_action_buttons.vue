@@ -1,11 +1,12 @@
 <script>
 import ActionButtonGroup from './action_button_group.vue';
 import RemoveMemberButton from './remove_member_button.vue';
+import ResendInviteButton from './resend_invite_button.vue';
 import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'InviteActionButtons',
-  components: { ActionButtonGroup, RemoveMemberButton },
+  components: { ActionButtonGroup, RemoveMemberButton, ResendInviteButton },
   props: {
     member: {
       type: Object,
@@ -33,7 +34,9 @@ export default {
 
 <template>
   <action-button-group>
-    <!-- Resend button will go here -->
+    <div v-if="permissions.canResend" class="gl-px-1">
+      <resend-invite-button :member-id="member.id" />
+    </div>
     <div v-if="permissions.canRemove" class="gl-px-1">
       <remove-member-button
         :member-id="member.id"

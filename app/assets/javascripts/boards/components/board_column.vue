@@ -7,6 +7,7 @@ import Tooltip from '~/vue_shared/directives/tooltip';
 import EmptyComponent from '~/vue_shared/components/empty_component';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardList from './board_list.vue';
+import BoardListNew from './board_list_new.vue';
 import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
 import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
@@ -16,7 +17,7 @@ export default {
   components: {
     BoardPromotionState: EmptyComponent,
     BoardListHeader,
-    BoardList,
+    BoardList: gon.features?.graphqlBoardLists ? BoardListNew : BoardList,
   },
   directives: {
     Tooltip,
@@ -72,7 +73,7 @@ export default {
     filter: {
       handler() {
         if (this.shouldFetchIssues) {
-          this.fetchIssuesForList(this.list.id);
+          this.fetchIssuesForList({ listId: this.list.id });
         } else {
           this.list.page = 1;
           this.list.getIssues(true).catch(() => {
@@ -85,7 +86,7 @@ export default {
   },
   mounted() {
     if (this.shouldFetchIssues) {
-      this.fetchIssuesForList(this.list.id);
+      this.fetchIssuesForList({ listId: this.list.id });
     }
 
     const instance = this;
@@ -144,7 +145,6 @@ export default {
         :disabled="disabled"
         :issues="listIssues"
         :list="list"
-        :loading="list.loading"
       />
 
       <!-- Will be only available in EE -->

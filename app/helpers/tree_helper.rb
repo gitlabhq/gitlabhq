@@ -31,7 +31,7 @@ module TreeHelper
   # mode - File unix mode
   # name - File name
   def tree_icon(type, mode, name)
-    icon([file_type_icon_class(type, mode, name), 'fw'])
+    sprite_icon(file_type_icon_class(type, mode, name))
   end
 
   # Using Rails `*_path` methods can be slow, especially when generating

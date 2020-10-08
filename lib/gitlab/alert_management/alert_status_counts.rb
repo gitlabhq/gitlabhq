@@ -6,8 +6,6 @@ module Gitlab
     class AlertStatusCounts
       include Gitlab::Utils::StrongMemoize
 
-      STATUSES = ::AlertManagement::Alert::STATUSES
-
       attr_reader :project
 
       def self.declarative_policy_class
@@ -21,7 +19,7 @@ module Gitlab
       end
 
       # Define method for each status
-      STATUSES.each_key do |status|
+      ::AlertManagement::Alert.status_names.each do |status|
         define_method(status) { counts[status] }
       end
 
@@ -44,9 +42,7 @@ module Gitlab
       end
 
       def counts_by_status
-        ::AlertManagement::AlertsFinder
-          .counts_by_status(current_user, project, params)
-          .transform_keys { |status_id| STATUSES.key(status_id) }
+        ::AlertManagement::AlertsFinder.counts_by_status(current_user, project, params)
       end
     end
   end

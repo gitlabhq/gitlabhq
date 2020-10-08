@@ -21,6 +21,12 @@ RSpec.describe Gitlab::SnippetSearchResults do
     end
   end
 
+  describe '#highlight_map' do
+    it 'returns the expected highlight map' do
+      expect(results.highlight_map('snippet_titles')).to eq({})
+    end
+  end
+
   describe '#objects' do
     it 'uses page and per_page to paginate results' do
       snippet2 = create(:snippet, :public, content: 'foo', file_name: 'foo')

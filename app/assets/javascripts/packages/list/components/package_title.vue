@@ -40,7 +40,7 @@ export default {
 
 <template>
   <title-area :title="$options.i18n.LIST_TITLE_TEXT" :info-messages="infoMessages">
-    <template #metadata_amount>
+    <template #metadata-amount>
       <metadata-item v-if="showPackageCount" icon="package" :text="packageAmountText" />
     </template>
   </title-area>

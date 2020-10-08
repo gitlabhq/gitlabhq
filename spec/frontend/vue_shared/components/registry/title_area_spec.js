@@ -79,9 +79,9 @@ describe('title area', () => {
 
   describe.each`
     slotNames
-    ${['metadata_foo']}
-    ${['metadata_foo', 'metadata_bar']}
-    ${['metadata_foo', 'metadata_bar', 'metadata_baz']}
+    ${['metadata-foo']}
+    ${['metadata-foo', 'metadata-bar']}
+    ${['metadata-foo', 'metadata-bar', 'metadata-baz']}
   `('$slotNames metadata slots', ({ slotNames }) => {
     const slotMocks = slotNames.reduce((acc, current) => {
       acc[current] = `<div data-testid="${current}" />`;

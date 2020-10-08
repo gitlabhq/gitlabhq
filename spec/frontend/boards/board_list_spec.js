@@ -44,7 +44,6 @@ const createComponent = ({ done, listIssueProps = {}, componentProps = {}, listP
       disabled: false,
       list,
       issues: list.issues,
-      loading: false,
       ...componentProps,
     },
     provide: {
@@ -94,7 +93,7 @@ describe('Board list component', () => {
     });
 
     it('renders loading icon', () => {
-      component.loading = true;
+      component.list.loading = true;
 
       return Vue.nextTick().then(() => {
         expect(component.$el.querySelector('.board-list-loading')).not.toBeNull();
