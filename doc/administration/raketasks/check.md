@@ -158,7 +158,7 @@ Projects::HousekeepingService.new(p, :gc).execute
 ### Delete references to missing remote uploads
 
 `gitlab-rake gitlab:uploads:check VERBOSE=1` detects remote objects that do not exist because they were
-deleted externally but their references still exist in the GitLab database. 
+deleted externally but their references still exist in the GitLab database.
 
 Example output with error message:  
 

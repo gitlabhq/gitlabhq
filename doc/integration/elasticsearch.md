@@ -178,7 +178,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    [license](../user/admin_area/license.md).
 
 1. Configure the [Advanced Search settings](#advanced-search-configuration) for
-   your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled** 
+   your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
 1. Now enable **Elasticsearch indexing** in **Admin Area > Settings >
    General > Advanced Search** and click **Save changes**. This will create

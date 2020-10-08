@@ -1,14 +1,16 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
-import tooltip from '~/vue_shared/directives/tooltip';
-import { __ } from '~/locale';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { SQUASH_BEFORE_MERGE } from '../../i18n';
 
 export default {
   components: {
     GlIcon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
+  },
+  i18n: {
+    ...SQUASH_BEFORE_MERGE,
   },
   props: {
     value: {
@@ -28,7 +30,10 @@ export default {
   },
   computed: {
     tooltipTitle() {
-      return this.isDisabled ? __('Required in this project.') : false;
+      return this.isDisabled ? this.$options.i18n.tooltipTitle : null;
+    },
+    tooltipFocusable() {
+      return this.isDisabled ? '0' : null;
     },
   },
 };
@@ -37,10 +42,11 @@ export default {
 <template>
   <div class="inline">
     <label
-      v-tooltip
+      v-gl-tooltip
       :class="{ 'gl-text-gray-400': isDisabled }"
+      :tabindex="tooltipFocusable"
       data-testid="squashLabel"
-      :data-title="tooltipTitle"
+      :title="tooltipTitle"
     >
       <input
         :checked="value"
@@ -50,19 +56,20 @@ export default {
         class="qa-squash-checkbox js-squash-checkbox"
         @change="$emit('input', $event.target.checked)"
       />
-      {{ __('Squash commits') }}
+      {{ $options.i18n.checkboxLabel }}
     </label>
     <a
       v-if="helpPath"
-      v-tooltip
+      v-gl-tooltip
       :href="helpPath"
-      data-title="About this feature"
-      data-placement="bottom"
+      :title="$options.i18n.helpLabel"
       target="_blank"
       rel="noopener noreferrer nofollow"
-      data-container="body"
     >
       <gl-icon name="question" />
+      <span class="sr-only">
+        {{ $options.i18n.helpLabel }}
+      </span>
     </a>
   </div>
 </template>

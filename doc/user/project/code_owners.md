@@ -158,7 +158,7 @@ file.md @group-x @group-x/subgroup-y
 ### Code Owners Sections **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2 behind a feature flag, enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4. 
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4.
 
 Code Owner rules can be grouped into named sections. This allows for better
 organization of broader categories of Code Owner rules to be applied.

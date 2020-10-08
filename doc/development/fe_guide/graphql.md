@@ -187,7 +187,7 @@ As shown in the code example by using `produce`, we can perform any kind of dire
 `draftState`. Besides, `immer` guarantees that a new state which includes the changes to `draftState` will be generated.
 
 Finally, to verify whether the immutable cache update is working properly, we need to change
-`assumeImmutableResults` to `true` in the `default client config` (see [Apollo Client](#apollo-client) for more info). 
+`assumeImmutableResults` to `true` in the `default client config` (see [Apollo Client](#apollo-client) for more info).
 
 If everything is working properly `assumeImmutableResults` should remain set to `true`.
 

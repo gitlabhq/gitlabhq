@@ -93,8 +93,12 @@ for filtering purposes; otherwise, they appear as normal.
 
 ### Manually creating a to do
 
-You can add an issue or merge request (or epic **(ULTIMATE)**) to your
-To-Do List by clicking its **Add a To Do** button.
+You can also add the following to your To-Do List by clicking the **Add a to do** button on an:
+
+- [Issue](project/issues/index.md)
+- [Merge Request](project/merge_requests/index.md)
+- [Epic](group/epics/index.md) **(ULTIMATE)**
+- [Design](project/issues/design_management.md)
 
 ![Adding a To Do from the issuable sidebar](img/todos_add_todo_sidebar.png)
 

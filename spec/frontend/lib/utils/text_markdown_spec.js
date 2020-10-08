@@ -13,6 +13,23 @@ describe('init markdown', () => {
     textArea.parentNode.removeChild(textArea);
   });
 
+  describe('insertMarkdownText', () => {
+    it('will not error if selected text is a number', () => {
+      const selected = 2;
+
+      insertMarkdownText({
+        textArea,
+        text: '',
+        tag: '',
+        blockTag: null,
+        selected,
+        wrap: false,
+      });
+
+      expect(textArea.value).toBe(selected.toString());
+    });
+  });
+
   describe('textArea', () => {
     describe('without selection', () => {
       it('inserts the tag on an empty line', () => {

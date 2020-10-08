@@ -299,7 +299,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       end
 
       shared_examples 'includes repositories in all repository storages' do
-        specify :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/263097' do
+        specify :aggregate_failures do
           project_a = create(:project, :repository)
           project_a.track_project_repository
           project_snippet_a = create(:project_snippet, :repository, project: project_a, author: project_a.owner)
@@ -331,11 +331,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
             "#{project_snippet_a.disk_path}.bundle",
             "#{project_snippet_b.disk_path}.bundle"
           ].each do |repo_name|
-            repo_lines = tar_lines.grep(/#{repo_name}/)
-
-            expect(repo_lines.size).to eq 1
-            # Checking that the size of the bundle is bigger than 0
-            expect(repo_lines.first.split[4].to_i > 0).to be true
+            expect(tar_lines.grep(/#{repo_name}/).size).to eq 1
           end
         end
 

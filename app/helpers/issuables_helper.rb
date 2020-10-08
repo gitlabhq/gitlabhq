@@ -435,7 +435,7 @@ module IssuablesHelper
 
   def issuable_todo_button_data(issuable, is_collapsed)
     {
-      todo_text: _('Add a To Do'),
+      todo_text: _('Add a to do'),
       mark_text: _('Mark as done'),
       todo_icon: sprite_icon('todo-add'),
       mark_icon: sprite_icon('todo-done', css_class: 'todo-undone'),

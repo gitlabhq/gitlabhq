@@ -118,7 +118,7 @@ describe('StageNavItem', () => {
       expect(wrapper.find('.stage-median').text()).toBe('Not available');
     });
     it('does not render options menu', () => {
-      expect(wrapper.find('.more-actions-toggle').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="more-actions-toggle"]').exists()).toBe(false);
     });
   });
 
@@ -135,7 +135,7 @@ describe('StageNavItem', () => {
     });
 
     it('does not render options menu', () => {
-      expect(wrapper.find('.more-actions-toggle').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="more-actions-toggle"]').exists()).toBe(false);
     });
 
     it('can not edit the stage', () => {

@@ -48,6 +48,8 @@ class SnippetBlobPresenter < BlobPresenter
   end
 
   def snippet_blob_raw_route(only_path: false)
+    return gitlab_raw_snippet_url(snippet, only_path: only_path) unless snippet.repository_exists?
+
     gitlab_raw_snippet_blob_url(snippet, blob.path, only_path: only_path)
   end
 end

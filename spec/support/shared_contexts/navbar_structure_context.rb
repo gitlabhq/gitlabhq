@@ -64,14 +64,14 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Operations'),
         nav_sub_items: [
           _('Metrics'),
+          _('Logs'),
+          _('Error Tracking'),
           _('Alerts'),
           _('Incidents'),
-          _('Environments'),
-          _('Error Tracking'),
-          _('Product Analytics'),
           _('Serverless'),
-          _('Logs'),
-          _('Kubernetes')
+          _('Kubernetes'),
+          _('Environments'),
+          _('Product Analytics')
         ]
       },
       analytics_nav_item,

@@ -81,7 +81,7 @@ browser is much slower than parsing the HTML response from the app.
 
 A common cause of slow tests is excessive creation of objects, and thus
 computation and DB time. Factories are essential to development, but they can
-make inserting data into the DB so easy that we may be able to optimize. 
+make inserting data into the DB so easy that we may be able to optimize.
 
 The two basic techniques to bear in mind here are:
 

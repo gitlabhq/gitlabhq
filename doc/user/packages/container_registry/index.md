@@ -113,9 +113,9 @@ To authenticate, run the `docker` command. For example:
 
 To build and push to the Container Registry:
 
-1. Authenticate with the Container Registry. 
+1. Authenticate with the Container Registry.
 
-1. Run the command to build or push. For example, to build: 
+1. Run the command to build or push. For example, to build:
 
    ```shell
    docker build -t registry.example.com/group/project/image .
@@ -181,7 +181,7 @@ You can configure your `.gitlab-ci.yml` file to build and push images to the Con
   longer, but it ensures your image is up-to-date.
 - Before each `docker run`, do an explicit `docker pull` to fetch
   the image that was just built. This is especially important if you are
-  using multiple runners that cache images locally.   
+  using multiple runners that cache images locally.
 
   If you use the Git SHA in your image tag, each job is unique and you
   should never have a stale image. However, it's still possible to have a
@@ -603,7 +603,7 @@ are not deleted by the cleanup policy.
 
 ## Disable the Container Registry for a project
 
-The Container Registry is enabled by default. 
+The Container Registry is enabled by default.
 
 You can, however, remove the Container Registry for a project:
 

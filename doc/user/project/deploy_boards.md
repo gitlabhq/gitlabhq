@@ -107,7 +107,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    be done automatically and no action is necessary.
 
    If you are using GCP to manage clusters, you can see the deployment details in GCP itself by going to **Workloads > deployment name > Details**:
-   
+
    ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 
 Once all of the above are set up and the pipeline has run at least once,

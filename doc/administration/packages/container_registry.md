@@ -397,7 +397,7 @@ To configure the `s3` storage driver in Omnibus:
      }
    }
    ```
- 
+
    - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
    - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 

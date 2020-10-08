@@ -166,6 +166,7 @@ export function insertMarkdownText({
   let editorSelectionEnd;
   let lastNewLine;
   let textToInsert;
+  selected = selected.toString();
 
   if (editor) {
     const selectionRange = getEditorSelectionRange(editor);

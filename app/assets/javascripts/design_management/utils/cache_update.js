@@ -136,7 +136,7 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
 
     const newDesigns = currentDesigns
       .map(design => {
-        return designManagementUpload.designs[design.filename] || design;
+        return designManagementUpload.designs.find(d => d.filename === design.filename) || design;
       })
       .concat(difference);
 

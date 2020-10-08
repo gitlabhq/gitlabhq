@@ -27,11 +27,11 @@
           .block.todo.hide-expanded
             = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar, is_collapsed: true
         .block.assignee.qa-assignee-block
-          = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees
+          = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
         - if Feature.enabled?(:merge_request_reviewers, @project) && reviewers
           .block.reviewer.qa-reviewer-block
-            = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers
+            = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers, signed_in: signed_in
 
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar
 

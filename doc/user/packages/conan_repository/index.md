@@ -223,7 +223,7 @@ To publish a Conan package, you need:
 
 - The Package Registry [set as a remote](#add-the-package-registry-as-a-conan-remote).
 - [Authentication](#authenticate-to-the-package-registry) set up with the Package Registry.
-- A local [Conan package](https://docs.conan.io/en/latest/creating_packages/getting_started.html). 
+- A local [Conan package](https://docs.conan.io/en/latest/creating_packages/getting_started.html).
   - For an instance remote, the package must meet the [naming convention](#package-recipe-naming-convention-for-instance-remotes).
 - A project ID, which is on the project's homepage.
 
@@ -276,12 +276,12 @@ To install a Conan package, you need:
 
 1. Add the Conan recipe to the `[requires]` section of the file:
 
-   ```ini
-    [requires]
-    Hello/0.1@mycompany/beta
-   
-    [generators]
-    cmake
+   ```plaintext
+   [requires]
+   Hello/0.1@mycompany/beta
+
+   [generators]
+   cmake
    ```
 
 1. At the root of your project, create a `build` directory and change to that directory:
@@ -316,7 +316,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
   NOTE: **Note:**
   This command removes all recipe and binary package files from the Package Registry.
 
-- From the GitLab user interface: 
+- From the GitLab user interface:
 
   Go to your project's **Packages & Registries > Package Registry**. Remove the package by clicking the red trash icon.
 

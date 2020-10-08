@@ -15,7 +15,7 @@ See [Geo limitations](../index.md#limitations) for more information.
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
-For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590). 
+For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
 will cause downtime.
 
@@ -132,7 +132,7 @@ Note the following when promoting a secondary:
 
 DANGER: **Danger:**
 In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
-   
+
    To promote the secondary node to primary along with preflight checks:
 
    ```shell

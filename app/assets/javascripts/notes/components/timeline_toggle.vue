@@ -4,6 +4,8 @@ import { mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { COMMENTS_ONLY_FILTER_VALUE, DESC } from '../constants';
 import notesEventHub from '../event_hub';
+import TrackEventDirective from '~/vue_shared/directives/track_event';
+import { trackToggleTimelineView } from '../utils';
 
 export const timelineEnabledTooltip = s__('Timeline|Turn timeline view off');
 export const timelineDisabledTooltip = s__('Timeline|Turn timeline view on');
@@ -14,6 +16,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    TrackEvent: TrackEventDirective,
   },
   computed: {
     ...mapGetters(['timelineEnabled', 'sortDirection']),
@@ -23,6 +26,7 @@ export default {
   },
   methods: {
     ...mapActions(['setTimelineView', 'setDiscussionSortDirection']),
+    trackToggleTimelineView,
     setSort() {
       if (this.timelineEnabled && this.sortDirection !== DESC) {
         this.setDiscussionSortDirection({ direction: DESC, persist: false });
@@ -44,6 +48,7 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip
+    v-track-event="trackToggleTimelineView(timelineEnabled)"
     icon="comments"
     size="small"
     :selected="timelineEnabled"

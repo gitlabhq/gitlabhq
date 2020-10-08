@@ -184,12 +184,12 @@ bash_history
 
 Each file name contained in a Git push is compared to the regular expression in this field. Filenames in Git consist of both the file's name and any directory that may precede it. A singular regular expression can contain multiple independent matches used as exclusions. File names can be broadly matched to any location in the repository, or restricted to specific locations. Filenames can also be partial matches used to exclude file types by extension.
 
-The following examples make use of regex string boundary characters which match the beginning of a string (`^`), and the end (`$`). They also include instances where either the directory path or the filename can include `.` or `/`. Both of these special regex characters have to be escaped with a backslash `\` to be used as normal characters in a match condition.
+The following examples make use of regex string boundary characters which match the beginning of a string (`^`), and the end (`$`). They also include instances where either the directory path or the filename can include `.` or `/`. Both of these special regex characters have to be escaped with a backslash `\\` to be used as normal characters in a match condition.
 
 Example: prevent pushing any `.exe` files to any location in the repository. This is an example of a partial match, which can match any filename that contains `.exe` at the end:
 
 ```plaintext
-\.exe$ 
+\.exe$
 ```
 
 Example: prevent a specific configuration file in the repository root from being pushed:
@@ -214,7 +214,7 @@ Example: combining all of the above in a single expression. Note that all of the
 
 ```plaintext
 (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
-``` 
+```
 
 <!-- ## Troubleshooting
 

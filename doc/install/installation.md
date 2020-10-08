@@ -321,7 +321,7 @@ Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we [
    ```shell
    sudo apt-get install -y postgresql postgresql-client libpq-dev postgresql-contrib
    ```
-   
+
 1. Verify the PostgreSQL version you have is supported by the version of GitLab you're
    installing:
 

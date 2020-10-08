@@ -229,7 +229,7 @@ backed by the database and allows searching in:
 - Commits (Project only)
 - Wiki (Project only)
 
-To start a search, type into the search bar on the top-right of the screen. You can always search 
+To start a search, type into the search bar on the top-right of the screen. You can always search
 in all GitLab and may also see the options to search within a group or project if you are in the
 group or project dashboard.
 
@@ -239,7 +239,7 @@ Once the results are returned, you can modify the search, select a different typ
 search, or choose a specific group or project.
 
 ![basic_search_results](img/basic_search_results.png)
- 
+
 ### Code search
 
 To search through code or other documents in a single project, you can use

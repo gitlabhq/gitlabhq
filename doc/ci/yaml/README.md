@@ -740,7 +740,7 @@ using [`|` (literal) and `>` (folded) YAML multi-line block scalar indicators](h
 
 CAUTION: **Warning:**
 If multiple commands are combined into one command string, only the last command's
-failure or success is reported. 
+failure or success is reported.
 [Failures from earlier commands are ignored due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).
 To work around this,
 run each command as a separate `script:` item, or add an `exit 1` command

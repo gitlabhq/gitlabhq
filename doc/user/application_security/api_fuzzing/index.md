@@ -8,8 +8,8 @@ type: reference, howto
 # Web API Fuzz Testing **(ULTIMATE)**
 
 You can add web API fuzzing to your [GitLab CI/CD](../../../ci/README.md)
-pipelines. This helps you discover bugs and potential security issues that other QA processes may miss. 
-API fuzzing performs fuzz testing of API operation parameters. 
+pipelines. This helps you discover bugs and potential security issues that other QA processes may miss.
+API fuzzing performs fuzz testing of API operation parameters.
 Fuzz testing sets operation parameters to unexpected values in an effort to cause unexpected behavior and errors in the API backend.
 
 We recommend that you use fuzz testing in addition to [GitLab Secure](../index.md)'s
@@ -443,7 +443,7 @@ Example usage for setting a single header:
 ```json
 {
   "headers": {
-    "Authorization": "Bearer dXNlcm5hbWU6cGFzc3dvcmQ=" 
+    "Authorization": "Bearer dXNlcm5hbWU6cGFzc3dvcmQ="
   }
 }
 ```
@@ -453,7 +453,7 @@ Example usage for setting both a header and cookie:
 ```json
 {
   "headers": {
-    "Authorization": "Bearer dXNlcm5hbWU6cGFzc3dvcmQ=" 
+    "Authorization": "Bearer dXNlcm5hbWU6cGFzc3dvcmQ="
   },
   "cookies": {
     "flags": "677"

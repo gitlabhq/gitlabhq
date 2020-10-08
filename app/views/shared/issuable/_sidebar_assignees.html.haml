@@ -1,5 +1,4 @@
 - issuable_type = issuable_sidebar[:type]
-- signed_in = !!issuable_sidebar.dig(:current_user, :id)
 
 #js-vue-sidebar-assignees{ data: { field: issuable_type, signed_in: signed_in } }
   .title.hide-collapsed

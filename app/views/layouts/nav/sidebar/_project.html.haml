@@ -229,6 +229,21 @@
                   %span
                     = _('Metrics')
 
+            - if project_nav_tab?(:environments) && can?(current_user, :read_pod_logs, @project)
+              = nav_link(controller: :logs, action: [:index]) do
+                = link_to project_logs_path(@project), title: _('Logs') do
+                  %span
+                    = _('Logs')
+
+            - if project_nav_tab? :environments
+              = render_if_exists "layouts/nav/sidebar/tracing_link"
+
+            - if project_nav_tab?(:error_tracking)
+              = nav_link(controller: :error_tracking) do
+                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking') do
+                  %span
+                    = _('Error Tracking')
+
             - if project_nav_tab?(:alert_management)
               = nav_link(controller: :alert_management) do
                 = link_to project_alert_management_index_path(@project), title: _('Alerts') do
@@ -241,37 +256,11 @@
                   %span
                     = _('Incidents')
 
-            - if project_nav_tab? :environments
-              = render_if_exists "layouts/nav/sidebar/tracing_link"
-
-              = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
-                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
-                  %span
-                    = _('Environments')
-
-            - if project_nav_tab?(:error_tracking)
-              = nav_link(controller: :error_tracking) do
-                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking') do
-                  %span
-                    = _('Error Tracking')
-
-            - if project_nav_tab?(:product_analytics)
-              = nav_link(controller: :product_analytics) do
-                = link_to project_product_analytics_path(@project), title: _('Product Analytics') do
-                  %span
-                    = _('Product Analytics')
-
             - if project_nav_tab? :serverless
               = nav_link(controller: :functions) do
                 = link_to project_serverless_functions_path(@project), title: _('Serverless') do
                   %span
                     = _('Serverless')
-
-            - if project_nav_tab?(:environments) && can?(current_user, :read_pod_logs, @project)
-              = nav_link(controller: :logs, action: [:index]) do
-                = link_to project_logs_path(@project), title: _('Logs') do
-                  %span
-                    = _('Logs')
 
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
@@ -302,7 +291,19 @@
                         %span= _("Got it!")
                         = sprite_icon('thumb-up')
 
+            - if project_nav_tab? :environments
+              = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
+                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
+                  %span
+                    = _('Environments')
+
             = render_if_exists 'layouts/nav/sidebar/project_feature_flags_link'
+
+            - if project_nav_tab?(:product_analytics)
+              = nav_link(controller: :product_analytics) do
+                = link_to project_product_analytics_path(@project), title: _('Product Analytics') do
+                  %span
+                    = _('Product Analytics')
 
       = render_if_exists 'layouts/nav/sidebar/project_packages_link'
 

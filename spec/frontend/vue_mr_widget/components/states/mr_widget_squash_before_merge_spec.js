@@ -1,5 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
+import { SQUASH_BEFORE_MERGE } from '~/vue_merge_request_widget/i18n';
 
 const localVue = createLocalVue();
 
@@ -85,7 +86,7 @@ describe('Squash before merge component', () => {
   });
 
   describe('tooltip', () => {
-    const tooltipTitle = () => findLabel().element.dataset.title;
+    const tooltipTitle = () => findLabel().attributes('title');
 
     it('does not render when isDisabled is false', () => {
       createComponent({
@@ -101,7 +102,7 @@ describe('Squash before merge component', () => {
         isDisabled: true,
       });
 
-      expect(tooltipTitle()).toBe('Required in this project.');
+      expect(tooltipTitle()).toBe(SQUASH_BEFORE_MERGE.tooltipTitle);
     });
   });
 

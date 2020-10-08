@@ -290,7 +290,7 @@ Administrators can disable this behavior in the [Continuous Integration settings
 
 You can route package requests to organizations and users outside of GitLab.
 
-To do this, add lines to your `.npmrc` file, replacing `my-org` with the namespace or group that owns your project's repository. The name is case-sensitive and must match the name of your group or namespace exactly. 
+To do this, add lines to your `.npmrc` file, replacing `my-org` with the namespace or group that owns your project's repository. The name is case-sensitive and must match the name of your group or namespace exactly.
 
 ```shell
 @foo:registry=https://gitlab.example.com/api/v4/packages/npm/
@@ -442,7 +442,7 @@ npm install @scope/package@my-tag              # Install a specific tag
 ```
 
 NOTE: **Note:**
-You cannot use your `CI_JOB_TOKEN` or deploy token with the `npm dist-tag` commands. View [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) for details. 
+You cannot use your `CI_JOB_TOKEN` or deploy token with the `npm dist-tag` commands. View [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) for details.
 
 CAUTION: **Warning:**
 Due to a bug in NPM 6.9.0, deleting dist tags fails. Make sure your NPM version is greater than 6.9.1.

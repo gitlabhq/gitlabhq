@@ -35,7 +35,7 @@ If you see a **Revoke** button, you can revoke that user's PAT. Whether you see 
 |-------------|------------------------|--------------------|----------------------------------------------------------------------------|
 | Active      | Yes                    | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
 | Active      | No                     | Yes                | Allows administrators to revoke the PAT, such as for a compromised account |
-| Expired     | Yes                    | No                 | PAT expires automatically                                                  |                                      
-| Expired     | No                     | Yes                | The administrator may revoke the PAT to prevent indefinite use             | 
-| Revoked     | Yes                    | No                 | Not applicable; token is already revoked                                   | 
-| Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |                                                               
+| Expired     | Yes                    | No                 | PAT expires automatically                                                  |
+| Expired     | No                     | Yes                | The administrator may revoke the PAT to prevent indefinite use             |
+| Revoked     | Yes                    | No                 | Not applicable; token is already revoked                                   |
+| Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |

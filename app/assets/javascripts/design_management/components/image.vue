@@ -93,8 +93,8 @@ export default {
 </script>
 
 <template>
-  <div class="m-auto js-design-image">
-    <gl-icon v-if="imageError" class="text-secondary-100" name="media-broken" :size="48" />
+  <div class="gl-mx-auto gl-my-auto js-design-image">
+    <gl-icon v-if="imageError" class="gl-text-gray-200" name="media-broken" :size="48" />
     <img
       v-show="!imageError"
       ref="contentImg"

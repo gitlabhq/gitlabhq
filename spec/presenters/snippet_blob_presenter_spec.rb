@@ -125,24 +125,70 @@ RSpec.describe SnippetBlobPresenter do
     let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
     let_it_be(:project_snippet)  { create(:project_snippet, :repository, project: project, author: user) }
 
+    let(:blob) { snippet.blobs.first }
+
     before do
       project.add_developer(user)
     end
 
     describe '#raw_path' do
-      subject { described_class.new(snippet.blobs.first, current_user: user).raw_path }
+      subject { described_class.new(blob, current_user: user).raw_path }
 
       it_behaves_like 'snippet blob raw path'
+
+      context 'with a snippet without a repository' do
+        let(:personal_snippet) { build(:personal_snippet, author: user, id: 1) }
+        let(:project_snippet)  { build(:project_snippet, project: project, author: user, id: 1) }
+        let(:blob) { snippet.blob }
+
+        context 'with ProjectSnippet' do
+          let(:snippet) { project_snippet }
+
+          it 'returns the raw project snippet path' do
+            expect(subject).to eq("/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
+          end
+        end
+
+        context 'with PersonalSnippet' do
+          let(:snippet) { personal_snippet }
+
+          it 'returns the raw personal snippet path' do
+            expect(subject).to eq("/-/snippets/#{personal_snippet.id}/raw")
+          end
+        end
+      end
     end
 
     describe '#raw_url' do
-      subject { described_class.new(snippet.blobs.first, current_user: user).raw_url }
+      subject { described_class.new(blob, current_user: user).raw_url }
 
       before do
         stub_default_url_options(host: 'test.host')
       end
 
       it_behaves_like 'snippet blob raw url'
+
+      context 'with a snippet without a repository' do
+        let(:personal_snippet) { build(:personal_snippet, author: user, id: 1) }
+        let(:project_snippet)  { build(:project_snippet, project: project, author: user, id: 1) }
+        let(:blob) { snippet.blob }
+
+        context 'with ProjectSnippet' do
+          let(:snippet) { project_snippet }
+
+          it 'returns the raw project snippet url' do
+            expect(subject).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
+          end
+        end
+
+        context 'with PersonalSnippet' do
+          let(:snippet) { personal_snippet }
+
+          it 'returns the raw personal snippet url' do
+            expect(subject).to eq("http://test.host/-/snippets/#{personal_snippet.id}/raw")
+          end
+        end
+      end
     end
   end
 

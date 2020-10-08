@@ -274,7 +274,7 @@ CHROME_HEADLESS=false bundle exec bin/qa QA::EE::Scenario::Test::Geo --primary-a
 
 ### Using Geo in Docker
 
-You can use [GitLab-QA Orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) to orchestrate two GitLab containers and configure them as a Geo setup. 
+You can use [GitLab-QA Orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) to orchestrate two GitLab containers and configure them as a Geo setup.
 
 Geo requires an EE license. To visit the Geo sites in your browser, you will need a reverse proxy server (for example, [NGINX](https://www.nginx.com/)).
 
@@ -319,7 +319,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you will nee
    _Map the hostnames to the local IP in `/etc/hosts` file on your machine:_
 
    ```plaintext
-   127.0.0.1 gitlab-primary.geo gitlab-secondary.geo 
+   127.0.0.1 gitlab-primary.geo gitlab-secondary.geo
    ```
 
    _Note the assigned ports:_

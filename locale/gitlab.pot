@@ -1613,6 +1613,9 @@ msgstr ""
 msgid "Add a task list"
 msgstr ""
 
+msgid "Add a to do"
+msgstr ""
+
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr ""
 
@@ -1766,7 +1769,7 @@ msgstr ""
 msgid "Added %{label_references} %{label_text}."
 msgstr ""
 
-msgid "Added a To Do."
+msgid "Added a to do."
 msgstr ""
 
 msgid "Added an issue to an epic."
@@ -1802,10 +1805,10 @@ msgstr ""
 msgid "Adds %{labels} %{label_text}."
 msgstr ""
 
-msgid "Adds a To Do."
+msgid "Adds a Zoom meeting"
 msgstr ""
 
-msgid "Adds a Zoom meeting"
+msgid "Adds a to do."
 msgstr ""
 
 msgid "Adds an issue to an epic."
@@ -11281,6 +11284,9 @@ msgstr ""
 msgid "File upload error."
 msgstr ""
 
+msgid "Filename"
+msgstr ""
+
 msgid "Files"
 msgstr ""
 
@@ -15636,9 +15642,6 @@ msgstr ""
 msgid "March"
 msgstr ""
 
-msgid "Mark To Do as done"
-msgstr ""
-
 msgid "Mark as done"
 msgstr ""
 
@@ -15655,6 +15658,9 @@ msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
 msgid "Mark this issue as related to another issue"
+msgstr ""
+
+msgid "Mark to do as done"
 msgstr ""
 
 msgid "Markdown"
@@ -15690,9 +15696,6 @@ msgstr ""
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
-msgid "Marked To Do as done."
-msgstr ""
-
 msgid "Marked this %{noun} as Work In Progress."
 msgstr ""
 
@@ -15702,7 +15705,7 @@ msgstr ""
 msgid "Marked this issue as related to %{issue_ref}."
 msgstr ""
 
-msgid "Marks To Do as done."
+msgid "Marked to do as done."
 msgstr ""
 
 msgid "Marks this %{noun} as Work In Progress."
@@ -15712,6 +15715,9 @@ msgid "Marks this issue as a duplicate of %{duplicate_reference}."
 msgstr ""
 
 msgid "Marks this issue as related to %{issue_ref}."
+msgstr ""
+
+msgid "Marks to do as done."
 msgstr ""
 
 msgid "Mask variable"
@@ -29091,6 +29097,9 @@ msgid "What are you searching for?"
 msgstr ""
 
 msgid "What describes you best?"
+msgstr ""
+
+msgid "What is squashing?"
 msgstr ""
 
 msgid "What's new at GitLab"

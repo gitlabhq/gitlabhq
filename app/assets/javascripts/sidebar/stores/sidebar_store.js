@@ -37,17 +37,17 @@ export default class SidebarStore {
     SidebarStore.singleton = this;
   }
 
-  setAssigneeData(data) {
+  setAssigneeData({ assignees }) {
     this.isFetching.assignees = false;
-    if (data.assignees) {
-      this.assignees = data.assignees;
+    if (assignees) {
+      this.assignees = assignees;
     }
   }
 
-  setReviewerData(data) {
+  setReviewerData({ reviewers }) {
     this.isFetching.reviewers = false;
-    if (data.reviewers) {
-      this.reviewers = data.reviewers;
+    if (reviewers) {
+      this.reviewers = reviewers;
     }
   }
 
@@ -91,22 +91,22 @@ export default class SidebarStore {
   }
 
   findAssignee(findAssignee) {
-    return this.assignees.find(assignee => assignee.id === findAssignee.id);
+    return this.assignees.find(({ id }) => id === findAssignee.id);
   }
 
   findReviewer(findReviewer) {
-    return this.reviewers.find(reviewer => reviewer.id === findReviewer.id);
+    return this.reviewers.find(({ id }) => id === findReviewer.id);
   }
 
-  removeAssignee(removeAssignee) {
-    if (removeAssignee) {
-      this.assignees = this.assignees.filter(assignee => assignee.id !== removeAssignee.id);
+  removeAssignee(assignee) {
+    if (assignee) {
+      this.assignees = this.assignees.filter(({ id }) => id !== assignee.id);
     }
   }
 
-  removeReviewer(removeReviewer) {
-    if (removeReviewer) {
-      this.reviewers = this.reviewers.filter(reviewer => reviewer.id !== removeReviewer.id);
+  removeReviewer(reviewer) {
+    if (reviewer) {
+      this.reviewers = this.reviewers.filter(({ id }) => id !== reviewer.id);
     }
   }
 

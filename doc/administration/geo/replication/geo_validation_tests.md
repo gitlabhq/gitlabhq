@@ -128,7 +128,7 @@ The following are PostgreSQL upgrade validation tests we performed.
   PostgreSQL 12 with a database cluster on the primary is not recommended until the issues are resolved.
 - Known issues for PostgreSQL clusters:
   - [Ensure Patroni detects PostgreSQL update](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5423)
-  - [Allow configuring permanent replication slots in patroni](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5628) 
+  - [Allow configuring permanent replication slots in patroni](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5628)
 
 ### August 2020
 

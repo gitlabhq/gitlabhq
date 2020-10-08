@@ -228,7 +228,7 @@ RSpec.describe QuickActions::InterpretService do
       it 'returns the todo message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Added a To Do.')
+        expect(message).to eq('Added a to do.')
       end
     end
 
@@ -244,7 +244,7 @@ RSpec.describe QuickActions::InterpretService do
         TodoService.new.mark_todo(issuable, developer)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Marked To Do as done.')
+        expect(message).to eq('Marked to do as done.')
       end
     end
 

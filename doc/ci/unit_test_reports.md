@@ -18,12 +18,12 @@ tests failed so that they can fix them.
 
 You can configure your job to use Unit test reports, and GitLab will display a
 report on the merge request so that it's easier and faster to identify the
-failure without having to check the entire log. Unit test reports currently 
+failure without having to check the entire log. Unit test reports currently
 only support test reports in the JUnit report format.
 
-If you don't use Merge Requests but still want to see the unit test report 
-output without searching through job logs, the full 
-[Unit test reports](#viewing-unit-test-reports-on-gitlab) are available 
+If you don't use Merge Requests but still want to see the unit test report
+output without searching through job logs, the full
+[Unit test reports](#viewing-unit-test-reports-on-gitlab) are available
 in the pipeline detail view.
 
 Consider the following workflow:

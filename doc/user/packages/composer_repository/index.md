@@ -24,7 +24,7 @@ can be any public or private repository.
    mkdir my-composer-package && cd my-composer-package
    ```
 
-1. Run [`composer init`](https://getcomposer.org/doc/03-cli.md#init) and answer the prompts. 
+1. Run [`composer init`](https://getcomposer.org/doc/03-cli.md#init) and answer the prompts.
 
    For namespace, enter your unique [namespace](../../../user/group/index.md#namespaces), like your GitLab username or group name.
 
@@ -71,7 +71,7 @@ Prerequisites:
 To publish the package:
 
 - Send a `POST` request to the [Packages API](../../../api/packages.md).
- 
+
   For example, you can use `curl`:
 
   ```shell
@@ -156,7 +156,7 @@ To install a package:
 1. Create an `auth.json` file with your GitLab credentials:
 
    ```shell
-   composer config gitlab-token.<DOMAIN-NAME> <personal_access_token> 
+   composer config gitlab-token.<DOMAIN-NAME> <personal_access_token>
    ```
 
 Output indicates that the package has been successfully installed.

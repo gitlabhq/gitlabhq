@@ -58,7 +58,7 @@ Here are some common use cases for issue boards.
 
 ### Use cases for a single issue board
 
-With the GitLab Workflow you can discuss proposals in issues, label 
+With the GitLab Workflow you can discuss proposals in issues, label
 them, and organize and prioritize them with issue boards.
 
 For example, let's consider this simplified development workflow:
@@ -169,9 +169,9 @@ At this point, that issue is assigned a relative order value by the system,
 with respect to the other issues in the list. Any time
 you drag and reorder the issue, its relative order value changes accordingly.
 
-Also, any time that issue appears in any board, the ordering is done according to 
+Also, any time that issue appears in any board, the ordering is done according to
 the updated relative order value. It's only the first
-time an issue appears that it takes from the priority order mentioned above. If a user in your GitLab instance 
+time an issue appears that it takes from the priority order mentioned above. If a user in your GitLab instance
 drags issue `A` above issue `B`, the ordering is maintained when these two issues are subsequently
 loaded in any board in the same instance. This could be a different project board or a different group
 board, for example.

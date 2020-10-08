@@ -31,7 +31,7 @@ cd <destination folder>
 
 [Create a new branch](create-branch.md) to add your file into. Submitting changes directly
 to the default branch should be avoided unless your project is very small and you're the
-only person working on it. 
+only person working on it.
 
 You can also [switch to an existing branch](start-using-git.md#work-on-an-existing-branch)
 if you have one already.
@@ -80,7 +80,7 @@ Now you can push (send) your changes (in the branch `<branch-name>`) to GitLab
 git push origin <branch-name>
 ```
 
-Your image is added to your branch in your repository in GitLab. 
+Your image is added to your branch in your repository in GitLab.
 
 <!-- ## Troubleshooting
 

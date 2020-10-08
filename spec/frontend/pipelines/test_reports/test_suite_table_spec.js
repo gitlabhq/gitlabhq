@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
+import { GlButton } from '@gitlab/ui';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { TestStatus } from '~/pipelines/constants';
@@ -72,6 +73,16 @@ describe('Test reports suite table', () => {
       const row = findCaseRowAtIndex(test);
 
       expect(findIconForRow(row, status).exists()).toBe(true);
+    });
+
+    it('renders the file name for the test with a copy button', () => {
+      const { file } = testCases[0];
+      const row = findCaseRowAtIndex(0);
+      const button = row.find(GlButton);
+
+      expect(row.text()).toContain(file);
+      expect(button.exists()).toBe(true);
+      expect(button.attributes('data-clipboard-text')).toBe(file);
     });
   });
 });

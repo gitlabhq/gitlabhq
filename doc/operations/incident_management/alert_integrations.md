@@ -31,7 +31,7 @@ You will need to activate the endpoint and obtain credentials to set up this int
 
 ### External Prometheus integration
 
-For GitLab versions 13.1 and greater, please see [External Prometheus Instances](../metrics/alerts.md#external-prometheus-instances) to configure alerts for this integration. 
+For GitLab versions 13.1 and greater, please see [External Prometheus Instances](../metrics/alerts.md#external-prometheus-instances) to configure alerts for this integration.
 
 ## Customizing the payload
 

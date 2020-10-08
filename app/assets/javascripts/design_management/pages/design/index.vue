@@ -40,6 +40,8 @@ import { trackDesignDetailView } from '../../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 
+const DEFAULT_SCALE = 1;
+
 export default {
   components: {
     ApolloMutation,
@@ -65,7 +67,7 @@ export default {
       comment: '',
       annotationCoordinates: null,
       errorMessage: '',
-      scale: 1,
+      scale: DEFAULT_SCALE,
       resolvedDiscussionsExpanded: false,
     };
   },
@@ -156,6 +158,11 @@ export default {
   },
   beforeDestroy() {
     Mousetrap.unbind('esc', this.closeDesign);
+  },
+  beforeRouteUpdate(to, from, next) {
+    // reset scale when the active design changes
+    this.scale = DEFAULT_SCALE;
+    next();
   },
   methods: {
     addImageDiffNoteToStore(

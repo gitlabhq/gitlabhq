@@ -228,7 +228,7 @@ RSpec.describe 'Dashboard Todos' do
     describe 'restoring the todo' do
       before do
         within first('.todo') do
-          click_link 'Add a To Do'
+          click_link 'Add a to do'
         end
       end
 
@@ -243,7 +243,7 @@ RSpec.describe 'Dashboard Todos' do
     end
   end
 
-  context 'User has Todos with labels spanning multiple projects' do
+  context 'User has to dos with labels spanning multiple projects' do
     before do
       label1 = create(:label, project: project)
       note1 = create(:note_on_issue, note: "Hello #{label1.to_reference(format: :name)}", noteable_id: issue.id, noteable_type: 'Issue', project: issue.project)
