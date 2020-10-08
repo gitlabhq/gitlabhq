@@ -6,39 +6,26 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
   describe '#initialize' do
     let(:test_case) { described_class.new(params) }
 
-    context 'when both classname and name are given' do
-      context 'when test case is passed' do
-        let(:job) { build(:ci_build) }
-        let(:params) { attributes_for(:test_case).merge!(job: job) }
+    context 'when required params are given' do
+      let(:job) { build(:ci_build) }
+      let(:params) { attributes_for(:test_case).merge!(job: job) }
 
-        it 'initializes an instance' do
-          expect { test_case }.not_to raise_error
+      it 'initializes an instance', :aggregate_failures do
+        expect { test_case }.not_to raise_error
 
-          expect(test_case.name).to eq('test-1')
-          expect(test_case.classname).to eq('trace')
-          expect(test_case.file).to eq('spec/trace_spec.rb')
-          expect(test_case.execution_time).to eq(1.23)
-          expect(test_case.status).to eq(described_class::STATUS_SUCCESS)
-          expect(test_case.system_output).to be_nil
-          expect(test_case.job).to be_present
-        end
-      end
+        expect(test_case).to have_attributes(
+          suite_name: params[:suite_name],
+          name: params[:name],
+          classname: params[:classname],
+          file: params[:file],
+          execution_time: params[:execution_time],
+          status: params[:status],
+          system_output: params[:system_output],
+          job: params[:job]
+        )
 
-      context 'when test case is failed' do
-        let(:job) { build(:ci_build) }
-        let(:params) { attributes_for(:test_case, :failed).merge!(job: job) }
-
-        it 'initializes an instance' do
-          expect { test_case }.not_to raise_error
-
-          expect(test_case.name).to eq('test-1')
-          expect(test_case.classname).to eq('trace')
-          expect(test_case.file).to eq('spec/trace_spec.rb')
-          expect(test_case.execution_time).to eq(1.23)
-          expect(test_case.status).to eq(described_class::STATUS_FAILED)
-          expect(test_case.system_output)
-            .to eq('Failure/Error: is_expected.to eq(300) expected: 300 got: -100')
-        end
+        key = "#{test_case.suite_name}_#{test_case.classname}_#{test_case.name}"
+        expect(test_case.key).to eq(Digest::SHA256.hexdigest(key))
       end
     end
 
@@ -51,6 +38,10 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
 
         expect { test_case }.to raise_error(KeyError)
       end
+    end
+
+    context 'when suite_name is missing' do
+      it_behaves_like 'param is missing', :suite_name
     end
 
     context 'when classname is missing' do

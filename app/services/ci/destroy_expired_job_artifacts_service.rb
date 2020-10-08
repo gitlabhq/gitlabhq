@@ -39,6 +39,13 @@ module Ci
       return false if artifacts.empty?
 
       artifacts.each(&:destroy!)
+      run_after_destroy(artifacts)
+
+      true # This is required because of the design of `loop_until` method.
     end
+
+    def run_after_destroy(artifacts); end
   end
 end
+
+Ci::DestroyExpiredJobArtifactsService.prepend_if_ee('EE::Ci::DestroyExpiredJobArtifactsService')

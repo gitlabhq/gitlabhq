@@ -1,0 +1,5 @@
+---
+title: Fix Auto Deploy scale subcommand unintentionally recreates legacy PostgreSQL
+merge_request: 44535
+author:
+type: fixed

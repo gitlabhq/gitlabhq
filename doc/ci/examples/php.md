@@ -141,12 +141,11 @@ Of course, `my_php.ini` must be present in the root directory of your repository
 
 ## Test PHP projects using the Shell executor
 
-The shell executor runs your job in a terminal session on your server.
-Thus, in order to test your projects you first need to make sure that all
-dependencies are installed.
+The shell executor runs your job in a terminal session on your server. To test
+your projects, you must first ensure that all dependencies are installed.
 
-For example, in a VM running Debian 8 we first update the cache, then we
-install `phpunit` and `php5-mysql`:
+For example, in a VM running Debian 8, first update the cache, and then install
+`phpunit` and `php5-mysql`:
 
 ```shell
 sudo apt-get update -y
@@ -219,8 +218,8 @@ test:atoum:
 ### Using Composer
 
 The majority of the PHP projects use Composer for managing their PHP packages.
-In order to execute Composer before running your tests, simply add the
-following in your `.gitlab-ci.yml`:
+To execute Composer before running your tests, add the following to your
+`.gitlab-ci.yml`:
 
 ```yaml
 # Composer stores all downloaded packages in the vendor/ directory.
@@ -243,14 +242,14 @@ before_script:
 ## Access private packages or dependencies
 
 If your test suite needs to access a private repository, you need to configure
-[the SSH keys](../ssh_keys/README.md) in order to be able to clone it.
+the [SSH keys](../ssh_keys/README.md) to be able to clone it.
 
 ## Use databases or other services
 
-Most of the time you will need a running database in order for your tests to
-run. If you are using the Docker executor you can leverage Docker's ability to
-link to other containers. With GitLab Runner, this can be achieved by
-defining a `service`.
+Most of the time, you need a running database for your tests to be able to
+run. If you're using the Docker executor, you can leverage Docker's ability to
+link to other containers. With GitLab Runner, this can be achieved by defining
+a `service`.
 
 This functionality is covered in [the CI services](../services/README.md)
 documentation.

@@ -12,7 +12,7 @@ module Gitlab
             root = Hash.from_xml(xml_data)
 
             all_cases(root) do |test_case|
-              test_case = create_test_case(test_case, args)
+              test_case = create_test_case(test_case, test_suite, args)
               test_suite.add_test_case(test_case)
             end
           rescue Nokogiri::XML::SyntaxError => e
@@ -33,20 +33,24 @@ module Gitlab
               all_cases(node['testsuites'], root, &blk) unless parent
 
               # we require at least one level of testsuites or testsuite
-              each_case(node['testcase'], &blk) if parent
+              each_case(node['testcase'], node['name'], &blk) if parent
 
               # we allow multiple nested 'testsuite' (eg. PHPUnit)
               all_cases(node['testsuite'], root, &blk)
             end
           end
 
-          def each_case(testcase, &blk)
+          def each_case(testcase, testsuite_name, &blk)
             return unless testcase.present?
 
-            [testcase].flatten.compact.map(&blk)
+            [testcase].flatten.compact.each do |tc|
+              tc['suite_name'] = testsuite_name
+
+              yield(tc)
+            end
           end
 
-          def create_test_case(data, args)
+          def create_test_case(data, test_suite, args)
             if data.key?('failure')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
@@ -63,6 +67,7 @@ module Gitlab
             end
 
             ::Gitlab::Ci::Reports::TestCase.new(
+              suite_name: data['suite_name'] || test_suite.name,
               classname: data['classname'],
               name: data['name'],
               file: data['file'],
@@ -72,6 +77,10 @@ module Gitlab
               attachment: attachment,
               job: args.fetch(:job)
             )
+          end
+
+          def suite_name(parent, test_suite)
+            parent.dig('testsuite', 'name') || test_suite.name
           end
 
           def attachment_path(data)

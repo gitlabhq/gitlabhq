@@ -125,8 +125,9 @@ Therefore:
 - Since `C` specifies that it should only run for merge requests, it will not run for any pipeline
   except a merge request pipeline.
 
-This helps you avoid having to add the `only:` rule to all of your jobs
-in order to make them always run. You can use this format to set up a Review App, helping to save resources.
+This helps you avoid having to add the `only:` rule to all of your jobs to make
+them always run. You can use this format to set up a Review App, helping to
+save resources.
 
 #### Excluding certain branches
 

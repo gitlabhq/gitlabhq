@@ -7,6 +7,7 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
 
   feature_category :importers
   worker_has_external_dependencies!
+  # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab/-/issues/16812 is solved.
   sidekiq_options retry: false
   sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
 

@@ -183,9 +183,9 @@ webhook URL for Push and Tag events (change the project ID, ref and token):
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
 ```
 
-`ref` should be passed as part of the URL in order to take precedence over
-`ref` from the webhook body that designates the branch ref that fired the
-trigger in the source repository. `ref` should be URL-encoded if it contains slashes.
+You should pass `ref` as part of the URL, to take precedence over `ref` from
+the webhook body that designates the branch ref that fired the trigger in the
+source repository. Be sure to URL-encode `ref` if it contains slashes.
 
 ## Making use of trigger variables
 

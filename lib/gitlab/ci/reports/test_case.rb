@@ -10,9 +10,10 @@ module Gitlab
         STATUS_ERROR = 'error'
         STATUS_TYPES = [STATUS_ERROR, STATUS_FAILED, STATUS_SUCCESS, STATUS_SKIPPED].freeze
 
-        attr_reader :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key, :attachment, :job
+        attr_reader :suite_name, :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key, :attachment, :job
 
         def initialize(params)
+          @suite_name = params.fetch(:suite_name)
           @name = params.fetch(:name)
           @classname = params.fetch(:classname)
           @file = params.fetch(:file, nil)
@@ -23,7 +24,7 @@ module Gitlab
           @attachment = params.fetch(:attachment, nil)
           @job = params.fetch(:job, nil)
 
-          @key = hash_key("#{classname}_#{name}")
+          @key = hash_key("#{suite_name}_#{classname}_#{name}")
         end
 
         def has_attachment?

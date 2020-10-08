@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         let(:junit) do
           <<-EOF.strip_heredoc
             <testsuites>
-              <testsuite>
+              <testsuite name='Math'>
                 <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
               </testsuite>
             </testsuites>
@@ -53,6 +53,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         it 'parses XML and adds a test case to a suite' do
           expect { subject }.not_to raise_error
 
+          expect(test_cases[0].suite_name).to eq('Math')
           expect(test_cases[0].classname).to eq('Calculator')
           expect(test_cases[0].name).to eq('sumTest1')
           expect(test_cases[0].execution_time).to eq(0.01)
@@ -62,7 +63,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
       context 'when there is <testcase>' do
         let(:junit) do
           <<-EOF.strip_heredoc
-              <testsuite>
+              <testsuite name='Math'>
                 <testcase classname='Calculator' name='sumTest1' time='0.01'>
                   #{testcase_content}
                 </testcase>
@@ -79,6 +80,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         shared_examples_for '<testcase> XML parser' do |status, output|
           it 'parses XML and adds a test case to the suite' do
             aggregate_failures do
+              expect(test_case.suite_name).to eq('Math')
               expect(test_case.classname).to eq('Calculator')
               expect(test_case.name).to eq('sumTest1')
               expect(test_case.execution_time).to eq(0.01)
@@ -152,13 +154,15 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
           expect { subject }.not_to raise_error
 
           expect(test_cases.count).to eq(1)
+          expect(test_cases.first.suite_name).to eq("XXX\\FrontEnd\\WebBundle\\Tests\\Controller\\LogControllerTest")
+          expect(test_cases.first.name).to eq("testIndexAction")
         end
       end
 
       context 'when there are two test cases' do
         let(:junit) do
           <<-EOF.strip_heredoc
-            <testsuite>
+            <testsuite name='Math'>
               <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
               <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
             </testsuite>
@@ -168,9 +172,11 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         it 'parses XML and adds test cases to a suite' do
           expect { subject }.not_to raise_error
 
+          expect(test_cases[0].suite_name).to eq('Math')
           expect(test_cases[0].classname).to eq('Calculator')
           expect(test_cases[0].name).to eq('sumTest1')
           expect(test_cases[0].execution_time).to eq(0.01)
+          expect(test_cases[1].suite_name).to eq('Math')
           expect(test_cases[1].classname).to eq('Calculator')
           expect(test_cases[1].name).to eq('sumTest2')
           expect(test_cases[1].execution_time).to eq(0.02)
@@ -181,7 +187,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         let(:junit) do
           <<-EOF.strip_heredoc
             <testsuites>
-              <testsuite>
+              <testsuite name='Math'>
                 <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
                 <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
               </testsuite>
@@ -196,18 +202,32 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         it 'parses XML and adds test cases to a suite' do
           expect { subject }.not_to raise_error
 
-          expect(test_cases[0].classname).to eq('Calculator')
-          expect(test_cases[0].name).to eq('sumTest1')
-          expect(test_cases[0].execution_time).to eq(0.01)
-          expect(test_cases[1].classname).to eq('Calculator')
-          expect(test_cases[1].name).to eq('sumTest2')
-          expect(test_cases[1].execution_time).to eq(0.02)
-          expect(test_cases[2].classname).to eq('Statemachine')
-          expect(test_cases[2].name).to eq('happy path')
-          expect(test_cases[2].execution_time).to eq(100)
-          expect(test_cases[3].classname).to eq('Statemachine')
-          expect(test_cases[3].name).to eq('unhappy path')
-          expect(test_cases[3].execution_time).to eq(200)
+          expect(test_cases).to contain_exactly(
+            have_attributes(
+              suite_name: 'Math',
+              classname: 'Calculator',
+              name: 'sumTest1',
+              execution_time: 0.01
+            ),
+            have_attributes(
+              suite_name: 'Math',
+              classname: 'Calculator',
+              name: 'sumTest2',
+              execution_time: 0.02
+            ),
+            have_attributes(
+              suite_name: test_suite.name, # Defaults to test suite instance's name
+              classname: 'Statemachine',
+              name: 'happy path',
+              execution_time: 100
+            ),
+            have_attributes(
+              suite_name: test_suite.name, # Defaults to test suite instance's name
+              classname: 'Statemachine',
+              name: 'unhappy path',
+              execution_time: 200
+            )
+          )
         end
       end
     end

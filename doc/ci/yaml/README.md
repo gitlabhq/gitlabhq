@@ -1979,15 +1979,17 @@ docker build service one:
       - service-one/**/*
 ```
 
-In the example above, a pipeline could fail due to changes to a file in `service-one/**/*`.
-A later commit could then be pushed that does not include any changes to this file,
-but includes changes to the `Dockerfile`, and this pipeline could pass because it's only
-testing the changes to the `Dockerfile`. GitLab checks the **most recent pipeline**,
-that **passed**, and shows the merge request as mergeable, despite the earlier
-failed pipeline caused by a change that was not yet corrected.
+In the example above, the pipeline might fail because of changes to a file in `service-one/**/*`.
 
-With this configuration, care must be taken to check that the most recent pipeline
-properly corrected any failures from previous pipelines.
+A later commit that doesn't have changes in `service-one/**/*`
+but does have changes to the `Dockerfile` can pass. The job
+only tests the changes to the `Dockerfile`.
+
+GitLab checks the **most recent pipeline** that **passed**. If the merge request is mergeable,
+it doesn't matter that an earlier pipeline failed because of a change that has not been corrected.
+
+When you use this configuration, ensure that the most recent pipeline
+properly corrects any failures from previous pipelines.
 
 ##### Using `only:changes` without pipelines for merge requests
 
@@ -2093,8 +2095,7 @@ can choose a custom limit. For example, to set the limit to 100:
 Plan.default.actual_limits.update!(ci_needs_size_limit: 100)
 ```
 
-NOTE: **Note:**
-To disable the ability to use DAG, set the limit to `0`.
+To disable directed acyclic graphs (DAG), set the limit to `0`.
 
 #### Artifact downloads with `needs`
 
@@ -2130,7 +2131,7 @@ rubocop:
 ```
 
 Additionally, in the three syntax examples below, the `rspec` job downloads the artifacts
-from all three `build_jobs`, as `artifacts` is true for `build_job_1`, and
+from all three `build_jobs`. `artifacts` is true for `build_job_1` and
 **defaults** to true for both `build_job_2` and `build_job_3`.
 
 ```yaml
@@ -2146,9 +2147,10 @@ rspec:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab v12.7.
 
-`needs` can be used to download artifacts from up to five jobs in pipelines on
-[other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project),
-or pipelines in different projects, groups and namespaces:
+Use `needs` to download artifacts from up to five jobs in pipelines:
+
+- [On other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project).
+- In different projects, groups and namespaces.
 
 ```yaml
 build_job:
@@ -2171,9 +2173,10 @@ The user running the pipeline must have at least `reporter` access to the group 
 
 ##### Artifact downloads between pipelines in the same project
 
-`needs` can be used to download artifacts from different pipelines in the current project
-by setting the `project` keyword as the current project's name, and specifying a ref.
-In the example below, `build_job` downloads the artifacts for the latest successful
+Use `needs` to download artifacts from different pipelines in the current project.
+Set the `project` keyword as the current project's name, and specify a ref.
+
+In this example, `build_job` downloads the artifacts for the latest successful
 `build-1` job with the `other-ref` ref:
 
 ```yaml
@@ -2205,7 +2208,6 @@ build_job:
       artifacts: true
 ```
 
-NOTE: **Note:**
 Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not supported.
 
 ### `tags`
@@ -2217,7 +2219,7 @@ When you register a runner, you can specify the runner's tags, for
 example `ruby`, `postgres`, `development`.
 
 In this example, the job is run by a runner that
-has both `ruby` AND `postgres` tags defined.
+has both `ruby` and `postgres` tags defined.
 
 ```yaml
 job:
@@ -2562,9 +2564,9 @@ deploy to production:
 >   defined, GitLab automatically triggers a stop action when the associated
 >   branch is deleted.
 
-Closing (stopping) environments can be achieved with the `on_stop` keyword defined under
-`environment`. It declares a different job that runs in order to close
-the environment.
+Closing (stopping) environments can be achieved with the `on_stop` keyword
+defined under `environment`. It declares a different job that runs to close the
+environment.
 
 Read the `environment:action` section for an example.
 
@@ -2602,21 +2604,20 @@ stop_review_app:
     action: stop
 ```
 
-In the above example we set up the `review_app` job to deploy to the `review`
-environment, and we also defined a new `stop_review_app` job under `on_stop`.
+In the above example, the `review_app` job deploys to the `review`
+environment. A new `stop_review_app` job is listed under `on_stop`.
 After the `review_app` job is finished, it triggers the
-`stop_review_app` job based on what is defined under `when`. In this case we
-set it up to `manual` so it needs a [manual action](#whenmanual) from
+`stop_review_app` job based on what is defined under `when`. In this case,
+it is set to `manual`, so it needs a [manual action](#whenmanual) from
 GitLab's user interface to run.
 
-Also in the example, `GIT_STRATEGY` is set to `none` so that GitLab Runner won’t
-try to check out the code after the branch is deleted when the `stop_review_app`
-job is [automatically triggered](../environments/index.md#automatically-stopping-an-environment).
+Also in the example, `GIT_STRATEGY` is set to `none`. If the
+`stop_review_app` job is [automatically triggered](../environments/index.md#automatically-stopping-an-environment),
+the runner won’t try to check out the code after the branch is deleted.
 
-NOTE: **Note:**
-The above example overwrites global variables. If your stop environment job depends
-on global variables, you can use [anchor variables](#yaml-anchors-for-variables) when setting the `GIT_STRATEGY`
-to change it without overriding the global variables.
+The example also overwrites global variables. If your `stop` `environment` job depends
+on global variables, you can use [anchor variables](#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`.
+This changes the job without overriding the global variables.
 
 The `stop_review_app` job is **required** to have the following keywords defined:
 

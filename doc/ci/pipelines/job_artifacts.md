@@ -37,8 +37,8 @@ pdf:
     expire_in: 1 week
 ```
 
-A job named `pdf` calls the `xelatex` command in order to build a PDF file from
-the latex source file `mycv.tex`. We then define the `artifacts` paths which in
+A job named `pdf` calls the `xelatex` command to build a PDF file from the
+latex source file `mycv.tex`. We then define the `artifacts` paths which in
 turn are defined with the `paths` keyword. All paths to files and directories
 are relative to the repository that was cloned during the build.
 
@@ -429,7 +429,9 @@ To erase a job:
 
 ## Retrieve artifacts of private projects when using GitLab CI
 
-In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../api/job_artifacts.md#get-job-artifacts) the artifacts.
+To retrieve a job artifact from a different project, you might need to use a
+private token to [authenticate and download](../../api/job_artifacts.md#get-job-artifacts)
+the artifact.
 
 ## Troubleshooting
 

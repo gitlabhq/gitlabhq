@@ -134,7 +134,8 @@ on, and use that key for all projects that are run on this machine.
    If you are accessing a private GitLab repository you need to add it as a
    [deploy key](../../ssh/README.md#deploy-keys).
 
-Once done, try to log in to the remote server in order to accept the fingerprint:
+After generating the key, try to sign in to the remote server to accept the
+fingerprint:
 
 ```shell
 ssh example.com

@@ -999,9 +999,6 @@ class Project < ApplicationRecord
     job_id =
       if forked?
         RepositoryForkWorker.perform_async(id)
-      elsif gitlab_project_import?
-        # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-foss/issues/26189 is solved.
-        RepositoryImportWorker.set(retry: false).perform_async(self.id)
       else
         RepositoryImportWorker.perform_async(self.id)
       end

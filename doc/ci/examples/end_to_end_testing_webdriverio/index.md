@@ -95,9 +95,10 @@ dependency upgrade did not break anything without even having to look at your we
 
 ## Running locally
 
-We'll get to running the above test in CI/CD in a moment. When writing tests, however, it helps if
-you do not have to wait for your pipelines to succeed in order to check whether they do what you
-expect them to do. In other words, let's get it to run locally.
+We'll get to running the above test in CI/CD in a moment. When writing tests,
+however, it helps if you don't have to wait for your pipelines to succeed to
+determine whether they do what you expect them to do. In other words, let's get
+it to run locally.
 
 Make sure that your app is running locally. If you use Webpack,
 you can use [the Webpack Dev Server WebdriverIO plugin](https://www.npmjs.com/package/wdio-webpack-dev-server-service)

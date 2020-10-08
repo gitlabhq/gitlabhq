@@ -47,7 +47,7 @@ module Ci
     def test_case_hashes(build, test_suite)
       [].tap do |hashes|
         test_suite.each_test_case do |test_case|
-          key = "#{build.project_id}-#{test_suite.name}-#{test_case.key}"
+          key = "#{build.project_id}-#{test_case.key}"
           hashes << Digest::SHA256.hexdigest(key)
         end
       end

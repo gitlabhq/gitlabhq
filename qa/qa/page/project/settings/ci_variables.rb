@@ -26,6 +26,10 @@ module QA
             within_element(:ci_variable_key_field) { find('input').set key }
             fill_element :ci_variable_value_field, value
             click_ci_variable_save_button
+
+            wait_until(reload: false) do
+              within_element(:ci_variable_table_content) { has_element?(:edit_ci_variable_button) }
+            end
           end
 
           def click_add_variable

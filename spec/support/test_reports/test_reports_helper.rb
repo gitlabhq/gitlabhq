@@ -3,6 +3,7 @@
 module TestReportsHelper
   def create_test_case_rspec_success(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'rspec',
       name: 'Test#sum when a is 1 and b is 3 returns summary',
       classname: "spec.#{name}",
       file: './spec/test_spec.rb',
@@ -12,6 +13,7 @@ module TestReportsHelper
 
   def create_test_case_rspec_failed(name = 'test_spec', execution_time = 2.22)
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'rspec',
       name: 'Test#sum when a is 1 and b is 3 returns summary',
       classname: "spec.#{name}",
       file: './spec/test_spec.rb',
@@ -22,6 +24,7 @@ module TestReportsHelper
 
   def create_test_case_rspec_skipped(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'rspec',
       name: 'Test#sum when a is 3 and b is 3 returns summary',
       classname: "spec.#{name}",
       file: './spec/test_spec.rb',
@@ -31,6 +34,7 @@ module TestReportsHelper
 
   def create_test_case_rspec_error(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'rspec',
       name: 'Test#sum when a is 4 and b is 4 returns summary',
       classname: "spec.#{name}",
       file: './spec/test_spec.rb',
@@ -52,6 +56,7 @@ module TestReportsHelper
 
   def create_test_case_java_success(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'java',
       name: name,
       classname: 'CalculatorTest',
       execution_time: 5.55,
@@ -60,6 +65,7 @@ module TestReportsHelper
 
   def create_test_case_java_failed(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'java',
       name: name,
       classname: 'CalculatorTest',
       execution_time: 6.66,
@@ -69,6 +75,7 @@ module TestReportsHelper
 
   def create_test_case_java_skipped(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'java',
       name: name,
       classname: 'CalculatorTest',
       execution_time: 7.77,
@@ -77,6 +84,7 @@ module TestReportsHelper
 
   def create_test_case_java_error(name = 'addTest')
     Gitlab::Ci::Reports::TestCase.new(
+      suite_name: 'java',
       name: name,
       classname: 'CalculatorTest',
       execution_time: 8.88,
