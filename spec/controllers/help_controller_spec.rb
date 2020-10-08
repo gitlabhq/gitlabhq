@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe HelpController do
+  include StubVersion
+
   let(:user) { create(:user) }
 
   before do
@@ -108,8 +110,56 @@ RSpec.describe HelpController do
         end
 
         it 'renders HTML' do
-          expect(response).to render_template('show.html.haml')
-          expect(response.media_type).to eq 'text/html'
+          aggregate_failures do
+            expect(response).to render_template('show.html.haml')
+            expect(response.media_type).to eq 'text/html'
+          end
+        end
+      end
+
+      context 'when a custom help_page_documentation_url is set' do
+        before do
+          stub_application_setting(help_page_documentation_base_url: documentation_base_url)
+          stub_version(gitlab_version, 'deadbeaf')
+        end
+
+        subject { get :show, params: { path: path }, format: 'html' }
+
+        let(:gitlab_version) { '13.4.0-ee' }
+        let(:documentation_base_url) { 'https://docs.gitlab.com' }
+        let(:path) { 'ssh/README' }
+
+        it 'redirects user to custom documentation url with a specified version' do
+          is_expected.to redirect_to("#{documentation_base_url}/13.4/ee/#{path}.html")
+        end
+
+        context 'when documentation url ends with a slash' do
+          let(:documentation_base_url) { 'https://docs.gitlab.com/' }
+
+          it 'redirects user to custom documentation url without slash duplicates' do
+            is_expected.to redirect_to("https://docs.gitlab.com/13.4/ee/#{path}.html")
+          end
+        end
+
+        context 'when it is a pre-release' do
+          let(:gitlab_version) { '13.4.0-pre' }
+
+          it 'redirects user to custom documentation url without a version' do
+            is_expected.to redirect_to("#{documentation_base_url}/ee/#{path}.html")
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(help_page_documentation_redirect: false)
+          end
+
+          it 'renders HTML' do
+            aggregate_failures do
+              is_expected.to render_template('show.html.haml')
+              expect(response.media_type).to eq 'text/html'
+            end
+          end
         end
       end
 
@@ -129,9 +179,12 @@ RSpec.describe HelpController do
                 path: 'user/img/markdown_logo'
               },
               format: :png
-          expect(response).to be_successful
-          expect(response.media_type).to eq 'image/png'
-          expect(response.headers['Content-Disposition']).to match(/^inline;/)
+
+          aggregate_failures do
+            expect(response).to be_successful
+            expect(response.media_type).to eq 'image/png'
+            expect(response.headers['Content-Disposition']).to match(/^inline;/)
+          end
         end
       end
 

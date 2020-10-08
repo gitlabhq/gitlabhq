@@ -406,8 +406,8 @@ server (with `gitaly_address`) unless you setup with special
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the Gitaly client can connect to Gitaly
-   servers.
+1. Run `sudo gitlab-rake gitlab:gitaly:check` on the Gitaly client (for example, the
+   Rails application) to confirm it can connect to Gitaly servers.
 1. Tail the logs to see the requests:
 
    ```shell

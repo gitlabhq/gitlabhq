@@ -51,3 +51,13 @@ export const targetPrometheusUrlPlaceholder = 'http://prometheus.example.com/';
 export const targetOpsgenieUrlPlaceholder = 'https://app.opsgenie.com/alert/list/';
 
 export const sectionHash = 'js-alert-management-settings';
+
+/* eslint-disable @gitlab/require-i18n-strings */
+
+/**
+ * Tracks snowplow event when user views alerts intergration list
+ */
+export const trackAlertIntergrationsViewsOptions = {
+  category: 'Alert Intergrations',
+  action: 'view_alert_integrations_list',
+};

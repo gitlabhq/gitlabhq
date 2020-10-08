@@ -182,7 +182,7 @@ failure. For greater fault tolerance, the following options are available:
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
-     [Relational Database Service](https://aws.amazon.com/rds/)) is recommended.
+     [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 To complete this section you will need:
 

@@ -1,0 +1,5 @@
+---
+title: Fix rollback portion of migration that adds temporary index for container scanning findings
+merge_request: 44593
+author:
+type: fixed

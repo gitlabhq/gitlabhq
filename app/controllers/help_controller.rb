@@ -27,17 +27,10 @@ class HelpController < ApplicationController
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
-        # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
-        path = File.join(Rails.root, 'doc', "#{@path}.md")
-
-        if File.exist?(path)
-          # Remove YAML frontmatter so that it doesn't look weird
-          @markdown = File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
-
-          render 'show.html.haml'
+        if redirect_to_documentation_website?
+          redirect_to documentation_url
         else
-          # Force template to Haml
-          render 'errors/not_found.html.haml', layout: 'errors', status: :not_found
+          render_documentation
         end
       end
 
@@ -75,5 +68,49 @@ class HelpController < ApplicationController
     params.require(:path)
 
     params
+  end
+
+  def redirect_to_documentation_website?
+    return false unless Feature.enabled?(:help_page_documentation_redirect)
+    return false unless Gitlab::UrlSanitizer.valid_web?(documentation_url)
+
+    true
+  end
+
+  def documentation_url
+    return unless documentation_base_url
+
+    @documentation_url ||= [
+      documentation_base_url.chomp('/'),
+      version_segment,
+      'ee',
+      "#{@path}.html"
+    ].compact.join('/')
+  end
+
+  def documentation_base_url
+    @documentation_base_url ||= Gitlab::CurrentSettings.current_application_settings.help_page_documentation_base_url.presence
+  end
+
+  def version_segment
+    return if Gitlab.pre_release?
+
+    version = Gitlab.version_info
+    [version.major, version.minor].join('.')
+  end
+
+  def render_documentation
+    # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
+    path = File.join(Rails.root, 'doc', "#{@path}.md")
+
+    if File.exist?(path)
+      # Remove YAML frontmatter so that it doesn't look weird
+      @markdown = File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
+
+      render 'show.html.haml'
+    else
+      # Force template to Haml
+      render 'errors/not_found.html.haml', layout: 'errors', status: :not_found
+    end
   end
 end

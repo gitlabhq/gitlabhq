@@ -15,6 +15,6 @@ class AddIndexToContainerScanningFindings < ActiveRecord::Migration[6.0]
   end
 
   def down
-    remove_concurrent_index_by_name(:project_registry, INDEX_NAME)
+    remove_concurrent_index_by_name(:vulnerability_occurrences, INDEX_NAME)
   end
 end

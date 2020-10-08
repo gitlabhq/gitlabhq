@@ -16,7 +16,6 @@ import {
 import { debounce } from 'lodash';
 import { s__ } from '~/locale';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import IntegrationsList from './alerts_integrations_list.vue';
@@ -56,7 +55,6 @@ export default {
   directives: {
     'gl-modal': GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['prometheus', 'generic', 'opsgenie'],
   data() {
     return {

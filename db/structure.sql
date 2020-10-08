@@ -9293,6 +9293,7 @@ CREATE TABLE application_settings (
     abuse_notification_email character varying,
     require_admin_approval_after_user_signup boolean DEFAULT false NOT NULL,
     help_page_documentation_base_url text,
+    automatic_purchased_storage_allocation boolean DEFAULT false NOT NULL,
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
