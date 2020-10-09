@@ -44,6 +44,8 @@ Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need
 
 ## Access controls
 
+> - Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
+
 When creating a cluster in GitLab, you are asked if you would like to create either:
 
 - A [Role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
@@ -54,9 +56,6 @@ GitLab creates the necessary service accounts and privileges to install and run
 [GitLab managed applications](index.md#installing-applications). When GitLab creates the cluster,
 a `gitlab` service account with `cluster-admin` privileges is created in the `default` namespace
 to manage the newly created cluster.
-
-NOTE: **Note:**
-Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
 
 The first time you install an application into your cluster, the `tiller` service
 account is created with `cluster-admin` privileges in the
@@ -152,11 +151,12 @@ Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level
 
 ## Add existing cluster
 
-If you have an existing Kubernetes cluster, you can add it to a project, group, or instance.
+If you have an existing Kubernetes cluster, you can add it to a project, group,
+or instance.
 
-NOTE: **Note:**
-Kubernetes integration is not supported for arm64 clusters. See the issue
-[Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838) for details.
+Kubernetes integration isn't supported for arm64 clusters. See the issue
+[Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838)
+for details.
 
 ### Existing Kubernetes cluster
 
@@ -191,7 +191,6 @@ To add a Kubernetes cluster to your project, group, or instance:
          kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
          ```
 
-         NOTE: **Note:**
          If the command returns the entire certificate chain, you must copy the Root CA
          certificate and any intermediate certificates at the bottom of the chain.
          A chain file has following structure:
@@ -321,7 +320,7 @@ integration to work properly.
 
 ![RBAC](img/rbac_v13_1.png)
 
-NOTE: **Note:**
+CAUTION: **Caution:**
 Disabling RBAC means that any application running in the cluster,
 or user who can authenticate to the cluster, has full API access. This is a
 [security concern](index.md#security-implications), and may not be desirable.

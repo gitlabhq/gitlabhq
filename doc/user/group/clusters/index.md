@@ -72,9 +72,8 @@ for deployments with a cluster not managed by GitLab, you must ensure:
   (this is [not automatic](https://gitlab.com/gitlab-org/gitlab/-/issues/31519)). Editing
   `KUBE_NAMESPACE` directly is discouraged.
 
-NOTE: **Note:**
 If you [install applications](#installing-applications) on your cluster, GitLab creates
-the resources required to run them even if you choose to manage your own cluster.
+the resources required to run them, even if you choose to manage your own cluster.
 
 ### Clearing the cluster cache
 

@@ -136,8 +136,8 @@ This example code does the following:
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be defined in your GitLab settings under **Settings > CI/CD > Variables**.
 For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
 
-NOTE: **Note:**
-   The AWS credentials you provide must include IAM policies that provision correct access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
+ The AWS credentials you provide must include IAM policies that provision correct
+ access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 
 #### Deploying your function
 
@@ -154,9 +154,7 @@ endpoints:
 #### Manually testing your function
 
 Running the following `curl` command should trigger your function.
-
-NOTE: **Note:**
-Your URL should be the one retrieved from the GitLab deploy stage log.
+Your URL should be the one retrieved from the GitLab deploy stage log:
 
 ```shell
 curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello

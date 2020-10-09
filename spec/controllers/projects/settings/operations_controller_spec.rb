@@ -504,7 +504,7 @@ RSpec.describe Projects::Settings::OperationsController do
 
       it_behaves_like 'PATCHable'
 
-      describe 'gitlab tracking', :snowplow, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/259282#note_425243784' do
+      describe 'gitlab tracking', :snowplow do
         shared_examples 'event tracking' do
           it 'tracks an event' do
             expect_snowplow_event(

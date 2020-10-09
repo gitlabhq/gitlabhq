@@ -1170,9 +1170,6 @@ Rails/SaveBang:
     - 'spec/support/shared_contexts/email_shared_context.rb'
     - 'spec/support/shared_contexts/finders/group_projects_finder_shared_contexts.rb'
     - 'spec/support/shared_contexts/mailers/notify_shared_context.rb'
-    - 'spec/tasks/gitlab/web_hook_rake_spec.rb'
-    - 'spec/uploaders/file_uploader_spec.rb'
-    - 'spec/uploaders/object_storage_spec.rb'
 
 # Offense count: 187
 # Cop supports --auto-correct.

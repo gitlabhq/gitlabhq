@@ -227,7 +227,10 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
 
-Gets a list of group members who counts as billable, including members in the sub group/project.
+Gets a list of group members that count as billable. The list includes members in the subgroup or subproject.
+
+NOTE:
+Unlike other API endpoints, billable members is updated once per day at 12:00 UTC.
 
 This function takes [pagination](README.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 

@@ -11,7 +11,7 @@ applications which can be added directly to your configured cluster. These
 applications are needed for [Review Apps](../../ci/review_apps/index.md) and
 [deployments](../../ci/environments/index.md) when using [Auto DevOps](../../topics/autodevops/index.md).
 You can install them after you [create a cluster](../project/clusters/add_remove_clusters.md). GitLab provides
-GitLab Managed Apps that can installed with [one-click](#install-with-one-click) or [using CI/CD](#install-using-gitlab-cicd-alpha). 
+GitLab Managed Apps that can installed with [one-click](#install-with-one-click) or [using CI/CD](#install-using-gitlab-cicd-alpha).
 
 ## Install with one click
 
@@ -143,7 +143,6 @@ The Ingress Controller installed is
 [Ingress-NGINX](https://kubernetes.io/docs/concepts/services-networking/ingress/),
 which is supported by the Kubernetes community.
 
-NOTE: **Note:**
 With the following procedure, a load balancer must be installed in your cluster
 to obtain the endpoint. You can use either
 Ingress, or Knative's own load balancer ([Istio](https://istio.io)) if using Knative.
@@ -725,8 +724,8 @@ least 2 people from the
 
 ### Install Sentry using GitLab CI/CD
 
-NOTE: **Note:**
-The Sentry Helm chart [recommends](https://github.com/helm/charts/blob/f6e5784f265dd459c5a77430185d0302ed372665/stable/sentry/values.yaml#L284-L285) at least 3GB of available RAM for database migrations.
+The Sentry Helm chart [recommends](https://github.com/helm/charts/blob/f6e5784f265dd459c5a77430185d0302ed372665/stable/sentry/values.yaml#L284-L285)
+at least 3 GB of available RAM for database migrations.
 
 To install Sentry, define the `.gitlab/managed-apps/config.yaml` file
 with:
