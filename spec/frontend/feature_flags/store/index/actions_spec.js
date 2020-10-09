@@ -7,10 +7,7 @@ import {
   receiveFeatureFlagsSuccess,
   receiveFeatureFlagsError,
   fetchFeatureFlags,
-  setFeatureFlagsEndpoint,
   setFeatureFlagsOptions,
-  setInstanceIdEndpoint,
-  setInstanceId,
   rotateInstanceId,
   requestRotateInstanceId,
   receiveRotateInstanceIdSuccess,
@@ -26,10 +23,10 @@ import {
   deleteUserList,
   receiveDeleteUserListError,
   clearAlert,
-} from '~/feature_flags/store/modules/index/actions';
-import { mapToScopesViewModel } from '~/feature_flags/store/modules/helpers';
-import state from '~/feature_flags/store/modules/index/state';
-import * as types from '~/feature_flags/store/modules/index/mutation_types';
+} from '~/feature_flags/store/index/actions';
+import { mapToScopesViewModel } from '~/feature_flags/store/helpers';
+import state from '~/feature_flags/store/index/state';
+import * as types from '~/feature_flags/store/index/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { getRequestData, rotateData, featureFlag, userList } from '../../mock_data';
 
@@ -39,20 +36,7 @@ describe('Feature flags actions', () => {
   let mockedState;
 
   beforeEach(() => {
-    mockedState = state();
-  });
-
-  describe('setFeatureFlagsEndpoint', () => {
-    it('should commit SET_FEATURE_FLAGS_ENDPOINT mutation', done => {
-      testAction(
-        setFeatureFlagsEndpoint,
-        'feature_flags.json',
-        mockedState,
-        [{ type: types.SET_FEATURE_FLAGS_ENDPOINT, payload: 'feature_flags.json' }],
-        [],
-        done,
-      );
-    });
+    mockedState = state({});
   });
 
   describe('setFeatureFlagsOptions', () => {
@@ -62,32 +46,6 @@ describe('Feature flags actions', () => {
         { page: '1', scope: 'all' },
         mockedState,
         [{ type: types.SET_FEATURE_FLAGS_OPTIONS, payload: { page: '1', scope: 'all' } }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('setInstanceIdEndpoint', () => {
-    it('should commit SET_INSTANCE_ID_ENDPOINT mutation', done => {
-      testAction(
-        setInstanceIdEndpoint,
-        'instance_id.json',
-        mockedState,
-        [{ type: types.SET_INSTANCE_ID_ENDPOINT, payload: 'instance_id.json' }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('setInstanceId', () => {
-    it('should commit SET_INSTANCE_ID mutation', done => {
-      testAction(
-        setInstanceId,
-        'test_instance_id',
-        mockedState,
-        [{ type: types.SET_INSTANCE_ID, payload: 'test_instance_id' }],
         [],
         done,
       );

@@ -1,28 +1,12 @@
-import state from '~/feature_flags/store/modules/edit/state';
-import mutations from '~/feature_flags/store/modules/edit/mutations';
-import * as types from '~/feature_flags/store/modules/edit/mutation_types';
+import state from '~/feature_flags/store/edit/state';
+import mutations from '~/feature_flags/store/edit/mutations';
+import * as types from '~/feature_flags/store/edit/mutation_types';
 
 describe('Feature flags Edit Module Mutations', () => {
   let stateCopy;
 
   beforeEach(() => {
-    stateCopy = state();
-  });
-
-  describe('SET_ENDPOINT', () => {
-    it('should set endpoint', () => {
-      mutations[types.SET_ENDPOINT](stateCopy, 'feature_flags.json');
-
-      expect(stateCopy.endpoint).toEqual('feature_flags.json');
-    });
-  });
-
-  describe('SET_PATH', () => {
-    it('should set provided options', () => {
-      mutations[types.SET_PATH](stateCopy, 'feature_flags');
-
-      expect(stateCopy.path).toEqual('feature_flags');
-    });
+    stateCopy = state({ endpoint: 'feature_flags.json', path: '/feature_flags' });
   });
 
   describe('REQUEST_FEATURE_FLAG', () => {

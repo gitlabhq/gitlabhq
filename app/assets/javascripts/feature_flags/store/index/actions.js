@@ -2,18 +2,8 @@ import Api from '~/api';
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 
-export const setFeatureFlagsEndpoint = ({ commit }, endpoint) =>
-  commit(types.SET_FEATURE_FLAGS_ENDPOINT, endpoint);
-
 export const setFeatureFlagsOptions = ({ commit }, options) =>
   commit(types.SET_FEATURE_FLAGS_OPTIONS, options);
-
-export const setInstanceIdEndpoint = ({ commit }, endpoint) =>
-  commit(types.SET_INSTANCE_ID_ENDPOINT, endpoint);
-
-export const setProjectId = ({ commit }, endpoint) => commit(types.SET_PROJECT_ID, endpoint);
-
-export const setInstanceId = ({ commit }, instanceId) => commit(types.SET_INSTANCE_ID, instanceId);
 
 export const fetchFeatureFlags = ({ state, dispatch }) => {
   dispatch('requestFeatureFlags');

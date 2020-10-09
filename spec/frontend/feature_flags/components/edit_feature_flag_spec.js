@@ -6,7 +6,7 @@ import { TEST_HOST } from 'spec/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { LEGACY_FLAG, NEW_VERSION_FLAG, NEW_FLAG_ALERT } from '~/feature_flags/constants';
 import Form from '~/feature_flags/components/form.vue';
-import editModule from '~/feature_flags/store/modules/edit';
+import createStore from '~/feature_flags/store/edit';
 import EditFeatureFlag from '~/feature_flags/components/edit_feature_flag.vue';
 import axios from '~/lib/utils/axios_utils';
 
@@ -20,10 +20,9 @@ describe('Edit feature flag form', () => {
   let wrapper;
   let mock;
 
-  const store = new Vuex.Store({
-    modules: {
-      edit: editModule,
-    },
+  const store = createStore({
+    path: '/feature_flags',
+    endpoint: `${TEST_HOST}/feature_flags.json`,
   });
 
   const factory = (opts = {}) => {
@@ -34,8 +33,6 @@ describe('Edit feature flag form', () => {
     wrapper = shallowMount(EditFeatureFlag, {
       localVue,
       propsData: {
-        endpoint: `${TEST_HOST}/feature_flags.json`,
-        path: '/feature_flags',
         environmentsEndpoint: 'environments.json',
         projectId: '8',
         featureFlagIssuesEndpoint: `${TEST_HOST}/feature_flags/5/issues`,
@@ -105,7 +102,7 @@ describe('Edit feature flag form', () => {
 
   describe('with error', () => {
     it('should render the error', () => {
-      store.dispatch('edit/receiveUpdateFeatureFlagError', { message: ['The name is required'] });
+      store.dispatch('receiveUpdateFeatureFlagError', { message: ['The name is required'] });
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find('.alert-danger').exists()).toEqual(true);
         expect(wrapper.find('.alert-danger').text()).toContain('The name is required');

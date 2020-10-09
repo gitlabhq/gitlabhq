@@ -28,7 +28,6 @@ above the log file data, depending on your configuration:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn more about the Log Explorer, see [APM - Log Explorer](https://www.youtube.com/watch?v=hWclZHA7Dgw).
 
-NOTE: **Note:**
 [Learn more about Kubernetes + GitLab](https://about.gitlab.com/solutions/kubernetes/).
 Everything you need to build, test, deploy, and run your application at scale.
 

@@ -135,6 +135,17 @@ RSpec.describe Gitlab::Middleware::Go do
 
                       it_behaves_like 'unauthorized'
                     end
+
+                    context 'with a blacklisted ip' do
+                      it 'returns forbidden' do
+                        expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::IpBlacklisted)
+                        response = go
+
+                        expect(response[0]).to eq(403)
+                        expect(response[1]['Content-Length']).to eq('0')
+                        expect(response[2].body).to eq([''])
+                      end
+                    end
                   end
                 end
               end

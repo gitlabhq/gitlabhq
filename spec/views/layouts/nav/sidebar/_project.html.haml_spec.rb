@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'layouts/nav/sidebar/_project' do
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   before do
     assign(:project, project)
@@ -242,6 +242,30 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
           render
 
           expect(rendered).to have_link('Operations', href: project_settings_operations_path(project))
+        end
+      end
+    end
+
+    describe 'Tracing' do
+      it 'is not visible to unauthorized user' do
+        allow(view).to receive(:can?).and_return(false)
+
+        render
+
+        expect(rendered).not_to have_text 'Tracing'
+      end
+
+      it 'links to Tracing page' do
+        render
+
+        expect(rendered).to have_link('Tracing', href: project_tracing_path(project))
+      end
+
+      context 'without project.tracing_external_url' do
+        it 'links to Tracing page' do
+          render
+
+          expect(rendered).to have_link('Tracing', href: project_tracing_path(project))
         end
       end
     end

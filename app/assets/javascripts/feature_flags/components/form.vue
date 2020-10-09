@@ -28,7 +28,7 @@ import {
   NEW_VERSION_FLAG,
   LEGACY_FLAG,
 } from '../constants';
-import { createNewEnvironmentScope } from '../store/modules/helpers';
+import { createNewEnvironmentScope } from '../store/helpers';
 
 export default {
   components: {

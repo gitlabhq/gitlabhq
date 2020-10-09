@@ -12,14 +12,13 @@ Grafana metrics can be embedded in [GitLab Flavored Markdown](../../user/markdow
 
 You can embed live [Grafana](https://docs.gitlab.com/omnibus/settings/grafana.html)
 charts in issues as a
-[direct linked rendered image](https://grafana.com/docs/grafana/latest/reference/share_panel/#direct-link-rendered-image).
-The **Direct link rendered image** sharing dialog within Grafana provides the link:
+[direct linked rendered image](https://grafana.com/docs/grafana/latest/reference/share_panel/#direct-link-rendered-image). Your Grafana instance must be available to the
+target user, either as a public dashboard or on the same network. The
+**Direct link rendered image** sharing dialog within Grafana provides the link:
 
 ![Grafana Direct Linked Rendered Image](img/grafana_live_embed.png)
 
-NOTE: **Note:**
-For this embed to display correctly, the Grafana instance must be available to the
-target user, either as a public dashboard or on the same network.
+For this embed to display correctly, the
 
 Copy the link and add an image tag as [inline HTML](../../user/markdown.md#inline-html)
 in your Markdown. You can tweak the query parameters to meet your needs, such as

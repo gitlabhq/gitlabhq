@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Editor Lite component rendering matches the snapshot 1`] = `
+<div
+  class="file-content code"
+>
+  <div
+    data-editor-loading=""
+    id="editor"
+  >
+    <pre
+      class="editor-loading-content"
+    >
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    </pre>
+  </div>
+</div>
+`;

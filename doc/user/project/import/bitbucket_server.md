@@ -89,7 +89,7 @@ Alternatively, if there is also no email address, the project creator is set as 
 
 User assignment by username is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](<replace with path to>/administration/feature_flags.md)
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can enable it.
 
 To enable it:

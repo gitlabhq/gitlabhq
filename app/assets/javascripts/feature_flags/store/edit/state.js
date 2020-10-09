@@ -1,8 +1,8 @@
-import { LEGACY_FLAG } from '../../../constants';
+import { LEGACY_FLAG } from '../../constants';
 
-export default () => ({
-  endpoint: null,
-  path: null,
+export default ({ path, endpoint }) => ({
+  endpoint,
+  path,
   isSendingRequest: false,
   error: [],
 

@@ -2222,13 +2222,13 @@ msgstr ""
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr ""
 
-msgid "After that, you will not to be able to use merge approvals or code quality as well as many other features."
+msgid "After that, you will not be able to use merge approvals or code quality as well as many other features."
 msgstr ""
 
-msgid "After that, you will not to be able to use merge approvals or epics as well as many other features."
+msgid "After that, you will not be able to use merge approvals or epics as well as many other features."
 msgstr ""
 
-msgid "After that, you will not to be able to use merge approvals or epics as well as many security features."
+msgid "After that, you will not be able to use merge approvals or epics as well as many security features."
 msgstr ""
 
 msgid "Alert"
@@ -29944,7 +29944,7 @@ msgstr ""
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
 msgstr ""
 
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not be able to create issues or merge requests as well as many other features."
 msgstr ""
 
 msgid "Your CSV export has started. It will be emailed to %{email} when complete."

@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Create and manage incidents in GitLab
+# Incidents
 
 While no configuration is required to use the [manual features](#create-an-incident-manually)
 of incident management, some simple [configuration](#configure-incidents) is needed to automate incident creation.
@@ -27,8 +27,7 @@ in your project's sidebar. The list contains the following metrics:
   - **{severity-low}** **Low - S4**
   - **{severity-unknown}** **Unknown**
 
-  NOTE: **Note:**
-  Editing incident severity on the incident details page was
+  [Editing incident severity](#incident-details) on the incident details page was
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229402) in GitLab 13.4.
 
 - **Incident** - The description of the incident, which attempts to capture the
@@ -45,12 +44,11 @@ The Incident list displays incidents sorted by incident created date.
 To see if a column is sortable, point your mouse at the header. Sortable columns
 display an arrow next to the column name.
 
+Incidents share the [Issues API](../../user/project/issues/index.md).
+
 TIP: **Tip:**
 For a live example of the incident list in action, visit this
 [demo project](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/incidents).
-
-NOTE: **Note:**
-Incidents share the [Issues API](../../user/project/issues/index.md).
 
 ## Configure incidents
 
@@ -134,24 +132,55 @@ confirm that a GitLab issue is created from the incident.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230847) in GitLab 13.4.
 
+Users with at least Reporter [permissions](../../user/permissions.md) can view
+the Incident Details page. Navigate to **Operations > Incidents** in your project's
+sidebar, and select an incident from the list.
+
+When you take any of these actions on an incident, GitLab logs a system note and
+displays it in the Incident Details view:
+
+- Updating the severity of an incident
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42358) in GitLab 13.5.)
+
+For live examples of GitLab incidents, visit the `tanuki-inc` project's
+[incident list page](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/incidents).
+Click any incident in the list to display its incident details page.
+
 ### Summary
 
 The summary section for incidents provides both critical details about and the
 contents of the issue template (if one was used). The highlighted bar at the top
-of the incident displays from left to right: the link to the original alert, the
-alert start time, and the event count. Beneath the highlight bar, GitLab
-displays a summary that includes the following fields:
+of the incident displays from left to right:
+
+- The link to the original alert.
+- The alert start time.
+- The event count.
+
+Beneath the highlight bar, GitLab displays a summary that includes the following fields:
 
 - Start time
 - Severity
 - `full_query`
 - Monitoring tool
 
+Comments are displayed in threads, but can be displayed chronologically
+[in a timeline view](#timeline-view).
+
 ### Alert details
 
 Incidents show the details of linked alerts in a separate tab. To populate this
 tab, the incident must have been created with a linked alert. Incidents
-[created automatically](#configure-incidents) from alerts will have this
+[created automatically](#configure-incidents) from alerts have this
 field populated.
 
 ![Incident alert details](./img/incident_alert_details_v13_4.png)
+
+### Timeline view
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+
+To quickly see the latest updates on an incident, click
+**{comments}** **Turn timeline view on** in the comment bar to display comments
+un-threaded and ordered chronologically, newest to oldest:
+
+![Timeline view toggle](./img/timeline_view_toggle_v13_5.png)

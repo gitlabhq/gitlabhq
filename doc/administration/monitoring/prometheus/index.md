@@ -32,7 +32,7 @@ dashboard tool like [Grafana](https://grafana.com).
 ## Configuring Prometheus
 
 NOTE: **Note:**
-For installations from source, you'll have to install and configure it yourself.
+For installations from source, you must install and configure it yourself.
 
 Prometheus and its exporters are on by default, starting with GitLab 9.0.
 Prometheus will run as the `gitlab-prometheus` user and listen on
@@ -179,7 +179,7 @@ The next step is to tell all the other nodes where the monitoring node is:
    take effect.
 
 NOTE: **Note:**
-Once monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
+After monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
 ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`. Setting both
 `consul['monitoring_service_discovery'] = true` and `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
 will result in errors.
@@ -312,7 +312,6 @@ To use an external Prometheus server:
 
 You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
 
-NOTE: **Note:**
 If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security). We plan to
 [provide access via GitLab](https://gitlab.com/gitlab-org/multi-user-prometheus), but in the interim there are

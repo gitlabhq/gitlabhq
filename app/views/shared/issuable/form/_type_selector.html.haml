@@ -25,6 +25,6 @@
                   = _("Incident")
     - if issuable.incident?
       %p.form-text.text-muted
-        - incident_docs_url = help_page_path('operations/incident_management/incidents.md', anchor: 'create-and-manage-incidents-in-gitlab')
+        - incident_docs_url = help_page_path('operations/incident_management/incidents.md')
         - incident_docs_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: incident_docs_url }
         = _('A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents.').html_safe % { incident_docs_start: incident_docs_start, incident_docs_end: '</a>'.html_safe }

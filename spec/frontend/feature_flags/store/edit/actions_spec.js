@@ -2,8 +2,6 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import {
-  setEndpoint,
-  setPath,
   updateFeatureFlag,
   requestUpdateFeatureFlag,
   receiveUpdateFeatureFlagSuccess,
@@ -13,18 +11,15 @@ import {
   receiveFeatureFlagSuccess,
   receiveFeatureFlagError,
   toggleActive,
-} from '~/feature_flags/store/modules/edit/actions';
-import state from '~/feature_flags/store/modules/edit/state';
-import {
-  mapStrategiesToRails,
-  mapFromScopesViewModel,
-} from '~/feature_flags/store/modules/helpers';
+} from '~/feature_flags/store/edit/actions';
+import state from '~/feature_flags/store/edit/state';
+import { mapStrategiesToRails, mapFromScopesViewModel } from '~/feature_flags/store/helpers';
 import {
   NEW_VERSION_FLAG,
   LEGACY_FLAG,
   ROLLOUT_STRATEGY_ALL_USERS,
 } from '~/feature_flags/constants';
-import * as types from '~/feature_flags/store/modules/edit/mutation_types';
+import * as types from '~/feature_flags/store/edit/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/url_utility');
@@ -33,33 +28,7 @@ describe('Feature flags Edit Module actions', () => {
   let mockedState;
 
   beforeEach(() => {
-    mockedState = state();
-  });
-
-  describe('setEndpoint', () => {
-    it('should commit SET_ENDPOINT mutation', done => {
-      testAction(
-        setEndpoint,
-        'feature_flags.json',
-        mockedState,
-        [{ type: types.SET_ENDPOINT, payload: 'feature_flags.json' }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('setPath', () => {
-    it('should commit SET_PATH mutation', done => {
-      testAction(
-        setPath,
-        '/feature_flags',
-        mockedState,
-        [{ type: types.SET_PATH, payload: '/feature_flags' }],
-        [],
-        done,
-      );
-    });
+    mockedState = state({ endpoint: 'feature_flags.json', path: '/feature_flags' });
   });
 
   describe('updateFeatureFlag', () => {

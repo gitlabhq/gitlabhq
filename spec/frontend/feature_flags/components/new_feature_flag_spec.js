@@ -1,10 +1,10 @@
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { GlAlert } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
-import newModule from '~/feature_flags/store/modules/new';
+import createStore from '~/feature_flags/store/new';
 import NewFeatureFlag from '~/feature_flags/components/new_feature_flag.vue';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
@@ -17,13 +17,15 @@ import { allUsersStrategy } from '../mock_data';
 const userCalloutId = 'feature_flags_new_version';
 const userCalloutsPath = `${TEST_HOST}/user_callouts`;
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('New feature flag form', () => {
   let wrapper;
 
-  const store = new Vuex.Store({
-    modules: {
-      new: newModule,
-    },
+  const store = createStore({
+    endpoint: `${TEST_HOST}/feature_flags.json`,
+    path: '/feature_flags',
   });
 
   const factory = (opts = {}) => {
@@ -32,9 +34,8 @@ describe('New feature flag form', () => {
       wrapper = null;
     }
     wrapper = shallowMount(NewFeatureFlag, {
+      localVue,
       propsData: {
-        endpoint: `${TEST_HOST}/feature_flags.json`,
-        path: '/feature_flags',
         environmentsEndpoint: 'environments.json',
         projectId: '8',
         showUserCallout: true,
@@ -63,7 +64,7 @@ describe('New feature flag form', () => {
 
   describe('with error', () => {
     it('should render the error', () => {
-      store.dispatch('new/receiveCreateFeatureFlagError', { message: ['The name is required'] });
+      store.dispatch('receiveCreateFeatureFlagError', { message: ['The name is required'] });
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find('.alert').exists()).toEqual(true);
         expect(wrapper.find('.alert').text()).toContain('The name is required');

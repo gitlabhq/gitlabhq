@@ -1,8 +1,7 @@
 <script>
-import { createNamespacedHelpers } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { GlAlert } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import store from '../store/index';
 import FeatureFlagForm from './form.vue';
 import {
   LEGACY_FLAG,
@@ -10,28 +9,17 @@ import {
   NEW_FLAG_ALERT,
   ROLLOUT_STRATEGY_ALL_USERS,
 } from '../constants';
-import { createNewEnvironmentScope } from '../store/modules/helpers';
+import { createNewEnvironmentScope } from '../store/helpers';
 
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-const { mapState, mapActions } = createNamespacedHelpers('new');
-
 export default {
-  store,
   components: {
     GlAlert,
     FeatureFlagForm,
   },
   mixins: [featureFlagsMixin()],
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    path: {
-      type: String,
-      required: true,
-    },
     environmentsEndpoint: {
       type: String,
       required: true,
@@ -64,7 +52,7 @@ export default {
     newFlagAlert: NEW_FLAG_ALERT,
   },
   computed: {
-    ...mapState(['error']),
+    ...mapState(['error', 'path']),
     scopes() {
       return [
         createNewEnvironmentScope(
@@ -89,12 +77,8 @@ export default {
       return [{ name: ROLLOUT_STRATEGY_ALL_USERS, parameters: {}, scopes: [] }];
     },
   },
-  created() {
-    this.setEndpoint(this.endpoint);
-    this.setPath(this.path);
-  },
   methods: {
-    ...mapActions(['createFeatureFlag', 'setEndpoint', 'setPath']),
+    ...mapActions(['createFeatureFlag']),
     dismissNewVersionFlagAlert() {
       this.userShouldSeeNewFlagAlert = false;
       axios.post(this.userCalloutsPath, {

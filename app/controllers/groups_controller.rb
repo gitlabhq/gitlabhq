@@ -241,7 +241,8 @@ class GroupsController < Groups::ApplicationController
       :two_factor_grace_period,
       :project_creation_level,
       :subgroup_creation_level,
-      :default_branch_protection
+      :default_branch_protection,
+      :default_branch_name
     ]
   end
 

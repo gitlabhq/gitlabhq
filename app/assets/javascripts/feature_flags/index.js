@@ -1,41 +1,47 @@
 import Vue from 'vue';
-import FeatureFlagsComponent from '~/feature_flags/components/feature_flags.vue';
+import Vuex from 'vuex';
 import csrf from '~/lib/utils/csrf';
+import FeatureFlagsComponent from './components/feature_flags.vue';
+import createStore from './store/index';
 
-export default () =>
-  new Vue({
-    el: '#feature-flags-vue',
-    components: {
-      FeatureFlagsComponent,
-    },
-    data() {
-      return {
-        dataset: document.querySelector(this.$options.el).dataset,
-      };
-    },
+Vue.use(Vuex);
+
+export default () => {
+  const el = document.querySelector('#feature-flags-vue');
+
+  const {
+    projectName,
+    featureFlagsHelpPagePath,
+    errorStateSvgPath,
+    endpoint,
+    projectId,
+    unleashApiInstanceId,
+    rotateInstanceIdPath,
+  } = el.dataset;
+
+  return new Vue({
+    el,
+    store: createStore({ endpoint, projectId, unleashApiInstanceId, rotateInstanceIdPath }),
     provide() {
       return {
-        projectName: this.dataset.projectName,
-        featureFlagsHelpPagePath: this.dataset.featureFlagsHelpPagePath,
-        errorStateSvgPath: this.dataset.errorStateSvgPath,
+        projectName,
+        featureFlagsHelpPagePath,
+        errorStateSvgPath,
       };
     },
     render(createElement) {
-      return createElement('feature-flags-component', {
+      return createElement(FeatureFlagsComponent, {
         props: {
-          endpoint: this.dataset.endpoint,
-          projectId: this.dataset.projectId,
-          featureFlagsClientLibrariesHelpPagePath: this.dataset
-            .featureFlagsClientLibrariesHelpPagePath,
-          featureFlagsClientExampleHelpPagePath: this.dataset.featureFlagsClientExampleHelpPagePath,
-          unleashApiUrl: this.dataset.unleashApiUrl,
-          unleashApiInstanceId: this.dataset.unleashApiInstanceId || '',
+          featureFlagsClientLibrariesHelpPagePath:
+            el.dataset.featureFlagsClientLibrariesHelpPagePath,
+          featureFlagsClientExampleHelpPagePath: el.dataset.featureFlagsClientExampleHelpPagePath,
+          unleashApiUrl: el.dataset.unleashApiUrl,
           csrfToken: csrf.token,
-          canUserConfigure: this.dataset.canUserAdminFeatureFlag,
-          newFeatureFlagPath: this.dataset.newFeatureFlagPath,
-          rotateInstanceIdPath: this.dataset.rotateInstanceIdPath,
-          newUserListPath: this.dataset.newUserListPath,
+          canUserConfigure: el.dataset.canUserAdminFeatureFlag,
+          newFeatureFlagPath: el.dataset.newFeatureFlagPath,
+          newUserListPath: el.dataset.newUserListPath,
         },
       });
     },
   });
+};

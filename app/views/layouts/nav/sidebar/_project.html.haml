@@ -236,7 +236,7 @@
                     = _('Logs')
 
             - if project_nav_tab? :environments
-              = render_if_exists "layouts/nav/sidebar/tracing_link"
+              = render "layouts/nav/sidebar/tracing_link"
 
             - if project_nav_tab?(:error_tracking)
               = nav_link(controller: :error_tracking) do

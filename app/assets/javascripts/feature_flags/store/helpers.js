@@ -10,7 +10,7 @@ import {
   fetchPercentageParams,
   fetchUserIdParams,
   LEGACY_FLAG,
-} from '../../constants';
+} from '../constants';
 
 /**
  * Converts raw scope objects fetched from the API into an array of scope

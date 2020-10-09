@@ -201,7 +201,7 @@ module Gitlab
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
           }.merge(
-            snowplow_event_counts(time_period: last_28_days_time_period(column: :collector_tstamp))
+            snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp))
           ).tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end

@@ -57,3 +57,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Pipeline::Index.prepend_if_ee('QA::EE::Page::Project::Pipeline::Index')

@@ -587,7 +587,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe '.system_usage_data_monthly' do
+    let_it_be(:project) { create(:project) }
     let!(:ud) { build(:usage_data) }
+
+    before do
+      stub_application_setting(self_monitoring_project: project)
+
+      for_defined_days_back do
+        create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
+      end
+    end
 
     subject { described_class.system_usage_data_monthly }
 
@@ -601,6 +610,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:personal_snippets]).to eq(1)
       expect(counts_monthly[:project_snippets]).to eq(2)
       expect(counts_monthly[:packages]).to eq(3)
+      expect(counts_monthly[:promoted_issues]).to eq(1)
     end
   end
 

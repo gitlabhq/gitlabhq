@@ -5,7 +5,7 @@ import {
   createNewEnvironmentScope,
   mapStrategiesToViewModel,
   mapStrategiesToRails,
-} from '~/feature_flags/store/modules/helpers';
+} from '~/feature_flags/store/helpers';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,

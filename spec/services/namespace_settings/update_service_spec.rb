@@ -33,5 +33,16 @@ RSpec.describe NamespaceSettings::UpdateService do
         end.not_to change { NamespaceSetting.count }
       end
     end
+
+    context "updating :default_branch_name" do
+      let(:example_branch_name) { "example_branch_name" }
+      let(:settings) { { default_branch_name: example_branch_name } }
+
+      it "changes settings" do
+        expect { service.execute }
+          .to change { group.namespace_settings.default_branch_name }
+          .from(nil).to(example_branch_name)
+      end
+    end
   end
 end

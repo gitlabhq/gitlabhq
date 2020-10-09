@@ -151,3 +151,20 @@ dependency_scanning:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week  # GitLab-specific
+
+license_scanning:
+  extends:
+    - .default-retry
+    - .reports:rules:license_scanning
+  stage: test
+  image:
+    name: "registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3"
+    entrypoint: [""]
+  needs: []
+  script:
+    - /run.sh analyze .
+  artifacts:
+    reports:
+      license_scanning: gl-license-scanning-report.json
+    expire_in: 1 week  # GitLab-specific
+  dependencies: []

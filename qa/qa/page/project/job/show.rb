@@ -58,6 +58,10 @@ module QA
             click_element :retry_button
           end
 
+          def has_job_log?
+            has_element? :job_log_content
+          end
+
           private
 
           def loaded?(wait: 60)
@@ -70,3 +74,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Job::Show.prepend_if_ee('QA::EE::Page::Project::Job::Show')

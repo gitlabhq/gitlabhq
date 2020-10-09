@@ -23,6 +23,8 @@ module Groups
 
       before_assignment_hook(group, params)
 
+      handle_namespace_settings
+
       group.assign_attributes(params)
 
       begin
@@ -39,6 +41,18 @@ module Groups
     end
 
     private
+
+    def handle_namespace_settings
+      settings_params = params.slice(*::NamespaceSetting::NAMESPACE_SETTINGS_PARAMS)
+
+      return if settings_params.empty?
+
+      ::NamespaceSetting::NAMESPACE_SETTINGS_PARAMS.each do |nsp|
+        params.delete(nsp)
+      end
+
+      ::NamespaceSettings::UpdateService.new(current_user, group, settings_params).execute
+    end
 
     def valid_path_change_with_npm_packages?
       return true unless group.packages_feature_enabled?

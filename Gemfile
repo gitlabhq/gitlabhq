@@ -401,7 +401,7 @@ end
 
 # Gems required in omnibus-gitlab pipeline
 group :development, :test, :omnibus do
-  gem 'license_finder', '~> 5.4', require: false
+  gem 'license_finder', '~> 6.0', require: false
 end
 
 group :test do

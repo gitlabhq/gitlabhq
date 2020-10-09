@@ -1,0 +1,5 @@
+---
+title: Handle the blacklisted ip error in the Go middleware
+merge_request: 44614
+author:
+type: changed

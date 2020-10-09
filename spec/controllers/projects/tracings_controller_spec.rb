@@ -43,31 +43,17 @@ RSpec.describe Projects::TracingsController do
       end
     end
 
-    describe 'with valid license' do
-      before do
-        stub_licensed_features(tracing: true)
-        sign_in(user)
-      end
-
-      context 'with maintainer role' do
-        it_behaves_like 'user with read access', :public
-        it_behaves_like 'user with read access', :internal
-        it_behaves_like 'user with read access', :private
-      end
-
-      context 'without maintainer role' do
-        it_behaves_like 'user without read access', :public
-        it_behaves_like 'user without read access', :internal
-        it_behaves_like 'user without read access', :private
-      end
+    before do
+      sign_in(user)
     end
 
-    context 'with invalid license' do
-      before do
-        stub_licensed_features(tracing: false)
-        sign_in(user)
-      end
+    context 'with maintainer role' do
+      it_behaves_like 'user with read access', :public
+      it_behaves_like 'user with read access', :internal
+      it_behaves_like 'user with read access', :private
+    end
 
+    context 'without maintainer role' do
       it_behaves_like 'user without read access', :public
       it_behaves_like 'user without read access', :internal
       it_behaves_like 'user without read access', :private

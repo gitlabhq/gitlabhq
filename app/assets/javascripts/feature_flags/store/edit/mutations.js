@@ -1,14 +1,8 @@
 import * as types from './mutation_types';
 import { mapToScopesViewModel, mapStrategiesToViewModel } from '../helpers';
-import { LEGACY_FLAG } from '../../../constants';
+import { LEGACY_FLAG } from '../../constants';
 
 export default {
-  [types.SET_ENDPOINT](state, endpoint) {
-    state.endpoint = endpoint;
-  },
-  [types.SET_PATH](state, path) {
-    state.path = path;
-  },
   [types.REQUEST_FEATURE_FLAG](state) {
     state.isLoading = true;
   },

@@ -24,7 +24,7 @@ Cron scheduling uses a series of five numbers, separated by spaces:
 # * * * * * <command to execute>
 ```
 
-[Source: [Wikipedia](https://en.wikipedia.org/wiki/Cron)]
+(Source: [Wikipedia](https://en.wikipedia.org/wiki/Cron))
 
 In cron syntax, the asterisk (`*`) means 'every,' so the following cron strings
 are valid:

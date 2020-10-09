@@ -551,6 +551,37 @@ RSpec.describe GroupsController, factory_default: :keep do
       end
     end
 
+    context "updating default_branch_name" do
+      let(:example_branch_name) { "example_branch_name" }
+
+      subject(:update_action) do
+        put :update,
+          params: {
+            id: group.to_param,
+            group: { default_branch_name: example_branch_name }
+          }
+      end
+
+      it "updates the attribute" do
+        expect { subject }
+          .to change { group.namespace_settings.reload.default_branch_name }
+          .from(nil)
+          .to(example_branch_name)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      context "to empty string" do
+        let(:example_branch_name) { '' }
+
+        it "does not update the attribute" do
+          subject
+
+          expect(group.namespace_settings.reload.default_branch_name).not_to eq('')
+        end
+      end
+    end
+
     context 'when there is a conflicting group path' do
       let!(:conflict_group) { create(:group, path: SecureRandom.hex(12) ) }
       let!(:old_name) { group.name }

@@ -1,17 +1,13 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlToggle } from '@gitlab/ui';
-import { createNamespacedHelpers } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import axios from '~/lib/utils/axios_utils';
 import { sprintf, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { LEGACY_FLAG, NEW_FLAG_ALERT } from '../constants';
-import store from '../store/index';
 import FeatureFlagForm from './form.vue';
 
-const { mapState, mapActions } = createNamespacedHelpers('edit');
-
 export default {
-  store,
   components: {
     GlAlert,
     GlLoadingIcon,
@@ -20,14 +16,6 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    path: {
-      type: String,
-      required: true,
-    },
     environmentsEndpoint: {
       type: String,
       required: true,
@@ -71,6 +59,7 @@ export default {
   },
   computed: {
     ...mapState([
+      'path',
       'error',
       'name',
       'description',
@@ -110,17 +99,10 @@ export default {
     },
   },
   created() {
-    this.setPath(this.path);
-    return this.setEndpoint(this.endpoint).then(() => this.fetchFeatureFlag());
+    return this.fetchFeatureFlag();
   },
   methods: {
-    ...mapActions([
-      'updateFeatureFlag',
-      'setEndpoint',
-      'setPath',
-      'fetchFeatureFlag',
-      'toggleActive',
-    ]),
+    ...mapActions(['updateFeatureFlag', 'fetchFeatureFlag', 'toggleActive']),
     dismissNewVersionFlagAlert() {
       this.userShouldSeeNewFlagAlert = false;
       axios.post(this.userCalloutsPath, {

@@ -301,7 +301,6 @@ module ProjectsHelper
     !disabled && !compact_mode
   end
 
-  # overridden in EE
   def settings_operations_available?
     can?(current_user, :read_environment, @project)
   end
@@ -755,6 +754,7 @@ module ProjectsHelper
       logs
       product_analytics
       metrics_dashboard
+      tracings
     ]
   end
 

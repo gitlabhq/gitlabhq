@@ -1,9 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import MockAdapter from 'axios-mock-adapter';
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
-import { createStore } from '~/feature_flags/store';
+import createStore from '~/feature_flags/store/index';
 import FeatureFlagsTab from '~/feature_flags/components/feature_flags_tab.vue';
 import FeatureFlagsComponent from '~/feature_flags/components/feature_flags.vue';
 import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
@@ -14,19 +15,25 @@ import TablePagination from '~/vue_shared/components/pagination/table_pagination
 import axios from '~/lib/utils/axios_utils';
 import { getRequestData, userList } from '../mock_data';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('Feature flags', () => {
   const mockData = {
-    endpoint: `${TEST_HOST}/endpoint.json`,
     csrfToken: 'testToken',
     featureFlagsClientLibrariesHelpPagePath: '/help/feature-flags#unleash-clients',
     featureFlagsClientExampleHelpPagePath: '/help/feature-flags#client-example',
     unleashApiUrl: `${TEST_HOST}/api/unleash`,
-    unleashApiInstanceId: 'oP6sCNRqtRHmpy1gw2-F',
     canUserConfigure: true,
     canUserRotateToken: true,
     newFeatureFlagPath: 'feature-flags/new',
     newUserListPath: '/user-list/new',
+  };
+
+  const mockState = {
+    endpoint: `${TEST_HOST}/endpoint.json`,
     projectId: '8',
+    unleashApiInstanceId: 'oP6sCNRqtRHmpy1gw2-F',
   };
 
   let wrapper;
@@ -34,8 +41,9 @@ describe('Feature flags', () => {
   let store;
 
   const factory = (propsData = mockData, fn = shallowMount) => {
-    store = createStore();
+    store = createStore(mockState);
     wrapper = fn(FeatureFlagsComponent, {
+      localVue,
       store,
       propsData,
       provide: {
@@ -76,7 +84,6 @@ describe('Feature flags', () => {
 
   describe('without permissions', () => {
     const propsData = {
-      endpoint: `${TEST_HOST}/endpoint.json`,
       csrfToken: 'testToken',
       errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
       featureFlagsHelpPagePath: '/help/feature-flags',
@@ -85,8 +92,6 @@ describe('Feature flags', () => {
       featureFlagsClientLibrariesHelpPagePath: '/help/feature-flags#unleash-clients',
       featureFlagsClientExampleHelpPagePath: '/help/feature-flags#client-example',
       unleashApiUrl: `${TEST_HOST}/api/unleash`,
-      unleashApiInstanceId: 'oP6sCNRqtRHmpy1gw2-F',
-      projectId: '8',
     };
 
     beforeEach(done => {
@@ -134,7 +139,7 @@ describe('Feature flags', () => {
       let emptyState;
 
       beforeEach(async () => {
-        mock.onGet(mockData.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } }).reply(
+        mock.onGet(mockState.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } }).reply(
           200,
           {
             feature_flags: [],
@@ -154,8 +159,6 @@ describe('Feature flags', () => {
       });
 
       it('should render the empty state', async () => {
-        await axios.waitForAll();
-        emptyState = wrapper.find(GlEmptyState);
         expect(emptyState.exists()).toBe(true);
       });
 
@@ -182,7 +185,7 @@ describe('Feature flags', () => {
     describe('with paginated feature flags', () => {
       beforeEach(done => {
         mock
-          .onGet(mockData.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
+          .onGet(mockState.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
           .replyOnce(200, getRequestData, {
             'x-next-page': '2',
             'x-page': '1',
@@ -218,7 +221,7 @@ describe('Feature flags', () => {
         const [flag] = table.props(FEATURE_FLAG_SCOPE);
         table.vm.$emit('toggle-flag', flag);
 
-        expect(store.dispatch).toHaveBeenCalledWith('index/toggleFeatureFlag', flag);
+        expect(store.dispatch).toHaveBeenCalledWith('toggleFeatureFlag', flag);
       });
 
       it('renders configure button', () => {
@@ -287,7 +290,7 @@ describe('Feature flags', () => {
   describe('unsuccessful request', () => {
     beforeEach(done => {
       mock
-        .onGet(mockData.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
+        .onGet(mockState.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .replyOnce(500, {});
       Api.fetchFeatureFlagUserLists.mockRejectedValueOnce();
 

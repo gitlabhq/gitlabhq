@@ -1,12 +1,6 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_ENDPOINT](state, endpoint) {
-    state.endpoint = endpoint;
-  },
-  [types.SET_PATH](state, path) {
-    state.path = path;
-  },
   [types.REQUEST_CREATE_FEATURE_FLAG](state) {
     state.isSendingRequest = true;
     state.error = [];

@@ -719,6 +719,14 @@
     - <<: *if-master-schedule-nightly
       allow_failure: true
 
+.reports:rules:license_scanning:
+  rules:
+    - if: '$LICENSE_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\blicense_scanning\b/'
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+
 ################
 # Review rules #
 ################

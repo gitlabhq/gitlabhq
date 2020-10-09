@@ -3,22 +3,8 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
-import { NEW_VERSION_FLAG } from '../../../constants';
+import { NEW_VERSION_FLAG } from '../../constants';
 import { mapFromScopesViewModel, mapStrategiesToRails } from '../helpers';
-
-/**
- * Commits mutation to set the main endpoint
- * @param {String} endpoint
- */
-export const setEndpoint = ({ commit }, endpoint) => commit(types.SET_ENDPOINT, endpoint);
-
-/**
- * Commits mutation to set the feature flag path.
- * Used to redirect the user after form submission
- *
- * @param {String} path
- */
-export const setPath = ({ commit }, path) => commit(types.SET_PATH, path);
 
 /**
  * Handles the edition of a feature flag.
