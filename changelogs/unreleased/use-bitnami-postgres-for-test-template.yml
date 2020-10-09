@@ -1,5 +1,0 @@
----
-title: 'Switch Auto Test CI template to `bitnami/postgresql` docker image (was previously `postgres`)'
-merge_request: 44329
-author:
-type: changed

@@ -1,10 +1,9 @@
 test:
   variables:
-    POSTGRES_VERSION: 9.6.16 # This is the version used by Auto Deploy by default, see https://hub.docker.com/r/bitnami/postgresql/tags for available tags
+    POSTGRES_VERSION: 9.6.16
     POSTGRES_DB: test
   services:
-    - name: "bitnami/postgresql:${POSTGRES_VERSION}"
-      alias: postgres
+    - "postgres:${POSTGRES_VERSION}"
   stage: test
   image: gliderlabs/herokuish:latest
   needs: []
