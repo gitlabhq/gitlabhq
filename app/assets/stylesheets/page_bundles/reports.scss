@@ -1,42 +1,4 @@
-.split-report-section {
-  border-bottom: 1px solid $gray-darker;
-
-  .report-block-container {
-    max-height: 500px;
-    overflow: auto;
-  }
-
-  .space-children,
-  .space-children > span {
-    display: flex;
-    align-self: center;
-  }
-
-  .media {
-    align-items: center;
-    padding: 10px;
-    line-height: 20px;
-
-    /*
-    This fixes the wrapping div of the icon in the report header.
-    Apparently the borderless status icons are half the size of the status icons with border.
-    This means we have to double the size of the wrapping div for borderless icons.
-    */
-    .space-children:first-child {
-      width: 32px;
-      height: 32px;
-      align-items: center;
-      justify-content: center;
-      margin-right: 5px;
-      margin-left: 1px;
-    }
-  }
-
-  .code-text {
-    width: 100%;
-    flex: 1;
-  }
-}
+@import 'mixins_and_variables_and_functions';
 
 .mr-widget-grouped-section {
   .report-block-container {
@@ -69,15 +31,15 @@
   display: flex;
 
   &.failed svg {
-    color: $red-500;
+    color: var(--red-500, $red-500);
   }
 
   &.success svg {
-    color: $green-500;
+    color: var(--green-500, $green-500);
   }
 
   &.neutral svg {
-    color: $gray-500;
+    color: var(--gray-500, $gray-500);
   }
 
   .ci-status-icon {
