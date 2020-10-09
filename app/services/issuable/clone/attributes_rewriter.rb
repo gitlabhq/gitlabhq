@@ -18,7 +18,6 @@ module Issuable
         new_entity.update(update_attributes)
 
         copy_resource_label_events
-        copy_resource_weight_events
         copy_resource_milestone_events
         copy_resource_state_events
       end
@@ -52,16 +51,6 @@ module Issuable
           event.attributes
             .except('id', 'reference', 'reference_html')
             .merge(entity_key => new_entity.id, 'action' => ResourceLabelEvent.actions[event.action])
-        end
-      end
-
-      def copy_resource_weight_events
-        return unless both_respond_to?(:resource_weight_events)
-
-        copy_events(ResourceWeightEvent.table_name, original_entity.resource_weight_events) do |event|
-          event.attributes
-            .except('id', 'reference', 'reference_html')
-            .merge('issue_id' => new_entity.id)
         end
       end
 
@@ -128,3 +117,5 @@ module Issuable
     end
   end
 end
+
+Issuable::Clone::AttributesRewriter.prepend_if_ee('EE::Issuable::Clone::AttributesRewriter')
