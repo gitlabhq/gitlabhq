@@ -107,7 +107,7 @@
               %li= _('You can only transfer the project to namespaces you manage.')
               %li= _('You will need to update your local repositories to point to the new location.')
               %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
-          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }
+          = f.submit 'Transfer project', class: "gl-button btn btn-danger js-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }
 
     - if @project.forked? && can?(current_user, :remove_fork_project, @project)
       .sub-section
@@ -117,7 +117,7 @@
         = form_for @project, url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' } do |f|
           %p
             %strong= _('Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.')
-          = button_to _('Remove fork relationship'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }
+          = button_to _('Remove fork relationship'), '#', class: "gl-button btn btn-danger js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }
 
     = render 'remove', project: @project
 

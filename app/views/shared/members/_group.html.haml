@@ -44,7 +44,7 @@
       = link_to group_link_path,
         method: :delete,
         data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name }, qa_selector: 'delete_group_access_link' },
-        class: 'btn btn-remove m-0 ml-sm-2 align-self-center' do
+        class: 'gl-button btn btn-danger m-0 ml-sm-2 align-self-center' do
         %span.d-block.d-sm-none
           = _("Delete")
         = sprite_icon('remove', css_class: 'd-none d-sm-block')

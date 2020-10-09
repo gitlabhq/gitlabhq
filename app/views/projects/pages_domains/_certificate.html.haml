@@ -40,7 +40,7 @@
             = link_to _('Remove'),
               clean_certificate_project_pages_domain_path(@project, domain_presenter),
               data: { confirm: _('Are you sure?') },
-              class: 'btn btn-remove btn-sm',
+              class: 'gl-button btn btn-danger btn-sm',
               method: :delete
   - else
     .row

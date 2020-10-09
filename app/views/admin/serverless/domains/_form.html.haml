@@ -50,7 +50,7 @@
         .d-flex.justify-content-between.align-items-center.p-3
           %span
             = @domain.subject || _('missing')
-          %button.btn.btn-remove.btn-sm.js-domain-cert-replace-btn{ type: 'button' }
+          %button.gl-button.btn.btn-danger.btn-sm.js-domain-cert-replace-btn{ type: 'button' }
             = _('Replace')
 
     .js-domain-cert-inputs{ class: ('hidden' if show_certificate_card) }
@@ -67,7 +67,7 @@
 
   = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "btn btn-success js-serverless-domain-submit", disabled: @domain.persisted?
   - if @domain.persisted?
-    %button.btn.btn-remove{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain" } }
+    %button.gl-button.btn.btn-danger{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain" } }
       = _('Delete domain')
 
 -# haml-lint:disable NoPlainNodes
@@ -95,5 +95,5 @@
             admin_serverless_domain_path(@domain.id),
             title: _('Delete'),
             method: :delete,
-            class: "btn btn-remove",
+            class: "gl-button btn btn-danger",
             disabled: domain_attached

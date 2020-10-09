@@ -31,7 +31,7 @@ RSpec.describe 'Protected Branches', :js do
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
 
-        expect(page).to have_css('.btn-remove.disabled')
+        expect(page).to have_css('.btn-danger.disabled')
       end
     end
   end

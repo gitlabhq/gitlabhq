@@ -64,7 +64,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       expect(page).to have_content(shared_with_group.name)
 
       accept_confirm do
-        find(:css, '#tab-groups li', text: shared_with_group.name).find(:css, 'a.btn-remove').click
+        find(:css, '#tab-groups li', text: shared_with_group.name).find(:css, 'a.btn-danger').click
       end
 
       expect(page).not_to have_content(shared_with_group.name)

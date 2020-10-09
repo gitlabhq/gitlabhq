@@ -22,4 +22,4 @@
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
-    = link_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"
+    = link_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "gl-button btn btn-danger btn-danger-secondary float-right"

@@ -24,7 +24,7 @@
   %td
     - if user
       = link_to 'Remove user', admin_spam_log_path(spam_log, remove_user: true),
-        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-sm btn-remove"
+        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "gl-button btn btn-sm btn-danger"
   %td
     - if spam_log.submitted_as_ham?
       .btn.btn-sm.disabled

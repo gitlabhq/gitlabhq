@@ -64,7 +64,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
 
   it 'deletes group link' do
     page.within(first('.group_member')) do
-      accept_confirm { find('.btn-remove').click }
+      accept_confirm { find('.btn-danger').click }
     end
     wait_for_requests
 
