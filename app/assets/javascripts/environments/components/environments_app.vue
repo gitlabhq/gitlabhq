@@ -145,7 +145,7 @@ export default {
           class="gl-mb-3 gl-flex-fill-1"
         />
         <gl-button
-          v-if="canCreateEnvironment && !isLoading"
+          v-if="canCreateEnvironment"
           :href="newEnvironmentPath"
           category="primary"
           variant="success"
@@ -181,7 +181,7 @@ export default {
               class="gl-mb-3 gl-lg-mr-3 gl-lg-mb-0"
             />
             <gl-button
-              v-if="canCreateEnvironment && !isLoading"
+              v-if="canCreateEnvironment"
               :href="newEnvironmentPath"
               category="primary"
               variant="success"

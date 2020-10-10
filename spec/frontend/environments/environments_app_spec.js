@@ -1,9 +1,10 @@
+import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import Container from '~/environments/components/container.vue';
 import EmptyState from '~/environments/components/empty_state.vue';
 import EnvironmentsApp from '~/environments/components/environments_app.vue';
+import axios from '~/lib/utils/axios_utils';
 import { environment, folder } from './mock_data';
 
 describe('Environment', () => {
@@ -40,6 +41,7 @@ describe('Environment', () => {
     return axios.waitForAll();
   };
 
+  const findNewEnvironmentButton = () => wrapper.find(GlButton);
   const findEnvironmentsTabAvailable = () => wrapper.find('.js-environments-tab-available > a');
   const findEnvironmentsTabStopped = () => wrapper.find('.js-environments-tab-stopped > a');
 
@@ -173,6 +175,32 @@ describe('Environment', () => {
 
     it('should show a button to show all environments', () => {
       expect(wrapper.find('.text-center > a.btn').text()).toContain('Show all');
+    });
+  });
+
+  describe('environment button', () => {
+    describe('when user can create environment', () => {
+      beforeEach(() => {
+        mockRequest([environment]);
+        wrapper = mount(EnvironmentsApp, { propsData: mockData });
+      });
+
+      it('should render', () => {
+        expect(findNewEnvironmentButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when user can not create environment', () => {
+      beforeEach(() => {
+        mockRequest([environment]);
+        wrapper = mount(EnvironmentsApp, {
+          propsData: { ...mockData, canCreateEnvironment: false },
+        });
+      });
+
+      it('should not render', () => {
+        expect(findNewEnvironmentButton().exists()).toBe(false);
+      });
     });
   });
 });
