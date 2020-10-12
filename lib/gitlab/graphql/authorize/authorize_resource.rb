@@ -29,8 +29,8 @@ module Gitlab
           raise NotImplementedError, "Implement #find_object in #{self.class.name}"
         end
 
-        def authorized_find!(*args)
-          object = Graphql::Lazy.force(find_object(*args))
+        def authorized_find!(*args, **kwargs)
+          object = Graphql::Lazy.force(find_object(*args, **kwargs))
 
           authorize!(object)
 
