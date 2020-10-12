@@ -21,7 +21,7 @@ end
 RSpec.shared_examples :reply_processing_shared_examples do
   context "when the user could not be found" do
     before do
-      user.destroy
+      user.destroy!
     end
 
     it "raises a UserNotFoundError" do

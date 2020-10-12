@@ -469,6 +469,20 @@ Cleanup policies can be run on all projects, with these exceptions:
 
   There are performance risks with enabling it for all projects, especially if you
   are using an [external registry](./index.md#use-with-external-container-registries).
+- For self-managed GitLab instances, you can enable or disable the cleanup policy for a specific
+  project.
+
+  To enable it:
+
+  ```ruby
+  Feature.enable(:container_expiration_policies_historic_entry, Project.find(<project id>))
+  ```
+
+  To disable it:
+
+  ```ruby
+  Feature.disable(:container_expiration_policies_historic_entry, Project.find(<project id>))
+  ```
 
 ### How the cleanup policy works
 

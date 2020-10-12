@@ -18,8 +18,8 @@ RSpec.shared_context 'GroupProjectsFinder context' do
   let!(:subgroup_private_project) { create(:project, :private, path: '7', group: subgroup) }
 
   before do
-    shared_project_1.project_group_links.create(group_access: Gitlab::Access::MAINTAINER, group: group)
-    shared_project_2.project_group_links.create(group_access: Gitlab::Access::MAINTAINER, group: group)
-    shared_project_3.project_group_links.create(group_access: Gitlab::Access::MAINTAINER, group: group)
+    shared_project_1.project_group_links.create!(group_access: Gitlab::Access::MAINTAINER, group: group)
+    shared_project_2.project_group_links.create!(group_access: Gitlab::Access::MAINTAINER, group: group)
+    shared_project_3.project_group_links.create!(group_access: Gitlab::Access::MAINTAINER, group: group)
   end
 end

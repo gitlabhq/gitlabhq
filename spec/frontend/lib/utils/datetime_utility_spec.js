@@ -69,6 +69,34 @@ describe('Date time utils', () => {
     });
   });
 
+  describe('formatDateAsMonth', () => {
+    it('should format dash cased date properly', () => {
+      const formattedMonth = datetimeUtility.formatDateAsMonth(new Date('2020-06-28'));
+
+      expect(formattedMonth).toBe('Jun');
+    });
+
+    it('should format return the non-abbreviated month', () => {
+      const formattedMonth = datetimeUtility.formatDateAsMonth(new Date('2020-07-28'), {
+        abbreviated: false,
+      });
+
+      expect(formattedMonth).toBe('July');
+    });
+
+    it('should format date with slashes properly', () => {
+      const formattedMonth = datetimeUtility.formatDateAsMonth(new Date('07/23/2016'));
+
+      expect(formattedMonth).toBe('Jul');
+    });
+
+    it('should format ISO date properly', () => {
+      const formattedMonth = datetimeUtility.formatDateAsMonth('2016-07-23T00:00:00.559Z');
+
+      expect(formattedMonth).toBe('Jul');
+    });
+  });
+
   describe('formatDate', () => {
     it('should format date properly', () => {
       const formattedDate = datetimeUtility.formatDate(new Date('07/23/2016'));

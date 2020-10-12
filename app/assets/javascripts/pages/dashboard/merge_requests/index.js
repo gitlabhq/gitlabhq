@@ -5,7 +5,7 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import { FILTERED_SEARCH } from '~/pages/constants';
 
 document.addEventListener('DOMContentLoaded', () => {
-  addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
+  addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys, true);
 
   initFilteredSearch({
     page: FILTERED_SEARCH.MERGE_REQUESTS,

@@ -1165,11 +1165,6 @@ Rails/SaveBang:
     - 'spec/services/users/repair_ldap_blocked_service_spec.rb'
     - 'spec/services/verify_pages_domain_service_spec.rb'
     - 'spec/sidekiq/cron/job_gem_dependency_spec.rb'
-    - 'spec/support/migrations_helpers/cluster_helpers.rb'
-    - 'spec/support/migrations_helpers/namespaces_helper.rb'
-    - 'spec/support/shared_contexts/email_shared_context.rb'
-    - 'spec/support/shared_contexts/finders/group_projects_finder_shared_contexts.rb'
-    - 'spec/support/shared_contexts/mailers/notify_shared_context.rb'
 
 # Offense count: 187
 # Cop supports --auto-correct.

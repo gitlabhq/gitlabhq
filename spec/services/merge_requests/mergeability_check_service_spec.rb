@@ -41,16 +41,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       subject
     end
 
-    context 'when merge_ref_head_comments is disabled' do
-      it 'does not update diff discussion positions' do
-        stub_feature_flags(merge_ref_head_comments: false)
-
-        expect(Discussions::CaptureDiffNotePositionsService).not_to receive(:new)
-
-        subject
-      end
-    end
-
     it 'updates the merge ref' do
       expect { subject }.to change(merge_request, :merge_ref_head).from(nil)
     end

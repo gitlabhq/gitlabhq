@@ -86,12 +86,6 @@ RSpec.describe SnippetsController do
         expect(assigns(:snippet)).to eq(personal_snippet)
         expect(response).to have_gitlab_http_status(:ok)
       end
-
-      it 'renders the blob from the repository' do
-        subject
-
-        expect(assigns(:blob)).to eq(personal_snippet.blobs.first)
-      end
     end
 
     context 'when the personal snippet is private' do
@@ -200,7 +194,7 @@ RSpec.describe SnippetsController do
         end
 
         it 'responds with status 404' do
-          get :show, params: { id: 'doesntexist' }
+          get :show, params: { id: non_existing_record_id }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -208,234 +202,20 @@ RSpec.describe SnippetsController do
 
       context 'when not signed in' do
         it 'responds with status 404' do
-          get :show, params: { id: 'doesntexist' }
+          get :show, params: { id: non_existing_record_id }
 
           expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
-  end
 
-  describe 'POST #create' do
-    def create_snippet(snippet_params = {}, additional_params = {})
-      sign_in(user)
+    context 'when requesting JSON' do
+      it 'renders the blob from the repository' do
+        personal_snippet = create(:personal_snippet, :public, :repository, author: user)
 
-      post :create, params: {
-        personal_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
-      }.merge(additional_params)
+        get :show, params: { id: personal_snippet.to_param }, format: :json
 
-      Snippet.last
-    end
-
-    it 'creates the snippet correctly' do
-      snippet = create_snippet(visibility_level: Snippet::PRIVATE)
-
-      expect(snippet.title).to eq('Title')
-      expect(snippet.content).to eq('Content')
-      expect(snippet.description).to eq('Description')
-    end
-
-    context 'when user is not allowed to create a personal snippet' do
-      let(:user) { create(:user, :external) }
-
-      it 'responds with status 404' do
-        aggregate_failures do
-          expect do
-            create_snippet(visibility_level: Snippet::PUBLIC)
-          end.not_to change { Snippet.count }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-    end
-
-    context 'when the controller receives the files param' do
-      let(:files) { %w(foo bar) }
-
-      it 'passes the files param to the snippet create service' do
-        expect(Snippets::CreateService).to receive(:new).with(nil, user, hash_including(files: files)).and_call_original
-
-        create_snippet({ title: nil }, { files: files })
-      end
-    end
-
-    context 'when the snippet is spam' do
-      before do
-        allow_next_instance_of(Spam::AkismetService) do |instance|
-          allow(instance).to receive(:spam?).and_return(true)
-        end
-      end
-
-      context 'when the snippet is private' do
-        it 'creates the snippet' do
-          expect { create_snippet(visibility_level: Snippet::PRIVATE) }
-            .to change { Snippet.count }.by(1)
-        end
-      end
-
-      context 'when the snippet is public' do
-        it 'rejects the snippet' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
-            .not_to change { Snippet.count }
-        end
-
-        it 'creates a spam log' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
-            .to log_spam(title: 'Title', user: user, noteable_type: 'PersonalSnippet')
-        end
-
-        it 'renders :new with reCAPTCHA disabled' do
-          stub_application_setting(recaptcha_enabled: false)
-
-          create_snippet(visibility_level: Snippet::PUBLIC)
-
-          expect(response).to render_template(:new)
-        end
-
-        context 'reCAPTCHA enabled' do
-          before do
-            stub_application_setting(recaptcha_enabled: true)
-          end
-
-          it 'renders :verify' do
-            create_snippet(visibility_level: Snippet::PUBLIC)
-
-            expect(response).to render_template(:verify)
-          end
-
-          it 'renders snippet page' do
-            spammy_title = 'Whatever'
-
-            spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
-            snippet = create_snippet({ title: spammy_title },
-                                     { spam_log_id: spam_logs.last.id,
-                                       recaptcha_verification: true })
-
-            expect(response).to redirect_to(snippet_path(snippet))
-          end
-        end
-      end
-    end
-  end
-
-  describe 'PUT #update' do
-    let(:project) { create :project }
-    let(:visibility_level) { Snippet::PUBLIC }
-    let(:snippet) { create :personal_snippet, author: user, project: project, visibility_level: visibility_level }
-
-    def update_snippet(snippet_params = {}, additional_params = {})
-      sign_in(user)
-
-      put :update, params: {
-        id: snippet.id,
-        personal_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
-      }.merge(additional_params)
-
-      snippet.reload
-    end
-
-    context 'when the snippet is spam' do
-      before do
-        allow_next_instance_of(Spam::AkismetService) do |instance|
-          allow(instance).to receive(:spam?).and_return(true)
-        end
-      end
-
-      context 'when the snippet is private' do
-        let(:visibility_level) { Snippet::PRIVATE }
-
-        it 'updates the snippet' do
-          expect { update_snippet(title: 'Foo') }
-            .to change { snippet.reload.title }.to('Foo')
-        end
-      end
-
-      context 'when a private snippet is made public' do
-        let(:visibility_level) { Snippet::PRIVATE }
-
-        it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
-            .not_to change { snippet.reload.title }
-        end
-
-        it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
-            .to log_spam(title: 'Foo', user: user, noteable_type: 'PersonalSnippet')
-        end
-
-        it 'renders :edit with reCAPTCHA disabled' do
-          stub_application_setting(recaptcha_enabled: false)
-
-          update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
-
-          expect(response).to render_template(:edit)
-        end
-
-        context 'reCAPTCHA enabled' do
-          before do
-            stub_application_setting(recaptcha_enabled: true)
-          end
-
-          it 'renders :verify' do
-            update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
-
-            expect(response).to render_template(:verify)
-          end
-
-          it 'renders snippet page when reCAPTCHA verified' do
-            spammy_title = 'Whatever'
-
-            spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
-            snippet = update_snippet({ title: spammy_title, visibility_level: Snippet::PUBLIC },
-                                     { spam_log_id: spam_logs.last.id,
-                                       recaptcha_verification: true })
-
-            expect(response).to redirect_to(snippet_path(snippet))
-          end
-        end
-      end
-
-      context 'when the snippet is public' do
-        it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo') }
-            .not_to change { snippet.reload.title }
-        end
-
-        it 'creates a spam log' do
-          expect {update_snippet(title: 'Foo') }
-            .to log_spam(title: 'Foo', user: user, noteable_type: 'PersonalSnippet')
-        end
-
-        it 'renders :edit with reCAPTCHA disabled' do
-          stub_application_setting(recaptcha_enabled: false)
-
-          update_snippet(title: 'Foo')
-
-          expect(response).to render_template(:edit)
-        end
-
-        context 'recaptcha enabled' do
-          before do
-            stub_application_setting(recaptcha_enabled: true)
-          end
-
-          it 'renders :verify' do
-            update_snippet(title: 'Foo')
-
-            expect(response).to render_template(:verify)
-          end
-
-          it 'renders snippet page when reCAPTCHA verified' do
-            spammy_title = 'Whatever'
-
-            spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
-            snippet = update_snippet({ title: spammy_title },
-                                     { spam_log_id: spam_logs.last.id,
-                                       recaptcha_verification: true })
-
-            expect(response).to redirect_to(snippet_path(snippet))
-          end
-        end
+        expect(assigns(:blob)).to eq(personal_snippet.blobs.first)
       end
     end
   end
@@ -632,7 +412,7 @@ RSpec.describe SnippetsController do
         end
 
         it 'responds with status 404' do
-          get :raw, params: { id: 'doesntexist' }
+          get :raw, params: { id: non_existing_record_id }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -640,7 +420,7 @@ RSpec.describe SnippetsController do
 
       context 'when not signed in' do
         it 'redirects to the sign in path' do
-          get :raw, params: { id: 'doesntexist' }
+          get :raw, params: { id: non_existing_record_id }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -686,58 +466,6 @@ RSpec.describe SnippetsController do
       post :preview_markdown, params: { id: snippet, text: '*Markdown* text' }
 
       expect(json_response.keys).to match_array(%w(body references))
-    end
-  end
-
-  describe 'DELETE #destroy' do
-    let!(:snippet) { create :personal_snippet, author: user }
-
-    context 'when current user has ability to destroy the snippet' do
-      before do
-        sign_in(user)
-      end
-
-      it 'removes the snippet' do
-        delete :destroy, params: { id: snippet.to_param }
-
-        expect { snippet.reload }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      context 'when snippet is succesfuly destroyed' do
-        it 'redirects to the project snippets page' do
-          delete :destroy, params: { id: snippet.to_param }
-
-          expect(response).to redirect_to(dashboard_snippets_path)
-        end
-      end
-
-      context 'when snippet is not destroyed' do
-        before do
-          allow(snippet).to receive(:destroy).and_return(false)
-          controller.instance_variable_set(:@snippet, snippet)
-        end
-
-        it 'renders the snippet page with errors' do
-          delete :destroy, params: { id: snippet.to_param }
-
-          expect(flash[:alert]).to eq('Failed to remove snippet.')
-          expect(response).to redirect_to(snippet_path(snippet))
-        end
-      end
-    end
-
-    context 'when current_user does not have ability to destroy the snippet' do
-      let(:another_user) { create(:user) }
-
-      before do
-        sign_in(another_user)
-      end
-
-      it 'responds with status 404' do
-        delete :destroy, params: { id: snippet.to_param }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
   end
 end

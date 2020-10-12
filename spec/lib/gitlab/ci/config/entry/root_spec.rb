@@ -127,7 +127,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                        image: { name: 'ruby:2.7' },
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
-                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
+                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
                        variables: { 'VAR' => 'root' },
                        ignore: false,
                        after_script: ['make clean'],
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          image: { name: 'ruby:2.7' },
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
-                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
+                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
                          variables: { 'VAR' => 'root' },
                          ignore: false,
                          after_script: ['make clean'],
@@ -156,7 +156,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          release: { name: "Release $CI_TAG_NAME", tag_name: 'v0.06', description: "./release_changelog.txt" },
                          image: { name: "ruby:2.7" },
                          services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
-                         cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push" },
+                         cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success' },
                          only: { refs: %w(branches tags) },
                          variables: { 'VAR' => 'job' },
                          after_script: [],
@@ -203,7 +203,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                        image: { name: 'ruby:2.7' },
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
-                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: "pull-push" },
+                       cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
                        variables: { 'VAR' => 'root' },
                        ignore: false,
                        after_script: ['make clean'],
@@ -215,7 +215,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          image: { name: 'ruby:2.7' },
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
-                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: "pull-push" },
+                         cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
                          variables: { 'VAR' => 'job' },
                          ignore: false,
                          after_script: ['make clean'],
@@ -261,7 +261,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
 
       describe '#cache_value' do
         it 'returns correct cache definition' do
-          expect(root.cache_value).to eq(key: 'a', policy: 'pull-push')
+          expect(root.cache_value).to eq(key: 'a', policy: 'pull-push', when: 'on_success')
         end
       end
     end

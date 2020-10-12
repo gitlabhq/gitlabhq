@@ -2,6 +2,6 @@
 name: junit_pipeline_screenshots_view
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/202114
 rollout_issue_url:
-group: 'group::verify testing'
+group: group::verify testing
 type: development
 default_enabled: false

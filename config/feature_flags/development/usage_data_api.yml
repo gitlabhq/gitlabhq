@@ -2,6 +2,6 @@
 name: usage_data_api
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41301
 rollout_issue_url:
-group: group::product_analytics
+group: group::product analytics
 type: development
 default_enabled: false

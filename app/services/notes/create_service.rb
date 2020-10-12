@@ -70,7 +70,7 @@ module Notes
         Gitlab::Tracking.event('Notes::CreateService', 'execute', tracking_data_for(note))
       end
 
-      if Feature.enabled?(:merge_ref_head_comments, project, default_enabled: true) && note.for_merge_request? && note.diff_note? && note.start_of_discussion?
+      if note.for_merge_request? && note.diff_note? && note.start_of_discussion?
         Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
       end
     end

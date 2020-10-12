@@ -290,7 +290,7 @@ gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sassc-rails', '~> 2.1.0'
-gem 'uglifier', '~> 2.7.2'
+gem 'terser', '~> 1.0'
 
 gem 'addressable', '~> 2.7'
 gem 'font-awesome-rails', '~> 4.7'
@@ -430,7 +430,7 @@ end
 gem 'octokit', '~> 4.15'
 
 # https://gitlab.com/gitlab-org/gitlab/issues/207207
-gem 'gitlab-mail_room', '~> 0.0.6', require: 'mail_room'
+gem 'gitlab-mail_room', '~> 0.0.7', require: 'mail_room'
 
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'

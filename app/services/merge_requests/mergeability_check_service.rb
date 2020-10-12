@@ -125,8 +125,6 @@ module MergeRequests
     end
 
     def update_diff_discussion_positions!
-      return if Feature.disabled?(:merge_ref_head_comments, merge_request.target_project, default_enabled: true)
-
       Discussions::CaptureDiffNotePositionsService.new(merge_request).execute
     end
 

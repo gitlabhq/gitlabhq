@@ -100,7 +100,7 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def flush_ref_caches(project)
-    project.repository.after_create_branch
+    project.repository.expire_branches_cache
     project.repository.branch_names
     project.repository.has_visible_content?
   end

@@ -368,7 +368,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :jira, only: [:show], controller: :jira
         end
 
-        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
+        resources :snippets, except: [:create, :update, :destroy], concerns: :awardable, constraints: { id: /\d+/ } do
           member do
             get :raw
             post :mark_as_spam

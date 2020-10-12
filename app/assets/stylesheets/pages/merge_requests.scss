@@ -771,6 +771,14 @@ $mr-widget-min-height: 69px;
     position: sticky;
     top: $header-height + $mr-tabs-height;
 
+    .with-system-header & {
+      top: $header-height + $mr-tabs-height + $system-header-height;
+    }
+
+    .with-system-header.with-performance-bar & {
+      top: $header-height + $mr-tabs-height + $system-header-height + $performance-bar-height;
+    }
+
     .mr-version-menus-container {
       flex-wrap: nowrap;
     }
@@ -787,6 +795,14 @@ $mr-widget-min-height: 69px;
   z-index: 250;
   background-color: $white;
   border-bottom: 1px solid $border-color;
+
+  .with-system-header & {
+    top: $header-height + $system-header-height;
+  }
+
+  .with-system-header.with-performance-bar & {
+    top: $header-height + $system-header-height + $performance-bar-height;
+  }
 
   @include media-breakpoint-up(sm) {
     position: -webkit-sticky;

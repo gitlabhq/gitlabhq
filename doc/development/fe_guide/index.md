@@ -76,6 +76,10 @@ How we use SVG for our [Icons and Illustrations](icons.md).
 
 General information about frontend [dependencies](dependencies.md) and how we manage them.
 
+## Keyboard Shortcuts
+
+How we implement [keyboard shortcuts](keyboard_shortcuts.md) that can be customized and disabled.
+
 ## Frontend FAQ
 
 Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.

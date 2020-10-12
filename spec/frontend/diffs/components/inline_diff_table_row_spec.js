@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { TEST_HOST } from 'helpers/test_constants';
 import { createStore } from '~/mr_notes/stores';
 import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
@@ -25,13 +24,6 @@ describe('InlineDiffTableRow', () => {
         isHighlighted: false,
         ...props,
       },
-    });
-  };
-
-  const setWindowLocation = value => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value,
     });
   };
 
@@ -122,22 +114,15 @@ describe('InlineDiffTableRow', () => {
       const findNoteButton = () => wrapper.find({ ref: 'addDiffNoteButton' });
 
       it.each`
-        userData     | query                | mergeRefHeadComments | expectation
-        ${TEST_USER} | ${'diff_head=false'} | ${false}             | ${true}
-        ${TEST_USER} | ${'diff_head=true'}  | ${true}              | ${true}
-        ${TEST_USER} | ${'diff_head=true'}  | ${false}             | ${false}
-        ${null}      | ${''}                | ${true}              | ${false}
-      `(
-        'exists is $expectation - with userData ($userData) query ($query)',
-        ({ userData, query, mergeRefHeadComments, expectation }) => {
-          store.state.notes.userData = userData;
-          gon.features = { mergeRefHeadComments };
-          setWindowLocation({ href: `${TEST_HOST}?${query}` });
-          createComponent({}, store);
+        userData     | expectation
+        ${TEST_USER} | ${true}
+        ${null}      | ${false}
+      `('exists is $expectation - with userData ($userData)', ({ userData, expectation }) => {
+        store.state.notes.userData = userData;
+        createComponent({}, store);
 
-          expect(findNoteButton().exists()).toBe(expectation);
-        },
-      );
+        expect(findNoteButton().exists()).toBe(expectation);
+      });
 
       it.each`
         isHover  | line                                                       | expectation

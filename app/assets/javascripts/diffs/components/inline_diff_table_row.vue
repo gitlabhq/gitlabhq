@@ -81,11 +81,7 @@ export default {
       return utils.addCommentTooltip(this.line);
     },
     shouldRenderCommentButton() {
-      return utils.shouldRenderCommentButton(
-        this.isLoggedIn,
-        true,
-        gon.features?.mergeRefHeadComments,
-      );
+      return utils.shouldRenderCommentButton(this.isLoggedIn, true);
     },
     shouldShowCommentButton() {
       return utils.shouldShowCommentButton(

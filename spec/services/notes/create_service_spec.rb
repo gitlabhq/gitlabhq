@@ -163,14 +163,6 @@ RSpec.describe Notes::CreateService do
           expect(note.note_diff_file).to be_present
           expect(note.diff_note_positions).to be_present
         end
-
-        it 'does not create diff positions merge_ref_head_comments is disabled' do
-          stub_feature_flags(merge_ref_head_comments: false)
-
-          expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
-
-          described_class.new(project_with_repo, user, new_opts).execute
-        end
       end
 
       context 'when DiffNote is a reply' do

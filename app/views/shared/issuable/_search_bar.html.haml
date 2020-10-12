@@ -1,6 +1,7 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
+- disable_target_branch = local_assigns.fetch(:disable_target_branch, false)
 - placeholder = local_assigns[:placeholder] || _('Search or filter results...')
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
@@ -154,11 +155,12 @@
                   %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
                     %button.btn.btn-link{ type: 'button' }
                       = _('No')
-              #js-dropdown-target-branch.filtered-search-input-dropdown-menu.dropdown-menu
-                %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
-                    %button.btn.btn-link.js-data-value.monospace
-                      {{title}}
+              - unless disable_target_branch
+                #js-dropdown-target-branch.filtered-search-input-dropdown-menu.dropdown-menu
+                  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                    %li.filter-dropdown-item
+                      %button.btn.btn-link.js-data-value.monospace
+                        {{title}}
 
               = render_if_exists 'shared/issuable/filter_weight', type: type
 

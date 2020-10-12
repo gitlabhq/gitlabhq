@@ -1,4 +1,4 @@
-resources :snippets, concerns: :awardable do
+resources :snippets, except: [:create, :update, :destroy], concerns: :awardable, constraints: { id: /\d+/ } do
   member do
     get :raw
     post :mark_as_spam

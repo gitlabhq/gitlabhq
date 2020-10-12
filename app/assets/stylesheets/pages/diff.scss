@@ -38,6 +38,14 @@
       top: $mr-file-header-top;
       z-index: 120;
 
+      .with-system-header & {
+        top: $mr-file-header-top + $system-header-height;
+      }
+
+      .with-system-header.with-performance-bar & {
+        top: $mr-file-header-top + $system-header-height + $performance-bar-height;
+      }
+
       &::before {
         content: '';
         position: absolute;
@@ -1077,6 +1085,14 @@ table.code {
   top: $top-pos;
   max-height: calc(100vh - #{$top-pos});
   z-index: 202;
+
+  .with-system-header & {
+    top: $top-pos + $system-header-height;
+  }
+
+  .with-system-header.with-performance-bar & {
+    top: $top-pos + $system-header-height + $performance-bar-height;
+  }
 
   .with-performance-bar & {
     $performance-bar-top-pos: $performance-bar-height + $top-pos;

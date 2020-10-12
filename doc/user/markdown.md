@@ -1419,26 +1419,20 @@ Example:
 
 ```markdown
 | header 1 | header 2 | header 3 |
-| ---      |  ------  |---------:|
+| ---      |  ------  |----------|
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
-| cell 7   |          | cell <br> 9 |
-| cell 10  | <ul><li> - [ ] Task One </li></ul> | <ul><li> - [ ] Task Two </li><li> - [ ] Task Three </li></ul> |
+| cell 7   |          | cell 9   |
 ```
 
 | header 1 | header 2 | header 3 |
-| ---      |  ------  |---------:|
+| ---      |  ------  |----------|
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
-| cell 7   |          | cell <br> 9 |
-| cell 10  | <ul><li> - [ ] Task One </li></ul> | <ul><li> - [ ] Task Two </li><li> - [ ] Task Three </li></ul> |
+| cell 7   |          | cell 9   |
 
 Additionally, you can choose the alignment of text within columns by adding colons (`:`)
-to the sides of the "dash" lines in the second row. This affects every cell in the column.
-
-NOTE: **Note:**
-[Within GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
-the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
+to the sides of the "dash" lines in the second row. This affects every cell in the column:
 
 ```markdown
 | Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
@@ -1451,6 +1445,34 @@ the headers are always left-aligned in Chrome and Firefox, and centered in Safar
 | :---         | :---:    | ---:          | :----------- | :------: | ------------: |
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
+
+[Within GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
+the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
+
+You can use HTML formatting to adjust the rendering of tables. For example, you can
+use `<br>` tags to force a cell to have multiple lines:
+
+```markdown
+| Name | Details |
+|------|---------|
+| Item1 | This is on one line |
+| Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
+```
+
+| Name | Details |
+|------|---------|
+| Item1 | This is on one line |
+| Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
+
+You can use HTML formatting within GitLab itself to add [task lists](#task-lists) with checkboxes,
+but they do not render properly on `docs.gitlab.com`:
+
+```markdown
+| header 1 | header 2 |
+|----------|----------|
+| cell 1   | cell 2   |
+| cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
+```
 
 #### Copy from spreadsheet and paste in Markdown
 

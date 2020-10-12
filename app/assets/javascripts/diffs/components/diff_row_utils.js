@@ -1,4 +1,3 @@
-import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import {
   MATCH_LINE_TYPE,
@@ -23,21 +22,8 @@ export const isMatchLine = type => type === MATCH_LINE_TYPE;
 export const isMetaLine = type =>
   [OLD_NO_NEW_LINE_TYPE, NEW_NO_NEW_LINE_TYPE, EMPTY_CELL_TYPE].includes(type);
 
-export const shouldRenderCommentButton = (
-  isLoggedIn,
-  isCommentButtonRendered,
-  featureMergeRefHeadComments = false,
-) => {
-  if (!isCommentButtonRendered) {
-    return false;
-  }
-
-  if (isLoggedIn) {
-    const isDiffHead = parseBoolean(getParameterByName('diff_head'));
-    return !isDiffHead || featureMergeRefHeadComments;
-  }
-
-  return false;
+export const shouldRenderCommentButton = (isLoggedIn, isCommentButtonRendered) => {
+  return isCommentButtonRendered && isLoggedIn;
 };
 
 export const hasDiscussions = line => line?.discussions?.length > 0;

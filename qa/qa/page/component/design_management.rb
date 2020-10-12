@@ -30,6 +30,7 @@ module QA
             view 'app/assets/javascripts/design_management/components/list/item.vue' do
               element :design_file_name
               element :design_image
+              element :design_status_icon
             end
 
             view 'app/assets/javascripts/design_management/pages/index.vue' do
@@ -79,6 +80,11 @@ module QA
           raise ElementNotFound, %Q(Attempted to attach design "#{filename}" but it did not appear) unless found
         end
 
+        def update_design(filename)
+          filepath = ::File.join('qa', 'fixtures', 'designs', 'update', filename)
+          add_design(filepath)
+        end
+
         def click_design(filename)
           click_element(:design_file_name, text: filename)
         end
@@ -100,6 +106,14 @@ module QA
 
         def has_design?(filename)
           has_element?(:design_file_name, text: filename)
+        end
+
+        def has_created_icon?
+          has_element?(:design_status_icon, status: 'file-addition-solid')
+        end
+
+        def has_modified_icon?
+          has_element?(:design_status_icon, status: 'file-modified-solid')
         end
       end
     end

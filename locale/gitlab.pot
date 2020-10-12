@@ -14773,6 +14773,12 @@ msgstr ""
 msgid "KeyboardKey|Ctrl+"
 msgstr ""
 
+msgid "KeyboardShortcuts|Global Shortcuts"
+msgstr ""
+
+msgid "KeyboardShortcuts|Toggle the Performance Bar"
+msgstr ""
+
 msgid "Keys"
 msgstr ""
 

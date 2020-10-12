@@ -56,7 +56,7 @@ RSpec.describe GitGarbageCollectWorker do
 
       it "flushes ref caches when the task if 'gc'" do
         expect(subject).to receive(:renew_lease).with(lease_key, lease_uuid).and_call_original
-        expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).to receive(:expire_branches_cache).and_call_original
         expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
         expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
@@ -77,7 +77,7 @@ RSpec.describe GitGarbageCollectWorker do
       end
 
       it 'returns silently' do
-        expect_any_instance_of(Repository).not_to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).not_to receive(:expire_branches_cache).and_call_original
         expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
         expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 
@@ -102,7 +102,7 @@ RSpec.describe GitGarbageCollectWorker do
 
         it "flushes ref caches when the task if 'gc'" do
           expect(subject).to receive(:get_lease_uuid).with("git_gc:#{task}:#{project.id}").and_return(false)
-          expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
+          expect_any_instance_of(Repository).to receive(:expire_branches_cache).and_call_original
           expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
@@ -170,7 +170,7 @@ RSpec.describe GitGarbageCollectWorker do
 
         it 'returns silently' do
           expect(subject).not_to receive(:command)
-          expect_any_instance_of(Repository).not_to receive(:after_create_branch).and_call_original
+          expect_any_instance_of(Repository).not_to receive(:expire_branches_cache).and_call_original
           expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 

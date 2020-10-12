@@ -19,6 +19,12 @@ RSpec.describe 'Dashboard Merge Requests' do
     sign_in(current_user)
   end
 
+  it 'disables target branch filter' do
+    visit merge_requests_dashboard_path
+
+    expect(page).not_to have_selector('#js-dropdown-target-branch', visible: false)
+  end
+
   context 'new merge request dropdown' do
     let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 

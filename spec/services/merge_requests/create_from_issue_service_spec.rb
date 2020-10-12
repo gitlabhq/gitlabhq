@@ -154,7 +154,7 @@ RSpec.describe MergeRequests::CreateFromIssueService do
 
         result = service.execute
 
-        expect(result[:merge_request].label_ids).to eq(label_ids)
+        expect(result[:merge_request].label_ids).to match_array(label_ids)
       end
 
       it "inherits milestones" do
