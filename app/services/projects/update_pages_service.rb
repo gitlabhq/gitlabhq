@@ -97,6 +97,7 @@ module Projects
       build.artifacts_file.use_file do |artifacts_path|
         SafeZip::Extract.new(artifacts_path)
           .extract(directories: [PUBLIC_DIR], to: temp_path)
+        create_pages_deployment(artifacts_path)
       end
     rescue SafeZip::Extract::Error => e
       raise FailedToExtractError, e.message
@@ -116,6 +117,21 @@ module Projects
       FileUtils.move(archive_public_path, public_path)
     ensure
       FileUtils.rm_r(previous_public_path, force: true)
+    end
+
+    def create_pages_deployment(artifacts_path)
+      return unless Feature.enabled?(:zip_pages_deployments, project)
+
+      File.open(artifacts_path) do |file|
+        deployment = project.pages_deployments.create!(file: file)
+        project.pages_metadatum.update!(pages_deployment: deployment)
+      end
+
+      # TODO: schedule old deployment removal https://gitlab.com/gitlab-org/gitlab/-/issues/235730
+    rescue => e
+      # we don't want to break current pages deployment process if something goes wrong
+      # TODO: remove this rescue as part of https://gitlab.com/gitlab-org/gitlab/-/issues/245308
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
     end
 
     def latest?

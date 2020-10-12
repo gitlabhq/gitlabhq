@@ -11,7 +11,6 @@ module QA
           element :new_user_email_field
           element :new_user_password_field
           element :new_user_register_button
-          element :new_user_accept_terms_checkbox
         end
 
         view 'app/views/registrations/welcome.html.haml' do
@@ -24,8 +23,6 @@ module QA
           fill_element :new_user_username_field, user.username
           fill_element :new_user_email_field, user.email
           fill_element :new_user_password_field, user.password
-
-          check_element :new_user_accept_terms_checkbox if has_element?(:new_user_accept_terms_checkbox)
 
           signed_in = retry_until do
             click_element :new_user_register_button if has_element?(:new_user_register_button)

@@ -3855,7 +3855,8 @@ Sometimes running multiple jobs or pipelines at the same time in an environment
 can lead to errors during the deployment.
 
 To avoid these errors, the `resource_group` attribute can be used to ensure that
-the runner doesn't run certain jobs simultaneously.
+the runner doesn't run certain jobs simultaneously. Resource groups behave similiar
+to semaphores in other programming languages.
 
 When the `resource_group` key is defined for a job in `.gitlab-ci.yml`,
 job executions are mutually exclusive across different pipelines for the same project.

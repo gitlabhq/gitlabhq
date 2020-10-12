@@ -118,10 +118,10 @@ Object {
     },
   ],
   "paginationInfo": Object {
-    "endCursor": "eyJpZCI6IjEiLCJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyJ9",
+    "endCursor": "eyJpZCI6IjEifQ",
     "hasNextPage": false,
     "hasPreviousPage": false,
-    "startCursor": "eyJpZCI6IjEiLCJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyJ9",
+    "startCursor": "eyJpZCI6IjEifQ",
   },
 }
 `;

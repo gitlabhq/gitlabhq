@@ -14,6 +14,9 @@ module DesignManagement
         @target_repository = @target_project.design_repository
         @target_design_collection = @target_issue.design_collection
         @temporary_branch = "CopyDesignCollectionService_#{SecureRandom.hex}"
+        # The user who triggered the copy may not have permissions to push
+        # to the design repository.
+        @git_user = @target_project.default_owner
 
         @designs = DesignManagement::Design.unscoped.where(issue: issue).order(:id).load
         @versions = DesignManagement::Version.unscoped.where(issue: issue).order(:id).includes(:designs).load
@@ -54,9 +57,9 @@ module DesignManagement
 
       private
 
-      attr_reader :designs, :event_enum_map, :sha_attribute, :shas, :temporary_branch,
-                  :target_design_collection, :target_issue, :target_repository,
-                  :target_project, :versions
+      attr_reader :designs, :event_enum_map, :git_user, :sha_attribute, :shas,
+                  :temporary_branch, :target_design_collection, :target_issue,
+                  :target_repository, :target_project, :versions
 
       alias_method :merge_branch, :target_branch
 
@@ -96,7 +99,7 @@ module DesignManagement
       # create `master` first by adding a file to it.
       def create_master_branch!
         target_repository.create_file(
-          current_user,
+          git_user,
           ".CopyDesignCollectionService_#{Time.now.to_i}",
           '.gitlab',
           message: "Commit to create #{merge_branch} branch in CopyDesignCollectionService",
@@ -106,7 +109,7 @@ module DesignManagement
 
       def create_temporary_branch!
         target_repository.add_branch(
-          current_user,
+          git_user,
           temporary_branch,
           target_repository.root_ref
         )
@@ -115,7 +118,7 @@ module DesignManagement
       def remove_temporary_branch!
         return unless target_repository.branch_exists?(temporary_branch)
 
-        target_repository.rm_branch(current_user, temporary_branch)
+        target_repository.rm_branch(git_user, temporary_branch)
       end
 
       # Merge the temporary branch containing the commits to `master`
@@ -124,7 +127,7 @@ module DesignManagement
         source_sha = shas.last
 
         target_repository.raw.merge(
-          current_user,
+          git_user,
           source_sha,
           merge_branch,
           'CopyDesignCollectionService finalize merge'
@@ -155,7 +158,7 @@ module DesignManagement
           end
 
           sha = target_repository.multi_action(
-            current_user,
+            git_user,
             branch_name: temporary_branch,
             message: commit_message(version),
             actions: gitaly_actions

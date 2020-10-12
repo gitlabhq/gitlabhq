@@ -11,6 +11,8 @@ RSpec.describe Gitlab::RepositorySizeChecker do
     described_class.new(
       current_size_proc: -> { current_size },
       limit: limit,
+      total_repository_size_excess: 0,
+      additional_purchased_storage: 0,
       enabled: enabled
     )
   end
@@ -44,50 +46,11 @@ RSpec.describe Gitlab::RepositorySizeChecker do
   end
 
   describe '#above_size_limit?' do
-    context 'when size is above the limit' do
-      let(:current_size) { 100 }
-
-      it 'returns true' do
-        expect(subject.above_size_limit?).to be_truthy
-      end
-    end
-
-    it 'returns false when not over the limit' do
-      expect(subject.above_size_limit?).to be_falsey
-    end
+    include_examples 'checker size above limit'
+    include_examples 'checker size not over limit'
   end
 
   describe '#exceeded_size' do
-    context 'when current size is below or equal to the limit' do
-      let(:current_size) { 50 }
-
-      it 'returns zero' do
-        expect(subject.exceeded_size).to eq(0)
-      end
-    end
-
-    context 'when current size is over the limit' do
-      let(:current_size) { 51 }
-
-      it 'returns zero' do
-        expect(subject.exceeded_size).to eq(1)
-      end
-    end
-
-    context 'when change size will be over the limit' do
-      let(:current_size) { 50 }
-
-      it 'returns zero' do
-        expect(subject.exceeded_size(1)).to eq(1)
-      end
-    end
-
-    context 'when change size will not be over the limit' do
-      let(:current_size) { 49 }
-
-      it 'returns zero' do
-        expect(subject.exceeded_size(1)).to eq(0)
-      end
-    end
+    include_examples 'checker size exceeded'
   end
 end

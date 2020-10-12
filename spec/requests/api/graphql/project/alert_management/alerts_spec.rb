@@ -139,6 +139,19 @@ RSpec.describe 'getting Alert Management Alerts' do
           it { expect(alerts.size).to eq(0) }
         end
       end
+
+      context 'assignee_username' do
+        let(:alert) { triggered_alert }
+        let(:assignee) { alert.assignees.first! }
+        let(:params) { { assignee_username: assignee.username } }
+
+        it_behaves_like 'a working graphql query'
+
+        specify do
+          expect(alerts.size).to eq(1)
+          expect(first_alert['iid']).to eq(alert.iid.to_s)
+        end
+      end
     end
   end
 end

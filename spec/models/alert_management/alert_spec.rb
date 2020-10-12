@@ -230,6 +230,35 @@ RSpec.describe AlertManagement::Alert do
       it { is_expected.to match_array(env_alert) }
     end
 
+    describe '.for_assignee_username' do
+      let_it_be(:alert) { triggered_alert }
+      let_it_be(:assignee) { create(:user) }
+
+      subject { AlertManagement::Alert.for_assignee_username(assignee_username) }
+
+      before_all do
+        alert.update!(assignees: [assignee])
+      end
+
+      context 'when matching assignee_username' do
+        let(:assignee_username) { assignee.username }
+
+        it { is_expected.to contain_exactly(alert) }
+      end
+
+      context 'when unknown assignee_username' do
+        let(:assignee_username) { 'unknown username' }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with empty assignee_username' do
+        let(:assignee_username) { ' ' }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
     describe '.order_severity_with_open_prometheus_alert' do
       subject { described_class.where(project: alert_project).order_severity_with_open_prometheus_alert }
 

@@ -57,6 +57,28 @@ RSpec.describe Projects::UpdatePagesService do
         end
       end
 
+      it 'creates pages_deployment and saves it in the metadata' do
+        expect do
+          expect(execute).to eq(:success)
+        end.to change { project.pages_deployments.count }.by(1)
+
+        deployment = project.pages_deployments.last
+
+        expect(deployment.size).to eq(file.size)
+        expect(deployment.file).to be
+        expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
+      end
+
+      it 'does not create deployment when zip_pages_deployments feature flag is disabled' do
+        stub_feature_flags(zip_pages_deployments: false)
+
+        expect do
+          expect(execute).to eq(:success)
+        end.not_to change { project.pages_deployments.count }
+
+        expect(project.pages_metadatum.reload.pages_deployment_id).to be_nil
+      end
+
       it 'limits pages size' do
         stub_application_setting(max_pages_size: 1)
         expect(execute).not_to eq(:success)

@@ -1,0 +1,7 @@
+---
+name: zip_pages_deployments
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42834
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/245308
+group: group::release management
+type: development
+default_enabled: false

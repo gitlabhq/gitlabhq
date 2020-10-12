@@ -53,6 +53,49 @@ RSpec.describe API::Releases do
         expect(json_response.second['tag_name']).to eq(release_1.tag)
       end
 
+      RSpec.shared_examples 'release sorting' do |order_by|
+        subject { get api(url, access_level), params: { sort: sort, order_by: order_by } }
+
+        context "sorting by #{order_by}" do
+          context 'ascending order' do
+            let(:sort) { 'asc' }
+
+            it 'returns the sorted releases' do
+              subject
+
+              expect(json_response.map { |release| release['name'] }).to eq(releases.map(&:name))
+            end
+          end
+
+          context 'descending order' do
+            let(:sort) { 'desc' }
+
+            it 'returns the sorted releases' do
+              subject
+
+              expect(json_response.map { |release| release['name'] }).to eq(releases.reverse.map(&:name))
+            end
+          end
+        end
+      end
+
+      context 'return releases in sorted order' do
+        before do
+          release_2.update_attribute(:created_at, 3.days.ago)
+        end
+
+        let(:url) { "/projects/#{project.id}/releases" }
+        let(:access_level) { maintainer }
+
+        it_behaves_like 'release sorting', 'released_at' do
+          let(:releases) { [release_1, release_2] }
+        end
+
+        it_behaves_like 'release sorting', 'created_at' do
+          let(:releases) { [release_2, release_1] }
+        end
+      end
+
       it 'matches response schema' do
         get api("/projects/#{project.id}/releases", maintainer)
 

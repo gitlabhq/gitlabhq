@@ -113,6 +113,7 @@ module AlertManagement
     scope :for_status, -> (status) { with_status(status) }
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
     scope :for_environment, -> (environment) { where(environment: environment) }
+    scope :for_assignee_username, -> (assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
     scope :open, -> { with_status(open_statuses) }
     scope :not_resolved, -> { without_status(:resolved) }

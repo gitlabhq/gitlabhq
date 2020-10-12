@@ -330,7 +330,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      include RedisTracking
 
      skip_before_action :authenticate_user!, only: :show
-     track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature, feature_default_enabled: true
+     track_redis_hll_event :index, :show, name: 'g_compliance_example_feature_visitors', feature: :compliance_example_feature, feature_default_enabled: true
 
      def index
        render html: 'index'

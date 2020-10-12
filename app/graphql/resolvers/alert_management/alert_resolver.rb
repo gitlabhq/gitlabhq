@@ -22,6 +22,10 @@ module Resolvers
                 description: 'Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.',
                 required: false
 
+      argument :assignee_username, GraphQL::STRING_TYPE,
+                required: false,
+                description: 'Username of a user assigned to the issue'
+
       type Types::AlertManagement::AlertType, null: true
 
       def resolve_with_lookahead(**args)

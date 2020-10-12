@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-12 08:34+0200\n"
-"PO-Revision-Date: 2020-10-12 08:34+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -4433,7 +4431,7 @@ msgstr ""
 msgid "By URL"
 msgstr ""
 
-msgid "By clicking Register, I agree that I have read and accepted the GitLab %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
+msgid "By clicking Register, I agree that I have read and accepted the %{company_name} %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
 msgstr ""
 
 msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
@@ -13285,9 +13283,6 @@ msgstr ""
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
-msgid "I accept the %{terms_link_start}Terms of Service and Privacy Policy%{terms_link_end}"
-msgstr ""
-
 msgid "I accept the %{terms_link}"
 msgstr ""
 
@@ -15962,6 +15957,9 @@ msgstr ""
 msgid "Members|Are you sure you want to deny %{usersName}'s request to join \"%{source}\""
 msgstr ""
 
+msgid "Members|Are you sure you want to leave \"%{source}\"?"
+msgstr ""
+
 msgid "Members|Are you sure you want to remove %{usersName} from \"%{source}\""
 msgstr ""
 
@@ -15975,6 +15973,9 @@ msgid "Members|Are you sure you want to withdraw your access request for \"%{sou
 msgstr ""
 
 msgid "Members|Expired"
+msgstr ""
+
+msgid "Members|Leave \"%{source}\""
 msgstr ""
 
 msgid "Members|No expiration set"
@@ -19004,9 +19005,6 @@ msgid "Pipelines|Owner"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
-msgstr ""
-
-msgid "Pipelines|Retry"
 msgstr ""
 
 msgid "Pipelines|Revoke"
@@ -29785,9 +29783,6 @@ msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
 msgid "You may close the milestone now."
-msgstr ""
-
-msgid "You must accept our Terms of Service and privacy policy in order to register an account"
 msgstr ""
 
 msgid "You must be logged in to search across all of GitLab"

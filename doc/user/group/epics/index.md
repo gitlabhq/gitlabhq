@@ -10,9 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
 > - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
-Epics let you manage your portfolio of projects more efficiently and with less
-effort by tracking groups of issues that share a theme, across projects and
-milestones.
+Epics let you manage your portfolio of projects more efficiently by tracking groups of issues that
+share a theme across projects and milestones.
 
 An epic's page contains the following tabs:
 
@@ -112,9 +111,9 @@ To set a **Start date** and **Due date** for an epic, select one of the followin
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 by **Inherited**.
 
 If you select **From milestones** for the start date, GitLab automatically sets the date to be earliest
-start date across all milestones that are currently assigned to the issues that are added to the epic.
-Similarly, if you select **From milestones** for the due date, GitLab sets it to be the latest due date across
-all milestones that are currently assigned to those issues.
+start date across all milestones that are assigned to the issues that belong to the epic.
+If you select **From milestones** for the due date, GitLab sets the date to be the latest due date across
+all milestones that are assigned to those issues.
 
 These are dynamic dates which are recalculated if any of the following occur:
 

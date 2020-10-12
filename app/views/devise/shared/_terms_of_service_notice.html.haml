@@ -1,0 +1,5 @@
+- company_name = Gitlab.com? ? 'GitLab' : ''
+
+- if Gitlab::CurrentSettings.current_application_settings.enforce_terms?
+  %p.gl-text-gray-500.gl-mt-5.gl-mb-0
+    = html_escape(_("By clicking Register, I agree that I have read and accepted the %{company_name} %{linkStart}Terms of Use and Privacy Policy%{linkEnd}")) % { linkStart: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, linkEnd: '</a>'.html_safe, company_name: company_name }

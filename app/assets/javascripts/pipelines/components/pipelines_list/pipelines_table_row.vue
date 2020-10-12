@@ -20,7 +20,7 @@ import { PIPELINES_TABLE } from '../../constants';
 export default {
   i18n: {
     cancelTitle: __('Cancel'),
-    redeployTitle: __('Pipelines|Retry'),
+    redeployTitle: __('Retry'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

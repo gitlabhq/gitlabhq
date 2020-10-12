@@ -64,3 +64,5 @@ export const MEMBER_TYPES = {
 };
 
 export const DAYS_TO_EXPIRE_SOON = 7;
+
+export const LEAVE_MODAL_ID = 'member-leave-modal';

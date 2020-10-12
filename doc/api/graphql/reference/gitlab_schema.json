@@ -38430,6 +38430,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -38447,6 +38457,16 @@
                 {
                   "name": "search",
                   "description": "Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -38508,6 +38528,16 @@
                 {
                   "name": "search",
                   "description": "Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",

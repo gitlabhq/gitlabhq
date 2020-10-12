@@ -666,16 +666,14 @@ RSpec.describe Snippet do
 
     let(:checker) { subject.repository_size_checker }
     let(:current_size) { 60 }
+    let(:total_repository_size_excess) { 0 }
+    let(:additional_purchased_storage) { 0 }
 
     before do
       allow(subject.repository).to receive(:size).and_return(current_size)
     end
 
-    it 'sets up size checker', :aggregate_failures do
-      expect(checker.current_size).to eq(current_size.megabytes)
-      expect(checker.limit).to eq(Gitlab::CurrentSettings.snippet_size_limit)
-      expect(checker.enabled?).to be_truthy
-    end
+    include_examples 'size checker for snippet'
   end
 
   describe '#can_cache_field?' do

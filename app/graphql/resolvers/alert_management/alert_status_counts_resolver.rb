@@ -9,6 +9,10 @@ module Resolvers
                 description: 'Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.',
                 required: false
 
+      argument :assignee_username, GraphQL::STRING_TYPE,
+                required: false,
+                description: 'Username of a user assigned to the issue'
+
       def resolve(**args)
         ::Gitlab::AlertManagement::AlertStatusCounts.new(context[:current_user], object, args)
       end

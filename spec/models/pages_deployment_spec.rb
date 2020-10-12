@@ -18,4 +18,21 @@ RSpec.describe PagesDeployment do
       expect(create(:pages_deployment)).to be_valid
     end
   end
+
+  describe 'default for file_store' do
+    it 'uses local store when object storage is not enabled' do
+      expect(build(:pages_deployment).file_store).to eq(ObjectStorage::Store::LOCAL)
+    end
+
+    it 'uses remote store when object storage is enabled' do
+      stub_pages_object_storage(::Pages::DeploymentUploader)
+
+      expect(build(:pages_deployment).file_store).to eq(ObjectStorage::Store::REMOTE)
+    end
+  end
+
+  it 'saves size along with the file' do
+    deployment = create(:pages_deployment)
+    expect(deployment.size).to eq(deployment.file.size)
+  end
 end

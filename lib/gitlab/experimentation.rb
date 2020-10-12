@@ -51,9 +51,6 @@ module Gitlab
       new_create_project_ui: {
         tracking_category: 'Manage::Import::Experiment::NewCreateProjectUi'
       },
-      terms_opt_in: {
-        tracking_category: 'Growth::Acquisition::Experiment::TermsOptIn'
-      },
       contact_sales_btn_in_app: {
         tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp'
       },

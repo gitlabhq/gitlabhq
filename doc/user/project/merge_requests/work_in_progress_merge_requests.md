@@ -28,9 +28,9 @@ There are several ways to flag a merge request as a Draft:
 - Add the `/wip` [quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics)
   in a comment in the merge request. This is a toggle, and can be repeated
   to change the status back. Note that any other text in the comment will be discarded.
-- Add `draft:` or `Draft:` to the start of a commit message targeting the merge request's
-  source branch. This is not a toggle, and doing it again in another commit will have
-  no effect.
+- Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the beginning of a commit message targeting the
+  merge request's source branch. This is not a toggle, and doing it again in another
+  commit will have no effect.
 
 ## Removing the "Draft" flag from a merge request
 
