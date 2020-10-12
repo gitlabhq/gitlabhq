@@ -20,7 +20,7 @@ module QA
               Quarantine.skip_or_run_quarantined_tests_or_contexts(config.inclusion_filter.rules, example)
 
               if example.metadata.key?(:only)
-                skip('Test is not compatible with this environment') unless Runtime::Env.address_matches?(example.metadata[:only])
+                skip('Test is not compatible with this environment or pipeline') unless Runtime::Env.context_matches?(example.metadata[:only])
               end
             end
           end
@@ -55,7 +55,7 @@ module QA
               if quarantine_tag&.is_a?(Hash) && quarantine_tag&.key?(:only)
                 # If the :quarantine hash contains :only, we respect that.
                 # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
-                return unless Runtime::Env.address_matches?(quarantine_tag[:only])
+                return unless Runtime::Env.context_matches?(quarantine_tag[:only])
               end
 
               skip(quarantine_message(quarantine_tag))

@@ -1,7 +1,7 @@
 - reporter = abuse_report.reporter
 - user = abuse_report.user
 %tr
-  %th.d-block.d-sm-none.d-md-none
+  %th.d-block.d-sm-none
     %strong= _('User')
   %td
     - if user
@@ -11,12 +11,13 @@
     - else
       = _('(removed)')
   %td
-    %strong.subheading.d-block.d-sm-none.d-md-none
+    %strong.subheading.d-block.d-sm-none
       = _('Reported by %{reporter}') % { reporter: reporter ? link_to(reporter.name, reporter) : _('(removed)') }
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)
   %td
-    %strong.subheading.d-block.d-sm-none.d-md-none= _('Message')
+    %strong.subheading.d-block.d-sm-none
+      = _('Message')
     .message
       = markdown_field(abuse_report, :message)
   %td
