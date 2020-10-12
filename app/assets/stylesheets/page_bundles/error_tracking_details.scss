@@ -1,15 +1,17 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
 .error-details {
   li {
     @include gl-line-height-32;
   }
 
   .btn-outline-info {
-    color: $blue-500;
-    border-color: $blue-500;
+    color: var(--blue-500, $blue-500);
+    border-color: var(--blue-500, $blue-500);
   }
 
   .error-details-header {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--border-color, $border-color);
 
     @include media-breakpoint-down(xs) {
       flex-flow: column;

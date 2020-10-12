@@ -4,7 +4,6 @@
 - show_access_requests = can_manage_members && @requesters.exists?
 - invited_active = params[:search_invited].present? || params[:invited_members_page].present?
 - vue_members_list_enabled = Feature.enabled?(:vue_group_members_list, @group)
-- data_attributes = { group_id: @group.id }
 
 - form_item_label_css_class = 'label-bold gl-mr-2 gl-mb-0 gl-py-2 align-self-md-center'
 
@@ -69,7 +68,7 @@
               = label_tag :sort_by, _('Sort by'), class: form_item_label_css_class
               = render 'shared/members/sort_dropdown'
         - if vue_members_list_enabled
-          .js-group-members-list{ data: { members: members_data_json(@group, @members), member_path: group_group_member_path(id: ':id'), **data_attributes } }
+          .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
         - else
           %ul.content-list.members-list{ data: { qa_selector: 'members_list' } }
             = render partial: 'shared/members/member', collection: @members, as: :member
@@ -81,7 +80,7 @@
             = render 'groups/group_members/tab_pane/title' do
               = html_escape(_('Groups with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           - if vue_members_list_enabled
-            .js-group-linked-list{ data: { members: linked_groups_data_json(@group.shared_with_group_links), **data_attributes } }
+            .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
           - else
             %ul.content-list.members-list{ data: { qa_selector: 'groups_list' } }
               - @group.shared_with_group_links.each do |group_link|
@@ -95,7 +94,7 @@
             = form_tag group_group_members_path(@group), method: :get, class: 'user-search-form', data: { testid: 'user-search-form' } do
               = render 'shared/members/search_field', name: 'search_invited'
           - if vue_members_list_enabled
-            .js-group-invited-members-list{ data: { members: members_data_json(@group, @invited_members), member_path: group_group_member_path(id: ':id'), **data_attributes } }
+            .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
           - else
             %ul.content-list.members-list
               = render partial: 'shared/members/member', collection: @invited_members, as: :member
@@ -107,7 +106,7 @@
             = render 'groups/group_members/tab_pane/title' do
               = html_escape(_('Users requesting access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           - if vue_members_list_enabled
-            .js-group-access-requests-list{ data: { members: members_data_json(@group, @requesters), member_path: group_group_member_path(id: ':id'), **data_attributes } }
+            .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
           - else
             %ul.content-list.members-list
               = render partial: 'shared/members/member', collection: @requesters, as: :member

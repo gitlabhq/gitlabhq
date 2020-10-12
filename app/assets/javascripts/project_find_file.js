@@ -5,6 +5,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
+import { spriteIcon } from '~/lib/utils/common_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
@@ -125,7 +126,10 @@ export default class ProjectFindFile {
   // make tbody row html
   static makeHtml(filePath, matches, blobItemUrl) {
     const $tr = $(
-      "<tr class='tree-item'><td class='tree-item-file-name link-container'><a><i class='fa fa-file-text-o fa-fw'></i><span class='str-truncated'></span></a></td></tr>",
+      `<tr class='tree-item'><td class='tree-item-file-name link-container'><a>${spriteIcon(
+        'doc-text',
+        's16 vertical-align-middle gl-mr-1',
+      )}<span class='str-truncated'></span></a></td></tr>`,
     );
     if (matches) {
       $tr

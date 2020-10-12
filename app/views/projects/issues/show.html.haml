@@ -6,6 +6,8 @@
 - page_card_attributes @issue.card_attributes
 - if @issue.relocation_target
   - page_canonical_link @issue.relocation_target.present(current_user: current_user).web_url
+- if @issue.sentry_issue.present?
+  - add_page_specific_style 'page_bundles/error_tracking_details'
 
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_reopen_issue = can?(current_user, :reopen_issue, @issue)

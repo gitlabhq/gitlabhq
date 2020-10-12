@@ -25,7 +25,6 @@ RSpec.describe API::GroupContainerRepositories do
     group.add_reporter(reporter)
     group.add_guest(guest)
 
-    stub_feature_flags(container_registry_api: true)
     stub_container_registry_config(enabled: true)
 
     root_repository

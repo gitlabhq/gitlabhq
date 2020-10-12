@@ -1,3 +1,4 @@
+import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import PipelinesTable from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 
@@ -19,6 +20,7 @@ describe('Pipelines Table', () => {
     });
   };
   const findRows = () => wrapper.findAll('.commit.gl-responsive-table-row');
+  const findGlButtons = () => wrapper.findAll(GlButton);
 
   preloadFixtures(jsonFixtureName);
 
@@ -61,6 +63,30 @@ describe('Pipelines Table', () => {
       createComponent({ pipelines: [pipeline], autoDevopsHelpPath: 'foo', viewType: 'root' });
 
       expect(findRows()).toHaveLength(1);
+    });
+  });
+
+  describe('pipline actions', () => {
+    it('should set the "Re-deploy" title', () => {
+      const pipelines = [{ ...pipeline, flags: { cancelable: false, retryable: true } }];
+      createComponent({ ...defaultProps, pipelines });
+      expect(findGlButtons().length).toBe(1);
+      expect(
+        findGlButtons()
+          .at(0)
+          .attributes('title'),
+      ).toMatch('Retry');
+    });
+
+    it('should set the "Cancel" title', () => {
+      const pipelines = [{ ...pipeline, flags: { cancelable: true, retryable: false } }];
+      createComponent({ ...defaultProps, pipelines });
+      expect(findGlButtons().length).toBe(1);
+      expect(
+        findGlButtons()
+          .at(0)
+          .attributes('title'),
+      ).toMatch('Cancel');
     });
   });
 });

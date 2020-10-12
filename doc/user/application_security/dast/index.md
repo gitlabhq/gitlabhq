@@ -677,6 +677,11 @@ A scanner profile defines the scanner settings used to run an on-demand scan:
 - **Spider timeout:** The maximum number of minutes allowed for the spider to traverse the site.
 - **Target timeout:** The maximum number of seconds DAST waits for the site to be available before
   starting the scan.
+- **Scan mode:** A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
+- **AJAX spider:**  Run the AJAX spider, in addition to the traditional spider, to crawl the target site.
+- **Debug messages:** Include debug messages in the DAST console output.
+
+Scan mode, AJAX spider, Debug messages are [added in GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/225804)
 
 ### Create a scanner profile
 

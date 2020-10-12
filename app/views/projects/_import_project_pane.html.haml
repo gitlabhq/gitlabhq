@@ -4,7 +4,7 @@
 .project-import
   .form-group.import-btn-container.clearfix
     %h5
-      Import project from
+      = _("Import project from")
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
@@ -64,7 +64,8 @@
       - if manifest_import_enabled?
         %div
           = link_to new_import_manifest_path, class: 'btn import_manifest', **tracking_attrs(track_label, 'click_button', 'manifest_file') do
-            = icon('file-text-o', text: 'Manifest file')
+            = sprite_icon('doc-text')
+            Manifest file
 
       - if phabricator_import_enabled?
         %div

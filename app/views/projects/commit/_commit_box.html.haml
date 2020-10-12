@@ -25,14 +25,14 @@
       %span.btn.disabled.btn-grouped.d-none.d-sm-block.gl-mr-3.has-tooltip{ title: n_("%d comment on this commit", "%d comments on this commit", @notes_count) % @notes_count }
         = sprite_icon('comment')
         = @notes_count
-    = link_to project_tree_path(@project, @commit), class: "btn btn-default gl-mr-3 d-none d-sm-none d-md-inline" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-default gl-mr-3 d-none d-md-inline" do
       #{ _('Browse files') }
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle.qa-options-button.d-md-inline{ data: { toggle: "dropdown" } }
         %span= _('Options')
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-right
-        %li.d-block.d-sm-none.d-md-none
+        %li.d-block.d-sm-none
           = link_to project_tree_path(@project, @commit) do
             #{ _('Browse Files') }
         - if can_collaborate && !@commit.has_been_reverted?(current_user)

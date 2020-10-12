@@ -20,12 +20,9 @@ describe('initGroupMembersApp', () => {
     el.setAttribute('data-member-path', '/groups/foo-bar/-/group_members/:id');
 
     window.gon = { current_user_id: 123 };
-
-    document.body.appendChild(el);
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
     el = null;
 
     wrapper.destroy();

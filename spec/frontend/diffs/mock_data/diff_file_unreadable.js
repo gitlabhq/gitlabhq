@@ -11,7 +11,6 @@ export default {
   },
   blob_path: 'CHANGELOG',
   blob_name: 'CHANGELOG',
-  blob_icon: '<i aria-hidden="true" data-hidden="true" class="fa fa-file-text-o fa-fw"></i>',
   file_hash: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a',
   file_path: 'CHANGELOG',
   new_file: false,

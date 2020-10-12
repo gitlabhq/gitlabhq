@@ -8,7 +8,6 @@ module API
     REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       tag_name: API::NO_SLASH_URL_PART_REGEX)
 
-    before { error!('404 Not Found', 404) unless Feature.enabled?(:container_registry_api, user_project, default_enabled: true) }
     before { authorize_read_container_images! }
 
     params do

@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { GlButton } from '@gitlab/ui';
 
 const buttonVariants = ['danger', 'primary', 'success', 'warning'];
 const sizeVariants = ['sm', 'md', 'lg', 'xl'];
@@ -7,6 +8,9 @@ const sizeVariants = ['sm', 'md', 'lg', 'xl'];
 export default {
   name: 'DeprecatedModal2', // use GlModal instead
 
+  components: {
+    GlButton,
+  },
   props: {
     id: {
       type: String,
@@ -72,20 +76,21 @@ export default {
   <div :id="id" class="modal fade" tabindex="-1" role="dialog">
     <div :class="modalSizeClass" class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header gl-pr-4">
           <slot name="header">
             <h4 class="modal-title">
               <slot name="title"> {{ headerTitleText }} </slot>
             </h4>
-            <button
+            <gl-button
               :aria-label="s__('Modal|Close')"
-              type="button"
-              class="close js-modal-close-action"
+              variant="default"
+              category="tertiary"
+              size="small"
+              icon="close"
+              class="js-modal-close-action"
               data-dismiss="modal"
               @click="emitCancel($event)"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            />
           </slot>
         </div>
 
@@ -93,23 +98,21 @@ export default {
 
         <div class="modal-footer">
           <slot name="footer">
-            <button
-              type="button"
-              class="btn js-modal-cancel-action qa-modal-cancel-button"
+            <gl-button
+              class="js-modal-cancel-action qa-modal-cancel-button"
               data-dismiss="modal"
               @click="emitCancel($event)"
             >
               {{ s__('Modal|Cancel') }}
-            </button>
-            <button
+            </gl-button>
+            <gl-button
               :class="`btn-${footerPrimaryButtonVariant}`"
-              type="button"
-              class="btn js-modal-primary-action qa-modal-primary-button"
+              class="js-modal-primary-action qa-modal-primary-button"
               data-dismiss="modal"
               @click="emitSubmit($event)"
             >
               {{ footerPrimaryButtonText }}
-            </button>
+            </gl-button>
           </slot>
         </div>
       </div>

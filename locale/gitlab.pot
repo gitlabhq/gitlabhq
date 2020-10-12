@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-12 08:34+0200\n"
+"PO-Revision-Date: 2020-10-12 08:34+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -8082,13 +8084,13 @@ msgstr ""
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
 msgstr ""
 
+msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
+msgstr ""
+
 msgid "DastProfiles|AJAX spider"
 msgstr ""
 
 msgid "DastProfiles|Active"
-msgstr ""
-
-msgid "DastProfiles|Active scan will make active attacks against the target site while Passive scan will not"
 msgstr ""
 
 msgid "DastProfiles|Are you sure you want to delete this profile?"
@@ -8151,16 +8153,13 @@ msgstr ""
 msgid "DastProfiles|Edit site profile"
 msgstr ""
 
-msgid "DastProfiles|Enable it to include the debug messages in DAST console output"
-msgstr ""
-
-msgid "DastProfiles|Enable it to run the AJAX spider (in addition to the traditional spider) to crawl the target site"
-msgstr ""
-
 msgid "DastProfiles|Error Details"
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"
+msgstr ""
+
+msgid "DastProfiles|Include debug messages in the DAST console output."
 msgstr ""
 
 msgid "DastProfiles|Manage Profiles"
@@ -8197,6 +8196,9 @@ msgid "DastProfiles|Please enter a valid timeout value"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
+msgstr ""
+
+msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
 msgstr ""
 
 msgid "DastProfiles|Save commonly used configurations for target sites and scan specifications as profiles. Use these with an on-demand scan."
@@ -13537,6 +13539,9 @@ msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
 msgid "Import project"
+msgstr ""
+
+msgid "Import project from"
 msgstr ""
 
 msgid "Import project members"
@@ -18993,6 +18998,9 @@ msgid "Pipelines|Owner"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
+msgstr ""
+
+msgid "Pipelines|Retry"
 msgstr ""
 
 msgid "Pipelines|Revoke"

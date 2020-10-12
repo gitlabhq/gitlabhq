@@ -11,7 +11,7 @@
   = _('The repository for this project is empty')
 
 - if @project.can_current_user_push_code?
-  %p.gl-mb-0
+  %p
     = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
 .project-buttons.qa-quick-actions
@@ -23,7 +23,7 @@
   = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 
 - if can?(current_user, :push_code, @project)
-  .empty-wrapper.gl-mt-7
+  .empty-wrapper.gl-mt-4
     %h3#repo-command-line-instructions.page-title-empty
       = _('Command line instructions')
     %p

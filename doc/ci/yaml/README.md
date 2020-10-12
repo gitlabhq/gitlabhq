@@ -4188,9 +4188,6 @@ Learn more about [variables and their priority](../variables/README.md).
 > - Introduced in GitLab 8.9 as an experimental feature.
 > - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
 
-CAUTION: **Caution:**
-May change or be removed completely in future releases.
-
 You can set the `GIT_STRATEGY` used for getting recent application code, either
 globally or per-job in the [`variables`](#variables) section. If left
 unspecified, the default from the project settings is used.
@@ -4214,10 +4211,11 @@ variables:
   GIT_STRATEGY: fetch
 ```
 
-`none` also re-uses the local working copy, but skips all Git operations
-(including GitLab Runner's pre-clone script, if present). It's mostly useful
-for jobs that operate exclusively on artifacts (for example, `deploy`). Git repository
-data may be present, but it's certain to be out of date, so you should only
+`none` also re-uses the local working copy. However, it skips all Git operations,
+including GitLab Runner's pre-clone script, if present.
+
+It's useful for jobs that operate exclusively on artifacts, like a deployment job.
+Git repository data may be present, but it's likely out-of-date. You should only
 rely on files brought into the local working copy from cache or artifacts.
 
 ```yaml
@@ -4285,8 +4283,8 @@ If set to `false`, the runner:
 - when doing `clone` - clones the repository and leaves the working copy on the
   default branch.
 
-Having this setting set to `true` means that for both `clone` and `fetch`
-strategies the runner checks out the working copy to a revision related
+If `GIT_CHECKOUT` is set to `true`, both `clone` and `fetch` work the same way.
+The runner checks out the working copy of a revision related
 to the CI pipeline:
 
 ```yaml
@@ -4332,7 +4330,7 @@ script:
 The `GIT_FETCH_EXTRA_FLAGS` variable is used to control the behavior of
 `git fetch`. You can set it globally or per-job in the [`variables`](#variables) section.
 
-`GIT_FETCH_EXTRA_FLAGS` accepts all possible options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command, but `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
+`GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
 
 The default flags are:
 
@@ -4391,20 +4389,19 @@ You can set them globally or per-job in the [`variables`](#variables) section.
 
 > Introduced in GitLab 8.9 as an experimental feature.
 
-NOTE: **Note:**
-In GitLab 12.0 and later, newly-created projects automatically have a [default `git depth` value of `50`](../pipelines/settings.md#git-shallow-clone).
-
-You can specify the depth of fetching and cloning using `GIT_DEPTH`. This does a
-shallow clone of the repository and can significantly speed up cloning for
-repositories with a large number of commits or old, large binaries. The value is
+You can specify the depth of fetching and cloning using `GIT_DEPTH`.
+`GIT_DEPTH` does a shallow clone of the repository and can significantly speed up cloning.
+It can be helpful for repositories with a large number of commits or old, large binaries. The value is
 passed to `git fetch` and `git clone`.
 
-NOTE: **Note:**
-If you use a depth of 1 and have a queue of jobs or retry
+In GitLab 12.0 and later, newly-created projects automatically have a
+[default `git depth` value of `50`](../pipelines/settings.md#git-shallow-clone).
+
+If you use a depth of `1` and have a queue of jobs or retry
 jobs, jobs may fail.
 
-Since Git fetching and cloning is based on a ref, such as a branch name, runners
-can't clone a specific commit SHA. If there are multiple jobs in the queue, or
+Git fetching and cloning is based on a ref, such as a branch name, so runners
+can't clone a specific commit SHA. If multiple jobs are in the queue, or
 you're retrying an old job, the commit to be tested must be within the
 Git history that is cloned. Setting too small a value for `GIT_DEPTH` can make
 it impossible to run these old commits and `unresolved reference` is displayed in
@@ -4452,10 +4449,11 @@ setting.
 
 #### Handling concurrency
 
-An executor using a concurrency greater than `1` might lead
-to failures because multiple jobs might be working on the same directory if the `builds_dir`
+An executor that uses a concurrency greater than `1` might lead
+to failures. Multiple jobs might be working on the same directory if the `builds_dir`
 is shared between jobs.
-GitLab Runner does not try to prevent this situation. It's up to the administrator
+
+The runner does not try to prevent this situation. It's up to the administrator
 and developers to comply with the requirements of runner configuration.
 
 To avoid this scenario, you can use a unique path within `$CI_BUILDS_DIR`, because runner
@@ -4522,9 +4520,10 @@ need to be used to merge arrays.
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-YAML has a handy feature called 'anchors', which lets you easily duplicate
-content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden jobs](#hide-jobs)
+YAML has a feature called 'anchors' that you can use to duplicate
+content across your document.
+
+Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](#hide-jobs)
 to provide templates for your jobs. When there are duplicate keys, GitLab
 performs a reverse deep merge based on the keys.
 
@@ -4766,7 +4765,7 @@ if using Git 2.10 or newer.
 ## Processing Git pushes
 
 GitLab creates at most four branch and tag pipelines when
-pushing multiple changes in single `git push` invocation.
+pushing multiple changes in a single `git push` invocation.
 
 This limitation does not affect any of the updated merge request pipelines.
 All updated merge requests have a pipeline created when using

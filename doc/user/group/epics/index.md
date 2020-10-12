@@ -141,8 +141,8 @@ These are dynamic dates and recalculated if any of the following occur:
 - Issues are added to, or removed from, the epic.
 
 Because the epic's dates can inherit dates from its children, the start date and due date propagate from the bottom to the top.
-If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic,
-then the parent epic's start date will reflect the change and this will propagate upwards to the top epic.
+If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic.
+The parent epic's start date then reflects this change and propagates upwards to the top epic.
 
 ## Roadmap in epics
 
@@ -156,11 +156,11 @@ have a [start or due date](#start-date-and-due-date), a
 
 ## Permissions
 
-If you have access to view an epic and have access to view an issue already
-added to that epic, then you can view the issue in the epic issue list.
+If you have access to view an epic and an issue added to that epic, you can view the issue in the
+epic's issue list.
 
-If you have access to edit an epic and have access to edit an issue, then you
-can add the issue to or remove it from the epic.
+If you have access to edit an epic and an issue added to that epic, you can add the issue to or
+remove it from the epic.
 
 Note that for a given group, the visibility of all projects must be the same as
 the group, or less restrictive. That means if you have access to a group's epic,
