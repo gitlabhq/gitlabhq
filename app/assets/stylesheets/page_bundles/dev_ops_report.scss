@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 $space-between-cards: 8px;
 
 .devops-empty svg {
@@ -21,7 +23,7 @@ $space-between-cards: 8px;
   .devops-header-subtitle {
     font-size: 22px;
     line-height: 1;
-    color: $gl-text-color-secondary;
+    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
     margin-left: 8px;
     font-weight: $gl-font-weight-normal;
 
@@ -31,10 +33,10 @@ $space-between-cards: 8px;
 
     a {
       font-size: 18px;
-      color: $gl-text-color-secondary;
+      color: var(--gl-text-color-secondary, $gl-text-color-secondary);
 
       &:hover {
-        color: $blue-500;
+        color: var(--blue-500, $blue-500);
       }
     }
   }
@@ -52,7 +54,7 @@ $space-between-cards: 8px;
   align-items: stretch;
   text-align: center;
   width: 50%;
-  border-color: $border-color;
+  border-color: var(--border-color, $border-color);
   margin: 0 0 32px;
   padding: $space-between-cards / 2;
   position: relative;
@@ -75,7 +77,7 @@ $space-between-cards: 8px;
 }
 
 .devops-card {
-  border: solid 1px $border-color;
+  border: solid 1px var(--border-color, $border-color);
   border-radius: 3px;
   border-top-width: 3px;
   display: flex;
@@ -84,26 +86,26 @@ $space-between-cards: 8px;
 }
 
 .devops-card-low {
-  border-top-color: $red-400;
+  border-top-color: var(--red-400, $red-400);
 
   .board-card-score-big {
-    background-color: $red-50;
+    background-color: var(--red-50, $red-50);
   }
 }
 
 .devops-card-average {
-  border-top-color: $orange-200;
+  border-top-color: var(--orange-200, $orange-200);
 
   .board-card-score-big {
-    background-color: $orange-50;
+    background-color: var(--orange-50, $orange-50);
   }
 }
 
 .devops-card-high {
-  border-top-color: $green-400;
+  border-top-color: var(--green-400, $green-400);
 
   .board-card-score-big {
-    background-color: $green-50;
+    background-color: var(--green-50, $green-50);
   }
 }
 
@@ -119,7 +121,7 @@ $space-between-cards: 8px;
   .light-text {
     font-size: 13px;
     line-height: 1.25;
-    color: $gl-text-color-secondary;
+    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
   }
 }
 
@@ -132,7 +134,7 @@ $space-between-cards: 8px;
 }
 
 .board-card-score {
-  color: $gl-text-color-secondary;
+  color: var(--gl-text-color-secondary, $gl-text-color-secondary);
 
   .board-card-score-name {
     font-size: 13px;
@@ -142,13 +144,13 @@ $space-between-cards: 8px;
 
 .board-card-score-value {
   font-size: 16px;
-  color: $gl-text-color;
+  color: var(--gl-text-color, $gl-text-color);
   font-weight: $gl-font-weight-normal;
 }
 
 .board-card-score-big {
-  border-top: 2px solid $border-color;
-  border-bottom: 1px solid $border-color;
+  border-top: 2px solid var(--border-color, $border-color);
+  border-bottom: 1px solid var(--border-color, $border-color);
   font-size: 22px;
   padding: 10px 0;
   font-weight: $gl-font-weight-normal;
@@ -159,17 +161,17 @@ $space-between-cards: 8px;
 
   > * {
     font-size: 16px;
-    color: $gl-text-color-secondary;
+    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
     padding: 10px;
     flex-grow: 1;
 
     &:hover {
-      background-color: $border-color;
-      color: $gl-text-color;
+      background-color: var(--border-color, $border-color);
+      color: var(--border-color, $border-color);
     }
 
     + * {
-      border-left: solid 1px $border-color;
+      border-left: solid 1px var(--border-color, $border-color);
     }
   }
 }
@@ -180,7 +182,7 @@ $space-between-cards: 8px;
   min-width: 100%;
   justify-content: space-around;
   position: relative;
-  background: $border-color;
+  background: var(--border-color, $border-color);
 }
 
 .devops-step {
@@ -202,12 +204,12 @@ $space-between-cards: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: solid 1px $border-color;
-  background: $white;
+  border: solid 1px var(--border-color, $border-color);
+  background: var(--white, $white);
   transform: translate(-50%, -50%);
-  color: $gl-text-color-secondary;
-  fill: $gl-text-color-secondary;
-  box-shadow: 0 2px 4px $dropdown-shadow-color;
+  color: var(--gl-text-color-secondary, $gl-text-color-secondary);
+  fill: var(--gl-text-color-secondary, $gl-text-color-secondary);
+  box-shadow: 0 2px 4px var(--dropdown-shadow-color, $dropdown-shadow-color);
 
   &:hover {
     padding: 8px 10px;
@@ -247,13 +249,13 @@ $space-between-cards: 8px;
 }
 
 .devops-high-score {
-  color: $green-400;
+  color: var(--green-400, $green-400);
 }
 
 .devops-average-score {
-  color: $orange-500;
+  color: var(--orange-500, $orange-500);
 }
 
 .devops-low-score {
-  color: $red-400;
+  color: var(--red-400, $red-400);
 }

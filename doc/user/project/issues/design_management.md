@@ -226,36 +226,11 @@ available in the **Resolved Comment** area at the bottom of the right sidebar.
 ## Add to dos for designs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198439) in GitLab 13.4.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-design-to-do-button). **(CORE ONLY)**
-
-CAUTION: **Warning:**
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245074) in **GitLab 13.5**
 
 Add a to do for a design by clicking **Add a To-Do** on the design sidebar:
 
 ![To-Do button](img/design_todo_button_v13_4.png)
-
-### Enable or disable the design to-do button **(CORE ONLY)**
-
-The **Add a To-Do** button for Designs is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:design_management_todo_button)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:design_management_todo_button)
-```
 
 ## Referring to designs in Markdown
 

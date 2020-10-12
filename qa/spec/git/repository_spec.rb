@@ -6,7 +6,16 @@ RSpec.describe QA::Git::Repository do
   shared_context 'unresolvable git directory' do
     let(:repo_uri) { 'http://foo/bar.git' }
     let(:repo_uri_with_credentials) { 'http://root@foo/bar.git' }
-    let(:repository) { described_class.new.tap { |r| r.uri = repo_uri } }
+    let(:env_vars) { [%q{HOME="temp"}] }
+    let(:extra_env_vars) { [] }
+    let(:run_params) { { env: env_vars + extra_env_vars, log_prefix: "Git: " } }
+    let(:repository) do
+      described_class.new.tap do |r|
+        r.uri = repo_uri
+        r.env_vars = env_vars
+      end
+    end
+
     let(:tmp_git_dir) { Dir.mktmpdir }
     let(:tmp_netrc_dir) { Dir.mktmpdir }
 
@@ -28,14 +37,13 @@ RSpec.describe QA::Git::Repository do
   end
 
   shared_examples 'command with retries' do
-    let(:extra_args) { {} }
     let(:result_output) { +'Command successful' }
     let(:result) { described_class::Result.new(any_args, 0, result_output) }
     let(:command_return) { result_output }
 
     context 'when command is successful' do
       it 'returns the #run command Result output' do
-        expect(repository).to receive(:run).with(command, extra_args.merge(max_attempts: 3)).and_return(result)
+        expect(repository).to receive(:run).with(command, run_params.merge(max_attempts: 3)).and_return(result)
 
         expect(call_method).to eq(command_return)
       end
@@ -52,10 +60,10 @@ RSpec.describe QA::Git::Repository do
       end
 
       context 'and retried command is not successful after 3 attempts' do
-        it 'raises a RepositoryCommandError exception' do
+        it 'raises a CommandError exception' do
           expect(Open3).to receive(:capture2e).and_return([+'FAILURE', double(exitstatus: 42)]).exactly(3).times
 
-          expect { call_method }.to raise_error(described_class::RepositoryCommandError, /The command .* failed \(42\) with the following output:\nFAILURE/)
+          expect { call_method }.to raise_error(QA::Support::Run::CommandError, /The command .* failed \(42\) with the following output:\nFAILURE/)
         end
       end
     end
@@ -182,7 +190,7 @@ RSpec.describe QA::Git::Repository do
     describe '#git_protocol=' do
       [0, 1, 2].each do |version|
         it "configures git to use protocol version #{version}" do
-          expect(repository).to receive(:run).with("git config protocol.version #{version}")
+          expect(repository).to receive(:run).with("git config protocol.version #{version}", run_params.merge(max_attempts: 1))
 
           repository.git_protocol = version
         end
@@ -200,7 +208,7 @@ RSpec.describe QA::Git::Repository do
         let(:command) { "git ls-remote #{repo_uri_with_credentials}" }
         let(:result_output) { +'packet: git< version 2' }
         let(:command_return) { '2' }
-        let(:extra_args) { { env: "GIT_TRACE_PACKET=1" } }
+        let(:extra_env_vars) { ["GIT_TRACE_PACKET=1"] }
       end
 
       it "reports the detected version" do

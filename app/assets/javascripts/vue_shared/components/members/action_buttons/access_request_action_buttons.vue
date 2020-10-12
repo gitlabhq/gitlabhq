@@ -1,11 +1,12 @@
 <script>
 import ActionButtonGroup from './action_button_group.vue';
 import RemoveMemberButton from './remove_member_button.vue';
+import ApproveAccessRequestButton from './approve_access_request_button.vue';
 import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'AccessRequestActionButtons',
-  components: { ActionButtonGroup, RemoveMemberButton },
+  components: { ActionButtonGroup, RemoveMemberButton, ApproveAccessRequestButton },
   props: {
     member: {
       type: Object,
@@ -42,7 +43,9 @@ export default {
 
 <template>
   <action-button-group>
-    <!-- Approve button will go here -->
+    <div v-if="permissions.canUpdate" class="gl-px-1">
+      <approve-access-request-button :member-id="member.id" />
+    </div>
     <div v-if="permissions.canRemove" class="gl-px-1">
       <remove-member-button
         :member-id="member.id"

@@ -20,7 +20,7 @@
       = link_to _('Manage two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-info'
     - else
       .gl-mb-3
-        = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-success'
+        = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-success', data: { qa_selector: 'enable_2fa_button' }
 
 %hr
 - if display_providers_on_profile?

@@ -23006,6 +23006,9 @@ msgstr ""
 msgid "SecurityReports|Error fetching the vulnerability list. Please check your network connection and try again."
 msgstr ""
 
+msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
+msgstr ""
+
 msgid "SecurityReports|False positive"
 msgstr ""
 
@@ -23067,6 +23070,12 @@ msgid "SecurityReports|Security Dashboard"
 msgstr ""
 
 msgid "SecurityReports|Security reports can only be accessed by authorized users."
+msgstr ""
+
+msgid "SecurityReports|Security reports help page link"
+msgstr ""
+
+msgid "SecurityReports|Security scans have run. Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports"
 msgstr ""
 
 msgid "SecurityReports|Select a project to add by using the project search field above."

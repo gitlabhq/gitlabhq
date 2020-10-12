@@ -354,4 +354,8 @@ RSpec.describe MergeRequestWidgetEntity do
       expect(entity[:rebase_path]).to be_nil
     end
   end
+
+  it 'has security_reports_docs_path' do
+    expect(subject[:security_reports_docs_path]).not_to be_nil
+  end
 end

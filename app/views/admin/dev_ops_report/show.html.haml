@@ -1,5 +1,6 @@
 - page_title _('DevOps Report')
 - usage_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
+- add_page_specific_style 'page_bundles/dev_ops_report'
 
 .container
   - if usage_ping_enabled && show_callout?('dev_ops_report_intro_callout_dismissed')

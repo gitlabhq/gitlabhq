@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import AccessRequestActionButtons from '~/vue_shared/components/members/action_buttons/access_request_action_buttons.vue';
 import RemoveMemberButton from '~/vue_shared/components/members/action_buttons/remove_member_button.vue';
+import ApproveAccessRequestButton from '~/vue_shared/components/members/action_buttons/approve_access_request_button.vue';
 import { accessRequest as member } from '../mock_data';
 
 describe('AccessRequestActionButtons', () => {
@@ -17,6 +18,7 @@ describe('AccessRequestActionButtons', () => {
   };
 
   const findRemoveMemberButton = () => wrapper.find(RemoveMemberButton);
+  const findApproveButton = () => wrapper.find(ApproveAccessRequestButton);
 
   afterEach(() => {
     wrapper.destroy();
@@ -77,6 +79,30 @@ describe('AccessRequestActionButtons', () => {
       });
 
       expect(findRemoveMemberButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when user has `canUpdate` permissions', () => {
+    it('renders the approve button', () => {
+      createComponent({
+        permissions: {
+          canUpdate: true,
+        },
+      });
+
+      expect(findApproveButton().exists()).toBe(true);
+    });
+  });
+
+  describe('when user does not have `canUpdate` permissions', () => {
+    it('does not render the approve button', () => {
+      createComponent({
+        permissions: {
+          canUpdate: false,
+        },
+      });
+
+      expect(findApproveButton().exists()).toBe(false);
     });
   });
 });

@@ -34,15 +34,17 @@ module QA
         result
       end
 
-      def retry_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false)
+      def retry_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false, log: true)
         # For backwards-compatibility
         max_attempts = 3 if max_attempts.nil? && max_duration.nil?
 
-        start_msg ||= ["with retry_until:"]
-        start_msg << "max_attempts: #{max_attempts};" if max_attempts
-        start_msg << "max_duration: #{max_duration};" if max_duration
-        start_msg << "reload_page: #{reload_page}; sleep_interval: #{sleep_interval}; raise_on_failure: #{raise_on_failure}; retry_on_exception: #{retry_on_exception}"
-        QA::Runtime::Logger.debug(start_msg.join(' '))
+        if log
+          start_msg ||= ["with retry_until:"]
+          start_msg << "max_attempts: #{max_attempts};" if max_attempts
+          start_msg << "max_duration: #{max_duration};" if max_duration
+          start_msg << "reload_page: #{reload_page}; sleep_interval: #{sleep_interval}; raise_on_failure: #{raise_on_failure}; retry_on_exception: #{retry_on_exception}"
+          QA::Runtime::Logger.debug(start_msg.join(' '))
+        end
 
         result = nil
         repeat_until(
@@ -51,7 +53,8 @@ module QA
           reload_page: reload_page,
           sleep_interval: sleep_interval,
           raise_on_failure: raise_on_failure,
-          retry_on_exception: retry_on_exception
+          retry_on_exception: retry_on_exception,
+          log: log
         ) do
           result = yield
         end

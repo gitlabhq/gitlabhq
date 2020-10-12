@@ -2,6 +2,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { withGonExperiment } from 'helpers/experimentation_helper';
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -51,13 +52,13 @@ describe('mrWidgetOptions', () => {
     gon.features = {};
   });
 
-  const createComponent = () => {
+  const createComponent = (mrData = mockData) => {
     if (vm) {
       vm.$destroy();
     }
 
     vm = mountComponent(MrWidgetOptions, {
-      mrData: { ...mockData },
+      mrData: { ...mrData },
     });
 
     return axios.waitForAll();
@@ -65,6 +66,7 @@ describe('mrWidgetOptions', () => {
 
   const findSuggestPipeline = () => vm.$el.querySelector('[data-testid="mr-suggest-pipeline"]');
   const findSuggestPipelineButton = () => findSuggestPipeline().querySelector('button');
+  const findSecurityMrWidget = () => vm.$el.querySelector('[data-testid="security-mr-widget"]');
 
   describe('default', () => {
     beforeEach(() => {
@@ -810,6 +812,41 @@ describe('mrWidgetOptions', () => {
 
     it('should not suggest pipelines when feature flag is not present', () => {
       expect(findSuggestPipeline()).toBeNull();
+    });
+  });
+
+  describe('security widget', () => {
+    describe.each`
+      context                                  | hasPipeline | reportType | isFlagEnabled | shouldRender
+      ${'security report and flag enabled'}    | ${true}     | ${'sast'}  | ${true}       | ${true}
+      ${'security report and flag disabled'}   | ${true}     | ${'sast'}  | ${false}      | ${false}
+      ${'no security report and flag enabled'} | ${true}     | ${'foo'}   | ${true}       | ${false}
+      ${'no pipeline and flag enabled'}        | ${false}    | ${'sast'}  | ${true}       | ${false}
+    `('given $context', ({ hasPipeline, reportType, isFlagEnabled, shouldRender }) => {
+      beforeEach(() => {
+        gon.features.coreSecurityMrWidget = isFlagEnabled;
+
+        if (hasPipeline) {
+          jest.spyOn(Api, 'pipelineJobs').mockResolvedValue({
+            data: [{ artifacts: [{ file_type: reportType }] }],
+          });
+        }
+
+        return createComponent({
+          ...mockData,
+          ...(hasPipeline ? {} : { pipeline: undefined }),
+        });
+      });
+
+      if (shouldRender) {
+        it('renders', () => {
+          expect(findSecurityMrWidget()).toEqual(expect.any(HTMLElement));
+        });
+      } else {
+        it('does not render', () => {
+          expect(findSecurityMrWidget()).toBeNull();
+        });
+      }
     });
   });
 

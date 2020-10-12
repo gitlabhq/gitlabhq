@@ -672,6 +672,27 @@ describe('Api', () => {
     });
   });
 
+  describe('pipelineJobs', () => {
+    it('fetches the jobs for a given pipeline', done => {
+      const projectId = 123;
+      const pipelineId = 456;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
+      const payload = [
+        {
+          name: 'test',
+        },
+      ];
+      mock.onGet(expectedUrl).reply(httpStatus.OK, payload);
+
+      Api.pipelineJobs(projectId, pipelineId)
+        .then(({ data }) => {
+          expect(data).toEqual(payload);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('createBranch', () => {
     it('creates new branch', done => {
       const ref = 'master';
