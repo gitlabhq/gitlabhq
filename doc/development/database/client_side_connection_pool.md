@@ -15,7 +15,6 @@ Because of the way [Ruby on Rails manages database
 connections](#connection-lifecycle), it is important that we have at
 least as many connections as we have threads. While there is a 'pool'
 setting in [`database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql), it is not very practical because you need to
-maintain it in tandem with the number of application threads. Because
 maintain it in tandem with the number of application threads. For this
 reason, we override the number of allowed connections in the database
 connection-pool based on the configured number of application threads.

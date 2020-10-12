@@ -2,15 +2,39 @@
 # rubocop:disable Style/SignalException
 
 PATTERNS = %w[
+  %a.btn.btn-
+  %button.btn.btn-
+  .alert
+  .alert-danger
+  .alert-dismissible
+  .alert-info
+  .alert-link
+  .alert-primary
+  .alert-success
+  .alert-warning
+  .nav-tabs
+  .toolbar-button-icon
+  .tooltip
+  .tooltip-inner
+  <button
+  <tabs
+  bs-callout
   createFlash
+  deprecated-modal
   gl-deprecated-button
-  loading-button
-  pagination-button
   gl-deprecated-dropdown
   gl-deprecated-dropdown-divider
   gl-deprecated-dropdown-header
   gl-deprecated-dropdown-item
+  graphql_pagination
+  has-tooltip
+  has_tooltip
   initDeprecatedJQueryDropdown
+  loading-button
+  pagination-button
+  v-popover
+  v-tooltip
+  with_tooltip
 ].freeze
 
 BLOCKING_PATTERNS = %w[

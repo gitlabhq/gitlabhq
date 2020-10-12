@@ -1,6 +1,6 @@
 # Environment selection
 
-Some tests are designed to be run against specific environments or [pipelines](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#scheduled-qa-test-pipelines). 
+Some tests are designed to be run against specific environments or [pipelines](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#scheduled-qa-test-pipelines).
 We can specify what environments or pipelines to run tests against using the `only` metadata.
 
 ## Available switches
