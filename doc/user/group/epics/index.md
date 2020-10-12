@@ -75,7 +75,7 @@ to:
 ## Issue health status in Epic tree **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199184) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - The health status of a closed issue [will be hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
+> - The health status of a closed issue [is hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
 
 Report or respond to the health of issues and epics by setting a red, amber, or green [health status](../../project/issues/index.md#health-status), which then appears on your Epic tree.
 
@@ -111,10 +111,10 @@ To set a **Start date** and **Due date** for an epic, select one of the followin
 
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 by **Inherited**.
 
-If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
-start date across all milestones that are assigned to the issues that are added to the epic.
-Similarly, if you select **From milestones** for the due date, GitLab will set it to be the latest due date across
-all milestones that are assigned to those issues.
+If you select **From milestones** for the start date, GitLab automatically sets the date to be earliest
+start date across all milestones that are currently assigned to the issues that are added to the epic.
+Similarly, if you select **From milestones** for the due date, GitLab sets it to be the latest due date across
+all milestones that are currently assigned to those issues.
 
 These are dynamic dates which are recalculated if any of the following occur:
 
@@ -178,8 +178,8 @@ You can also consult the [group permissions table](../../permissions.md#group-me
 
 Once you write your comment, you can either:
 
-- Click **Comment**, and your comment will be published.
-- Click **Start thread**, and you will start a thread within that epic's discussion.
+- Click **Comment** to publish your comment. 
+- Click **Start thread** to start a thread within that epic's discussion.
 
 ### Activity sort order
 

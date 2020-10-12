@@ -422,7 +422,6 @@ application servers above, with some changes to run only the `sidekiq` service:
    ##
    alertmanager['enable'] = false
    consul['enable'] = false
-   geo_logcursor['enable'] = false
    gitaly['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_workhorse['enable'] = false

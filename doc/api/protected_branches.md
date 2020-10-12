@@ -295,6 +295,67 @@ Example response:
 }
 ```
 
+### Example with allow to push and allow to merge access **(STARTER)**
+
+Example request:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{
+      "id": 5,
+      "name": "master",
+      "allowed_to_push": [{"access_level": 30}],
+      "allowed_to_merge": [{
+          "access_level": 30
+        },{
+          "access_level": 40
+        }
+      ]}'
+     "https://gitlab.example.com/api/v4/projects/5/protected_branches"
+```
+
+Example response:
+
+```json
+{
+    "id": 5,
+    "name": "master",
+    "push_access_levels": [
+        {
+            "access_level": 30,
+            "access_level_description": "Developers + Maintainers",
+            "user_id": null,
+            "group_id": null
+        }
+    ],
+    "merge_access_levels": [
+        {
+            "access_level": 30,
+            "access_level_description": "Developers + Maintainers",
+            "user_id": null,
+            "group_id": null
+        },
+        {
+            "access_level": 40,
+            "access_level_description": "Maintainers",
+            "user_id": null,
+            "group_id": null
+        }
+    ],
+    "unprotect_access_levels": [
+        {
+            "access_level": 40,
+            "access_level_description": "Maintainers",
+            "user_id": null,
+            "group_id": null
+        }
+    ],
+    "code_owner_approval_required": false
+}
+```
+
 ## Unprotect repository branches
 
 Unprotects the given protected branch or wildcard protected branch.
