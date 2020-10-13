@@ -124,7 +124,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
   end
 
   describe '#blob' do
-    let(:query_blob) { subject.dig('data', 'snippets', 'edges')[0]['node']['blob'] }
+    let(:query_blob) { subject.dig('data', 'snippets', 'nodes')[0]['blob'] }
 
     subject { GitlabSchema.execute(snippet_query_for(field: 'blob'), context: { current_user: user }).as_json }
 
@@ -151,21 +151,17 @@ RSpec.describe GitlabSchema.types['Snippet'] do
 
   describe '#blobs' do
     let_it_be(:snippet) { create(:personal_snippet, :public, author: user) }
-    let(:query_blobs) { subject.dig('data', 'snippets', 'edges')[0].dig('node', 'blobs', 'edges') }
+    let(:query_blobs) { subject.dig('data', 'snippets', 'nodes')[0].dig('blobs', 'nodes') }
     let(:paths) { [] }
     let(:query) do
       %(
         {
           snippets {
-            edges {
-              node {
-                blobs(paths: #{paths}) {
-                  edges {
-                    node {
-                      name
-                      path
-                    }
-                  }
+            nodes {
+              blobs(paths: #{paths}) {
+                nodes {
+                  name
+                  path
                 }
               }
             }
@@ -188,8 +184,8 @@ RSpec.describe GitlabSchema.types['Snippet'] do
       it_behaves_like 'an array'
 
       it 'contains the first blob from the snippet' do
-        expect(query_blobs.first['node']['name']).to eq blob.name
-        expect(query_blobs.first['node']['path']).to eq blob.path
+        expect(query_blobs.first['name']).to eq blob.name
+        expect(query_blobs.first['path']).to eq blob.path
       end
     end
 
@@ -200,7 +196,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
       it_behaves_like 'an array'
 
       it 'contains all the blobs from the repository' do
-        resulting_blobs_names = query_blobs.map { |b| b['node']['name'] }
+        resulting_blobs_names = query_blobs.map { |b| b['name'] }
 
         expect(resulting_blobs_names).to match_array(blobs.map(&:name))
       end
@@ -211,7 +207,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
         it_behaves_like 'an array'
 
         it 'returns specific files' do
-          resulting_blobs_names = query_blobs.map { |b| b['node']['name'] }
+          resulting_blobs_names = query_blobs.map { |b| b['name'] }
 
           expect(resulting_blobs_names).to match(paths)
         end
@@ -223,12 +219,10 @@ RSpec.describe GitlabSchema.types['Snippet'] do
     %(
       {
         snippets {
-          edges {
-            node {
-              #{field} {
-                name
-                path
-              }
+          nodes {
+            #{field} {
+              name
+              path
             }
           }
         }

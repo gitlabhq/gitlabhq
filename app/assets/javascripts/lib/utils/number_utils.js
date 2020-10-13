@@ -1,4 +1,4 @@
-import { BYTES_IN_KIB } from './constants';
+import { BYTES_IN_KIB, BYTES_IN_KB } from './constants';
 import { sprintf, __ } from '~/locale';
 
 /**
@@ -32,6 +32,18 @@ export function formatRelevantDigits(number) {
     formattedNumber = Number(number).toFixed(relevantDigits);
   }
   return formattedNumber;
+}
+
+/**
+ * Utility function that calculates KB of the given bytes.
+ * Note: This method calculates KiloBytes as opposed to
+ * Kibibytes. For Kibibytes, bytesToKiB should be used.
+ *
+ * @param  {Number} number bytes
+ * @return {Number}        KiB
+ */
+export function bytesToKB(number) {
+  return number / BYTES_IN_KB;
 }
 
 /**

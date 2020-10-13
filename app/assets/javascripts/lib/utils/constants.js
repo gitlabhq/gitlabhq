@@ -1,4 +1,5 @@
 export const BYTES_IN_KIB = 1024;
+export const BYTES_IN_KB = 1000;
 export const HIDDEN_CLASS = 'hidden';
 export const TRUNCATE_WIDTH_DEFAULT_WIDTH = 80;
 export const TRUNCATE_WIDTH_DEFAULT_FONT_SIZE = 12;

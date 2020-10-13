@@ -1,11 +1,3 @@
-.alert_holder {
-  margin: -16px;
-
-  .alert-link {
-    font-weight: $gl-font-weight-normal;
-  }
-}
-
 .new_project,
 .edit-project,
 .import-project {
@@ -67,38 +59,7 @@
   }
 }
 
-.classification-label {
-  background-color: $red-500;
-}
-
-.toggle-wrapper {
-  margin-top: 5px;
-}
-
-.project-feature-row > .toggle-wrapper {
-  margin: 10px 0;
-}
-
-.project-visibility-setting,
-.project-feature-settings {
-  border: 1px solid $border-color;
-  padding: 10px 32px;
-
-  @include media-breakpoint-down(xs) {
-    padding: 10px 20px;
-  }
-}
-
-.project-visibility-setting .request-access {
-  line-height: 2;
-}
-
-.project-feature-settings {
-  background: $gray-lighter;
-  border-top: 0;
-  margin-bottom: 16px;
-}
-
+// INFO Scoped to project_feature_setting and settings_panel components in app/assets/javascripts/pages/projects/shared/permissions/components
 .project-repo-select {
   transition: background 2s ease-out;
 
@@ -113,63 +74,31 @@
   }
 }
 
+// INFO Scoped to project_feature_setting and settings_panel components in app/assets/javascripts/pages/projects/shared/permissions/components
 .project-feature-controls {
-  display: flex;
-  align-items: center;
-  margin: $gl-padding-8 0;
   max-width: 432px;
-
-  .toggle-wrapper {
-    flex: 0;
-    margin-right: 10px;
-  }
-
-  .select-wrapper {
-    flex: 1;
-  }
 }
 
+// INFO Scoped to settings_panel component in app/assets/javascripts/pages/projects/shared/permissions/components
 .project-feature-setting-group {
-  padding-left: 32px;
-
   .project-feature-controls {
     max-width: 400px;
   }
-
-  @include media-breakpoint-down(xs) {
-    padding-left: 20px;
-  }
 }
 
-.group-home-panel,
 .project-home-panel {
-  margin-top: $gl-padding;
-  margin-bottom: $gl-padding;
-
   .home-panel-avatar {
-    width: $home-panel-title-row-height;
-    height: $home-panel-title-row-height;
-    flex-shrink: 0;
     flex-basis: $home-panel-title-row-height;
   }
 
   .home-panel-title {
-    font-size: 20px;
-    line-height: $gl-line-height-24;
-    font-weight: bold;
-
     .icon {
       vertical-align: -1px;
     }
 
     .home-panel-topic-list {
-      font-size: $gl-font-size;
-      font-weight: $gl-font-weight-normal;
-
       .icon {
-        position: relative;
         top: 3px;
-        margin-right: $gl-padding-4;
       }
     }
   }
@@ -198,24 +127,6 @@
       .home-panel-metadata {
         font-size: $gl-font-size-small;
       }
-    }
-  }
-
-  .home-panel-metadata {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: $gl-btn-line-height;
-
-    .home-panel-license {
-      .btn {
-        line-height: 0;
-        border-width: 0;
-      }
-    }
-
-    .access-request-link {
-      padding-left: $gl-padding-8;
-      border-left: 1px solid $gl-text-color-secondary;
     }
   }
 

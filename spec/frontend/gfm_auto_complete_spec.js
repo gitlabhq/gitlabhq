@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: "off" */
 
 import $ from 'jquery';
+import { emojiFixtureMap, initEmojiMock, describeEmojiFields } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
 import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
 
@@ -700,6 +701,64 @@ describe('GfmAutoComplete', () => {
         ${'/relabel ~'} | ${assignedLabels}
         ${'/unlabel ~'} | ${assignedLabels}
       `('$input shows $output.length labels', expectLabels);
+    });
+  });
+
+  describe('emoji', () => {
+    const { atom } = emojiFixtureMap;
+    const assertInserted = ({ input, subject, emoji }) =>
+      expect(subject).toBe(`:${emoji?.name || input}:`);
+    const assertTemplated = ({ input, subject, emoji }) =>
+      expect(subject.replace(/\s+/g, ' ')).toBe(
+        `<li>${input} <gl-emoji data-name="${emoji?.name || input}"></gl-emoji> </li>`,
+      );
+
+    let mock;
+
+    beforeEach(async () => {
+      mock = await initEmojiMock();
+
+      await new GfmAutoComplete({}).loadEmojiData({ atwho() {}, trigger() {} }, ':');
+      if (!GfmAutoComplete.glEmojiTag) throw new Error('emoji not loaded');
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    describe.each`
+      name                        | inputFormat           | assert
+      ${'insertTemplateFunction'} | ${name => ({ name })} | ${assertInserted}
+      ${'templateFunction'}       | ${name => name}       | ${assertTemplated}
+    `('Emoji.$name', ({ name, inputFormat, assert }) => {
+      const execute = (input, emoji) =>
+        assert({
+          input,
+          emoji,
+          subject: GfmAutoComplete.Emoji[name](inputFormat(input)),
+        });
+
+      describeEmojiFields('for $field', ({ accessor }) => {
+        it('should work with lowercase', () => {
+          execute(accessor(atom), atom);
+        });
+
+        it('should work with uppercase', () => {
+          execute(accessor(atom).toUpperCase(), atom);
+        });
+
+        it('should work with partial value', () => {
+          execute(accessor(atom).slice(1), atom);
+        });
+      });
+
+      it('should work with unicode value', () => {
+        execute(atom.moji, atom);
+      });
+
+      it('should pass through unknown value', () => {
+        execute('foo bar baz');
+      });
     });
   });
 });

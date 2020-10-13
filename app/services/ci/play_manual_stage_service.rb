@@ -9,12 +9,12 @@ module Ci
     end
 
     def execute(stage)
-      stage.builds.manual.each do |build|
-        next unless build.playable?
+      stage.processables.manual.each do |processable|
+        next unless processable.playable?
 
-        build.play(current_user)
+        processable.play(current_user)
       rescue Gitlab::Access::AccessDeniedError
-        logger.error(message: 'Unable to play manual action', build_id: build.id)
+        logger.error(message: 'Unable to play manual action', processable_id: processable.id)
       end
     end
 

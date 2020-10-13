@@ -87,11 +87,17 @@ RSpec.describe Terraform::State do
       let(:terraform_state) { create(:terraform_state, :with_file) }
 
       it { is_expected.to eq terraform_state.file }
+
+      context 'and a version exists (migration to versioned in progress)' do
+        let!(:migrated_version) { create(:terraform_state_version, terraform_state: terraform_state) }
+
+        it { is_expected.to eq terraform_state.latest_version.file }
+      end
     end
   end
 
   describe '#update_file!' do
-    let(:version) { 2 }
+    let(:version) { 3 }
     let(:data) { Hash[terraform_version: '0.12.21'].to_json }
 
     subject { terraform_state.update_file!(CarrierWaveStringFile.new(data), version: version) }
@@ -114,6 +120,33 @@ RSpec.describe Terraform::State do
         expect { subject }.not_to change { Terraform::StateVersion.count }
 
         expect(terraform_state.latest_file.read).to eq(data)
+      end
+
+      context 'and a version exists (migration to versioned in progress)' do
+        let!(:migrated_version) { create(:terraform_state_version, terraform_state: terraform_state, version: 0) }
+
+        it 'creates a new version, corrects the migrated version number, and marks the state as versioned' do
+          expect { subject }.to change { Terraform::StateVersion.count }
+
+          expect(migrated_version.reload.version).to eq(1)
+          expect(migrated_version.file.read).to eq(terraform_state_file)
+
+          expect(terraform_state.reload.latest_version.version).to eq(version)
+          expect(terraform_state.latest_version.file.read).to eq(data)
+          expect(terraform_state).to be_versioning_enabled
+        end
+
+        context 'the current version cannot be determined' do
+          before do
+            migrated_version.update!(file: CarrierWaveStringFile.new('invalid-json'))
+          end
+
+          it 'uses version - 1 to correct the migrated version number' do
+            expect { subject }.to change { Terraform::StateVersion.count }
+
+            expect(migrated_version.reload.version).to eq(2)
+          end
+        end
       end
     end
   end

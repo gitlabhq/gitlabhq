@@ -37,7 +37,11 @@ module Terraform
     end
 
     def latest_file
-      versioning_enabled ? latest_version&.file : file
+      if versioning_enabled?
+        latest_version&.file
+      else
+        latest_version&.file || file
+      end
     end
 
     def locked?
@@ -46,13 +50,56 @@ module Terraform
 
     def update_file!(data, version:)
       if versioning_enabled?
-        new_version = versions.build(version: version)
-        new_version.assign_attributes(created_by_user: locked_by_user, file: data)
-        new_version.save!
+        create_new_version!(data: data, version: version)
+      elsif latest_version.present?
+        migrate_legacy_version!(data: data, version: version)
       else
         self.file = data
         save!
       end
+    end
+
+    private
+
+    ##
+    # If a Terraform state was created before versioning support was
+    # introduced, it will have a single version record whose file
+    # uses a legacy naming scheme in object storage. To update
+    # these states and versions to use the new behaviour, we must do
+    # the following when creating the next version:
+    #
+    #  * Read the current, non-versioned file from the old location.
+    #  * Update the :versioning_enabled flag, which determines the
+    #    naming scheme
+    #  * Resave the existing file with the updated name and location,
+    #    using a version number one prior to the new version
+    #  * Create the new version as normal
+    #
+    # This migration only needs to happen once for each state, from
+    # then on the state will behave as if it was always versioned.
+    #
+    # The code can be removed in the next major version (14.0), after
+    # which any states that haven't been migrated will need to be
+    # recreated: https://gitlab.com/gitlab-org/gitlab/-/issues/258960
+    def migrate_legacy_version!(data:, version:)
+      current_file = latest_version.file.read
+      current_version = parse_serial(current_file) || version - 1
+
+      update!(versioning_enabled: true)
+
+      reload_latest_version.update!(version: current_version, file: CarrierWaveStringFile.new(current_file))
+      create_new_version!(data: data, version: version)
+    end
+
+    def create_new_version!(data:, version:)
+      new_version = versions.build(version: version, created_by_user: locked_by_user)
+      new_version.assign_attributes(file: data)
+      new_version.save!
+    end
+
+    def parse_serial(file)
+      Gitlab::Json.parse(file)["serial"]
+    rescue JSON::ParserError
     end
   end
 end

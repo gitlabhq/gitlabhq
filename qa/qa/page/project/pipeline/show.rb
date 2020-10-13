@@ -16,8 +16,9 @@ module QA
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
-            element :job_component, /class.*ci-job-component.*/ # rubocop:disable QA/ElementWithPattern
+            element :job_item_container
             element :job_link
+            element :action_button
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
@@ -40,10 +41,12 @@ module QA
           end
 
           def has_build?(name, status: :success, wait: nil)
-            within('.pipeline-graph') do
-              within('.ci-job-component', text: name) do
+            if status
+              within_element(:job_item_container, text: name) do
                 has_selector?(".ci-status-icon-#{status}", { wait: wait }.compact)
               end
+            else
+              has_element?(:job_item_container, text: name)
             end
           end
 
@@ -77,6 +80,12 @@ module QA
 
           def click_on_first_job
             first('.js-pipeline-graph-job-link', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME).click
+          end
+
+          def click_job_action(job_name)
+            within_element(:job_item_container, text: job_name) do
+              click_element(:action_button)
+            end
           end
         end
       end

@@ -2390,9 +2390,9 @@ To trigger a manual job, a user must have permission to merge to the assigned br
 You can use [protected branches](../../user/project/protected_branches.md) to more strictly
 [protect manual deployments](#protecting-manual-jobs) from being run by unauthorized users.
 
-`when:manual` and [`trigger`](#trigger) cannot be used together. If you use both in
-the same job, you receive a `jobs:#{job-name} when should be on_success, on_failure or always`
-error.
+In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
+can use `when:manual` in the same job as [`trigger`](#trigger). In GitLab 13.4 and
+earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
 
 ##### Protecting manual jobs **(PREMIUM)**
 
@@ -3643,10 +3643,9 @@ You can use this keyword to create two different types of downstream pipelines:
 see which job triggered a downstream pipeline by hovering your mouse cursor over
 the downstream pipeline job in the [pipeline graph](../pipelines/index.md#visualize-pipelines).
 
-NOTE: **Note:**
-Using a `trigger` with `when:manual` together results in the error `jobs:#{job-name}
-when should be on_success, on_failure or always`, because `when:manual` prevents
-triggers being used.
+In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
+can use [`when:manual`](#whenmanual) in the same job as `trigger`. In GitLab 13.4 and
+earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
 
 #### Simple `trigger` syntax for multi-project pipelines
 

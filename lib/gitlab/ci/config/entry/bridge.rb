@@ -11,15 +11,18 @@ module Gitlab
         class Bridge < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Ci::Config::Entry::Processable
 
+          ALLOWED_WHEN = %w[on_success on_failure always manual].freeze
           ALLOWED_KEYS = %i[trigger].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
 
             with_options allow_nil: true do
-              validates :when,
-                inclusion: { in: %w[on_success on_failure always],
-                              message: 'should be on_success, on_failure or always' }
+              validates :allow_failure, boolean: true
+              validates :when, inclusion: {
+                in: ALLOWED_WHEN,
+                message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
+              }
             end
 
             validate on: :composed do
@@ -57,11 +60,19 @@ module Gitlab
             true
           end
 
+          def manual_action?
+            self.when == 'manual'
+          end
+
+          def ignored?
+            allow_failure.nil? ? manual_action? : allow_failure
+          end
+
           def value
             super.merge(
               trigger: (trigger_value if trigger_defined?),
               needs: (needs_value if needs_defined?),
-              ignore: !!allow_failure,
+              ignore: ignored?,
               when: self.when,
               scheduling_type: needs_defined? && !bridge_needs ? :dag : :stage
             ).compact

@@ -6,7 +6,10 @@ module Gitlab
       module Bridge
         class Factory < Status::Factory
           def self.extended_statuses
-            [Status::Bridge::Failed]
+            [[Status::Bridge::Failed],
+             [Status::Bridge::Manual],
+             [Status::Bridge::Play],
+             [Status::Bridge::Action]]
           end
 
           def self.common_helpers

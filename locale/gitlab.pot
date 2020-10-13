@@ -746,6 +746,9 @@ msgid_plural "%{securityScanner} results are not available because a pipeline ha
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{size} %{unit}"
+msgstr ""
+
 msgid "%{size} GiB"
 msgstr ""
 
@@ -28102,6 +28105,12 @@ msgstr ""
 msgid "UsageQuota|LFS Storage"
 msgstr ""
 
+msgid "UsageQuota|Learn more about excess storage usage"
+msgstr ""
+
+msgid "UsageQuota|Learn more about usage quotas"
+msgstr ""
+
 msgid "UsageQuota|Packages"
 msgstr ""
 
@@ -28109,6 +28118,9 @@ msgid "UsageQuota|Pipelines"
 msgstr ""
 
 msgid "UsageQuota|Purchase more storage"
+msgstr ""
+
+msgid "UsageQuota|Purchased storage available"
 msgstr ""
 
 msgid "UsageQuota|Repositories"
@@ -28123,6 +28135,9 @@ msgstr ""
 msgid "UsageQuota|Storage"
 msgstr ""
 
+msgid "UsageQuota|This namespace contains locked projects"
+msgstr ""
+
 msgid "UsageQuota|This namespace has no projects which use shared runners"
 msgstr ""
 
@@ -28130,6 +28145,12 @@ msgid "UsageQuota|This project is at risk of being locked."
 msgstr ""
 
 msgid "UsageQuota|This project is locked."
+msgstr ""
+
+msgid "UsageQuota|Total excess storage used"
+msgstr ""
+
+msgid "UsageQuota|Total namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|Unlimited"
@@ -30191,6 +30212,9 @@ msgid "Your project limit is %{limit} projects! Please contact your administrato
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "Your purchased storage is running low. To avoid locked projects, please purchase more storage."
 msgstr ""
 
 msgid "Your request for access could not be processed: %{error_meesage}"

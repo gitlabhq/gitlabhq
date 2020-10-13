@@ -191,8 +191,7 @@ class GfmAutoComplete {
         }
         return tmpl;
       },
-      // eslint-disable-next-line no-template-curly-in-string
-      insertTpl: ':${name}:',
+      insertTpl: GfmAutoComplete.Emoji.insertTemplateFunction,
       skipSpecialCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
       callbacks: {
@@ -612,12 +611,7 @@ class GfmAutoComplete {
     } else if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      Emoji.initEmojiMap()
-        .then(() => {
-          this.loadData($input, at, Emoji.getValidEmojiNames());
-          GfmAutoComplete.glEmojiTag = Emoji.glEmojiTag;
-        })
-        .catch(() => {});
+      this.loadEmojiData($input, at).catch(() => {});
     } else if (dataSource) {
       AjaxCache.retrieve(dataSource, true)
         .then(data => {
@@ -638,6 +632,18 @@ class GfmAutoComplete {
     // This trigger at.js again
     // otherwise we would be stuck with loading until the user types
     return $input.trigger('keyup');
+  }
+
+  async loadEmojiData($input, at) {
+    await Emoji.initEmojiMap();
+
+    this.loadData($input, at, [
+      ...Emoji.getValidEmojiNames(),
+      ...Emoji.getValidEmojiDescriptions(),
+      ...Emoji.getValidEmojiUnicodeValues(),
+    ]);
+
+    GfmAutoComplete.glEmojiTag = Emoji.glEmojiTag;
   }
 
   clearCache() {
@@ -708,12 +714,16 @@ GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
 // Emoji
 GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {
+  insertTemplateFunction(value) {
+    const { name = value.name } = Emoji.searchEmoji(value.name, { match: 'contains' })[0] || {};
+    return `:${name}:`;
+  },
   templateFunction(name) {
     // glEmojiTag helper is loaded on-demand in fetchData()
-    if (GfmAutoComplete.glEmojiTag) {
-      return `<li>${name} ${GfmAutoComplete.glEmojiTag(name)}</li>`;
-    }
-    return `<li>${name}</li>`;
+    if (!GfmAutoComplete.glEmojiTag) return `<li>${name}</li>`;
+
+    const emoji = Emoji.searchEmoji(name, { match: 'contains' })[0];
+    return `<li>${name} ${GfmAutoComplete.glEmojiTag(emoji?.name || name)}</li>`;
   },
 };
 // Team Members

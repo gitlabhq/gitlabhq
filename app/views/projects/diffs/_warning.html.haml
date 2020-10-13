@@ -1,12 +1,15 @@
-.alert.alert-warning
-  %h4
+.gl-alert.gl-alert-warning.gl-mb-5
+  %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
+    = sprite_icon('close', size: 16, css_class: 'gl-icon')
+  = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon')
+  %h4.gl-alert-title
     = _("Too many changes to show.")
-    .float-right
-      - if current_controller?(:commit)
-        = link_to _("Plain diff"), project_commit_path(@project, @commit, format: :diff), class: "btn btn-sm"
-        = link_to _("Email patch"), project_commit_path(@project, @commit, format: :patch), class: "btn btn-sm"
-      - elsif current_controller?('projects/merge_requests/diffs') && @merge_request&.persisted?
-        = link_to _("Plain diff"), merge_request_path(@merge_request, format: :diff), class: "btn btn-sm"
-        = link_to _("Email patch"), merge_request_path(@merge_request, format: :patch), class: "btn btn-sm"
-  %p
+  .gl-alert-body
     = html_escape(_("To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed.")) % { display_size: diff_files.size, real_size: diff_files.real_size, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
+  .gl-alert-actions
+    - if current_controller?(:commit)
+      = link_to _("Plain diff"), project_commit_path(@project, @commit, format: :diff), class: "btn gl-alert-action btn-default gl-button btn-default-secondary"
+      = link_to _("Email patch"), project_commit_path(@project, @commit, format: :patch), class: "btn gl-alert-action btn-default gl-button btn-default-secondary"
+    - elsif current_controller?('projects/merge_requests/diffs') && @merge_request&.persisted?
+      = link_to _("Plain diff"), merge_request_path(@merge_request, format: :diff), class: "btn gl-alert-action btn-default gl-button btn-default-secondary"
+      = link_to _("Email patch"), merge_request_path(@merge_request, format: :patch), class: "btn gl-alert-action btn-default gl-button btn-default-secondary"

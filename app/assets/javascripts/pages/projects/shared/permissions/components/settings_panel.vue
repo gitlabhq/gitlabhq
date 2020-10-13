@@ -292,14 +292,16 @@ export default {
 
 <template>
   <div>
-    <div class="project-visibility-setting">
+    <div
+      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-py-3 gl-px-7 gl-sm-pr-5 gl-sm-pl-5"
+    >
       <project-setting-row
         ref="project-visibility-settings"
         :help-path="visibilityHelpPath"
         :label="s__('ProjectSettings|Project visibility')"
       >
-        <div class="project-feature-controls">
-          <div class="select-wrapper">
+        <div class="project-feature-controls gl-display-flex gl-align-items-center gl-my-3 gl-mx-0">
+          <div class="select-wrapper gl-flex-fill-1">
             <select
               v-model="visibilityLevel"
               :disabled="!canChangeVisibilityLevel"
@@ -327,7 +329,7 @@ export default {
           </div>
         </div>
         <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
-        <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="request-access">
+        <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="gl-line-height-28">
           <input
             :value="requestAccessEnabled"
             type="hidden"
@@ -338,7 +340,10 @@ export default {
         </label>
       </project-setting-row>
     </div>
-    <div :class="{ 'highlight-changes': highlightChangesClass }" class="project-feature-settings">
+    <div
+      :class="{ 'highlight-changes': highlightChangesClass }"
+      class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-7 gl-sm-pr-5 gl-sm-pl-5 gl-bg-gray-10"
+    >
       <project-setting-row
         ref="issues-settings"
         :label="s__('ProjectSettings|Issues')"
@@ -361,7 +366,7 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group">
+      <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
         <project-setting-row
           ref="merge-request-settings"
           :label="s__('ProjectSettings|Merge requests')"
@@ -516,8 +521,8 @@ export default {
           )
         "
       >
-        <div class="project-feature-controls">
-          <div class="select-wrapper">
+        <div class="project-feature-controls gl-display-flex gl-align-items-center gl-my-3 gl-mx-0">
+          <div class="select-wrapper gl-flex-fill-1">
             <select
               v-model="metricsDashboardAccessLevel"
               :disabled="metricsOptionsDropdownEnabled"

@@ -3,9 +3,7 @@
 module Ci
   class PlayBuildService < ::BaseService
     def execute(build, job_variables_attributes = nil)
-      unless can?(current_user, :update_build, build)
-        raise Gitlab::Access::AccessDeniedError
-      end
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :play_job, build)
 
       # Try to enqueue the build, otherwise create a duplicate.
       #
