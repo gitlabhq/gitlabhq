@@ -1,25 +1,49 @@
 import { escape } from 'lodash';
 import { __ } from '~/locale';
+import consts from '../stores/modules/commit/constants';
 
 const CODEOWNERS_REGEX = /Push.*protected branches.*CODEOWNERS/;
 const BRANCH_CHANGED_REGEX = /changed.*since.*start.*edit/;
+const BRANCH_ALREADY_EXISTS = /branch.*already.*exists/;
 
-export const createUnexpectedCommitError = () => ({
+const createNewBranchAndCommit = store =>
+  store
+    .dispatch('commit/updateCommitAction', consts.COMMIT_TO_NEW_BRANCH)
+    .then(() => store.dispatch('commit/commitChanges'));
+
+export const createUnexpectedCommitError = message => ({
   title: __('Unexpected error'),
-  messageHTML: __('Could not commit. An unexpected error occurred.'),
-  canCreateBranch: false,
+  messageHTML: escape(message) || __('Could not commit. An unexpected error occurred.'),
 });
 
 export const createCodeownersCommitError = message => ({
   title: __('CODEOWNERS rule violation'),
   messageHTML: escape(message),
-  canCreateBranch: true,
+  primaryAction: {
+    text: __('Create new branch'),
+    callback: createNewBranchAndCommit,
+  },
 });
 
 export const createBranchChangedCommitError = message => ({
   title: __('Branch changed'),
   messageHTML: `${escape(message)}<br/><br/>${__('Would you like to create a new branch?')}`,
-  canCreateBranch: true,
+  primaryAction: {
+    text: __('Create new branch'),
+    callback: createNewBranchAndCommit,
+  },
+});
+
+export const branchAlreadyExistsCommitError = message => ({
+  title: __('Branch already exists'),
+  messageHTML: `${escape(message)}<br/><br/>${__(
+    'Would you like to try auto-generating a branch name?',
+  )}`,
+  primaryAction: {
+    text: __('Create new branch'),
+    callback: store =>
+      store.dispatch('commit/addSuffixToBranchName').then(() => createNewBranchAndCommit(store)),
+  },
 });
 
 export const parseCommitError = e => {
@@ -33,7 +57,9 @@ export const parseCommitError = e => {
     return createCodeownersCommitError(message);
   } else if (BRANCH_CHANGED_REGEX.test(message)) {
     return createBranchChangedCommitError(message);
+  } else if (BRANCH_ALREADY_EXISTS.test(message)) {
+    return branchAlreadyExistsCommitError(message);
   }
 
-  return createUnexpectedCommitError();
+  return createUnexpectedCommitError(message);
 };

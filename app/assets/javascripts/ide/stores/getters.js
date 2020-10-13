@@ -6,6 +6,7 @@ import {
   PERMISSION_CREATE_MR,
   PERMISSION_PUSH_CODE,
 } from '../constants';
+import { addNumericSuffix } from '~/ide/utils';
 import Api from '~/api';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
@@ -167,10 +168,7 @@ export const getAvailableFileName = (state, getters) => path => {
   let newPath = path;
 
   while (getters.entryExists(newPath)) {
-    newPath = newPath.replace(
-      /([ _-]?)(\d*)(\..+?$|$)/,
-      (_, before, number, after) => `${before || '_'}${Number(number) + 1}${after}`,
-    );
+    newPath = addNumericSuffix(newPath);
   }
 
   return newPath;

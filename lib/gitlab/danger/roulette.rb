@@ -52,6 +52,11 @@ module Gitlab
               # Fetch an already picked backend maintainer, or pick one otherwise
               spin.maintainer = backend_spin&.maintainer || spin_for_category(project, :backend, timezone_experiment: including_timezone).maintainer
             end
+          when :ci_template
+            if spin.maintainer.nil?
+              # Fetch an already picked backend maintainer, or pick one otherwise
+              spin.maintainer = backend_spin&.maintainer || spin_for_category(project, :backend, timezone_experiment: including_timezone).maintainer
+            end
           end
         end
 

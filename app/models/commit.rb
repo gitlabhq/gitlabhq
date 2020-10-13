@@ -74,8 +74,8 @@ class Commit
       sha[0..MIN_SHA_LENGTH]
     end
 
-    def diff_safe_lines
-      Gitlab::Git::DiffCollection.default_limits[:max_lines]
+    def diff_safe_lines(project: nil)
+      Gitlab::Git::DiffCollection.default_limits(project: project)[:max_lines]
     end
 
     def diff_hard_limit_files(project: nil)

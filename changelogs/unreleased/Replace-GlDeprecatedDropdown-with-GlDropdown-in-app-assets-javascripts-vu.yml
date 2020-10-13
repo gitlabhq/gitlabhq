@@ -1,0 +1,5 @@
+---
+title: Replace `GlDeprecatedDropdown` with `GlDropdown` in app/assets/javascripts/vue_shared/components/split_button.vue
+merge_request: 41433
+author: nuwe1
+type: other

@@ -2,6 +2,7 @@ import {
   createUnexpectedCommitError,
   createCodeownersCommitError,
   createBranchChangedCommitError,
+  branchAlreadyExistsCommitError,
   parseCommitError,
 } from '~/ide/lib/errors';
 
@@ -21,35 +22,22 @@ describe('~/ide/lib/errors', () => {
     },
   });
 
-  describe('createCodeownersCommitError', () => {
-    it('uses given message', () => {
-      expect(createCodeownersCommitError(TEST_MESSAGE)).toEqual({
-        title: 'CODEOWNERS rule violation',
-        messageHTML: TEST_MESSAGE,
-        canCreateBranch: true,
-      });
-    });
+  const NEW_BRANCH_SUFFIX = `<br/><br/>Would you like to create a new branch?`;
+  const AUTOGENERATE_SUFFIX = `<br/><br/>Would you like to try auto-generating a branch name?`;
 
-    it('escapes special chars', () => {
-      expect(createCodeownersCommitError(TEST_SPECIAL)).toEqual({
-        title: 'CODEOWNERS rule violation',
-        messageHTML: TEST_SPECIAL_ESCAPED,
-        canCreateBranch: true,
-      });
-    });
-  });
-
-  describe('createBranchChangedCommitError', () => {
-    it.each`
-      message         | expectedMessage
-      ${TEST_MESSAGE} | ${`${TEST_MESSAGE}<br/><br/>Would you like to create a new branch?`}
-      ${TEST_SPECIAL} | ${`${TEST_SPECIAL_ESCAPED}<br/><br/>Would you like to create a new branch?`}
-    `('uses given message="$message"', ({ message, expectedMessage }) => {
-      expect(createBranchChangedCommitError(message)).toEqual({
-        title: 'Branch changed',
-        messageHTML: expectedMessage,
-        canCreateBranch: true,
-      });
+  it.each`
+    fn                                | title                          | message         | messageHTML
+    ${createCodeownersCommitError}    | ${'CODEOWNERS rule violation'} | ${TEST_MESSAGE} | ${TEST_MESSAGE}
+    ${createCodeownersCommitError}    | ${'CODEOWNERS rule violation'} | ${TEST_SPECIAL} | ${TEST_SPECIAL_ESCAPED}
+    ${branchAlreadyExistsCommitError} | ${'Branch already exists'}     | ${TEST_MESSAGE} | ${`${TEST_MESSAGE}${AUTOGENERATE_SUFFIX}`}
+    ${branchAlreadyExistsCommitError} | ${'Branch already exists'}     | ${TEST_SPECIAL} | ${`${TEST_SPECIAL_ESCAPED}${AUTOGENERATE_SUFFIX}`}
+    ${createBranchChangedCommitError} | ${'Branch changed'}            | ${TEST_MESSAGE} | ${`${TEST_MESSAGE}${NEW_BRANCH_SUFFIX}`}
+    ${createBranchChangedCommitError} | ${'Branch changed'}            | ${TEST_SPECIAL} | ${`${TEST_SPECIAL_ESCAPED}${NEW_BRANCH_SUFFIX}`}
+  `('$fn escapes and uses given message="$message"', ({ fn, title, message, messageHTML }) => {
+    expect(fn(message)).toEqual({
+      title,
+      messageHTML,
+      primaryAction: { text: 'Create new branch', callback: expect.any(Function) },
     });
   });
 
@@ -60,7 +48,7 @@ describe('~/ide/lib/errors', () => {
       ${{}}                                      | ${createUnexpectedCommitError()}
       ${{ response: {} }}                        | ${createUnexpectedCommitError()}
       ${{ response: { data: {} } }}              | ${createUnexpectedCommitError()}
-      ${createResponseError('test')}             | ${createUnexpectedCommitError()}
+      ${createResponseError(TEST_MESSAGE)}       | ${createUnexpectedCommitError(TEST_MESSAGE)}
       ${createResponseError(CODEOWNERS_MESSAGE)} | ${createCodeownersCommitError(CODEOWNERS_MESSAGE)}
       ${createResponseError(CHANGED_MESSAGE)}    | ${createBranchChangedCommitError(CHANGED_MESSAGE)}
     `('parses message into error object with "$message"', ({ message, expectation }) => {

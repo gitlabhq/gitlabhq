@@ -15,6 +15,7 @@ import {
   pypiSetupCommand,
   composerRegistryInclude,
   composerPackageInclude,
+  groupExists,
 } from '~/packages/details/store/getters';
 import {
   conanPackage,
@@ -68,10 +69,11 @@ describe('Getters PackageDetails Store', () => {
   const nugetSetupCommandStr = `nuget source Add -Name "GitLab" -Source "${registryUrl}" -UserName <your_username> -Password <your_token>`;
 
   const pypiPipCommandStr = `pip install ${pypiPackage.name} --extra-index-url ${registryUrl}`;
-  const composerRegistryIncludeStr = '{"type":"composer","url":"foo"}';
-  const composerPackageIncludeStr = JSON.stringify({
-    [packageWithoutBuildInfo.name]: packageWithoutBuildInfo.version,
-  });
+  const composerRegistryIncludeStr =
+    'composer config repositories.gitlab.com/123 \'{"type": "composer", "url": "foo"}\'';
+  const composerPackageIncludeStr = `composer req ${[packageWithoutBuildInfo.name]}:${
+    packageWithoutBuildInfo.version
+  }`;
 
   describe('packagePipeline', () => {
     it('should return the pipeline info when pipeline exists', () => {
@@ -221,7 +223,7 @@ describe('Getters PackageDetails Store', () => {
 
   describe('composer string getters', () => {
     it('gets the correct composerRegistryInclude command', () => {
-      setupState({ composerPath: 'foo' });
+      setupState({ composerPath: 'foo', composerConfigRepositoryName: 'gitlab.com/123' });
 
       expect(composerRegistryInclude(state)).toBe(composerRegistryIncludeStr);
     });
@@ -230,6 +232,20 @@ describe('Getters PackageDetails Store', () => {
       setupState();
 
       expect(composerPackageInclude(state)).toBe(composerPackageIncludeStr);
+    });
+  });
+
+  describe('check if group', () => {
+    it('is set', () => {
+      setupState({ groupListUrl: '/groups/composer/-/packages' });
+
+      expect(groupExists(state)).toBe(true);
+    });
+
+    it('is not set', () => {
+      setupState({ groupListUrl: '' });
+
+      expect(groupExists(state)).toBe(false);
     });
   });
 });

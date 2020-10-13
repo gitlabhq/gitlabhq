@@ -102,11 +102,12 @@ repository = ${pypiSetupPath}
 username = __token__
 password = <your personal access token>`;
 
-export const composerRegistryInclude = ({ composerPath }) => {
-  const base = { type: 'composer', url: composerPath };
-  return JSON.stringify(base);
-};
-export const composerPackageInclude = ({ packageEntity }) => {
-  const base = { [packageEntity.name]: packageEntity.version };
-  return JSON.stringify(base);
-};
+export const composerRegistryInclude = ({ composerPath, composerConfigRepositoryName }) =>
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  `composer config repositories.${composerConfigRepositoryName} '{"type": "composer", "url": "${composerPath}"}'`;
+
+export const composerPackageInclude = ({ packageEntity }) =>
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  `composer req ${[packageEntity.name]}:${packageEntity.version}`;
+
+export const groupExists = ({ groupListUrl }) => groupListUrl.length > 0;

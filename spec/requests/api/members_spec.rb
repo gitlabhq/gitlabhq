@@ -251,6 +251,36 @@ RSpec.describe API::Members do
           expect(json_response['id']).to eq(stranger.id)
           expect(json_response['access_level']).to eq(Member::DEVELOPER)
         end
+
+        describe 'executes the Members::CreateService for multiple user_ids' do
+          it 'returns success when it successfully create all members' do
+            expect do
+              user_ids = [stranger.id, access_requester.id].join(',')
+
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                   params: { user_id: user_ids, access_level: Member::DEVELOPER }
+
+              expect(response).to have_gitlab_http_status(:created)
+            end.to change { source.members.count }.by(2)
+            expect(json_response['status']).to eq('success')
+          end
+
+          it 'returns the error message if there was an error adding members to group' do
+            error_message = 'Unable to find User ID'
+            user_ids = [stranger.id, access_requester.id].join(',')
+
+            allow_next_instance_of(::Members::CreateService) do |service|
+              expect(service).to receive(:execute).with(source).and_return({ status: :error, message: error_message })
+            end
+
+            expect do
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                   params: { user_id: user_ids, access_level: Member::DEVELOPER }
+            end.not_to change { source.members.count }
+            expect(json_response['status']).to eq('error')
+            expect(json_response['message']).to eq(error_message)
+          end
+        end
       end
 
       context 'access levels' do

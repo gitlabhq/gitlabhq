@@ -51,4 +51,15 @@ RSpec.describe PackagesHelper do
       expect(url).to eq("#{base_url}group/1/-/packages/composer/packages.json")
     end
   end
+
+  describe 'composer_config_repository_name' do
+    let(:host) { Gitlab.config.gitlab.host }
+    let(:group_id) { 1 }
+
+    it 'return global unique composer registry id' do
+      id = helper.composer_config_repository_name(group_id)
+
+      expect(id).to eq("#{host}/#{group_id}")
+    end
+  end
 end

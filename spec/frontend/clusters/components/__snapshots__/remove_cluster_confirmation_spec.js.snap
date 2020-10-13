@@ -5,14 +5,17 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
   class="gl-display-flex gl-justify-content-end"
 >
   <div
-    class="dropdown b-dropdown gl-dropdown btn-group"
+    class="dropdown b-dropdown gl-new-dropdown btn-group"
+    menu-class="dropdown-menu-large"
   >
     <button
-      class="btn btn-danger"
+      class="btn btn-danger btn-md gl-button split-content-button"
       type="button"
     >
+      <!---->
+       
       <span
-        class="gl-dropdown-toggle-text"
+        class="gl-new-dropdown-button-text"
       >
         Remove integration and resources
       </span>
@@ -22,7 +25,7 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
     <button
       aria-expanded="false"
       aria-haspopup="true"
-      class="btn dropdown-toggle btn-danger dropdown-toggle-split"
+      class="btn dropdown-toggle btn-danger btn-md gl-button gl-dropdown-toggle dropdown-toggle-split"
       type="button"
     >
       <span
@@ -32,29 +35,58 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
       </span>
     </button>
     <ul
-      class="dropdown-menu dropdown-menu-selectable dropdown-menu-large"
+      class="dropdown-menu dropdown-menu-large"
       role="menu"
       tabindex="-1"
     >
+      <!---->
+       
       <li
+        class="gl-new-dropdown-item"
         role="presentation"
       >
         <button
-          class="dropdown-item is-active"
+          class="dropdown-item"
           role="menuitem"
           type="button"
         >
-          <strong>
-            Remove integration and resources
-          </strong>
+          <svg
+            class="gl-icon s16 gl-new-dropdown-item-check-icon"
+            data-testid="mobile-issue-close-icon"
+          >
+            <use
+              href="#mobile-issue-close"
+            />
+          </svg>
            
-          <div>
-            Deletes all GitLab resources attached to this cluster during removal
+          <!---->
+           
+          <!---->
+           
+          <div
+            class="gl-new-dropdown-item-text-wrapper"
+          >
+            <p
+              class="gl-new-dropdown-item-text-primary"
+            >
+              <strong>
+                Remove integration and resources
+              </strong>
+               
+              <div>
+                Deletes all GitLab resources attached to this cluster during removal
+              </div>
+            </p>
+             
+            <!---->
           </div>
+           
+          <!---->
         </button>
       </li>
        
       <li
+        class="gl-new-dropdown-divider"
         role="presentation"
       >
         <hr
@@ -64,6 +96,7 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
         />
       </li>
       <li
+        class="gl-new-dropdown-item"
         role="presentation"
       >
         <button
@@ -71,13 +104,38 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
           role="menuitem"
           type="button"
         >
-          <strong>
-            Remove integration
-          </strong>
+          <svg
+            class="gl-icon s16 gl-new-dropdown-item-check-icon gl-visibility-hidden"
+            data-testid="mobile-issue-close-icon"
+          >
+            <use
+              href="#mobile-issue-close"
+            />
+          </svg>
            
-          <div>
-            Removes cluster from project but keeps associated resources
+          <!---->
+           
+          <!---->
+           
+          <div
+            class="gl-new-dropdown-item-text-wrapper"
+          >
+            <p
+              class="gl-new-dropdown-item-text-primary"
+            >
+              <strong>
+                Remove integration
+              </strong>
+               
+              <div>
+                Removes cluster from project but keeps associated resources
+              </div>
+            </p>
+             
+            <!---->
           </div>
+           
+          <!---->
         </button>
       </li>
        

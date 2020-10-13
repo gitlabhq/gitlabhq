@@ -449,16 +449,16 @@ describe('IDE store getters', () => {
   describe('getAvailableFileName', () => {
     it.each`
       path                                          | newPath
-      ${'foo'}                                      | ${'foo_1'}
+      ${'foo'}                                      | ${'foo-1'}
       ${'foo__93.png'}                              | ${'foo__94.png'}
-      ${'foo/bar.png'}                              | ${'foo/bar_1.png'}
+      ${'foo/bar.png'}                              | ${'foo/bar-1.png'}
       ${'foo/bar--34.png'}                          | ${'foo/bar--35.png'}
       ${'foo/bar 2.png'}                            | ${'foo/bar 3.png'}
       ${'foo/bar-621.png'}                          | ${'foo/bar-622.png'}
-      ${'jquery.min.js'}                            | ${'jquery_1.min.js'}
+      ${'jquery.min.js'}                            | ${'jquery-1.min.js'}
       ${'my_spec_22.js.snap'}                       | ${'my_spec_23.js.snap'}
-      ${'subtitles5.mp4.srt'}                       | ${'subtitles_6.mp4.srt'}
-      ${'sample_file.mp3'}                          | ${'sample_file_1.mp3'}
+      ${'subtitles5.mp4.srt'}                       | ${'subtitles-6.mp4.srt'}
+      ${'sample-file.mp3'}                          | ${'sample-file-1.mp3'}
       ${'Screenshot 2020-05-26 at 10.53.08 PM.png'} | ${'Screenshot 2020-05-26 at 11.53.08 PM.png'}
     `('suffixes the path with a number if the path already exists', ({ path, newPath }) => {
       localState.entries[path] = file();

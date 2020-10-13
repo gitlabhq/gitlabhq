@@ -24,4 +24,5 @@
       composer_help_path: help_page_path('user/packages/composer_repository/index'),
       project_name: @project.name,
       project_list_url: project_packages_path(@project),
-      group_list_url: @project.group ? group_packages_path(@project.group) : ''} }
+      group_list_url: @project.group ? group_packages_path(@project.group) : '',
+      composer_config_repository_name: composer_config_repository_name(@project.group&.id)} }

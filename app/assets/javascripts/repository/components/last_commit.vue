@@ -2,6 +2,7 @@
 /* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
+import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
@@ -9,7 +10,6 @@ import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
-import pathLastCommitQuery from '../queries/path_last_commit.query.graphql';
 
 export default {
   components: {

@@ -1,3 +1,5 @@
+- current_route_path = request.fullpath.match(/-\/tree\/[^\/]+\/(.+$)/).to_a[1]
+- add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, currentRoutePath: current_route_path })
 - breadcrumb_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
 

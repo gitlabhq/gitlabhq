@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import InstanceCounts from '~/analytics/instance_statistics/components/instance_counts.vue';
 import MetricCard from '~/analytics/shared/components/metric_card.vue';
-import countsMockData from '../mock_data';
+import { mockInstanceCounts } from '../mock_data';
 
 describe('InstanceCounts', () => {
   let wrapper;
@@ -44,11 +44,11 @@ describe('InstanceCounts', () => {
 
   describe('with data', () => {
     beforeEach(() => {
-      createComponent({ data: { counts: countsMockData } });
+      createComponent({ data: { counts: mockInstanceCounts } });
     });
 
     it('passes the counts data to the metric card', () => {
-      expect(findMetricCard().props('metrics')).toEqual(countsMockData);
+      expect(findMetricCard().props('metrics')).toEqual(mockInstanceCounts);
     });
   });
 });

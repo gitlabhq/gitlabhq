@@ -15,15 +15,18 @@ describe('ComposerInstallation', () => {
 
   const composerRegistryIncludeStr = 'foo/registry';
   const composerPackageIncludeStr = 'foo/package';
+  const groupExists = true;
 
   const store = new Vuex.Store({
     state: {
       packageEntity,
       composerHelpPath,
+      groupExists,
     },
     getters: {
       composerRegistryInclude: () => composerRegistryIncludeStr,
       composerPackageInclude: () => composerPackageIncludeStr,
+      groupExists: () => groupExists,
     },
   });
 
@@ -62,7 +65,7 @@ describe('ComposerInstallation', () => {
     });
 
     it('has the correct title', () => {
-      expect(findRegistryInclude().props('label')).toBe('composer.json registry include');
+      expect(findRegistryInclude().props('label')).toBe('Add composer registry');
     });
   });
 
@@ -78,7 +81,7 @@ describe('ComposerInstallation', () => {
     });
 
     it('has the correct title', () => {
-      expect(findPackageInclude().props('label')).toBe('composer.json require package include');
+      expect(findPackageInclude().props('label')).toBe('Install package version');
     });
 
     it('has the correct help text', () => {

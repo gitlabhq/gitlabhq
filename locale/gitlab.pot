@@ -4215,6 +4215,9 @@ msgstr ""
 msgid "Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr ""
 
+msgid "Branch already exists"
+msgstr ""
+
 msgid "Branch changed"
 msgstr ""
 
@@ -8610,16 +8613,25 @@ msgstr ""
 msgid "Dependencies|Job failed to generate the dependency list"
 msgstr ""
 
+msgid "Dependencies|Learn more about dependency paths"
+msgstr ""
+
 msgid "Dependencies|License"
 msgstr ""
 
 msgid "Dependencies|Location"
 msgstr ""
 
+msgid "Dependencies|Location and dependency path"
+msgstr ""
+
 msgid "Dependencies|Packager"
 msgstr ""
 
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
+msgstr ""
+
+msgid "Dependencies|The component dependency path is based on the lock file. There may be several paths. In these cases, the longest path is displayed."
 msgstr ""
 
 msgid "Dependencies|There may be multiple paths"
@@ -9510,6 +9522,9 @@ msgid "Edit stage"
 msgstr ""
 
 msgid "Edit this release"
+msgstr ""
+
+msgid "Edit title and description"
 msgstr ""
 
 msgid "Edit wiki page"
@@ -18389,6 +18404,9 @@ msgstr ""
 msgid "PackageRegistry|Add NuGet Source"
 msgstr ""
 
+msgid "PackageRegistry|Add composer registry"
+msgstr ""
+
 msgid "PackageRegistry|App group: %{group}"
 msgstr ""
 
@@ -18485,6 +18503,9 @@ msgstr ""
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file."
 msgstr ""
 
+msgid "PackageRegistry|Install package version"
+msgstr ""
+
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
@@ -18573,12 +18594,6 @@ msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Ar
 msgstr ""
 
 msgid "PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
-msgstr ""
-
-msgid "PackageRegistry|composer.json registry include"
-msgstr ""
-
-msgid "PackageRegistry|composer.json require package include"
 msgstr ""
 
 msgid "PackageRegistry|npm command"
@@ -29465,6 +29480,9 @@ msgid "Work in progress Limit"
 msgstr ""
 
 msgid "Would you like to create a new branch?"
+msgstr ""
+
+msgid "Would you like to try auto-generating a branch name?"
 msgstr ""
 
 msgid "Write"

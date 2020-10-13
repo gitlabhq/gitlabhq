@@ -194,3 +194,7 @@ To disable it:
 ```ruby
 Feature.disable(:ci_child_of_child_pipeline)
 ```
+
+## Pass variables to a child pipeline
+
+You can [pass variables to a downstream pipeline](multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline).

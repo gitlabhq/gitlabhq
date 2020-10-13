@@ -8,6 +8,7 @@ import consts from './constants';
 import { leftSidebarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 import { parseCommitError } from '../../../lib/errors';
+import { addNumericSuffix } from '~/ide/utils';
 
 export const updateCommitMessage = ({ commit }, message) => {
   commit(types.UPDATE_COMMIT_MESSAGE, message);
@@ -17,11 +18,8 @@ export const discardDraft = ({ commit }) => {
   commit(types.UPDATE_COMMIT_MESSAGE, '');
 };
 
-export const updateCommitAction = ({ commit, getters }, commitAction) => {
-  commit(types.UPDATE_COMMIT_ACTION, {
-    commitAction,
-  });
-  commit(types.TOGGLE_SHOULD_CREATE_MR, !getters.shouldHideNewMrOption);
+export const updateCommitAction = ({ commit }, commitAction) => {
+  commit(types.UPDATE_COMMIT_ACTION, { commitAction });
 };
 
 export const toggleShouldCreateMR = ({ commit }) => {
@@ -30,6 +28,12 @@ export const toggleShouldCreateMR = ({ commit }) => {
 
 export const updateBranchName = ({ commit }, branchName) => {
   commit(types.UPDATE_NEW_BRANCH_NAME, branchName);
+};
+
+export const addSuffixToBranchName = ({ commit, state }) => {
+  const newBranchName = addNumericSuffix(state.newBranchName, true);
+
+  commit(types.UPDATE_NEW_BRANCH_NAME, newBranchName);
 };
 
 export const setLastCommitMessage = ({ commit, rootGetters }, data) => {
@@ -107,7 +111,7 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetter
 export const commitChanges = ({ commit, state, getters, dispatch, rootState, rootGetters }) => {
   // Pull commit options out because they could change
   // During some of the pre and post commit processing
-  const { shouldCreateMR, isCreatingNewBranch, branchName } = getters;
+  const { shouldCreateMR, shouldHideNewMrOption, isCreatingNewBranch, branchName } = getters;
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
   const stageFilesPromise = rootState.stagedFiles.length
     ? Promise.resolve()
@@ -167,7 +171,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
           }, 5000);
 
-          if (shouldCreateMR) {
+          if (shouldCreateMR && !shouldHideNewMrOption) {
             const { currentProject } = rootGetters;
             const targetBranch = isCreatingNewBranch
               ? rootState.currentBranchId

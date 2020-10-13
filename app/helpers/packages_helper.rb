@@ -34,6 +34,10 @@ module PackagesHelper
     expose_url(api_v4_group___packages_composer_packages_path(id: group_id, format: '.json'))
   end
 
+  def composer_config_repository_name(group_id)
+    "#{Gitlab.config.gitlab.host}/#{group_id}"
+  end
+
   def packages_list_data(type, resource)
     {
       resource_id: resource.id,

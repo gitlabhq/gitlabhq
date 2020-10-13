@@ -1,4 +1,4 @@
-import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import SplitButton from '~/vue_shared/components/split_button.vue';
@@ -25,10 +25,10 @@ describe('SplitButton', () => {
     });
   };
 
-  const findDropdown = () => wrapper.find(GlDeprecatedDropdown);
+  const findDropdown = () => wrapper.find(GlDropdown);
   const findDropdownItem = (index = 0) =>
     findDropdown()
-      .findAll(GlDeprecatedDropdownItem)
+      .findAll(GlDropdownItem)
       .at(index);
   const selectItem = index => {
     findDropdownItem(index).vm.$emit('click');

@@ -123,7 +123,8 @@ module Gitlab
         none: "",
         qa: "~QA",
         test: "~test ~Quality for `spec/features/*`",
-        engineering_productivity: '~"Engineering Productivity" for CI, Danger'
+        engineering_productivity: '~"Engineering Productivity" for CI, Danger',
+        ci_template: '~"ci::templates"'
       }.freeze
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
@@ -175,6 +176,8 @@ module Gitlab
         %r{\Atooling/} => :engineering_productivity,
         %r{(CODEOWNERS)} => :engineering_productivity,
         %r{(tests.yml)} => :engineering_productivity,
+
+        %r{\Alib/gitlab/ci/templates} => :ci_template,
 
         %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/support/shared_examples/features/} => :test,

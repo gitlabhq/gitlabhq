@@ -4,6 +4,7 @@ import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
+import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
@@ -52,6 +53,9 @@ export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'MRWidget',
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
+  },
   components: {
     Loading,
     'mr-widget-header': WidgetHeader,
@@ -510,7 +514,7 @@ export default {
           </mr-widget-alert-message>
 
           <mr-widget-alert-message v-if="mr.mergeError" type="danger">
-            {{ mergeError }}
+            <span v-safe-html="mergeError"></span>
           </mr-widget-alert-message>
 
           <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />

@@ -226,6 +226,14 @@ $colors: (
   .solarized-dark {
     @include color-scheme('solarized-dark'); }
 
+  .none {
+    .line_content.header {
+      button {
+        color: $gray-900;
+      }
+    }
+  }
+
   .diff-wrap-lines .line_content {
     white-space: normal;
     min-height: 19px;

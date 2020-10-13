@@ -4,8 +4,11 @@ require 'webmock/rspec'
 require 'timecop'
 
 require 'gitlab/danger/roulette'
+require 'active_support/testing/time_helpers'
 
 RSpec.describe Gitlab::Danger::Roulette do
+  include ActiveSupport::Testing::TimeHelpers
+
   around do |example|
     travel_to(Time.utc(2020, 06, 22, 10)) { example.run }
   end
@@ -67,13 +70,25 @@ RSpec.describe Gitlab::Danger::Roulette do
     )
   end
 
+  let(:ci_template_reviewer) do
+    Gitlab::Danger::Teammate.new(
+      'username' => 'ci-template-maintainer',
+      'name' => 'CI Template engineer',
+      'role' => '~"ci::templates"',
+      'projects' => { 'gitlab' => 'reviewer ci_template' },
+      'available' => true,
+      'tz_offset_hours' => 2.0
+    )
+  end
+
   let(:teammates) do
     [
       backend_maintainer.to_h,
       frontend_maintainer.to_h,
       frontend_reviewer.to_h,
       software_engineer_in_test.to_h,
-      engineering_productivity_reviewer.to_h
+      engineering_productivity_reviewer.to_h,
+      ci_template_reviewer.to_h
     ]
   end
 
@@ -163,6 +178,14 @@ RSpec.describe Gitlab::Danger::Roulette do
 
         it 'assigns Engineering Productivity reviewer and fallback to backend maintainer' do
           expect(spins).to eq([described_class::Spin.new(:engineering_productivity, engineering_productivity_reviewer, backend_maintainer, false, false)])
+        end
+      end
+
+      context 'when change contains CI/CD Template category' do
+        let(:categories) { [:ci_template] }
+
+        it 'assigns CI/CD Template reviewer and fallback to backend maintainer' do
+          expect(spins).to eq([described_class::Spin.new(:ci_template, ci_template_reviewer, backend_maintainer, false, false)])
         end
       end
 
@@ -332,7 +355,8 @@ RSpec.describe Gitlab::Danger::Roulette do
           frontend_reviewer,
           frontend_maintainer,
           software_engineer_in_test,
-          engineering_productivity_reviewer
+          engineering_productivity_reviewer,
+          ci_template_reviewer
         ])
       end
 

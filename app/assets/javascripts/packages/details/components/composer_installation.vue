@@ -14,12 +14,12 @@ export default {
   },
   computed: {
     ...mapState(['composerHelpPath']),
-    ...mapGetters(['composerRegistryInclude', 'composerPackageInclude']),
+    ...mapGetters(['composerRegistryInclude', 'composerPackageInclude', 'groupExists']),
   },
   i18n: {
-    registryInclude: s__('PackageRegistry|composer.json registry include'),
+    registryInclude: s__('PackageRegistry|Add composer registry'),
     copyRegistryInclude: s__('PackageRegistry|Copy registry include'),
-    packageInclude: s__('PackageRegistry|composer.json require package include'),
+    packageInclude: s__('PackageRegistry|Install package version'),
     copyPackageInclude: s__('PackageRegistry|Copy require package include'),
     infoLine: s__(
       'PackageRegistry|For more information on Composer packages in GitLab, %{linkStart}see the documentation.%{linkEnd}',
@@ -32,31 +32,33 @@ export default {
 
 <template>
   <div>
-    <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
+    <div v-if="groupExists">
+      <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
 
-    <code-instruction
-      :label="$options.i18n.registryInclude"
-      :instruction="composerRegistryInclude"
-      :copy-text="$options.i18n.copyRegistryInclude"
-      :tracking-action="$options.trackingActions.COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
-      data-testid="registry-include"
-    />
+      <code-instruction
+        :label="$options.i18n.registryInclude"
+        :instruction="composerRegistryInclude"
+        :copy-text="$options.i18n.copyRegistryInclude"
+        :tracking-action="$options.trackingActions.COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND"
+        :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+        data-testid="registry-include"
+      />
 
-    <code-instruction
-      :label="$options.i18n.packageInclude"
-      :instruction="composerPackageInclude"
-      :copy-text="$options.i18n.copyPackageInclude"
-      :tracking-action="$options.trackingActions.COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
-      data-testid="package-include"
-    />
-    <span data-testid="help-text">
-      <gl-sprintf :message="$options.i18n.infoLine">
-        <template #link="{ content }">
-          <gl-link :href="composerHelpPath" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </span>
+      <code-instruction
+        :label="$options.i18n.packageInclude"
+        :instruction="composerPackageInclude"
+        :copy-text="$options.i18n.copyPackageInclude"
+        :tracking-action="$options.trackingActions.COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND"
+        :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+        data-testid="package-include"
+      />
+      <span data-testid="help-text">
+        <gl-sprintf :message="$options.i18n.infoLine">
+          <template #link="{ content }">
+            <gl-link :href="composerHelpPath" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </span>
+    </div>
   </div>
 </template>

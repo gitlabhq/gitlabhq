@@ -11,13 +11,17 @@ module Gitlab
 
       delegate :max_files, :max_lines, :max_bytes, :safe_max_files, :safe_max_lines, :safe_max_bytes, to: :limits
 
-      def self.default_limits
-        { max_files: 100, max_lines: 5000 }
+      def self.default_limits(project: nil)
+        if Feature.enabled?(:increased_diff_limits, project)
+          { max_files: 200, max_lines: 7500 }
+        else
+          { max_files: 100, max_lines: 5000 }
+        end
       end
 
       def self.limits(options = {})
         limits = {}
-        defaults = default_limits
+        defaults = default_limits(project: options[:project])
         limits[:max_files] = options.fetch(:max_files, defaults[:max_files])
         limits[:max_lines] = options.fetch(:max_lines, defaults[:max_lines])
         limits[:max_bytes] = limits[:max_files] * 5.kilobytes # Average 5 KB per file

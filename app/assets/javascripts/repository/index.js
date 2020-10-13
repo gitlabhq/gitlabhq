@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import PathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { escapeFileUrl, joinPaths, webIDEUrl } from '../lib/utils/url_utility';
 import createRouter from './router';
 import App from './components/app.vue';
@@ -18,6 +19,10 @@ export default function setupVueRepositoryList() {
   const { dataset } = el;
   const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
   const router = createRouter(projectPath, escapedRef);
+  const pathRegex = /-\/tree\/[^/]+\/(.+$)/;
+  const matches = window.location.href.match(pathRegex);
+
+  const currentRoutePath = matches ? matches[1] : '';
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
@@ -28,6 +33,43 @@ export default function setupVueRepositoryList() {
       commits: [],
     },
   });
+
+  const initLastCommitApp = () =>
+    new Vue({
+      el: document.getElementById('js-last-commit'),
+      router,
+      apolloProvider,
+      render(h) {
+        return h(LastCommit, {
+          props: {
+            currentPath: this.$route.params.path,
+          },
+        });
+      },
+    });
+
+  if (window.gl.startup_graphql_calls) {
+    const query = window.gl.startup_graphql_calls.find(
+      call => call.operationName === 'pathLastCommit',
+    );
+    query.fetchCall
+      .then(res => res.json())
+      .then(res => {
+        apolloProvider.clients.defaultClient.writeQuery({
+          query: PathLastCommitQuery,
+          data: res.data,
+          variables: {
+            projectPath,
+            ref,
+            path: currentRoutePath,
+          },
+        });
+      })
+      .catch(() => {})
+      .finally(() => initLastCommitApp());
+  } else {
+    initLastCommitApp();
+  }
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);
@@ -76,20 +118,6 @@ export default function setupVueRepositoryList() {
       },
     });
   }
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: document.getElementById('js-last-commit'),
-    router,
-    apolloProvider,
-    render(h) {
-      return h(LastCommit, {
-        props: {
-          currentPath: this.$route.params.path,
-        },
-      });
-    },
-  });
 
   const treeHistoryLinkEl = document.getElementById('js-tree-history-link');
   const { historyLink } = treeHistoryLinkEl.dataset;
