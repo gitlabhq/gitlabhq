@@ -23,8 +23,8 @@ GET /projects/:id/registry/repositories
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) accessible by the authenticated user. |
-| `tags`      | boolean | no | If the parameter is included as true, each repository will include an array of `"tags"` in the response. |
-| `tags_count` | boolean | no | If the parameter is included as true, each repository will include `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
+| `tags`      | boolean | no | If the parameter is included as true, each repository includes an array of `"tags"` in the response. |
+| `tags_count` | boolean | no | If the parameter is included as true, each repository includes `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
@@ -66,8 +66,8 @@ GET /groups/:id/registry/repositories
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) accessible by the authenticated user. |
-| `tags`      | boolean | no | If the parameter is included as true, each repository will include an array of `"tags"` in the response. |
-| `tags_count` | boolean | no | If the parameter is included as true, each repository will include `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
+| `tags`      | boolean | no | If the parameter is included as true, each repository includes an array of `"tags"` in the response. |
+| `tags_count` | boolean | no | If the parameter is included as true, each repository includes `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1&tags_count=true"
@@ -250,7 +250,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | `repository_id` | integer | yes | The ID of registry repository. |
 | `name_regex` | string | no | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. **Note:** `name_regex` is deprecated in favor of `name_regex_delete`. This field is validated. |
 | `name_regex_delete` | string | yes | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. This field is validated. |
-| `name_regex_keep` | string | no | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to keep. This value will override any matches from `name_regex_delete`. This field is validated. Note: setting to `.*` will result in a no-op. |
+| `name_regex_keep` | string | no | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to keep. This value overrides any matches from `name_regex_delete`. This field is validated. Note: setting to `.*` results in a no-op. |
 | `keep_n` | integer | no | The amount of latest tags of given name to keep. |
 | `older_than` | string | no | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |
 

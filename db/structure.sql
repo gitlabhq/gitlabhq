@@ -12739,6 +12739,21 @@ CREATE SEQUENCE issuable_severities_id_seq
 
 ALTER SEQUENCE issuable_severities_id_seq OWNED BY issuable_severities.id;
 
+CREATE TABLE issuable_slas (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    due_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE issuable_slas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE issuable_slas_id_seq OWNED BY issuable_slas.id;
+
 CREATE TABLE issue_assignees (
     user_id integer NOT NULL,
     issue_id integer NOT NULL
@@ -17561,6 +17576,8 @@ ALTER TABLE ONLY ip_restrictions ALTER COLUMN id SET DEFAULT nextval('ip_restric
 
 ALTER TABLE ONLY issuable_severities ALTER COLUMN id SET DEFAULT nextval('issuable_severities_id_seq'::regclass);
 
+ALTER TABLE ONLY issuable_slas ALTER COLUMN id SET DEFAULT nextval('issuable_slas_id_seq'::regclass);
+
 ALTER TABLE ONLY issue_email_participants ALTER COLUMN id SET DEFAULT nextval('issue_email_participants_id_seq'::regclass);
 
 ALTER TABLE ONLY issue_links ALTER COLUMN id SET DEFAULT nextval('issue_links_id_seq'::regclass);
@@ -18688,6 +18705,9 @@ ALTER TABLE ONLY ip_restrictions
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT issuable_severities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY issuable_slas
+    ADD CONSTRAINT issuable_slas_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY issue_email_participants
     ADD CONSTRAINT issue_email_participants_pkey PRIMARY KEY (id);
@@ -20485,6 +20505,8 @@ CREATE INDEX index_ip_restrictions_on_group_id ON ip_restrictions USING btree (g
 
 CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities USING btree (issue_id);
 
+CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree (issue_id);
+
 CREATE UNIQUE INDEX index_issue_assignees_on_issue_id_and_user_id ON issue_assignees USING btree (issue_id, user_id);
 
 CREATE INDEX index_issue_assignees_on_user_id ON issue_assignees USING btree (user_id);
@@ -20540,8 +20562,6 @@ CREATE INDEX index_issues_on_title_trigram ON issues USING gin (title gin_trgm_o
 CREATE INDEX index_issues_on_updated_at ON issues USING btree (updated_at);
 
 CREATE INDEX index_issues_on_updated_by_id ON issues USING btree (updated_by_id) WHERE (updated_by_id IS NOT NULL);
-
-CREATE INDEX index_issues_project_id_issue_type_incident ON issues USING btree (project_id) WHERE (issue_type = 1);
 
 CREATE UNIQUE INDEX index_jira_connect_installations_on_client_key ON jira_connect_installations USING btree (client_key);
 
@@ -22851,6 +22871,9 @@ ALTER TABLE ONLY gpg_signatures
 
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT fk_rails_1a41c485cd FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issuable_slas
+    ADD CONSTRAINT fk_rails_1b8768cd63 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_1c0ff59e82 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE CASCADE;

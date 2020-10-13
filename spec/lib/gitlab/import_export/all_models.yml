@@ -30,6 +30,7 @@ issues:
 - metrics
 - timelogs
 - issuable_severity
+- issuable_sla
 - issue_assignees
 - closed_by
 - epic_issue
@@ -713,3 +714,5 @@ system_note_metadata:
 - description_version
 status_page_published_incident:
 - issue
+issuable_sla:
+  - issue

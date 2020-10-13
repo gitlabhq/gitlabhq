@@ -253,20 +253,24 @@ production: &base
 
 ## Upgrade your subscription tier
 
-To upgrade your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team as this
-can't be done in the Customers Portal. You can either send an email to `renewals@gitlab.com`, or
-complete the [**Contact Sales**](https://about.gitlab.com/sales/) form. Include details of which subscription you want to upgrade and the desired tier in your message.
+To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
-After messaging the sales team, the workflow is as follows:
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select the **Upgrade** button on the relevant subscription card on the
+   [Manage purchases](https://customers.gitlab.com/subscriptions) page.
+1. Select the desired upgrade.
+1. Confirm the active form of payment, or add a new form of payment.
+1. Select the **I accept the Privacy Policy and Terms of Service** checkbox.
+1. Select **Purchase**.
 
-1. Receive a reply from the sales team, asking for confirmation of the upgrade.
-1. Reply to the sales team, confirming details of the upgrade.
-1. Receive a quote from the sales team.
-1. Sign and return the quote.
-1. Receive the new license.
-1. Upload the new license. For details, see [Uploading your license](../../user/admin_area/license.md#uploading-your-license).
+The following is emailed to you:
 
-The new subscription tier is active when the license file is uploaded.
+- A payment receipt. You can also access this information in the Customers Portal under
+  [**View invoices**](https://customers.gitlab.com/receipts).
+- A new license.
+
+[Upload the new license](../../user/admin_area/license.md#uploading-your-license) to your instance.
+The new tier takes effect when the new license is uploaded.
 
 ## Subscription expiry
 

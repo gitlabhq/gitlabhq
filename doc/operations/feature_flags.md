@@ -56,6 +56,20 @@ To create and enable a feature flag:
 You can change these settings by clicking the **{pencil}** (edit) button
 next to any feature flag in the list.
 
+## Maximum number of feature flags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254379) in GitLab 13.5.
+
+The maximum number of feature flags per project on self-managed GitLab instances
+is 200. On GitLab.com, the maximum number is determined by [GitLab.com tier](https://about.gitlab.com/pricing/):
+
+| Tier     | Number of feature flags per project |
+|----------|-------------------------------------|
+| Free     | 50                                  |
+| Bronze   | 100                                 |
+| Silver   | 150                                 |
+| Gold     | 200                                 |
+
 ## Feature flag strategies
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.

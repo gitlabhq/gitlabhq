@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import merge from 'lodash/merge';
 import { GlLink } from '@gitlab/ui';
 import HighlightBar from '~/issue_show/components/incidents/highlight_bar.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -16,12 +17,17 @@ describe('Highlight Bar', () => {
     title: 'Alert 1',
   };
 
-  const mountComponent = () => {
-    wrapper = shallowMount(HighlightBar, {
-      propsData: {
-        alert,
-      },
-    });
+  const mountComponent = options => {
+    wrapper = shallowMount(
+      HighlightBar,
+      merge(
+        {
+          propsData: { alert },
+          provide: { fullPath: 'test', iid: 1, slaFeatureAvailable: true },
+        },
+        options,
+      ),
+    );
   };
 
   beforeEach(() => {
@@ -37,22 +43,52 @@ describe('Highlight Bar', () => {
 
   const findLink = () => wrapper.find(GlLink);
 
-  it('renders a link to the alert page', () => {
-    expect(findLink().exists()).toBe(true);
-    expect(findLink().attributes('href')).toBe(alert.detailsUrl);
-    expect(findLink().attributes('title')).toBe(alert.title);
-    expect(findLink().text()).toBe(`#${alert.iid}`);
+  describe('empty state', () => {
+    beforeEach(() => {
+      mountComponent({ propsData: { alert: null } });
+    });
+
+    it('renders a empty component', () => {
+      expect(wrapper.isVisible()).toBe(false);
+    });
   });
 
-  it('renders formatted start time of the alert', () => {
-    const formattedDate = '2020-05-29 UTC';
-    formatDate.mockReturnValueOnce(formattedDate);
-    mountComponent();
-    expect(formatDate).toHaveBeenCalledWith(alert.startedAt, 'yyyy-mm-dd Z');
-    expect(wrapper.text()).toContain(formattedDate);
+  describe('alert present', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('renders a link to the alert page', () => {
+      expect(findLink().exists()).toBe(true);
+      expect(findLink().attributes('href')).toBe(alert.detailsUrl);
+      expect(findLink().attributes('title')).toBe(alert.title);
+      expect(findLink().text()).toBe(`#${alert.iid}`);
+    });
+
+    it('renders formatted start time of the alert', () => {
+      const formattedDate = '2020-05-29 UTC';
+      formatDate.mockReturnValueOnce(formattedDate);
+      mountComponent();
+      expect(formatDate).toHaveBeenCalledWith(alert.startedAt, 'yyyy-mm-dd Z');
+      expect(wrapper.text()).toContain(formattedDate);
+    });
+
+    it('renders a number of alert events', () => {
+      expect(wrapper.text()).toContain(alert.eventCount);
+    });
   });
 
-  it('renders a number of alert events', () => {
-    expect(wrapper.text()).toContain(alert.eventCount);
+  describe('when child data is present', () => {
+    beforeEach(() => {
+      mountComponent({
+        data() {
+          return { hasChildData: true };
+        },
+      });
+    });
+
+    it('renders the highlight bar component', () => {
+      expect(wrapper.isVisible()).toBe(true);
+    });
   });
 });

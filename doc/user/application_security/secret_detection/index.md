@@ -173,6 +173,32 @@ We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showca
   <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
+### Make GitLab Secret Detection analyzer image available inside your Docker registry
+
+Import the following default Secret Detection analyzer images from `registry.gitlab.com` into your
+[local Docker container registry](../../packages/container_registry/index.md):
+
+```plaintext
+registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
+```
+
+The process for importing Docker images into a local offline Docker registry depends on
+**your network security policy**. Please consult your IT staff to find an accepted and approved
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
+with new definitions, so consider if you're able to make periodic updates yourself.
+
+For details on saving and transporting Docker images as a file, see Docker's documentation on
+[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
+[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+
+#### If support for Custom Certificate Authorities are needed
+
+Support for custom certificate authorities was introduced in the following versions.
+
+| Analyzer | Version |
+| -------- | ------- |
+| secrets | [v3.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/releases/v3.0.0) |
+
 ## Troubleshooting
 
 ### Getting warning message `gl-secret-detection-report.json: no matching files`

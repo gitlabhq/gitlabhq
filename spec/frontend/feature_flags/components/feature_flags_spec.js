@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import MockAdapter from 'axios-mock-adapter';
-import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import Api from '~/api';
 import createStore from '~/feature_flags/store/index';
@@ -20,14 +20,17 @@ localVue.use(Vuex);
 
 describe('Feature flags', () => {
   const mockData = {
-    csrfToken: 'testToken',
-    featureFlagsClientLibrariesHelpPagePath: '/help/feature-flags#unleash-clients',
-    featureFlagsClientExampleHelpPagePath: '/help/feature-flags#client-example',
-    unleashApiUrl: `${TEST_HOST}/api/unleash`,
     canUserConfigure: true,
-    canUserRotateToken: true,
+    // canUserRotateToken: true,
+    csrfToken: 'testToken',
+    featureFlagsClientExampleHelpPagePath: '/help/feature-flags#client-example',
+    featureFlagsClientLibrariesHelpPagePath: '/help/feature-flags#unleash-clients',
+    featureFlagsHelpPagePath: '/help/feature-flags',
+    featureFlagsLimit: '200',
+    featureFlagsLimitExceeded: false,
     newFeatureFlagPath: 'feature-flags/new',
     newUserListPath: '/user-list/new',
+    unleashApiUrl: `${TEST_HOST}/api/unleash`,
   };
 
   const mockState = {
@@ -60,6 +63,7 @@ describe('Feature flags', () => {
   const configureButton = () => wrapper.find('[data-testid="ff-configure-button"]');
   const newButton = () => wrapper.find('[data-testid="ff-new-button"]');
   const newUserListButton = () => wrapper.find('[data-testid="ff-new-list-button"]');
+  const limitAlert = () => wrapper.find(GlAlert);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -82,28 +86,64 @@ describe('Feature flags', () => {
     wrapper = null;
   });
 
+  describe('when limit exceeded', () => {
+    const propsData = { ...mockData, featureFlagsLimitExceeded: true };
+
+    beforeEach(done => {
+      mock
+        .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
+        .reply(200, getRequestData, {});
+      factory(propsData);
+      setImmediate(done);
+    });
+
+    it('makes the new feature flag button do nothing if clicked', () => {
+      expect(newButton().exists()).toBe(true);
+      expect(newButton().props('disabled')).toBe(false);
+      expect(newButton().props('href')).toBe(undefined);
+    });
+
+    it('shows a feature flags limit reached alert', () => {
+      expect(limitAlert().exists()).toBe(true);
+      expect(
+        limitAlert()
+          .find(GlSprintf)
+          .attributes('message'),
+      ).toContain('Feature flags limit reached');
+    });
+
+    describe('when the alert is dismissed', () => {
+      beforeEach(async () => {
+        await limitAlert().vm.$emit('dismiss');
+      });
+
+      it('hides the alert', async () => {
+        expect(limitAlert().exists()).toBe(false);
+      });
+
+      it('re-shows the alert if the new feature flag button is clicked', async () => {
+        await newButton().vm.$emit('click');
+
+        expect(limitAlert().exists()).toBe(true);
+      });
+    });
+  });
+
   describe('without permissions', () => {
     const propsData = {
-      csrfToken: 'testToken',
-      errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
-      featureFlagsHelpPagePath: '/help/feature-flags',
+      ...mockData,
       canUserConfigure: false,
       canUserRotateToken: false,
-      featureFlagsClientLibrariesHelpPagePath: '/help/feature-flags#unleash-clients',
-      featureFlagsClientExampleHelpPagePath: '/help/feature-flags#client-example',
-      unleashApiUrl: `${TEST_HOST}/api/unleash`,
+      newFeatureFlagPath: null,
+      newUserListPath: null,
     };
 
     beforeEach(done => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});
-
       factory(propsData);
-
-      setImmediate(() => {
-        done();
-      });
+      setImmediate(done);
     });
 
     it('does not render configure button', () => {
@@ -197,9 +237,7 @@ describe('Feature flags', () => {
 
         factory();
         jest.spyOn(store, 'dispatch');
-        setImmediate(() => {
-          done();
-        });
+        setImmediate(done);
       });
 
       it('should render a table with feature flags', () => {
@@ -267,10 +305,7 @@ describe('Feature flags', () => {
     describe('in user lists tab', () => {
       beforeEach(done => {
         factory();
-
-        setImmediate(() => {
-          done();
-        });
+        setImmediate(done);
       });
       beforeEach(() => {
         wrapper.find('[data-testid="user-lists-tab"]').vm.$emit('changeTab');
@@ -295,10 +330,7 @@ describe('Feature flags', () => {
       Api.fetchFeatureFlagUserLists.mockRejectedValueOnce();
 
       factory();
-
-      setImmediate(() => {
-        done();
-      });
+      setImmediate(done);
     });
 
     it('should render error state', () => {
@@ -329,10 +361,7 @@ describe('Feature flags', () => {
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});
       factory();
-
-      setImmediate(() => {
-        done();
-      });
+      setImmediate(done);
     });
 
     it('should fire the rotate action when a `token` event is received', () => {

@@ -57,7 +57,6 @@ describe('Incident Tabs component', () => {
 
     it('does not show the alert details tab', () => {
       expect(findAlertDetailsComponent().exists()).toBe(false);
-      expect(findHighlightBarComponent().exists()).toBe(false);
     });
   });
 

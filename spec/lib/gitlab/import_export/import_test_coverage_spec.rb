@@ -23,6 +23,7 @@ RSpec.describe 'Test coverage of the Project Import' do
       project.issues.notes.events
       project.issues.notes.events.push_event_payload
       project.issues.milestone.events.push_event_payload
+      project.issues.issuable_sla
       project.issues.issue_milestones
       project.issues.issue_milestones.milestone
       project.issues.resource_label_events.label.priorities

@@ -36,6 +36,8 @@ export default () => {
             el.dataset.featureFlagsClientLibrariesHelpPagePath,
           featureFlagsClientExampleHelpPagePath: el.dataset.featureFlagsClientExampleHelpPagePath,
           unleashApiUrl: el.dataset.unleashApiUrl,
+          featureFlagsLimitExceeded: el.dataset.featureFlagsLimitExceeded,
+          featureFlagsLimit: el.dataset.featureFlagsLimit,
           csrfToken: csrf.token,
           canUserConfigure: el.dataset.canUserAdminFeatureFlag,
           newFeatureFlagPath: el.dataset.newFeatureFlagPath,

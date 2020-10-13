@@ -1,7 +1,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { isEmpty } from 'lodash';
-import { GlButton, GlModalDirective, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlButton, GlModalDirective, GlSprintf, GlTabs } from '@gitlab/ui';
+
 import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../constants';
 import FeatureFlagsTab from './feature_flags_tab.vue';
 import FeatureFlagsTable from './feature_flags_table.vue';
@@ -9,9 +10,9 @@ import UserListsTable from './user_lists_table.vue';
 import { s__ } from '~/locale';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import {
+  buildUrlWithCurrentLocation,
   getParameterByName,
   historyPushState,
-  buildUrlWithCurrentLocation,
 } from '~/lib/utils/common_utils';
 
 import ConfigureFeatureFlagsModal from './configure_feature_flags_modal.vue';
@@ -20,13 +21,15 @@ const SCOPES = { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE };
 
 export default {
   components: {
-    FeatureFlagsTable,
-    UserListsTable,
-    TablePagination,
-    GlButton,
-    GlTabs,
-    FeatureFlagsTab,
     ConfigureFeatureFlagsModal,
+    FeatureFlagsTab,
+    FeatureFlagsTable,
+    GlAlert,
+    GlButton,
+    GlSprintf,
+    GlTabs,
+    TablePagination,
+    UserListsTable,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -43,6 +46,20 @@ export default {
     featureFlagsClientExampleHelpPagePath: {
       type: String,
       required: true,
+    },
+    featureFlagsLimit: {
+      type: String,
+      required: true,
+    },
+    featureFlagsLimitExceeded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    rotateInstanceIdPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     unleashApiUrl: {
       type: String,
@@ -69,6 +86,7 @@ export default {
       scope,
       page: getParameterByName('page') || '1',
       isUserListAlertDismissed: false,
+      shouldShowFeatureFlagsLimitWarning: this.featureFlagsLimitExceeded,
       selectedTab: Object.values(SCOPES).indexOf(scope),
     };
   },
@@ -184,11 +202,36 @@ export default {
     dataForScope(scope) {
       return this[scope];
     },
+    onDismissFeatureFlagsLimitWarning() {
+      this.shouldShowFeatureFlagsLimitWarning = false;
+    },
+    onNewFeatureFlagCLick() {
+      if (this.featureFlagsLimitExceeded) {
+        this.shouldShowFeatureFlagsLimitWarning = true;
+      }
+    },
   },
 };
 </script>
 <template>
   <div>
+    <gl-alert
+      v-if="shouldShowFeatureFlagsLimitWarning"
+      variant="warning"
+      @dismiss="onDismissFeatureFlagsLimitWarning"
+    >
+      <gl-sprintf
+        :message="
+          s__(
+            'FeatureFlags|Feature flags limit reached (%{featureFlagsLimit}). Delete one or more feature flags before adding new ones.',
+          )
+        "
+      >
+        <template #featureFlagsLimit>
+          <span>{{ featureFlagsLimit }}</span>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <configure-feature-flags-modal
       v-if="canUserConfigure"
       :help-client-libraries-path="featureFlagsClientLibrariesHelpPagePath"
@@ -228,9 +271,10 @@ export default {
 
         <gl-button
           v-if="hasNewPath"
-          :href="newFeatureFlagPath"
+          :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
           variant="success"
           data-testid="ff-new-button"
+          @click="onNewFeatureFlagCLick"
         >
           {{ s__('FeatureFlags|New feature flag') }}
         </gl-button>
@@ -306,9 +350,10 @@ export default {
 
             <gl-button
               v-if="hasNewPath"
-              :href="newFeatureFlagPath"
+              :href="featureFlagsLimitExceeded ? '' : newFeatureFlagPath"
               variant="success"
               data-testid="ff-new-button"
+              @click="onNewFeatureFlagCLick"
             >
               {{ s__('FeatureFlags|New feature flag') }}
             </gl-button>

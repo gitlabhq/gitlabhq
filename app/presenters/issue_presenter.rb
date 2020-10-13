@@ -11,3 +11,5 @@ class IssuePresenter < Gitlab::View::Presenter::Delegated
     issue.subscribed?(current_user, issue.project)
   end
 end
+
+IssuePresenter.prepend_if_ee('EE::IssuePresenter')

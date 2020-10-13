@@ -11152,6 +11152,9 @@ msgstr ""
 msgid "FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality."
 msgstr ""
 
+msgid "FeatureFlags|Feature flags limit reached (%{featureFlagsLimit}). Delete one or more feature flags before adding new ones."
+msgstr ""
+
 msgid "FeatureFlags|Flag becomes read only soon"
 msgstr ""
 
@@ -13280,6 +13283,9 @@ msgstr ""
 msgid "HighlightBar|Original alert:"
 msgstr ""
 
+msgid "HighlightBar|Time to SLA:"
+msgstr ""
+
 msgid "History"
 msgstr ""
 
@@ -13834,6 +13840,9 @@ msgid "Incident|Summary"
 msgstr ""
 
 msgid "Incident|There was an issue loading alert data. Please try again."
+msgstr ""
+
+msgid "Incident|There was an issue loading incident data. Please try again."
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."

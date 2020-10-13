@@ -18533,6 +18533,20 @@
               "deprecationReason": null
             },
             {
+              "name": "slaDueAt",
+              "description": "Timestamp of when the issue SLA expires. Returns null if `incident_sla_dev` feature flag is disabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "state",
               "description": "State of the issue",
               "args": [
@@ -24215,6 +24229,20 @@
               "type": {
                 "kind": "ENUM",
                 "name": "IssuableSeverity",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "slaDueAt",
+              "description": "Timestamp of when the issue SLA expires. Returns null if `incident_sla_dev` feature flag is disabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
                 "ofType": null
               },
               "isDeprecated": false,

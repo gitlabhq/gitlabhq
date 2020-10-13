@@ -53,7 +53,7 @@ export default {
   <div>
     <gl-tabs content-class="gl-reset-line-height" class="gl-mt-n3" data-testid="incident-tabs">
       <gl-tab :title="s__('Incident|Summary')">
-        <highlight-bar v-if="alert" :alert="alert" />
+        <highlight-bar :alert="alert" />
         <description-component v-bind="$attrs" />
       </gl-tab>
       <gl-tab v-if="alert" class="alert-management-details" :title="s__('Incident|Alert details')">
