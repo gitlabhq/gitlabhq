@@ -11,6 +11,7 @@ class ApplicationSetting < ApplicationRecord
   ignore_column :instance_statistics_visibility_private, remove_with: '13.6', remove_after: '2020-10-22'
   ignore_column :snowplow_iglu_registry_url, remove_with: '13.6', remove_after: '2020-11-22'
 
+  INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
 
@@ -435,6 +436,14 @@ class ApplicationSetting < ApplicationRecord
 
   def sourcegraph_url_is_com?
     !!(sourcegraph_url =~ /\Ahttps:\/\/(www\.)?sourcegraph\.com/)
+  end
+
+  def instance_review_permitted?
+    users_count = Rails.cache.fetch('limited_users_count', expires_in: 1.day) do
+      ::User.limit(INSTANCE_REVIEW_MIN_USERS + 1).count(:all)
+    end
+
+    users_count >= INSTANCE_REVIEW_MIN_USERS
   end
 
   def self.create_from_defaults

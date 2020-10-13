@@ -14800,6 +14800,8 @@ CREATE TABLE project_incident_management_settings (
     encrypted_pagerduty_token bytea,
     encrypted_pagerduty_token_iv bytea,
     auto_close_incident boolean DEFAULT true NOT NULL,
+    sla_timer boolean DEFAULT false,
+    sla_timer_minutes integer,
     CONSTRAINT pagerduty_token_iv_length_constraint CHECK ((octet_length(encrypted_pagerduty_token_iv) <= 12)),
     CONSTRAINT pagerduty_token_length_constraint CHECK ((octet_length(encrypted_pagerduty_token) <= 255))
 );

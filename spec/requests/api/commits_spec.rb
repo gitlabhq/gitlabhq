@@ -40,17 +40,6 @@ RSpec.describe API::Commits do
 
         expect(response).to include_limited_pagination_headers
       end
-
-      it 'includes the total headers when the count is not disabled' do
-        stub_feature_flags(api_commits_without_count: false)
-        commit_count = project.repository.count_commits(ref: 'master').to_s
-
-        get api(route, current_user)
-
-        expect(response).to include_pagination_headers
-        expect(response.headers['X-Total']).to eq(commit_count)
-        expect(response.headers['X-Page']).to eql('1')
-      end
     end
 
     context 'when unauthenticated', 'and project is public' do

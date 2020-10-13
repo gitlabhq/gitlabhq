@@ -2,7 +2,7 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6995) in [GitLab Core](https://about.gitlab.com/pricing/) 11.3.
 
-If you are running a medium size instance of GitLab Core edition you are qualified for a free Instance Review. You can find the button in the User menu.
+If you are running a medium size instance (50+ users) of GitLab Core edition you are qualified for a free Instance Review. You can find the button in the User menu.
 
 ![Instance Review button](img/instance_review_button.png)
 

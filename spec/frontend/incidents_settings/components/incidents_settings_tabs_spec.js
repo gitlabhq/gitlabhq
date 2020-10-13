@@ -6,7 +6,12 @@ describe('IncidentsSettingTabs', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(IncidentsSettingTabs);
+    wrapper = shallowMount(IncidentsSettingTabs, {
+      provide: {
+        service: {},
+        serviceLevelAgreementSettings: {},
+      },
+    });
   });
 
   afterEach(() => {

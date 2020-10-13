@@ -68,6 +68,11 @@ module Types
             null: true,
             description: 'Timestamp the alert ended'
 
+      field :environment,
+            Types::EnvironmentType,
+            null: true,
+            description: 'Environment for the alert'
+
       field :event_count,
             GraphQL::INT_TYPE,
             null: true,

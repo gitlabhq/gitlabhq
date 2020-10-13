@@ -807,6 +807,23 @@ RSpec.describe ApplicationSetting do
     end
   end
 
+  describe '#instance_review_permitted?', :request_store do
+    subject { setting.instance_review_permitted? }
+
+    before do
+      RequestStore.store[:current_license] = nil
+      expect(Rails.cache).to receive(:fetch).and_return(
+        ::ApplicationSetting::INSTANCE_REVIEW_MIN_USERS + users_over_minimum
+      )
+    end
+
+    where(users_over_minimum: [-1, 0, 1])
+
+    with_them do
+      it { is_expected.to be(users_over_minimum >= 0) }
+    end
+  end
+
   describe 'email_restrictions' do
     context 'when email restrictions are enabled' do
       before do

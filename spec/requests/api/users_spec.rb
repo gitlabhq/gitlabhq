@@ -2524,6 +2524,15 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
+    it 'returns a 403 error if user is internal' do
+      internal_user = create(:user, :bot)
+
+      post api("/users/#{internal_user.id}/block", admin)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['message']).to eq('An internal user cannot be blocked')
+    end
+
     it 'returns a 201 if user is already blocked' do
       post api("/users/#{blocked_user.id}/block", admin)
 

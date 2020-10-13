@@ -1,5 +1,4 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import {
   GlAlert,
   GlBadge,
@@ -12,6 +11,7 @@ import {
   GlButton,
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
+import * as Sentry from '~/sentry/wrapper';
 import { s__ } from '~/locale';
 import alertQuery from '../graphql/queries/details.query.graphql';
 import sidebarStatusQuery from '../graphql/queries/sidebar_status.query.graphql';
@@ -30,6 +30,7 @@ import AlertSidebar from './alert_sidebar.vue';
 import AlertMetrics from './alert_metrics.vue';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import AlertSummaryRow from './alert_summary_row.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');
 
@@ -76,6 +77,7 @@ export default {
     SystemNote,
     AlertMetrics,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     projectPath: {
       default: '',
@@ -146,6 +148,15 @@ export default {
         const tabId = this.$options.tabsConfig[tabIdx].id;
         this.$router.replace({ name: 'tab', params: { tabId } });
       },
+    },
+    environmentName() {
+      return this.shouldDisplayEnvironment && this.alert?.environment?.name;
+    },
+    environmentPath() {
+      return this.shouldDisplayEnvironment && this.alert?.environment?.path;
+    },
+    shouldDisplayEnvironment() {
+      return this.glFeatures.exposeEnvironmentPathInAlertDetails;
     },
   },
   mounted() {
@@ -299,19 +310,18 @@ export default {
             </span>
           </alert-summary-row>
           <alert-summary-row
-            v-if="alert.environment"
+            v-if="environmentName"
             :label="`${s__('AlertManagement|Environment')}:`"
           >
             <gl-link
-              v-if="alert.environmentUrl"
+              v-if="environmentPath"
               class="gl-display-inline-block"
-              data-testid="environmentUrl"
-              :href="alert.environmentUrl"
-              target="_blank"
+              data-testid="environmentPath"
+              :href="environmentPath"
             >
-              {{ alert.environment }}
+              {{ environmentName }}
             </gl-link>
-            <span v-else data-testid="environment">{{ alert.environment }}</span>
+            <span v-else data-testid="environmentName">{{ environmentName }}</span>
           </alert-summary-row>
           <alert-summary-row
             v-if="alert.startedAt"

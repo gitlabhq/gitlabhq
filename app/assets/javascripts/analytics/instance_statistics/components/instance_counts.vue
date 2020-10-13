@@ -1,5 +1,5 @@
 <script>
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/wrapper';
 import { s__ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';

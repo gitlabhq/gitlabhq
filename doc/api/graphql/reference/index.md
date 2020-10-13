@@ -77,6 +77,7 @@ Describes an alert from the project's Alert Management.
 | `details` | JSON | Alert details |
 | `detailsUrl` | String! | The URL of the alert detail page |
 | `endedAt` | Time | Timestamp the alert ended |
+| `environment` | Environment | Environment for the alert |
 | `eventCount` | Int | Number of events of this alert |
 | `hosts` | String! => Array | List of hosts the alert came from |
 | `iid` | ID! | Internal ID of the alert |
@@ -943,9 +944,10 @@ Describes where code is deployed for a project.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `id` | ID! | ID of the environment |
-| `latestOpenedMostSevereAlert` | AlertManagementAlert | The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned. |
+| `latestOpenedMostSevereAlert` | AlertManagementAlert | The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned |
 | `metricsDashboard` | MetricsDashboard | Metrics dashboard schema for the environment |
 | `name` | String! | Human-readable name of the environment |
+| `path` | String | The path to the environment. Will always return null if `expose_environment_path_in_alert_details` feature flag is disabled |
 | `state` | String! | State of the environment, for example: available/stopped |
 
 ### Epic

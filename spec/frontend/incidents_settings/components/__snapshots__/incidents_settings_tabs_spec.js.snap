@@ -58,6 +58,8 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
         />
       </gl-tab-stub>
       <!---->
+       
+      <!---->
     </gl-tabs-stub>
   </div>
 </section>

@@ -7,6 +7,8 @@ module Users
     end
 
     def execute(user)
+      return error('An internal user cannot be blocked', 403) if user.internal?
+
       if user.block
         after_block_hook(user)
         success

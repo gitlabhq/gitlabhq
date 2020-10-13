@@ -81,6 +81,8 @@ namespace :admin do
     post :preview, on: :collection
   end
 
+  get :instance_review, to: 'instance_review#index'
+
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 

@@ -212,6 +212,10 @@ module ApplicationHelper
     Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
+  def instance_review_permitted?
+    ::Gitlab::CurrentSettings.instance_review_permitted? && current_user&.admin?
+  end
+
   def static_objects_external_storage_enabled?
     Gitlab::CurrentSettings.static_objects_external_storage_enabled?
   end

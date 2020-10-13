@@ -52,8 +52,9 @@ and edit labels.
 
 View the project labels list by going to the project and clicking **Issues > Labels**.
 The list includes all labels that are defined at the project level, as well as all
-labels inherited from the immediate parent group. You can filter the list by entering a search
-query at the top and clicking search (**{search}**).
+labels inherited from the immediate parent group.
+For each label, you can see the project or group path from where it was created.
+You can filter the list by entering a search query at the top and clicking search (**{search}**).
 
 To create a new project label:
 

@@ -667,6 +667,20 @@
               "deprecationReason": null
             },
             {
+              "name": "environment",
+              "description": "Environment for the alert",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Environment",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "eventCount",
               "description": "Number of events of this alert",
               "args": [
@@ -15990,7 +16004,7 @@
             },
             {
               "name": "latestOpenedMostSevereAlert",
-              "description": "The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.",
+              "description": "The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned",
               "args": [
 
               ],
@@ -16043,6 +16057,20 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "path",
+              "description": "The path to the environment. Will always return null if `expose_environment_path_in_alert_details` feature flag is disabled",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

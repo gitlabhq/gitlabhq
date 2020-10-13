@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      name id state metrics_dashboard latest_opened_most_severe_alert
+      name id state metrics_dashboard latest_opened_most_severe_alert path
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
@@ -28,6 +28,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
           project(fullPath: "#{project.full_path}") {
             environment(name: "#{environment.name}") {
               name
+              path
               state
             }
           }
@@ -41,6 +42,18 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
     it 'returns an environment' do
       expect(subject['data']['project']['environment']['name']).to eq(environment.name)
+    end
+
+    it 'returns the path when the feature is enabled' do
+      expect(subject['data']['project']['environment']['path']).to eq(
+        Gitlab::Routing.url_helpers.project_environment_path(project, environment)
+      )
+    end
+
+    it 'does not return the path when the feature is disabled' do
+      stub_feature_flags(expose_environment_path_in_alert_details: false)
+
+      expect(subject['data']['project']['environment']['path']).to be_nil
     end
 
     context 'when query alert data for the environment' do

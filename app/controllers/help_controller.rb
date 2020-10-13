@@ -80,16 +80,15 @@ class HelpController < ApplicationController
   def documentation_url
     return unless documentation_base_url
 
-    @documentation_url ||= [
-      documentation_base_url.chomp('/'),
-      version_segment,
-      'ee',
-      "#{@path}.html"
-    ].compact.join('/')
+    @documentation_url ||= Gitlab::Utils.append_path(documentation_base_url, documentation_file_path)
   end
 
   def documentation_base_url
     @documentation_base_url ||= Gitlab::CurrentSettings.current_application_settings.help_page_documentation_base_url.presence
+  end
+
+  def documentation_file_path
+    @documentation_file_path ||= [version_segment, 'ee', "#{@path}.html"].compact.join('/')
   end
 
   def version_segment

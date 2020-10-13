@@ -11,6 +11,10 @@ fragment AlertDetailItem on AlertManagementAlert {
   updatedAt
   endedAt
   hosts
+  environment {
+    name
+    path
+  }
   details
   runbook
   todos {

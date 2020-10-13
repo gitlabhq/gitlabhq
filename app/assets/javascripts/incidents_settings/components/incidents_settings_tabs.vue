@@ -11,6 +11,8 @@ export default {
     GlTab,
     AlertsSettingsForm,
     PagerDutySettingsForm,
+    ServiceLevelAgreementForm: () =>
+      import('ee_component/incidents_settings/components/service_level_agreement_form.vue'),
   },
   tabs: INTEGRATION_TABS_CONFIG,
   i18n: I18N_INTEGRATION_TABS,
@@ -45,6 +47,7 @@ export default {
         >
           <component :is="tab.component" class="gl-pt-3" :data-testid="`${tab.component}-tab`" />
         </gl-tab>
+        <service-level-agreement-form />
       </gl-tabs>
     </div>
   </section>

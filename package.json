@@ -47,7 +47,6 @@
     "@gitlab/visual-review-tools": "1.6.1",
     "@rails/actioncable": "^6.0.3-3",
     "@rails/ujs": "^6.0.3-2",
-    "@sentry/browser": "^5.22.3",
     "@sourcegraph/code-host-integration": "0.0.50",
     "@toast-ui/editor": "^2.4.0",
     "@toast-ui/vue-editor": "^2.4.0",

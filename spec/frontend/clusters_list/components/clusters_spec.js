@@ -6,7 +6,7 @@ import {
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlTable,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/wrapper';
 import axios from '~/lib/utils/axios_utils';
 import Clusters from '~/clusters_list/components/clusters.vue';
 import ClusterStore from '~/clusters_list/store';

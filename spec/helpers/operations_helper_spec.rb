@@ -145,7 +145,7 @@ RSpec.describe OperationsHelper do
     subject { helper.operations_settings_data }
 
     it 'returns the correct set of data' do
-      is_expected.to eq(
+      is_expected.to include(
         operations_settings_endpoint: project_settings_operations_path(project),
         templates: '[]',
         create_issue: 'false',

@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import { escape } from 'lodash';
+import * as Sentry from '~/sentry/wrapper';
 import { spriteIcon } from './lib/utils/common_utils';
 
 const FLASH_TYPES = {

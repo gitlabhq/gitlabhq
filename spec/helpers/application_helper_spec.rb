@@ -222,6 +222,32 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#instance_review_permitted?' do
+    let_it_be(:non_admin_user) { create :user }
+    let_it_be(:admin_user) { create :user, :admin }
+
+    before do
+      allow(::Gitlab::CurrentSettings).to receive(:instance_review_permitted?).and_return(app_setting)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    subject { helper.instance_review_permitted? }
+
+    where(app_setting: [true, false], is_admin: [true, false, nil])
+
+    with_them do
+      let(:current_user) do
+        if is_admin.nil?
+          nil
+        else
+          is_admin ? admin_user : non_admin_user
+        end
+      end
+
+      it { is_expected.to be(app_setting && is_admin) }
+    end
+  end
+
   describe '#locale_path' do
     it 'returns the locale path with an `_`' do
       Gitlab::I18n.with_locale('pt-BR') do

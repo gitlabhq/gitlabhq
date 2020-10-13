@@ -202,6 +202,36 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue added to epic actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_ADDED_TO_EPIC}
+
+      def track_action(params)
+        described_class.track_issue_added_to_epic_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue removed from epic actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_REMOVED_FROM_EPIC}
+
+      def track_action(params)
+        described_class.track_issue_removed_from_epic_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue changed epic actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_CHANGED_EPIC}
+
+      def track_action(params)
+        described_class.track_issue_changed_epic_action(**params)
+      end
+    end
+  end
+
   it 'can return the count of actions per user deduplicated', :aggregate_failures do
     described_class.track_issue_title_changed_action(author: user1)
     described_class.track_issue_description_changed_action(author: user1)

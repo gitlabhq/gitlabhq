@@ -13451,10 +13451,10 @@ msgstr ""
 msgid "Ignored"
 msgstr ""
 
-msgid "Image Details"
+msgid "Image URL"
 msgstr ""
 
-msgid "Image URL"
+msgid "Image details"
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -13728,10 +13728,16 @@ msgstr ""
 msgid "IncidentManagement|Unpublished"
 msgstr ""
 
+msgid "IncidentSettings|Activate \"time to SLA\" countdown timer"
+msgstr ""
+
 msgid "IncidentSettings|Alert integration"
 msgstr ""
 
 msgid "IncidentSettings|Grafana integration"
+msgstr ""
+
+msgid "IncidentSettings|Incident settings"
 msgstr ""
 
 msgid "IncidentSettings|Incidents"
@@ -13741,6 +13747,30 @@ msgid "IncidentSettings|PagerDuty integration"
 msgstr ""
 
 msgid "IncidentSettings|Set up integrations with external tools to help better manage incidents."
+msgstr ""
+
+msgid "IncidentSettings|Time limit"
+msgstr ""
+
+msgid "IncidentSettings|Time limit must be a multiple of 15 minutes"
+msgstr ""
+
+msgid "IncidentSettings|Time limit must be a valid number"
+msgstr ""
+
+msgid "IncidentSettings|Time limit must be greater than 0"
+msgstr ""
+
+msgid "IncidentSettings|When activated, this will apply to all new incidents within the project"
+msgstr ""
+
+msgid "IncidentSettings|You may choose to introduce a countdown timer in incident issues to better track Service Level Agreements (SLAs). The timer is automatically started when the incident is created, and sets a time limit for the incident to be resolved in. When activated, \"time to SLA\" countdown will appear on all new incidents."
+msgstr ""
+
+msgid "IncidentSettings|hours"
+msgstr ""
+
+msgid "IncidentSettings|minutes"
 msgstr ""
 
 msgid "Incidents"
@@ -13830,9 +13860,6 @@ msgstr ""
 msgid "Input your repository URL"
 msgstr ""
 
-msgid "Insert"
-msgstr ""
-
 msgid "Insert a code block"
 msgstr ""
 
@@ -13843,6 +13870,9 @@ msgid "Insert an image"
 msgstr ""
 
 msgid "Insert code"
+msgstr ""
+
+msgid "Insert image"
 msgstr ""
 
 msgid "Insert inline code"

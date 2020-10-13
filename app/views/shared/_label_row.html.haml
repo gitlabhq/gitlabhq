@@ -3,22 +3,28 @@
 - show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
 - show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests)
 
-.label-name.gl-flex-shrink-0.gl-mr-3
+.label-name.gl-flex-shrink-0.gl-mt-2.gl-mr-3
   = render_label(label, tooltip: false)
-.label-description.gl-flex-grow-1.gl-mr-3.gl-w-full
-  - if label.description.present?
-    .description-text.gl-mb-3
-      = markdown_field(label, :description)
-  %ul.label-links.gl-m-0.gl-p-0.gl-white-space-nowrap
-    - if show_label_issues_link
-      %li.inline.gl-text-blue-600
-        = link_to_label(label, css_class: 'gl-text-blue-600!') { _('Issues') }
-    - if show_label_merge_requests_link
-      &middot;
-      %li.inline.gl-text-blue-600
-        = link_to_label(label, type: :merge_request, css_class: 'gl-text-blue-600!') { _('Merge requests') }
-    = render_if_exists 'shared/label_row_epics_link', label: label
-    - if force_priority
-      &middot;
-      %li.js-priority-badge.inline.gl-ml-3
-        .label-badge.gl-bg-blue-50= _('Prioritized label')
+.label-description.gl-flex-grow-1.gl-overflow-hidden
+  .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-mt-2
+    .description-text.gl-flex-grow-1.gl-overflow-hidden
+      - if label.description.present?
+        = markdown_field(label, :description)
+      - elsif @project
+        = render 'shared/label_full_path', label: label
+    %ul.label-links.gl-m-0.gl-p-0.gl-white-space-nowrap
+      - if show_label_issues_link
+        %li.inline
+          = link_to_label(label, css_class: 'gl-text-blue-600!') { _('Issues') }
+      - if show_label_merge_requests_link
+        &middot;
+        %li.inline
+          = link_to_label(label, type: :merge_request, css_class: 'gl-text-blue-600!') { _('Merge requests') }
+      = render_if_exists 'shared/label_row_epics_link', label: label
+      - if force_priority
+        &middot;
+        %li.js-priority-badge.inline.gl-ml-3
+          .label-badge.gl-bg-blue-50= _('Prioritized label')
+  - if @project && label.description.present?
+    .gl-mt-3
+      = render 'shared/label_full_path', label: label

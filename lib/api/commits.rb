@@ -64,27 +64,13 @@ module API
 
         serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
 
-        if Feature.enabled?(:api_commits_without_count, user_project)
-          # This tells kaminari that there is 1 more commit after the one we've
-          # loaded, meaning there will be a next page, if the currently loaded set
-          # of commits is equal to the requested page size.
-          commit_count = offset + commits.size + 1
-          paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+        # This tells kaminari that there is 1 more commit after the one we've
+        # loaded, meaning there will be a next page, if the currently loaded set
+        # of commits is equal to the requested page size.
+        commit_count = offset + commits.size + 1
+        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
-          present paginate(paginated_commits, exclude_total_headers: true), with: serializer
-        else
-          commit_count =
-            if all || path || before || after || first_parent
-              user_project.repository.count_commits(ref: ref, path: path, before: before, after: after, all: all, first_parent: first_parent)
-            else
-              # Cacheable commit count.
-              user_project.repository.commit_count_for_ref(ref)
-            end
-
-          paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
-
-          present paginate(paginated_commits), with: serializer
-        end
+        present paginate(paginated_commits, exclude_total_headers: true), with: serializer
       end
 
       desc 'Commit multiple file changes as one commit' do

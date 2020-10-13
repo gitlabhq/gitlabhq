@@ -91,4 +91,18 @@ RSpec.describe LabelPresenter do
       it { is_expected.to eq(label.project.name) }
     end
   end
+
+  describe '#subject_full_name' do
+    context 'with group label' do
+      subject { group_label.subject_full_name }
+
+      it { is_expected.to eq(group_label.group.full_name) }
+    end
+
+    context 'with project label' do
+      subject { label.subject_full_name }
+
+      it { is_expected.to eq(label.project.full_name) }
+    end
+  end
 end
