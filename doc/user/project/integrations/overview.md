@@ -50,7 +50,7 @@ Click on the service links to see further configuration instructions and details
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands | No |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost | No |
 | [Microsoft teams](microsoft_teams.md) |  Receive notifications for actions that happen on GitLab into a room on Microsoft Teams using Office 365 Connectors | No |
-| Packagist | Update your project on Packagist, the main Composer repository | Yes |
+| Packagist | Update your projects on Packagist, the main Composer repository | Yes |
 | Pipelines emails | Email the pipeline status to a list of recipients | No |
 | [Slack Notifications](slack.md) | Send GitLab events (for example, an issue was created) to Slack as notifications | No |
 | [Slack slash commands](slack_slash_commands.md) **(CORE ONLY)** | Use slash commands in Slack to control GitLab | No |

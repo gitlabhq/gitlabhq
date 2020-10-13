@@ -24,6 +24,14 @@ export const member = {
   usingLicense: false,
   groupSso: false,
   groupManagedAccount: false,
+  validRoles: {
+    Guest: 10,
+    Reporter: 20,
+    Developer: 30,
+    Maintainer: 40,
+    Owner: 50,
+    'Minimal Access': 5,
+  },
 };
 
 export const group = {
@@ -39,6 +47,7 @@ export const group = {
   id: 3,
   createdAt: '2020-08-06T15:31:07.662Z',
   expiresAt: null,
+  validRoles: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
 };
 
 const { user, ...memberNoUser } = member;

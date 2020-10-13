@@ -49,7 +49,7 @@ export default {
     :state="hasUserLists"
     :invalid-feedback="$options.translations.rolloutUserListNoListError"
     :label="$options.translations.rolloutUserListLabel"
-    :description="$options.translations.rolloutUserListDescription"
+    :description="hasUserLists ? $options.translations.rolloutUserListDescription : ''"
   >
     <template #default="{ inputId }">
       <gl-form-select

@@ -49,7 +49,7 @@
                   = project.full_name
               %td
                 .float-right
-                  = link_to 'Disable', admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn btn-danger btn-sm'
+                  = link_to 'Disable', admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'gl-button btn btn-danger btn-sm'
 
     %table.table.unassigned-projects
       %thead
@@ -73,7 +73,7 @@
             .float-right
               = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
                 = f.hidden_field :runner_id, value: @runner.id
-                = f.submit 'Enable', class: 'btn btn-sm'
+                = f.submit 'Enable', class: 'gl-button btn btn-sm'
     = paginate_without_count @projects
 
   .col-md-6

@@ -2011,6 +2011,11 @@ type BurnupChartDailyTotals {
 
 type CiGroup {
   """
+  Detailed status of the group
+  """
+  detailedStatus: DetailedStatus
+
+  """
   Jobs in group
   """
   jobs(
@@ -2083,6 +2088,11 @@ type CiGroupEdge {
 
 type CiJob {
   """
+  Detailed status of the job
+  """
+  detailedStatus: DetailedStatus
+
+  """
   Name of the job
   """
   name: String
@@ -2154,6 +2164,11 @@ Identifier of Ci::Pipeline
 scalar CiPipelineID
 
 type CiStage {
+  """
+  Detailed status of the stage
+  """
+  detailedStatus: DetailedStatus
+
   """
   Group of jobs for the stage
   """
@@ -5295,42 +5310,42 @@ type DetailedStatus {
   action: StatusAction
 
   """
-  Path of the details for the pipeline status
+  Path of the details for the status
   """
-  detailsPath: String!
+  detailsPath: String
 
   """
-  Favicon of the pipeline status
+  Favicon of the status
   """
   favicon: String!
 
   """
-  Group of the pipeline status
+  Group of the status
   """
   group: String!
 
   """
-  Indicates if the pipeline status has further details
+  Indicates if the status has further details
   """
   hasDetails: Boolean!
 
   """
-  Icon of the pipeline status
+  Icon of the status
   """
   icon: String!
 
   """
-  Label of the pipeline status
+  Label of the status
   """
   label: String!
 
   """
-  Text of the pipeline status
+  Text of the status
   """
   text: String!
 
   """
-  Tooltip associated with the pipeline status
+  Tooltip associated with the status
   """
   tooltip: String!
 }

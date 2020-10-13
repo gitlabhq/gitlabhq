@@ -72,6 +72,7 @@ module API
         post '/verify' do
           authenticate_runner!
           status 200
+          body "200"
         end
       end
 
@@ -183,6 +184,7 @@ module API
           service.execute.then do |result|
             header 'X-GitLab-Trace-Update-Interval', result.backoff
             status result.status
+            body result.status.to_s
           end
         end
 
@@ -293,6 +295,7 @@ module API
 
           if result[:status] == :success
             status :created
+            body "201"
           else
             render_api_error!(result[:message], result[:http_status])
           end

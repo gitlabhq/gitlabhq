@@ -26,4 +26,8 @@ RSpec.describe Gitlab::Ci::Status::Scheduled do
   describe '#group' do
     it { expect(subject.group).to eq 'scheduled' }
   end
+
+  describe '#details_path' do
+    it { expect(subject.details_path).to be_nil }
+  end
 end

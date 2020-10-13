@@ -171,7 +171,7 @@ class Admin::UsersController < Admin::ApplicationController
         # restore username to keep form action url.
         user.username = params[:id]
         format.html { render "edit" }
-        format.json { render json: [result[:message]], status: result[:status] }
+        format.json { render json: [result[:message]], status: :internal_server_error }
       end
     end
   end

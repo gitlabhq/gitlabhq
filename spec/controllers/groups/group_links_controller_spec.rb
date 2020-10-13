@@ -15,6 +15,21 @@ RSpec.describe Groups::GroupLinksController do
     shared_with_group.add_developer(group_member)
   end
 
+  shared_examples 'placeholder is passed as `id` parameter' do |action|
+    it 'returns a 404' do
+      post(
+        action,
+        params: {
+          group_id: shared_group,
+          id: ':id'
+        },
+        format: :json
+      )
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   describe '#create' do
     let(:shared_with_group_id) { shared_with_group.id }
     let(:shared_group_access) { GroupGroupLink.default_access }
@@ -125,6 +140,8 @@ RSpec.describe Groups::GroupLinksController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    include_examples 'placeholder is passed as `id` parameter', :create
   end
 
   describe '#update' do
@@ -197,6 +214,8 @@ RSpec.describe Groups::GroupLinksController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    include_examples 'placeholder is passed as `id` parameter', :update
   end
 
   describe '#destroy' do
@@ -232,5 +251,7 @@ RSpec.describe Groups::GroupLinksController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    include_examples 'placeholder is passed as `id` parameter', :destroy
   end
 end

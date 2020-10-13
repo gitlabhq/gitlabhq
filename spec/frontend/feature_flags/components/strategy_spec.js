@@ -1,10 +1,11 @@
 import { mount } from '@vue/test-utils';
 import { last } from 'lodash';
-import { GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
+import { GlAlert, GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
 import {
   PERCENT_ROLLOUT_GROUP_ID,
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+  ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
   ROLLOUT_STRATEGY_USER_ID,
   ROLLOUT_STRATEGY_GITLAB_USER_LIST,
 } from '~/feature_flags/constants';
@@ -66,6 +67,7 @@ describe('Feature flags strategy', () => {
     name
     ${ROLLOUT_STRATEGY_ALL_USERS}
     ${ROLLOUT_STRATEGY_PERCENT_ROLLOUT}
+    ${ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT}
     ${ROLLOUT_STRATEGY_USER_ID}
     ${ROLLOUT_STRATEGY_GITLAB_USER_LIST}
   `('with strategy $name', ({ name }) => {
@@ -88,6 +90,26 @@ describe('Feature flags strategy', () => {
       expect(last(wrapper.emitted('change'))).toEqual([
         { name, parameters: { test: 'parameters' } },
       ]);
+    });
+  });
+
+  describe('with the gradualRolloutByUserId strategy', () => {
+    let strategy;
+
+    beforeEach(() => {
+      strategy = {
+        name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+        parameters: { percentage: '50', groupId: 'default' },
+        scopes: [{ environmentScope: 'production' }],
+      };
+      const propsData = { strategy, index: 0, endpoint: '' };
+      factory({ propsData, provide });
+    });
+
+    it('shows an alert asking users to consider using flexibleRollout instead', () => {
+      expect(wrapper.find(GlAlert).text()).toContain(
+        'Consider using the more flexible "Percent rollout" strategy instead.',
+      );
     });
   });
 

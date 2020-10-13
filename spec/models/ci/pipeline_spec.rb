@@ -2988,6 +2988,57 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#builds_in_self_and_descendants' do
+    subject(:builds) { pipeline.builds_in_self_and_descendants }
+
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:build) { create(:ci_build, pipeline: pipeline) }
+
+    context 'when pipeline is standalone' do
+      it 'returns the list of builds' do
+        expect(builds).to contain_exactly(build)
+      end
+    end
+
+    context 'when pipeline is parent of another pipeline' do
+      let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:child_build) { create(:ci_build, pipeline: child_pipeline) }
+
+      it 'returns the list of builds' do
+        expect(builds).to contain_exactly(build, child_build)
+      end
+    end
+
+    context 'when pipeline is parent of another parent pipeline' do
+      let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:child_build) { create(:ci_build, pipeline: child_pipeline) }
+      let(:child_of_child_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
+      let!(:child_of_child_build) { create(:ci_build, pipeline: child_of_child_pipeline) }
+
+      it 'returns the list of builds' do
+        expect(builds).to contain_exactly(build, child_build, child_of_child_build)
+      end
+    end
+  end
+
+  describe '#build_with_artifacts_in_self_and_descendants' do
+    let!(:build) { create(:ci_build, name: 'test', pipeline: pipeline) }
+    let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+    let!(:child_build) { create(:ci_build, :artifacts, name: 'test', pipeline: child_pipeline) }
+
+    it 'returns the build with a given name, having artifacts' do
+      expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(child_build)
+    end
+
+    context 'when same job name is present in both parent and child pipeline' do
+      let!(:build) { create(:ci_build, :artifacts, name: 'test', pipeline: pipeline) }
+
+      it 'returns the job in the parent pipeline' do
+        expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(build)
+      end
+    end
+  end
+
   describe '#find_job_with_archive_artifacts' do
     let!(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
     let!(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }

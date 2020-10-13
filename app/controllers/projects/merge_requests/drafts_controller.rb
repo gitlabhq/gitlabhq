@@ -45,7 +45,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     if result[:status] == :success
       head :ok
     else
-      render json: { message: result[:message] }, status: result[:status]
+      render json: { message: result[:message] }, status: :internal_server_error
     end
   end
 

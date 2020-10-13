@@ -10,6 +10,7 @@ RSpec.describe Types::Ci::GroupType do
       name
       size
       jobs
+      detailedStatus
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

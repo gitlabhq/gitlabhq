@@ -7,22 +7,22 @@ module Types
       graphql_name 'DetailedStatus'
 
       field :group, GraphQL::STRING_TYPE, null: false,
-            description: 'Group of the pipeline status'
+            description: 'Group of the status'
       field :icon, GraphQL::STRING_TYPE, null: false,
-            description: 'Icon of the pipeline status'
+            description: 'Icon of the status'
       field :favicon, GraphQL::STRING_TYPE, null: false,
-            description: 'Favicon of the pipeline status'
-      field :details_path, GraphQL::STRING_TYPE, null: false,
-            description: 'Path of the details for the pipeline status'
+            description: 'Favicon of the status'
+      field :details_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Path of the details for the status'
       field :has_details, GraphQL::BOOLEAN_TYPE, null: false,
-            description: 'Indicates if the pipeline status has further details',
+            description: 'Indicates if the status has further details',
             method: :has_details?
       field :label, GraphQL::STRING_TYPE, null: false,
-            description: 'Label of the pipeline status'
+            description: 'Label of the status'
       field :text, GraphQL::STRING_TYPE, null: false,
-            description: 'Text of the pipeline status'
+            description: 'Text of the status'
       field :tooltip, GraphQL::STRING_TYPE, null: false,
-            description: 'Tooltip associated with the pipeline status',
+            description: 'Tooltip associated with the status',
             method: :status_tooltip
       field :action, Types::Ci::StatusActionType, null: true,
             description: 'Action information for the status. This includes method, button title, icon, path, and title',

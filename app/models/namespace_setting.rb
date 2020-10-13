@@ -4,6 +4,7 @@ class NamespaceSetting < ApplicationRecord
   belongs_to :namespace, inverse_of: :namespace_settings
 
   validate :default_branch_name_content
+  validate :allow_mfa_for_group
 
   NAMESPACE_SETTINGS_PARAMS = [:default_branch_name].freeze
 
@@ -14,6 +15,12 @@ class NamespaceSetting < ApplicationRecord
 
     if default_branch_name.blank?
       errors.add(:default_branch_name, "can not be an empty string")
+    end
+  end
+
+  def allow_mfa_for_group
+    if namespace&.subgroup? && allow_mfa_for_subgroups == false
+      errors.add(:allow_mfa_for_subgroups, _('is not allowed since the group is not top-level group.'))
     end
   end
 end

@@ -76,6 +76,7 @@ class Group < Namespace
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
+  validate :two_factor_authentication_allowed
   validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -587,6 +588,16 @@ class Group < Namespace
     return if visibility_level_allowed_by_sub_groups?
 
     errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
+  end
+
+  def two_factor_authentication_allowed
+    return unless has_parent?
+    return unless require_two_factor_authentication
+
+    ancestor_settings = ancestors.find_by(parent_id: nil).namespace_settings
+    return if ancestor_settings.allow_mfa_for_subgroups
+
+    errors.add(:require_two_factor_authentication, _('is forbidden by a top-level group'))
   end
 
   def members_from_self_and_ancestor_group_shares

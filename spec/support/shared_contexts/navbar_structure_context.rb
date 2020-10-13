@@ -72,6 +72,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Serverless'),
           _('Kubernetes'),
           _('Environments'),
+          _('Feature Flags'),
           _('Product Analytics')
         ]
       },

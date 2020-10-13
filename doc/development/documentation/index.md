@@ -676,7 +676,7 @@ build pipelines:
      ```
 
      We recommend installing the version of `markdownlint-cli` currently used in the documentation
-     linting [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/dockerfiles/Dockerfile.gitlab-docs-lint#L38).
+     linting [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L420).
 
 1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
    `brew` for macOS, run:
@@ -686,7 +686,7 @@ build pipelines:
    ```
 
    We recommend installing the version of Vale currently used in the documentation linting
-   [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/dockerfiles/Dockerfile.gitlab-docs-lint#L16).
+   [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L419).
 
 In addition to using markdownlint and Vale at the command line, these tools can be
 [integrated with your code editor](#configure-editors).

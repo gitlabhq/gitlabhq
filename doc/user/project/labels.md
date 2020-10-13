@@ -30,18 +30,25 @@ There are two types of labels in GitLab:
 
 ## Assign and unassign labels
 
-Every issue, merge request and epic can be assigned any number of labels. The labels are
+> Unassigning labels with the **X** button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216881) in GitLab 13.5.
+
+Every issue, merge request, and epic can be assigned any number of labels. The labels are
 managed in the right sidebar, where you can assign or unassign labels as needed.
 
-To assign a label to an issue, merge request or epic:
+To assign or unassign a label:
 
-1. In the label section of the sidebar, click **Edit**, then:
-   - In the list, click the labels you want. Each label is flagged with a checkmark.
-   - Find labels by entering a search query and clicking search (**{search}**), then
-     click on them. You can search repeatedly and add more labels.
-1. Click **X** or anywhere outside the label section and the labels are applied.
+1. In the **Labels** section of the sidebar, click **Edit**.
+1. In the **Assign labels** list, search for labels by typing their names.
+   You can search repeatedly to add more labels.
+   The selected labels are marked with a checkmark.
+1. Click the labels you want to assign or unassign.
+1. To apply your changes to labels, click **X** next to **Assign labels** or anywhere outside the
+   label section.
 
-You can also assign a label with the [`/label ~label1 ~label2` quick action](quick_actions.md).
+Alternatively, to unassign a label, click the **X** on the label you want to unassign.
+
+You can also assign a label with the `/label` [quick action](quick_actions.md),
+remove labels with `/unlabel`, and reassign labels (remove all and assign new ones) with `/relabel`.
 
 ## Label management
 

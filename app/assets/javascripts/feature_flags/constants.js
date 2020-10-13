@@ -3,6 +3,7 @@ import { s__ } from '~/locale';
 
 export const ROLLOUT_STRATEGY_ALL_USERS = 'default';
 export const ROLLOUT_STRATEGY_PERCENT_ROLLOUT = 'gradualRolloutUserId';
+export const ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT = 'flexibleRollout';
 export const ROLLOUT_STRATEGY_USER_ID = 'userWithId';
 export const ROLLOUT_STRATEGY_GITLAB_USER_LIST = 'gitlabUserList';
 
@@ -33,6 +34,10 @@ export const STRATEGY_SELECTIONS = [
   {
     value: ROLLOUT_STRATEGY_ALL_USERS,
     text: s__('FeatureFlags|All users'),
+  },
+  {
+    value: ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
+    text: s__('FeatureFlags|Percent rollout'),
   },
   {
     value: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,

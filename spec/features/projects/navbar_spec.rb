@@ -18,14 +18,6 @@ RSpec.describe 'Project navbar' do
 
     project.add_maintainer(user)
     sign_in(user)
-
-    if Gitlab.ee?
-      insert_after_sub_nav_item(
-        _('Environments'),
-        within: _('Operations'),
-        new_sub_nav_item_name: _('Feature Flags')
-      )
-    end
   end
 
   it_behaves_like 'verified navigation bar' do

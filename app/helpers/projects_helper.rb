@@ -471,7 +471,8 @@ module ProjectsHelper
       labels:             :read_label,
       issues:             :read_issue,
       project_members:    :read_project_member,
-      wiki:               :read_wiki
+      wiki:               :read_wiki,
+      feature_flags:      :read_feature_flag
     }
   end
 
@@ -482,7 +483,8 @@ module ProjectsHelper
       :read_environment,
       :read_issue,
       :read_sentry_issue,
-      :read_cluster
+      :read_cluster,
+      :read_feature_flag
     ].any? do |ability|
       can?(current_user, ability, project)
     end
@@ -561,7 +563,11 @@ module ProjectsHelper
   end
 
   def sidebar_operations_link_path(project = @project)
-    metrics_project_environments_path(project) if can?(current_user, :read_environment, project)
+    if can?(current_user, :read_environment, project)
+      metrics_project_environments_path(project)
+    else
+      project_feature_flags_path(project)
+    end
   end
 
   def project_last_activity(project)
@@ -754,6 +760,7 @@ module ProjectsHelper
       logs
       product_analytics
       metrics_dashboard
+      feature_flags
       tracings
     ]
   end

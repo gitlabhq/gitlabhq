@@ -80,11 +80,9 @@ module Gitlab
         job.trace_chunks.any? || current_path.present? || old_trace.present?
       end
 
-      def read(should_retry: true, &block)
+      def read(&block)
         read_stream(&block)
-      rescue Errno::ENOENT
-        raise unless should_retry
-
+      rescue Errno::ENOENT, ChunkedIO::FailedToGetChunkError
         job.reset
         read_stream(&block)
       end

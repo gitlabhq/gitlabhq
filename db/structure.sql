@@ -10074,6 +10074,24 @@ CREATE SEQUENCE ci_daily_build_group_report_results_id_seq
 
 ALTER SEQUENCE ci_daily_build_group_report_results_id_seq OWNED BY ci_daily_build_group_report_results.id;
 
+CREATE TABLE ci_deleted_objects (
+    id bigint NOT NULL,
+    file_store smallint DEFAULT 1 NOT NULL,
+    pick_up_at timestamp with time zone DEFAULT now() NOT NULL,
+    store_dir text NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_5e151d6912 CHECK ((char_length(store_dir) <= 1024))
+);
+
+CREATE SEQUENCE ci_deleted_objects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_deleted_objects_id_seq OWNED BY ci_deleted_objects.id;
+
 CREATE TABLE ci_freeze_periods (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -17293,6 +17311,8 @@ ALTER TABLE ONLY ci_builds_runner_session ALTER COLUMN id SET DEFAULT nextval('c
 
 ALTER TABLE ONLY ci_daily_build_group_report_results ALTER COLUMN id SET DEFAULT nextval('ci_daily_build_group_report_results_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_deleted_objects ALTER COLUMN id SET DEFAULT nextval('ci_deleted_objects_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('ci_freeze_periods_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_group_variables ALTER COLUMN id SET DEFAULT nextval('ci_group_variables_id_seq'::regclass);
@@ -18281,6 +18301,9 @@ ALTER TABLE ONLY ci_builds_runner_session
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT ci_daily_build_group_report_results_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_deleted_objects
+    ADD CONSTRAINT ci_deleted_objects_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_freeze_periods
     ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
@@ -19819,6 +19842,8 @@ CREATE INDEX index_ci_builds_project_id_and_status_for_live_jobs_partial2 ON ci_
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON ci_builds_runner_session USING btree (build_id);
 
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON ci_daily_build_group_report_results USING btree (last_pipeline_id);
+
+CREATE INDEX index_ci_deleted_objects_on_pick_up_at ON ci_deleted_objects USING btree (pick_up_at);
 
 CREATE INDEX index_ci_freeze_periods_on_project_id ON ci_freeze_periods USING btree (project_id);
 

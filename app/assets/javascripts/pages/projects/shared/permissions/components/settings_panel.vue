@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
@@ -22,6 +22,7 @@ export default {
     projectFeatureSetting,
     projectFeatureToggle,
     projectSettingRow,
+    GlIcon,
     GlSprintf,
     GlLink,
     GlFormCheckbox,
@@ -325,7 +326,12 @@ export default {
                 >{{ s__('ProjectSettings|Public') }}</option
               >
             </select>
-            <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i>
+            <gl-icon
+              name="chevron-down"
+              aria-hidden="true"
+              data-hidden="true"
+              class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
+            />
           </div>
         </div>
         <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
@@ -540,7 +546,12 @@ export default {
                 >{{ featureAccessLevelEveryone[1] }}</option
               >
             </select>
-            <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i>
+            <gl-icon
+              name="chevron-down"
+              aria-hidden="true"
+              data-hidden="true"
+              class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
+            />
           </div>
         </div>
       </project-setting-row>

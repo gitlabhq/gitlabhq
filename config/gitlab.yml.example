@@ -435,6 +435,9 @@ production: &base
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
+    # Remove files from object storage
+    ci_schedule_delete_objects_worker:
+      cron: "*/16 * * * *"
     # Stop expired environments
     environments_auto_stop_cron_worker:
       cron: "24 * * * *"

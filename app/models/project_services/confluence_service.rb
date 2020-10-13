@@ -27,7 +27,7 @@ class ConfluenceService < Service
   end
 
   def description
-    s_('ConfluenceService|Connect a Confluence Cloud Workspace to your GitLab project')
+    s_('ConfluenceService|Connect a Confluence Cloud Workspace to GitLab')
   end
 
   def detailed_description

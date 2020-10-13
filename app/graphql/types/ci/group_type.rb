@@ -12,6 +12,9 @@ module Types
         description: 'Size of the group'
       field :jobs, Ci::JobType.connection_type, null: true,
         description: 'Jobs in group'
+      field :detailed_status, Types::Ci::DetailedStatusType, null: true,
+            description: 'Detailed status of the group',
+            resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
     end
   end
 end

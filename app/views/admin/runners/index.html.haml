@@ -48,7 +48,7 @@
         .filtered-search-box
           = dropdown_tag(_('Recent searches'),
             options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',
-            toggle_class: 'btn filtered-search-history-dropdown-toggle-button',
+            toggle_class: 'gl-button btn filtered-search-history-dropdown-toggle-button',
             dropdown_class: 'filtered-search-history-dropdown',
             content_class: 'filtered-search-history-dropdown-content' }) do
             .js-filtered-search-history-dropdown{ data: { full_path: admin_runners_path } }
@@ -60,7 +60,7 @@
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
-                  = button_tag class: %w[btn btn-link] do
+                  = button_tag class: %w[gl-button btn btn-link] do
                     -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                     -# haml lint's ClassAttributeWithStaticValue
                     %svg
@@ -78,21 +78,21 @@
               %ul{ data: { dropdown: true } }
                 - Ci::Runner::AVAILABLE_STATUSES.each do |status|
                   %li.filter-dropdown-item{ data: { value: status } }
-                    = button_tag class: %w[btn btn-link] do
+                    = button_tag class: %w[gl-button btn btn-link] do
                       = status.titleize
 
             #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
                   %li.filter-dropdown-item{ data: { value: runner_type } }
-                    = button_tag class: %w[btn btn-link] do
+                    = button_tag class: %w[gl-button btn btn-link] do
                       = runner_type.titleize
 
           #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
             %ul{ data: { dropdown: true } }
               - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
                 %li.filter-dropdown-item{ data: { value: runner_type } }
-                  = button_tag class: %w[btn btn-link] do
+                  = button_tag class: %w[gl-button btn btn-link] do
                     = runner_type.titleize
 
           #js-dropdown-runner-tag.filtered-search-input-dropdown-menu.dropdown-menu

@@ -114,7 +114,7 @@ RSpec.describe MergeRequests::FfMergeService do
         error_message = 'error message'
         raw_message = 'The truth is out there'
 
-        pre_receive_error = Gitlab::Git::PreReceiveError.new(raw_message, "GitLab: #{error_message}")
+        pre_receive_error = Gitlab::Git::PreReceiveError.new(raw_message, fallback_message: error_message)
         allow(service).to receive(:repository).and_raise(pre_receive_error)
         allow(service).to receive(:execute_hooks)
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(

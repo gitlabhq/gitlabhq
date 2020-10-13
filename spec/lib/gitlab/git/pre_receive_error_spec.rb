@@ -21,13 +21,21 @@ RSpec.describe Gitlab::Git::PreReceiveError do
         expect(ex.raw_message).to eq(raw_message)
       end
 
-      it 'sanitizes the user message' do
-        raw_message = 'Raw message'
-        ex = described_class.new(raw_message, "#{prefix} User message")
+      it 'prefers the original message over the fallback' do
+        raw_message = "#{prefix} Hello,\nworld!"
+        ex = described_class.new(raw_message, fallback_message: "User message")
 
+        expect(ex.message).to eq('Hello,')
         expect(ex.raw_message).to eq(raw_message)
-        expect(ex.message).to eq('User message')
       end
+    end
+
+    it 'uses the fallback message' do
+      raw_message = 'Hello\n'
+      ex = described_class.new(raw_message, fallback_message: "User message")
+
+      expect(ex.raw_message).to eq(raw_message)
+      expect(ex.message).to eq('User message')
     end
   end
 end

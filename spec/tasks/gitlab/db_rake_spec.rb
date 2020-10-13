@@ -98,6 +98,29 @@ RSpec.describe 'gitlab:db namespace rake task' do
     end
   end
 
+  describe 'unattended' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:schema_migration_table_exists, :needs_migrations, :rake_output) do
+      false | false | "unattended_migrations_completed"
+      false | true | "unattended_migrations_completed"
+      true | false | "unattended_migrations_static"
+      true | true | "unattended_migrations_completed"
+    end
+
+    before do
+      allow(Rake::Task['gitlab:db:configure']).to receive(:invoke).and_return(true)
+    end
+
+    with_them do
+      it 'outputs changed message for automation after operations happen' do
+        allow(ActiveRecord::Base.connection.schema_migration).to receive(:table_exists?).and_return(schema_migration_table_exists)
+        allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migrations)
+        expect { run_rake_task('gitlab:db:unattended') }. to output(/^#{rake_output}$/).to_stdout
+      end
+    end
+  end
+
   describe 'clean_structure_sql' do
     let_it_be(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
     let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }

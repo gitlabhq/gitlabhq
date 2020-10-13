@@ -33,7 +33,7 @@ export default {
       return MEMBER_TYPES.user;
     },
     isDirectMember() {
-      return this.member.source?.id === this.sourceId;
+      return this.isGroup || this.member.source?.id === this.sourceId;
     },
     isCurrentUser() {
       return this.member.user?.id === this.currentUserId;
@@ -44,6 +44,9 @@ export default {
     canResend() {
       return Boolean(this.member.invite?.canResend);
     },
+    canUpdate() {
+      return !this.isCurrentUser && this.isDirectMember && this.member.canUpdate;
+    },
   },
   render() {
     return this.$scopedSlots.default({
@@ -53,6 +56,7 @@ export default {
       permissions: {
         canRemove: this.canRemove,
         canResend: this.canResend,
+        canUpdate: this.canUpdate,
       },
     });
   },

@@ -65,6 +65,19 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'
+    task unattended: :environment do
+      no_database = !ActiveRecord::Base.connection.schema_migration.table_exists?
+      needs_migrations = ActiveRecord::Base.connection.migration_context.needs_migration?
+
+      if no_database || needs_migrations
+        Rake::Task['gitlab:db:configure'].invoke
+        puts "unattended_migrations_completed"
+      else
+        puts "unattended_migrations_static"
+      end
+    end
+
     desc 'GitLab | DB | Checks if migrations require downtime or not'
     task :downtime_check, [:ref] => :environment do |_, args|
       abort 'You must specify a Git reference to compare with' unless args[:ref]

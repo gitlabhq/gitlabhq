@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import { GlTable } from '@gitlab/ui';
+import { GlTable, GlBadge } from '@gitlab/ui';
 import { FIELDS } from '../constants';
 import initUserPopovers from '~/user_popovers';
 import MemberAvatar from './member_avatar.vue';
@@ -9,17 +9,20 @@ import CreatedAt from './created_at.vue';
 import ExpiresAt from './expires_at.vue';
 import MemberActionButtons from './member_action_buttons.vue';
 import MembersTableCell from './members_table_cell.vue';
+import RoleDropdown from './role_dropdown.vue';
 
 export default {
   name: 'MembersTable',
   components: {
     GlTable,
+    GlBadge,
     MemberAvatar,
     CreatedAt,
     ExpiresAt,
     MembersTableCell,
     MemberSource,
     MemberActionButtons,
+    RoleDropdown,
   },
   computed: {
     ...mapState(['members', 'tableFields']),
@@ -75,6 +78,13 @@ export default {
 
     <template #cell(expires)="{ item: { expiresAt } }">
       <expires-at :date="expiresAt" />
+    </template>
+
+    <template #cell(maxRole)="{ item: member }">
+      <members-table-cell #default="{ permissions }" :member="member">
+        <role-dropdown v-if="permissions.canUpdate" :member="member" />
+        <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
+      </members-table-cell>
     </template>
 
     <template #cell(actions)="{ item: member }">

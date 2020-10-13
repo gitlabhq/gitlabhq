@@ -23,6 +23,10 @@ module Gitlab
         def group
           'waiting-for-resource'
         end
+
+        def details_path
+          nil
+        end
       end
     end
   end

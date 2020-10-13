@@ -465,12 +465,14 @@ RSpec.describe API::Jobs do
     end
 
     context 'find proper job' do
+      let(:job_with_artifacts) { job }
+
       shared_examples 'a valid file' do
         context 'when artifacts are stored locally', :sidekiq_might_not_need_inline do
           let(:download_headers) do
             { 'Content-Transfer-Encoding' => 'binary',
               'Content-Disposition' =>
-              %Q(attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
+              %Q(attachment; filename="#{job_with_artifacts.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
           end
 
           it { expect(response).to have_gitlab_http_status(:ok) }
@@ -514,6 +516,18 @@ RSpec.describe API::Jobs do
 
         before do
           get_for_ref('improve/awesome')
+        end
+
+        it_behaves_like 'a valid file'
+      end
+
+      context 'with job name in a child pipeline' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let!(:child_job) { create(:ci_build, :artifacts, :success, name: 'rspec', pipeline: child_pipeline) }
+        let(:job_with_artifacts) { child_job }
+
+        before do
+          get_for_ref('master', child_job.name)
         end
 
         it_behaves_like 'a valid file'

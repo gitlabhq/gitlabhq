@@ -28,6 +28,11 @@ export default {
     DropdownValueCollapsed,
   },
   props: {
+    allowLabelRemove: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     allowLabelEdit: {
       type: Boolean,
       required: true,
@@ -130,6 +135,7 @@ export default {
   mounted() {
     this.setInitialState({
       variant: this.variant,
+      allowLabelRemove: this.allowLabelRemove,
       allowLabelEdit: this.allowLabelEdit,
       allowLabelCreate: this.allowLabelCreate,
       allowMultiselect: this.allowMultiselect,
@@ -252,7 +258,10 @@ export default {
         :allow-label-edit="allowLabelEdit"
         :labels-select-in-progress="labelsSelectInProgress"
       />
-      <dropdown-value>
+      <dropdown-value
+        :disable-labels="labelsSelectInProgress"
+        @onLabelRemove="$emit('onLabelRemove', $event)"
+      >
         <slot></slot>
       </dropdown-value>
       <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />

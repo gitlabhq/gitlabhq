@@ -22,6 +22,8 @@ describe('UserAvatar', () => {
   const getByText = (text, options) =>
     createWrapper(within(wrapper.element).findByText(text, options));
 
+  const findStatusEmoji = emoji => wrapper.find(`gl-emoji[data-name="${emoji}"]`);
+
   afterEach(() => {
     wrapper.destroy();
   });
@@ -80,6 +82,34 @@ describe('UserAvatar', () => {
       createComponent({ isCurrentUser: true });
 
       expect(getByText("It's you").exists()).toBe(true);
+    });
+  });
+
+  describe('user status', () => {
+    const emoji = 'island';
+
+    describe('when set', () => {
+      it('displays the status emoji', () => {
+        createComponent({
+          member: {
+            ...memberMock,
+            user: {
+              ...memberMock.user,
+              status: { emoji, messageHtml: 'On vacation' },
+            },
+          },
+        });
+
+        expect(findStatusEmoji(emoji).exists()).toBe(true);
+      });
+    });
+
+    describe('when not set', () => {
+      it('does not display status emoji', () => {
+        createComponent();
+
+        expect(findStatusEmoji(emoji).exists()).toBe(false);
+      });
     });
   });
 });

@@ -222,6 +222,36 @@ RSpec.describe Group do
         end
       end
     end
+
+    describe '#two_factor_authentication_allowed' do
+      let_it_be(:group) { create(:group) }
+
+      context 'for a parent group' do
+        it 'is valid' do
+          group.require_two_factor_authentication = true
+
+          expect(group).to be_valid
+        end
+      end
+
+      context 'for a child group' do
+        let(:sub_group) { create(:group, parent: group) }
+
+        it 'is valid when parent group allows' do
+          sub_group.require_two_factor_authentication = true
+
+          expect(sub_group).to be_valid
+        end
+
+        it 'is invalid when parent group blocks' do
+          group.namespace_settings.update!(allow_mfa_for_subgroups: false)
+          sub_group.require_two_factor_authentication = true
+
+          expect(sub_group).to be_invalid
+          expect(sub_group.errors[:require_two_factor_authentication]).to include('is forbidden by a top-level group')
+        end
+      end
+    end
   end
 
   describe '.without_integration' do

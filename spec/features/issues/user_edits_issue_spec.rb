@@ -6,9 +6,10 @@ RSpec.describe "Issues > User edits issue", :js do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
+  let_it_be(:label_assigned) { create(:label, project: project, title: 'verisimilitude') }
+  let_it_be(:label_unassigned) { create(:label, project: project, title: 'syzygy') }
+  let_it_be(:issue) { create(:issue, project: project, author: user, assignees: [user], labels: [label_assigned]) }
   let_it_be(:issue_with_milestones) { create(:issue, project: project_with_milestones, author: user, assignees: [user]) }
-  let_it_be(:label) { create(:label, project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project_with_milestones) }
 
@@ -101,6 +102,39 @@ RSpec.describe "Issues > User edits issue", :js do
 
           expect(page).not_to have_selector('.block-loading')
           expect(page).not_to have_selector('.gl-spinner')
+        end
+      end
+
+      it 'can add label to issue' do
+        page.within '.block.labels' do
+          expect(page).to have_text('verisimilitude')
+          expect(page).not_to have_text('syzygy')
+
+          click_on 'Edit'
+
+          wait_for_requests
+
+          click_on 'syzygy'
+          find('.dropdown-header-button').click
+
+          wait_for_requests
+
+          expect(page).to have_text('verisimilitude')
+          expect(page).to have_text('syzygy')
+        end
+      end
+
+      it 'can remove label from issue by clicking on the label `x` button' do
+        page.within '.block.labels' do
+          expect(page).to have_text('verisimilitude')
+
+          within '.gl-label' do
+            click_button
+          end
+
+          wait_for_requests
+
+          expect(page).not_to have_text('verisimilitude')
         end
       end
     end

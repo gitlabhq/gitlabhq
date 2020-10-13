@@ -8,8 +8,20 @@ export default {
   components: {
     GlLabel,
   },
+  props: {
+    disableLabels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
-    ...mapState(['selectedLabels', 'allowScopedLabels', 'labelsFilterBasePath']),
+    ...mapState([
+      'selectedLabels',
+      'allowLabelRemove',
+      'allowScopedLabels',
+      'labelsFilterBasePath',
+    ]),
   },
   methods: {
     labelFilterUrl(label) {
@@ -42,7 +54,10 @@ export default {
         :background-color="label.color"
         :target="labelFilterUrl(label)"
         :scoped="scopedLabel(label)"
+        :show-close-button="allowLabelRemove"
+        :disabled="disableLabels"
         tooltip-placement="top"
+        @close="$emit('onLabelRemove', label.id)"
       />
     </template>
   </div>

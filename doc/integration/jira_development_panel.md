@@ -263,7 +263,7 @@ The GitLab for Jira App uses an iframe to add namespaces on the settings page. S
 
 > "You need to sign in or sign up before continuing."
 
-In this case, enable cross-site cookies in your browser.
+In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/), [Google Chrome](https://www.google.com/chrome/index.html) or enable cross-site cookies in your browser.
 
 ## Usage
 

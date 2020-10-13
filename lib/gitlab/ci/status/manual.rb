@@ -19,6 +19,10 @@ module Gitlab
         def favicon
           'favicon_status_manual'
         end
+
+        def details_path
+          nil
+        end
       end
     end
   end

@@ -343,6 +343,11 @@ The latest artifacts are created by jobs in the **most recent** successful pipel
 for the specific ref. If you run two types of pipelines for the same ref, timing determines the latest
 artifact. For example, if a merge request creates a branch pipeline at the same time as a scheduled pipeline, the pipeline that completed most recently creates the latest artifact.
 
+In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
+for [parent and child pipelines](../parent_child_pipelines.md) are searched in hierarchical
+order from parent to child. For example, if both parent and child pipelines have a
+job with the same name, the artifact from the parent pipeline is returned.
+
 Artifacts for other pipelines can be accessed with direct access to them.
 
 The structure of the URL to download the whole artifacts archive is the following:

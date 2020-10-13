@@ -8,11 +8,13 @@ import {
 import { generateBadges } from 'ee_else_ce/vue_shared/components/members/utils';
 import { __ } from '~/locale';
 import { AVATAR_SIZE } from '../constants';
+import { glEmojiTag } from '~/emoji';
 
 export default {
   name: 'UserAvatar',
   avatarSize: AVATAR_SIZE,
   orphanedUserLabel: __('Orphaned member'),
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
     GlAvatarLink,
     GlAvatarLabeled,
@@ -38,6 +40,12 @@ export default {
     badges() {
       return generateBadges(this.member, this.isCurrentUser).filter(badge => badge.show);
     },
+    statusEmoji() {
+      return this.user?.status?.emoji;
+    },
+  },
+  methods: {
+    glEmojiTag,
   },
 };
 </script>
@@ -60,6 +68,9 @@ export default {
       :entity-id="user.id"
     >
       <template #meta>
+        <div v-if="statusEmoji" class="gl-p-1">
+          <span v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"></span>
+        </div>
         <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
           <gl-badge size="sm" :variant="badge.variant">
             {{ badge.text }}

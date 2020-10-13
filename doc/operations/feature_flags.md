@@ -87,11 +87,48 @@ and clicking **{pencil}** (edit).
 Enables the feature for all users. It uses the [`default`](https://unleash.github.io/docs/activation_strategy#default)
 Unleash activation strategy.
 
+### Percent Rollout
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43340) in GitLab 13.5.
+
+Enables the feature for a percentage of page views, with configurable consistency
+of behavior. This consistency is also known as stickiness. It uses the
+[`flexibleRollout`](https://unleash.github.io/docs/activation_strategy#flexiblerollout)
+Unleash activation strategy.
+
+You can configure the consistency to be based on:
+
+- **User IDs**: Each user ID has a consistent behavior, ignoring session IDs.
+- **Session IDs**: Each session ID has a consistent behavior, ignoring user IDs.
+- **Random**: Consistent behavior is not guaranteed. The feature is enabled for the
+  selected percentage of page views randomly. User IDs and session IDs are ignored.
+- **Available ID**: Consistent behavior is attempted based on the status of the user:
+  - If the user is logged in, make behavior consistent based on user ID.
+  - If the user is anonymous, make the behavior consistent based on the session ID.
+  - If there is no user ID or session ID, then the feature is enabled for the selected
+    percentage of page view randomly.
+
+For example, set a value of 15% based on **Available ID** to enable the feature for 15% of page views. For
+authenticated users this is based on their user ID. For anonymous users with a session ID it would be based on their
+session ID instead as they do not have a user ID. Then if no session ID is provided, it falls back to random.
+
+The rollout percentage can be from 0% to 100%.
+
+Selecting a consistency based on User IDs functions the same as the [percent of Users](#percent-of-users) rollout.
+
+CAUTION: **Caution:**
+Selecting **Random** provides inconsistent application behavior for individual users.
+
 ### Percent of Users
 
 Enables the feature for a percentage of authenticated users. It uses the
 [`gradualRolloutUserId`](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid)
 Unleash activation strategy.
+
+NOTE: **Note:**
+[Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
+behavior. It is recommended to use percent rollout instead of percent of users as
+it is more flexible.
 
 For example, set a value of 15% to enable the feature for 15% of authenticated users.
 

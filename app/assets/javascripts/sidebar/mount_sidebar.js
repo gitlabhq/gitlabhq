@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import Vuex from 'vuex';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import SidebarLabels from './components/labels/sidebar_labels.vue';
@@ -17,11 +16,9 @@ import createDefaultClient from '~/lib/graphql';
 import { isInIssuePage, isInIncidentPage, parseBoolean } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
-Vue.use(Vuex);
 
 function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-options')) {
   return JSON.parse(sidebarOptEl.innerHTML);
@@ -94,8 +91,6 @@ export function mountSidebarLabels() {
     return false;
   }
 
-  const labelsStore = new Vuex.Store(labelsSelectModule());
-
   return new Vue({
     el,
     provide: {
@@ -105,7 +100,6 @@ export function mountSidebarLabels() {
       allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),
       initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
     },
-    store: labelsStore,
     render: createElement => createElement(SidebarLabels),
   });
 }

@@ -15,9 +15,25 @@ FactoryBot.define do
     # on pipeline factories to avoid circular references
     transient { head_pipeline_of { nil } }
 
+    transient { child_of { nil } }
+
+    after(:build) do |pipeline, evaluator|
+      if evaluator.child_of
+        pipeline.project = evaluator.child_of.project
+        pipeline.source = :parent_pipeline
+      end
+    end
+
     after(:create) do |pipeline, evaluator|
       merge_request = evaluator.head_pipeline_of
       merge_request&.update!(head_pipeline: pipeline)
+
+      if evaluator.child_of
+        bridge = create(:ci_bridge, pipeline: evaluator.child_of)
+        create(:ci_sources_pipeline,
+          source_job: bridge,
+          pipeline: pipeline)
+      end
     end
 
     factory :ci_pipeline do

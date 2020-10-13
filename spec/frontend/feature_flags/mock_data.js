@@ -1,6 +1,7 @@
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+  ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
   ROLLOUT_STRATEGY_GITLAB_USER_LIST,
   ROLLOUT_STRATEGY_USER_ID,
 } from '~/feature_flags/constants';
@@ -78,6 +79,24 @@ export const featureFlag = {
         },
       ],
     },
+    {
+      id: 5,
+      active: true,
+      environment_scope: 'development',
+      can_update: true,
+      protected: false,
+      created_at: '2019-01-14T06:41:40.987Z',
+      updated_at: '2019-01-14T06:41:40.987Z',
+      strategies: [
+        {
+          name: ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
+          parameters: {
+            rollout: '42',
+            stickiness: 'DEFAULT',
+          },
+        },
+      ],
+    },
   ],
 };
 
@@ -114,6 +133,12 @@ export const userListStrategy = {
 export const percentRolloutStrategy = {
   name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
   parameters: { percentage: '50', groupId: 'default' },
+  scopes: [],
+};
+
+export const flexibleRolloutStrategy = {
+  name: ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
+  parameters: { rollout: '50', groupId: 'default', stickiness: 'DEFAULT' },
   scopes: [],
 };
 

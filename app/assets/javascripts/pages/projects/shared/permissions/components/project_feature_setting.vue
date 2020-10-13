@@ -1,17 +1,17 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 import { featureAccessLevelNone } from '../constants';
 
 export default {
   components: {
+    GlIcon,
     projectFeatureToggle,
   },
-
   model: {
     prop: 'value',
     event: 'change',
   },
-
   props: {
     name: {
       type: String,
@@ -34,7 +34,6 @@ export default {
       default: false,
     },
   },
-
   computed: {
     featureEnabled() {
       return this.value !== 0;
@@ -51,7 +50,6 @@ export default {
       return this.disabledInput || !this.featureEnabled || this.displayOptions.length < 2;
     },
   },
-
   methods: {
     toggleFeature(featureEnabled) {
       if (featureEnabled === false || this.options.length < 1) {
@@ -96,7 +94,11 @@ export default {
           {{ optionName }}
         </option>
       </select>
-      <i aria-hidden="true" class="fa fa-chevron-down"> </i>
+      <gl-icon
+        name="chevron-down"
+        aria-hidden="true"
+        class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
+      />
     </div>
   </div>
 </template>

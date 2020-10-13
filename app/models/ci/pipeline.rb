@@ -841,6 +841,25 @@ module Ci
       end
     end
 
+    def build_with_artifacts_in_self_and_descendants(name)
+      builds_in_self_and_descendants
+        .ordered_by_pipeline # find job in hierarchical order
+        .with_downloadable_artifacts
+        .find_by_name(name)
+    end
+
+    def builds_in_self_and_descendants
+      Ci::Build.latest.where(pipeline: self_and_descendants)
+    end
+
+    # Without using `unscoped`, caller scope is also included into the query.
+    # Using `unscoped` here will be redundant after Rails 6.1
+    def self_and_descendants
+      ::Gitlab::Ci::PipelineObjectHierarchy
+        .new(self.class.unscoped.where(id: id), options: { same_project: true })
+        .base_and_descendants
+    end
+
     def bridge_triggered?
       source_bridge.present?
     end

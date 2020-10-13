@@ -62,4 +62,17 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
       expect(formGroup.attributes('state')).toBeUndefined();
     });
   });
+
+  describe('with percentage that is not a whole number', () => {
+    beforeEach(() => {
+      wrapper = factory({ strategy: { parameters: { percentage: '3.14' } } });
+
+      input = wrapper.find(GlFormInput);
+      formGroup = wrapper.find(ParameterFormGroup);
+    });
+
+    it('shows errors', () => {
+      expect(formGroup.attributes('state')).toBeUndefined();
+    });
+  });
 });

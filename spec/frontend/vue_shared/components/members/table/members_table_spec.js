@@ -4,11 +4,13 @@ import {
   getByText as getByTextHelper,
   getByTestId as getByTestIdHelper,
 } from '@testing-library/dom';
+import { GlBadge } from '@gitlab/ui';
 import MembersTable from '~/vue_shared/components/members/table/members_table.vue';
 import MemberAvatar from '~/vue_shared/components/members/table/member_avatar.vue';
 import MemberSource from '~/vue_shared/components/members/table/member_source.vue';
 import ExpiresAt from '~/vue_shared/components/members/table/expires_at.vue';
 import CreatedAt from '~/vue_shared/components/members/table/created_at.vue';
+import RoleDropdown from '~/vue_shared/components/members/table/role_dropdown.vue';
 import MemberActionButtons from '~/vue_shared/components/members/table/member_action_buttons.vue';
 import * as initUserPopovers from '~/user_popovers';
 import { member as memberMock, invite, accessRequest } from '../mock_data';
@@ -24,6 +26,7 @@ describe('MemberList', () => {
       state: {
         members: [],
         tableFields: [],
+        sourceId: 1,
         ...state,
       },
     });
@@ -39,6 +42,7 @@ describe('MemberList', () => {
         'expires-at',
         'created-at',
         'member-action-buttons',
+        'role-dropdown',
       ],
     });
   };
@@ -55,16 +59,22 @@ describe('MemberList', () => {
   });
 
   describe('fields', () => {
+    const memberCanUpdate = {
+      ...memberMock,
+      canUpdate: true,
+      source: { ...memberMock.source, id: 1 },
+    };
+
     it.each`
-      field           | label               | member           | expectedComponent
-      ${'account'}    | ${'Account'}        | ${memberMock}    | ${MemberAvatar}
-      ${'source'}     | ${'Source'}         | ${memberMock}    | ${MemberSource}
-      ${'granted'}    | ${'Access granted'} | ${memberMock}    | ${CreatedAt}
-      ${'invited'}    | ${'Invited'}        | ${invite}        | ${CreatedAt}
-      ${'requested'}  | ${'Requested'}      | ${accessRequest} | ${CreatedAt}
-      ${'expires'}    | ${'Access expires'} | ${memberMock}    | ${ExpiresAt}
-      ${'maxRole'}    | ${'Max role'}       | ${memberMock}    | ${null}
-      ${'expiration'} | ${'Expiration'}     | ${memberMock}    | ${null}
+      field           | label               | member             | expectedComponent
+      ${'account'}    | ${'Account'}        | ${memberMock}      | ${MemberAvatar}
+      ${'source'}     | ${'Source'}         | ${memberMock}      | ${MemberSource}
+      ${'granted'}    | ${'Access granted'} | ${memberMock}      | ${CreatedAt}
+      ${'invited'}    | ${'Invited'}        | ${invite}          | ${CreatedAt}
+      ${'requested'}  | ${'Requested'}      | ${accessRequest}   | ${CreatedAt}
+      ${'expires'}    | ${'Access expires'} | ${memberMock}      | ${ExpiresAt}
+      ${'maxRole'}    | ${'Max role'}       | ${memberCanUpdate} | ${RoleDropdown}
+      ${'expiration'} | ${'Expiration'}     | ${memberMock}      | ${null}
     `('renders the $label field', ({ field, label, member, expectedComponent }) => {
       createComponent({
         members: [member],
@@ -104,6 +114,19 @@ describe('MemberList', () => {
       createComponent();
 
       expect(getByText('No members found').exists()).toBe(true);
+    });
+  });
+
+  describe('when member can not be updated', () => {
+    it('renders badge in "Max role" field', () => {
+      createComponent({ members: [memberMock], tableFields: ['maxRole'] });
+
+      expect(
+        wrapper
+          .find(`[data-label="Max role"][role="cell"]`)
+          .find(GlBadge)
+          .text(),
+      ).toBe(memberMock.accessLevel.stringValue);
     });
   });
 

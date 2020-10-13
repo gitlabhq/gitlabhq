@@ -38,8 +38,8 @@ export const FIELDS = [
   {
     key: 'maxRole',
     label: __('Max role'),
-    thClass: 'col-meta',
-    tdClass: 'col-meta',
+    thClass: 'col-max-role',
+    tdClass: 'col-max-role',
   },
   {
     key: 'expiration',

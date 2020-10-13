@@ -147,6 +147,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:ci_schedule_delete_objects_cron
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:container_expiration_policy
   :feature_category: :container_registry
   :has_external_dependencies:
@@ -1305,6 +1313,14 @@
   :idempotent:
   :tags:
   - :requires_disk_io
+- :name: ci_delete_objects
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: create_commit_signature
   :feature_category: :source_code_management
   :has_external_dependencies:
