@@ -167,6 +167,7 @@ to authenticate with the API:
   - [NPM Repository](../user/packages/npm_registry/index.md#authenticating-with-a-ci-job-token)
   - [Nuget Repository](../user/packages/nuget_repository/index.md)
   - [PyPI Repository](../user/packages/pypi_repository/index.md#using-gitlab-ci-with-pypi-packages)
+  - [Generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
 - [Pipeline triggers](pipeline_triggers.md) (via `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)

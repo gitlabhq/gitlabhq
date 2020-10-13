@@ -64,15 +64,16 @@ will have to be managed. Using instance level endpoints requires [stricter namin
 
 The current state of existing package registries availability is:
 
-| Repository Type | Project Level | Group Level | Instance Level |
-|-----------------|---------------|-------------|----------------|
-| Maven           | Yes           | Yes         | Yes            |
-| Conan           | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
-| NPM             | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
-| NuGet           | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
-| PyPI            | Yes | No | No |
-| Go              | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213900) | No - [open-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213902) |
-| Composer | Yes | Yes | No |
+| Repository Type  | Project Level | Group Level | Instance Level |
+|------------------|---------------|-------------|----------------|
+| Maven            | Yes           | Yes         | Yes            |
+| Conan            | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
+| NPM              | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
+| NuGet            | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
+| PyPI             | Yes           | No          | No             |
+| Go               | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213900) | No - [open-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213902) |
+| Composer         | Yes           | Yes         | No             |
+| Generic | Yes           | No          | No             |
 
 NOTE: **Note:**
 NPM is currently a hybrid of the instance level and group level.

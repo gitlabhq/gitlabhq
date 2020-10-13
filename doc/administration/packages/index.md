@@ -21,6 +21,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 | [Maven Repository](../../user/packages/maven_repository/index.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. | 11.3+ |
 | [NPM Registry](../../user/packages/npm_registry/index.md)   | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. | 11.7+ |
 | [Go Proxy](../../user/packages/go_proxy/index.md) | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
+| [Generic packages](../../user/packages/generic_packages/index.md) | Store arbitrary files, like release binaries. | 13.5+ |
 
 Don't you see your package management system supported yet?
 Please consider contributing

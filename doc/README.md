@@ -267,9 +267,7 @@ The following documentation relates to the DevOps **Package** stage:
 |:----------------------------------------------------------------|:-------------------------------------------------------|
 | [Container Registry](user/packages/container_registry/index.md)   | The GitLab Container Registry enables every project in GitLab to have its own space to store [Docker](https://www.docker.com/) images. |
 | [Dependency Proxy](user/packages/dependency_proxy/index.md) **(PREMIUM)** | The GitLab Dependency Proxy sets up a local proxy for frequently used upstream images/packages. |
-| [Conan Repository](user/packages/conan_repository/index.md) | The GitLab Conan Repository enables every project in GitLab to have its own space to store [Conan](https://conan.io/) packages. |
-| [Maven Repository](user/packages/maven_repository/index.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. |
-| [NPM Registry](user/packages/npm_registry/index.md) | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. |
+| [Package Registry](user/packages/package_registry/index.md) | Use GitLab as a private or public registry for a variety of common package managers, including [NPM](user/packages/npm_registry/index.md), [Maven](user/packages/maven_repository/index.md), [PyPI](user/packages/pypi_repository/index.md), and others. You can also store generic files. |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
