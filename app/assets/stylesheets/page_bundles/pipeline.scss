@@ -386,7 +386,6 @@
   top: 8px;
 }
 
-
 .split-report-section {
   border-bottom: 1px solid var(--gray-50, $gray-50);
 
@@ -424,6 +423,43 @@
   .code-text {
     width: 100%;
     flex: 1;
+  }
+}
+
+.big-pipeline-graph-dropdown-menu {
+  @include pipeline-graph-dropdown-menu();
+  width: 195px;
+  min-width: 195px;
+  left: 100%;
+  top: -10px;
+  box-shadow: 0 1px 5px $black-transparent;
+
+  /**
+   * Top arrow in the dropdown in the big pipeline graph
+   */
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: 18px;
+  }
+
+  &::before {
+    left: -6px;
+    margin-top: 3px;
+    border-width: 7px 5px 7px 0;
+    border-right-color: $border-color;
+  }
+
+  &::after {
+    left: -5px;
+    border-width: 10px 7px 10px 0;
+    border-right-color: $white;
   }
 }
 

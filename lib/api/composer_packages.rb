@@ -26,6 +26,10 @@ module API
       render_api_error!(e.message, 400)
     end
 
+    rescue_from Packages::Composer::ComposerJsonService::InvalidJson do |e|
+      render_api_error!(e.message, 422)
+    end
+
     helpers do
       def packages
         strong_memoize(:packages) do

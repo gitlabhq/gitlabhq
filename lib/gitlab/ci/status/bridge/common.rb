@@ -14,7 +14,6 @@ module Gitlab
           end
 
           def details_path
-            return unless Feature.enabled?(:ci_bridge_pipeline_details, subject.project, default_enabled: true)
             return unless can?(user, :read_pipeline, downstream_pipeline)
 
             project_pipeline_path(downstream_project, downstream_pipeline)

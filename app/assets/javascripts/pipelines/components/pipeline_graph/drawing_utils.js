@@ -14,14 +14,11 @@ import { createUniqueJobId } from '../../utils';
 
 export const generateLinksData = ({ links }, jobs, containerID) => {
   const containerEl = document.getElementById(containerID);
-
   return links.map(link => {
     const path = d3.path();
 
-    // We can only have one unique job name per stage, so our selector
-    // is: ${stageName}-${jobName}
-    const sourceId = createUniqueJobId(jobs[link.source].stage, link.source);
-    const targetId = createUniqueJobId(jobs[link.target].stage, link.target);
+    const sourceId = jobs[link.source].id;
+    const targetId = jobs[link.target].id;
 
     const sourceNodeEl = document.getElementById(sourceId);
     const targetNodeEl = document.getElementById(targetId);
@@ -80,6 +77,12 @@ export const generateLinksData = ({ links }, jobs, containerID) => {
       targetNodeY,
     );
 
-    return { ...link, path: path.toString() };
+    return {
+      ...link,
+      source: sourceId,
+      target: targetId,
+      ref: createUniqueJobId(sourceId, targetId),
+      path: path.toString(),
+    };
   });
 };

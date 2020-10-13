@@ -9,7 +9,6 @@ import {
   GlButtonGroup,
   GlDropdown,
   GlDropdownItem,
-  GlDropdownSectionHeader,
   GlDropdownDivider,
 } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -19,6 +18,7 @@ import { __, s__, sprintf } from '~/locale';
 import { diffViewerModes } from '~/ide/constants';
 import DiffStats from './diff_stats.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import { DIFF_FILE_HEADER } from '../i18n';
 
 export default {
   components: {
@@ -30,12 +30,14 @@ export default {
     GlButtonGroup,
     GlDropdown,
     GlDropdownItem,
-    GlDropdownSectionHeader,
     GlDropdownDivider,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
+  },
+  i18n: {
+    ...DIFF_FILE_HEADER,
   },
   props: {
     discussionPath: {
@@ -290,7 +292,7 @@ export default {
           icon="external-link"
         />
         <gl-dropdown
-          v-gl-tooltip.hover.focus="__('More actions')"
+          v-gl-tooltip.hover.focus="$options.i18n.optionsDropdownTitle"
           right
           toggle-class="btn-icon js-diff-more-actions"
           class="gl-pt-0!"
@@ -299,11 +301,8 @@ export default {
         >
           <template #button-content>
             <gl-icon name="ellipsis_v" class="mr-0" />
-            <span class="sr-only">{{ __('More actions') }}</span>
+            <span class="sr-only">{{ $options.i18n.optionsDropdownTitle }}</span>
           </template>
-          <gl-dropdown-section-header>
-            {{ __('More actions') }}
-          </gl-dropdown-section-header>
           <gl-dropdown-item
             v-if="diffFile.replaced_view_path"
             ref="replacedFileButton"

@@ -107,11 +107,11 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
     context 'mocked specs' do
       before do
         allow(subject).to receive(:connection).and_return(connection)
-        allow(subject).to receive(:disable_statement_timeout).and_yield
+        allow(connection).to receive(:execute).and_call_original
       end
 
       it 'replaces the existing index with an identical index' do
-        expect(subject).to receive(:disable_statement_timeout).twice.and_yield
+        expect(connection).to receive(:execute).with('SET statement_timeout TO 21600').twice
 
         expect_to_execute_concurrently_in_order(create_index)
 
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
         end
 
         it 'replaces the existing index with an identical index' do
-          expect(subject).to receive(:disable_statement_timeout).exactly(3).times.and_yield
+          expect(connection).to receive(:execute).with('SET statement_timeout TO 21600').exactly(3).times
 
           expect_to_execute_concurrently_in_order(drop_index)
           expect_to_execute_concurrently_in_order(create_index)

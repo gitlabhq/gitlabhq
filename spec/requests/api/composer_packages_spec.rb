@@ -289,6 +289,34 @@ RSpec.describe API::ComposerPackages do
         it_behaves_like 'process Composer api request', :developer, :not_found
       end
     end
+
+    context 'with invalid composer.json' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+      let(:params) { { tag: 'v1.2.99' } }
+      let(:project) { create(:project, :custom_repo, files: files, group: group) }
+
+      before do
+        project.repository.add_tag(user, 'v1.2.99', 'master')
+      end
+
+      context 'with a missing composer.json file' do
+        let(:files) { { 'some_other_file' => '' } }
+
+        it_behaves_like 'process Composer api request', :developer, :unprocessable_entity
+      end
+
+      context 'with an empty composer.json file' do
+        let(:files) { { 'composer.json' => '' } }
+
+        it_behaves_like 'process Composer api request', :developer, :unprocessable_entity
+      end
+
+      context 'with a malformed composer.json file' do
+        let(:files) { { 'composer.json' => 'not_valid_JSON' } }
+
+        it_behaves_like 'process Composer api request', :developer, :unprocessable_entity
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/composer/archives/*package_name?sha=:sha' do

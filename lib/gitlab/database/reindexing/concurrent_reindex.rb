@@ -5,13 +5,13 @@ module Gitlab
     module Reindexing
       class ConcurrentReindex
         include Gitlab::Utils::StrongMemoize
-        include MigrationHelpers
 
         ReindexError = Class.new(StandardError)
 
         PG_IDENTIFIER_LENGTH = 63
         TEMPORARY_INDEX_PREFIX = 'tmp_reindex_'
         REPLACED_INDEX_PREFIX = 'old_reindex_'
+        STATEMENT_TIMEOUT = 6.hours
 
         attr_reader :index, :logger
 
@@ -47,7 +47,7 @@ module Gitlab
           logger.info("creating replacement index #{replacement_index_name}")
           logger.debug("replacement index definition: #{create_replacement_index_statement}")
 
-          disable_statement_timeout do
+          set_statement_timeout do
             connection.execute(create_replacement_index_statement)
           end
 
@@ -88,7 +88,7 @@ module Gitlab
         def remove_index(schema, name)
           logger.info("Removing index #{schema}.#{name}")
 
-          disable_statement_timeout do
+          set_statement_timeout do
             connection.execute(<<~SQL)
               DROP INDEX CONCURRENTLY
               IF EXISTS #{quote_table_name(schema)}.#{quote_table_name(name)}
@@ -108,6 +108,13 @@ module Gitlab
           arguments = { klass: self.class, logger: logger }
 
           Gitlab::Database::WithLockRetries.new(**arguments).run(raise_on_exhaustion: true, &block)
+        end
+
+        def set_statement_timeout
+          execute("SET statement_timeout TO #{STATEMENT_TIMEOUT}")
+          yield
+        ensure
+          execute('RESET statement_timeout')
         end
 
         delegate :execute, :quote_table_name, to: :connection

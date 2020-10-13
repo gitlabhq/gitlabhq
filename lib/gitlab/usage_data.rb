@@ -266,7 +266,8 @@ module Gitlab
           Gitlab::UsageDataCounters::SourceCodeCounter,
           Gitlab::UsageDataCounters::MergeRequestCounter,
           Gitlab::UsageDataCounters::DesignsCounter,
-          Gitlab::UsageDataCounters::KubernetesAgentCounter
+          Gitlab::UsageDataCounters::KubernetesAgentCounter,
+          Gitlab::UsageDataCounters::StaticSiteEditorCounter
         ]
       end
 

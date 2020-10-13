@@ -170,6 +170,12 @@ module Types
     end
 
     def diff_stats_summary
+      metrics = object.metrics
+
+      if metrics && metrics.added_lines && metrics.removed_lines
+        return { additions: metrics.added_lines, deletions: metrics.removed_lines, file_count: object.merge_request_diff&.files_count || 0 }
+      end
+
       nil_stats = { additions: 0, deletions: 0, file_count: 0 }
       return nil_stats unless object.diff_stats.present?
 

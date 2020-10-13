@@ -45,6 +45,10 @@ RSpec.describe Jira::Requests::Projects::ListService do
           end
 
           it 'returns an error response' do
+            expect(Gitlab::ProjectServiceLogger).to receive(:error).with(
+              hash_including(
+                error: hash_including(:exception_class, :exception_message, :exception_backtrace)))
+              .and_call_original
             expect(subject.error?).to be_truthy
             expect(subject.message).to eq('Jira request error: Timeout::Error')
           end

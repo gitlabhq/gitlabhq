@@ -248,7 +248,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
 
       it 'calls the index rebuilder with the proper arguments' do
         expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.foo_idx').and_return(index)
-        expect(Gitlab::Database::Reindexing).to receive(:perform).with(index)
+        expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
 
         run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
       end

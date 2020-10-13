@@ -38,4 +38,40 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
+
+  describe '#diff_stats_summary' do
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let(:current_user) { create :admin }
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequests {
+              nodes {
+                diffStatsSummary {
+                  additions, deletions
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:project) { create(:project, :public) }
+    let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+
+    let(:response) { subject.dig('data', 'project', 'mergeRequests', 'nodes').first['diffStatsSummary'] }
+
+    context 'when MR metrics has additions and deletions' do
+      before do
+        merge_request.metrics.update!(added_lines: 5, removed_lines: 8)
+      end
+
+      it 'pulls out data from metrics object' do
+        expect(response).to match('additions' => 5, 'deletions' => 8)
+      end
+    end
+  end
 end

@@ -27,6 +27,8 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
     ).execute
 
     if service_response.success?
+      Gitlab::UsageDataCounters::StaticSiteEditorCounter.increment_views_count
+
       @data = serialize_necessary_payload_values_to_json(service_response.payload)
     else
       # TODO: For now, if the service returns any error, the user is redirected

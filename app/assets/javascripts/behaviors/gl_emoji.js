@@ -3,9 +3,7 @@ import isEmojiUnicodeSupported from '../emoji/support';
 import { initEmojiMap, getEmojiInfo, emojiFallbackImageSrc, emojiImageTag } from '../emoji';
 
 class GlEmoji extends HTMLElement {
-  constructor() {
-    super();
-
+  connectedCallback() {
     this.initialize();
   }
   initialize() {

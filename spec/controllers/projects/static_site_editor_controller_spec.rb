@@ -54,9 +54,14 @@ RSpec.describe Projects::StaticSiteEditorController do
 
       context "as developer" do
         before do
+          allow(Gitlab::UsageDataCounters::StaticSiteEditorCounter).to receive(:increment_views_count)
           project.add_role(user, 'developer')
           sign_in(user)
           get :show, params: default_params
+        end
+
+        it 'increases the views counter' do
+          expect(Gitlab::UsageDataCounters::StaticSiteEditorCounter).to have_received(:increment_views_count)
         end
 
         it 'renders the edit page' do

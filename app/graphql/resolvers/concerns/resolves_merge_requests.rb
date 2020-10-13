@@ -44,6 +44,7 @@ module ResolvesMergeRequests
       author: [:author],
       merged_at: [:metrics],
       commit_count: [:metrics],
+      diff_stats_summary: [:metrics],
       approved_by: [:approved_by_users],
       milestone: [:milestone],
       head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }]

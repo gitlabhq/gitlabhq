@@ -193,7 +193,7 @@ namespace :gitlab do
       end
 
       indexes = if args[:index_name]
-                  Gitlab::Database::PostgresIndex.by_identifier(args[:index_name])
+                  [Gitlab::Database::PostgresIndex.by_identifier(args[:index_name])]
                 else
                   Gitlab::Database::Reindexing.candidate_indexes.random_few(2)
                 end

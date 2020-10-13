@@ -290,7 +290,7 @@ gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sassc-rails', '~> 2.1.0'
-gem 'gitlab-terser', '1.0.1.1'
+gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.7'
 gem 'font-awesome-rails', '~> 4.7'

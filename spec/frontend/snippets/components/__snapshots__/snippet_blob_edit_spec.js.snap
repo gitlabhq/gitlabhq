@@ -13,7 +13,8 @@ exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
     value="foo/bar/test.md"
   />
    
-  <blob-content-edit-stub
+  <editor-lite-stub
+    editoroptions="[object Object]"
     fileglobalid="blob_local_7"
     filename="foo/bar/test.md"
     value="Lorem ipsum dolar sit amet,

@@ -23,7 +23,7 @@ RSpec.describe Packages::Composer::ComposerJsonService do
         let(:json) { '{ name": "package-name"}' }
 
         it 'raises an error' do
-          expect { subject }.to raise_error(/Invalid/)
+          expect { subject }.to raise_error(described_class::InvalidJson, /Invalid/)
         end
       end
     end
@@ -32,7 +32,7 @@ RSpec.describe Packages::Composer::ComposerJsonService do
       let(:project) { create(:project, :repository) }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(/not found/)
+        expect { subject }.to raise_error(described_class::InvalidJson, /not found/)
       end
     end
   end
