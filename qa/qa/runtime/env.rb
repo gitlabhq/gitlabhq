@@ -90,8 +90,8 @@ module QA
         ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
       end
 
-      def ci_job_id
-        ENV['CI_JOB_ID']
+      def ci_job_url
+        ENV['CI_JOB_URL']
       end
 
       def ci_project_name

@@ -51,7 +51,7 @@ module QA
           testcase: example.metadata[:testcase],
           quarantine: example.metadata[:quarantine],
           screenshot: example.metadata[:screenshot],
-          ci_job_id: QA::Runtime::Env.ci_job_id
+          ci_job_url: QA::Runtime::Env.ci_job_url
         }
       end
 

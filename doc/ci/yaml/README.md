@@ -2296,15 +2296,15 @@ failure.
 `when` can be set to one of the following values:
 
 1. `on_success` - execute job only when all jobs from prior stages
-    succeed (or are considered succeeding because they are marked
-    `allow_failure`). This is the default.
+    succeed (or are considered succeeding because they have `allow_failure: true`).
+    This is the default.
 1. `on_failure` - execute job only when at least one job from prior stages
     fails.
 1. `always` - execute job regardless of the status of jobs from prior stages.
 1. `manual` - execute job manually (added in GitLab 8.10). Read about
-    [manual actions](#whenmanual) below.
+    [manual jobs](#whenmanual) below.
 1. `delayed` - execute job after a certain period (added in GitLab 11.14).
-    Read about [delayed actions](#whendelayed) below.
+    Read about [delayed jobs](#whendelayed) below.
 1. `never`:
    - With [`rules`](#rules), don't execute job.
    - With [`workflow:rules`](#workflowrules), don't run pipeline.
@@ -2358,45 +2358,41 @@ The above script:
 #### `when:manual`
 
 > - Introduced in GitLab 8.10.
-> - Blocking manual actions were introduced in GitLab 9.0.
+> - Blocking manual jobs were introduced in GitLab 9.0.
 > - Protected actions were introduced in GitLab 9.2.
 
-Manual actions are a special type of job that are not executed automatically,
-they need to be explicitly started by a user. An example usage of manual actions
-would be a deployment to a production environment. Manual actions can be started
-from the pipeline, job, environment, and deployment views. Read more at the
-[environments documentation](../environments/index.md#configuring-manual-deployments).
+A manual job is a type of job that is not executed automatically and must be explicitly
+started by a user. You might want to use manual jobs for things like deploying to production.
 
-Manual actions can be either optional or blocking. Blocking manual actions
-block the execution of the pipeline at the stage this action is defined in. It's
-possible to resume execution of the pipeline when someone executes a blocking
-manual action by clicking a _play_ button.
+To make a job manual, add `when: manual` to its configuration.
 
-When a pipeline is blocked, it isn't merged if Merge When Pipeline Succeeds
-is set. Blocked pipelines also have a special status, called _manual_.
-When the `when:manual` syntax is used, manual actions are non-blocking by
-default. If you want to make a manual action blocking, add
-`allow_failure: false` to the job's definition in `.gitlab-ci.yml`.
+Manual jobs can be started from the pipeline, job, [environment](../environments/index.md#configuring-manual-deployments),
+and deployment views.
 
-Optional manual actions have `allow_failure: true` set by default and their
-statuses don't contribute to the overall pipeline status. So, if a manual
-action fails, the pipeline eventually succeeds.
+Manual jobs can be either optional or blocking:
 
-NOTE: **Note:**
-When using [`rules:`](#rules), `allow_failure` defaults to `false`, including for manual jobs.
+- **Optional**: Manual jobs have [`allow_failure: true](#allow_failure) set by default
+  and are considered optional. The status of an optional manual job does not contribute
+  to the overall pipeline status. A pipeline can succeed even if all its manual jobs fail.
 
-Manual actions are considered to be write actions, so permissions for
-[protected branches](../../user/project/protected_branches.md) are used when
-a user wants to trigger an action. In other words, to trigger a manual
-action assigned to a branch that the pipeline is running for, the user must
-have the ability to merge to this branch. It's possible to use protected environments
-to more strictly [protect manual deployments](#protecting-manual-jobs) from being
-run by unauthorized users.
+- **Blocking**: To make a blocking manual job, add `allow_failure: false` to its configuration.
+  Blocking manual jobs stop further execution of the pipeline at the stage where the
+  job is defined. To let the pipeline continue running, click **{play}** (play) on
+  the blocking manual job.
 
-NOTE: **Note:**
-Using `when:manual` and `trigger` together results in the error `jobs:#{job-name} when
-should be on_success, on_failure or always`, because `when:manual` prevents triggers
-being used.
+  Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+  enabled can't be merged with a blocked pipeline. Blocked pipelines show a status
+  of **blocked**.
+
+When you use [`rules:`](#rules), `allow_failure` defaults to `false`, including for manual jobs.
+
+To trigger a manual job, a user must have permission to merge to the assigned branch.
+You can use [protected branches](../../user/project/protected_branches.md) to more strictly
+[protect manual deployments](#protecting-manual-jobs) from being run by unauthorized users.
+
+`when:manual` and [`trigger`](#trigger) cannot be used together. If you use both in
+the same job, you receive a `jobs:#{job-name} when should be on_success, on_failure or always`
+error.
 
 ##### Protecting manual jobs **(PREMIUM)**
 
@@ -2431,9 +2427,9 @@ To do this, you must:
    this list can trigger this manual job, as well as GitLab administrators
    who are always able to use protected environments.
 
-Additionally, if a manual job is defined as blocking by adding `allow_failure: false`,
-the next stages of the pipeline don't run until the manual job is triggered. This
-can be used to define a list of users allowed to "approve" later pipeline
+Additionally, if you define a manual job as blocking by adding `allow_failure: false`,
+the pipeline's next stages don't run until the manual job is triggered. You can use this
+to define a list of users allowed to "approve" later pipeline
 stages by triggering the blocking manual job.
 
 #### `when:delayed`
