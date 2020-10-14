@@ -812,7 +812,6 @@ time.
 
 ## How to debug a job locally
 
-NOTE: **Note:**
 The following commands are run without root privileges. You should be
 able to run Docker with your regular user account.
 

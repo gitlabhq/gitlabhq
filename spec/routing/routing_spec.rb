@@ -133,6 +133,10 @@ RSpec.describe ProfilesController, "routing" do
   it "to #show" do
     expect(get("/profile")).to route_to('profiles#show')
   end
+
+  it 'to #show from scope routing' do
+    expect(get("/-/profile")).to route_to('profiles#show')
+  end
 end
 
 # profile_preferences GET      /profile/preferences(.:format) profiles/preferences#show

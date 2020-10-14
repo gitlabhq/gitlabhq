@@ -31,7 +31,6 @@ either:
 - Site-wide by modifying the settings in `gitlab.yml` and `gitlab.rb` for source
   and Omnibus installations respectively.
 
-NOTE: **Note:**
 This only applies to pipelines run as part of GitLab CI/CD. This will not enable or disable
 pipelines that are run from an [external integration](../user/project/integrations/overview.md#integrations-listing).
 

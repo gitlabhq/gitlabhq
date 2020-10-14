@@ -48,6 +48,9 @@ module Gitlab
       invite_members_version_a: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionA'
       },
+      invite_members_version_b: {
+        tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionB'
+      },
       new_create_project_ui: {
         tracking_category: 'Manage::Import::Experiment::NewCreateProjectUi'
       },

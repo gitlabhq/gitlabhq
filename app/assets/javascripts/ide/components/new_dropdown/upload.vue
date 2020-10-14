@@ -35,7 +35,7 @@ export default {
           name: `${this.path ? `${this.path}/` : ''}${name}`,
           type: 'blob',
           content,
-          rawPath: !isText ? target.result : '',
+          rawPath: !isText ? URL.createObjectURL(file) : '',
         });
 
       if (isText) {
@@ -44,7 +44,7 @@ export default {
         reader.addEventListener('load', e => emitCreateEvent(e.target.result), { once: true });
         reader.readAsText(file);
       } else {
-        emitCreateEvent(encodedContent);
+        emitCreateEvent(rawContent);
       }
     },
     readFile(file) {

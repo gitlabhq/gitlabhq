@@ -83,8 +83,7 @@ microservice_a:
         file: 'path/to/ci-config.yml'
 ```
 
-NOTE: **Note:**
-The max number of entries that are accepted for `trigger:include:` is three.
+The maximum number of entries that are accepted for `trigger:include:` is three.
 
 Similar to [multi-project pipelines](multi_project_pipelines.md#mirroring-status-from-triggered-pipeline),
 we can set the parent pipeline to depend on the status of the child pipeline upon completion:

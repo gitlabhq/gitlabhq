@@ -291,6 +291,20 @@ describe('IDE store file actions', () => {
           expect(store.state.openFiles[0].name).toBe(localFile.name);
         });
       });
+
+      it('does not toggle loading if toggleLoading=false', () => {
+        expect(localFile.loading).toBe(false);
+
+        return store
+          .dispatch('getFileData', {
+            path: localFile.path,
+            makeFileActive: false,
+            toggleLoading: false,
+          })
+          .then(() => {
+            expect(localFile.loading).toBe(true);
+          });
+      });
     });
 
     describe('Re-named success', () => {

@@ -39,7 +39,7 @@ export default {
     :aria-label="title"
     :href="terminalPath"
     :class="{ disabled: disabled }"
-    class="btn terminal-button d-none d-sm-none d-md-block text-secondary"
+    class="btn terminal-button d-none d-md-block text-secondary"
   >
     <gl-icon name="terminal" />
   </a>

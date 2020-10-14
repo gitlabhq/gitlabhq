@@ -361,7 +361,6 @@ rspec:coverage:
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
     - run_timed_command "bundle exec scripts/merge-simplecov"
     - run_timed_command "bundle exec scripts/gather-test-memory-data"
-    - run_timed_command "bundle exec scripts/used-feature-flags"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
@@ -372,6 +371,32 @@ rspec:coverage:
       - tmp/memory_test/
     reports:
       cobertura: coverage/coverage.xml
+
+rspec:feature-flags:
+  extends:
+    - .coverage-base
+    - .rails:rules:rspec-feature-flags
+  stage: post-test
+  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
+  # so we use `dependencies` here.
+  dependencies:
+    - setup-test-env
+    - rspec migration pg11
+    - rspec unit pg11
+    - rspec integration pg11
+    - rspec system pg11
+    - rspec-ee migration pg11
+    - rspec-ee unit pg11
+    - rspec-ee integration pg11
+    - rspec-ee system pg11
+    - rspec-ee unit pg11 geo
+    - rspec-ee integration pg11 geo
+    - rspec-ee system pg11 geo
+    - memory-static
+    - memory-on-boot
+  script:
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+    - run_timed_command "bundle exec scripts/used-feature-flags"
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
 #######################################################
 

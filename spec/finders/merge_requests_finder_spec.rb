@@ -500,6 +500,16 @@ RSpec.describe MergeRequestsFinder do
 
         expect(finder.row_count).to eq(1)
       end
+
+      it 'returns -1 if the query times out' do
+        finder = described_class.new(user)
+
+        expect_next_instance_of(described_class) do |subfinder|
+          expect(subfinder).to receive(:execute).and_raise(ActiveRecord::QueryCanceled)
+        end
+
+        expect(finder.row_count).to eq(-1)
+      end
     end
 
     context 'external authorization' do

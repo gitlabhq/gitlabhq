@@ -5,6 +5,7 @@ import UsersSelect from '~/users_select';
 import groupsSelect from '~/groups_select';
 import RemoveMemberModal from '~/vue_shared/components/remove_member_modal.vue';
 import { initGroupMembersApp } from '~/groups/members';
+import { memberRequestFormatter, groupLinkRequestFormatter } from '~/groups/members/utils';
 
 function mountRemoveMemberModal() {
   const el = document.querySelector('.js-remove-member-modal');
@@ -31,18 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initGroupMembersApp(
     document.querySelector('.js-group-members-list'),
     SHARED_FIELDS.concat(['source', 'granted']),
+    memberRequestFormatter,
   );
   initGroupMembersApp(
     document.querySelector('.js-group-linked-list'),
     SHARED_FIELDS.concat('granted'),
+    groupLinkRequestFormatter,
   );
   initGroupMembersApp(
     document.querySelector('.js-group-invited-members-list'),
     SHARED_FIELDS.concat('invited'),
+    memberRequestFormatter,
   );
   initGroupMembersApp(
     document.querySelector('.js-group-access-requests-list'),
     SHARED_FIELDS.concat('requested'),
+    memberRequestFormatter,
   );
 
   new Members(); // eslint-disable-line no-new

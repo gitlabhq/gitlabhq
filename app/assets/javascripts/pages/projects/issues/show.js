@@ -11,6 +11,8 @@ import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_iss
 import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';
 import initRelatedMergeRequestsApp from '~/related_merge_requests';
 import { parseIssuableData } from '~/issue_show/utils/parse_data';
+import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
+import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 
 export default function() {
   const { issueType, ...issuableData } = parseIssuableData();
@@ -35,4 +37,6 @@ export default function() {
   initIssuableSidebar();
 
   loadAwardsHandler();
+  initInviteMemberModal();
+  initInviteMemberTrigger();
 }

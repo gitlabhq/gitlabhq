@@ -292,6 +292,15 @@ export function isBase64DataUrl(url) {
 }
 
 /**
+ * Returns true if url is a blob: type url
+ *
+ * @param {String} url
+ */
+export function isBlobUrl(url) {
+  return /^blob:/.test(url);
+}
+
+/**
  * Returns true if url is an absolute or root-relative URL
  *
  * @param {String} url

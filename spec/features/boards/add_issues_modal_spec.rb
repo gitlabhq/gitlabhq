@@ -103,7 +103,13 @@ RSpec.describe 'Issue Boards add issue modal', :js do
           click_button 'Cancel'
         end
 
-        accept_confirm { first('.board-delete').click }
+        page.within(find('.board:nth-child(2)')) do
+          find('button[title="List settings"]').click
+        end
+
+        page.within(find('.js-board-settings-sidebar')) do
+          accept_confirm { find('[data-testid="remove-list"]').click }
+        end
 
         click_button('Add issues')
 

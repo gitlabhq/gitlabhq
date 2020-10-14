@@ -264,7 +264,7 @@ your application's performance and how to resolve any problems.
 CAUTION: **Warning:**
 This feature might not be available to you. Check the **version history** note above for details.
 
-The environment information and the link are displayed in the Alert Details tab[#alert-details-tab].
+The environment information and the link are displayed in the [Alert Details tab](#alert-details-tab).
 
 ### Enable or disable Environment Link in Alert Details **(CORE ONLY)**
 

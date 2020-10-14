@@ -570,7 +570,7 @@ export default {
     </div>
 
     <div
-      class="table-section deployment-column d-none d-sm-none d-md-block"
+      class="table-section deployment-column d-none d-md-block"
       :class="tableData.deploy.spacing"
       role="gridcell"
     >
@@ -594,11 +594,7 @@ export default {
       </div>
     </div>
 
-    <div
-      class="table-section d-none d-sm-none d-md-block"
-      :class="tableData.build.spacing"
-      role="gridcell"
-    >
+    <div class="table-section d-none d-md-block" :class="tableData.build.spacing" role="gridcell">
       <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link cgray">
         <tooltip-on-truncate
           :title="buildName"

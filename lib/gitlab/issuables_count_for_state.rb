@@ -16,14 +16,21 @@ module Gitlab
     end
 
     # finder - The finder class to use for retrieving the issuables.
-    def initialize(finder, project = nil)
+    # fast_fail - restrict counting to a shorter period, degrading gracefully on
+    # failure
+    def initialize(finder, project = nil, fast_fail: false)
       @finder = finder
       @project = project
+      @fast_fail = fast_fail
       @cache = Gitlab::SafeRequestStore[CACHE_KEY] ||= initialize_cache
     end
 
     def for_state_or_opened(state = nil)
       self[state || :opened]
+    end
+
+    def fast_fail?
+      !!@fast_fail
     end
 
     # Define method for each state
@@ -53,7 +60,53 @@ module Gitlab
     end
 
     def initialize_cache
-      Hash.new { |hash, finder| hash[finder] = finder.count_by_state }
+      Hash.new { |hash, finder| hash[finder] = perform_count(finder) }
+    end
+
+    def perform_count(finder)
+      return finder.count_by_state unless fast_fail?
+
+      fast_count_by_state_attempt!
+
+      # Determining counts when referring to issuable titles or descriptions can
+      # be very expensive, and involve the database reading gigabytes of data
+      # for a relatively minor piece of functionality. This may slow index pages
+      # by seconds in the best case, or lead to a statement timeout in the worst
+      # case.
+      #
+      # In time, we may be able to use elasticsearch or postgresql tsv columns
+      # to perform the calculation more efficiently. Until then, use a shorter
+      # timeout and return -1 as a sentinel value if it is triggered
+      begin
+        ApplicationRecord.with_fast_statement_timeout do
+          finder.count_by_state
+        end
+      rescue ActiveRecord::QueryCanceled => err
+        fast_count_by_state_failure!
+
+        Gitlab::ErrorTracking.track_exception(
+          err,
+          params: finder.params,
+          current_user_id: finder.current_user&.id,
+          issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/249180'
+        )
+
+        Hash.new(-1)
+      end
+    end
+
+    def fast_count_by_state_attempt!
+      Gitlab::Metrics.counter(
+        :gitlab_issuable_fast_count_by_state_total,
+        "Count of total calls to IssuableFinder#count_by_state with fast failure"
+      ).increment
+    end
+
+    def fast_count_by_state_failure!
+      Gitlab::Metrics.counter(
+        :gitlab_issuable_fast_count_by_state_failures_total,
+        "Count of failed calls to IssuableFinder#count_by_state with fast failure"
+      ).increment
     end
   end
 end

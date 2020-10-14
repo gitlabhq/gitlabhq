@@ -19,7 +19,7 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-10 d-none d-sm-none d-md-block pipeline-triggerer">
+  <div class="table-section section-10 d-none d-md-block pipeline-triggerer">
     <user-avatar-link
       v-if="user"
       :link-href="user.path"

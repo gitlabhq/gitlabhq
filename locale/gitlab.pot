@@ -1000,6 +1000,12 @@ msgstr[1] ""
 msgid "+%{approvers} more approvers"
 msgstr ""
 
+msgid "+%{more_assignees_count}"
+msgstr ""
+
+msgid "+%{more_assignees_count} more assignees"
+msgstr ""
+
 msgid "+%{more_reviewers_count}"
 msgstr ""
 
@@ -3608,6 +3614,9 @@ msgstr ""
 msgid "Assigned to %{assignee_name}"
 msgstr ""
 
+msgid "Assigned to %{name}"
+msgstr ""
+
 msgid "Assigned to me"
 msgstr ""
 
@@ -4126,6 +4135,9 @@ msgid "BillingPlan|Contact sales"
 msgstr ""
 
 msgid "BillingPlan|Upgrade"
+msgstr ""
+
+msgid "Billing|An error occurred while loading billable members list"
 msgstr ""
 
 msgid "Bitbucket Server Import"
@@ -7448,6 +7460,9 @@ msgstr ""
 msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
+msgid "Couldn't calculate number of %{issuables}."
+msgstr ""
+
 msgid "Country"
 msgstr ""
 
@@ -8482,9 +8497,6 @@ msgid "Delete label"
 msgstr ""
 
 msgid "Delete label: %{label_name} ?"
-msgstr ""
-
-msgid "Delete list"
 msgstr ""
 
 msgid "Delete pipeline"
@@ -14291,6 +14303,18 @@ msgstr ""
 msgid "InviteMembers|Invite team members"
 msgstr ""
 
+msgid "InviteMember|Oops, this feature isn't ready yet"
+msgstr ""
+
+msgid "InviteMember|See who can invite members for you"
+msgstr ""
+
+msgid "InviteMember|Until then, ask an owner to invite new project members for you"
+msgstr ""
+
+msgid "InviteMember|We're working to allow everyone to invite new members, making it easier for teams to get started with GitLab"
+msgstr ""
+
 msgid "InviteReminderEmail|%{inviter} is still waiting for you to join GitLab"
 msgstr ""
 
@@ -16054,6 +16078,9 @@ msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Members|%{time} by %{user}"
+msgstr ""
+
+msgid "Members|An error occurred while updating the member's role, please try again."
 msgstr ""
 
 msgid "Members|Are you sure you want to deny %{usersName}'s request to join \"%{source}\""
@@ -21694,6 +21721,9 @@ msgid "Remove license"
 msgstr ""
 
 msgid "Remove limit"
+msgstr ""
+
+msgid "Remove list"
 msgstr ""
 
 msgid "Remove member"

@@ -102,8 +102,10 @@ RSpec.describe DesignManagement::SaveDesignsService do
         end
       end
 
-      it 'creates a commit, an event in the activity stream and updates the creation count' do
+      it 'creates a commit, an event in the activity stream and updates the creation count', :aggregate_failures do
         counter = Gitlab::UsageDataCounters::DesignsCounter
+
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_added_action).with(author: user)
 
         expect { run_service }
           .to change { Event.count }.by(1)
@@ -188,6 +190,12 @@ RSpec.describe DesignManagement::SaveDesignsService do
 
           expect(updated_designs.size).to eq(1)
           expect(updated_designs.first.versions.size).to eq(2)
+        end
+
+        it 'updates UsageData for changed designs' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_modified_action).with(author: user)
+
+          run_service
         end
 
         it 'records the correct events' do

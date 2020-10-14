@@ -59,14 +59,11 @@ describe('new dropdown upload', () => {
       result: 'base64,cGxhaW4gdGV4dA==',
     };
     const binaryTarget = {
-      result: 'base64,w4I=',
+      result: 'base64,8PDw8A==', // ðððð
     };
-    const textFile = new File(['plain text'], 'textFile');
 
-    const binaryFile = {
-      name: 'binaryFile',
-      type: 'image/png',
-    };
+    const textFile = new File(['plain text'], 'textFile');
+    const binaryFile = new File(['😺'], 'binaryFile');
 
     beforeEach(() => {
       jest.spyOn(FileReader.prototype, 'readAsText');
@@ -92,16 +89,16 @@ describe('new dropdown upload', () => {
         .catch(done.fail);
     });
 
-    it('splits content on base64 if binary', () => {
+    it('creates a blob URL for the content if binary', () => {
       vm.createFile(binaryTarget, binaryFile);
 
-      expect(FileReader.prototype.readAsText).not.toHaveBeenCalledWith(textFile);
+      expect(FileReader.prototype.readAsText).not.toHaveBeenCalled();
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
         name: binaryFile.name,
         type: 'blob',
-        content: binaryTarget.result.split('base64,')[1],
-        rawPath: binaryTarget.result,
+        content: 'ðððð',
+        rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
       });
     });
   });

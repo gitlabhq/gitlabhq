@@ -83,6 +83,8 @@ Rails.application.routes.draw do
       get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
     end
 
+    get '/whats_new' => 'whats_new#index'
+
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
@@ -272,6 +274,14 @@ Rails.application.routes.draw do
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
   scope as: 'deprecated' do
     draw :snippets
+  end
+
+  # Serve profile routes under /-/ scope.
+  # To ensure an old unscoped routing is used for the UI we need to
+  # add prefix 'as' to the scope routing and place it below original routing.
+  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
+  scope '-', as: :scoped do
+    draw :profile
   end
 
   root to: "root#index"

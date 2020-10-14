@@ -27,6 +27,9 @@ module Gitlab
       ISSUE_ADDED_TO_EPIC = 'g_project_management_issue_added_to_epic'
       ISSUE_REMOVED_FROM_EPIC = 'g_project_management_issue_removed_from_epic'
       ISSUE_CHANGED_EPIC = 'g_project_management_issue_changed_epic'
+      ISSUE_DESIGNS_ADDED = 'g_project_management_issue_designs_added'
+      ISSUE_DESIGNS_MODIFIED = 'g_project_management_issue_designs_modified'
+      ISSUE_DESIGNS_REMOVED = 'g_project_management_issue_designs_removed'
 
       class << self
         def track_issue_created_action(author:, time: Time.zone.now)
@@ -115,6 +118,18 @@ module Gitlab
 
         def track_issue_changed_epic_action(author:, time: Time.zone.now)
           track_unique_action(ISSUE_CHANGED_EPIC, author, time)
+        end
+
+        def track_issue_designs_added_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_DESIGNS_ADDED, author, time)
+        end
+
+        def track_issue_designs_modified_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_DESIGNS_MODIFIED, author, time)
+        end
+
+        def track_issue_designs_removed_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_DESIGNS_REMOVED, author, time)
         end
 
         private

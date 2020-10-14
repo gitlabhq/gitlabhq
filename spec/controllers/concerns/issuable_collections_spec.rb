@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IssuableCollections do
+  using RSpec::Parameterized::TableSyntax
+
   let(:user) { create(:user) }
 
   let(:controller) do
@@ -25,13 +27,35 @@ RSpec.describe IssuableCollections do
   end
 
   describe '#page_count_for_relation' do
-    let(:params) { { state: 'opened' } }
+    let(:relation) { double(:relation, limit_value: 20) }
 
-    it 'returns the number of pages' do
-      relation = double(:relation, limit_value: 20)
-      pages = controller.send(:page_count_for_relation, relation, 28)
+    context 'row count is known' do
+      let(:params) { { state: 'opened' } }
 
-      expect(pages).to eq(2)
+      it 'returns the number of pages' do
+        pages = controller.send(:page_count_for_relation, relation, 28)
+
+        expect(pages).to eq(2)
+      end
+    end
+
+    context 'row_count is unknown' do
+      where(:page_param, :expected) do
+        nil | 2
+        1   | 2
+        '1' | 2
+        2   | 3
+      end
+
+      with_them do
+        let(:params) { { state: 'opened', page: page_param } }
+
+        it 'returns current page + 1 if the row count is unknown' do
+          pages = controller.send(:page_count_for_relation, relation, -1)
+
+          expect(pages).to eq(expected)
+        end
+      end
     end
   end
 

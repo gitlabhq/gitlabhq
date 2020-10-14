@@ -232,6 +232,36 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue designs added actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_DESIGNS_ADDED }
+
+      def track_action(params)
+        described_class.track_issue_designs_added_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue designs modified actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_DESIGNS_MODIFIED }
+
+      def track_action(params)
+        described_class.track_issue_designs_modified_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue designs removed actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_DESIGNS_REMOVED }
+
+      def track_action(params)
+        described_class.track_issue_designs_removed_action(**params)
+      end
+    end
+  end
+
   it 'can return the count of actions per user deduplicated', :aggregate_failures do
     described_class.track_issue_title_changed_action(author: user1)
     described_class.track_issue_description_changed_action(author: user1)

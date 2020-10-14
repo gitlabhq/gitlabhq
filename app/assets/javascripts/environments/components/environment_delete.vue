@@ -59,7 +59,7 @@ export default {
     :loading="isLoading"
     :title="title"
     :aria-label="title"
-    container-class="btn btn-danger d-none d-sm-none d-md-block"
+    container-class="btn btn-danger d-none d-md-block"
     data-toggle="modal"
     data-target="#delete-environment-modal"
     @click="onClick"

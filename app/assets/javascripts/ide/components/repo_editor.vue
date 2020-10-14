@@ -68,7 +68,7 @@ export default {
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
-      return this.file && !isTextFile(this.file);
+      return this.file && !this.file.loading && !isTextFile(this.file);
     },
     showContentViewer() {
       return (
@@ -235,6 +235,7 @@ export default {
       return this.getFileData({
         path: this.file.path,
         makeFileActive: false,
+        toggleLoading: false,
       }).then(() =>
         this.getRawFileData({
           path: this.file.path,

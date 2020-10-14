@@ -19,7 +19,6 @@ export default () => {
       render(createElement) {
         return createElement('app', {
           props: {
-            features: whatsNewElm.getAttribute('data-features'),
             storageKey: whatsNewElm.getAttribute('data-storage-key'),
           },
         });

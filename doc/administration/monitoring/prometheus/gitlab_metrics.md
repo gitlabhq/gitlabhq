@@ -113,6 +113,8 @@ The following metrics are available:
 | `action_cable_pool_largest_size`                               | Gauge     |                   13.4 | Largest number of worker threads observed so far in ActionCable thread pool | `server_mode` |
 | `action_cable_pool_pending_tasks`                              | Gauge     |                   13.4 | Number of tasks waiting to be executed in ActionCable thread pool | `server_mode` |
 | `action_cable_pool_tasks_total`                                | Gauge     |                   13.4 | Total number of tasks executed in ActionCable thread pool | `server_mode` |
+| `gitlab_issuable_fast_count_by_state_total`                    | Counter   |                   13.5 | Total number of row count operations on issue/merge request list pages | |
+| `gitlab_issuable_fast_count_by_state_failures_total`           | Counter   |                   13.5 | Number of soft-failed row count operations on issue/merge request list pages | |
 
 ## Metrics controlled by a feature flag
 
@@ -122,6 +124,8 @@ The following metrics can be controlled by feature flags:
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
+| `gitlab_issuable_fast_count_by_state_total`                    | `soft_fail_count_by_state` |
+| `gitlab_issuable_fast_count_by_state_failures_total`           | `soft_fail_count_by_state` |
 
 ## Sidekiq metrics
 

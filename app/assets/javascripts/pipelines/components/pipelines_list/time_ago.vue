@@ -58,7 +58,7 @@ export default {
         {{ durationFormatted }}
       </p>
 
-      <p v-if="hasFinishedTime" class="finished-at d-none d-sm-none d-md-block">
+      <p v-if="hasFinishedTime" class="finished-at d-none d-md-block">
         <gl-icon name="calendar" class="gl-vertical-align-baseline!" aria-hidden="true" />
 
         <time

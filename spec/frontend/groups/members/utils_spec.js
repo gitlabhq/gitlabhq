@@ -1,5 +1,9 @@
 import { membersJsonString, membersParsed } from './mock_data';
-import { parseDataAttributes } from '~/groups/members/utils';
+import {
+  parseDataAttributes,
+  memberRequestFormatter,
+  groupLinkRequestFormatter,
+} from '~/groups/members/utils';
 
 describe('group member utils', () => {
   describe('parseDataAttributes', () => {
@@ -20,6 +24,28 @@ describe('group member utils', () => {
         members: membersParsed,
         sourceId: 234,
       });
+    });
+  });
+
+  describe('memberRequestFormatter', () => {
+    it('returns expected format', () => {
+      expect(
+        memberRequestFormatter({
+          accessLevel: 50,
+          expires_at: '2020-10-16',
+        }),
+      ).toEqual({ group_member: { access_level: 50, expires_at: '2020-10-16' } });
+    });
+  });
+
+  describe('groupLinkRequestFormatter', () => {
+    it('returns expected format', () => {
+      expect(
+        groupLinkRequestFormatter({
+          accessLevel: 50,
+          expires_at: '2020-10-16',
+        }),
+      ).toEqual({ group_link: { group_access: 50, expires_at: '2020-10-16' } });
     });
   });
 });

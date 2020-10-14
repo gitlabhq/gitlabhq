@@ -1,10 +1,9 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { numberToHumanSize } from '../../../../lib/utils/number_utils';
 
 export default {
   components: {
-    GlLink,
     GlIcon,
   },
   props: {
@@ -44,16 +43,10 @@ export default {
           ({{ fileSizeReadable }})
         </template>
       </p>
-      <gl-link
-        :href="path"
-        class="btn btn-default"
-        rel="nofollow"
-        :download="fileName"
-        target="_blank"
-      >
+      <a :href="path" class="btn btn-default" rel="nofollow" :download="fileName" target="_blank">
         <gl-icon :size="16" name="download" class="float-left gl-mr-3" />
         {{ __('Download') }}
-      </gl-link>
+      </a>
     </div>
   </div>
 </template>

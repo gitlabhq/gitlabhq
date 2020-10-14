@@ -322,10 +322,10 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 The text for a badge can be customized. This can be useful to differentiate between multiple coverage jobs that run in the same pipeline. Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100
+https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
 ```
 
-![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100)
+![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
 
 ## Environment Variables
 

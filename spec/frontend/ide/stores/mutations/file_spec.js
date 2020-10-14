@@ -39,20 +39,34 @@ describe('IDE store file mutations', () => {
   });
 
   describe('TOGGLE_FILE_OPEN', () => {
-    beforeEach(() => {
-      mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
-    });
-
     it('adds into opened files', () => {
+      mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
+
       expect(localFile.opened).toBeTruthy();
       expect(localState.openFiles.length).toBe(1);
     });
 
-    it('removes from opened files', () => {
+    describe('if already open', () => {
+      it('removes from opened files', () => {
+        mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
+        mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
+
+        expect(localFile.opened).toBeFalsy();
+        expect(localState.openFiles.length).toBe(0);
+      });
+    });
+
+    it.each`
+      entry                                | loading
+      ${{ opened: false }}                 | ${true}
+      ${{ opened: false, tempFile: true }} | ${false}
+      ${{ opened: true }}                  | ${false}
+    `('for state: $entry, sets loading=$loading', ({ entry, loading }) => {
+      Object.assign(localFile, entry);
+
       mutations.TOGGLE_FILE_OPEN(localState, localFile.path);
 
-      expect(localFile.opened).toBeFalsy();
-      expect(localState.openFiles.length).toBe(0);
+      expect(localFile.loading).toBe(loading);
     });
   });
 

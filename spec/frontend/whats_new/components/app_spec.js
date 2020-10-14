@@ -8,21 +8,23 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('App', () => {
+  const propsData = { storageKey: 'storage-key' };
   let wrapper;
   let store;
   let actions;
   let state;
-  let propsData = { features: '[ {"title":"Whats New Drawer"} ]', storageKey: 'storage-key' };
   let trackingSpy;
 
   const buildWrapper = () => {
     actions = {
       openDrawer: jest.fn(),
       closeDrawer: jest.fn(),
+      fetchItems: jest.fn(),
     };
 
     state = {
       open: true,
+      features: null,
     };
 
     store = new Vuex.Store({
@@ -37,12 +39,15 @@ describe('App', () => {
     });
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     document.body.dataset.page = 'test-page';
     document.body.dataset.namespaceId = 'namespace-840';
 
     trackingSpy = mockTracking('_category_', null, jest.spyOn);
     buildWrapper();
+
+    wrapper.vm.$store.state.features = [{ title: 'Whats New Drawer', url: 'www.url.com' }];
+    await wrapper.vm.$nextTick();
   });
 
   afterEach(() => {
@@ -77,29 +82,18 @@ describe('App', () => {
     expect(getDrawer().props('open')).toBe(openState);
   });
 
-  it('renders features when provided as props', () => {
+  it('renders features when provided via ajax', () => {
+    expect(actions.fetchItems).toHaveBeenCalled();
     expect(wrapper.find('h5').text()).toBe('Whats New Drawer');
   });
 
-  it('handles bad json argument gracefully', () => {
-    propsData = { features: 'this is not json', storageKey: 'storage-key' };
-    buildWrapper();
-
-    expect(getDrawer().exists()).toBe(true);
-  });
-
   it('send an event when feature item is clicked', () => {
-    propsData = {
-      features: '[ {"title":"Whats New Drawer", "url": "www.url.com"} ]',
-      storageKey: 'storage-key',
-    };
-    buildWrapper();
     trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
 
     const link = wrapper.find('[data-testid="whats-new-title-link"]');
     triggerEvent(link.element);
 
-    expect(trackingSpy.mock.calls[2]).toMatchObject([
+    expect(trackingSpy.mock.calls[1]).toMatchObject([
       '_category_',
       'click_whats_new_item',
       {

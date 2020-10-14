@@ -30,6 +30,7 @@
       'can-bulk-edit': @can_bulk_update.to_json,
       'empty-state-meta': { svg_path: image_path('illustrations/issues.svg') },
       'sort-key': @sort,
-      type: 'issues' } }
+      type: 'issues',
+      'scoped-labels': @group.feature_available?(:scoped_labels).to_json } }
   - else
     = render 'shared/issues'

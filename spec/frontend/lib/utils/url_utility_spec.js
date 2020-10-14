@@ -509,6 +509,20 @@ describe('URL utility', () => {
     });
   });
 
+  describe('isBlobUrl', () => {
+    it.each`
+      url                               | valid
+      ${undefined}                      | ${false}
+      ${'blob:http://gitlab.com/abcd'}  | ${true}
+      ${'data:image/png;base64,abcdef'} | ${false}
+      ${'notaurl'}                      | ${false}
+      ${'../relative_url'}              | ${false}
+      ${'<a></a>'}                      | ${false}
+    `('returns $valid for $url', ({ url, valid }) => {
+      expect(urlUtils.isBlobUrl(url)).toBe(valid);
+    });
+  });
+
   describe('relativePathToAbsolute', () => {
     it.each`
       path                       | base                                  | result

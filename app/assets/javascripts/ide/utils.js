@@ -43,16 +43,17 @@ const KNOWN_TYPES = [
   },
 ];
 
-export function isTextFile({ name, content, mimeType = '' }) {
+export function isTextFile({ name, raw, content, mimeType = '' }) {
   const knownType = KNOWN_TYPES.find(type => type.isMatch(mimeType, name));
-
   if (knownType) return knownType.isText;
 
   // does the string contain ascii characters only (ranges from space to tilde, tabs and new lines)
   const asciiRegex = /^[ -~\t\n\r]+$/;
 
+  const fileContents = raw || content;
+
   // for unknown types, determine the type by evaluating the file contents
-  return isString(content) && (content === '' || asciiRegex.test(content));
+  return isString(fileContents) && (fileContents === '' || asciiRegex.test(fileContents));
 }
 
 export const createPathWithExt = p => {

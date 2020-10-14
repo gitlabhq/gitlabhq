@@ -1,7 +1,17 @@
-export default ({ members, sourceId, currentUserId, tableFields, memberPath }) => ({
+export default ({
   members,
   sourceId,
   currentUserId,
   tableFields,
   memberPath,
+  requestFormatter,
+}) => ({
+  members,
+  sourceId,
+  currentUserId,
+  tableFields,
+  memberPath,
+  requestFormatter,
+  showError: false,
+  errorMessage: '',
 });

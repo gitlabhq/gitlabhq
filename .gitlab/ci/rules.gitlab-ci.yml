@@ -645,6 +645,13 @@
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:rspec-feature-flags:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-merge-request-title-run-all-rspec
+
 .rails:rules:master-schedule-nightly--code-backstage:
   rules:
     - <<: *if-master-schedule-nightly

@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import axios from '~/lib/utils/axios_utils';
 
 export default {
   closeDrawer({ commit }) {
@@ -10,5 +11,10 @@ export default {
     if (storageKey) {
       localStorage.setItem(storageKey, JSON.stringify(false));
     }
+  },
+  fetchItems({ commit }) {
+    return axios.get('/-/whats_new').then(({ data }) => {
+      commit(types.SET_FEATURES, data);
+    });
   },
 };

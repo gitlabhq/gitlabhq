@@ -41,10 +41,13 @@ module IssuableCollections
   end
 
   def set_pagination
+    row_count = finder.row_count
+
     @issuables          = @issuables.page(params[:page])
     @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
+    @issuables          = @issuables.without_count if row_count == -1
     @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issuables).data
-    @total_pages        = issuable_page_count(@issuables)
+    @total_pages        = page_count_for_relation(@issuables, row_count)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -58,14 +61,11 @@ module IssuableCollections
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def issuable_page_count(relation)
-    page_count_for_relation(relation, finder.row_count)
-  end
-
   def page_count_for_relation(relation, row_count)
     limit = relation.limit_value.to_f
 
     return 1 if limit == 0
+    return (params[:page] || 1).to_i + 1 if row_count == -1
 
     (row_count.to_f / limit).ceil
   end

@@ -781,3 +781,10 @@ For example, if there is a connection timeout:
 ```plaintext
 error="failed to connect to internal Pages API: Get \"https://gitlab.example.com:3000/api/v4/internal/pages/status\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)"
 ```
+
+### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
+
+This problem most likely results from an [out-dated operating system](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html).
+The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [crypto/rand in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
+This requires the `getrandom` syscall or `/dev/urandom` to be available on the host OS.
+Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.

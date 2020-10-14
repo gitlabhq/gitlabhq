@@ -399,6 +399,10 @@ configuration files. This helps avoid duplicated configuration, for example, glo
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
 otherwise the external file is not included.
 
+Using [YAML anchors](#anchors) across different YAML files sourced by `include` is not
+supported. You must only refer to anchors in the same file. Instead
+of using YAML anchors, you can use the [`extends` keyword](#extends).
+
 `include` supports the following inclusion methods:
 
 | Method                          | Description                                                       |
@@ -410,7 +414,6 @@ otherwise the external file is not included.
 
 The `include` methods do not support [variable expansion](../variables/where_variables_can_be_used.md#variables-usage).
 
-NOTE: **Note:**
 `.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
 The configuration is a snapshot in time and persisted in the database. Any changes to
 referenced `.gitlab-ci.yml` configuration is not reflected in GitLab until the next pipeline is created.
@@ -425,11 +428,6 @@ TIP: **Tip:**
 Use merging to customize and override included CI/CD configurations with local
 definitions. Local definitions in `.gitlab-ci.yml` override included definitions.
 
-NOTE: **Note:**
-Using [YAML anchors](#anchors) across different YAML files sourced by `include` is not
-supported. You must only refer to anchors in the same file. Instead
-of using YAML anchors, you can use the [`extends` keyword](#extends).
-
 #### `include:local`
 
 `include:local` includes a file from the same repository as `.gitlab-ci.yml`.
@@ -439,11 +437,10 @@ You can only use files that are tracked by Git on the same branch
 your configuration file is on. In other words, when using a `include:local`, make
 sure that both `.gitlab-ci.yml` and the local file are on the same branch.
 
+Including local files through Git submodules paths is not supported.
+
 All [nested includes](#nested-includes) are executed in the scope of the same project,
 so it's possible to use local, project, remote, or template includes.
-
-NOTE: **Note:**
-Including local files through Git submodules paths is not supported.
 
 Example:
 
@@ -452,7 +449,6 @@ include:
   - local: '/templates/.gitlab-ci-template.yml'
 ```
 
-TIP: **Tip:**
 Local includes can be used as a replacement for symbolic links that are not followed.
 
 This can be defined as a short local include:
@@ -891,6 +887,8 @@ The following stages are available to every pipeline:
 
 User-defined stages are executed after `.pre` and before `.post`.
 
+A pipeline is not created if all jobs are in `.pre` or `.post` stages.
+
 The order of `.pre` and `.post` can't be changed, even if defined out of order in `.gitlab-ci.yml`.
 For example, the following are equivalent configuration:
 
@@ -921,9 +919,6 @@ For example, the following are equivalent configuration:
     - a
     - b
   ```
-
-NOTE: **Note:**
-A pipeline is not created if all jobs are in `.pre` or `.post` stages.
 
 ### `extends`
 
@@ -1106,7 +1101,6 @@ is either included or excluded from the pipeline, depending on the configuration
 If included, the job also has [certain attributes](#rules-attributes)
 added to it.
 
-CAUTION: **Caution:**
 `rules` replaces [`only/except`](#onlyexcept-basic) and can't be used in conjunction with it.
 If you attempt to use both keywords in the same job, the linter returns a
 `key may not be used with rules` error.
@@ -1560,7 +1554,7 @@ job1:
     if: ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
 ```
 
-NOTE: **Note:**
+CAUTION: **Caution:**
 [Before GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/230938),
 rules that use both `||` and `&&` may evaluate with an unexpected order of operations.
 
@@ -1715,10 +1709,6 @@ Feature.enable(:allow_unsafe_ruby_regexp)
 ```
 
 ### `only`/`except` (advanced)
-
-CAUTION: **Warning:**
-This is an _alpha_ feature, and is subject to change at any time without
-prior notice!
 
 GitLab supports both simple and complex strategies, so it's possible to use an
 array and a hash configuration scheme.
@@ -2726,16 +2716,15 @@ as Review Apps. You can see a simple example using Review Apps at
 >   by default.
 > - From GitLab 9.2, caches are restored before [artifacts](#artifacts).
 
-TIP: **Learn more:**
-Read how caching works and find out some good practices in the
-[caching dependencies documentation](../caching/index.md).
-
 `cache` is used to specify a list of files and directories that should be
 cached between jobs. You can only use paths that are within the local working
 copy.
 
 If `cache` is defined outside the scope of jobs, it means it's set
 globally and all jobs use that definition.
+
+Read how caching works and find out some good practices in the
+[caching dependencies documentation](../caching/index.md).
 
 #### `cache:paths`
 
@@ -2798,10 +2787,6 @@ The `cache:key` variable can use any of the
 set, is just literal `default`, which means everything is shared between
 pipelines and jobs by default, starting from GitLab 9.0.
 
-NOTE: **Note:**
-The `cache:key` variable can't contain the `/` character, or the equivalent
-URI-encoded `%2F`; a value made only of dots (`.`, `%2E`) is also forbidden.
-
 For example, to enable per-branch caching:
 
 ```yaml
@@ -2820,6 +2805,9 @@ cache:
   paths:
     - binaries/
 ```
+
+The `cache:key` variable can't contain the `/` character, or the equivalent
+URI-encoded `%2F`. A value made only of dots (`.`, `%2E`) is also forbidden.
 
 You can specify a [fallback cache key](#fallback-cache-key) to use if the specified `cache:key` is not found.
 
@@ -3141,11 +3129,6 @@ useful when you want to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
 The default name is `artifacts`, which becomes `artifacts.zip` when you download it.
 
-NOTE: **Note:**
-If your branch-name contains forward slashes
-(for example `feature/my-feature`) it's advised to use `$CI_COMMIT_REF_SLUG`
-instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
-
 To create an archive with a name of the current job:
 
 ```yaml
@@ -3166,6 +3149,10 @@ job:
     paths:
       - binaries/
 ```
+
+If your branch-name contains forward slashes
+(for example `feature/my-feature`) it's advised to use `$CI_COMMIT_REF_SLUG`
+instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
 
 To create an archive with a name of the current job and the current branch or
 tag including only the binaries directory:
@@ -3215,10 +3202,8 @@ job:
 #### `artifacts:untracked`
 
 `artifacts:untracked` is used to add all Git untracked files as artifacts (along
-to the paths defined in `artifacts:paths`).
-
-NOTE: **Note:**
-`artifacts:untracked` ignores configuration in the repository's `.gitignore` file.
+to the paths defined in `artifacts:paths`). `artifacts:untracked` ignores configuration
+in the repository's `.gitignore` file.
 
 Send all Git untracked files:
 
@@ -3308,7 +3293,6 @@ job:
     expire_in: 1 week
 ```
 
-NOTE: **Note:**
 The latest artifacts for refs are locked against deletion, and kept regardless of
 the expiry time. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
 GitLab 13.0 behind a disabled feature flag, and [made the default behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/229936)
@@ -3407,7 +3391,6 @@ If the artifacts of the job that is set as a dependency have been
 [erased](../pipelines/job_artifacts.md#erasing-artifacts), then
 the dependent job fails.
 
-NOTE: **Note:**
 You can ask your administrator to
 [flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
 and bring back the old behavior.
@@ -3554,7 +3537,6 @@ test:
   parallel: 5
 ```
 
-TIP: **Tip:**
 Parallelize tests suites across parallel jobs.
 Different languages have different tools to facilitate this.
 
@@ -3811,10 +3793,9 @@ When enabled, a pipeline on the same branch is canceled when:
 - It's made redundant by a newer pipeline run.
 - Either all jobs are set as interruptible, or any uninterruptible jobs haven't started.
 
-Pending jobs are always considered interruptible.
-
-TIP: **Tip:**
 Set jobs as interruptible that can be safely canceled once started (for instance, a build job).
+
+Pending jobs are always considered interruptible.
 
 Here is a simple example:
 
@@ -3847,7 +3828,6 @@ In the example above, a new pipeline run causes an existing running pipeline to 
 - Canceled, if only `step-1` is running or pending.
 - Not canceled, once `step-2` starts running.
 
-NOTE: **Note:**
 When an uninterruptible job is running, the pipeline can never be canceled, regardless of the final job's state.
 
 ### `resource_group`
@@ -3879,11 +3859,10 @@ In this case, two `deploy-to-production` jobs in two separate pipelines can neve
 you can ensure that concurrent deployments never happen to the production environment.
 
 There can be multiple `resource_group`s defined per environment. A good use case for this
-is when deploying to physical devices. You may have more than one physical device, and each
-one can be deployed to, but there can be only one deployment per device at any given time.
+is when deploying to physical devices. You may have multiple physical devices that
+can be deployed to, but there can be only one deployment per device at any given time.
 
-NOTE: **Note:**
-This key can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
+The `resource_group` value can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
 It can't start or end with `/`.
 
 For more information, see [Deployments Safety](../environments/deployment_safety.md).
@@ -4073,6 +4052,11 @@ tags. These options cannot be used together, so choose one:
         - 'm3'
       released_at: '2020-07-15T08:00:00Z'  # Optional, will auto generate if not defined, or can use a variable.
   ```
+
+#### Release assets as Generic packages
+
+You can use [Generic packages](../../user/packages/generic_packages/) to host your release assets.
+For a complete example of how to do this, see the [example in the repository](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs/examples/release-assets-as-generic-package/).
 
 #### `releaser-cli` command line
 
@@ -4473,11 +4457,6 @@ You can set it globally or per-job in the [`variables`](#variables) section.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2211) in GitLab Runner 11.10.
 
-NOTE: **Note:**
-This can only be used when `custom_build_dir` is enabled in the [runner's
-configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
-This is the default configuration for `docker` and `kubernetes` executor.
-
 By default, GitLab Runner clones the repository in a unique subpath of the
 `$CI_BUILDS_DIR` directory. However, your project might require the code in a
 specific directory (Go projects, for example). In that case, you can specify
@@ -4496,6 +4475,10 @@ test:
 The `GIT_CLONE_PATH` has to always be within `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
 is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 setting.
+
+This can only be used when `custom_build_dir` is enabled in the
+[runner's configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
+This is the default configuration for the `docker` and `kubernetes` executors.
 
 #### Handling concurrency
 
@@ -4576,6 +4559,10 @@ content across your document.
 Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](#hide-jobs)
 to provide templates for your jobs. When there are duplicate keys, GitLab
 performs a reverse deep merge based on the keys.
+
+You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
+feature. Anchors are only valid within the file they were defined in. Instead
+of using YAML anchors, you can use the [`extends` keyword](#extends).
 
 The following example uses anchors and map merging. It creates two jobs,
 `test1` and `test2`, that inherit the parameters of `.job_template`, each
@@ -4698,15 +4685,8 @@ test:mysql:
     - dev
 ```
 
-You can see that the hidden jobs are conveniently used as templates.
-
-NOTE: **Note:**
-Note that `tags: [dev]` has been overwritten by `tags: [postgres]`.
-
-NOTE: **Note:**
-You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
-feature. Anchors are only valid within the file they were defined in. Instead
-of using YAML anchors, you can use the [`extends` keyword](#extends).
+You can see that the hidden jobs are conveniently used as templates, and
+`tags: [dev]` has been overwritten by `tags: [postgres]`.
 
 #### YAML anchors for `before_script` and `after_script`
 

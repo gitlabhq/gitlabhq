@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-10 d-none d-sm-none d-md-block pipeline-tags">
+  <div class="table-section section-10 d-none d-md-block pipeline-tags">
     <gl-link
       :href="pipeline.path"
       class="js-pipeline-url-link js-onboarding-pipeline-item"

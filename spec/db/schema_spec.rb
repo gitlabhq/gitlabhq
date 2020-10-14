@@ -238,6 +238,42 @@ RSpec.describe 'Database schema' do
     end
   end
 
+  context 'primary keys' do
+    let(:exceptions) do
+      %i(
+        analytics_language_trend_repository_languages
+        approval_project_rules_protected_branches
+        ci_build_trace_sections
+        deployment_merge_requests
+        elasticsearch_indexed_namespaces
+        elasticsearch_indexed_projects
+        issue_assignees
+        issues_prometheus_alert_events
+        issues_self_managed_prometheus_alert_events
+        merge_request_context_commit_diff_files
+        merge_request_diff_commits
+        merge_request_diff_files
+        milestone_releases
+        project_authorizations
+        project_pages_metadata
+        push_event_payloads
+        repository_languages
+        user_interacted_projects
+        users_security_dashboard_projects
+      )
+    end
+
+    it 'expects every table to have a primary key defined' do
+      connection = ActiveRecord::Base.connection
+
+      problematic_tables = connection.tables.select do |table|
+        !connection.primary_key(table).present?
+      end.map(&:to_sym)
+
+      expect(problematic_tables - exceptions).to be_empty
+    end
+  end
+
   private
 
   def retrieve_columns_name_with_jsonb

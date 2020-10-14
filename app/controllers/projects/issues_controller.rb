@@ -52,10 +52,9 @@ class Projects::IssuesController < Projects::ApplicationController
     real_time_enabled = Gitlab::ActionCable::Config.in_app? || Feature.enabled?(real_time_feature_flag, @project)
 
     gon.push({ features: { real_time_feature_flag.to_s.camelize(:lower) => real_time_enabled } }, true)
-  end
 
-  before_action only: :index do
-    push_frontend_feature_flag(:scoped_labels, @project, type: :licensed)
+    record_experiment_user(:invite_members_version_a)
+    record_experiment_user(:invite_members_version_b)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
