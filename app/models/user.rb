@@ -1711,7 +1711,7 @@ class User < ApplicationRecord
   end
 
   def can_be_deactivated?
-    active? && no_recent_activity?
+    active? && no_recent_activity? && !internal?
   end
 
   def last_active_at

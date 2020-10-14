@@ -173,6 +173,10 @@ module UsageDataHelpers
     allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
   end
 
+  def clear_memoized_values(values)
+    values.each { |v| described_class.clear_memoization(v) }
+  end
+
   def stub_object_store_settings
     allow(Settings).to receive(:[]).with('artifacts')
       .and_return(

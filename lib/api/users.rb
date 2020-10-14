@@ -547,10 +547,15 @@ module API
 
         unless user.can_be_deactivated?
           forbidden!('A blocked user cannot be deactivated by the API') if user.blocked?
+          forbidden!('An internal user cannot be deactivated by the API') if user.internal?
           forbidden!("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
         end
 
-        user.deactivate
+        if user.deactivate
+          true
+        else
+          render_api_error!(user.errors.full_messages, 400)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

@@ -476,3 +476,9 @@
     height: auto !important;
   }
 }
+
+.test-reports-table {
+  .build-trace {
+    @include build-trace();
+  }
+}

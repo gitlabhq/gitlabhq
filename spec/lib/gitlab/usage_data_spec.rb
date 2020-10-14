@@ -8,6 +8,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   before do
     stub_usage_data_connections
     stub_object_store_settings
+    clear_memoized_values(described_class::CE_MEMOIZED_VALUES)
   end
 
   describe '.uncached_data' do
@@ -24,25 +25,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       it 'clears memoized values' do
-        values = %i(issue_minimum_id issue_maximum_id
-                    project_minimum_id project_maximum_id
-                    user_minimum_id user_maximum_id unique_visit_service
-                    deployment_minimum_id deployment_maximum_id
-                    auth_providers)
-
-        if Gitlab.ee?
-          values << %i(approval_merge_request_rule_minimum_id
-                       approval_merge_request_rule_maximum_id
-                       merge_request_minimum_id
-                       merge_request_maximum_id)
-          values.flatten!
-        end
-
-        values.each do |key|
-          expect(described_class).to receive(:clear_memoization).with(key)
-        end
+        allow(described_class).to receive(:clear_memoization)
 
         subject
+
+        described_class::CE_MEMOIZED_VALUES.each do |key|
+          expect(described_class).to have_received(:clear_memoization).with(key)
+        end
       end
 
       it 'merge_requests_users is included only in montly counters' do
@@ -175,8 +164,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
   describe 'usage_activity_by_stage_manage' do
     it 'includes accurate usage_activity_by_stage data' do
-      described_class.clear_memoization(:auth_providers)
-
       stub_config(
         omniauth:
           { providers: omniauth_providers }
@@ -1142,8 +1129,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.compliance_unique_visits_data }
 
     before do
-      described_class.clear_memoization(:unique_visit_service)
-
       allow_next_instance_of(::Gitlab::Analytics::UniqueVisits) do |instance|
         ::Gitlab::Analytics::UniqueVisits.compliance_events.each do |target|
           allow(instance).to receive(:unique_visits_for).with(targets: target).and_return(123)
@@ -1174,7 +1159,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.search_unique_visits_data }
 
     before do
-      described_class.clear_memoization(:unique_visit_service)
       events = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('search')
       events.each do |event|
         allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: event, start_date: 7.days.ago.to_date, end_date: Date.current).and_return(123)

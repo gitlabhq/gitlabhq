@@ -1250,6 +1250,7 @@ Returns:
 - `403 Forbidden` when trying to deactivate a user:
   - Blocked by admin or by LDAP synchronization.
   - That has any activity in past 180 days. These users cannot be deactivated.
+  - That is internal.
 
 ## Activate user
 

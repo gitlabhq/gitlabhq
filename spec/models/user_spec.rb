@@ -2781,6 +2781,14 @@ RSpec.describe User do
 
       it_behaves_like 'eligible for deactivation'
     end
+
+    context 'a user who is internal' do
+      it 'returns false' do
+        internal_user = create(:user, :bot)
+
+        expect(internal_user.can_be_deactivated?).to be_falsey
+      end
+    end
   end
 
   describe "#contributed_projects" do

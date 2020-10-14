@@ -190,6 +190,17 @@ RSpec.describe Admin::UsersController do
         expect(flash[:notice]).to eq('Error occurred. A blocked user cannot be deactivated')
       end
     end
+
+    context 'for an internal user' do
+      it 'does not deactivate the user' do
+        internal_user = User.alert_bot
+
+        put :deactivate, params: { id: internal_user.username }
+
+        expect(internal_user.reload.deactivated?).to be_falsey
+        expect(flash[:notice]).to eq('Internal users cannot be deactivated')
+      end
+    end
   end
 
   describe 'PUT block/:id' do

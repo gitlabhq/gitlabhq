@@ -2,11 +2,12 @@
 
 module PersonalAccessTokens
   class RevokeService
-    attr_reader :token, :current_user
+    attr_reader :token, :current_user, :group
 
-    def initialize(current_user = nil, params = { token: nil })
+    def initialize(current_user = nil, params = { token: nil, group: nil })
       @current_user = current_user
       @token = params[:token]
+      @group = params[:group]
     end
 
     def execute
@@ -34,3 +35,5 @@ module PersonalAccessTokens
     end
   end
 end
+
+PersonalAccessTokens::RevokeService.prepend_if_ee('EE::PersonalAccessTokens::RevokeService')

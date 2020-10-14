@@ -150,26 +150,27 @@
 
       = render 'admin/users/user_detail_note'
 
-      - if @user.deactivated?
-        .card.border-info
-          .card-header.bg-info.text-white
-            Reactivate this user
-          .card-body
-            = render partial: 'admin/users/user_activation_effects'
-            %br
-            = link_to 'Activate user', activate_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?' }
-      - elsif @user.can_be_deactivated?
-        .card.border-warning
-          .card-header.bg-warning.text-white
-            Deactivate this user
-          .card-body
-            = render partial: 'admin/users/user_deactivation_effects'
-            %br
-            %button.btn.gl-button.btn-warning{ data: { 'gl-modal-action': 'deactivate',
-              content: 'You can always re-activate their account, their data will remain intact.',
-              url: deactivate_admin_user_path(@user),
-              username: sanitize_name(@user.name) } }
-              = s_('AdminUsers|Deactivate user')
+      - unless @user.internal?
+        - if @user.deactivated?
+          .card.border-info
+            .card-header.bg-info.text-white
+              Reactivate this user
+            .card-body
+              = render partial: 'admin/users/user_activation_effects'
+              %br
+              = link_to 'Activate user', activate_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?' }
+        - elsif @user.can_be_deactivated?
+          .card.border-warning
+            .card-header.bg-warning.text-white
+              Deactivate this user
+            .card-body
+              = render partial: 'admin/users/user_deactivation_effects'
+              %br
+              %button.btn.gl-button.btn-warning{ data: { 'gl-modal-action': 'deactivate',
+                content: 'You can always re-activate their account, their data will remain intact.',
+                url: deactivate_admin_user_path(@user),
+                username: sanitize_name(@user.name) } }
+                = s_('AdminUsers|Deactivate user')
 
       - if @user.blocked?
         .card.border-info
