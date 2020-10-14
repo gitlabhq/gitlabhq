@@ -10,6 +10,7 @@ RSpec.describe Types::Ci::JobType do
       name
       needs
       detailedStatus
+      scheduledAt
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

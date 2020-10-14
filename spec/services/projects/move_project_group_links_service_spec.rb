@@ -14,9 +14,9 @@ RSpec.describe Projects::MoveProjectGroupLinksService do
 
   describe '#execute' do
     before do
-      project_with_groups.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
-      project_with_groups.project_group_links.create(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
-      project_with_groups.project_group_links.create(group: reporter_group, group_access: Gitlab::Access::REPORTER)
+      project_with_groups.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
+      project_with_groups.project_group_links.create!(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
+      project_with_groups.project_group_links.create!(group: reporter_group, group_access: Gitlab::Access::REPORTER)
     end
 
     it 'moves the group links from one project to another' do
@@ -30,8 +30,8 @@ RSpec.describe Projects::MoveProjectGroupLinksService do
     end
 
     it 'does not move existent group links in the current project' do
-      target_project.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
-      target_project.project_group_links.create(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
+      target_project.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
+      target_project.project_group_links.create!(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
 
       expect(project_with_groups.project_group_links.count).to eq 3
       expect(target_project.project_group_links.count).to eq 2
@@ -55,8 +55,8 @@ RSpec.describe Projects::MoveProjectGroupLinksService do
       let(:options) { { remove_remaining_elements: false } }
 
       it 'does not remove remaining project group links' do
-        target_project.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
-        target_project.project_group_links.create(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
+        target_project.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
+        target_project.project_group_links.create!(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
 
         subject.execute(project_with_groups, options)
 

@@ -123,7 +123,7 @@ RSpec.describe Projects::AutocompleteService do
       let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
 
       before do
-        project.update(namespace: subgroup)
+        project.update!(namespace: subgroup)
       end
 
       it 'includes project milestones and all acestors milestones' do

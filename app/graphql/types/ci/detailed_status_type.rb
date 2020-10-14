@@ -6,22 +6,22 @@ module Types
     class DetailedStatusType < BaseObject
       graphql_name 'DetailedStatus'
 
-      field :group, GraphQL::STRING_TYPE, null: false,
+      field :group, GraphQL::STRING_TYPE, null: true,
             description: 'Group of the status'
-      field :icon, GraphQL::STRING_TYPE, null: false,
+      field :icon, GraphQL::STRING_TYPE, null: true,
             description: 'Icon of the status'
-      field :favicon, GraphQL::STRING_TYPE, null: false,
+      field :favicon, GraphQL::STRING_TYPE, null: true,
             description: 'Favicon of the status'
       field :details_path, GraphQL::STRING_TYPE, null: true,
             description: 'Path of the details for the status'
-      field :has_details, GraphQL::BOOLEAN_TYPE, null: false,
+      field :has_details, GraphQL::BOOLEAN_TYPE, null: true,
             description: 'Indicates if the status has further details',
             method: :has_details?
-      field :label, GraphQL::STRING_TYPE, null: false,
+      field :label, GraphQL::STRING_TYPE, null: true,
             description: 'Label of the status'
-      field :text, GraphQL::STRING_TYPE, null: false,
+      field :text, GraphQL::STRING_TYPE, null: true,
             description: 'Text of the status'
-      field :tooltip, GraphQL::STRING_TYPE, null: false,
+      field :tooltip, GraphQL::STRING_TYPE, null: true,
             description: 'Tooltip associated with the status',
             method: :status_tooltip
       field :action, Types::Ci::StatusActionType, null: true,

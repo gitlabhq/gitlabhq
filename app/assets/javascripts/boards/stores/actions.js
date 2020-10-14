@@ -1,13 +1,17 @@
 import Cookies from 'js-cookie';
-import { sortBy, pick } from 'lodash';
-import createFlash from '~/flash';
+import { pick } from 'lodash';
 import { __ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { BoardType, ListType, inactiveId } from '~/boards/constants';
 import * as types from './mutation_types';
-import { formatListIssues, fullBoardId, formatListsPageInfo } from '../boards_util';
+import {
+  formatBoardLists,
+  formatListIssues,
+  fullBoardId,
+  formatListsPageInfo,
+} from '../boards_util';
 import boardStore from '~/boards/stores/boards_store';
 
 import listsIssuesQuery from '../queries/lists_issues.query.graphql';
@@ -71,38 +75,29 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        let { lists } = data[boardType]?.board;
-        // Temporarily using positioning logic from boardStore
-        lists = lists.nodes.map(list =>
-          boardStore.updateListPosition({
-            ...list,
-            doNotFetchIssues: true,
-          }),
-        );
-        commit(types.RECEIVE_BOARD_LISTS_SUCCESS, sortBy(lists, 'position'));
+        const { lists } = data[boardType]?.board;
+        commit(types.RECEIVE_BOARD_LISTS_SUCCESS, formatBoardLists(lists));
         // Backlog list needs to be created if it doesn't exist
-        if (!lists.find(l => l.type === ListType.backlog)) {
+        if (!lists.nodes.find(l => l.listType === ListType.backlog)) {
           dispatch('createList', { backlog: true });
         }
         dispatch('showWelcomeList');
       })
-      .catch(() => {
-        createFlash(
-          __('An error occurred while fetching the board lists. Please reload the page.'),
-        );
-      });
+      .catch(() => commit(types.RECEIVE_BOARD_LISTS_FAILURE));
   },
 
-  // This action only supports backlog list creation at this stage
-  // Future iterations will add the ability to create other list types
-  createList: ({ state, commit, dispatch }, { backlog = false }) => {
+  createList: ({ state, commit, dispatch }, { backlog, labelId, milestoneId, assigneeId }) => {
     const { boardId } = state.endpoints;
+
     gqlClient
       .mutate({
         mutation: createBoardListMutation,
         variables: {
           boardId: fullBoardId(boardId),
           backlog,
+          labelId,
+          milestoneId,
+          assigneeId,
         },
       })
       .then(({ data }) => {
@@ -113,16 +108,15 @@ export default {
           dispatch('addList', list);
         }
       })
-      .catch(() => {
-        commit(types.CREATE_LIST_FAILURE);
-      });
+      .catch(() => commit(types.CREATE_LIST_FAILURE));
   },
 
-  addList: ({ state, commit }, list) => {
-    const lists = state.boardLists;
+  addList: ({ commit }, list) => {
     // Temporarily using positioning logic from boardStore
-    lists.push(boardStore.updateListPosition({ ...list, doNotFetchIssues: true }));
-    commit(types.RECEIVE_BOARD_LISTS_SUCCESS, sortBy(lists, 'position'));
+    commit(
+      types.RECEIVE_ADD_LIST_SUCCESS,
+      boardStore.updateListPosition({ ...list, doNotFetchIssues: true }),
+    );
   },
 
   showWelcomeList: ({ state, dispatch }) => {
@@ -130,7 +124,9 @@ export default {
       return;
     }
     if (
-      state.boardLists.find(list => list.type !== ListType.backlog && list.type !== ListType.closed)
+      Object.entries(state.boardLists).find(
+        ([, list]) => list.type !== ListType.backlog && list.type !== ListType.closed,
+      )
     ) {
       return;
     }
@@ -152,13 +148,16 @@ export default {
     notImplemented();
   },
 
-  moveList: ({ state, commit, dispatch }, { listId, newIndex, adjustmentValue }) => {
+  moveList: (
+    { state, commit, dispatch },
+    { listId, replacedListId, newIndex, adjustmentValue },
+  ) => {
     const { boardLists } = state;
-    const backupList = [...boardLists];
-    const movedList = boardLists.find(({ id }) => id === listId);
+    const backupList = { ...boardLists };
+    const movedList = boardLists[listId];
 
     const newPosition = newIndex - 1;
-    const listAtNewIndex = boardLists[newIndex];
+    const listAtNewIndex = boardLists[replacedListId];
 
     movedList.position = newPosition;
     listAtNewIndex.position += adjustmentValue;

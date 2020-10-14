@@ -1,3 +1,4 @@
+import { find } from 'lodash';
 import { inactiveId } from '../constants';
 
 export default {
@@ -21,5 +22,17 @@ export default {
 
   getActiveIssue: state => {
     return state.issues[state.activeId] || {};
+  },
+
+  getListByLabelId: state => labelId => {
+    return find(state.boardLists, l => l.label?.id === labelId);
+  },
+
+  getListByTitle: state => title => {
+    return find(state.boardLists, l => l.title === title);
+  },
+
+  shouldUseGraphQL: () => {
+    return gon?.features?.graphqlBoardLists;
   },
 };

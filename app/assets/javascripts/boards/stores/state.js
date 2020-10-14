@@ -8,7 +8,7 @@ export default () => ({
   isShowingLabels: true,
   activeId: inactiveId,
   sidebarType: '',
-  boardLists: [],
+  boardLists: {},
   listsFlags: {},
   issuesByListId: {},
   pageInfoByListId: {},

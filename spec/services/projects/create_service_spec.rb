@@ -15,7 +15,7 @@ RSpec.describe Projects::CreateService, '#execute' do
   end
 
   it 'creates labels on Project creation if there are templates' do
-    Label.create(title: "bug", template: true)
+    Label.create!(title: "bug", template: true)
     project = create_project(user, opts)
 
     created_label = project.reload.labels.last

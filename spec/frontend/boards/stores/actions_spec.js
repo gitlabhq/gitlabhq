@@ -177,16 +177,26 @@ describe('createList', () => {
 
 describe('moveList', () => {
   it('should commit MOVE_LIST mutation and dispatch updateList action', done => {
+    const initialBoardListsState = {
+      'gid://gitlab/List/1': mockListsWithModel[0],
+      'gid://gitlab/List/2': mockListsWithModel[1],
+    };
+
     const state = {
       endpoints: { fullPath: 'gitlab-org', boardId: '1' },
       boardType: 'group',
       disabled: false,
-      boardLists: mockListsWithModel,
+      boardLists: initialBoardListsState,
     };
 
     testAction(
       actions.moveList,
-      { listId: 'gid://gitlab/List/1', newIndex: 1, adjustmentValue: 1 },
+      {
+        listId: 'gid://gitlab/List/1',
+        replacedListId: 'gid://gitlab/List/2',
+        newIndex: 1,
+        adjustmentValue: 1,
+      },
       state,
       [
         {
@@ -197,7 +207,11 @@ describe('moveList', () => {
       [
         {
           type: 'updateList',
-          payload: { listId: 'gid://gitlab/List/1', position: 0, backupList: mockListsWithModel },
+          payload: {
+            listId: 'gid://gitlab/List/1',
+            position: 0,
+            backupList: initialBoardListsState,
+          },
         },
       ],
       done,

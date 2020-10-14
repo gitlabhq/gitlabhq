@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
+import { getFilename } from '~/lib/utils/file_upload';
 import UploadButton from '../components/upload/button.vue';
 import DeleteButton from '../components/delete_button.vue';
 import Design from '../components/list/item.vue';
@@ -31,7 +32,7 @@ import {
   isValidDesignFile,
   moveDesignOptimisticResponse,
 } from '../utils/design_management_utils';
-import { getFilename } from '~/lib/utils/file_upload';
+import { trackDesignCreate, trackDesignUpdate } from '../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../router/constants';
 
 const MAXIMUM_FILE_UPLOAD_LIMIT = 10;
@@ -186,6 +187,7 @@ export default {
       updateStoreAfterUploadDesign(store, designManagementUpload, this.projectQueryBody);
     },
     onUploadDesignDone(res) {
+      // display any warnings, if necessary
       const skippedFiles = res?.data?.designManagementUpload?.skippedDesigns || [];
       const skippedWarningMessage = designUploadSkippedWarning(this.filesToBeSaved, skippedFiles);
       if (skippedWarningMessage) {
@@ -196,7 +198,19 @@ export default {
       if (!this.isLatestVersion) {
         this.$router.push({ name: DESIGNS_ROUTE_NAME });
       }
+
+      // reset state
       this.resetFilesToBeSaved();
+      this.trackUploadDesign(res);
+    },
+    trackUploadDesign(res) {
+      (res?.data?.designManagementUpload?.designs || []).forEach(design => {
+        if (design.event === 'CREATION') {
+          trackDesignCreate();
+        } else if (design.event === 'MODIFICATION') {
+          trackDesignUpdate();
+        }
+      });
     },
     onUploadDesignError() {
       this.resetFilesToBeSaved();

@@ -72,7 +72,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     context 'when project has remote mirrors' do
       let!(:project) do
         create(:project, :repository, namespace: user.namespace).tap do |project|
-          project.remote_mirrors.create(url: 'http://test.com')
+          project.remote_mirrors.create!(url: 'http://test.com')
         end
       end
 

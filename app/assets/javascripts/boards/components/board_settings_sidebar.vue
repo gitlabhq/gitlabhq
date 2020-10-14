@@ -34,7 +34,7 @@ export default {
         referencing a List Model class. Reactivity only applies to plain JS objects
       */
       if (this.glFeatures.graphqlBoardLists) {
-        return this.boardLists.find(({ id }) => id === this.activeId);
+        return this.boardLists[this.activeId];
       }
       return boardsStore.state.lists.find(({ id }) => id === this.activeId);
     },

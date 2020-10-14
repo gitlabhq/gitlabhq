@@ -2127,6 +2127,11 @@ type CiJob {
     """
     last: Int
   ): CiJobConnection
+
+  """
+  Schedule for the build
+  """
+  scheduledAt: Time
 }
 
 """
@@ -5328,37 +5333,37 @@ type DetailedStatus {
   """
   Favicon of the status
   """
-  favicon: String!
+  favicon: String
 
   """
   Group of the status
   """
-  group: String!
+  group: String
 
   """
   Indicates if the status has further details
   """
-  hasDetails: Boolean!
+  hasDetails: Boolean
 
   """
   Icon of the status
   """
-  icon: String!
+  icon: String
 
   """
   Label of the status
   """
-  label: String!
+  label: String
 
   """
   Text of the status
   """
-  text: String!
+  text: String
 
   """
   Tooltip associated with the status
   """
-  tooltip: String!
+  tooltip: String
 }
 
 input DiffImagePositionInput {

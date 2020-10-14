@@ -1,0 +1,5 @@
+---
+title: Add migration helpers for copying check constraints
+merge_request: 44777
+author:
+type: other

@@ -243,7 +243,7 @@ RSpec.describe Projects::AfterRenameService do
   def service_execute
     # AfterRenameService is called by UpdateService after a successful model.update
     # the initialization will include before and after paths values
-    project.update(path: path_after_rename)
+    project.update!(path: path_after_rename)
 
     described_class.new(project, path_before: path_before_rename, full_path_before: full_path_before_rename).execute
   end

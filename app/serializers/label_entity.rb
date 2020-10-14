@@ -7,7 +7,7 @@ class LabelEntity < Grape::Entity
   expose :color
   expose :description
   expose :group_id
-  expose :project_id
+  expose :project_id, if: ->(label, _) { !label.is_a?(GlobalLabel) }
   expose :template
   expose :text_color
   expose :created_at

@@ -184,3 +184,12 @@ To quickly see the latest updates on an incident, click
 un-threaded and ordered chronologically, newest to oldest:
 
 ![Timeline view toggle](./img/timeline_view_toggle_v13_5.png)
+
+### Service Level Agreement countdown timer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in GitLab 13.5.
+
+After enabling **Incident SLA** in the Incident Management configuration, newly-created
+incidents display a SLA (Service Level Agreement) timer showing the time remaining before
+the SLA period expires. If the incident is not closed before the SLA period ends, GitLab
+adds a `missed::SLA` label to the incident.

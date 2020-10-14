@@ -13,6 +13,7 @@ module.exports = path => {
       'jest-junit',
       {
         outputName: './junit_jest.xml',
+        addFileAttribute: 'true',
       },
     ]);
   }

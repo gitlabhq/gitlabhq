@@ -28,6 +28,8 @@
     # Help pages are excluded from scan as they are static pages.
     # profile/two_factor_auth is excluded from scan to prevent 2FA from being turned on from user profile, which will reduce coverage.
     - 'export DAST_AUTH_EXCLUDE_URLS="${DAST_WEBSITE}/help/.*,${DAST_WEBSITE}/profile/two_factor_auth,${DAST_WEBSITE}/users/sign_out"'
+    # Exclude the automatically generated monitoring project from being tested due to https://gitlab.com/gitlab-org/gitlab/-/issues/260362
+    - 'DAST_AUTH_EXCLUDE_URLS="${DAST_AUTH_EXCLUDE_URLS},https://.*\.gitlab-review\.app/gitlab-instance-(administrators-)?[a-zA-Z0-9]{8}/.*"'
     - enable_rule () { read all_rules; rule=$1; echo $all_rules | sed -r "s/(,)?$rule(,)?/\1-1\2/" ; }
     # Sort ids in DAST_RULES ascendingly, which is required when using DAST_RULES as argument to enable_rule
     - 'DAST_RULES=$(echo $DAST_RULES | tr "," "\n" | sort -n | paste -sd ",")'

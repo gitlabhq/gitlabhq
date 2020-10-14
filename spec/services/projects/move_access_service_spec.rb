@@ -17,9 +17,9 @@ RSpec.describe Projects::MoveAccessService do
     project_with_access.add_maintainer(maintainer_user)
     project_with_access.add_developer(developer_user)
     project_with_access.add_reporter(reporter_user)
-    project_with_access.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
-    project_with_access.project_group_links.create(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
-    project_with_access.project_group_links.create(group: reporter_group, group_access: Gitlab::Access::REPORTER)
+    project_with_access.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
+    project_with_access.project_group_links.create!(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
+    project_with_access.project_group_links.create!(group: reporter_group, group_access: Gitlab::Access::REPORTER)
   end
 
   subject { described_class.new(target_project, user) }
@@ -97,7 +97,7 @@ RSpec.describe Projects::MoveAccessService do
       end
 
       it 'does not remove remaining group links' do
-        target_project.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
+        target_project.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
 
         subject.execute(project_with_access, options)
 
