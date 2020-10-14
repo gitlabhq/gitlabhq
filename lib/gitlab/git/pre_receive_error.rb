@@ -18,13 +18,15 @@ module Gitlab
 
       attr_reader :raw_message
 
-      def initialize(message = '', user_message = '')
+      def initialize(message = '', fallback_message: '')
         @raw_message = message
 
-        if user_message.present?
-          super(sanitize(user_message))
+        sanitized_msg = sanitize(message)
+
+        if sanitized_msg.present?
+          super(sanitized_msg)
         else
-          super(sanitize(message))
+          super(fallback_message)
         end
       end
 
