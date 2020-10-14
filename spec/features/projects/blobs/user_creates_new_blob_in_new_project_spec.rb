@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates blob in new project', :js do
+RSpec.describe 'User creates new blob', :js do
+  include WebIdeSpecHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :empty_repo) }
 
@@ -12,16 +14,19 @@ RSpec.describe 'User creates blob in new project', :js do
       visit project_path(project)
     end
 
-    it 'allows the user to add a new file' do
+    it 'allows the user to add a new file in Web IDE' do
       click_link 'New file'
 
-      execute_script("monaco.editor.getModels()[0].setValue('Hello world')")
+      wait_for_requests
 
-      fill_in(:file_name, with: 'dummy-file')
+      ide_create_new_file('dummy-file', content: "Hello world\n")
 
-      click_button('Commit changes')
+      ide_commit
 
-      expect(page).to have_content('The file has been successfully created')
+      click_button('Commit')
+
+      expect(page).to have_content('All changes are committed')
+      expect(project.repository.blob_at('master', 'dummy-file').data).to eql("Hello world\n")
     end
   end
 

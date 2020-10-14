@@ -28,7 +28,10 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $gl-text-color-secondary;
+
+      &:not(.text-warning) {
+        fill: $gl-text-color-secondary;
+      }
     }
 
     .sprite {

@@ -619,7 +619,7 @@ Ensure you comply with the [Changelog entries guide](../changelog.md).
 
 ### 8. Ask for a Product Analytics Review
 
-On GitLab.com, we have DangerBot setup to monitor Product Analytics related files and DangerBot will recommend a Product Analytics review. Mention `@gitlab-org/growth/product-analytics/engineers` in your MR for a review.
+On GitLab.com, we have DangerBot setup to monitor Product Analytics related files and DangerBot will recommend a Product Analytics review. Mention `@gitlab-org/growth/product_analytics/engineers` in your MR for a review.
 
 ### 9. Verify your metric
 

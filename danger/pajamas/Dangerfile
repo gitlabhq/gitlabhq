@@ -26,18 +26,18 @@ PATTERNS = %w[
   gl-deprecated-dropdown-divider
   gl-deprecated-dropdown-header
   gl-deprecated-dropdown-item
-  graphql_pagination
   has-tooltip
   has_tooltip
   initDeprecatedJQueryDropdown
   loading-button
-  pagination-button
   v-popover
   v-tooltip
   with_tooltip
 ].freeze
 
 BLOCKING_PATTERNS = %w[
+  pagination-button
+  graphql_pagination
 ].freeze
 
 def get_added_lines(files)

@@ -90,4 +90,12 @@ RSpec.describe ApplicationRecord do
       expect(User.at_most(2).count).to eq(2)
     end
   end
+
+  describe '.where_exists' do
+    it 'produces a WHERE EXISTS query' do
+      user = create(:user)
+
+      expect(User.where_exists(User.limit(1))).to eq([user])
+    end
+  end
 end

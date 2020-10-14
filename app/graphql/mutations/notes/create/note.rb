@@ -17,7 +17,7 @@ module Mutations
           discussion_id = nil
 
           if args[:discussion_id]
-            discussion = GitlabSchema.object_from_id(args[:discussion_id])
+            discussion = GitlabSchema.object_from_id(args[:discussion_id], expected_type: ::Discussion)
             authorize_discussion!(discussion)
 
             discussion_id = discussion.id

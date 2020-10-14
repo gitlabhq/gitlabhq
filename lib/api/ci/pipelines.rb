@@ -128,7 +128,7 @@ module API
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
 
-          if Feature.enabled?(:ci_jobs_finder_refactor)
+          if Feature.enabled?(:ci_jobs_finder_refactor, default_enabled: true)
             builds = ::Ci::JobsFinder
               .new(current_user: current_user, pipeline: pipeline, params: params)
               .execute
@@ -157,7 +157,7 @@ module API
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
 
-          if Feature.enabled?(:ci_jobs_finder_refactor)
+          if Feature.enabled?(:ci_jobs_finder_refactor, default_enabled: true)
             bridges = ::Ci::JobsFinder
               .new(current_user: current_user, pipeline: pipeline, params: params, type: ::Ci::Bridge)
               .execute

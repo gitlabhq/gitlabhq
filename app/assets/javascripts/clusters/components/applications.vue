@@ -360,7 +360,7 @@ export default {
             >
               <template #link="{ content }">
                 <gl-link
-                  href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+                  href="https://docs.gitlab.com/ee/user/project/integrations/prometheus.html"
                   target="_blank"
                   >{{ content }}</gl-link
                 >

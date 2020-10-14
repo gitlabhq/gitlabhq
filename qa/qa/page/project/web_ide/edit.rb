@@ -73,6 +73,10 @@ module QA
             element :project_path_content
           end
 
+          view 'app/assets/javascripts/ide/components/commit_sidebar/message_field.vue' do
+            element :ide_commit_message_field
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
               page.has_content? file_name
@@ -81,6 +85,10 @@ module QA
 
           def has_project_path?(project_path)
             has_element?(:project_path_content, project_path: project_path)
+          end
+
+          def go_to_project
+            click_element(:project_path_content, Page::Project::Show)
           end
 
           def create_new_file_from_template(file_name, template)
@@ -115,7 +123,7 @@ module QA
             find_element(:commit_sha_content).text
           end
 
-          def commit_changes(open_merge_request: false)
+          def commit_changes(commit_message = nil, open_merge_request: false)
             # Clicking :begin_commit_button switches from the
             # edit to the commit view
             click_element(:begin_commit_button)
@@ -131,6 +139,10 @@ module QA
             wait_until(reload: false) do
               has_no_element?(:begin_commit_button) &&
                 has_element?(:commit_button)
+            end
+
+            if commit_message
+              fill_element(:ide_commit_message_field, commit_message)
             end
 
             if open_merge_request

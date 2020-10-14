@@ -3,7 +3,7 @@
 # Gitlab::VisibilityLevelChecker verifies that:
 #   - Current @project.visibility_level is not restricted
 #   - Override visibility param is not restricted
-#     - @see https://docs.gitlab.com/ce/api/project_import_export.html#import-a-file
+#     - @see https://docs.gitlab.com/ee/api/project_import_export.html#import-a-file
 #
 # @param current_user [User] Current user object to verify visibility level against
 # @param project [Project] Current project that is being created/imported

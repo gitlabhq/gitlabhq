@@ -64,18 +64,17 @@ To set up GitLab and its components to accommodate up to 2,000 users:
 
 ## Configure the external load balancer
 
-NOTE: **Note:**
-This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/).
-Although you can use a load balancer with a similar set of features, GitLab
-hasn't validated other load balancers.
-
 In an active/active GitLab configuration, you'll need a load balancer to route
-traffic to the application servers. The specifics for which load balancer to
-use or its exact configuration is out of scope for the GitLab documentation.
-If you're managing multi-node systems (including GitLab) you'll probably
-already have a load balancer of choice. Some examples including HAProxy
-(open-source), F5 Big-IP LTM, and Citrix Net Scaler. This documentation
-includes the ports and protocols for use with GitLab.
+traffic to the application servers. The specifics on which load balancer to use
+or its exact configuration is beyond the scope of GitLab documentation. We hope
+that if you're managing multi-node systems like GitLab, you already have a load
+balancer of choice. Some load balancer examples include HAProxy (open-source),
+F5 Big-IP LTM, and Citrix Net Scaler. This documentation outline the ports and
+protocols needed for use with GitLab.
+
+This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/)
+as the load balancer. Although other load balancers with similar feature sets
+could also be used, those load balancers have not been validated.
 
 The next question is how you will handle SSL in your environment. There are
 several different options:
@@ -489,11 +488,10 @@ Name. If you are addressing the Gitaly server by its IP address, you must add it
 as a Subject Alternative Name to the certificate.
 [gRPC does not support using an IP address as Common Name in a certificate](https://github.com/grpc/grpc/issues/2691).
 
-NOTE: **Note:**
-It is possible to configure Gitaly servers with both an
-unencrypted listening address `listen_addr` and an encrypted listening
-address `tls_listen_addr` at the same time. This allows you to do a
-gradual transition from unencrypted to encrypted traffic, if necessary.
+It's possible to configure Gitaly servers with both an unencrypted listening
+address (`listen_addr`) and an encrypted listening address (`tls_listen_addr`)
+at the same time. This allows you to do a gradual transition from unencrypted to
+encrypted traffic, if necessary.
 
 To configure Gitaly with TLS:
 
@@ -537,14 +535,14 @@ To configure Gitaly with TLS:
 
 ## Configure GitLab Rails
 
-NOTE: **Note:**
-In our architectures we run each GitLab Rails node using the Puma webserver
-and have its number of workers set to 90% of available CPUs along with four threads. For
-nodes that are running Rails with other components the worker value should be reduced
-accordingly where we've found 50% achieves a good balance but this is dependent
-on workload.
-
 This section describes how to configure the GitLab application (Rails) component.
+
+In our architecture, we run each GitLab Rails node using the Puma webserver, and
+have its number of workers set to 90% of available CPUs, with four threads. For
+nodes running Rails with other components, the worker value should be reduced
+accordingly. We've determined that a worker value of 50% achieves a good balance,
+but this is dependent on workload.
+
 On each node perform the following:
 
 1. If you're [using NFS](#configure-nfs-optional):
@@ -572,10 +570,10 @@ On each node perform the following:
       mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
       ```
 
-1. Download/install Omnibus GitLab using **steps 1 and 2** from
+1. Download and install Omnibus GitLab using **steps 1 and 2** from
    [GitLab downloads](https://about.gitlab.com/install/). Do not complete other
    steps on the download page.
-1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
+1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
    to access GitLab. This would be the URL of the [load balancer](#configure-the-external-load-balancer)
@@ -671,12 +669,10 @@ On each node perform the following:
    [Gitaly node](#configure-gitaly) and
    [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-NOTE: **Note:**
-When you specify `https` in the `external_url`, as in the example
-above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
-certificates are not present, NGINX will fail to start. See the
-[NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-for more information.
+When you specify `https` in the `external_url`, as in the previous example,
+GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
+certificates aren't present, NGINX will fail to start. For more information, see
+the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
 
 ### GitLab Rails post-configuration
 
@@ -688,12 +684,11 @@ for more information.
    sudo gitlab-rake gitlab:db:configure
    ```
 
-    NOTE: **Note:**
-    If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to
-    PostgreSQL it may be that your PgBouncer node's IP address is missing from
-    PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-    [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
-    in the Troubleshooting section before proceeding.
+   If you encounter a `rake aborted!` error message stating that PgBouncer is
+   failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
+   address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
+   on your database nodes. Before proceeding, see
+   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
@@ -832,30 +827,44 @@ data, and is recommended over [NFS](#configure-nfs-optional). In general,
 object storage services are better for larger environments, as object storage
 is typically much more performant, reliable, and scalable.
 
-Object storage options that GitLab has either tested or is aware of customers
-using, includes:
+GitLab has been tested on a number of object storage providers:
 
-- SaaS/Cloud solutions (such as [Amazon S3](https://aws.amazon.com/s3/) or
-  [Google Cloud Storage](https://cloud.google.com/storage)).
-- On-premises hardware and appliances, from various storage vendors.
-- MinIO ([Deployment guide](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html)).
+- [Amazon S3](https://aws.amazon.com/s3/)
+- [Google Cloud Storage](https://cloud.google.com/storage)
+- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
+- [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
+- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
+- On-premises hardware and appliances from various storage vendors.
+- MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
-To configure GitLab to use object storage, refer to the following guides based
-on the features you intend to use:
+There are two ways of specifying object storage configuration in GitLab:
 
-1. [Object storage for backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
-1. [Object storage for job artifacts](../job_artifacts.md#using-object-storage)
-   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
-1. [Object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. [Object storage for uploads](../uploads.md#using-object-storage).
-1. [Object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
-1. [Object storage for Container Registry](../packages/container_registry.md#use-object-storage) (optional feature).
-1. [Object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
-1. [Object storage for packages](../packages/index.md#using-object-storage) (optional feature).
-1. [Object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. [Object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. [Object storage for autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
-1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage).
+- [Consolidated form](../object_storage.md#consolidated-object-storage-configuration): A single credential is
+  shared by all supported object types.
+- [Storage-specific form](../object_storage.md#storage-specific-configuration): Every object defines its
+  own object storage [connection and configuration](../object_storage.md#connection-settings).
+
+Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
+
+For configuring object storage in GitLab 13.1 and earlier, or for storage types not
+supported by consolidated configuration form, refer to the following guides based
+on what features you intend to use:
+
+|Object storage type|Supported by consolidated configuration?|
+|-------------------|----------------------------------------|
+| [Backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage)|No|
+| [Job artifacts](../job_artifacts.md#using-object-storage) including archived job logs | Yes |
+| [LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
+| [Uploads](../uploads.md#using-object-storage) | Yes |
+| [Container Registry](../packages/container_registry.md#use-object-storage) (optional feature) | No |
+| [Merge request diffs](../merge_request_diffs.md#using-object-storage) | Yes |
+| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
+| [Packages](../packages/index.md#using-object-storage) (optional feature) | Yes |
+| [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
+| [Pseudonymizer](../pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
+| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
+| [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 
@@ -879,16 +888,13 @@ functioning backups is encountered.
 
 ## Configure Advanced Search **(STARTER ONLY)**
 
-NOTE: **Note:**
-Elasticsearch cluster design and requirements are dependent on your specific data.
-For recommended best practices on how to set up your Elasticsearch cluster
-alongside your instance, read how to
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+for faster, more advanced code search across your entire GitLab instance.
+
+Elasticsearch cluster design and requirements are dependent on your specific
+data. For recommended best practices about how to set up your Elasticsearch
+cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
-
-You can leverage Elasticsearch and enable Advanced Search for faster, more
-advanced code search across your entire GitLab instance.
-
-[Learn how to set it up.](../../integration/elasticsearch.md)
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

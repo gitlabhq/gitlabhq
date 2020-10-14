@@ -229,7 +229,7 @@ RSpec.configure do |config|
     end
 
     # Enable Marginalia feature for all specs in the test suite.
-    allow(Gitlab::Marginalia).to receive(:cached_feature_enabled?).and_return(true)
+    Gitlab::Marginalia.enabled = true
 
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:

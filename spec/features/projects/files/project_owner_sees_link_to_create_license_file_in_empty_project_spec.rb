@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > Project owner sees a link to create a license file in empty project', :js do
+  include WebIdeSpecHelpers
+
   let(:project) { create(:project_empty_repo) }
   let(:project_maintainer) { project.owner }
 
@@ -10,36 +12,35 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
     sign_in(project_maintainer)
   end
 
-  it 'project maintainer creates a license file from a template' do
+  it 'allows project maintainer creates a license file from a template in Web IDE' do
     visit project_path(project)
     click_on 'Add LICENSE'
-    expect(page).to have_content('New file')
 
-    expect(current_path).to eq(
-      project_new_blob_path(project, 'master'))
-    expect(find('#file_name').value).to eq('LICENSE')
-    expect(page).to have_selector('.license-selector')
+    expect(current_path).to eq("/-/ide/project/#{project.full_path}/edit/master/-/LICENSE")
+
+    expect(page).to have_selector('.qa-file-templates-bar')
 
     select_template('MIT License')
 
-    file_content = first('.file-editor')
-    expect(file_content).to have_content('MIT License')
-    expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    expect(ide_editor_value).to have_content('MIT License')
+    expect(ide_editor_value).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
-    fill_in :commit_message, with: 'Add a LICENSE file', visible: true
-    click_button 'Commit changes'
+    ide_commit
 
-    expect(current_path).to eq(
-      project_blob_path(project, 'master/LICENSE'))
-    expect(page).to have_content('MIT License')
-    expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+    click_button('Commit')
+
+    expect(current_path).to eq("/-/ide/project/#{project.full_path}/tree/master/-/")
+
+    expect(page).to have_content('All changes are committed')
+
+    license_file = project.repository.blob_at('master', 'LICENSE').data
+    expect(license_file).to have_content('MIT License')
+    expect(license_file).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end
 
   def select_template(template)
-    page.within('.js-license-selector-wrap') do
-      click_button 'Apply a template'
-      click_link template
-      wait_for_requests
-    end
+    click_button 'Choose a template...'
+    click_button template
+    wait_for_requests
   end
 end

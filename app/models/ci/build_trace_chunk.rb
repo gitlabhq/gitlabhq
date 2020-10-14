@@ -136,6 +136,10 @@ module Ci
     # We are using optimistic locking combined with Redis locking to ensure
     # that a chunk gets migrated properly.
     #
+    # We are catching an exception related to an exclusive lock not being
+    # acquired because it is creating a lot of noise, and is a result of
+    # duplicated workers running in parallel for the same build trace chunk.
+    #
     def persist_data!
       in_lock(*lock_params) do         # exclusive Redis lock is acquired first
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
@@ -144,6 +148,8 @@ module Ci
           chunk.unsafe_persist_data!   # we migrate the data and update data store
         end
       end
+    rescue FailedToObtainLockError
+      metrics.increment_trace_operation(operation: :stalled)
     rescue ActiveRecord::StaleObjectError
       raise FailedToPersistDataError, <<~MSG
         Data migration race condition detected

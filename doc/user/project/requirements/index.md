@@ -40,13 +40,15 @@ list is sorted by creation date in descending order.
 
 ## Edit a requirement
 
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/218607) ability to mark a requirement as Satisfied in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.5.
+
 You can edit a requirement (if you have the necessary privileges) from the requirements
 list page.
 
 To edit a requirement:
 
 1. From the requirements list, click **Edit** (**{pencil}**).
-1. Update the title in text input field.
+1. Update the title in text input field. You can also mark (and unmark) a requirement as satisfied in the edit form by using the checkbox labeled "Satisfied".
 1. Click **Save changes**.
 
 ## Archive a requirement
@@ -97,7 +99,7 @@ You can also sort the requirements list by:
 GitLab supports [requirements test
 reports](../../../ci/pipelines/job_artifacts.md#artifactsreportsrequirements) now.
 You can add a job to your CI pipeline that, when triggered, marks all existing
-requirements as Satisfied.
+requirements as Satisfied (you may manually satisfy a requirement in the edit form [edit a requirement](#edit-a-requirement)).
 
 ### Add the manual job to CI
 

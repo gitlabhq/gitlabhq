@@ -22,7 +22,7 @@
     - if ref
       - if job.ref
         .icon-container.gl-display-inline-block
-          = job.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
+          = job.tag? ? sprite_icon('label', css_class: 'sprite') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else
         .light= _('none')
@@ -33,10 +33,12 @@
       = link_to job.short_sha, project_commit_path(job.project, job.sha), class: "commit-sha mr-0"
 
     - if job.stuck?
-      = icon('warning', class: 'text-warning has-tooltip', title: _('Job is stuck. Check runners.'))
+      %span.has-tooltip{ title: _('Job is stuck. Check runners.') }
+        = sprite_icon('warning', css_class: 'text-warning!')
 
     - if retried
-      = icon('refresh', class: 'text-warning has-tooltip', title: _('Job was retried'))
+      %span.has-tooltip{ title: _('Job was retried') }
+        = sprite_icon('retry', css_class: 'text-warning')
 
     .label-container
       - if job.tags.any?
@@ -87,7 +89,7 @@
 
     - if job.finished_at
       %p.finished-at
-        = icon("calendar")
+        = sprite_icon("calendar")
         %span= time_ago_with_tooltip(job.finished_at)
 
   %td.coverage

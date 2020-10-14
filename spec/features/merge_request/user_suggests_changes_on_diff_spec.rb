@@ -250,7 +250,7 @@ RSpec.describe 'User comments on a diff', :js do
   end
 
   context 'multiple suggestions in a single note' do
-    it 'suggestions are presented' do
+    it 'suggestions are presented', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/258989' do
       click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do

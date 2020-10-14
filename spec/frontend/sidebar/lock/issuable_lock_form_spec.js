@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
 import EditForm from '~/sidebar/components/lock/edit_form.vue';
 import createStore from '~/notes/stores';
@@ -19,6 +20,8 @@ describe('IssuableLockForm', () => {
   const findLockStatus = () => wrapper.find('[data-testid="lock-status"]');
   const findEditLink = () => wrapper.find('[data-testid="edit-link"]');
   const findEditForm = () => wrapper.find(EditForm);
+  const findSidebarLockStatusTooltip = () =>
+    getBinding(findSidebarCollapseIcon().element, 'gl-tooltip');
 
   const initStore = isLocked => {
     if (issuableType === ISSUABLE_TYPE_ISSUE) {
@@ -36,6 +39,9 @@ describe('IssuableLockForm', () => {
       propsData: {
         isEditable: true,
         ...props,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
     });
   };
@@ -124,6 +130,13 @@ describe('IssuableLockForm', () => {
               return wrapper.vm.$nextTick().then(() => {
                 expect(findEditForm().exists()).toBe(true);
               });
+            });
+
+            it('renders a tooltip with the lock status text', () => {
+              const tooltip = findSidebarLockStatusTooltip();
+
+              expect(tooltip).toBeDefined();
+              expect(tooltip.value.title).toBe(isLocked ? 'Locked' : 'Unlocked');
             });
           });
         });

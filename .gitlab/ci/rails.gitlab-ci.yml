@@ -34,6 +34,7 @@
       - rspec_profiling/
       - tmp/capybara/
       - tmp/memory_test/
+      - tmp/feature_flags/
       - log/*.log
     reports:
       junit: junit_rspec.xml
@@ -360,6 +361,7 @@ rspec:coverage:
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
     - run_timed_command "bundle exec scripts/merge-simplecov"
     - run_timed_command "bundle exec scripts/gather-test-memory-data"
+    - run_timed_command "bundle exec scripts/used-feature-flags"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage

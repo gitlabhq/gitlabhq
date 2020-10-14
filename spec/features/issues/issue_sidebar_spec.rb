@@ -140,6 +140,18 @@ RSpec.describe 'Issue Sidebar' do
         end
       end
     end
+
+    it 'shows label text as "Apply" when assignees are changed' do
+      project.add_developer(user)
+      visit_issue(project, issue2)
+
+      find('.block.assignee .edit-link').click
+      wait_for_requests
+
+      click_on 'Unassigned'
+
+      expect(page).to have_link('Apply')
+    end
   end
 
   context 'as a allowed user' do

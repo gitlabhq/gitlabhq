@@ -1,8 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
 
@@ -26,7 +25,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -79,13 +78,9 @@ export default {
 <template>
   <div class="block issuable-sidebar-item lock">
     <div
-      v-tooltip
-      :title="tooltipLabel"
+      v-gl-tooltip.left.viewport="{ title: tooltipLabel }"
       class="sidebar-collapsed-icon"
       data-testid="sidebar-collapse-icon"
-      data-container="body"
-      data-placement="left"
-      data-boundary="viewport"
       @click="toggleForm"
     >
       <gl-icon :name="lockStatus.icon" class="sidebar-item-icon is-active" />

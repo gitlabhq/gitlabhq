@@ -146,7 +146,7 @@ NOTE: **Note:**
 These commands will not work for artifacts stored on
 [object storage](../administration/object_storage.md).
 
-When you notice there are more job artifacts files on disk than there
+When you notice there are more job artifacts files and/or directories on disk than there
 should be, you can run:
 
 ```shell
@@ -157,7 +157,7 @@ This command:
 
 - Scans through the entire artifacts folder.
 - Checks which files still have a record in the database.
-- If no database record is found, the file is deleted from disk.
+- If no database record is found, the file and directory is deleted from disk.
 
 By default, this task does not delete anything but shows what it can
 delete. Run the command with `DRY_RUN=false` if you actually want to

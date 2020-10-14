@@ -6,6 +6,10 @@ RSpec.describe RedisTracking do
   let(:feature) { 'approval_rule' }
   let(:user) { create(:user) }
 
+  before do
+    skip_feature_flags_yaml_validation
+  end
+
   controller(ApplicationController) do
     include RedisTracking
 

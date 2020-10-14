@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Developer views tags' do
+  include RepoHelpers
+
   let(:user) { create(:user) }
   let(:group) { create(:group) }
 
@@ -15,10 +17,13 @@ RSpec.describe 'Developer views tags' do
     let(:project) { create(:project_empty_repo, namespace: group) }
 
     before do
-      visit project_path(project)
-      click_on 'Add README'
-      fill_in :commit_message, with: 'Add a README file', visible: true
-      click_button 'Commit changes'
+      project.repository.create_file(
+        user,
+        'README.md',
+        'Example readme',
+        message: 'Add README',
+        branch_name: 'master')
+
       visit project_tags_path(project)
     end
 

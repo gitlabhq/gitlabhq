@@ -939,12 +939,10 @@ installed version of GitLab, the restore command aborts with an error
 message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
-There is a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3470)
-for restore not working with `pgbouncer`. To work around the issue, the Rails
-node must bypass `pgbouncer` and connect directly to the primary
-database node. You can do this by setting `gitlab_rails['db_host']` and
-`gitlab_rails['port']` to connect to the primary database node and
-[reconfiguring GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+NOTE: **Note:**
+There is a known issue with restore not working with `pgbouncer`. The [workaround is to bypass
+`pgbouncer` and connect directly to the primary database node](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+[Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
 
 ### Restore for Docker image and GitLab Helm chart installations
 
@@ -1038,6 +1036,29 @@ If you're running GitLab on a virtualized server, you can possibly also create
 VM snapshots of the entire GitLab server. It's not uncommon however for a VM
 snapshot to require you to power down the server, which limits this solution's
 practical use.
+
+## Backup and restore for installations using PgBouncer
+
+PgBouncer can cause the following errors when performing backups and restores:
+
+```ruby
+ActiveRecord::StatementInvalid: PG::UndefinedTable
+```
+
+There is a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3470) for restore not working
+with `pgbouncer`.
+
+To workaround this issue, the GitLab server will need to bypass `pgbouncer` and
+[connect directly to the primary database node](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
+to perform the database restore.
+
+There is also a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
+with PostgreSQL 9 and running a database backup through PgBouncer that can cause
+an outage to GitLab. If you're still on PostgreSQL 9 and upgrading PostgreSQL isn't
+an option, workarounds include having a dedicated application node just for backups,
+configured to connect directly the primary database node as noted above. You're
+advised to upgrade your PostgreSQL version though, GitLab 11.11 shipped with PostgreSQL
+10.7, and that is the recommended version for GitLab 12+.
 
 ## Additional notes
 

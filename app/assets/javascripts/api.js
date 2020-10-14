@@ -376,7 +376,7 @@ const Api = {
   },
 
   commitMultiple(id, data) {
-    // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
+    // see https://docs.gitlab.com/ee/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitsPath).replace(':id', encodeURIComponent(id));
     return axios.post(url, JSON.stringify(data), {
       headers: {

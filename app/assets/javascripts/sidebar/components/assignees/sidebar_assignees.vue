@@ -89,6 +89,8 @@ export default {
         .saveAssignees(this.field)
         .then(() => {
           this.loading = false;
+          this.store.resetChanging();
+
           refreshUserMergeRequestCounts();
         })
         .catch(() => {
@@ -113,6 +115,7 @@ export default {
       :loading="loading || store.isFetching.assignees"
       :editable="store.editable"
       :show-toggle="!signedIn"
+      :changing="store.changing"
     />
     <assignees
       v-if="!store.isFetching.assignees"

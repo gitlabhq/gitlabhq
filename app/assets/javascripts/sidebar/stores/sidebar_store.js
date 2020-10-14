@@ -33,6 +33,7 @@ export default class SidebarStore {
     this.projectEmailsDisabled = false;
     this.subscribeDisabledDescription = '';
     this.subscribed = null;
+    this.changing = false;
 
     SidebarStore.singleton = this;
   }
@@ -49,6 +50,10 @@ export default class SidebarStore {
     if (reviewers) {
       this.reviewers = reviewers;
     }
+  }
+
+  resetChanging() {
+    this.changing = false;
   }
 
   setTimeTrackingData(data) {
@@ -80,6 +85,7 @@ export default class SidebarStore {
 
   addAssignee(assignee) {
     if (!this.findAssignee(assignee)) {
+      this.changing = true;
       this.assignees.push(assignee);
     }
   }
@@ -100,6 +106,7 @@ export default class SidebarStore {
 
   removeAssignee(assignee) {
     if (assignee) {
+      this.changing = true;
       this.assignees = this.assignees.filter(({ id }) => id !== assignee.id);
     }
   }
@@ -111,6 +118,7 @@ export default class SidebarStore {
   }
 
   removeAllAssignees() {
+    this.changing = true;
     this.assignees = [];
   }
 

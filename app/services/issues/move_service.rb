@@ -52,7 +52,8 @@ module Issues
                      iid: nil,
                      project: target_project,
                      author: original_entity.author,
-                     assignee_ids: original_entity.assignee_ids
+                     assignee_ids: original_entity.assignee_ids,
+                     moved_issue: true
                    }
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)

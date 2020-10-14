@@ -153,6 +153,11 @@ default_enabled: false
 TIP: **Tip:**
 To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feature-flag --ee`
 
+## Delete a feature flag
+
+See [cleaning up feature flags](controls.md#cleaning-up) for more information about
+deleting feature flags.
+
 ## Develop with a feature flag
 
 There are two main ways of using Feature Flags in the GitLab codebase:

@@ -73,7 +73,7 @@ sensitive as to how you word things. Use Emoji to express your feelings (heart,
 star, smile, etc.). Some good tips about code reviews can be found in our
 [Code Review Guidelines].
 
-[Code Review Guidelines]: https://docs.gitlab.com/ce/development/code_review.html
+[Code Review Guidelines]: https://docs.gitlab.com/ee/development/code_review.html
 
 ## Feature flags
 
@@ -217,5 +217,5 @@ rebase with master to see if that solves the issue.
 
 [team]: https://about.gitlab.com/team/
 [done]: https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done
-[automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
-[ee_features]: https://docs.gitlab.com/ce/development/ee_features.html
+[automatic_ce_ee_merge]: https://docs.gitlab.com/ee/development/automatic_ce_ee_merge.html
+[ee_features]: https://docs.gitlab.com/ee/development/ee_features.html

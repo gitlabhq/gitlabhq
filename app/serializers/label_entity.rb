@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class LabelEntity < Grape::Entity
-  expose :id, if: ->(label, _) { !label.is_a?(GlobalLabel) }
+  expose :id
 
   expose :title
   expose :color
   expose :description
   expose :group_id
-  expose :project_id, if: ->(label, _) { !label.is_a?(GlobalLabel) }
+  expose :project_id
   expose :template
   expose :text_color
   expose :created_at

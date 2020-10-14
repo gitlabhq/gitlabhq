@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { n__, __ } from '~/locale';
 
 export default {
   name: 'AssigneeTitle',
@@ -26,11 +26,18 @@ export default {
       required: false,
       default: false,
     },
+    changing: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     assigneeTitle() {
       const assignees = this.numberOfAssignees;
       return n__('Assignee', `%d Assignees`, assignees);
+    },
+    titleCopy() {
+      return this.changing ? __('Apply') : __('Edit');
     },
   },
 };
@@ -43,11 +50,12 @@ export default {
       v-if="editable"
       class="js-sidebar-dropdown-toggle edit-link float-right"
       href="#"
+      data-test-id="edit-link"
       data-track-event="click_edit_button"
       data-track-label="right_sidebar"
       data-track-property="assignee"
     >
-      {{ __('Edit') }}
+      {{ titleCopy }}
     </a>
     <a
       v-if="showToggle"

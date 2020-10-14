@@ -1892,7 +1892,7 @@ for the changes to take effect.
 
 If the document you are editing resides in a place other than the GitLab CE/EE
 `doc/` directory, instead of the relative link, use the full path:
-`https://docs.gitlab.com/ce/administration/restart_gitlab.html`. Replace
+`https://docs.gitlab.com/ee/administration/restart_gitlab.html`. Replace
 `reconfigure` with `restart` where appropriate.
 
 ### Installation guide

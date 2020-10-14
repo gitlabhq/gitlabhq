@@ -21,4 +21,4 @@ Gitlab::Marginalia.set_application_name
 
 Gitlab::Marginalia.enable_sidekiq_instrumentation
 
-Gitlab::Marginalia.set_feature_cache
+Gitlab::Marginalia.set_enabled_from_feature_flag

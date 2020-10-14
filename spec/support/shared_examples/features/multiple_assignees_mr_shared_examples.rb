@@ -38,7 +38,7 @@ RSpec.shared_examples 'multiple assignees merge request' do |action, save_button
     page.within '.issuable-sidebar' do
       page.within '.assignee' do
         # Closing dropdown to persist
-        click_link 'Edit'
+        click_link 'Apply'
 
         expect(page).to have_content user2.name
       end

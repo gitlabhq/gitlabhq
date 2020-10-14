@@ -148,6 +148,35 @@ ote_pid | tls
 (1 row)
 ```
 
+## Procedure for bypassing PgBouncer
+
+Some database changes have to be done directly, and not through PgBouncer. This includes database restores and GitLab upgrades (because of the database migrations).
+
+1. To find the primary node, run the following on a database node:
+
+   ```shell
+   sudo gitlab-ctl repmgr cluster show
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` on the application node you're performing the task on, and update
+   `gitlab_rails['db_host']` and `gitlab_rails['db_port']` with the database
+   primary's host and port.
+
+1. Run reconfigure:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+Once you've performed the tasks or procedure, switch back to using PgBouncer:
+
+1. Change back `/etc/gitlab/gitlab.rb` to point to PgBouncer.
+1. Run reconfigure:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
 ## Troubleshooting
 
 In case you are experiencing any issues connecting through PgBouncer, the first

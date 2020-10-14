@@ -11,6 +11,7 @@ describe('AssigneeTitle component', () => {
       propsData: {
         numberOfAssignees: 0,
         editable: false,
+        changing: false,
         ...props,
       },
     });
@@ -59,6 +60,22 @@ describe('AssigneeTitle component', () => {
       });
 
       expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toEqual(expect.any(Object));
+    });
+  });
+
+  describe('when changing is false', () => {
+    it('renders "Edit"', () => {
+      wrapper = createComponent({ editable: true });
+
+      expect(wrapper.find('[data-test-id="edit-link"]').text()).toEqual('Edit');
+    });
+  });
+
+  describe('when changing is true', () => {
+    it('renders "Edit"', () => {
+      wrapper = createComponent({ editable: true, changing: true });
+
+      expect(wrapper.find('[data-test-id="edit-link"]').text()).toEqual('Apply');
     });
   });
 

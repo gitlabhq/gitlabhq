@@ -102,7 +102,7 @@ class IssuableFinder
     items = filter_items(items)
 
     # Let's see if we have to negate anything
-    items = filter_negated_items(items)
+    items = filter_negated_items(items) if should_filter_negated_args?
 
     # This has to be last as we use a CTE as an optimization fence
     # for counts by passing the force_cte param and passing the
@@ -134,13 +134,15 @@ class IssuableFinder
     by_my_reaction_emoji(items)
   end
 
-  # Negates all params found in `negatable_params`
-  def filter_negated_items(items)
-    return items unless Feature.enabled?(:not_issuable_queries, params.group || params.project, default_enabled: true)
+  def should_filter_negated_args?
+    return false unless Feature.enabled?(:not_issuable_queries, params.group || params.project, default_enabled: true)
 
     # API endpoints send in `nil` values so we test if there are any non-nil
-    return items unless not_params.present? && not_params.values.any?
+    not_params.present? && not_params.values.any?
+  end
 
+  # Negates all params found in `negatable_params`
+  def filter_negated_items(items)
     items = by_negated_author(items)
     items = by_negated_assignee(items)
     items = by_negated_label(items)

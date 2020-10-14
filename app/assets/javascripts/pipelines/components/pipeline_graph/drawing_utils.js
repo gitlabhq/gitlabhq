@@ -64,10 +64,18 @@ export const generateLinksData = ({ links }, jobs, containerID) => {
     // Start point
     path.moveTo(sourceNodeX, sourceNodeY);
 
+    // Make cross-stages lines a straight line all the way
+    // until we can safely draw the bezier to look nice.
+    const straightLineDestinationX = targetNodeX - 100;
+    const controlPointX = straightLineDestinationX + (targetNodeX - straightLineDestinationX) / 2;
+
+    if (straightLineDestinationX > 0) {
+      path.lineTo(straightLineDestinationX, sourceNodeY);
+    }
+
     // Add bezier curve. The first 4 coordinates are the 2 control
     // points to create the curve, and the last one is the end point (x, y).
     // We want our control points to be in the middle of the line
-    const controlPointX = sourceNodeX + (targetNodeX - sourceNodeX) / 2;
     path.bezierCurveTo(
       controlPointX,
       sourceNodeY,
