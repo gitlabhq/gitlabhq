@@ -229,7 +229,7 @@ RSpec.describe 'Issue Boards', :js do
   end
 
   context 'time tracking' do
-    let(:compare_meter_tooltip) { find('.time-tracking .time-tracking-content .compare-meter')['data-original-title'] }
+    let(:compare_meter_tooltip) { find('.time-tracking .time-tracking-content .compare-meter')['title'] }
 
     before do
       issue2.timelogs.create(time_spent: 14400, user: user)

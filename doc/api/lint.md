@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI Lint API
 
-## Validate the CI YAML config
+## Validate the CI YAML configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5953) in GitLab 8.12.
 
@@ -26,7 +26,7 @@ POST /ci/lint
 curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
 ```
 
-Be sure to paste the exact contents of your GitLab CI/CD YAML config because YAML
+Be sure to paste the exact contents of your GitLab CI/CD YAML configuration because YAML
 is very sensitive about indentation and spacing.
 
 Example responses:
@@ -61,7 +61,10 @@ Example responses:
 
 ### YAML expansion
 
-The expansion only works for CI configurations that don't have local [includes](../ci/yaml/README.md#include).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29568) in GitLab 13.5.
+
+The CI lint returns an expanded version of the configuration. The expansion does not
+work for CI configuration added with [`include: local`](../ci/yaml/README.md#includelocal).
 
 Example contents of a `.gitlab-ci.yml` passed to the CI Lint API with
 `include_merged_yaml` set as true:
@@ -119,7 +122,7 @@ curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 
 Example responses:
 
-- Valid config:
+- Valid configuration:
 
 ```json
 {
@@ -130,7 +133,7 @@ Example responses:
 }
 ```
 
-- Invalid config:
+- Invalid configuration:
 
 ```json
 {

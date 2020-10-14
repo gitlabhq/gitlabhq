@@ -2622,10 +2622,12 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `environment:action`
 
 Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
-or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. In the example
-above, if the configuration is not identical, the `stop_review_app` job might not be
-included in all pipelines that include the `review_app` job, and it is not
-possible to trigger the `action: stop` to stop the environment automatically.
+or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. 
+
+In the example above, if the configuration is not identical:
+
+- The `stop_review_app` job might not be included in all pipelines that include the `review_app` job.
+- It is not possible to trigger the `action: stop` to stop the environment automatically.
 
 #### `environment:auto_stop_in`
 
@@ -2774,17 +2776,17 @@ rspec:
       - binaries/
 ```
 
-Note that since cache is shared between jobs, if you're using different
-paths for different jobs, you should also set a different **cache:key**
-otherwise cache content can be overwritten.
+The cache is shared between jobs, so if you're using different
+paths for different jobs, you should also set a different `cache:key`.
+Otherwise cache content can be overwritten.
 
 #### `cache:key`
 
 > Introduced in GitLab Runner v1.0.0.
 
-Since the cache is shared between jobs, if you're using different
-paths for different jobs, you should also set a different `cache:key`
-otherwise cache content can be overwritten.
+The cache is shared between jobs, so if you're using different
+paths for different jobs, you should also set a different `cache:key`.
+Otherwise cache content can be overwritten.
 
 The `key` parameter defines the affinity of caching between jobs,
 to have a single cache for all jobs, cache per-job, cache per-branch
@@ -2973,13 +2975,13 @@ rspec:
     - bundle exec rspec ...
 ```
 
-This helps to speed up job execution and reduce load on the cache server,
-especially when you have a large number of cache-using jobs executing in
+This helps to speed up job execution and reduce load on the cache server.
+It is especially helpful when you have a large number of cache-using jobs executing in
 parallel.
 
-Additionally, if you have a job that unconditionally recreates the cache without
-reference to its previous contents, you can use `policy: push` in that job to
-skip the download step.
+If you have a job that unconditionally recreates the cache without
+referring to its previous contents, you can skip the download step.
+To do so, add `policy: push` to the job.
 
 ### `artifacts`
 
@@ -2992,7 +2994,7 @@ skip the download step.
 `artifacts` is used to specify a list of files and directories that are
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
-The artifacts are sent to GitLab after the job finishes and are
+The artifacts are sent to GitLab after the job finishes. They are
 available for download in the GitLab UI if the size is not
 larger than the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
 
@@ -3341,19 +3343,22 @@ These are the available report types:
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-By default, all [`artifacts`](#artifacts) from all previous [stages](#stages)
-are passed, but you can use the `dependencies` parameter to define a limited
-list of jobs (or no jobs) to fetch artifacts from.
+By default, all [`artifacts`](#artifacts) from previous [stages](#stages)
+are passed to each job. However, you can use the `dependencies` parameter to
+define a limited list of jobs to fetch artifacts from. You can also set a job to download no artifacts at all.
 
 To use this feature, define `dependencies` in context of the job and pass
 a list of all previous jobs the artifacts should be downloaded from.
-You can only define jobs from stages that are executed before the current one.
-An error is shown if you define jobs from the current stage or next ones.
-Defining an empty array skips downloading any artifacts for that job.
-The status of the previous job is not considered when using `dependencies`, so
-if it failed or it's a manual job that was not run, no error occurs.
 
-In the following example, we define two jobs with artifacts, `build:osx` and
+You can define jobs from stages that were executed before the current one.
+An error occurs if you define jobs from the current or an upcoming stage.
+
+To prevent a job from downloading artifacts, define an empty array.
+
+When you use `dependencies`, the status of the previous job is not considered.
+If a job fails or it's a manual job that was not run, no error occurs.
+
+The following example defines two jobs with artifacts: `build:osx` and
 `build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
 are downloaded and extracted in the context of the build. The same happens
 for `test:linux` and artifacts from `build:linux`.
@@ -3435,14 +3440,14 @@ job1:
 Use `retry` to configure how many times a job is retried in
 case of a failure.
 
-When a job fails and has `retry` configured, the job is processed again,
-up to the amount of times specified by the `retry` keyword.
+When a job fails, the job is processed again,
+until the limit specified by the `retry` keyword is reached.
 
-If `retry` is set to 2, and a job succeeds in a second run (first retry), it is not tried
-again. `retry` value has to be a positive integer, equal to or larger than 0, but
-less than or equal to 2 (two retries maximum, three runs in total).
+If `retry` is set to `2`, and a job succeeds in a second run (first retry), it is not retried.
+The `retry` value must be a positive integer, from `0` to `2`
+(two retries maximum, three runs in total).
 
-A simple example to retry in all failure cases:
+This example retries all failure cases:
 
 ```yaml
 test:
@@ -3640,9 +3645,9 @@ You can use this keyword to create two different types of downstream pipelines:
 - [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
 - [Child pipelines](../parent_child_pipelines.md)
 
-[Since GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
-see which job triggered a downstream pipeline by hovering your mouse cursor over
-the downstream pipeline job in the [pipeline graph](../pipelines/index.md#visualize-pipelines).
+[In GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
+view which job triggered a downstream pipeline. In the [pipeline graph](../pipelines/index.md#visualize-pipelines),
+hover over the downstream pipeline job.
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
 can use [`when:manual`](#whenmanual) in the same job as `trigger`. In GitLab 13.4 and
@@ -3782,7 +3787,7 @@ trigger_job:
 
 This setting can help keep your pipeline execution linear. In the example above, jobs from
 subsequent stages wait for the triggered pipeline to successfully complete before
-starting, at the cost of reduced parallelization.
+starting, which reduces parallelization.
 
 #### Trigger a pipeline by API call
 
@@ -3859,7 +3864,7 @@ to semaphores in other programming languages.
 When the `resource_group` key is defined for a job in `.gitlab-ci.yml`,
 job executions are mutually exclusive across different pipelines for the same project.
 If multiple jobs belonging to the same resource group are enqueued simultaneously,
-only one of the jobs is picked by the runner, and the other jobs wait until the
+only one of the jobs is picked by the runner. The other jobs wait until the
 `resource_group` is free.
 
 Here is a simple example:
@@ -3870,9 +3875,7 @@ deploy-to-production:
   resource_group: production
 ```
 
-In this case, if a `deploy-to-production` job is running in a pipeline, and a new
-`deploy-to-production` job is created in a different pipeline, it doesn't run until
-the currently running/pending `deploy-to-production` job finishes. As a result,
+In this case, two `deploy-to-production` jobs in two separate pipelines can never run at the same time. As a result,
 you can ensure that concurrent deployments never happen to the production environment.
 
 There can be multiple `resource_group`s defined per environment. A good use case for this

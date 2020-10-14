@@ -8,24 +8,24 @@
 
     .external-url,
     .dropdown-new {
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gray-500);
     }
 
     .build-link,
     .ref-name {
-      color: $gl-text-color;
+      color: var(--gray-900, $gray-900);
     }
 
     .folder-icon {
       margin-right: 3px;
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gray-500);
       display: inline-block;
       vertical-align: text-top;
     }
 
     .folder-name {
       cursor: pointer;
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gray-500);
       display: inline-block;
     }
 
@@ -74,17 +74,17 @@
 
 .x-axis path,
 .y-axis path {
-  stroke: $gray-300;
+  stroke: var(--gray-300, $gray-300);
 }
 
 .label-x-axis-line,
 .label-y-axis-line {
-  stroke: $border-color;
+  stroke: var(--gray-100, $gray-100);
 }
 
 .y-axis {
   line {
-    stroke: $gray-300;
+    stroke: var(--gray-300, $gray-300);
     stroke-width: 1;
   }
 }
@@ -94,13 +94,13 @@
 }
 
 .rect-text-metric {
-  fill: $white;
+  fill: var(--white, $white);
   stroke-width: 1;
-  stroke: $gray-darkest;
+  stroke: var(--gray-600, $gray-600);
 }
 
 .rect-axis-text {
-  fill: $white;
+  fill: var(--white, $white);
 }
 
 .text-metric {
@@ -108,18 +108,18 @@
 }
 
 .selected-metric-line {
-  stroke: $gray-900;
+  stroke: var(--gray-900, $gray-900);
   stroke-width: 1;
 }
 
 .deployment-line {
-  stroke: $black;
+  stroke: var(--white, $white);
   stroke-width: 1;
 }
 
 .divider-line {
   stroke-width: 1;
-  stroke: $gray-darkest;
+  stroke: var(--gray-600, $gray-600);
 }
 
 .environments-actions {

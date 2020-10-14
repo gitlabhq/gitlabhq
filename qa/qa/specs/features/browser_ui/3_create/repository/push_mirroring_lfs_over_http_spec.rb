@@ -37,8 +37,10 @@ module QA
 
         # Check that the target project has the commit from the source
         target_project.visit!
-        expect(page).to have_content('README.md')
-        expect(page).to have_content('The rendered file could not be displayed because it is stored in LFS')
+        Page::Project::Show.perform do |project_page|
+          expect(project_page).to have_file('README.md')
+          expect(project_page).to have_readme_content('The rendered file could not be displayed because it is stored in LFS')
+        end
       end
     end
   end

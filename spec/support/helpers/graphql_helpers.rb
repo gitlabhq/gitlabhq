@@ -219,7 +219,7 @@ module GraphqlHelpers
   def as_graphql_literal(value)
     case value
     when Array then "[#{value.map { |v| as_graphql_literal(v) }.join(',')}]"
-    when Hash then "{#{value.map { |k, v| "#{k}:#{as_graphql_literal(v)}" }.join(',')}}"
+    when Hash then "{#{attributes_to_graphql(value)}}"
     when Integer, Float then value.to_s
     when String then "\"#{value.gsub(/"/, '\\"')}\""
     when Symbol then value

@@ -5,6 +5,8 @@ module Types
     prepend Gitlab::Graphql::Authorize
     include GitlabStyleDeprecations
 
+    argument_class ::Types::BaseArgument
+
     DEFAULT_COMPLEXITY = 1
 
     def initialize(*args, **kwargs, &block)

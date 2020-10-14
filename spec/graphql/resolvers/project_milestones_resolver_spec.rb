@@ -13,13 +13,19 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
       project.add_developer(current_user)
     end
 
+    def args(**arguments)
+      satisfy("contain only #{arguments.inspect}") do |passed|
+        expect(passed.compact).to match(arguments)
+      end
+    end
+
     def resolve_project_milestones(args = {}, context = { current_user: current_user })
       resolve(described_class, obj: project, args: args, ctx: context)
     end
 
     it 'calls MilestonesFinder to retrieve all milestones' do
       expect(MilestonesFinder).to receive(:new)
-        .with(ids: nil, project_ids: project.id, state: 'all', start_date: nil, end_date: nil)
+        .with(args(project_ids: project.id, state: 'all'))
         .and_call_original
 
       resolve_project_milestones
@@ -36,7 +42,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
 
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(ids: nil, project_ids: project.id, group_ids: contain_exactly(group, parent_group), state: 'all', start_date: nil, end_date: nil)
+          .with(args(project_ids: project.id, group_ids: contain_exactly(group, parent_group), state: 'all'))
           .and_call_original
 
         resolve_project_milestones(include_ancestors: true)
@@ -48,7 +54,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
         milestone = create(:milestone, project: project)
 
         expect(MilestonesFinder).to receive(:new)
-          .with(ids: [milestone.id.to_s], project_ids: project.id, state: 'all', start_date: nil, end_date: nil)
+          .with(args(ids: [milestone.id.to_s], project_ids: project.id, state: 'all'))
           .and_call_original
 
         resolve_project_milestones(ids: [milestone.to_global_id])
@@ -58,7 +64,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     context 'by state' do
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(ids: nil, project_ids: project.id, state: 'closed', start_date: nil, end_date: nil)
+          .with(args(project_ids: project.id, state: 'closed'))
           .and_call_original
 
         resolve_project_milestones(state: 'closed')
@@ -72,7 +78,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
           end_date = Time.now + 5.days
 
           expect(MilestonesFinder).to receive(:new)
-            .with(ids: nil, project_ids: project.id, state: 'all', start_date: start_date, end_date: end_date)
+            .with(args(project_ids: project.id, state: 'all', start_date: start_date, end_date: end_date))
             .and_call_original
 
           resolve_project_milestones(start_date: start_date, end_date: end_date)
@@ -101,6 +107,51 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
             resolve_project_milestones(end_date: Time.now)
           end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/)
         end
+      end
+
+      context 'when passing a timeframe' do
+        it 'calls MilestonesFinder with correct parameters' do
+          start_date = Time.now
+          end_date = Time.now + 5.days
+
+          expect(MilestonesFinder).to receive(:new)
+            .with(args(project_ids: project.id, state: 'all', start_date: start_date, end_date: end_date))
+            .and_call_original
+
+          resolve_project_milestones(timeframe: { start: start_date, end: end_date })
+        end
+      end
+    end
+
+    context 'when title is present' do
+      it 'calls MilestonesFinder with correct parameters' do
+        expect(MilestonesFinder).to receive(:new)
+          .with(args(title: '13.5', state: 'all', project_ids: project.id))
+          .and_call_original
+
+        resolve_project_milestones(title: '13.5')
+      end
+    end
+
+    context 'when search_title is present' do
+      it 'calls MilestonesFinder with correct parameters' do
+        expect(MilestonesFinder).to receive(:new)
+          .with(args(search_title: '13', state: 'all', project_ids: project.id))
+          .and_call_original
+
+        resolve_project_milestones(search_title: '13')
+      end
+    end
+
+    context 'when containing date is present' do
+      it 'calls MilestonesFinder with correct parameters' do
+        t = Time.now
+
+        expect(MilestonesFinder).to receive(:new)
+          .with(args(containing_date: t, state: 'all', project_ids: project.id))
+          .and_call_original
+
+        resolve_project_milestones(containing_date: t)
       end
     end
 
