@@ -363,8 +363,7 @@ This file lives in `/var/log/gitlab/gitlab-rails/git_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/git_json.log` for
 installations from source.
 
-NOTE: **Note:**
-After 12.2, this file was renamed from `githost.log` to
+After GitLab version 12.2, this file was renamed from `githost.log` to
 `git_json.log` and stored in JSON format.
 
 GitLab has to interact with Git repositories, but in some rare cases

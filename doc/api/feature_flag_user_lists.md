@@ -4,9 +4,10 @@ group: Progressive Delivery
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Feature flag user lists API **(PREMIUM)**
+# Feature flag user lists API **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Core in 13.5.
 
 API for accessing GitLab Feature Flag User Lists.
 

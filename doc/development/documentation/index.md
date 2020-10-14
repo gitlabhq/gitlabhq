@@ -216,9 +216,8 @@ For example, if you move `doc/workflow/lfs/index.md` to
    git grep -n "lfs/lfs_administration"
    ```
 
-NOTE: **Note:**
-If the document being moved has any Disqus comments on it, there are extra steps
-to follow documented just [below](#redirections-for-pages-with-disqus-comments).
+1. If the document being moved has any Disqus comments on it, follow the steps
+   described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
 
 Things to note:
 
@@ -249,16 +248,14 @@ using the old URL as value. For example, let's say we moved the document
 available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
 `https://docs.gitlab.com/my-new-location/index.html`.
 
-Into the **new document** front matter, we add the following:
+Into the **new document** front matter, we add the following information. You must
+include the file name in the `disqus_identifier` URL, even if it's `index.html` or `README.html`.
 
 ```yaml
 ---
 disqus_identifier: 'https://docs.gitlab.com/my-old-location/README.html'
 ---
 ```
-
-Note: it is necessary to include the file name in the `disqus_identifier` URL,
-even if it's `index.html` or `README.html`.
 
 ## Merge requests for GitLab documentation
 
@@ -275,9 +272,8 @@ represents a good-faith effort to follow the template and style standards,
 and is believed to be accurate.
 
 Further needs for what would make the doc even better should be immediately addressed
-in a follow-up MR or issue.
+in a follow-up merge request or issue.
 
-NOTE: **Note:**
 If the release version you want to add the documentation to has already been
 frozen or released, use the label `~"Pick into X.Y"` to get it merged into
 the correct release. Avoid picking into a past release as much as you can, as
@@ -400,8 +396,7 @@ You will need at least Maintainer permissions to be able to run it.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
-NOTE: **Note:**
-You will need to push a branch to those repositories, it doesn't work for forks.
+You must push a branch to those repositories, as it doesn't work for forks.
 
 The `review-docs-deploy*` job will:
 
@@ -418,16 +413,15 @@ minutes and it should appear online, otherwise you can check the status of the
 remote pipeline from the link in the merge request's job output.
 If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
 
-TIP: **Tip:**
-Someone with no merge rights to the GitLab projects (think of forks from
-contributors) cannot run the manual job. In that case, you can
-ask someone from the GitLab team who has the permissions to do that for you.
-
-NOTE: **Note:**
 Make sure that you always delete the branch of the merge request you were
 working on. If you don't, the remote docs branch won't be removed either,
 and the server where the Review Apps are hosted will eventually be out of
 disk space.
+
+TIP: **Tip:**
+Someone with no merge rights to the GitLab projects (think of forks from
+contributors) cannot run the manual job. In that case, you can
+ask someone from the GitLab team who has the permissions to do that for you.
 
 ### Troubleshooting review apps
 

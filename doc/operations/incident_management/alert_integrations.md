@@ -127,3 +127,26 @@ and details pages.
 If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ![Alert Management List](./img/alert_list_v13_1.png)
+
+### Link to your Opsgenie Alerts
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
+
+If you enable the Opsgenie integration, you can't have other GitLab alert
+services, such as [Generic Alerts](generic_alerts.md) or Prometheus alerts,
+active at the same time.
+
+To enable Opsgenie integration:
+
+1. Sign in as a user with Maintainer or Owner [permissions](../../user/permissions.md).
+1. Navigate to **Operations > Alerts**.
+1. In the **Integrations** select box, select **Opsgenie**.
+1. Select the **Active** toggle.
+1. In the **API URL** field, enter the base URL for your Opsgenie integration,
+   such as `https://app.opsgenie.com/alert/list`.
+1. Select **Save changes**.
+
+After you enable the integration, navigate to the Alerts list page at
+**Operations > Alerts**, and then select **View alerts in Opsgenie**.

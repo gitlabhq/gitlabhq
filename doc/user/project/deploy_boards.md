@@ -42,9 +42,8 @@ knowledge. In particular, you should be familiar with:
 - [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 
 NOTE: **Note:**
-In GitLab 13.4 and earlier, apps that consist of multiple deployments are shown as
-duplicates on the deploy board. This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/8463)
-in GitLab 13.5.
+Apps that consist of multiple deployments are shown as duplicates on the deploy board.
+Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/8463) for details.
 
 ## Use cases
 

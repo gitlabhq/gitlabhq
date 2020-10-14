@@ -36,7 +36,7 @@ Otherwise, the Container Registry is not enabled. To enable it:
 - You can configure it for [a different domain](#configure-container-registry-under-its-own-domain).
 
 The Container Registry works under HTTPS by default. You can use HTTP
-but it's not recommended and is out of the scope of this document.
+but it's not recommended and is beyond the scope of this document.
 Read the [insecure Registry documentation](https://docs.docker.com/registry/insecure/)
 if you want to implement this.
 
@@ -77,7 +77,7 @@ Where:
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 
 A Registry init file is not shipped with GitLab if you install it from source.
-Hence, [restarting GitLab](../restart_gitlab.md#installations-from-source) will not restart the Registry should
+Hence, [restarting GitLab](../restart_gitlab.md#installations-from-source) does not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
 At the **absolute** minimum, make sure your [Registry configuration](https://docs.docker.com/registry/configuration/#auth)
@@ -101,7 +101,7 @@ If `auth` is not set up, users can pull Docker images without authentication.
 There are two ways you can configure the Registry's external domain. Either:
 
 - [Use the existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain).
-  The Registry listens on a port and reuse GitLab's TLS certificate.
+  The Registry listens on a port and reuses GitLab's TLS certificate.
 - [Use a completely separate domain](#configure-container-registry-under-its-own-domain) with a new TLS certificate
   for that domain.
 
@@ -113,16 +113,15 @@ for the first time.
 ### Configure Container Registry under an existing GitLab domain
 
 If the Registry is configured to use the existing GitLab domain, you can
-expose the Registry on a port so that you can reuse the existing GitLab TLS
+expose the Registry on a port. This way you can reuse the existing GitLab TLS
 certificate.
 
-Assuming that the GitLab domain is `https://gitlab.example.com` and the port the
-Registry is exposed to the outside world is `5050`, here is what you need to set
+If the GitLab domain is `https://gitlab.example.com` and the port to the outside world is `5050`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
 
 Ensure you choose a port different than the one that Registry listens to (`5000` by default),
-otherwise there will be conflicts.
+otherwise conflicts occur.
 
 **Omnibus GitLab installations**
 
@@ -180,8 +179,8 @@ docker login gitlab.example.com:5050
 
 ### Configure Container Registry under its own domain
 
-If the Registry is configured to use its own domain, you will need a TLS
-certificate for that specific domain (for example, `registry.example.com`) or maybe
+When the Registry is configured to use its own domain, you need a TLS
+certificate for that specific domain (for example, `registry.example.com`). You might need 
 a wildcard certificate if hosted under a subdomain of your existing GitLab
 domain, for example, `registry.gitlab.example.com`.
 
@@ -272,7 +271,7 @@ Registry application itself.
 
 ## Disable Container Registry for new projects site-wide
 
-If the Container Registry is enabled, then it will be available on all new
+If the Container Registry is enabled, then it should be available on all new
 projects. To disable this function and let the owners of a project to enable
 the Container Registry by themselves, follow the steps below.
 
@@ -308,7 +307,7 @@ the Container Registry by themselves, follow the steps below.
 
 You can configure the Container Registry to use various storage backends by
 configuring a storage driver. By default the GitLab Container Registry
-is configured to use the [filesystem driver](#use-filesystem)
+is configured to use the [file system driver](#use-file-system)
 configuration.
 
 The different supported drivers are:
@@ -327,9 +326,9 @@ Although most S3 compatible services (like [MinIO](https://min.io/)) should work
 Read more about the individual driver's configuration options in the
 [Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
 
-### Use filesystem
+### Use file system
 
-If you want to store your images on the filesystem, you can change the storage
+If you want to store your images on the file system, you can change the storage
 path for the Container Registry, follow the steps below.
 
 This path is accessible to:
@@ -377,7 +376,7 @@ driver for the Container Registry.
 
 CAUTION: **Warning:**
 GitLab does not back up Docker images that are not stored on the
-filesystem. Enable backups with your object storage provider if
+file system. Enable backups with your object storage provider if
 desired.
 
 **Omnibus GitLab installations**
@@ -436,7 +435,7 @@ you can pull from the Container Registry, but you cannot push.
 1. Optional: To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime).
 1. This example uses the `aws` CLI. If you haven't configured the
    CLI before, you have to configure your credentials by running `sudo aws configure`.
-   Because a non-admin user likely can't access the Container Registry folder,
+   Because a non-administrator user likely can't access the Container Registry folder,
    ensure you use `sudo`. To check your credential configuration, run
    [`ls`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/ls.html) to list
    all buckets.
@@ -468,14 +467,14 @@ you can pull from the Container Registry, but you cannot push.
    sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket --delete --dryrun
    ```
 
-   After verifying the command is going to perform as expected, remove the
+   After verifying the command performs as expected, remove the
    [`--dryrun`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
    flag and run the command.
 
    DANGER: **Danger:**
    The [`--delete`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
    flag deletes files that exist in the destination but not in the source.
-   Make sure not to swap the source and destination, or you will delete all data in the Registry.
+   If you swap the source and destination, all data in the Registry is deleted.
 
 1. Verify all Container Registry files have been uploaded to object storage
    by looking at the file count returned by these two commands:
@@ -545,7 +544,7 @@ However, this behavior is undesirable for registries used by internal hosts that
 ### Storage limitations
 
 Currently, there is no storage limitation, which means a user can upload an
-infinite amount of Docker images with arbitrary sizes. This setting will be
+infinite amount of Docker images with arbitrary sizes. This setting should be
 configurable in future releases.
 
 ## Change the registry's internal port
@@ -604,7 +603,7 @@ You can use GitLab as an auth endpoint with an external container registry.
    Container Registry service does not start, even with this enabled.
 
 1. A certificate-key pair is required for GitLab and the external container
-   registry to communicate securely. You will need to create a certificate-key
+   registry to communicate securely. You need to create a certificate-key
    pair, configuring the external container registry with the public
    certificate and configuring GitLab with the private key. To do that, add
    the following to `/etc/gitlab/gitlab.rb`:
@@ -747,7 +746,7 @@ some unused layers, the registry includes a garbage collect command.
 
 GitLab offers a set of APIs to manipulate the Container Registry and aid the process
 of removing unused tags. Currently, this is exposed using the API, but in the future,
-these controls will be migrated to the GitLab interface.
+these controls should migrate to the GitLab interface.
 
 Project maintainers can
 [delete Container Registry tags in bulk](../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
@@ -761,9 +760,9 @@ Prerequisites:
 - You must have installed GitLab by using an Omnibus package or the
   [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 - You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
-  Running garbage collection causes downtime for the Container Registry. If you run this command
+  Running garbage collection causes downtime for the Container Registry. When you run this command
   on an instance in an environment where another instances is still writing to the Registry storage,
-  referenced manifests will be removed.
+  referenced manifests are removed.
 
 ### Understanding the content-addressable layers
 

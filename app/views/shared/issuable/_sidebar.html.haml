@@ -118,7 +118,7 @@
       - else
         - selected_labels = issuable_sidebar[:labels]
         .block.labels{ data: { qa_selector: 'labels_block' } }
-          .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(selected_labels), data: { placement: "left", container: "body", boundary: 'viewport' } }
+          .sidebar-collapsed-icon.has-tooltip.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(selected_labels), data: { placement: "left", container: "body", boundary: 'viewport' } }
             = sprite_icon('labels')
             %span
               = selected_labels.size

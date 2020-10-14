@@ -51,7 +51,7 @@ can follow the same steps once the integration has been enabled and configured b
 If you are new to Gitpod, head over to the [Gitpod documentation](https://www.gitpod.io/docs/self-hosted/latest/self-hosted/)
 and get your instance up and running.
 
-1. In GitLab, go to **Admin Area > Settings > Integrations**.
+1. In GitLab, go to **Admin Area > Settings > General**.
 1. Expand the **Gitpod** configuration section.
 1. Check **Enable Gitpod**.
 1. Add your Gitpod instance URL (for example, `https://gitpod.example.com`).

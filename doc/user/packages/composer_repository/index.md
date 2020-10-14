@@ -12,6 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Publish [Composer](https://getcomposer.org/) packages in your project's Package Registry.
 Then, install the packages whenever you need to use them as a dependency.
 
+Only Composer 1.x is supported. Consider contributing or even adding support for
+[Composer 2.0 in the Package Registry](https://gitlab.com/gitlab-org/gitlab/-/issues/259840).
+
 ## Create a Composer package
 
 If you do not have a Composer package, create one and check it in to

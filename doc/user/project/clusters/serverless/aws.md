@@ -377,7 +377,6 @@ To set these:
    `AWS_SECRET_ACCESS_KEY`.
 1. Mask the credentials so they do not show in logs using the **Masked** toggle.
 
-NOTE: **Note:**
 The AWS credentials you provide must include IAM policies that provision correct access
 control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 

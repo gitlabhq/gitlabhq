@@ -43,7 +43,7 @@ For example, the following policy document allows assuming a role whose name sta
 
 Generate an access key for the IAM user, and configure GitLab with the credentials:
 
-1. Navigate to **Admin Area > Settings > Integrations** and expand the **Amazon EKS** section.
+1. Navigate to **Admin Area > Settings > General** and expand the **Amazon EKS** section.
 1. Check **Enable Amazon EKS integration**.
 1. Enter the account ID and access key credentials into the respective
    `Account ID`, `Access key ID` and `Secret access key` fields.

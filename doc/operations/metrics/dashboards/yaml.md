@@ -45,7 +45,6 @@ Read the documentation on [links](index.md#add-related-links-to-custom-dashboard
 
 Dashboards display panel groups in the order they are listed in the dashboard YAML file.
 
-NOTE: **Note:**
 In GitLab versions 13.3 and below, panel groups were ordered by a `priority` key, which
 is no longer used.
 
@@ -60,7 +59,6 @@ Panels in a panel group are laid out in rows consisting of two panels per row. A
 
 Dashboards display panels in the order they are listed in the dashboard YAML file.
 
-NOTE: **Note:**
 In GitLab versions 13.3 and below, panels were ordered by a `weight` key, which
 is no longer used.
 

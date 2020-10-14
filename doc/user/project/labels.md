@@ -155,7 +155,7 @@ by preventing certain labels from being used together.
 A label is scoped when it uses a special double-colon (`::`) syntax in the label’s
 title, for example:
 
-![Sample scoped labels](img/labels_key_value_v12_1.png)
+![Scoped labels](img/labels_key_value_v13_5.png)
 
 An issue, merge request or epic cannot have two scoped labels, of the form `key::value`,
 with the same `key`. Adding a new label with the same `key`, but a different `value` will
@@ -214,7 +214,7 @@ issue, or merge request.
 If you are subscribing to a group label from within a project, you can select to subscribe
 to label notifications for the project only, or the whole group.
 
-![Labels subscriptions](img/labels_subscriptions_v12_1.png)
+![Labels subscriptions](img/labels_subscriptions_v13_5.png)
 
 ## Label priority
 
@@ -228,7 +228,7 @@ from the group label list.
 
 From the project label list page, star a label to indicate that it has a priority.
 
-![Labels prioritized](img/labels_prioritized_v12_1.png)
+![Labels prioritized](img/labels_prioritized_v13_5.png)
 
 Drag starred labels up and down the list to change their priority, where higher in the list
 means higher priority.

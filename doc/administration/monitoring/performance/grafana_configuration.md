@@ -49,7 +49,6 @@ JSON file individually:
 1. After the dashboard is imported, click the **Save dashboard** icon in the top bar:
    ![Grafana save icon](img/grafana_save_icon.png)
 
-   NOTE: **Note:**
    If you don't save the dashboard after importing it, the dashboard is removed
    when you navigate away from the page.
 

@@ -13,6 +13,7 @@ import ModalStore from './boards/stores/modal_store';
 import boardsStore from './boards/stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { fixTitle } from '~/tooltips';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -57,7 +58,6 @@ export default class LabelsSelect {
         .get();
       const scopedLabels = $dropdown.data('scopedLabels');
       const { handleClick } = options;
-      $sidebarLabelTooltip.tooltip();
 
       if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
         new CreateLabelDropdown(
@@ -166,7 +166,8 @@ export default class LabelsSelect {
               labelTooltipTitle = __('Labels');
             }
 
-            $sidebarLabelTooltip.attr('title', labelTooltipTitle).tooltip('_fixTitle');
+            $sidebarLabelTooltip.attr('title', labelTooltipTitle);
+            fixTitle($sidebarLabelTooltip);
 
             $('.has-tooltip', $value).tooltip({
               container: 'body',
