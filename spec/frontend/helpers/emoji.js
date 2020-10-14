@@ -4,41 +4,63 @@ import { initEmojiMap, EMOJI_VERSION } from '~/emoji';
 
 export const emojiFixtureMap = {
   atom: {
-    name: 'atom',
     moji: '⚛',
     description: 'atom symbol',
     unicodeVersion: '4.1',
     aliases: ['atom_symbol'],
   },
   bomb: {
-    name: 'bomb',
     moji: '💣',
     unicodeVersion: '6.0',
     description: 'bomb',
-    aliases: [],
   },
   construction_worker_tone5: {
-    name: 'construction_worker_tone5',
     moji: '👷🏿',
     unicodeVersion: '8.0',
     description: 'construction worker tone 5',
-    aliases: [],
   },
   five: {
-    name: 'five',
     moji: '5️⃣',
     unicodeVersion: '3.0',
     description: 'keycap digit five',
-    aliases: [],
   },
   grey_question: {
-    name: 'grey_question',
     moji: '❔',
     unicodeVersion: '6.0',
     description: 'white question mark ornament',
-    aliases: [],
+  },
+
+  // used for regression tests
+  // black_heart MUST come before heart
+  // custard MUST come before star
+  black_heart: {
+    moji: '🖤',
+    unicodeVersion: '1.1',
+    description: 'black heart',
+  },
+  heart: {
+    moji: '❤',
+    unicodeVersion: '1.1',
+    description: 'heavy black heart',
+  },
+  custard: {
+    moji: '🍮',
+    unicodeVersion: '6.0',
+    description: 'custard',
+  },
+  star: {
+    moji: '⭐',
+    unicodeVersion: '5.1',
+    description: 'white medium star',
   },
 };
+
+Object.keys(emojiFixtureMap).forEach(k => {
+  emojiFixtureMap[k].name = k;
+  if (!emojiFixtureMap[k].aliases) {
+    emojiFixtureMap[k].aliases = [];
+  }
+});
 
 export async function initEmojiMock() {
   const emojiData = Object.fromEntries(

@@ -8,7 +8,7 @@ module BlobViewer
     self.partial_name = 'balsamiq'
     self.extensions = %w(bmpr)
     self.binary = true
-    self.switcher_icon = 'file-image-o'
+    self.switcher_icon = 'doc-image'
     self.switcher_title = 'preview'
   end
 end

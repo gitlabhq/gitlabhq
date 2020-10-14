@@ -9545,6 +9545,9 @@ msgstr ""
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
 msgstr ""
 
+msgid "Edited"
+msgstr ""
+
 msgid "Edited %{timeago}"
 msgstr ""
 
@@ -21108,6 +21111,9 @@ msgid "ProtectedBranch|Branch"
 msgstr ""
 
 msgid "ProtectedBranch|Code owner approval"
+msgstr ""
+
+msgid "ProtectedBranch|Does not apply to users allowed to merge or push."
 msgstr ""
 
 msgid "ProtectedBranch|Protect"

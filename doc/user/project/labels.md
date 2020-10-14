@@ -57,7 +57,7 @@ and edit labels.
 
 ### Project labels
 
-View the project labels list by going to the project and clicking **Issues > Labels**.
+To view the project labels list, navigate to the project and click **Issues > Labels**.
 The list includes all labels that are defined at the project level, as well as all
 labels inherited from the immediate parent group.
 For each label, you can see the project or group path from where it was created.
@@ -89,19 +89,19 @@ a label by clicking the three dots (**{ellipsis_v}**) next to the **Subscribe** 
 and selecting **Delete**.
 
 CAUTION: **Caution:**
-If you delete a label, it is permanently deleted. You will not be able to undo the deletion, and all references to the label will be removed from the system.
+If you delete a label, it is permanently deleted. All references to the label are removed from the system and you cannot undo the deletion.
 
 #### Promote a project label to a group label
 
 If you previously created a project label and now want to make it available for other
 projects within the same group, you can promote it to a group label.
 
-If other projects in the same group have a label with the same title, they will all be
-merged with the new group label. If a group label with the same title exists, it will
-also be merged.
+If other projects in the same group have a label with the same title, they are all 
+merged with the new group label. If a group label with the same title exists, it is
+also merged.
 
 All issues, merge requests, issue board lists, issue board filters, and label subscriptions
-with the old labels will be assigned to the new group label.
+with the old labels are assigned to the new group label.
 
 CAUTION: **Caution:**
 Promoting a label is a permanent action, and cannot be reversed.
@@ -114,7 +114,7 @@ To promote a project label to a group label:
 
 ### Group labels
 
-View the group labels list by going to the group and clicking **Issues > Labels**.
+To view the group labels list, navigate to the group and click **Issues > Labels**.
 The list includes all labels that are defined at the group level only. It does not
 list any labels that are defined in projects. You can filter the list by entering
 a search query at the top and clicking search (**{search}**).
@@ -124,15 +124,15 @@ follow the same process as [creating a project label](#project-labels).
 
 #### Create group labels from epics **(ULTIMATE)**
 
-You can create group labels from the Epic sidebar. The labels you create will
+You can create group labels from the epic sidebar. The labels you create 
 belong to the immediate group to which the epic belongs. The process is the same as
 creating a [project label from an issue or merge request](#project-labels).
 
 ### Generate default labels
 
 If a project or group has no labels, you can generate a default set of project or group
-labels from the label list page. The page will show a **Generate a default set of labels**
-button if the list is empty, and clicking it will add the following default labels
+labels from the label list page. The page shows a **Generate a default set of labels**
+button if the list is empty. Select the button to add the following default labels
 to the project:
 
 - `bug`
@@ -158,10 +158,10 @@ title, for example:
 ![Scoped labels](img/labels_key_value_v13_5.png)
 
 An issue, merge request or epic cannot have two scoped labels, of the form `key::value`,
-with the same `key`. Adding a new label with the same `key`, but a different `value` will
-cause the previous `key` label to be replaced with the new label.
+with the same `key`. Adding a new label with the same `key`, but a different `value` 
+causes the previous `key` label to be replaced with the new label.
 
-Example use case:
+For example:
 
 1. An issue is identified as being low priority, and a `priority::low` project
    label is added to it.
@@ -194,7 +194,7 @@ This functionality is demonstrated in a video regarding
 ### Scoped labels with nested scopes
 
 You can create a label with a nested scope by using multiple double colons `::` when creating
-it. In this case, everything before the last `::` will be the scope.
+it. In this case, everything before the last `::` is the scope.
 
 For example, `workflow::backend::review` and `workflow::backend::development` are valid
 scoped labels, but they **can't** exist on the same issue at the same time, as they
@@ -208,7 +208,7 @@ both have different scopes, `workflow::frontend` and `workflow::backend`.
 
 From the project label list page and the group label list page, you can click **Subscribe**
 to the right of any label to enable [notifications](../profile/notifications.md) for that
-label. You will be notified whenever the label is assigned to an epic,
+label. You are notified whenever the label is assigned to an epic,
 issue, or merge request.
 
 If you are subscribing to a group label from within a project, you can select to subscribe

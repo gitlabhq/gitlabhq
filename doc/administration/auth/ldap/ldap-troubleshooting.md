@@ -682,7 +682,7 @@ The rails console is a valuable tool to help debug LDAP problems. It allows you 
 directly interact with the application by running commands and seeing how GitLab
 responds to them.
 
-Please refer to [this guide](../../troubleshooting/debug.md#starting-a-rails-console-session)
+Please refer to [this guide](../../operations/rails_console.md#starting-a-rails-console-session)
 for instructions on how to use the rails console.
 
 #### Enable debug output

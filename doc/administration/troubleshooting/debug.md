@@ -5,26 +5,14 @@ in production.
 
 ## Starting a Rails console session
 
-Troubleshooting and debugging your GitLab instance often requires a
-[Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
+Troubleshooting and debugging your GitLab instance often requires a Rails console.
+
+Your type of GitLab installation determines how
+[to start a rails console](../operations/rails_console.md).
 See also:
 
 - [GitLab Rails Console Cheat Sheet](gitlab_rails_cheat_sheet.md).
 - [Navigating GitLab via Rails console](navigating_gitlab_via_rails_console.md).
-
-**For Omnibus installations**
-
-```shell
-sudo gitlab-rails console
-```
-
-**For installations from source**
-
-```shell
-sudo -u git -H bundle exec rails console -e production
-```
-
-Kubernetes: the console is in the task-runner pod, refer to our [Kubernetes cheat sheet](kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information) for details.
 
 ### Enabling Active Record logging
 
@@ -98,7 +86,7 @@ sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 A common problem is that mails are not being sent for some reason. Suppose you configured
 an SMTP server, but you're not seeing mail delivered. Here's how to check the settings:
 
-1. Run a [Rails console](#starting-a-rails-console-session).
+1. Run a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 
 1. Look at the ActionMailer `delivery_method` to make sure it matches what you
    intended. If you configured SMTP, it should say `:smtp`. If you're using
@@ -238,7 +226,7 @@ separate Rails process to debug the issue:
 1. Log in to your GitLab account.
 1. Copy the URL that is causing problems (e.g. `https://gitlab.com/ABC`).
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
-1. Bring up the [GitLab Rails console.](#starting-a-rails-console-session)
+1. Bring up the [GitLab Rails console.](../operations/rails_console.md#starting-a-rails-console-session)
 1. At the Rails console, run:
 
    ```ruby

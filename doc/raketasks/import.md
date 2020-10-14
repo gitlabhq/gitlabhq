@@ -131,7 +131,7 @@ Bare repositories are **not** importable by GitLab 10.4 to GitLab 11.6, if all t
 bare repositories are importable.
 
 To manually migrate repositories yourself (for GitLab 10.4 to GitLab 11.6), you can use the
-[Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console-session)
+[Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
 to do so. In a Rails console session, run the following to migrate a project:
 
 ```ruby

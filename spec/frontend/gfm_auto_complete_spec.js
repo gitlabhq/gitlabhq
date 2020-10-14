@@ -705,12 +705,12 @@ describe('GfmAutoComplete', () => {
   });
 
   describe('emoji', () => {
-    const { atom } = emojiFixtureMap;
+    const { atom, heart, star } = emojiFixtureMap;
     const assertInserted = ({ input, subject, emoji }) =>
       expect(subject).toBe(`:${emoji?.name || input}:`);
-    const assertTemplated = ({ input, subject, emoji }) =>
+    const assertTemplated = ({ input, subject, emoji, field }) =>
       expect(subject.replace(/\s+/g, ' ')).toBe(
-        `<li>${input} <gl-emoji data-name="${emoji?.name || input}"></gl-emoji> </li>`,
+        `<li>${field || input} <gl-emoji data-name="${emoji?.name || input}"></gl-emoji> </li>`,
       );
 
     let mock;
@@ -731,33 +731,85 @@ describe('GfmAutoComplete', () => {
       ${'insertTemplateFunction'} | ${name => ({ name })} | ${assertInserted}
       ${'templateFunction'}       | ${name => name}       | ${assertTemplated}
     `('Emoji.$name', ({ name, inputFormat, assert }) => {
-      const execute = (input, emoji) =>
+      const execute = (accessor, input, emoji) =>
         assert({
           input,
           emoji,
+          field: accessor && accessor(emoji),
           subject: GfmAutoComplete.Emoji[name](inputFormat(input)),
         });
 
       describeEmojiFields('for $field', ({ accessor }) => {
         it('should work with lowercase', () => {
-          execute(accessor(atom), atom);
+          execute(accessor, accessor(atom), atom);
         });
 
         it('should work with uppercase', () => {
-          execute(accessor(atom).toUpperCase(), atom);
+          execute(accessor, accessor(atom).toUpperCase(), atom);
         });
 
         it('should work with partial value', () => {
-          execute(accessor(atom).slice(1), atom);
+          execute(accessor, accessor(atom).slice(1), atom);
         });
       });
 
       it('should work with unicode value', () => {
-        execute(atom.moji, atom);
+        execute(null, atom.moji, atom);
       });
 
       it('should pass through unknown value', () => {
-        execute('foo bar baz');
+        execute(null, 'foo bar baz');
+      });
+    });
+
+    const expectEmojiOrder = (first, second) => {
+      const keys = Object.keys(emojiFixtureMap);
+      const firstIndex = keys.indexOf(first);
+      const secondIndex = keys.indexOf(second);
+      expect(firstIndex).toBeGreaterThanOrEqual(0);
+      expect(secondIndex).toBeGreaterThanOrEqual(0);
+      expect(firstIndex).toBeLessThan(secondIndex);
+    };
+
+    describe('Emoji.insertTemplateFunction', () => {
+      it('should map ":heart" to :heart: [regression]', () => {
+        // the bug mapped heart to black_heart because the latter sorted first
+        expectEmojiOrder('black_heart', 'heart');
+
+        const item = GfmAutoComplete.Emoji.insertTemplateFunction({ name: 'heart' });
+        expect(item).toEqual(`:${heart.name}:`);
+      });
+
+      it('should map ":star" to :star: [regression]', () => {
+        // the bug mapped star to custard because the latter sorted first
+        expectEmojiOrder('custard', 'star');
+
+        const item = GfmAutoComplete.Emoji.insertTemplateFunction({ name: 'star' });
+        expect(item).toEqual(`:${star.name}:`);
+      });
+    });
+
+    describe('Emoji.templateFunction', () => {
+      it('should map ":heart" to ❤ [regression]', () => {
+        // the bug mapped heart to black_heart because the latter sorted first
+        expectEmojiOrder('black_heart', 'heart');
+
+        const item = GfmAutoComplete.Emoji.templateFunction('heart')
+          .replace(/(<gl-emoji)\s+(data-name)/, '$1 $2')
+          .replace(/>\s+|\s+</g, s => s.trim());
+        expect(item).toEqual(
+          `<li>${heart.name}<gl-emoji data-name="${heart.name}"></gl-emoji></li>`,
+        );
+      });
+
+      it('should map ":star" to ⭐ [regression]', () => {
+        // the bug mapped star to custard because the latter sorted first
+        expectEmojiOrder('custard', 'star');
+
+        const item = GfmAutoComplete.Emoji.templateFunction('star')
+          .replace(/(<gl-emoji)\s+(data-name)/, '$1 $2')
+          .replace(/>\s+|\s+</g, s => s.trim());
+        expect(item).toEqual(`<li>${star.name}<gl-emoji data-name="${star.name}"></gl-emoji></li>`);
       });
     });
   });

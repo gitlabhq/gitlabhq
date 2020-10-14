@@ -37,4 +37,4 @@
             - deactivating_usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_usage_ping_path }
             = s_('For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}.').html_safe % { deactivating_usage_ping_link_start: deactivating_usage_ping_link_start, deactivating_usage_ping_link_end: '</a>'.html_safe }
 
-  = f.submit 'Save changes', class: "btn btn-success"
+  = f.submit 'Save changes', class: "gl-button btn btn-success"

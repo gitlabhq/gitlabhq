@@ -111,7 +111,7 @@ module Gitlab
         end
 
         def set_statement_timeout
-          execute("SET statement_timeout TO #{STATEMENT_TIMEOUT}")
+          execute("SET statement_timeout TO '%ds'" % STATEMENT_TIMEOUT)
           yield
         ensure
           execute('RESET statement_timeout')

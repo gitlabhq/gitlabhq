@@ -71,7 +71,7 @@ the following table.
 
 You can programmatically create a predetermined personal access token for use in
 automation or tests. You need sufficient access to run a
-[Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
+[Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
 for your GitLab instance.
 
 To create a token belonging to a user with username `automation-bot`, run the
@@ -101,7 +101,7 @@ The list of valid scopes and what they do can be found
 ## Programmatically revoking a personal access token
 
 You can programmatically revoke a personal access token. You need
-sufficient access to run a [Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
+sufficient access to run a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
 for your GitLab instance.
 
 To revoke a known token `token-string-here123`, run the following in the Rails

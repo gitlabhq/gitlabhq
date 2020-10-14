@@ -1,11 +1,11 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { roundOffFloat } from '~/lib/utils/common_utils';
-import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     cssClass: {
@@ -112,7 +112,7 @@ export default {
     <span v-if="!totalCount" class="status-unavailable">{{ unavailableLabel }}</span>
     <span
       v-if="successPercent"
-      v-tooltip
+      v-gl-tooltip
       :title="successTooltip"
       :style="successBarStyle"
       class="status-green"
@@ -122,7 +122,7 @@ export default {
     </span>
     <span
       v-if="neutralPercent"
-      v-tooltip
+      v-gl-tooltip
       :title="neutralTooltip"
       :style="neutralBarStyle"
       class="status-neutral"
@@ -132,7 +132,7 @@ export default {
     </span>
     <span
       v-if="failurePercent"
-      v-tooltip
+      v-gl-tooltip
       :title="failureTooltip"
       :style="failureBarStyle"
       class="status-red"

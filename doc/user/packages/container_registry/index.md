@@ -461,7 +461,7 @@ Cleanup policies can be run on all projects, with these exceptions:
   for all projects (even those created before 12.8) in
   [GitLab application settings](../../../api/settings.md#change-application-settings)
   by setting `container_expiration_policies_enable_historic_entries` to true.
-  Alternatively, you can execute the following command in the [Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session):
+  Alternatively, you can execute the following command in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
   ApplicationSetting.last.update(container_expiration_policies_enable_historic_entries: true)

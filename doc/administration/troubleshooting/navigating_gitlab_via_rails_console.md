@@ -3,7 +3,7 @@
 At the heart of GitLab is a web application [built using the Ruby on Rails
 framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
 Thanks to this, we also get access to the amazing tools built right into Rails.
-In this guide, we'll introduce the [Rails console](debug.md#starting-a-rails-console-session)
+In this guide, we'll introduce the [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
 and the basics of interacting with your GitLab instance from the command line.
 
 CAUTION: **Caution:**
@@ -20,20 +20,10 @@ Rails experience is helpful to have but not a must.
 
 ## Starting a Rails console session
 
-Omnibus GitLab comes with a convenient wrapper command which automatically loads
-the production GitLab environment:
+Your type of GitLab installation determines how
+[to start a rails console](../operations/rails_console.md).
 
-```shell
-sudo gitlab-rails console
-```
-
-For source installations, you'll have to instead run:
-
-```shell
-sudo -u git -H bundle exec rails console -e production
-```
-
-Further code examples will all take place inside the Rails console and also
+The following code examples will all take place inside the Rails console and also
 assume an Omnibus GitLab installation.
 
 ## Active Record objects

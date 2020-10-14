@@ -96,6 +96,7 @@ RSpec.describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMent
 
       # this not does not have actual mentions
       let!(:note4) { notes.create!(commit_id: commit.id, noteable_type: 'Commit', project_id: project.id, author_id: author.id, note: 'note for an email@somesite.com and some other random @ ref' ) }
+
       # this should have pointed to an innexisted commit record in a commits table
       # but because commit is not an AR we'll just make it so that it does not have mentions
       let!(:note5) { notes.create!(commit_id: 'abc', noteable_type: 'Commit', project_id: project.id, author_id: author.id, note: 'note for an email@somesite.com and some other random @ ref') }

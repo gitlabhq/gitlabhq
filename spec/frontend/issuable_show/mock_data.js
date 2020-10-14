@@ -11,6 +11,7 @@ export const mockIssuable = {
   state: 'opened',
   blocked: false,
   confidential: false,
+  updatedBy: issuable.author,
   currentUserTodos: {
     nodes: [
       {

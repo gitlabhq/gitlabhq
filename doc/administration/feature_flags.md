@@ -65,7 +65,7 @@ For installations from the source:
 sudo -u git -H bundle exec rails console -e production
 ```
 
-For details, see [starting a Rails console session](troubleshooting/debug.md#starting-a-rails-console-session).
+For details, see [starting a Rails console session](operations/rails_console.md#starting-a-rails-console-session).
 
 ### Enable or disable the feature
 
