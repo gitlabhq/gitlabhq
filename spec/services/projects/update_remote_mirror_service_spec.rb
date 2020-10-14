@@ -123,54 +123,36 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
         stub_lfs_setting(enabled: true)
       end
 
-      context 'feature flag enabled' do
-        before do
-          stub_feature_flags(push_mirror_syncs_lfs: true)
+      it 'pushes LFS objects to a HTTP repository' do
+        expect_next_instance_of(Lfs::PushService) do |service|
+          expect(service).to receive(:execute)
         end
 
-        it 'pushes LFS objects to a HTTP repository' do
-          expect_next_instance_of(Lfs::PushService) do |service|
-            expect(service).to receive(:execute)
-          end
-
-          execute!
-        end
-
-        it 'does nothing to an SSH repository' do
-          remote_mirror.update!(url: 'ssh://example.com')
-
-          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
-
-          execute!
-        end
-
-        it 'does nothing if LFS is disabled' do
-          expect(project).to receive(:lfs_enabled?) { false }
-
-          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
-
-          execute!
-        end
-
-        it 'does nothing if non-password auth is specified' do
-          remote_mirror.update!(auth_method: 'ssh_public_key')
-
-          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
-
-          execute!
-        end
+        execute!
       end
 
-      context 'feature flag disabled' do
-        before do
-          stub_feature_flags(push_mirror_syncs_lfs: false)
-        end
+      it 'does nothing to an SSH repository' do
+        remote_mirror.update!(url: 'ssh://example.com')
 
-        it 'does nothing' do
-          expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+        expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
 
-          execute!
-        end
+        execute!
+      end
+
+      it 'does nothing if LFS is disabled' do
+        expect(project).to receive(:lfs_enabled?) { false }
+
+        expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+
+        execute!
+      end
+
+      it 'does nothing if non-password auth is specified' do
+        remote_mirror.update!(auth_method: 'ssh_public_key')
+
+        expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
+
+        execute!
       end
     end
   end

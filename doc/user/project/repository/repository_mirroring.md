@@ -56,6 +56,7 @@ The following are some possible use cases for repository mirroring:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249) in GitLab Enterprise Edition 8.7.
 > - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18715) in 10.8.
+> - [LFS support over HTTPS added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in 13.5
 
 For an existing project, you can set up push mirroring as follows:
 

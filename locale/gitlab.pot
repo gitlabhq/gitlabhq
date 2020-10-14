@@ -2302,10 +2302,10 @@ msgstr ""
 msgid "AlertManagement|High"
 msgstr ""
 
-msgid "AlertManagement|Info"
+msgid "AlertManagement|Incident"
 msgstr ""
 
-msgid "AlertManagement|Issue"
+msgid "AlertManagement|Info"
 msgstr ""
 
 msgid "AlertManagement|Key"
@@ -12121,7 +12121,7 @@ msgstr ""
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
-msgid "Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will %{strong_open}not%{strong_close} be synced in push mirrors."
+msgid "Git LFS objects will be synced if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH."
 msgstr ""
 
 msgid "Git LFS status:"
@@ -22022,6 +22022,9 @@ msgstr ""
 msgid "Repositories Analytics"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Coverage"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Download Historic Test Coverage Data"
 msgstr ""
 
@@ -22032,6 +22035,18 @@ msgid "RepositoriesAnalytics|Download test coverage data (.csv)"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Historic Test Coverage Data is available in raw format (.csv) for further analysis."
+msgstr ""
+
+msgid "RepositoriesAnalytics|Last Update"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Number of Coverages"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Please select a project or multiple projects to display their most recent test coverage data."
+msgstr ""
+
+msgid "RepositoriesAnalytics|Please select projects to display."
 msgstr ""
 
 msgid "RepositoriesAnalytics|Test Code Coverage"
@@ -25771,9 +25786,6 @@ msgstr ""
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
 msgstr ""
 
-msgid "The Git LFS objects will %{strong_open}not%{strong_close} be synced."
-msgstr ""
-
 msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"
 msgstr ""
 
@@ -28207,7 +28219,7 @@ msgstr ""
 msgid "UsageQuota|Artifacts"
 msgstr ""
 
-msgid "UsageQuota|Build Artifacts"
+msgid "UsageQuota|Artifacts is a sum of build and pipeline artifacts."
 msgstr ""
 
 msgid "UsageQuota|Buy additional minutes"

@@ -94,7 +94,7 @@ export default {
     },
     {
       key: 'issue',
-      label: s__('AlertManagement|Issue'),
+      label: s__('AlertManagement|Incident'),
       thClass: 'gl-w-12 gl-pointer-events-none',
       tdClass,
     },

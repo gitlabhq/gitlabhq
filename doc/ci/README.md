@@ -73,6 +73,8 @@ to your needs:
 
 ![Use a `.gitlab-ci.yml` template](img/add_file_template_11_10.png)
 
+While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visualization](yaml/visualization.md) to facilate your writing experience.
+
 For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
 Once you're familiar with how GitLab CI/CD works, see the

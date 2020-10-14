@@ -55,7 +55,6 @@ module Projects
     end
 
     def send_lfs_objects!(remote_mirror)
-      return unless Feature.enabled?(:push_mirror_syncs_lfs, project)
       return unless project.lfs_enabled?
 
       # TODO: Support LFS sync over SSH

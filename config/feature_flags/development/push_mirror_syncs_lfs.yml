@@ -1,7 +1,0 @@
----
-name: push_mirror_syncs_lfs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137
-rollout_issue_url: 
-group: group::source code
-type: development
-default_enabled: false

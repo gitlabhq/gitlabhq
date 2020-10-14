@@ -10,13 +10,13 @@ $status-box-line-height: 26px;
   padding: $gl-padding-8;
   margin-top: $gl-padding-8;
   border-radius: $border-radius-default;
-  background-color: $gray-100;
+  background-color: var(--gray-100, $gray-100);
 
   .milestone {
     border: 0;
     padding: $gl-padding-top $gl-padding;
     border-radius: $border-radius-default;
-    background-color: $white;
+    background-color: var(--white, $white);
 
     &:not(:last-child) {
       margin-bottom: $gl-padding-4;
@@ -35,7 +35,7 @@ $status-box-line-height: 26px;
     .milestone-progress,
     .milestone-release-links {
       a {
-        color: $blue-600;
+        color: var(--blue-600, $blue-600);
       }
     }
 
@@ -63,7 +63,7 @@ $status-box-line-height: 26px;
   .issuable-row {
     span {
       a {
-        color: $gl-text-color;
+        color: var(--gray-900, $gray-900);
         word-wrap: break-word;
       }
 
@@ -164,7 +164,7 @@ $status-box-line-height: 26px;
     }
 
     .issuable-number {
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gray-500);
       margin-right: 5px;
     }
 
@@ -179,7 +179,7 @@ $status-box-line-height: 26px;
 }
 
 .milestone-detail {
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color, $border-color);
 }
 
 @include media-breakpoint-down(xs) {
@@ -235,7 +235,7 @@ $status-box-line-height: 26px;
 }
 
 .issuable-row {
-  background-color: $white;
+  background-color: var(--white, $white);
 }
 
 .milestone-popover-instructions-list {

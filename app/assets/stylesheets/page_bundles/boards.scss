@@ -27,7 +27,7 @@
   margin: 0;
   padding: $gl-padding-4 $gl-padding $gl-padding;
   border-bottom: 0;
-  color: $gl-text-color-secondary;
+  color: var(--gray-500, $gray-500);
 }
 
 .issue-boards-page {
@@ -102,7 +102,7 @@
     }
 
     &:hover {
-      background-color: $gray-50;
+      background-color: var(--gray-50, $gray-50);
       transition: background-color 0.1s linear;
     }
   }
@@ -167,8 +167,8 @@
 
 .board-inner {
   font-size: $issue-boards-font-size;
-  background: $gray-light;
-  border: 1px solid $gray-100;
+  background: var(--gray-10, $gray-10);
+  border: 1px solid var(--gray-100, $gray-100);
 }
 
 .board-header {
@@ -199,7 +199,7 @@
 .board-title {
   align-items: center;
   font-size: 1em;
-  border-bottom: 1px solid $gray-100;
+  border-bottom: 1px solid var(--gray-100, $gray-100);
   padding: 0 $gl-spacing-scale-3;
   height: 3rem;
 
@@ -217,14 +217,14 @@
   outline: 0;
 
   &:hover {
-    color: $blue-600;
+    color: var(--blue-600, $blue-600);
     box-shadow: none;
   }
 }
 
 .board-blank-state,
 .board-promotion-state {
-  background-color: $white;
+  background-color: var(--white, $white);
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -258,9 +258,9 @@
 }
 
 .board-card {
-  background: $white;
-  border: 1px solid $gray-100;
-  box-shadow: 0 1px 2px $issue-boards-card-shadow;
+  background: var(--white, $white);
+  border: 1px solid var(--gray-100, $gray-100);
+  box-shadow: 0 1px 2px rgba(var(--black, $black), 0.1);
   line-height: $gl-padding;
   list-style: none;
   position: relative;
@@ -271,12 +271,12 @@
 
   &.is-active,
   &.is-active .board-card-assignee:hover a {
-    background-color: $blue-50;
+    background-color: var(--blue-50, $blue-50);
   }
 
   &.multi-select {
-    border-color: $blue-200;
-    background-color: $blue-50;
+    border-color: var(--blue-200, $blue-200);
+    background-color: var(--blue-50, $blue-50);
   }
 
   .gl-label {
@@ -285,12 +285,12 @@
   }
 
   .confidential-icon {
-    color: $orange-500;
+    color: var(--orange-500, $orange-500);
     cursor: help;
   }
 
   .issue-blocked-icon {
-    color: $red-500;
+    color: var(--red-500, $red-500);
   }
 
   @include media-breakpoint-down(md) {
@@ -303,7 +303,7 @@
   font-size: 1em;
 
   a {
-    color: $gl-text-color;
+    color: var(--gray-900, $gray-900);
   }
 
   @include media-breakpoint-down(md) {
@@ -325,7 +325,7 @@
     min-width: $gl-padding-24;
     height: $gl-padding-24;
     border-radius: $gl-padding-24;
-    background-color: $gl-text-color-tertiary;
+    background-color: var(--gray-400, $gray-400);
     font-size: $gl-font-size-xs;
     cursor: help;
     font-weight: $gl-font-weight-bold;
@@ -372,7 +372,7 @@
 
 .board-card-number {
   font-size: $gl-font-size-xs;
-  color: $gl-text-color-secondary;
+  color: var(--gray-500, $gray-500);
 
   @include media-breakpoint-up(md) {
     font-size: $label-font-size;
@@ -381,7 +381,7 @@
 
 .board-list-count {
   padding: 10px 0;
-  color: $gl-text-color-secondary;
+  color: var(--gray-500, $gray-500);
   font-size: 13px;
 }
 
@@ -437,8 +437,8 @@
   max-width: 1100px;
   min-height: 500px;
   padding: 25px 15px 0;
-  background-color: $white;
-  box-shadow: 0 2px 12px rgba($black, 0.5);
+  background-color: var(--white, $white);
+  box-shadow: 0 2px 12px rgba(var(--black, $black), 0.5);
 
   .empty-state {
     &.add-issues-empty-state-filter {
@@ -486,8 +486,8 @@
   }
 
   .board-card {
-    border: 1px solid $border-white-normal;
-    box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, 0.3);
+    border: 1px solid var(--gray-900, $gray-900);
+    box-shadow: 0 1px 2px rgba(var(--black, $black), 0.4);
     cursor: pointer;
   }
 }
@@ -511,16 +511,16 @@
   right: -3px;
   top: -3px;
   width: 17px;
-  background-color: $blue-500;
+  background-color: var(--blue-500, $blue-500);
   color: $white;
-  border: 1px solid $blue-600;
+  border: 1px solid var(--blue-600, $blue-600);
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
 }
 
 .board-card-info {
-  color: $gl-text-color-secondary;
+  color: var(--gray-500, $gray-500);
   white-space: nowrap;
   margin-right: $gl-padding-8;
 
@@ -529,7 +529,7 @@
   }
 
   &.board-card-weight {
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gray-500);
     cursor: pointer;
 
     &:hover {
@@ -539,7 +539,7 @@
   }
 
   .board-card-info-icon {
-    color: $gray-500;
+    color: var(--gray-500, $gray-500);
     margin-right: $gl-padding-4;
     vertical-align: text-top;
   }
@@ -568,7 +568,7 @@
   height: 100%;
   top: 0;
   left: 0;
-  background: $white;
+  background: var(--white, $white);
   z-index: 9000;
 
   @include media-breakpoint-down(sm) {
@@ -591,7 +591,7 @@
 }
 
 .board-header-collapsed-info-icon:hover {
-  color: $gray-900;
+  color: var(--gray-900, $gray-900);
 }
 
 $epic-icons-spacing: 40px;

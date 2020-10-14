@@ -68,7 +68,7 @@ module Gitlab
       end
 
       def self.one_dimensional_matrix_enabled?
-        ::Feature.enabled?(:one_dimensional_matrix, default_enabled: false)
+        ::Feature.enabled?(:one_dimensional_matrix, default_enabled: true)
       end
 
       def self.manual_bridges_enabled?(project)
