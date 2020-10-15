@@ -1571,4 +1571,24 @@ RSpec.describe Group do
       end
     end
   end
+
+  describe '#parent_allows_two_factor_authentication?' do
+    it 'returns true for top-level group' do
+      expect(group.parent_allows_two_factor_authentication?).to eq(true)
+    end
+
+    context 'for subgroup' do
+      let(:subgroup) { create(:group, parent: group) }
+
+      it 'returns true if parent group allows two factor authentication for its descendants' do
+        expect(subgroup.parent_allows_two_factor_authentication?).to eq(true)
+      end
+
+      it 'returns true if parent group allows two factor authentication for its descendants' do
+        group.namespace_settings.update!(allow_mfa_for_subgroups: false)
+
+        expect(subgroup.parent_allows_two_factor_authentication?).to eq(false)
+      end
+    end
+  end
 end

@@ -21,7 +21,7 @@ module QA
         end
       end
 
-      it 'publishes an npm package and then deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/944', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/247281', type: :investigating } do
+      it 'publishes an npm package and then deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/944' do
         uri = URI.parse(Runtime::Scenario.gitlab_address)
         gitlab_host_with_port = "#{uri.host}:#{uri.port}"
         gitlab_address_with_port = "#{uri.scheme}://#{uri.host}:#{uri.port}"
@@ -68,7 +68,7 @@ module QA
         end
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_content("Package was removed")
+          expect(index).to have_content("Package deleted successfully")
           expect(index).to have_no_package(package_name)
         end
       end

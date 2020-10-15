@@ -45,7 +45,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Labels'),
           _('Service Desk'),
           _('Milestones'),
-          _('Iterations')
+          (_('Iterations') if Gitlab.ee?)
         ]
       },
       {

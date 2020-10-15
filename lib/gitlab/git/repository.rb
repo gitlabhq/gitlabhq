@@ -297,9 +297,16 @@ module Gitlab
           end
 
         file_name = "#{name}.#{extension}"
-        File.join(storage_path, self.gl_repository, sha, file_name)
+        File.join(storage_path, self.gl_repository, sha, archive_version_path, file_name)
       end
       private :archive_file_path
+
+      def archive_version_path
+        return '' unless Feature.enabled?(:include_lfs_blobs_in_archive)
+
+        '@v2'
+      end
+      private :archive_version_path
 
       # Return repo size in megabytes
       def size

@@ -201,6 +201,71 @@ spotbugs-sast:
     FAIL_NEVER: 1
 ```
 
+### Custom rulesets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
+
+You can customize the default scanning rules provided with SAST's NodeJS-Scan and Gosec analyzers.
+Customization allows you to exclude rules and modify the behavior of existing rules.
+
+To customize the default scanning rules, create a file containing custom rules. These rules
+are passed through to the analyzer's underlying scanner tool.
+
+To create a custom ruleset:
+
+1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
+1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory.
+1. In the `sast-ruleset.toml` file, do one of the following:
+
+   - Define a custom analyzer configuration. In this example, customized rules are defined for the
+     `nodejs-scan` scanner:
+
+     ```toml
+     [nodejs-scan]
+       description = 'custom ruleset for nodejs-scan'
+
+       [[nodejs-scan.passthrough]]
+         type  = "raw"
+         value = '''
+     - nodejs-extensions:
+       - .js
+
+       template-extensions:
+       - .new
+       - .hbs
+       - ''
+
+       ignore-filenames:
+     - skip.js
+
+       ignore-paths:
+       - __MACOSX
+       - skip_dir
+       - node_modules
+
+       ignore-extensions:
+       - .hbs
+
+       ignore-rules:
+       - regex_injection_dos
+       - pug_jade_template
+       - express_xss
+
+     '''
+     ```
+
+   - Provide the name of the file containing a custom analyzer configuration. In this example,
+     customized rules for the `gosec` scanner are contained in the file `gosec-config.json`:
+
+     ```toml
+     [gosec]
+       description = 'custom ruleset for gosec'
+
+       [[gosec.passthrough]]
+         type  = "file"
+         value = "gosec-config.json"
+     ```
+
 ### Using environment variables to pass credentials for private repositories
 
 Some analyzers require downloading the project's dependencies in order to

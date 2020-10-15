@@ -242,7 +242,8 @@ class GroupsController < Groups::ApplicationController
       :project_creation_level,
       :subgroup_creation_level,
       :default_branch_protection,
-      :default_branch_name
+      :default_branch_name,
+      :allow_mfa_for_subgroups
     ]
   end
 

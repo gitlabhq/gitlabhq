@@ -199,7 +199,7 @@ For example, to add support for files referenced by a `Widget` model with a
 
      # @param primary_key_in [Range, Widget] arg to pass to primary_key_in scope
      # @return [ActiveRecord::Relation<Widget>] everything that should be synced to this node, restricted by primary key
-     def self.replicables_for_geo_node(primary_key_in)
+     def self.replicables_for_current_secondary(primary_key_in)
        # Should be implemented. The idea of the method is to restrict
        # the set of synced items depending on synchronization settings
      end

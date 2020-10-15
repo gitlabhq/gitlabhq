@@ -45,6 +45,15 @@ RSpec.describe Groups::CreateService, '#execute' do
     end
   end
 
+  context 'creating a group with `allow_mfa_for_subgroups` attribute' do
+    let(:params) { group_params.merge(allow_mfa_for_subgroups: false) }
+    let(:service) { described_class.new(user, params) }
+
+    it 'creates group without error' do
+      expect(service.execute).to be_persisted
+    end
+  end
+
   describe 'creating a top level group' do
     let(:service) { described_class.new(user, group_params) }
 

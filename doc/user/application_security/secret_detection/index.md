@@ -142,6 +142,49 @@ Secret Detection can be customized by defining available variables:
 | `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
 
+### Custom rulesets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+
+You can customize the default secret detection rules provided with GitLab.
+Customization allows you to exclude rules and add new rules.
+
+To create a custom ruleset:
+
+1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
+1. Create a custom ruleset file named `secret-detection-ruleset.toml` in the `.gitlab` directory.
+1. In the `secret-detection-ruleset.toml` file, do one of the following:
+
+   - Define a custom ruleset:
+
+     ```toml
+     [secrets]
+       description = 'secrets custom rules configuration'
+
+       [[secrets.passthrough]]
+         type  = "raw"
+         target = "gitleaks.toml"
+         value = """\
+     title = "gitleaks config"
+     # add regexes to the regex table
+     [[rules]]
+     description = "Test for Raw Custom Rulesets"
+     regex = '''Custom Raw Ruleset T[est]{3}'''
+     """
+     ```
+
+   - Provide the name of the file containing a custom ruleset:
+
+     ```toml
+     [secrets]
+       description = 'secrets custom rules configuration'
+
+       [[secrets.passthrough]]
+         type  = "file"
+         target = "gitleaks.toml"
+         value = "config/gitleaks.toml"
+     ```
+
 ### Logging level
 
 To control the verbosity of logs set the `SECURE_LOG_LEVEL` environment variable. Messages of this logging level or higher are output. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1.

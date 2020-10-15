@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { GlToast } from '@gitlab/ui';
 import { parseDataAttributes } from 'ee_else_ce/groups/members/utils';
 import App from './components/app.vue';
 import membersModule from '~/vuex_shared/modules/members';
@@ -10,6 +11,7 @@ export const initGroupMembersApp = (el, tableFields, requestFormatter) => {
   }
 
   Vue.use(Vuex);
+  Vue.use(GlToast);
 
   const store = new Vuex.Store({
     ...membersModule({

@@ -564,6 +564,13 @@ class Group < Namespace
     access_level_roles.values
   end
 
+  def parent_allows_two_factor_authentication?
+    return true unless has_parent?
+
+    ancestor_settings = ancestors.find_by(parent_id: nil).namespace_settings
+    ancestor_settings.allow_mfa_for_subgroups
+  end
+
   private
 
   def update_two_factor_requirement
@@ -598,8 +605,7 @@ class Group < Namespace
     return unless has_parent?
     return unless require_two_factor_authentication
 
-    ancestor_settings = ancestors.find_by(parent_id: nil).namespace_settings
-    return if ancestor_settings.allow_mfa_for_subgroups
+    return if parent_allows_two_factor_authentication?
 
     errors.add(:require_two_factor_authentication, _('is forbidden by a top-level group'))
   end

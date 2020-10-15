@@ -49,6 +49,7 @@ module Groups
 
     def remove_unallowed_params
       params.delete(:default_branch_protection) unless can?(current_user, :create_group_with_default_branch_protection)
+      params.delete(:allow_mfa_for_subgroups)
     end
 
     def create_chat_team?

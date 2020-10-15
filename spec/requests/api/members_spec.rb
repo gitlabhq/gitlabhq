@@ -196,6 +196,7 @@ RSpec.describe API::Members do
 
               # Member attributes
               expect(json_response['access_level']).to eq(Member::DEVELOPER)
+              expect(json_response['created_at'].to_time).to be_like_time(developer.created_at)
             end
           end
         end

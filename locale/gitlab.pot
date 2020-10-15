@@ -2697,6 +2697,9 @@ msgstr ""
 msgid "Allow requests to the local network from web hooks and services"
 msgstr ""
 
+msgid "Allow subgroups to set up their own two-factor authentication rules"
+msgstr ""
+
 msgid "Allow this key to push to repository as well? (Default only allows pull access.)"
 msgstr ""
 
@@ -16193,6 +16196,9 @@ msgstr ""
 msgid "Members|No expiration set"
 msgstr ""
 
+msgid "Members|Role updated successfully."
+msgstr ""
+
 msgid "Members|in %{time}"
 msgstr ""
 
@@ -22273,7 +22279,7 @@ msgstr ""
 msgid "Require admin approval for new sign-ups"
 msgstr ""
 
-msgid "Require all users in this group to setup Two-factor authentication"
+msgid "Require all users in this group to setup two-factor authentication"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
