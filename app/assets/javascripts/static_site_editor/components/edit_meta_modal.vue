@@ -35,6 +35,12 @@ export default {
         attributes: [{ variant: 'success' }, { disabled: this.disabled }],
       };
     },
+    secondaryProps() {
+      return {
+        text: __('Keep editing'),
+        attributes: [{ variant: 'default' }],
+      };
+    },
   },
   methods: {
     hide() {
@@ -42,6 +48,13 @@ export default {
     },
     show() {
       this.$refs.modal.show();
+    },
+    onPrimary() {
+      this.$emit('primary', this.mergeRequestMeta);
+      this.$refs.editMetaControls.resetCachedEditable();
+    },
+    onSecondary() {
+      this.hide();
     },
     onUpdateSettings(mergeRequestMeta) {
       this.mergeRequestMeta = { ...mergeRequestMeta };
@@ -56,11 +69,14 @@ export default {
     modal-id="edit-meta-modal"
     :title="__('Submit your changes')"
     :action-primary="primaryProps"
+    :action-secondary="secondaryProps"
     size="sm"
-    @primary="() => $emit('primary', mergeRequestMeta)"
+    @primary="onPrimary"
+    @secondary="onSecondary"
     @hide="() => $emit('hide')"
   >
     <edit-meta-controls
+      ref="editMetaControls"
       :title="mergeRequestMeta.title"
       :description="mergeRequestMeta.description"
       @updateSettings="onUpdateSettings"

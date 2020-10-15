@@ -114,4 +114,16 @@ describe('boards sidebar remove issue', () => {
 
     expect(wrapper.emitted().open.length).toBe(1);
   });
+
+  it('does not emits events when collapsing with false `emitEvent`', async () => {
+    createComponent({ canUpdate: true });
+
+    findEditButton().vm.$emit('click');
+
+    await wrapper.vm.$nextTick();
+
+    wrapper.vm.collapse({ emitEvent: false });
+
+    expect(wrapper.emitted().close).toBeUndefined();
+  });
 });

@@ -11,7 +11,7 @@ type: howto
 
 GitLab administrators are responsible for the overall security of their instance. To assist, GitLab provides a Credentials inventory to keep track of all the credentials that can be used to access their self-managed instance.
 
-Using Credentials inventory, you can see all the personal access tokens (PAT) and SSH keys that exist in your GitLab instance. In addition, you can [revoke them](#revoke-a-users-personal-access-token) and see:
+Using Credentials inventory, you can see all the personal access tokens (PAT) and SSH keys that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token) and [delete](#delete-a-users-ssh-key) and see:
 
 - Who they belong to.
 - Their access scope.
@@ -27,7 +27,7 @@ The following is an example of the Credentials inventory page:
 
 ## Revoke a user's personal access token
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.4.
 
 If you see a **Revoke** button, you can revoke that user's PAT. Whether you see a **Revoke** button depends on the token state, and if an expiration date has been set. For more information, see the following table:
 
@@ -39,3 +39,11 @@ If you see a **Revoke** button, you can revoke that user's PAT. Whether you see 
 | Expired     | No                     | Yes                | The administrator may revoke the PAT to prevent indefinite use             |
 | Revoked     | Yes                    | No                 | Not applicable; token is already revoked                                   |
 | Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |
+
+## Delete a user's SSH key
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
+
+You can **Delete** a user's SSH key by navigating to the credentials inventory's SSH Keys tab.
+
+![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v13_5.png)

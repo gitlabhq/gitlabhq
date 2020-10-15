@@ -9,6 +9,8 @@ import { sourcePath, mergeRequestMeta } from '../mock_data';
 
 describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
   let wrapper;
+  let resetCachedEditable;
+  let mockEditMetaControlsInstance;
   const { title, description } = mergeRequestMeta;
 
   const buildWrapper = (propsData = {}) => {
@@ -20,11 +22,18 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
     });
   };
 
+  const buildMocks = () => {
+    resetCachedEditable = jest.fn();
+    mockEditMetaControlsInstance = { resetCachedEditable };
+    wrapper.vm.$refs.editMetaControls = mockEditMetaControlsInstance;
+  };
+
   const findGlModal = () => wrapper.find(GlModal);
   const findEditMetaControls = () => wrapper.find(EditMetaControls);
 
   beforeEach(() => {
     buildWrapper();
+    buildMocks();
 
     return wrapper.vm.$nextTick();
   });
@@ -57,6 +66,11 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
   it('emits the primary event with mergeRequestMeta', () => {
     findGlModal().vm.$emit('primary', mergeRequestMeta);
     expect(wrapper.emitted('primary')).toEqual([[mergeRequestMeta]]);
+  });
+
+  it('calls resetCachedEditable on EditMetaControls when primary emits', () => {
+    findGlModal().vm.$emit('primary', mergeRequestMeta);
+    expect(mockEditMetaControlsInstance.resetCachedEditable).toHaveBeenCalled();
   });
 
   it('emits the hide event', () => {

@@ -5,8 +5,8 @@ module Gitlab
     class PumaWorkerKillerInitializer
       def self.start(
         puma_options,
-          puma_per_worker_max_memory_mb: 850,
-          puma_master_max_memory_mb: 550,
+          puma_per_worker_max_memory_mb: 1024,
+          puma_master_max_memory_mb: 800,
           additional_puma_dev_max_memory_mb: 200
       )
         require 'puma_worker_killer'

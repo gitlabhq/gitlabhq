@@ -1,14 +1,21 @@
 import { shallowMount } from '@vue/test-utils';
 
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { GlFormInput, GlFormTextarea } from '@gitlab/ui';
 
 import EditMetaControls from '~/static_site_editor/components/edit_meta_controls.vue';
 
 import { mergeRequestMeta } from '../mock_data';
 
-describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
+describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
+  useLocalStorageSpy();
+
   let wrapper;
+  let mockSelect;
+  let mockGlFormInputTitleInstance;
   const { title, description } = mergeRequestMeta;
+  const newTitle = 'New title';
+  const newDescription = 'New description';
 
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMount(EditMetaControls, {
@@ -20,11 +27,18 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
     });
   };
 
+  const buildMocks = () => {
+    mockSelect = jest.fn();
+    mockGlFormInputTitleInstance = { $el: { select: mockSelect } };
+    wrapper.vm.$refs.title = mockGlFormInputTitleInstance;
+  };
+
   const findGlFormInputTitle = () => wrapper.find(GlFormInput);
   const findGlFormTextAreaDescription = () => wrapper.find(GlFormTextarea);
 
   beforeEach(() => {
     buildWrapper();
+    buildMocks();
 
     return wrapper.vm.$nextTick();
   });
@@ -50,23 +64,36 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
     expect(findGlFormTextAreaDescription().attributes().value).toBe(description);
   });
 
-  it('emits updated settings when title input updates', () => {
-    const newTitle = 'New title';
-
-    findGlFormInputTitle().vm.$emit('input', newTitle);
-
-    const newSettings = { description, title: newTitle };
-
-    expect(wrapper.emitted('updateSettings')[0][0]).toMatchObject(newSettings);
+  it('calls select on the title input when mounted', () => {
+    expect(mockGlFormInputTitleInstance.$el.select).toHaveBeenCalled();
   });
 
-  it('emits updated settings when description textarea updates', () => {
-    const newDescription = 'New description';
+  describe('when inputs change', () => {
+    const storageKey = 'sse-merge-request-meta-local-storage-editable';
 
-    findGlFormTextAreaDescription().vm.$emit('input', newDescription);
+    afterEach(() => {
+      localStorage.removeItem(storageKey);
+    });
 
-    const newSettings = { description: newDescription, title };
+    it.each`
+      findFn                           | key              | value
+      ${findGlFormInputTitle}          | ${'title'}       | ${newTitle}
+      ${findGlFormTextAreaDescription} | ${'description'} | ${newDescription}
+    `('emits updated settings when $findFn input updates', ({ key, value, findFn }) => {
+      findFn().vm.$emit('input', value);
 
-    expect(wrapper.emitted('updateSettings')[0][0]).toMatchObject(newSettings);
+      const newSettings = { ...mergeRequestMeta, [key]: value };
+
+      expect(wrapper.emitted('updateSettings')[0][0]).toMatchObject(newSettings);
+    });
+
+    it('should remember the input changes', () => {
+      findGlFormInputTitle().vm.$emit('input', newTitle);
+      findGlFormTextAreaDescription().vm.$emit('input', newDescription);
+
+      const newSettings = { title: newTitle, description: newDescription };
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(storageKey, JSON.stringify(newSettings));
+    });
   });
 });

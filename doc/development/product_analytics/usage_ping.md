@@ -387,7 +387,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    Increment unique users count using Redis HLL, for given event name.
 
-   Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is disabled by default.
+   Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is enabled by default.
 
    API requests are protected by checking for a valid CSRF token.
 

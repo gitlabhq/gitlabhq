@@ -7,7 +7,7 @@ may be filling up. Users will notice when this happens because new branches
 may not show up and merge requests may not be updated. The following are some
 troubleshooting steps that will help you diagnose the bottleneck.
 
-NOTE **Note:**
+NOTE: **Note:**
 GitLab administrators/users should consider working through these
 debug steps with GitLab Support so the backtraces can be analyzed by our team.
 It may reveal a bug or necessary improvement in GitLab.

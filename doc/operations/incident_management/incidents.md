@@ -13,7 +13,7 @@ For users with at least Guest [permissions](../../user/permissions.md), the
 Incident Management list is available at **Operations > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
-![Incident List](img/incident_list_v13_4.png)
+![Incident List](img/incident_list_v13_5.png)
 
 - **Status** - To filter incidents by their status, click **Open**, **Closed**,
   or **All** above the incident list.
@@ -35,6 +35,8 @@ in your project's sidebar. The list contains the following metrics:
 - **Date created** - How long ago the incident was created. This field uses the
   standard GitLab pattern of `X time ago`, but is supported by a granular date/time
   tooltip depending on the user's locale.
+- **Time to SLA** - If configured for this alert, the time remaining
+  [before the SLA period expires](#service-level-agreement-countdown-timer).
 - **Assignees** - The user assigned to the incident.
 - **Published** - Displays a green check mark (**{check-circle}**) if the incident is published
   to a [Status Page](status_page.md). **(ULTIMATE)**
@@ -83,7 +85,9 @@ when you receive notification that the alert is resolved.
 
 ## Create an incident manually
 
-If you have at least Guest [permissions](../../user/permissions.md), to create an Incident, you have two options.
+If you have at least Guest [permissions](../../user/permissions.md), to create an Incident,
+you can create incidents manually [from the Incidents list](#from-the-incidents-list)
+or [from the issues list](#from-the-issues-list).
 
 ### From the Incidents List
 
@@ -152,9 +156,12 @@ The summary section for incidents provides both critical details about and the
 contents of the issue template (if one was used). The highlighted bar at the top
 of the incident displays from left to right:
 
+![Incident SLA Highlight Bar](./img/incident_highlight_bar_v13_5.png)
+
 - The link to the original alert.
 - The alert start time.
 - The event count.
+- The time to [SLA breach](#service-level-agreement-countdown-timer).
 
 Beneath the highlight bar, GitLab displays a summary that includes the following fields:
 
@@ -168,10 +175,10 @@ Comments are displayed in threads, but can be displayed chronologically
 
 ### Alert details
 
-Incidents show the details of linked alerts in a separate tab. To populate this
+The **Alert details** tab displays more detailed information about linked alerts. To populate this
 tab, the incident must have been created with a linked alert. Incidents
 [created automatically](#configure-incidents) from alerts have this
-field populated.
+field populated:
 
 ![Incident alert details](./img/incident_alert_details_v13_4.png)
 
@@ -187,9 +194,29 @@ un-threaded and ordered chronologically, newest to oldest:
 
 ### Service Level Agreement countdown timer
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in GitLab 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
 
-After enabling **Incident SLA** in the Incident Management configuration, newly-created
-incidents display a SLA (Service Level Agreement) timer showing the time remaining before
-the SLA period expires. If the incident is not closed before the SLA period ends, GitLab
-adds a `missed::SLA` label to the incident.
+You can configure a Service Level Agreement (SLA) timer for Incidents in the Incident
+Management configuration. When set, the incident list and [incident summary tab](#summary)
+display an SLA timer for newly-created incidents, showing the time remaining
+before the SLA period expires.
+
+If the incident is not closed before the SLA period ends, GitLab adds a `missed::SLA`
+label to the incident.
+
+#### Enable the Incident SLA
+
+To configure the Service Level Agreement countdown timer:
+
+1. Sign in as a user with Maintainer [permissions](../../user/permissions.md).
+1. Navigate to **Settings > Operations** and expand **Incidents**.
+1. Select the **Incident Settings** tab:
+
+   ![Incident SLA settings](./img/incident_sla_settings_v13_5.png)
+
+1. Select the **Activate** check box to activate the integration.
+1. In **Time limit**, select the length of the SLA period.
+1. Click **Save changes**.
+
+Any changes to the Incident SLA settings are applied to *new* incidents only.
+Existing incidents remain unchanged.

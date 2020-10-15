@@ -75,7 +75,7 @@ RSpec.describe RegistrationsController do
 
             expect(response).to redirect_to(new_user_session_path(anchor: 'login-pane'))
             expect(flash[:notice])
-              .to eq('You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your administrator.')
+              .to eq('You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator.')
           end
 
           context 'email confirmation' do

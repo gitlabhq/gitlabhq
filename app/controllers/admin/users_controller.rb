@@ -300,7 +300,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def check_admin_approval_feature_available!
-    access_denied! unless Feature.enabled?(:admin_approval_for_new_user_signups)
+    access_denied! unless Feature.enabled?(:admin_approval_for_new_user_signups, default_enabled: true)
   end
 end
 

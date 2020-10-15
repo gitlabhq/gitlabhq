@@ -73,7 +73,7 @@ class Deployment < ApplicationRecord
       next unless deployment.project.forward_deployment_enabled?
 
       deployment.run_after_commit do
-        Deployments::ForwardDeploymentWorker.perform_async(id)
+        Deployments::DropOlderDeploymentsWorker.perform_async(id)
       end
     end
 

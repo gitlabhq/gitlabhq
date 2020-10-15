@@ -178,7 +178,7 @@ RSpec.describe 'Pipeline', :js do
       it 'pipeline header shows the user status and emoji' do
         visit project_pipeline_path(project, pipeline)
 
-        within '[data-testid="pipeline-header-content"]' do
+        within '[data-testid="ci-header-content"]' do
           expect(page).to have_selector("[data-testid='#{status.message}']")
           expect(page).to have_selector("[data-name='#{status.emoji}']")
         end

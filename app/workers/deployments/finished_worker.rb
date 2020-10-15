@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This worker is deprecated and will be removed in 14.0
+# See: https://gitlab.com/gitlab-org/gitlab/-/issues/266381
 module Deployments
   class FinishedWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker

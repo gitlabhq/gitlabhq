@@ -18,16 +18,12 @@ Runners can be specific to certain projects or available to all projects.
 
 ## Types of runners
 
-There are three types of runners:
+In the GitLab UI there are three types of runners, based on who you want to have access:
 
-- [Shared](#shared-runners) (for all projects)
-- [Group](#group-runners) (for all projects in a group)
-- [Specific](#specific-runners) (for specific projects)
-
-If you are running self-managed GitLab, you can create your own runners.
-
-If you are using GitLab.com, you can use the shared runners provided by GitLab or
-create your own group or specific runners.
+- [Shared runners](#shared-runners) are available to all groups and projects in a GitLab instance.
+- [Group runners](#group-runners) are available to all projects and subgroups in a group.
+- [Specific runners](#specific-runners) are associated with specific projects.
+  Typically, specific runners are used for one project at a time.
 
 ### Shared runners
 
@@ -122,21 +118,20 @@ To enable shared runners:
 
 #### Disable shared runners
 
-You can disable shared runners for individual projects<!-- or for groups-->.
-You must have Owner permissions for the project<!-- or group-->.
+You can disable shared runners for individual projects or for groups.
+You must have Owner permissions for the project or group.
 
 To disable shared runners for a project:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. In the **Shared runners** area, click **Disable shared runners**.
 
-<!--To disable shared runners for a group:
+To disable shared runners for a group:
 
 1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
-1. In the **Shared runners** area, click **Disable shared runners globally**.
+1. In the **Shared runners** area, click **Enable shared runners for this group**.
 1. Optionally, to allow shared runners to be enabled for individual projects or subgroups,
-   click **Allow projects/subgroups to override the global setting**.
--->
+   click **Allow projects and subgroups to override the group setting**.
 
 ### Group runners
 

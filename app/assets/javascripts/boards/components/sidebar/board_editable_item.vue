@@ -39,13 +39,15 @@ export default {
       this.$emit('open');
       window.addEventListener('click', this.collapseWhenOffClick);
     },
-    collapse() {
+    collapse({ emitEvent = true } = {}) {
       if (!this.edit) {
         return;
       }
 
       this.edit = false;
-      this.$emit('close');
+      if (emitEvent) {
+        this.$emit('close');
+      }
       window.removeEventListener('click', this.collapseWhenOffClick);
     },
   },

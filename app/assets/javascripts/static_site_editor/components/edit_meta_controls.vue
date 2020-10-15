@@ -1,5 +1,6 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import AccessorUtilities from '~/lib/utils/accessor';
 
 export default {
   components: {
@@ -26,12 +27,47 @@ export default {
       },
     };
   },
+  computed: {
+    editableStorageKey() {
+      return this.getId('local-storage', 'editable');
+    },
+    hasLocalStorage() {
+      return AccessorUtilities.isLocalStorageAccessSafe();
+    },
+  },
+  mounted() {
+    this.initCachedEditable();
+    this.preSelect();
+  },
   methods: {
     getId(type, key) {
       return `sse-merge-request-meta-${type}-${key}`;
     },
+    initCachedEditable() {
+      if (this.hasLocalStorage) {
+        const cachedEditable = JSON.parse(localStorage.getItem(this.editableStorageKey));
+        if (cachedEditable) {
+          this.editable = cachedEditable;
+        }
+      }
+    },
+    preSelect() {
+      this.$nextTick(() => {
+        this.$refs.title.$el.select();
+      });
+    },
+    resetCachedEditable() {
+      if (this.hasLocalStorage) {
+        window.localStorage.removeItem(this.editableStorageKey);
+      }
+    },
     onUpdate() {
-      this.$emit('updateSettings', { ...this.editable });
+      const payload = { ...this.editable };
+      this.$emit('updateSettings', payload);
+
+      if (this.hasLocalStorage) {
+        window.localStorage.setItem(this.editableStorageKey, JSON.stringify(payload));
+      }
     },
   },
 };
@@ -46,6 +82,7 @@ export default {
     >
       <gl-form-input
         :id="getId('control', 'title')"
+        ref="title"
         v-model.lazy="editable.title"
         type="text"
         @input="onUpdate"

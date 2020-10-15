@@ -66,6 +66,7 @@ exceptions:
   - POST
   - PUT
   - RAM
+  - REST
   - RPC
   - RSA
   - RSS

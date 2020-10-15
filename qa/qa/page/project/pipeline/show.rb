@@ -8,7 +8,7 @@ module QA
           include Component::CiBadgeLink
 
           view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
-            element :pipeline_header, /header class.*ci-header-container.*/ # rubocop:disable QA/ElementWithPattern
+            element :pipeline_header
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/graph_component.vue' do
@@ -35,7 +35,7 @@ module QA
           end
 
           def running?(wait: 0)
-            within('.ci-header-container') do
+            within_element(:pipeline_header) do
               page.has_content?('running', wait: wait)
             end
           end

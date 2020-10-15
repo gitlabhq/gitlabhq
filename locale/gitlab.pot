@@ -4467,6 +4467,15 @@ msgstr ""
 msgid "Bulk request concurrency"
 msgstr ""
 
+msgid "BulkImport|expected an associated Group but has an associated Project"
+msgstr ""
+
+msgid "BulkImport|expected an associated Project but has an associated Group"
+msgstr ""
+
+msgid "BulkImport|must be a group"
+msgstr ""
+
 msgid "Burndown chart"
 msgstr ""
 
@@ -14936,6 +14945,9 @@ msgstr ""
 msgid "Keep divergent refs"
 msgstr ""
 
+msgid "Keep editing"
+msgstr ""
+
 msgid "Kerberos access denied"
 msgstr ""
 
@@ -21351,6 +21363,9 @@ msgid "Puma is running with a thread count above 1 and the Rugged service is ena
 msgstr ""
 
 msgid "Purchase more minutes"
+msgstr ""
+
+msgid "Purchase more storage"
 msgstr ""
 
 msgid "Push"
@@ -29453,7 +29468,7 @@ msgstr ""
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
-msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by the admin before they can login. This setting is effective only if sign-ups are enabled."
+msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled."
 msgstr ""
 
 msgid "When enabled, any user visiting %{host} will be able to create an account."
