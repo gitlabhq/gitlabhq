@@ -101,7 +101,7 @@ module API
       include ::API::Helpers::Packages::BasicAuthHelpers
 
       def require_generic_packages_available!
-        not_found! unless Feature.enabled?(:generic_packages, project)
+        not_found! unless Feature.enabled?(:generic_packages, project, default_enabled: true)
       end
 
       def project

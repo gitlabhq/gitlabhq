@@ -64,7 +64,8 @@ Example responses:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29568) in GitLab 13.5.
 
 The CI lint returns an expanded version of the configuration. The expansion does not
-work for CI configuration added with [`include: local`](../ci/yaml/README.md#includelocal).
+work for CI configuration added with [`include: local`](../ci/yaml/README.md#includelocal),
+or with [`extends:`](../ci/yaml/README.md#extends).
 
 Example contents of a `.gitlab-ci.yml` passed to the CI Lint API with
 `include_merged_yaml` set as true:
@@ -144,4 +145,93 @@ Example responses:
   ],
   "warnings": []
 }
+```
+
+## Use jq to create and process YAML & JSON payloads
+
+To `POST` a YAML configuration to the CI Lint endpoint, it must be properly escaped and JSON encoded.
+You can use `jq` and `curl` to escape and upload YAML to the GitLab API.
+
+### Escape YAML for JSON encoding
+
+To escape quotes and encode your YAML in a format suitable for embedding within
+a JSON payload, you can use `jq`. For example, create a file named `example-gitlab-ci.yml`:
+
+```yaml
+.api_test:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE=="merge_request_event"'
+      changes:
+        - src/api/*
+deploy:
+  extends:
+    - .api_test
+  rules:
+    - when: manual
+      allow_failure: true
+  script:
+    - echo "hello world"
+```
+
+Next, use `jq` to escape and encode the YAML file into JSON:
+
+```shell
+jq --raw-input --slurp < example-gitlab-ci.yml
+```
+
+To escape and encode an input YAML file (`example-gitlab-ci.yml`), and `POST` it to the
+GitLab API using `curl` and `jq` in a one-line command:
+
+```shell
+jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
+| curl 'https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true' \
+--header 'Content-Type: application/json' \
+--data @-
+```
+
+### Parse a CI Lint response
+
+To reformat the CI Lint response, you can use `jq`. You can pipe the CI Lint response to `jq`,
+or store the API response as a text file and provide it as an argument:
+
+```shell
+jq --raw-output '.merged_yaml | fromjson' <your_input_here>
+```
+
+Example input:
+
+```json
+{"status":"valid","errors":[],"merged_yaml":"---\n:.api_test:\n  :rules:\n  - :if: $CI_PIPELINE_SOURCE==\"merge_request_event\"\n    :changes:\n    - src/api/*\n:deploy:\n  :rules:\n  - :when: manual\n    :allow_failure: true\n  :extends:\n  - \".api_test\"\n  :script:\n  - echo \"hello world\"\n"}
+```
+
+Becomes:
+
+```yaml
+:.api_test:
+  :rules:
+  - :if: $CI_PIPELINE_SOURCE=="merge_request_event"
+    :changes:
+    - src/api/*
+:deploy:
+  :rules:
+  - :when: manual
+    :allow_failure: true
+  :extends:
+  - ".api_test"
+  :script:
+  - echo "hello world"
+```
+
+With a one-line command, you can:
+
+1. Escape the YAML
+1. Encode it in JSON
+1. POST it to the API with curl
+1. Format the response
+
+```shell
+jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
+| curl 'https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true' \
+--header 'Content-Type: application/json' --data @- \
+| jq --raw-output '.merged_yaml | fromjson'
 ```
