@@ -267,9 +267,14 @@ In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/), [Google Chr
 
 ## Usage
 
-Once the integration is set up on GitLab and Jira you may refer any Jira issue by its ID in branch names, commit messages and merge request titles on GitLab's side,
-and you will be able to see the linked `branches`, `commits`, and `merge requests` when entering a Jira issue
-(inside the Jira issue, merge requests will be called "pull requests").
+After the integration is set up on GitLab and Jira, you can:
+
+- Refer to any Jira issue by its ID in GitLab branch names, commit messages, and merge request
+  titles.
+- See the linked branches, commits, and merge requests in Jira issues (merge requests are
+  called "pull requests" in Jira issues).
+
+Jira issue IDs must be formatted in uppercase for the integration to work.
 
 ![Branch, Commit and Pull Requests links on Jira issue](img/jira_dev_panel_jira_setup_3.png)
 

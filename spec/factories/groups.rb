@@ -23,7 +23,7 @@ FactoryBot.define do
     end
 
     trait :internal do
-      visibility_level {Gitlab::VisibilityLevel::INTERNAL }
+      visibility_level { Gitlab::VisibilityLevel::INTERNAL }
     end
 
     trait :private do

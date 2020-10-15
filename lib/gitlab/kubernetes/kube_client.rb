@@ -167,6 +167,21 @@ module Gitlab
         end
       end
 
+      # Ingresses resource is currently on the apis/extensions api group
+      # until Kubernetes 1.21. Kubernetest 1.22+ has ingresses resources in
+      # the networking.k8s.io/v1 api group.
+      #
+      # As we still support Kubernetes 1.12+, we will need to support both.
+      def get_ingresses(**args)
+        extensions_client.discover unless extensions_client.discovered
+
+        if extensions_client.respond_to?(:get_ingresses)
+          extensions_client.get_ingresses(**args)
+        else
+          networking_client.get_ingresses(**args)
+        end
+      end
+
       def create_or_update_cluster_role_binding(resource)
         update_cluster_role_binding(resource)
       end

@@ -62,6 +62,43 @@ RSpec.describe "Admin::Users" do
       end
     end
 
+    describe 'tabs' do
+      it 'has multiple tabs to filter users' do
+        expect(page).to have_link('Active', href: admin_users_path)
+        expect(page).to have_link('Admins', href: admin_users_path(filter: 'admins'))
+        expect(page).to have_link('2FA Enabled', href: admin_users_path(filter: 'two_factor_enabled'))
+        expect(page).to have_link('2FA Disabled', href: admin_users_path(filter: 'two_factor_disabled'))
+        expect(page).to have_link('External', href: admin_users_path(filter: 'external'))
+        expect(page).to have_link('Blocked', href: admin_users_path(filter: 'blocked'))
+        expect(page).to have_link('Deactivated', href: admin_users_path(filter: 'deactivated'))
+        expect(page).to have_link('Without projects', href: admin_users_path(filter: 'wop'))
+      end
+
+      context '`Pending approval` tab' do
+        context 'feature is enabled' do
+          before do
+            stub_feature_flags(admin_approval_for_new_user_signups: true)
+            visit admin_users_path
+          end
+
+          it 'shows the `Pending approval` tab' do
+            expect(page).to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
+          end
+        end
+
+        context 'feature is disabled' do
+          before do
+            stub_feature_flags(admin_approval_for_new_user_signups: false)
+            visit admin_users_path
+          end
+
+          it 'does not show the `Pending approval` tab' do
+            expect(page).not_to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
+          end
+        end
+      end
+    end
+
     describe 'search and sort' do
       before do
         create(:user, name: 'Foo Bar', last_activity_on: 3.days.ago)
@@ -156,6 +193,27 @@ RSpec.describe "Admin::Users" do
       it 'filters by users who have not enabled 2FA' do
         visit admin_users_path
         click_link '2FA Disabled'
+
+        expect(page).to have_content(user.email)
+      end
+    end
+
+    describe 'Pending approval filter' do
+      it 'counts users who are pending approval' do
+        create_list(:user, 2, :blocked_pending_approval)
+
+        visit admin_users_path
+
+        page.within('.filter-blocked-pending-approval small') do
+          expect(page).to have_content('2')
+        end
+      end
+
+      it 'filters by users who are pending approval' do
+        user = create(:user, :blocked_pending_approval)
+
+        visit admin_users_path
+        click_link 'Pending approval'
 
         expect(page).to have_content(user.email)
       end
@@ -299,6 +357,23 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_button('Block user')
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')
+    end
+
+    context 'user pending approval' do
+      it 'shows user info' do
+        user = create(:user, :blocked_pending_approval)
+
+        visit admin_users_path
+        click_link 'Pending approval'
+        click_link user.name
+
+        expect(page).to have_content(user.name)
+        expect(page).to have_content('Pending approval')
+        expect(page).to have_link('Approve user')
+        expect(page).to have_button('Block user')
+        expect(page).to have_button('Delete user')
+        expect(page).to have_button('Delete user and contributions')
+      end
     end
 
     describe 'Impersonation' do

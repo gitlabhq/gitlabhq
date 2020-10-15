@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class KeysFinder
+  delegate :find, :find_by_id, to: :execute
+
   InvalidFingerprint = Class.new(StandardError)
   GitLabAccessDeniedError = Class.new(StandardError)
 

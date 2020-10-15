@@ -14,15 +14,30 @@ RSpec.describe Projects::CreateService, '#execute' do
     }
   end
 
-  it 'creates labels on Project creation if there are templates' do
-    Label.create!(title: "bug", template: true)
-    project = create_project(user, opts)
+  context 'with labels' do
+    subject(:project) { create_project(user, opts) }
 
-    created_label = project.reload.labels.last
+    before_all do
+      Label.create!(title: 'bug', template: true)
+    end
 
-    expect(created_label.type).to eq('ProjectLabel')
-    expect(created_label.project_id).to eq(project.id)
-    expect(created_label.title).to eq('bug')
+    it 'creates labels on project creation' do
+      created_label = project.labels.last
+
+      expect(created_label.type).to eq('ProjectLabel')
+      expect(created_label.project_id).to eq(project.id)
+      expect(created_label.title).to eq('bug')
+    end
+
+    context 'using gitlab project import' do
+      before do
+        opts[:import_type] = 'gitlab_project'
+      end
+
+      it 'does not creates labels on project creation' do
+        expect(project.labels.size).to eq(0)
+      end
+    end
   end
 
   context 'user namespace' do
@@ -59,10 +74,6 @@ RSpec.describe Projects::CreateService, '#execute' do
   context "admin creates project with other user's namespace_id" do
     it 'sets the correct permissions' do
       admin = create(:admin)
-      opts = {
-        name: 'GitLab',
-        namespace_id: user.namespace.id
-      }
       project = create_project(admin, opts)
 
       expect(project).to be_persisted

@@ -38,6 +38,7 @@ module Groups
     # Overridden in EE
     def post_update_hooks(updated_project_ids)
       refresh_project_authorizations
+      refresh_descendant_groups if @new_parent_group
     end
 
     def ensure_allowed_transfer
@@ -101,6 +102,8 @@ module Groups
         @group.visibility_level = @new_parent_group.visibility_level
       end
 
+      update_two_factor_authentication if @new_parent_group
+
       @group.parent = @new_parent_group
       @group.clear_memoization(:self_and_ancestors_ids)
 
@@ -129,7 +132,25 @@ module Groups
       projects_to_update
         .update_all(visibility_level: @new_parent_group.visibility_level)
     end
+
+    def update_two_factor_authentication
+      return if namespace_parent_allows_two_factor_auth
+
+      @group.require_two_factor_authentication = false
+    end
+
+    def refresh_descendant_groups
+      return if namespace_parent_allows_two_factor_auth
+
+      if @group.descendants.where(require_two_factor_authentication: true).any?
+        DisallowTwoFactorForSubgroupsWorker.perform_async(@group.id)
+      end
+    end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def namespace_parent_allows_two_factor_auth
+      @new_parent_group.namespace_settings.allow_mfa_for_subgroups
+    end
 
     def ensure_ownership
       return if @new_parent_group

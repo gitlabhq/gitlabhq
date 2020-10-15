@@ -5,13 +5,16 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, concepts
 ---
 
-# Merge Request Approvals
+# Merge Request Approvals **(CORE)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580) in GitLab Enterprise Edition 7.2. Available in GitLab Core and higher tiers.
+> - Redesign [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/10685) in 12.0.
 
 Code review is an essential practice of every successful project, and giving your
 approval once a merge request is in good shape is an important part of the review
 process, as it clearly communicates the ability to merge the change.
 
-## Optional Approvals **(CORE ONLY)**
+## Optional Approvals
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27426) in GitLab 13.2.
 
@@ -334,26 +337,6 @@ of your security team when a vulnerability would be introduced by a merge reques
 
 For more information, see
 [Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests).
-
-### Enabling the new approvals interface
-
-Since [GitLab v12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/10685), an updated approvals
-interface is available by default. In versions older than 12.0, the updated interface is not
-available unless the `approval_rules` feature flag is enabled, which can be done from
-the Rails console by instance administrators.
-
-Use these commands to start the Rails console:
-
-```shell
-# Omnibus GitLab
-gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console -e production
-```
-
-Then run `Feature.enable(:approval_rules)` to enable the updated interface.
 
 <!-- ## Troubleshooting
 

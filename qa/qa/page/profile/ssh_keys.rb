@@ -11,7 +11,7 @@ module QA
           element :add_key_button
         end
 
-        view 'app/helpers/profiles_helper.rb' do
+        view 'app/helpers/ssh_keys_helper.rb' do
           element :delete_ssh_key_button
           element :ssh_key_delete_modal
         end

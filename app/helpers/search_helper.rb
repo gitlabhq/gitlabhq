@@ -100,7 +100,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, params)
+    @search_service ||= ::SearchService.new(current_user, params.merge(confidential: Gitlab::Utils.to_boolean(params[:confidential])))
   end
 
   private

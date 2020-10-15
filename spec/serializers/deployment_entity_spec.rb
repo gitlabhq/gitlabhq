@@ -30,6 +30,10 @@ RSpec.describe DeploymentEntity do
     expect(subject[:ref][:name]).to eq 'master'
   end
 
+  it 'exposes status' do
+    expect(subject).to include(:status)
+  end
+
   it 'exposes creation date' do
     expect(subject).to include(:created_at)
   end

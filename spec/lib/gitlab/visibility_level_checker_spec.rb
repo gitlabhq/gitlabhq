@@ -5,16 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::VisibilityLevelChecker do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:visibility_level_checker) { }
   let(:override_params) { {} }
 
-  subject { described_class.new(user, project, project_params: override_params) }
-
   describe '#level_restricted?' do
+    subject(:result) { described_class.new(user, project, project_params: override_params).level_restricted? }
+
     context 'when visibility level is allowed' do
       it 'returns false with nil for visibility level' do
-        result = subject.level_restricted?
-
         expect(result.restricted?).to eq(false)
         expect(result.visibility_level).to be_nil
       end
@@ -25,12 +22,26 @@ RSpec.describe Gitlab::VisibilityLevelChecker do
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
-      it 'returns true and visibility name' do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        result = subject.level_restricted?
+      context 'for public project' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
 
-        expect(result.restricted?).to eq(true)
-        expect(result.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+        context 'for non-admin user' do
+          it 'returns true and visibility name' do
+            expect(result.restricted?).to eq(true)
+            expect(result.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+          end
+        end
+
+        context 'for admin user' do
+          let(:user) { create(:user, :admin) }
+
+          it 'returns false and a nil visibility level' do
+            expect(result.restricted?).to eq(false)
+            expect(result.visibility_level).to be_nil
+          end
+        end
       end
 
       context 'overridden visibility' do
@@ -50,8 +61,6 @@ RSpec.describe Gitlab::VisibilityLevelChecker do
           let(:override_visibility) { 'public' }
 
           it 'returns true and visibility name' do
-            result = subject.level_restricted?
-
             expect(result.restricted?).to eq(true)
             expect(result.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
           end
@@ -61,8 +70,6 @@ RSpec.describe Gitlab::VisibilityLevelChecker do
           let(:override_visibility) { 'publik' }
 
           it 'returns false with nil for visibility level' do
-            result = subject.level_restricted?
-
             expect(result.restricted?).to eq(false)
             expect(result.visibility_level).to be_nil
           end
@@ -72,8 +79,6 @@ RSpec.describe Gitlab::VisibilityLevelChecker do
           let(:override_params) { {} }
 
           it 'returns false with nil for visibility level' do
-            result = subject.level_restricted?
-
             expect(result.restricted?).to eq(false)
             expect(result.visibility_level).to be_nil
           end

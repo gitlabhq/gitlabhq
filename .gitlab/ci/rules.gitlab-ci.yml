@@ -353,6 +353,7 @@
 .frontend:rules:compile-test-assets:
   rules:
     - changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .frontend:rules:compile-test-assets-as-if-foss:
   rules:
@@ -500,6 +501,7 @@
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-only-migration:
   rules:
@@ -891,6 +893,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       when: on_success
+    - <<: *if-merge-request-title-run-all-rspec
 
 .test-metadata:rules:update-tests-metadata:
   rules:

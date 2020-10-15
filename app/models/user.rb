@@ -293,6 +293,7 @@ class User < ApplicationRecord
       transition active: :blocked
       transition deactivated: :blocked
       transition ldap_blocked: :blocked
+      transition blocked_pending_approval: :blocked
     end
 
     event :ldap_block do
@@ -338,7 +339,8 @@ class User < ApplicationRecord
 
   # Scopes
   scope :admins, -> { where(admin: true) }
-  scope :blocked, -> { with_states(:blocked, :ldap_blocked, :blocked_pending_approval) }
+  scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
+  scope :blocked_pending_approval, -> { with_states(:blocked_pending_approval) }
   scope :external, -> { where(external: true) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
@@ -538,6 +540,8 @@ class User < ApplicationRecord
         admins
       when 'blocked'
         blocked
+      when 'blocked_pending_approval'
+        blocked_pending_approval
       when 'two_factor_disabled'
         without_two_factor
       when 'two_factor_enabled'

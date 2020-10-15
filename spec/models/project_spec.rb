@@ -4979,15 +4979,21 @@ RSpec.describe Project do
     context "with an empty repository" do
       let_it_be(:project) { create(:project_empty_repo) }
 
-      context "Gitlab::CurrentSettings.default_branch_name is unavailable" do
+      context "group.default_branch_name is available" do
+        let(:project_group) { create(:group) }
+        let(:project) { create(:project, path: 'avatar', namespace: project_group) }
+
         before do
           expect(Gitlab::CurrentSettings)
+            .not_to receive(:default_branch_name)
+
+          expect(project.group)
             .to receive(:default_branch_name)
-            .and_return(nil)
+            .and_return('example_branch')
         end
 
-        it "returns that value" do
-          expect(project.default_branch).to be_nil
+        it "returns the group default value" do
+          expect(project.default_branch).to eq("example_branch")
         end
       end
 
@@ -4995,11 +5001,23 @@ RSpec.describe Project do
         before do
           expect(Gitlab::CurrentSettings)
             .to receive(:default_branch_name)
-            .and_return('example_branch')
+            .and_return(example_branch_name)
         end
 
-        it "returns that value" do
-          expect(project.default_branch).to eq("example_branch")
+        context "is missing or nil" do
+          let(:example_branch_name) { nil }
+
+          it "returns nil" do
+            expect(project.default_branch).to be_nil
+          end
+        end
+
+        context "is present" do
+          let(:example_branch_name) { "example_branch_name" }
+
+          it "returns the expected branch name" do
+            expect(project.default_branch).to eq(example_branch_name)
+          end
         end
       end
     end

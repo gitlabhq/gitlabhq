@@ -552,6 +552,10 @@ class Group < Namespace
     owners.first || parent&.default_owner || owner
   end
 
+  def default_branch_name
+    namespace_settings&.default_branch_name
+  end
+
   def access_level_roles
     GroupMember.access_level_roles
   end

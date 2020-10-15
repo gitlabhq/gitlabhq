@@ -1,13 +1,20 @@
 %h3.page-title
   = @user.name
-  - if @user.blocked?
-    %span.cred (Blocked)
+  - if @user.blocked_pending_approval?
+    %span.cred
+      = s_('AdminUsers|(Pending approval)')
+  - elsif @user.blocked?
+    %span.cred
+      = s_('AdminUsers|(Blocked)')
   - if @user.internal?
-    %span.cred (Internal)
+    %span.cred
+      = s_('AdminUsers|(Internal)')
   - if @user.admin
-    %span.cred (Admin)
+    %span.cred
+      = s_('AdminUsers|(Admin)')
   - if @user.deactivated?
-    %span.cred (Deactivated)
+    %span.cred
+      = s_('AdminUsers|(Deactivated)')
   = render_if_exists 'admin/users/audtior_user_badge'
 
   .float-right

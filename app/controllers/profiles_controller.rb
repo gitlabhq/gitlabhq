@@ -2,6 +2,7 @@
 
 class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
+  include Gitlab::Tracking
 
   before_action :user
   before_action :authorize_change_username!, only: :update_username
@@ -65,6 +66,8 @@ class ProfilesController < Profiles::ApplicationController
     @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id)
       .order("created_at DESC")
       .page(params[:page])
+
+    Gitlab::Tracking.event(self.class.name, 'search_audit_event')
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

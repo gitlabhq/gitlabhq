@@ -147,7 +147,7 @@ module Projects
 
     def create_readme
       commit_attrs = {
-        branch_name:  Gitlab::CurrentSettings.default_branch_name.presence || 'master',
+        branch_name: @project.default_branch || 'master',
         commit_message: 'Initial commit',
         file_path: 'README.md',
         file_content: "# #{@project.name}\n\n#{@project.description}"
@@ -165,10 +165,9 @@ module Projects
         @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
         if @project.save
-          unless @project.gitlab_project_import?
-            Service.create_from_active_default_integrations(@project, :project_id, with_templates: true)
-            @project.create_labels
-          end
+          Service.create_from_active_default_integrations(@project, :project_id, with_templates: true)
+
+          @project.create_labels unless @project.gitlab_project_import?
 
           unless @project.import?
             raise 'Failed to create repository' unless @project.create_repository

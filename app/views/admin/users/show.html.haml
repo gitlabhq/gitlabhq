@@ -137,7 +137,7 @@
 
   .col-md-6
     - unless @user == current_user
-      - unless @user.confirmed?
+      - if can_force_email_confirmation?(@user)
         .card.border-info
           .card-header.bg-info.text-white
             Confirm user
@@ -173,28 +173,23 @@
                 = s_('AdminUsers|Deactivate user')
 
       - if @user.blocked?
-        .card.border-info
-          .card-header.bg-info.text-white
-            This user is blocked
-          .card-body
-            %p A blocked user cannot:
-            %ul
-              %li Log in
-              %li Access Git repositories
-            %br
-            = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?' }
+        - if @user.blocked_pending_approval?
+          = render 'admin/users/approve_user', user: @user
+          = render 'admin/users/block_user', user: @user
+        - else
+          .card.border-info
+            .card-header.gl-bg-blue-500.gl-text-white
+              This user is blocked
+            .card-body
+              %p A blocked user cannot:
+              %ul
+                %li Log in
+                %li Access Git repositories
+              %br
+              = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: s_('AdminUsers|Are you sure?') }
       - elsif !@user.internal?
-        .card.border-warning
-          .card-header.bg-warning.text-white
-            Block this user
-          .card-body
-            = render partial: 'admin/users/user_block_effects'
-            %br
-            %button.btn.gl-button.btn-warning{ data: { 'gl-modal-action': 'block',
-              content: 'You can always unblock their account, their data will remain intact.',
-              url: block_admin_user_path(@user),
-              username: sanitize_name(@user.name) } }
-              = s_('AdminUsers|Block user')
+        = render 'admin/users/block_user', user: @user
+
       - if @user.access_locked?
         .card.border-info
           .card-header.bg-info.text-white

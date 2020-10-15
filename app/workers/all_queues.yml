@@ -1409,6 +1409,22 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: disallow_two_factor_for_group
+  :feature_category: :subgroups
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: disallow_two_factor_for_subgroups
+  :feature_category: :subgroups
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: email_receiver
   :feature_category: :issue_tracking
   :has_external_dependencies:

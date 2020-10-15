@@ -308,6 +308,25 @@ RSpec.describe Groups::UpdateService do
     end
   end
 
+  context 'changes allowing subgroups to establish own 2FA' do
+    let(:group) { create(:group) }
+    let(:params) { { allow_mfa_for_subgroups: false } }
+
+    subject { described_class.new(group, user, params).execute }
+
+    it 'changes settings' do
+      subject
+
+      expect(group.namespace_settings.reload.allow_mfa_for_subgroups).to eq(false)
+    end
+
+    it 'enqueues update subgroups and its members' do
+      expect(DisallowTwoFactorForSubgroupsWorker).to receive(:perform_async).with(group.id)
+
+      subject
+    end
+  end
+
   def update_group(group, user, opts)
     Groups::UpdateService.new(group, user, opts).execute
   end

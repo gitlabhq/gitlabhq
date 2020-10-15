@@ -77,7 +77,7 @@ export default {
 <template>
   <labels-select
     class="block labels js-labels-block"
-    :allow-label-remove="true"
+    :allow-label-remove="allowLabelEdit"
     :allow-label-create="allowLabelCreate"
     :allow-label-edit="allowLabelEdit"
     :allow-multiselect="true"

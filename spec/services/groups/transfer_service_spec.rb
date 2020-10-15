@@ -567,6 +567,39 @@ RSpec.describe Groups::TransferService do
         end
       end
 
+      context 'when transferring a group with two factor authentication switched on' do
+        before do
+          TestEnv.clean_test_path
+          create(:group_member, :owner, group: new_parent_group, user: user)
+          create(:group, :private, parent: group, require_two_factor_authentication: true)
+          group.update!(require_two_factor_authentication: true)
+        end
+
+        it 'does not update group two factor authentication setting' do
+          transfer_service.execute(new_parent_group)
+
+          expect(group.require_two_factor_authentication).to eq(true)
+        end
+
+        context 'when new parent disallows two factor authentication switched on for descendants' do
+          before do
+            new_parent_group.namespace_settings.update!(allow_mfa_for_subgroups: false)
+          end
+
+          it 'updates group two factor authentication setting' do
+            transfer_service.execute(new_parent_group)
+
+            expect(group.require_two_factor_authentication).to eq(false)
+          end
+
+          it 'schedules update of group two factor authentication setting for descendants' do
+            expect(DisallowTwoFactorForSubgroupsWorker).to receive(:perform_async).with(group.id)
+
+            transfer_service.execute(new_parent_group)
+          end
+        end
+      end
+
       context 'when updating the group goes wrong' do
         let!(:subgroup1) { create(:group, :public, parent: group) }
         let!(:subgroup2) { create(:group, :public, parent: group) }

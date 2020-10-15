@@ -448,4 +448,33 @@ RSpec.describe SearchHelper do
       end
     end
   end
+
+  describe '#search_service' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { search_service }
+
+    before do
+      allow(self).to receive(:current_user).and_return(:the_current_user)
+    end
+
+    where(:confidential, :expected) do
+      '0'       | false
+      '1'       | true
+      'yes'     | true
+      'no'      | false
+      true      | true
+      false     | false
+    end
+
+    let(:params) {{ confidential: confidential }}
+
+    with_them do
+      it 'transforms confidentiality param' do
+        expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
+
+        subject
+      end
+    end
+  end
 end

@@ -21,7 +21,7 @@ RSpec.describe Projects::IncidentsHelper do
     subject(:data) { helper.incidents_data(project, params) }
 
     it 'returns frontend configuration' do
-      expect(data).to match(
+      expect(data).to include(
         'project-path' => project_path,
         'new-issue-path' => new_issue_path,
         'incident-template-name' => 'incident',

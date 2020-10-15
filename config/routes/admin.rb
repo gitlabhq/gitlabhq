@@ -17,6 +17,7 @@ namespace :admin do
       put :activate
       put :unlock
       put :confirm
+      put :approve
       post :impersonate
       patch :disable_two_factor
       delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'

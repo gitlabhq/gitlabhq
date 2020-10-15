@@ -122,6 +122,8 @@ By now you should have [configured Jira](#configuring-jira) and enabled the
 you should be able to reference and close Jira issues by just mentioning their
 ID in GitLab commits and merge requests.
 
+Jira issue IDs must be formatted in uppercase for the integration to work.
+
 ### Reference Jira issues
 
 When GitLab project has Jira issue tracker configured and enabled, mentioning

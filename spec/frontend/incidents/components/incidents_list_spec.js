@@ -55,6 +55,7 @@ describe('Incidents List', () => {
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
   const findSearch = () => wrapper.find(FilteredSearchBar);
+  const findIncidentSlaHeader = () => wrapper.find('[data-testid="incident-management-sla"]');
   const findAssignees = () => wrapper.findAll('[data-testid="incident-assignees"]');
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
@@ -64,11 +65,16 @@ describe('Incidents List', () => {
   const findStatusTabs = () => wrapper.find(GlTabs);
   const findEmptyState = () => wrapper.find(GlEmptyState);
   const findSeverity = () => wrapper.findAll(SeverityToken);
+  const findIncidentSla = () => wrapper.findAll("[data-testid='incident-sla']");
 
-  function mountComponent({ data = { incidents: [], incidentsCount: {} }, loading = false }) {
+  function mountComponent({ data = {}, loading = false, provide = {} } = {}) {
     wrapper = mount(IncidentsList, {
       data() {
-        return data;
+        return {
+          incidents: [],
+          incidentsCount: {},
+          ...data,
+        };
       },
       mocks: {
         $apollo: {
@@ -90,11 +96,14 @@ describe('Incidents List', () => {
         textQuery: '',
         authorUsernamesQuery: '',
         assigneeUsernamesQuery: '',
+        slaFeatureAvailable: true,
+        ...provide,
       },
       stubs: {
         GlButton: true,
         GlAvatar: true,
         GlEmptyState: true,
+        ServiceLevelAgreementCell: true,
       },
     });
   }
@@ -203,6 +212,35 @@ describe('Incidents List', () => {
       expect(visitUrl).toHaveBeenCalledWith(
         joinPaths(`/project/issues/incident`, mockIncidents[0].iid),
       );
+    });
+
+    describe('Incident SLA field', () => {
+      it('displays the column when the feature is available', () => {
+        mountComponent({
+          data: { incidents: { list: mockIncidents } },
+          provide: { slaFeatureAvailable: true },
+        });
+
+        expect(findIncidentSlaHeader().text()).toContain('Time to SLA');
+      });
+
+      it('does not display the column when the feature is not available', () => {
+        mountComponent({
+          data: { incidents: { list: mockIncidents } },
+          provide: { slaFeatureAvailable: false },
+        });
+
+        expect(findIncidentSlaHeader().exists()).toBe(false);
+      });
+
+      it('renders an SLA for each incident', () => {
+        mountComponent({
+          data: { incidents: { list: mockIncidents } },
+          provide: { slaFeatureAvailable: true },
+        });
+
+        expect(findIncidentSla().length).toBe(mockIncidents.length);
+      });
     });
   });
 

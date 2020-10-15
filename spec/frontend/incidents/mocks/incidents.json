@@ -5,7 +5,8 @@
     "createdAt": "2020-06-03T15:46:08Z",
     "assignees": {},
     "state": "opened",
-    "severity": "CRITICAL"
+    "severity": "CRITICAL",
+    "slaDueAt": "2020-06-04T12:46:08Z"
   },
   {
     "iid": "14",
@@ -22,7 +23,8 @@
       ]
     },
     "state": "opened",
-    "severity": "HIGH"
+    "severity": "HIGH",
+    "slaDueAt": null
   },
   {
     "iid": "13",

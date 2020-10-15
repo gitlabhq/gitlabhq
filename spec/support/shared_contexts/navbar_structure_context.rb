@@ -44,7 +44,8 @@ RSpec.shared_context 'project navbar structure' do
           _('Boards'),
           _('Labels'),
           _('Service Desk'),
-          _('Milestones')
+          _('Milestones'),
+          _('Iterations')
         ]
       },
       {

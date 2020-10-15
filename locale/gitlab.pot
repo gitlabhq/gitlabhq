@@ -630,9 +630,6 @@ msgstr ""
 msgid "%{name_with_link} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "%{namespace_name} is now read-only. You cannot: %{base_message}"
-msgstr ""
-
 msgid "%{name} contained %{resultsString}"
 msgstr ""
 
@@ -2042,6 +2039,21 @@ msgstr ""
 msgid "AdminStatistics|Snippets"
 msgstr ""
 
+msgid "AdminUsers|(Admin)"
+msgstr ""
+
+msgid "AdminUsers|(Blocked)"
+msgstr ""
+
+msgid "AdminUsers|(Deactivated)"
+msgstr ""
+
+msgid "AdminUsers|(Internal)"
+msgstr ""
+
+msgid "AdminUsers|(Pending approval)"
+msgstr ""
+
 msgid "AdminUsers|2FA Disabled"
 msgstr ""
 
@@ -2049,6 +2061,12 @@ msgid "AdminUsers|2FA Enabled"
 msgstr ""
 
 msgid "AdminUsers|Access"
+msgstr ""
+
+msgid "AdminUsers|Access Git repositories"
+msgstr ""
+
+msgid "AdminUsers|Access the API"
 msgstr ""
 
 msgid "AdminUsers|Active"
@@ -2063,10 +2081,28 @@ msgstr ""
 msgid "AdminUsers|Admins"
 msgstr ""
 
+msgid "AdminUsers|Approve"
+msgstr ""
+
+msgid "AdminUsers|Approve user"
+msgstr ""
+
+msgid "AdminUsers|Approved users can:"
+msgstr ""
+
+msgid "AdminUsers|Are you sure?"
+msgstr ""
+
 msgid "AdminUsers|Automatically marked as default internal user"
 msgstr ""
 
+msgid "AdminUsers|Be added to groups and projects"
+msgstr ""
+
 msgid "AdminUsers|Block"
+msgstr ""
+
+msgid "AdminUsers|Block this user"
 msgstr ""
 
 msgid "AdminUsers|Block user"
@@ -2123,6 +2159,9 @@ msgstr ""
 msgid "AdminUsers|It's you!"
 msgstr ""
 
+msgid "AdminUsers|Log in"
+msgstr ""
+
 msgid "AdminUsers|New user"
 msgstr ""
 
@@ -2130,6 +2169,9 @@ msgid "AdminUsers|No users found"
 msgstr ""
 
 msgid "AdminUsers|Owned groups will be left"
+msgstr ""
+
+msgid "AdminUsers|Pending approval"
 msgstr ""
 
 msgid "AdminUsers|Personal projects will be left"
@@ -2177,6 +2219,9 @@ msgstr ""
 msgid "AdminUsers|The user will not receive any notifications"
 msgstr ""
 
+msgid "AdminUsers|This user has requested access"
+msgstr ""
+
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
@@ -2199,6 +2244,9 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. Issu
 msgstr ""
 
 msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "AdminUsers|You can always unblock their account, their data will remain intact."
 msgstr ""
 
 msgid "AdminUsers|You cannot remove your own admin rights."
@@ -4636,6 +4684,9 @@ msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
 msgid "Cannot enable shared runners because parent group does not allow it"
+msgstr ""
+
+msgid "Cannot find user key."
 msgstr ""
 
 msgid "Cannot have multiple Jira imports running at the same time"
@@ -13502,9 +13553,6 @@ msgstr ""
 msgid "If you lose your recovery codes you can generate new ones, invalidating all previous codes."
 msgstr ""
 
-msgid "If you reach 100%% storage capacity, you will not be able to: %{base_message}"
-msgstr ""
-
 msgid "If you recently signed in and recognize the IP address, you may disregard this email."
 msgstr ""
 
@@ -13734,6 +13782,12 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "IncidentManagement|%{hours} hours, %{minutes} minutes remaining"
+msgstr ""
+
+msgid "IncidentManagement|%{minutes} minutes remaining"
+msgstr ""
+
 msgid "IncidentManagement|All"
 msgstr ""
 
@@ -13792,6 +13846,9 @@ msgid "IncidentManagement|There are no closed incidents"
 msgstr ""
 
 msgid "IncidentManagement|There was an error displaying the incidents."
+msgstr ""
+
+msgid "IncidentManagement|Time to SLA"
 msgstr ""
 
 msgid "IncidentManagement|Unassigned"
@@ -17138,6 +17195,30 @@ msgid "Namespace is empty"
 msgstr ""
 
 msgid "Namespace:"
+msgstr ""
+
+msgid "NamespaceStorageSize|%{namespace_name} contains a locked project"
+msgstr ""
+
+msgid "NamespaceStorageSize|%{namespace_name} is now read-only. You cannot: %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free 10GB project limit. You can't %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free 10GB limit. You can't %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have reached the free storage limit of 10GB on %{locked_project_count} projects. To unlock them, please purchase additional storage"
+msgstr ""
+
+msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
 msgid "Namespaces"
@@ -24527,6 +24608,9 @@ msgstr ""
 msgid "SortOptions|Access level, descending"
 msgstr ""
 
+msgid "SortOptions|Blocking"
+msgstr ""
+
 msgid "SortOptions|Created date"
 msgstr ""
 
@@ -25248,6 +25332,9 @@ msgid "Succeeded"
 msgstr ""
 
 msgid "Successfully activated"
+msgstr ""
+
+msgid "Successfully approved"
 msgstr ""
 
 msgid "Successfully blocked"
@@ -26149,6 +26236,9 @@ msgid "The user map is a JSON document mapping the Google Code users that partic
 msgstr ""
 
 msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
+msgstr ""
+
+msgid "The user you are trying to approve is not pending an approval"
 msgstr ""
 
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
@@ -29701,6 +29791,9 @@ msgstr ""
 msgid "You are going to turn on the confidentiality. This means that only team members with %{strongStart}at least Reporter access%{strongEnd} are able to see and leave comments on the %{issuableType}."
 msgstr ""
 
+msgid "You are not allowed to approve a user"
+msgstr ""
+
 msgid "You are not allowed to push into this branch. Create another branch or open a merge request."
 msgstr ""
 
@@ -30044,9 +30137,6 @@ msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr ""
 
 msgid "You need to upload a Google Takeout archive."
-msgstr ""
-
-msgid "You reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
 msgstr ""
 
 msgid "You successfully declined the invitation"
@@ -31583,9 +31673,6 @@ msgid "project members"
 msgstr ""
 
 msgid "projects"
-msgstr ""
-
-msgid "push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 
 msgid "quick actions"

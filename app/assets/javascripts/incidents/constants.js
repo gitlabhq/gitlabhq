@@ -46,5 +46,6 @@ export const trackIncidentCreateNewOptions = {
 export const DEFAULT_PAGE_SIZE = 20;
 export const TH_CREATED_AT_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
 export const TH_SEVERITY_TEST_ID = { 'data-testid': 'incident-management-severity-sort' };
+export const TH_INCIDENT_SLA_TEST_ID = { 'data-testid': 'incident-management-sla' };
 export const TH_PUBLISHED_TEST_ID = { 'data-testid': 'incident-management-published-sort' };
 export const INCIDENT_DETAILS_PATH = 'incident';

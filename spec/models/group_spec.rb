@@ -1506,6 +1506,28 @@ RSpec.describe Group do
     end
   end
 
+  describe "#default_branch_name" do
+    context "group.namespace_settings does not have a default branch name" do
+      it "returns nil" do
+        expect(group.default_branch_name).to be_nil
+      end
+    end
+
+    context "group.namespace_settings has a default branch name" do
+      let(:example_branch_name) { "example_branch_name" }
+
+      before do
+        expect(group.namespace_settings)
+          .to receive(:default_branch_name)
+          .and_return(example_branch_name)
+      end
+
+      it "returns the default branch name" do
+        expect(group.default_branch_name).to eq(example_branch_name)
+      end
+    end
+  end
+
   describe '#default_owner' do
     let(:group) { build(:group) }
 

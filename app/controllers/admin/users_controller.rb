@@ -6,6 +6,7 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :check_admin_approval_feature_available!, only: [:approve]
 
   feature_category :users
 
@@ -62,6 +63,16 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def approve
+    result = Users::ApproveService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully approved"))
+    else
+      redirect_back_or_admin_user(alert: result[:message])
+    end
+  end
+
   def activate
     return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user must be unblocked to be activated")) if user.blocked?
 
@@ -82,7 +93,7 @@ class Admin::UsersController < Admin::ApplicationController
   def block
     result = Users::BlockService.new(current_user).execute(user)
 
-    if result[:status] = :success
+    if result[:status] == :success
       redirect_back_or_admin_user(notice: _("Successfully blocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not blocked"))
@@ -286,6 +297,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def log_impersonation_event
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
+  end
+
+  def check_admin_approval_feature_available!
+    access_denied! unless Feature.enabled?(:admin_approval_for_new_user_signups)
   end
 end
 

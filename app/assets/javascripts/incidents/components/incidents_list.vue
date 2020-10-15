@@ -39,6 +39,7 @@ import {
   DEFAULT_PAGE_SIZE,
   INCIDENT_STATUS_TABS,
   TH_CREATED_AT_TEST_ID,
+  TH_INCIDENT_SLA_TEST_ID,
   TH_SEVERITY_TEST_ID,
   TH_PUBLISHED_TEST_ID,
   INCIDENT_DETAILS_PATH,
@@ -67,7 +68,7 @@ export default {
     {
       key: 'severity',
       label: s__('IncidentManagement|Severity'),
-      thClass,
+      thClass: `${thClass} w-15p`,
       tdClass: `${tdClass} sortable-cell`,
       sortable: true,
       thAttr: TH_SEVERITY_TEST_ID,
@@ -75,22 +76,37 @@ export default {
     {
       key: 'title',
       label: s__('IncidentManagement|Incident'),
-      thClass: `gl-pointer-events-none gl-w-half`,
+      thClass: `gl-pointer-events-none`,
       tdClass,
     },
     {
       key: 'createdAt',
       label: s__('IncidentManagement|Date created'),
-      thClass,
+      thClass: `${thClass} gl-w-eighth`,
       tdClass: `${tdClass} sortable-cell`,
       sortable: true,
       thAttr: TH_CREATED_AT_TEST_ID,
     },
     {
+      key: 'incidentSla',
+      label: s__('IncidentManagement|Time to SLA'),
+      thClass: `gl-pointer-events-none gl-text-right gl-w-eighth`,
+      tdClass: `${tdClass} gl-text-right`,
+      thAttr: TH_INCIDENT_SLA_TEST_ID,
+    },
+    {
       key: 'assignees',
       label: s__('IncidentManagement|Assignees'),
-      thClass: 'gl-pointer-events-none',
+      thClass: 'gl-pointer-events-none w-15p',
       tdClass,
+    },
+    {
+      key: 'published',
+      label: s__('IncidentManagement|Published'),
+      thClass: `${thClass} w-15p`,
+      tdClass: `${tdClass} sortable-cell`,
+      sortable: true,
+      thAttr: TH_PUBLISHED_TEST_ID,
     },
   ],
   components: {
@@ -107,6 +123,8 @@ export default {
     GlTabs,
     GlTab,
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
+    ServiceLevelAgreementCell: () =>
+      import('ee_component/incidents/components/service_level_agreement_cell.vue'),
     GlBadge,
     GlEmptyState,
     SeverityToken,
@@ -126,6 +144,7 @@ export default {
     'textQuery',
     'authorUsernamesQuery',
     'assigneeUsernamesQuery',
+    'slaFeatureAvailable',
   ],
   apollo: {
     incidents: {
@@ -231,21 +250,12 @@ export default {
       );
     },
     availableFields() {
-      return this.publishedAvailable
-        ? [
-            ...this.$options.fields,
-            ...[
-              {
-                key: 'published',
-                label: s__('IncidentManagement|Published'),
-                thClass,
-                tdClass: `${tdClass} sortable-cell`,
-                sortable: true,
-                thAttr: TH_PUBLISHED_TEST_ID,
-              },
-            ],
-          ]
-        : this.$options.fields;
+      const isHidden = {
+        published: !this.publishedAvailable,
+        incidentSla: !this.slaFeatureAvailable,
+      };
+
+      return this.$options.fields.filter(({ key }) => !isHidden[key]);
     },
     isEmpty() {
       return !this.incidents.list?.length;
@@ -524,6 +534,10 @@ export default {
 
       <template #cell(createdAt)="{ item }">
         <time-ago-tooltip :time="item.createdAt" />
+      </template>
+
+      <template v-if="slaFeatureAvailable" #cell(incidentSla)="{ item }">
+        <service-level-agreement-cell :sla-due-at="item.slaDueAt" data-testid="incident-sla" />
       </template>
 
       <template #cell(assignees)="{ item }">

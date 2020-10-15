@@ -17,6 +17,7 @@ class DeploymentEntity < Grape::Entity
     end
   end
 
+  expose :status
   expose :created_at
   expose :deployed_at
   expose :tag

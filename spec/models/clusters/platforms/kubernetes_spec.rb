@@ -412,7 +412,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     end
 
     let(:namespace) { "project-namespace" }
-    let(:environment) { instance_double(Environment, deployment_namespace: namespace) }
+    let(:environment) { instance_double(Environment, deployment_namespace: namespace, project: service.cluster.project) }
 
     subject { service.calculate_reactive_cache_for(environment) }
 
@@ -428,6 +428,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       before do
         stub_kubeclient_pods(namespace)
         stub_kubeclient_deployments(namespace)
+        stub_kubeclient_ingresses(namespace)
       end
 
       it { is_expected.to include(pods: [expected_pod_cached_data]) }
@@ -437,6 +438,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       before do
         stub_kubeclient_pods(namespace, status: 500)
         stub_kubeclient_deployments(namespace, status: 500)
+        stub_kubeclient_ingresses(namespace, status: 500)
       end
 
       it { expect { subject }.to raise_error(Kubeclient::HttpError) }
@@ -446,6 +448,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       before do
         stub_kubeclient_pods(namespace, status: 404)
         stub_kubeclient_deployments(namespace, status: 404)
+        stub_kubeclient_ingresses(namespace, status: 404)
       end
 
       it { is_expected.to include(pods: []) }
