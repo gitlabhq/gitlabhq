@@ -8,7 +8,7 @@ MemoryKiller applies the same approach to the Sidekiq processes used by GitLab
 to process background jobs.
 
 Unlike puma-worker-killer, which is enabled by default for all GitLab
-installations since GitLab 13.0, the Sidekiq MemoryKiller is enabled by default
+installations of GitLab 13.0 and later, the Sidekiq MemoryKiller is enabled by default
 _only_ for Omnibus packages. The reason for this is that the MemoryKiller
 relies on runit to restart Sidekiq after a memory-induced shutdown and GitLab
 installations from source do not all use runit or an equivalent.

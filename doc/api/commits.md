@@ -614,7 +614,7 @@ Example response:
 
 ## Commit status
 
-Since GitLab 8.1, this is the new commit status API.
+In GitLab 8.1 and later, this is the new commit status API.
 
 ### List the statuses of a commit
 

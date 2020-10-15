@@ -51,7 +51,7 @@ A to do item appears on your To-Do List when:
   - You're the author.
   - You're the user that set the merge request to automatically merge after a
     pipeline succeeds.
-- [Since GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136), a
+- [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136) and later, a
   merge request is removed from a
   [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md),
   and you're the user that added it. **(PREMIUM)**

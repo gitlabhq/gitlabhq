@@ -2,7 +2,7 @@
 
 module API
   module Ci
-    class Pipelines < Grape::API::Instance
+    class Pipelines < ::API::Base
       include PaginationParams
 
       before { authenticate_non_get! }

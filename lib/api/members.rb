@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Members < Grape::API::Instance
+  class Members < ::API::Base
     include PaginationParams
 
     before { authenticate! }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Releases < Grape::API::Instance
+  class Releases < ::API::Base
     include PaginationParams
 
     RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS

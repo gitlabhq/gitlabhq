@@ -438,7 +438,7 @@ instance and project. In addition, all admins can use the admin interface under
 
 1. Only if the job was:
    - Triggered by the user
-   - [Since GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069), not run for a protected branch
+   - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later, not run for a protected branch
 
 ### Job permissions
 
@@ -485,7 +485,7 @@ for details about the pipelines security model.
 
 ## LDAP users permissions
 
-Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
+In GitLab 8.15 and later, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases

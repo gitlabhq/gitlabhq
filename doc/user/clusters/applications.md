@@ -63,7 +63,7 @@ supported by GitLab before installing any of the applications.
 
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
-> - [Uses a local Tiller](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) since GitLab 13.2.
+> - [Uses a local Tiller](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 and later.
 
 [Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
 used to install the GitLab-managed apps. GitLab runs each `helm` command

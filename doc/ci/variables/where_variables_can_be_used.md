@@ -38,14 +38,13 @@ There are two places defined variables can be used. On the:
 
 ### `config.toml` file
 
-NOTE: **Note:**
-You can read more about `config.toml` in the [GitLab Runner docs](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
-
 | Definition                           | Can be expanded? | Description                                                                                                                                  |
 |:-------------------------------------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
 | `runners.environment`                | yes              | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `runners.kubernetes.pod_labels`      | yes              | The Variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `runners.kubernetes.pod_annotations` | yes              | The Variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
+
+You can read more about `config.toml` in the [GitLab Runner docs](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
 ## Expansion mechanisms
 
@@ -104,10 +103,6 @@ These restrictions are because `after_script` scripts are executed in a
 
 ## Persisted variables
 
-NOTE: **Note:**
-Some of the persisted variables contain tokens and cannot be used by some definitions
-due to security reasons.
-
 The following variables are known as "persisted":
 
 - `CI_PIPELINE_ID`
@@ -129,6 +124,9 @@ They are:
 - Not supported:
   - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
   - In the `only` and `except` [variables expressions](README.md#environment-variables-expressions).
+
+Some of the persisted variables contain tokens and cannot be used by some definitions
+due to security reasons.
 
 ## Variables with an environment scope
 

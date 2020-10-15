@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Badges < Grape::API::Instance
+  class Badges < ::API::Base
     include PaginationParams
 
     before { authenticate_non_get! }

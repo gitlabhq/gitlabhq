@@ -349,7 +349,7 @@ RSpec.describe Projects::BlobController do
     end
 
     it_behaves_like 'tracking unique hll events', :track_editor_edit_actions do
-      subject { put :update, params: default_params, format: format }
+      subject(:request) { put :update, params: default_params }
 
       let(:target_id) { 'g_edit_by_sfe' }
       let(:expected_type) { instance_of(Integer) }
@@ -465,7 +465,7 @@ RSpec.describe Projects::BlobController do
     end
 
     it_behaves_like 'tracking unique hll events', :track_editor_edit_actions do
-      subject { post :create, params: default_params, format: format }
+      subject(:request) { post :create, params: default_params }
 
       let(:target_id) { 'g_edit_by_sfe' }
       let(:expected_type) { instance_of(Integer) }

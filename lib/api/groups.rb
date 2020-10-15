@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Groups < Grape::API::Instance
+  class Groups < ::API::Base
     include PaginationParams
     include Helpers::CustomAttributes
 

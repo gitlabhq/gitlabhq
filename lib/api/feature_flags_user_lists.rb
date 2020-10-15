@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class FeatureFlagsUserLists < Grape::API::Instance
+  class FeatureFlagsUserLists < ::API::Base
     include PaginationParams
 
     error_formatter :json, -> (message, _backtrace, _options, _env, _original_exception) {

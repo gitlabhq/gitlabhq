@@ -243,7 +243,7 @@ Some variables are listed in the UI so you can choose them more quickly.
 | `AWS_DEFAULT_REGION`    | Any                                                | 12.10         |
 | `AWS_SECRET_ACCESS_KEY` | Any                                                | 12.10         |
 
-NOTE: **Note:**
+CAUTION: **Caution:**
 When you store credentials, there are security implications. If you are using AWS keys,
 for example, follow their [best practices](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
 
@@ -371,9 +371,6 @@ export GITLAB_USER_ID="42"
 
 ## `.gitlab-ci.yml` defined variables
 
-NOTE: **Note:**
-This feature requires GitLab Runner 0.5.0 or higher and GitLab 7.14 or higher.
-
 You can add variables that are set in the build environment to `.gitlab-ci.yml`.
 These variables are saved in the repository, and they
 are meant to store non-sensitive project configuration, like `RAILS_ENV` or
@@ -437,8 +434,7 @@ Once you set them, they are available for all subsequent pipelines. Any group-le
 
 Instance variables are useful for no longer needing to manually enter the same credentials repeatedly for all your projects. Instance-level variables are available to all projects and groups on the instance.
 
-NOTE: **Note:**
-The maximum number of instance-level variables is [planned to be 25](https://gitlab.com/gitlab-org/gitlab/-/issues/216097).
+In GitLab 13.1 and later, the [maximum number of instance-level variables is 25](https://gitlab.com/gitlab-org/gitlab/-/issues/216097).
 
 You can define instance-level variables via the UI or [API](../../api/instance_level_ci_variables.md).
 
@@ -448,7 +444,7 @@ To add an instance-level variable:
 1. Click the **Add variable** button, and fill in the details:
 
    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
-   - **Value**: [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028), 10,000 characters allowed. This is also bounded by the limits of the selected runner operating system. In GitLab 13.0 to 13.2, 700 characters allowed.
+   - **Value**: [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028), 10,000 characters allowed. This is also bounded by the limits of the selected runner operating system. In GitLab 13.0 to 13.2, 700 characters allowed.
    - **Type**: `File` or `Variable`.
    - **Protect variable** (Optional): If selected, the variable is only available in pipelines that run on protected branches or tags.
    - **Mask variable** (Optional): If selected, the variable's **Value** is not shown in job logs. The variable is not saved if the value does not meet the [masking requirements](#masked-variable-requirements).

@@ -143,7 +143,6 @@ Now, let's clone our repository on the server just to make sure the `deployer` u
 git clone git@gitlab.example.com:<USERNAME>/laravel-sample.git
 ```
 
-NOTE: **Note:**
 Answer **yes** if asked `Are you sure you want to continue connecting (yes/no)?`.
 It adds GitLab.com to the known hosts.
 
@@ -167,7 +166,6 @@ server {
 }
 ```
 
-NOTE: **Note:**
 You may replace the app's name in `/var/www/app/current/public` with the folder name of your application.
 
 ## Setting up Envoy
@@ -441,7 +439,9 @@ On your GitLab project repository navigate to the **Registry** tab.
 
 You may need to enable the Container Registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
 
-To start using Container Registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password:
+To start using Container Registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password.
+Make sure you have [Docker](https://docs.docker.com/engine/installation/) installed on our machine,
+then run the following commands:
 
 ```shell
 docker login registry.gitlab.com
@@ -455,14 +455,10 @@ docker build -t registry.gitlab.com/<USERNAME>/laravel-sample .
 docker push registry.gitlab.com/<USERNAME>/laravel-sample
 ```
 
-NOTE: **Note:**
-To run the above commands, we first need to have [Docker](https://docs.docker.com/engine/installation/) installed on our machine.
-
 Congratulations! You just pushed the first Docker image to the GitLab Registry, and if you refresh the page you should be able to see it:
 
 ![container registry page with image](img/container_registry_page_with_image.jpg)
 
-NOTE: **Note:**
 You can also [use GitLab CI/CD](https://about.gitlab.com/blog/2016/05/23/gitlab-container-registry/#use-with-gitlab-ci) to build and push your Docker images, rather than doing that on your machine.
 
 We'll use this image further down in the `.gitlab-ci.yml` configuration file to handle the process of testing and deploying our app.
@@ -542,7 +538,6 @@ services:
 ...
 ```
 
-NOTE: **Note:**
 If you wish to test your app with different PHP versions and [database management systems](../../services/README.md), you can define different `image` and `services` keywords for each test job.
 
 #### Variables

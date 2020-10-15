@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class UsageData < Grape::API::Instance
+  class UsageData < ::API::Base
     before { authenticate! }
 
     namespace 'usage_data' do

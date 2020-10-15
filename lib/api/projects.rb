@@ -3,7 +3,7 @@
 require_dependency 'declarative_policy'
 
 module API
-  class Projects < Grape::API::Instance
+  class Projects < ::API::Base
     include PaginationParams
     include Helpers::CustomAttributes
 

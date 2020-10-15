@@ -272,7 +272,7 @@ action doesn't delete blobs. To delete them and recycle disk space,
 [run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
 
 NOTE: **Note:**
-Since GitLab 12.4, individual tags are deleted.
+In GitLab 12.4 and later, individual tags are deleted.
 For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/15737).
 
 Examples:

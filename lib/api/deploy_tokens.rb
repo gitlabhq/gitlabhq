@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class DeployTokens < Grape::API::Instance
+  class DeployTokens < ::API::Base
     include PaginationParams
 
     helpers do

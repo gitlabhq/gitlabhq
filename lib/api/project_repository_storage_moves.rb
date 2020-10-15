@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectRepositoryStorageMoves < Grape::API::Instance
+  class ProjectRepositoryStorageMoves < ::API::Base
     include PaginationParams
 
     before { authenticated_as_admin! }

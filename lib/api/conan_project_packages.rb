@@ -2,7 +2,7 @@
 
 # Conan Project-Level Package Manager Client API
 module API
-  class ConanProjectPackages < Grape::API::Instance
+  class ConanProjectPackages < ::API::Base
     params do
       requires :id, type: Integer, desc: 'The ID of a project', regexp: %r{\A[1-9]\d*\z}
     end

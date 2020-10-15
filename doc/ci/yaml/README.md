@@ -388,7 +388,7 @@ include:
 ### `include`
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
-> - Available for Starter, Premium and Ultimate since 10.6.
+> - Available for Starter, Premium, and Ultimate in GitLab 10.6 and later.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Core in 11.4.
 
 Using the `include` keyword allows the inclusion of external YAML files. This helps
@@ -541,7 +541,7 @@ Nested includes allow you to compose a set of includes.
 
 A total of 100 includes is allowed, but duplicate includes are considered a configuration error.
 
-Since [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/28212), the time limit
+In [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/28212) and later, the time limit
 for resolving all files is 30 seconds.
 
 #### Additional `includes` examples
@@ -1487,9 +1487,8 @@ job:
         - spec/**.rb
 ```
 
-NOTE: **Note:**
-For performance reasons, using `exists` with patterns is limited to 10000
-checks. After the 10000th check, rules with patterned globs always match.
+For performance reasons, using `exists` with patterns is limited to 10,000
+checks. After the 10,000th check, rules with patterned globs always match.
 
 #### `rules:allow_failure`
 
@@ -2093,7 +2092,7 @@ To disable directed acyclic graphs (DAG), set the limit to `0`.
 
 When using `needs`, artifact downloads are controlled with `artifacts: true` (default) or `artifacts: false`.
 
-Since GitLab 12.6, you can't combine the [`dependencies`](#dependencies) keyword
+In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
 with `needs` to control artifact downloads in jobs. `dependencies` is still valid
 in jobs that do not use `needs`.
 
@@ -3627,7 +3626,7 @@ You can use this keyword to create two different types of downstream pipelines:
 - [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
 - [Child pipelines](../parent_child_pipelines.md)
 
-[In GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
+[In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) and later, you can
 view which job triggered a downstream pipeline. In the [pipeline graph](../pipelines/index.md#visualize-pipelines),
 hover over the downstream pipeline job.
 
@@ -4378,7 +4377,7 @@ the following stages:
 | Variable                          | Description                                            |
 |-----------------------------------|--------------------------------------------------------|
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**    | Number of attempts to download artifacts running a job |
-| **EXECUTOR_JOB_SECTION_ATTEMPTS** | [Since GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450), the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
+| **EXECUTOR_JOB_SECTION_ATTEMPTS** | [In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) and later, the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
 | **GET_SOURCES_ATTEMPTS**          | Number of attempts to fetch sources running a job      |
 | **RESTORE_CACHE_ATTEMPTS**        | Number of attempts to restore the cache running a job  |
 

@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Terraform state administration (alpha)
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 12.10.

@@ -70,7 +70,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a new instance-level variable.
 
-[Since GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/216097), the maximum number of allowed instance-level variables can be changed.
+[In GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/216097), the maximum number of allowed instance-level variables can be changed.
 
 ```plaintext
 POST /admin/ci/variables
@@ -79,7 +79,7 @@ POST /admin/ci/variables
 | Attribute       | Type    | required | Description           |
 |-----------------|---------|----------|-----------------------|
 | `key`           | string  | yes      | The `key` of a variable. Max 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
-| `value`         | string  | yes      | The `value` of a variable. 10,000 characters allowed. [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028) |
+| `value`         | string  | yes      | The `value` of a variable. 10,000 characters allowed ([GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028)). |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 | `protected`     | boolean | no       | Whether the variable is protected. |
 | `masked`        | boolean | no       | Whether the variable is masked. |
@@ -109,7 +109,7 @@ PUT /admin/ci/variables/:key
 | Attribute       | Type    | required | Description             |
 |-----------------|---------|----------|-------------------------|
 | `key`           | string  | yes      | The `key` of a variable.   |
-| `value`         | string  | yes      | The `value` of a variable. [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028), around 10,000 characters allowed. Previously 700 characters. |
+| `value`         | string  | yes      | The `value` of a variable. 10,000 characters allowed ([GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028)). |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 | `protected`     | boolean | no       | Whether the variable is protected. |
 | `masked`        | boolean | no       | Whether the variable is masked. |

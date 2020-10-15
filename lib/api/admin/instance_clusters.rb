@@ -2,7 +2,7 @@
 
 module API
   module Admin
-    class InstanceClusters < Grape::API::Instance
+    class InstanceClusters < ::API::Base
       include PaginationParams
 
       before do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectClusters < Grape::API::Instance
+  class ProjectClusters < ::API::Base
     include PaginationParams
 
     before { authenticate! }

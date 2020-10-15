@@ -371,7 +371,7 @@ To create group links via filter:
 
 ### Overriding user permissions **(STARTER ONLY)**
 
-Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
+In GitLab [8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) and later, LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
 
 1. Go to your group's **Members** page.
 1. Select the pencil icon in the row for the user you are editing.

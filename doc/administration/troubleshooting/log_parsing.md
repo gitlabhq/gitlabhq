@@ -3,7 +3,7 @@
 We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
 but if they are not available you can still quickly parse
 [GitLab logs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26311) in JSON format
-(the default since GitLab 12.0) using [`jq`](https://stedolan.github.io/jq/).
+(the default in GitLab 12.0 and later) using [`jq`](https://stedolan.github.io/jq/).
 
 ## What is JQ?
 

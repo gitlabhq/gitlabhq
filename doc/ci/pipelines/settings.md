@@ -36,13 +36,11 @@ in `.gitlab-ci.yml`.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
 
-NOTE: **Note:**
-As of GitLab 12.0, newly created projects automatically have a default
-`git depth` value of `50`.
-
 It is possible to limit the number of changes that GitLab CI/CD fetches when cloning
-a repository. Setting a limit to `git depth` can speed up Pipelines execution. Maximum
-allowed value is `1000`.
+a repository. Setting a limit to `git depth` can speed up Pipelines execution.
+
+In GitLab 12.0 and later, newly created projects automatically have a default
+`git depth` value of `50`. The maximum allowed value is `1000`.
 
 To disable shallow clone and make GitLab CI/CD fetch all branches and tags each time,
 keep the value empty or set to `0`.
@@ -180,8 +178,7 @@ This also determines the visibility of these related features:
 - Job artifacts
 - The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
 
-NOTE: **Note:**
-Currently, job logs and artifacts are [not yet visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
+Job logs and artifacts are [not visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
 
 If **Public pipelines** is enabled (default):
 

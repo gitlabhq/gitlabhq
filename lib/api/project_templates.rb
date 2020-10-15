@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectTemplates < Grape::API::Instance
+  class ProjectTemplates < ::API::Base
     include PaginationParams
 
     TEMPLATE_TYPES = %w[dockerfiles gitignores gitlab_ci_ymls licenses metrics_dashboard_ymls issues merge_requests].freeze

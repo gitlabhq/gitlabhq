@@ -213,13 +213,13 @@ RSpec.describe ProjectsController do
           expect(assigns(:issuable_meta_data)).not_to be_nil
         end
 
-        it 'shows customize workflow page if wiki and issues are disabled' do
+        it 'shows activity page if wiki and issues are disabled' do
           project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
           get :show, params: { namespace_id: project.namespace, id: project }
 
-          expect(response).to render_template("projects/_customize_workflow")
+          expect(response).to render_template("projects/_activity")
         end
 
         it 'shows activity if enabled by user' do

@@ -7,7 +7,7 @@
 #
 module API
   module V3
-    class Github < Grape::API::Instance
+    class Github < ::API::Base
       NO_SLASH_URL_PART_REGEX = %r{[^/]+}.freeze
       ENDPOINT_REQUIREMENTS = {
         namespace: NO_SLASH_URL_PART_REGEX,

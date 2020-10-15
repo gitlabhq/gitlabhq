@@ -3,7 +3,7 @@
 require 'mime/types'
 
 module API
-  class Repositories < Grape::API::Instance
+  class Repositories < ::API::Base
     include PaginationParams
 
     helpers ::API::Helpers::HeadersHelpers

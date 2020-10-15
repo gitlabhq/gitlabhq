@@ -48,7 +48,7 @@ that the `master` branch is protected by default.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081) in GitLab 8.11.
 
-Since GitLab 8.11, we added another layer of branch protection which provides
+In GitLab 8.11 and later, we added another layer of branch protection which provides
 more granular management of protected branches. The "Developers can push"
 option was replaced by an "Allowed to push" setting which can be set to
 allow/prohibit Maintainers and/or Developers to push to a protected branch.

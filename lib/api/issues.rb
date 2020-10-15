@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Issues < Grape::API::Instance
+  class Issues < ::API::Base
     include PaginationParams
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter

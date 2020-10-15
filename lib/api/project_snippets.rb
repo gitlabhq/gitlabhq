@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectSnippets < Grape::API::Instance
+  class ProjectSnippets < ::API::Base
     include PaginationParams
 
     before { check_snippets_enabled }

@@ -2,7 +2,7 @@
 
 module API
   module Ci
-    class Runner < Grape::API::Instance
+    class Runner < ::API::Base
       helpers ::API::Helpers::Runner
 
       resource :runners do

@@ -247,7 +247,7 @@ Helm, which you can [customize](customize.md#custom-helm-chart). The application
 into the [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
-Since GitLab 11.4, [local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
+In GitLab 11.4 and later, [local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -365,7 +365,7 @@ chart to deploy the application into the
 [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
-Since GitLab 11.4, a
+In GitLab 11.4 and later, a
 [local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectPackages < Grape::API::Instance
+  class ProjectPackages < ::API::Base
     include PaginationParams
 
     before do

@@ -602,7 +602,7 @@ See the style guide on [`NOT NULL` constraints](database/not_null_constraints.md
 
 ## Adding Columns With Default Values
 
-With PostgreSQL 11 being the minimum version since GitLab 13.0, adding columns with default values has become much easier and
+With PostgreSQL 11 being the minimum version in GitLab 13.0 and later, adding columns with default values has become much easier and
 the standard `add_column` helper should be used in all cases.
 
 Before PostgreSQL 11, adding a column with a default was problematic as it would

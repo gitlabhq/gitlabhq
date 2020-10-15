@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class DebianProjectPackages < Grape::API::Instance
+  class DebianProjectPackages < ::API::Base
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

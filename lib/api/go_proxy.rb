@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module API
-  class GoProxy < Grape::API::Instance
+  class GoProxy < ::API::Base
     helpers Gitlab::Golang
     helpers ::API::Helpers::PackagesHelpers
 

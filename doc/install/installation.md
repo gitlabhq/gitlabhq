@@ -260,7 +260,7 @@ sudo gem install bundler --no-document --version '< 2'
 
 ## 3. Go
 
-Since GitLab 8.0, GitLab has several daemons written in Go. To install
+In GitLab 8.0 and later, GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
 Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
@@ -278,7 +278,7 @@ rm go1.13.5.linux-amd64.tar.gz
 
 ## 4. Node
 
-Since GitLab 8.17, GitLab requires the use of Node to compile JavaScript
+In GitLab 8.17 and later, GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
@@ -313,7 +313,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 ## 6. Database
 
 NOTE: **Note:**
-Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we [require PostgreSQL 11+](requirements.md#postgresql-requirements).
+In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 13.0 and later, we [require PostgreSQL 11+](requirements.md#postgresql-requirements).
 
 1. Install the database packages:
 

@@ -65,14 +65,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     if can?(current_user, :download_code, project)
       user_view
-    elsif user_view == "activity"
-      "activity"
-    elsif can?(current_user, :read_wiki, project)
-      "wiki"
-    elsif feature_available?(:issues, current_user)
-      "projects/issues/issues"
+    elsif user_view == 'activity'
+      'activity'
+    elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
+      'wiki'
+    elsif can?(current_user, :read_issue, project)
+      'projects/issues/issues'
     else
-      "customize_workflow"
+      'activity'
     end
   end
 
@@ -407,6 +407,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def anonymous_project_view
     if !project.empty_repo? && can?(current_user, :download_code, project)
       'files'
+    elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
+      'wiki'
+    elsif can?(current_user, :read_issue, project)
+      'projects/issues/issues'
     else
       'activity'
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class FeatureFlags < Grape::API::Instance
+  class FeatureFlags < ::API::Base
     include PaginationParams
 
     FEATURE_FLAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS

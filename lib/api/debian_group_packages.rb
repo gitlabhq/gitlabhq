@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class DebianGroupPackages < Grape::API::Instance
+  class DebianGroupPackages < ::API::Base
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end

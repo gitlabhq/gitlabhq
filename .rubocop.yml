@@ -335,7 +335,7 @@ Gitlab/Union:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
-API/GrapeAPIInstance:
+API/Base:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'

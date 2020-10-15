@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GroupContainerRepositories < Grape::API::Instance
+  class GroupContainerRepositories < ::API::Base
     include PaginationParams
 
     helpers ::API::Helpers::PackagesHelpers

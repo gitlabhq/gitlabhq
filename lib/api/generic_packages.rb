@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GenericPackages < Grape::API::Instance
+  class GenericPackages < ::API::Base
     GENERIC_PACKAGES_REQUIREMENTS = {
       package_name: API::NO_SLASH_URL_PART_REGEX,
       file_name: API::NO_SLASH_URL_PART_REGEX

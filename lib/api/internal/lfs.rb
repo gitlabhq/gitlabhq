@@ -2,7 +2,7 @@
 
 module API
   module Internal
-    class Lfs < Grape::API::Instance
+    class Lfs < ::API::Base
       use Rack::Sendfile
 
       before { authenticate_by_gitlab_shell_token! }

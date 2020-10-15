@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectHooks < Grape::API::Instance
+  class ProjectHooks < ::API::Base
     include PaginationParams
 
     before { authenticate! }

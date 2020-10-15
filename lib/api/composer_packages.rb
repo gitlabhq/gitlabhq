@@ -2,7 +2,7 @@
 
 # PHP composer support (https://getcomposer.org/)
 module API
-  class ComposerPackages < Grape::API::Instance
+  class ComposerPackages < ::API::Base
     helpers ::API::Helpers::PackagesManagerClientsHelpers
     helpers ::API::Helpers::RelatedResourcesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class IssueLinks < Grape::API::Instance
+  class IssueLinks < ::API::Base
     include PaginationParams
 
     before { authenticate! }

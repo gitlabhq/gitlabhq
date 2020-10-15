@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Labels < Grape::API::Instance
+  class Labels < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::LabelHelpers
 

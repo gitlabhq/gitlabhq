@@ -2,7 +2,7 @@
 
 module API
   # Snippets API
-  class Snippets < Grape::API::Instance
+  class Snippets < ::API::Base
     include PaginationParams
 
     resource :snippets do

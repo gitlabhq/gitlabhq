@@ -2,7 +2,7 @@
 
 module API
   # External applications API
-  class Applications < Grape::API::Instance
+  class Applications < ::API::Base
     before { authenticated_as_admin! }
 
     resource :applications do

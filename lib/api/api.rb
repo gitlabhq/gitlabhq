@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class API < Grape::API::Instance
+  class API < ::API::Base
     include APIGuard
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")

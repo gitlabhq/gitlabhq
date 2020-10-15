@@ -10,7 +10,7 @@ type: reference
 
 > Introduced in GitLab 8.8.
 
-NOTE: **Tip:**
+TIP: **Tip:**
 Watch the
 ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to see a comprehensive demo of a GitLab CI/CD pipeline.
@@ -101,8 +101,8 @@ you can filter the pipeline list by:
 
 - Trigger author
 - Branch name
-- Status ([since GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
-- Tag ([since GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
+- Status ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
+- Tag ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
 
 ### Run a pipeline manually
 
@@ -114,7 +114,7 @@ operation of the pipeline.
 To execute a pipeline manually:
 
 1. Navigate to your project's **CI/CD > Pipelines**.
-1. Click on the **Run Pipeline** button.
+1. Select the **Run Pipeline** button.
 1. On the **Run Pipeline** page:
     1. Select the branch to run the pipeline for in the **Create for** field.
     1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
@@ -495,7 +495,6 @@ and their statuses.
 Pipeline graphs can be displayed in two different ways, depending on the page you
 access the graph from.
 
-NOTE: **Note:**
 GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### Regular pipeline graphs

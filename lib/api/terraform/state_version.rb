@@ -2,7 +2,7 @@
 
 module API
   module Terraform
-    class StateVersion < Grape::API::Instance
+    class StateVersion < ::API::Base
       default_format :json
 
       before do

@@ -6,7 +6,7 @@
 # called by the PyPI package manager client when users run commands
 # like `pip install` or `twine upload`.
 module API
-  class PypiPackages < Grape::API::Instance
+  class PypiPackages < ::API::Base
     helpers ::API::Helpers::PackagesManagerClientsHelpers
     helpers ::API::Helpers::RelatedResourcesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers

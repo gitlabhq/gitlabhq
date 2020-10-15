@@ -93,7 +93,7 @@ When running Gitaly on its own server, note the following regarding GitLab versi
   NFS. To use Elasticsearch in these versions, the
   [repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
   must be enabled in your GitLab configuration.
-- [Since GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/6481), the new indexer is
+- [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/6481), the new indexer is
   the default and no configuration is required.
 
 ### Network architecture

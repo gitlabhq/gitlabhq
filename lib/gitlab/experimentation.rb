@@ -68,6 +68,9 @@ module Gitlab
       },
       group_only_trials: {
         tracking_category: 'Growth::Conversion::Experiment::GroupOnlyTrials'
+      },
+      default_to_issues_board: {
+        tracking_category: 'Growth::Conversion::Experiment::DefaultToIssuesBoard'
       }
     }.freeze
 

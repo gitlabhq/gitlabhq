@@ -183,7 +183,7 @@ RSpec.describe SearchController do
       end
 
       it_behaves_like 'tracking unique hll events', :search_track_unique_users do
-        subject { get :show, params: { scope: 'projects', search: 'term' }, format: format }
+        subject(:request) { get :show, params: { scope: 'projects', search: 'term' } }
 
         let(:target_id) { 'i_search_total' }
         let(:expected_type) { instance_of(String) }

@@ -892,7 +892,7 @@ you can monitor the behavior of your app running in each environment. For the mo
 dashboard to appear, you need to Configure Prometheus to collect at least one
 [supported metric](../../user/project/integrations/prometheus_library/index.md).
 
-Since GitLab 9.2, all deployments to an environment are shown directly on the monitoring dashboard.
+In GitLab 9.2 and later, all deployments to an environment are shown directly on the monitoring dashboard.
 
 Once configured, GitLab will attempt to retrieve [supported performance metrics](../../user/project/integrations/prometheus_library/index.md)
 for any environment that has had a successful deployment. If monitoring data was
@@ -956,7 +956,7 @@ session and even a multiplexer like `screen` or `tmux`.
 
 ### Check out deployments locally
 
-Since GitLab 8.13, a reference in the Git repository is saved for each deployment, so
+In GitLab 8.13 and later, a reference in the Git repository is saved for each deployment, so
 knowing the state of your current environments is only a `git fetch` away.
 
 In your Git configuration, append the `[remote "<your-remote>"]` block with an extra
