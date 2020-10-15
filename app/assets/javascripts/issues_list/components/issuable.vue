@@ -351,7 +351,7 @@ export default {
             :class="{ cred: isOverdue }"
             :title="__('Due date')"
           >
-            <i class="fa fa-calendar"></i>
+            <gl-icon name="calendar" />
             {{ dueDateWords }}
           </span>
 

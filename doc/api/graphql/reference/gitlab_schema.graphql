@@ -115,6 +115,11 @@ input AdminSidekiqQueuesDeleteJobsInput {
   clientMutationId: String
 
   """
+  Delete jobs matching feature_category in the context metadata
+  """
+  featureCategory: String
+
+  """
   Delete jobs matching project in the context metadata
   """
   project: String

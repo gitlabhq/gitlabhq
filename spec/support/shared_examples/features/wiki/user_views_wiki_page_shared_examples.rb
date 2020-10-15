@@ -55,7 +55,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       first(:link, text: 'three').click
 
-      expect(find('.nav-text')).to have_content('three')
+      expect(find('[data-testid="wiki_page_title"]')).to have_content('three')
 
       click_on('Edit')
 
@@ -208,7 +208,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'preserves the special characters' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_css('.wiki-page-title', text: title)
+      expect(page).to have_css('[data-testid="wiki_page_title"]', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
     end
   end
@@ -223,7 +223,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'safely displays the page' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_css('.wiki-page-title', text: title)
+      expect(page).to have_selector('[data-testid="wiki_page_title"]', text: title)
       expect(page).to have_content('foo bar')
     end
   end

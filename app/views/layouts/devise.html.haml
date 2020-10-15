@@ -14,7 +14,7 @@
           .row.mt-3
             .col-sm-12
               %h1.mb-3.font-weight-normal
-                = brand_title
+                = current_appearance&.title.presence || "GitLab"
           .row.mb-3
             .col-sm-7.order-12.order-sm-1.brand-holder
               = brand_image
@@ -26,6 +26,9 @@
 
                 %p
                   = _('GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.')
+
+                %p
+                  = _('This is a self-managed instance of GitLab.')
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)

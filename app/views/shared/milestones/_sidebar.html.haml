@@ -32,7 +32,8 @@
 
     .block.due_date
       .sidebar-collapsed-icon
-        = icon('calendar', 'aria-hidden': 'true')
+        %span{ 'aria-hidden': 'true' }
+          = sprite_icon('calendar')
         %span.collapsed-milestone-date
           - if milestone.start_date && milestone.due_date
             - if milestone.start_date.year == milestone.due_date.year

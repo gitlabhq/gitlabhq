@@ -4,7 +4,7 @@ import mutations from '~/releases/stores/modules/list/mutations';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import { parseIntPagination, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
-import { convertGraphQLResponse } from '~/releases/util';
+import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];
@@ -22,7 +22,7 @@ describe('Releases Store Mutations', () => {
   beforeEach(() => {
     stateCopy = createState({});
     restPageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
-    graphQlPageInfo = convertGraphQLResponse(graphqlReleasesResponse).paginationInfo;
+    graphQlPageInfo = convertAllReleasesGraphQLResponse(graphqlReleasesResponse).paginationInfo;
     releases = convertObjectPropsToCamelCase(originalReleases, { deep: true });
   });
 

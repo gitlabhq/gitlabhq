@@ -30,7 +30,7 @@
     .table-mobile-header{ role: 'rowheader' }= _('Creation date')
     .table-mobile-content
       %p.finished-at
-        = icon("calendar")
+        = sprite_icon("calendar")
         %span= time_ago_with_tooltip(artifact.created_at)
 
   .table-section.section-20
@@ -38,7 +38,7 @@
     .table-mobile-content
       - if artifact.expire_at
         %p.finished-at
-          = icon("calendar")
+          = sprite_icon("calendar")
           %span= time_ago_with_tooltip(artifact.expire_at)
 
   .table-section.section-10

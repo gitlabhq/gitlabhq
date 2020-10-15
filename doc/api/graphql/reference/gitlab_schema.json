@@ -382,6 +382,16 @@
               "defaultValue": null
             },
             {
+              "name": "featureCategory",
+              "description": "Delete jobs matching feature_category in the context metadata",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "queueName",
               "description": "The name of the queue to delete jobs from",
               "type": {

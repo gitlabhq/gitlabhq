@@ -7,6 +7,19 @@
   table {
     @include gl-text-gray-500;
 
+    tbody {
+      tr {
+        // TODO replace with gitlab/ui utilities: https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1791
+        &:hover {
+          border-top-style: double;
+
+          td {
+            border-bottom-style: initial;
+          }
+        }
+      }
+    }
+
     tr {
       &:focus {
         outline: none;

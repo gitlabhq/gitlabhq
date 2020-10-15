@@ -38,7 +38,6 @@ const getDefaultProps = () => ({
       ],
     },
   ],
-  csrfToken: 'fakeToken',
 });
 
 describe('Feature flag table', () => {
@@ -48,6 +47,9 @@ describe('Feature flag table', () => {
   const createWrapper = (propsData, opts = {}) => {
     wrapper = shallowMount(FeatureFlagsTable, {
       propsData,
+      provide: {
+        csrfToken: 'fakeToken',
+      },
       ...opts,
     });
   };
@@ -220,7 +222,9 @@ describe('Feature flag table', () => {
           },
         ],
       };
-      createWrapper(newVersionProps, { provide: { glFeatures: { featureFlagsNewVersion: true } } });
+      createWrapper(newVersionProps, {
+        provide: { csrfToken: 'fakeToken', glFeatures: { featureFlagsNewVersion: true } },
+      });
 
       badges = wrapper.findAll('[data-testid="strategy-badge"]');
     });

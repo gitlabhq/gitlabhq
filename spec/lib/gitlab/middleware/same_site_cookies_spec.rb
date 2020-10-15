@@ -60,12 +60,12 @@ RSpec.describe Gitlab::Middleware::SameSiteCookies do
       end
 
       context 'with no cookies' do
-        let(:cookies) { "" }
+        let(:cookies) { nil }
 
         it 'does not add headers' do
           response = do_request
 
-          expect(response['Set-Cookie']).to eq("")
+          expect(response['Set-Cookie']).to be_nil
         end
       end
 

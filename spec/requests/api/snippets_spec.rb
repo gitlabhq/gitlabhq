@@ -132,7 +132,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
   end
 
   describe 'GET /snippets/:id/files/:ref/:file_path/raw' do
-    let(:snippet) { private_snippet }
+    let_it_be(:snippet) { private_snippet }
 
     it_behaves_like 'raw snippet files' do
       let(:api_path) { "/snippets/#{snippet_id}/files/#{ref}/#{file_path}/raw" }

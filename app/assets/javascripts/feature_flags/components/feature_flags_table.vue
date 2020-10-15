@@ -18,15 +18,12 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    csrfToken: {
-      type: String,
-      required: true,
-    },
     featureFlags: {
       type: Array,
       required: true,
     },
   },
+  inject: ['csrfToken'],
   data() {
     return {
       deleteFeatureFlagUrl: null,

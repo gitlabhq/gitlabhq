@@ -8,7 +8,7 @@ import {
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
-import { gqClient, convertGraphQLResponse } from '../../../util';
+import { gqClient, convertAllReleasesGraphQLResponse } from '../../../util';
 import { PAGE_SIZE } from '../../../constants';
 
 /**
@@ -64,7 +64,7 @@ export const fetchReleasesGraphQl = (
       },
     })
     .then(response => {
-      const { data, paginationInfo: graphQlPageInfo } = convertGraphQLResponse(response);
+      const { data, paginationInfo: graphQlPageInfo } = convertAllReleasesGraphQLResponse(response);
 
       commit(types.RECEIVE_RELEASES_SUCCESS, {
         data,

@@ -39,6 +39,17 @@ module JavaScriptFixturesHelpers
     Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
   end
 
+  # Public: Reads a GraphQL query from the filesystem as a string
+  #
+  # query_path - file path to the GraphQL query, relative to `app/assets/javascripts`
+  # fragment_paths - an optional array of file paths to any fragments the query uses,
+  #                  also relative to `app/assets/javascripts`
+  def get_graphql_query_as_string(query_path, fragment_paths = [])
+    [query_path, *fragment_paths].map do |path|
+      File.read(File.join(Rails.root, '/app/assets/javascripts', path))
+    end.join("\n")
+  end
+
   private
 
   # Private: Store a response object as fixture file

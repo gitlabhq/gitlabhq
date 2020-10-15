@@ -338,7 +338,7 @@ RSpec.describe Admin::UsersController do
 
   describe 'POST update' do
     context 'when the password has changed' do
-      def update_password(user, password = User.random_password, password_confirmation = password, format = :html)
+      def update_password(user, password = User.random_password, password_confirmation = password)
         params = {
           id: user.to_param,
           user: {
@@ -347,7 +347,7 @@ RSpec.describe Admin::UsersController do
           }
         }
 
-        post :update, params: params, format: format
+        post :update, params: params
       end
 
       context 'when admin changes their own password' do
@@ -444,23 +444,6 @@ RSpec.describe Admin::UsersController do
         it 'does not update the password' do
           expect { update_password(user, password, password_confirmation) }
             .not_to change { user.reload.encrypted_password }
-        end
-      end
-
-      context 'when the update fails' do
-        let(:password) { User.random_password }
-
-        before do
-          expect_next_instance_of(Users::UpdateService) do |service|
-            allow(service).to receive(:execute).and_return({ message: 'failed', status: :error })
-          end
-        end
-
-        it 'returns a 500 error' do
-          expect { update_password(admin, password, password, :json) }
-            .not_to change { admin.reload.password_expired? }
-
-          expect(response).to have_gitlab_http_status(:error)
         end
       end
     end

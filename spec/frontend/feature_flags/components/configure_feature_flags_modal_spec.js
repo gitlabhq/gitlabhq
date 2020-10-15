@@ -8,12 +8,12 @@ describe('Configure Feature Flags Modal', () => {
   const provide = {
     projectName: 'fakeProjectName',
     featureFlagsHelpPagePath: '/help/path',
+    featureFlagsClientLibrariesHelpPagePath: '/help/path/#flags',
+    featureFlagsClientExampleHelpPagePath: '/feature-flags#clientexample',
+    unleashApiUrl: '/api/url',
   };
 
   const propsData = {
-    helpClientLibrariesPath: '/help/path/#flags',
-    helpClientExamplePath: '/feature-flags#clientexample',
-    apiUrl: '/api/url',
     instanceId: 'instance-id-token',
     isRotating: false,
     hasRotateError: false,
@@ -82,7 +82,7 @@ describe('Configure Feature Flags Modal', () => {
         provide.featureFlagsHelpPagePath,
       );
       expect(wrapper.find('[data-testid="help-client-link"]').attributes('href')).toBe(
-        propsData.helpClientLibrariesPath,
+        provide.featureFlagsClientLibrariesHelpPagePath,
       );
     });
 

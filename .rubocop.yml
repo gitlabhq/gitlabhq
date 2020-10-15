@@ -371,6 +371,12 @@ Graphql/GIDExpectedType:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Graphql/IDType:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+
 Graphql/JSONType:
   Enabled: true
   Include:

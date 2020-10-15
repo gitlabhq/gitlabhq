@@ -21,7 +21,6 @@ localVue.use(Vuex);
 describe('Feature flags', () => {
   const mockData = {
     canUserConfigure: true,
-    // canUserRotateToken: true,
     csrfToken: 'testToken',
     featureFlagsClientExampleHelpPagePath: '/help/feature-flags#client-example',
     featureFlagsClientLibrariesHelpPagePath: '/help/feature-flags#unleash-clients',
@@ -31,6 +30,8 @@ describe('Feature flags', () => {
     newFeatureFlagPath: 'feature-flags/new',
     newUserListPath: '/user-list/new',
     unleashApiUrl: `${TEST_HOST}/api/unleash`,
+    projectName: 'fakeProjectName',
+    errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
   };
 
   const mockState = {
@@ -43,17 +44,12 @@ describe('Feature flags', () => {
   let mock;
   let store;
 
-  const factory = (propsData = mockData, fn = shallowMount) => {
+  const factory = (provide = mockData, fn = shallowMount) => {
     store = createStore(mockState);
     wrapper = fn(FeatureFlagsComponent, {
       localVue,
       store,
-      propsData,
-      provide: {
-        projectName: 'fakeProjectName',
-        errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
-        featureFlagsHelpPagePath: '/help/feature-flags',
-      },
+      provide,
       stubs: {
         FeatureFlagsTab,
       },
@@ -87,13 +83,13 @@ describe('Feature flags', () => {
   });
 
   describe('when limit exceeded', () => {
-    const propsData = { ...mockData, featureFlagsLimitExceeded: true };
+    const provideData = { ...mockData, featureFlagsLimitExceeded: true };
 
     beforeEach(done => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});
-      factory(propsData);
+      factory(provideData);
       setImmediate(done);
     });
 
@@ -130,7 +126,7 @@ describe('Feature flags', () => {
   });
 
   describe('without permissions', () => {
-    const propsData = {
+    const provideData = {
       ...mockData,
       canUserConfigure: false,
       canUserRotateToken: false,
@@ -142,7 +138,7 @@ describe('Feature flags', () => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});
-      factory(propsData);
+      factory(provideData);
       setImmediate(done);
     });
 

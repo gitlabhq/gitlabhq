@@ -116,19 +116,29 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     end
   end
 
-  graphql_query_path = 'releases/queries/all_releases.query.graphql'
-
-  describe "~/#{graphql_query_path}", type: :request do
+  describe GraphQL::Query, type: :request do
     include GraphqlHelpers
+
+    all_releases_query_path = 'releases/queries/all_releases.query.graphql'
+    one_release_query_path = 'releases/queries/one_release.query.graphql'
+    fragment_paths = ['releases/queries/release.fragment.graphql']
 
     before(:all) do
       clean_frontend_fixtures('graphql/releases/')
     end
 
-    it "graphql/#{graphql_query_path}.json" do
-      query = File.read(File.join(Rails.root, '/app/assets/javascripts', graphql_query_path))
+    it "graphql/#{all_releases_query_path}.json" do
+      query = get_graphql_query_as_string(all_releases_query_path, fragment_paths)
 
       post_graphql(query, current_user: admin, variables: { fullPath: project.full_path })
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "graphql/#{one_release_query_path}.json" do
+      query = get_graphql_query_as_string(one_release_query_path, fragment_paths)
+
+      post_graphql(query, current_user: admin, variables: { fullPath: project.full_path, tagName: release.tag })
 
       expect_graphql_errors_to_be_empty
     end

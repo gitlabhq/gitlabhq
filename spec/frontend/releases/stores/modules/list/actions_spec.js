@@ -10,7 +10,7 @@ import {
 import createState from '~/releases/stores/modules/list/state';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import api from '~/api';
-import { gqClient, convertGraphQLResponse } from '~/releases/util';
+import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
 import {
   normalizeHeaders,
   parseIntPagination,
@@ -164,7 +164,7 @@ describe('Releases State actions', () => {
       });
 
       it(`commits ${types.REQUEST_RELEASES} and ${types.RECEIVE_RELEASES_SUCCESS}`, () => {
-        const convertedResponse = convertGraphQLResponse(graphqlReleasesResponse);
+        const convertedResponse = convertAllReleasesGraphQLResponse(graphqlReleasesResponse);
 
         return testAction(
           fetchReleasesGraphQl,

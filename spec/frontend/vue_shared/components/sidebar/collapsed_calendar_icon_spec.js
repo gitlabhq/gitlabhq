@@ -18,7 +18,7 @@ describe('collapsedCalendarIcon', () => {
   });
 
   it('should hide calendar icon if showIcon', () => {
-    expect(vm.$el.querySelector('.fa-calendar')).toBeNull();
+    expect(vm.$el.querySelector('[data-testid="calendar-icon"]')).toBeNull();
   });
 
   it('should render text', () => {

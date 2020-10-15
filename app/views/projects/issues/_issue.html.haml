@@ -35,7 +35,7 @@
           - if issue.due_date
             %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
               &nbsp;
-              = icon('calendar')
+              = sprite_icon('calendar')
               = issue.due_date.to_s(:medium)
           - if issue.labels.any?
             &nbsp;

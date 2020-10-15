@@ -172,7 +172,7 @@ gem 'diffy', '~> 3.3'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.1.4'
+gem 'rack', '~> 2.0.9'
 # https://github.com/sharpstone/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.5.1', require: 'rack/timeout/base'
 
@@ -310,7 +310,7 @@ gem 'sentry-raven', '~> 3.0'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '0.12.1'
+gem 'gitlab-labkit', '0.12.2'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false

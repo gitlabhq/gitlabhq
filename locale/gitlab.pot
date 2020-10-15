@@ -26664,6 +26664,9 @@ msgstr ""
 msgid "This is a security log of important events involving your account."
 msgstr ""
 
+msgid "This is a self-managed instance of GitLab."
+msgstr ""
+
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 

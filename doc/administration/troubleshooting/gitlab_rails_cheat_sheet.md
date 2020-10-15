@@ -222,11 +222,12 @@ namespace = Namespace.find_by_full_path("")
 
 ```ruby
 # ID will be the webhook_id
-WebHookLog.where(web_hook_id: ID).each_slice(ID) do |slice|
-  slice.each(&:destroy)
-end
+hook=WebHook.find(ID)
 
-WebHook.find(ID).destroy
+WebHooks::DestroyService.new(current_user).execute(hook)
+
+#In case the service gets timeout consider removing webhook_logs
+hook.web_hook_logs.limit(BATCH_SIZE).delete_all
 ```
 
 ### Bulk update service integration password for _all_ projects
@@ -283,6 +284,16 @@ p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter y
 GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)  ### deletes the wiki project from the filesystem
 
 p.create_wiki  ### creates the wiki project on the filesystem
+```
+
+## Issue boards
+
+### In case of issue boards not loading properly and it's getting time out. We need to call the Issue Rebalancing service to fix this
+
+```ruby
+p=Project.find_by_full_path('PROJECT PATH')
+
+IssueRebalancingService.new(p.issues.take).execute
 ```
 
 ## Imports / Exports
@@ -507,6 +518,54 @@ GroupDestroyWorker.perform_async(group_id, user_id)
 # Project creation levels: 0 - No one, 1 - Maintainers, 2 - Developers + Maintainers
 group = Group.find_by_path_or_name('group-name')
 group.project_creation_level=0
+```
+
+## SCIM
+
+### Fixing bad SCIM identities
+
+```ruby
+def delete_bad_scim(email, group_path)
+    output = ""
+    u = User.find_by_email(email)
+    uid = u.id
+    g = Group.find_by_full_path(group_path)
+    saml_prov_id = SamlProvider.find_by(group_id: g.id).id
+    saml = Identity.where(user_id: uid, saml_provider_id: saml_prov_id)
+    scim = ScimIdentity.where(user_id: uid , group_id: g.id)
+    if saml[0]
+      saml_eid = saml[0].extern_uid
+      output +=  "%s," % [email]
+      output +=  "SAML: %s," % [saml_eid]
+      if scim[0]
+        scim_eid = scim[0].extern_uid
+        output += "SCIM: %s" % [scim_eid]
+        if saml_eid == scim_eid
+          output += " Identities matched, not deleted \n"
+        else
+          scim[0].destroy
+          output += " Deleted \n"
+        end
+      else
+        output = "ERROR No SCIM identify found for: [%s]\n" % [email]
+        puts output
+        return 1
+      end
+    else
+      output = "ERROR No SAML identify found for: [%s]\n" % [email]
+      puts output
+      return 1
+    end
+      puts output
+    return 0
+end
+
+# In case of multiple emails
+emails = [email1, email2]
+
+emails.each do |e|
+  delete_bad_scim(e,'GROUPPATH')
+end  
 ```
 
 ## Routes

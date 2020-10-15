@@ -271,6 +271,7 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
+    headers[Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER] = feature_category
   end
 
   def default_cache_headers
@@ -465,7 +466,8 @@ class ApplicationController < ActionController::Base
       user: -> { auth_user if strong_memoized?(:auth_user) },
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
-      caller_id: full_action_name) do
+      caller_id: caller_id,
+      feature_category: feature_category) do
       yield
     ensure
       @current_context = Labkit::Context.current.to_h
@@ -547,8 +549,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def full_action_name
+  def caller_id
     "#{self.class.name}##{action_name}"
+  end
+
+  def feature_category
+    self.class.feature_category_for_action(action_name).to_s
   end
 
   def required_signup_info

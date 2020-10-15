@@ -15,6 +15,9 @@ module Gitlab
 
       HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
 
+      FEATURE_CATEGORY_HEADER = 'X-Gitlab-Feature-Category'
+      FEATURE_CATEGORY_DEFAULT = 'unknown'
+
       def initialize(app)
         @app = app
       end
@@ -50,11 +53,13 @@ module Gitlab
         started = Time.now.to_f
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
+        feature_category = nil
 
         begin
           status, headers, body = @app.call(env)
 
           elapsed = Time.now.to_f - started
+          feature_category = headers&.fetch(FEATURE_CATEGORY_HEADER, nil)
 
           unless health_endpoint
             RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method, status: status.to_s }, elapsed)
@@ -66,9 +71,9 @@ module Gitlab
           raise
         ensure
           if health_endpoint
-            RequestsRackMiddleware.http_health_requests_total.increment(method: method, status: status)
+            RequestsRackMiddleware.http_health_requests_total.increment(status: status, method: method)
           else
-            RequestsRackMiddleware.http_request_total.increment(method: method, status: status)
+            RequestsRackMiddleware.http_request_total.increment(status: status, method: method, feature_category: feature_category || FEATURE_CATEGORY_DEFAULT)
           end
         end
       end
