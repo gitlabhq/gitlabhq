@@ -1,5 +1,5 @@
 /* eslint-disable @gitlab/require-i18n-strings */
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export const I18N = {
   errorMsg: s__('IncidentManagement|There was an error displaying the incidents.'),
@@ -7,7 +7,6 @@ export const I18N = {
   unassigned: s__('IncidentManagement|Unassigned'),
   createIncidentBtnLabel: s__('IncidentManagement|Create incident'),
   unPublished: s__('IncidentManagement|Unpublished'),
-  searchPlaceholder: __('Search or filter results…'),
   emptyState: {
     title: s__('IncidentManagement|Display your incidents in a dedicated view'),
     emptyClosedTabTitle: s__('IncidentManagement|There are no closed incidents'),
@@ -41,6 +40,14 @@ export const INCIDENT_STATUS_TABS = [
 export const trackIncidentCreateNewOptions = {
   category: 'Incident Management',
   action: 'create_incident_button_clicks',
+};
+
+/**
+ * Tracks snowplow event when user views incident list
+ */
+export const trackIncidentListViewsOptions = {
+  category: 'Incident Management',
+  action: 'view_incidents_list',
 };
 
 export const DEFAULT_PAGE_SIZE = 20;

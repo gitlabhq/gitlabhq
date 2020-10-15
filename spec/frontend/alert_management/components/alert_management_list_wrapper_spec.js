@@ -1,33 +1,18 @@
 import { shallowMount } from '@vue/test-utils';
 import AlertManagementList from '~/alert_management/components/alert_management_list_wrapper.vue';
-import { trackAlertListViewsOptions } from '~/alert_management/constants';
-import mockAlerts from '../mocks/alerts.json';
-import Tracking from '~/tracking';
+import AlertManagementEmptyState from '~/alert_management/components/alert_management_empty_state.vue';
+import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
+import defaultProvideValues from '../mocks/alerts_provide_config.json';
 
 describe('AlertManagementList', () => {
   let wrapper;
 
-  function mountComponent({
-    props = {
-      alertManagementEnabled: false,
-      userCanEnableAlertManagement: false,
-    },
-    data = {},
-    stubs = {},
-  } = {}) {
+  function mountComponent({ provide = {} } = {}) {
     wrapper = shallowMount(AlertManagementList, {
-      propsData: {
-        projectPath: 'gitlab-org/gitlab',
-        enableAlertManagementPath: '/link',
-        alertsHelpUrl: '/link',
-        populatingAlertsHelpUrl: '/help/help-page.md#populating-alert-data',
-        emptyAlertSvgPath: 'illustration/path',
-        ...props,
+      provide: {
+        ...defaultProvideValues,
+        ...provide,
       },
-      data() {
-        return data;
-      },
-      stubs,
     });
   }
 
@@ -41,18 +26,21 @@ describe('AlertManagementList', () => {
     }
   });
 
-  describe('Snowplow tracking', () => {
-    beforeEach(() => {
-      jest.spyOn(Tracking, 'event');
-      mountComponent({
-        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts } },
-      });
+  describe('Alert List Wrapper', () => {
+    it('should show the empty state when alerts are not enabled', () => {
+      expect(wrapper.find(AlertManagementEmptyState).exists()).toBe(true);
+      expect(wrapper.find(AlertManagementTable).exists()).toBe(false);
     });
 
-    it('should track alert list page views', () => {
-      const { category, action } = trackAlertListViewsOptions;
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    it('should show the alerts table when alerts are enabled', () => {
+      mountComponent({
+        provide: {
+          alertManagementEnabled: true,
+        },
+      });
+
+      expect(wrapper.find(AlertManagementEmptyState).exists()).toBe(false);
+      expect(wrapper.find(AlertManagementTable).exists()).toBe(true);
     });
   });
 });

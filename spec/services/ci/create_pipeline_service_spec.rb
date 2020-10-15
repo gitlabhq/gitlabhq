@@ -41,7 +41,9 @@ RSpec.describe Ci::CreatePipelineService do
         save_on_errors: save_on_errors,
         trigger_request: trigger_request,
         merge_request: merge_request,
-        external_pull_request: external_pull_request)
+        external_pull_request: external_pull_request) do |pipeline|
+        yield(pipeline) if block_given?
+      end
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -2271,6 +2273,108 @@ RSpec.describe Ci::CreatePipelineService do
                 expect(pipeline).not_to be_persisted
               end
             end
+          end
+        end
+      end
+
+      context 'with workflow rules with persisted variables' do
+        let(:config) do
+          <<-EOY
+            workflow:
+              rules:
+                - if: $CI_COMMIT_REF_NAME == "master"
+
+            regular-job:
+              script: 'echo Hello, World!'
+          EOY
+        end
+
+        context 'with matches' do
+          it 'creates a pipeline' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('regular-job')
+          end
+        end
+
+        context 'with no matches' do
+          let(:ref_name) { 'refs/heads/feature' }
+
+          it 'does not create a pipeline' do
+            expect(pipeline).not_to be_persisted
+          end
+        end
+      end
+
+      context 'with workflow rules with pipeline variables' do
+        let(:pipeline) do
+          execute_service(variables_attributes: variables_attributes)
+        end
+
+        let(:config) do
+          <<-EOY
+            workflow:
+              rules:
+                - if: $SOME_VARIABLE
+
+            regular-job:
+              script: 'echo Hello, World!'
+          EOY
+        end
+
+        context 'with matches' do
+          let(:variables_attributes) do
+            [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAR' }]
+          end
+
+          it 'creates a pipeline' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('regular-job')
+          end
+        end
+
+        context 'with no matches' do
+          let(:variables_attributes) { {} }
+
+          it 'does not create a pipeline' do
+            expect(pipeline).not_to be_persisted
+          end
+        end
+      end
+
+      context 'with workflow rules with trigger variables' do
+        let(:pipeline) do
+          execute_service do |pipeline|
+            pipeline.variables.build(variables)
+          end
+        end
+
+        let(:config) do
+          <<-EOY
+            workflow:
+              rules:
+                - if: $SOME_VARIABLE
+
+            regular-job:
+              script: 'echo Hello, World!'
+          EOY
+        end
+
+        context 'with matches' do
+          let(:variables) do
+            [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAR' }]
+          end
+
+          it 'creates a pipeline' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('regular-job')
+          end
+        end
+
+        context 'with no matches' do
+          let(:variables) { {} }
+
+          it 'does not create a pipeline' do
+            expect(pipeline).not_to be_persisted
           end
         end
       end

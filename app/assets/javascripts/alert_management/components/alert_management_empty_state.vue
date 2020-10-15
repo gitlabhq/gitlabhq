@@ -33,30 +33,13 @@ export default {
       query: alertsHelpUrlQuery,
     },
   },
-  props: {
-    enableAlertManagementPath: {
-      type: String,
-      required: true,
-    },
-    userCanEnableAlertManagement: {
-      type: Boolean,
-      required: true,
-    },
-    emptyAlertSvgPath: {
-      type: String,
-      required: true,
-    },
-    opsgenieMvcEnabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    opsgenieMvcTargetUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
+  inject: [
+    'enableAlertManagementPath',
+    'userCanEnableAlertManagement',
+    'emptyAlertSvgPath',
+    'opsgenieMvcEnabled',
+    'opsgenieMvcTargetUrl',
+  ],
   data() {
     return {
       alertsHelpUrl: '',

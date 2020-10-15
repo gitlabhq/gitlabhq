@@ -124,7 +124,6 @@ export default {
         class="col-8 col-md-9 gl-p-0"
         :label="$options.i18n.webhookUrl.label"
         label-for="url"
-        label-class="label-bold"
       >
         <gl-form-input-group id="url" data-testid="webhook-url" readonly :value="webhookUrl">
           <template #append>

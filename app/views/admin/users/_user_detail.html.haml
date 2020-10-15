@@ -15,3 +15,5 @@
 
       .row-second-line.str-truncated-100
         = mail_to user.email, user.email, class: 'text-secondary'
+        - unless Feature.disabled?(:security_auto_fix) || !user.internal? || user.website_url.blank?
+          = link_to "(#{_('more information')})", user.website_url

@@ -10,7 +10,7 @@
     .description-text.gl-flex-grow-1.gl-overflow-hidden
       - if label.description.present?
         = markdown_field(label, :description)
-      - elsif @project
+      - elsif show_labels_full_path?(@project, @group)
         = render 'shared/label_full_path', label: label
     %ul.label-links.gl-m-0.gl-p-0.gl-white-space-nowrap
       - if show_label_issues_link
@@ -25,6 +25,6 @@
         &middot;
         %li.js-priority-badge.inline.gl-ml-3
           .label-badge.gl-bg-blue-50= _('Prioritized label')
-  - if @project && label.description.present?
+  - if label.description.present? && show_labels_full_path?(@project, @group)
     .gl-mt-3
       = render 'shared/label_full_path', label: label

@@ -229,11 +229,7 @@ export default {
           <p class="gl-new-dropdown-header-top">
             {{ __('Assign To') }}
           </p>
-          <gl-search-box-by-type
-            v-model.trim="search"
-            class="m-2"
-            :placeholder="__('Search users')"
-          />
+          <gl-search-box-by-type v-model.trim="search" :placeholder="__('Search users')" />
           <div class="dropdown-content dropdown-body">
             <template v-if="userListValid">
               <gl-dropdown-item

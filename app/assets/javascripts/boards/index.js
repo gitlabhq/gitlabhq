@@ -87,6 +87,9 @@ export default () => {
       groupId: Number($boardApp.dataset.groupId),
       rootPath: $boardApp.dataset.rootPath,
       canUpdate: $boardApp.dataset.canUpdate,
+      labelsFetchPath: $boardApp.dataset.labelsFetchPath,
+      labelsManagePath: $boardApp.dataset.labelsManagePath,
+      labelsFilterBasePath: $boardApp.dataset.labelsFilterBasePath,
     },
     store,
     apolloProvider,
@@ -369,6 +372,10 @@ export default () => {
 
   toggleFocusMode(ModalStore, boardsStore);
   toggleLabels();
-  toggleEpicsSwimlanes();
+
+  if (gon.features?.swimlanes) {
+    toggleEpicsSwimlanes();
+  }
+
   mountMultipleBoardsSwitcher();
 };

@@ -52,7 +52,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
           </gl-dropdown-section-header-stub>
            
           <gl-search-box-by-type-stub
-            class="gl-m-3"
             clearbuttontitle="Clear"
             value=""
           />

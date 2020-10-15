@@ -376,33 +376,11 @@
 }
 
 .project-item-select-holder.btn-group {
-  display: flex;
-  overflow: hidden;
-  float: right;
-
-  .new-project-item-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .new-project-item-select-button {
-    width: 32px;
+    max-width: 44px;
   }
 }
 
 .empty-state .project-item-select-holder.btn-group {
-  float: none;
-  justify-content: center;
-
-  .btn {
-    // overrides styles applied to plain `.empty-state .btn`
-    margin: 10px 0;
-    max-width: 300px;
-    width: auto;
-
-    @include media-breakpoint-down(xs) {
-      max-width: 250px;
-    }
-  }
+  max-width: 320px;
 }

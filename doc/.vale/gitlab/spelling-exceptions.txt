@@ -61,6 +61,7 @@ buildpacks
 bundler
 bundlers
 burndown
+burnup
 cacheable
 CAS
 CentOS

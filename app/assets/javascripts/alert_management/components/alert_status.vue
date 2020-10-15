@@ -3,7 +3,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { trackAlertStatusUpdateOptions } from '../constants';
-import updateAlertStatus from '../graphql/mutations/update_alert_status.mutation.graphql';
+import updateAlertStatusMutation from '../graphql/mutations/update_alert_status.mutation.graphql';
 
 export default {
   i18n: {
@@ -50,7 +50,7 @@ export default {
       this.$emit('handle-updating', true);
       this.$apollo
         .mutate({
-          mutation: updateAlertStatus,
+          mutation: updateAlertStatusMutation,
           variables: {
             iid: this.alert.iid,
             status: status.toUpperCase(),
@@ -59,8 +59,6 @@ export default {
         })
         .then(resp => {
           this.trackStatusUpdate(status);
-          this.$emit('hide-dropdown');
-
           const errors = resp.data?.updateAlertStatus?.errors || [];
 
           if (errors[0]) {
@@ -69,6 +67,8 @@ export default {
               `${this.$options.i18n.UPDATE_ALERT_STATUS_ERROR} ${errors[0]}`,
             );
           }
+
+          this.$emit('hide-dropdown');
         })
         .catch(() => {
           this.$emit(

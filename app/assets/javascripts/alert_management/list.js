@@ -18,12 +18,12 @@ export default () => {
     populatingAlertsHelpUrl,
     alertsHelpUrl,
     opsgenieMvcTargetUrl,
+    textQuery,
+    assigneeUsernameQuery,
+    alertManagementEnabled,
+    userCanEnableAlertManagement,
+    opsgenieMvcEnabled,
   } = domEl.dataset;
-  let { alertManagementEnabled, userCanEnableAlertManagement, opsgenieMvcEnabled } = domEl.dataset;
-
-  alertManagementEnabled = parseBoolean(alertManagementEnabled);
-  userCanEnableAlertManagement = parseBoolean(userCanEnableAlertManagement);
-  opsgenieMvcEnabled = parseBoolean(opsgenieMvcEnabled);
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(
@@ -50,23 +50,24 @@ export default () => {
 
   return new Vue({
     el: selector,
+    provide: {
+      projectPath,
+      textQuery,
+      assigneeUsernameQuery,
+      enableAlertManagementPath,
+      populatingAlertsHelpUrl,
+      emptyAlertSvgPath,
+      opsgenieMvcTargetUrl,
+      alertManagementEnabled: parseBoolean(alertManagementEnabled),
+      userCanEnableAlertManagement: parseBoolean(userCanEnableAlertManagement),
+      opsgenieMvcEnabled: parseBoolean(opsgenieMvcEnabled),
+    },
     apolloProvider,
     components: {
       AlertManagementList,
     },
     render(createElement) {
-      return createElement('alert-management-list', {
-        props: {
-          projectPath,
-          enableAlertManagementPath,
-          populatingAlertsHelpUrl,
-          emptyAlertSvgPath,
-          alertManagementEnabled,
-          userCanEnableAlertManagement,
-          opsgenieMvcTargetUrl,
-          opsgenieMvcEnabled,
-        },
-      });
+      return createElement('alert-management-list');
     },
   });
 };

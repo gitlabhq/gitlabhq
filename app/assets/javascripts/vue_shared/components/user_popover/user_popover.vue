@@ -1,16 +1,27 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlIcon } from '@gitlab/ui';
+import {
+  GlPopover,
+  GlLink,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlIcon,
+} from '@gitlab/ui';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
 
 const MAX_SKELETON_LINES = 4;
+
+const SECURITY_BOT_USER_DATA = {
+  username: 'GitLab-Security-Bot',
+  name: 'GitLab Security Bot',
+};
 
 export default {
   name: 'UserPopover',
   maxSkeletonLines: MAX_SKELETON_LINES,
   components: {
     GlIcon,
+    GlLink,
     GlPopover,
     GlSkeletonLoading,
     UserAvatarImage,
@@ -42,6 +53,15 @@ export default {
     },
     userIsLoading() {
       return !this.user?.loaded;
+    },
+    isSecurityBot() {
+      const { username, name, websiteUrl = '' } = this.user;
+      return (
+        gon.features?.securityAutoFix &&
+        username === SECURITY_BOT_USER_DATA.username &&
+        name === SECURITY_BOT_USER_DATA.name &&
+        websiteUrl.length
+      );
     },
   },
 };
@@ -88,6 +108,12 @@ export default {
           </div>
           <div v-if="statusHtml" class="js-user-status gl-mt-3">
             <span v-html="statusHtml"></span>
+          </div>
+          <div v-if="isSecurityBot" class="gl-text-blue-500">
+            <gl-icon name="question" />
+            <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
+              {{ sprintf(__('Learn more about %{username}'), { username: user.name }) }}
+            </gl-link>
           </div>
         </template>
       </div>

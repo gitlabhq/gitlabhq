@@ -63,5 +63,3 @@ export const trackAlertStatusUpdateOptions = {
   action: 'update_alert_status',
   label: 'Status',
 };
-
-export const DEFAULT_PAGE_SIZE = 20;

@@ -181,7 +181,7 @@ To enable or disable the inheritance of all `variables:` or `default:` parameter
 - `variables: true` or `variables: false`
 
 To inherit only a subset of `default:` parameters or `variables:`, specify what
-you wish to inherit, and any not listed will **not** be inherited. Use
+you wish to inherit. Anything not listed is **not** inherited. Use
 one of the following formats:
 
 ```yaml
@@ -344,9 +344,9 @@ workflow:
 This example never allows pipelines for schedules or `push` (branches and tags) pipelines,
 but does allow pipelines in **all** other cases, *including* merge request pipelines.
 
-As with `rules` defined in jobs, be careful not to use a configuration that allows
-merge request pipelines and branch pipelines to run at the same time, or you could
-have [duplicate pipelines](#prevent-duplicate-pipelines).
+Be careful not to use a configuration that might run
+merge request pipelines and branch pipelines at the same time. As with `rules` defined in jobs,
+it can cause [duplicate pipelines](#prevent-duplicate-pipelines).
 
 #### `workflow:rules` templates
 
@@ -358,9 +358,9 @@ for common scenarios. These templates help prevent duplicate pipelines.
 The [`Branch-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/Branch-Pipelines.gitlab-ci.yml)
 makes your pipelines run for branches and tags.
 
-Branch pipeline status is displayed within merge requests that use that branch
-as a source, but this pipeline type does not support any features offered by
-[Merge Request Pipelines](../merge_request_pipelines/) like
+Branch pipeline status is displayed within merge requests that use the branch
+as a source. However, this pipeline type does not support any features offered by
+[Merge Request Pipelines](../merge_request_pipelines/), like
 [Pipelines for Merge Results](../merge_request_pipelines/#pipelines-for-merged-results)
 or [Merge Trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/).
 Use this template if you are intentionally avoiding those features.
@@ -1529,7 +1529,7 @@ docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - if: '$VAR == "string value"'
-      changes:  # Will include the job and set to when:manual if any of the follow paths match a modified file.
+      changes:  # Include the job and set to when:manual if any of the follow paths match a modified file.
         - Dockerfile
         - docker/scripts/*
       when: manual
@@ -1730,7 +1730,7 @@ the pipeline if the following is true:
 
 - `(any listed refs are true) AND (any listed variables are true) AND (any listed changes are true) AND (any chosen Kubernetes status matches)`
 
-In the example below, the `test` job will `only` be created when **all** of the following are true:
+In the example below, the `test` job is `only` created when **all** of the following are true:
 
 - The pipeline has been [scheduled](../pipelines/schedules.md) **or** runs for `master`.
 - The `variables` keyword matches.
@@ -1889,7 +1889,7 @@ the `docker build` job is created, but only if changes were made to any of the f
 
 CAUTION: **Warning:**
 If you use `only:changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
-undesired behavior can result if you don't [also use `only:merge_requests`](#using-onlychanges-with-pipelines-for-merge-requests).
+you should [also use `only:merge_requests`](#using-onlychanges-with-pipelines-for-merge-requests). Otherwise it may not work as expected.
 
 You can also use glob patterns to match multiple files in either the root directory
 of the repository, or in _any_ directory within the repository. However, they must be wrapped
@@ -1949,13 +1949,9 @@ docker build service one:
       - service-one/**/*
 ```
 
-In the scenario above, if a merge request is created or updated that changes
-either files in `service-one` directory or the `Dockerfile`, GitLab creates
-and triggers the `docker build service one` job.
-
-Note that if [pipelines for merge requests](../merge_request_pipelines/index.md) is
-combined with `only: [change]`, but `only: [merge_requests]` is omitted, there could be
-unwanted behavior.
+In this scenario, if a merge request changes
+files in the `service-one` directory or the `Dockerfile`, GitLab creates
+the `docker build service one` job.
 
 For example:
 
@@ -2776,8 +2772,8 @@ The cache is shared between jobs, so if you're using different
 paths for different jobs, you should also set a different `cache:key`.
 Otherwise cache content can be overwritten.
 
-The `key` parameter defines the affinity of caching between jobs,
-to have a single cache for all jobs, cache per-job, cache per-branch
+The `key` parameter defines the affinity of caching between jobs.
+You can have a single cache for all jobs, cache per-job, cache per-branch,
 or any other way that fits your workflow. This way, you can fine tune caching,
 including caching data between different jobs or even different branches.
 
@@ -3381,7 +3377,7 @@ deploy:
   script: make deploy
 ```
 
-##### When a dependent job will fail
+##### When a dependent job fails
 
 > Introduced in GitLab 10.3.
 
@@ -3621,6 +3617,10 @@ Job naming style [was improved](https://gitlab.com/gitlab-org/gitlab/-/issues/23
 Use `trigger` to define a downstream pipeline trigger. When GitLab starts a job created
 with a `trigger` definition, a downstream pipeline is created.
 
+Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#limitations).
+For example, you can't run commands with [`script`](#script), [`before_script`](#before_script-and-after_script),
+or [`after_script`](#before_script-and-after_script).
+
 You can use this keyword to create two different types of downstream pipelines:
 
 - [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
@@ -3772,10 +3772,10 @@ starting, which reduces parallelization.
 
 #### Trigger a pipeline by API call
 
-Triggers can be used to force a rebuild of a specific branch, tag or commit,
-with an API call when a pipeline gets created using a trigger token.
+To force a rebuild of a specific branch, tag, or commit, you can use an API call
+with a trigger token.
 
-Not to be confused with the [`trigger`](#trigger) parameter.
+The trigger token is different than the [`trigger`](#trigger) parameter.
 
 [Read more in the triggers documentation.](../triggers/README.md)
 
@@ -3818,7 +3818,7 @@ step-2:
 step-3:
   stage: stage3
   script:
-    - echo "Because step-2 can not be canceled, this step will never be canceled, even though set as interruptible."
+    - echo "Because step-2 can not be canceled, this step can never be canceled, even though it's set as interruptible."
   interruptible: true
 ```
 
@@ -3837,7 +3837,7 @@ Sometimes running multiple jobs or pipelines at the same time in an environment
 can lead to errors during the deployment.
 
 To avoid these errors, the `resource_group` attribute can be used to ensure that
-the runner doesn't run certain jobs simultaneously. Resource groups behave similiar
+the runner doesn't run certain jobs simultaneously. Resource groups behave similar
 to semaphores in other programming languages.
 
 When the `resource_group` key is defined for a job in `.gitlab-ci.yml`,
@@ -4003,7 +4003,7 @@ tags. These options cannot be used together, so choose one:
         - 'm1'
         - 'm2'
         - 'm3'
-      released_at: '2020-07-15T08:00:00Z'  # Optional, will auto generate if not defined, or can use a variable.
+      released_at: '2020-07-15T08:00:00Z'  # Optional, is auto generated if not defined, or can use a variable.
   ```
 
 - To create a release automatically when commits are pushed or merged to the default branch,
@@ -4049,7 +4049,7 @@ tags. These options cannot be used together, so choose one:
         - 'm1'
         - 'm2'
         - 'm3'
-      released_at: '2020-07-15T08:00:00Z'  # Optional, will auto generate if not defined, or can use a variable.
+      released_at: '2020-07-15T08:00:00Z'  # Optional, is auto generated if not defined, or can use a variable.
   ```
 
 #### Release assets as Generic packages

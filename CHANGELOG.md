@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.4.4 (2020-10-15)
+
+### Fixed (2 changes)
+
+- Fix rollback portion of migration that adds temporary index for container scanning findings. !44593
+- Improve merge error when pre-receive hooks fail in fast-forward merge. !44843
+
+### Other (1 change)
+
+- Revert 42465 and 42343: Expanded collapsed diff files. !43361
+
+
 ## 13.4.3 (2020-10-06)
 
 ### Fixed (3 changes)

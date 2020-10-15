@@ -388,7 +388,7 @@ export default {
     <gl-form @submit.prevent="onSubmit" @reset.prevent="onReset">
       <h5 class="gl-font-lg">{{ $options.i18n.integrationsLabel }}</h5>
 
-      <gl-form-group label-for="integrations" label-class="gl-font-weight-bold">
+      <gl-form-group label-for="integrations">
         <div data-testid="alert-settings-description" class="gl-mt-5">
           <p v-for="section in sections" :key="section.text">
             <gl-sprintf :message="section.text">
@@ -417,11 +417,7 @@ export default {
           </gl-sprintf>
         </span>
       </gl-form-group>
-      <gl-form-group
-        :label="$options.i18n.activeLabel"
-        label-for="activated"
-        label-class="gl-font-weight-bold"
-      >
+      <gl-form-group :label="$options.i18n.activeLabel" label-for="activated">
         <toggle-button
           id="activated"
           :disabled-input="loading"
@@ -434,7 +430,6 @@ export default {
         v-if="isOpsgenie || isPrometheus"
         :label="$options.i18n.apiBaseUrlLabel"
         label-for="api-url"
-        label-class="gl-font-weight-bold"
       >
         <gl-form-input
           id="api-url"
@@ -448,11 +443,7 @@ export default {
         </span>
       </gl-form-group>
       <template v-if="!isOpsgenie">
-        <gl-form-group
-          :label="$options.i18n.urlLabel"
-          label-for="url"
-          label-class="gl-font-weight-bold"
-        >
+        <gl-form-group :label="$options.i18n.urlLabel" label-for="url">
           <gl-form-input-group id="url" readonly :value="selectedService.url">
             <template #append>
               <clipboard-button
@@ -466,11 +457,7 @@ export default {
             {{ prometheusInfo }}
           </span>
         </gl-form-group>
-        <gl-form-group
-          :label="$options.i18n.authKeyLabel"
-          label-for="authorization-key"
-          label-class="gl-font-weight-bold"
-        >
+        <gl-form-group :label="$options.i18n.authKeyLabel" label-for="authorization-key">
           <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="authKey">
             <template #append>
               <clipboard-button
@@ -496,7 +483,6 @@ export default {
         <gl-form-group
           :label="$options.i18n.alertJson"
           label-for="alert-json"
-          label-class="gl-font-weight-bold"
           :invalid-feedback="testAlert.error"
         >
           <gl-form-textarea

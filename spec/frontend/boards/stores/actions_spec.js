@@ -7,6 +7,7 @@ import {
   mockIssue2WithModel,
   rawIssue,
   mockIssues,
+  labels,
 } from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
@@ -523,6 +524,51 @@ describe('addListIssueFailure', () => {
       [],
       done,
     );
+  });
+});
+
+describe('setActiveIssueLabels', () => {
+  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const getters = { getActiveIssue: mockIssue };
+  const testLabelIds = labels.map(label => label.id);
+  const input = {
+    addLabelIds: testLabelIds,
+    removeLabelIds: [],
+    projectPath: 'h/b',
+  };
+
+  it('should assign labels on success', done => {
+    jest
+      .spyOn(gqlClient, 'mutate')
+      .mockResolvedValue({ data: { updateIssue: { issue: { labels: { nodes: labels } } } } });
+
+    const payload = {
+      issueId: getters.getActiveIssue.id,
+      prop: 'labels',
+      value: labels,
+    };
+
+    testAction(
+      actions.setActiveIssueLabels,
+      input,
+      { ...state, ...getters },
+      [
+        {
+          type: types.UPDATE_ISSUE_BY_ID,
+          payload,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('throws error if fails', async () => {
+    jest
+      .spyOn(gqlClient, 'mutate')
+      .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
+
+    await expect(actions.setActiveIssueLabels({ getters }, input)).rejects.toThrow(Error);
   });
 });
 

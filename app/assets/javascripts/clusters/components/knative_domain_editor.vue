@@ -130,7 +130,6 @@ export default {
         <gl-search-box-by-type
           v-model.trim="searchQuery"
           :placeholder="s__('ClusterIntegration|Search domains')"
-          class="gl-m-3"
         />
         <gl-dropdown-item
           v-for="domain in filteredDomains"

@@ -49,7 +49,7 @@
 - error_tracking
 - feature_flags
 - foundations
-- fuzz-testing
+- fuzz_testing
 - gdk
 - geo_replication
 - git_lfs

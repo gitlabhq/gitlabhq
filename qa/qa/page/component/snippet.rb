@@ -139,7 +139,7 @@ module QA
         end
 
         def click_edit_button
-          click_element(:snippet_action_button, action: 'Edit')
+          click_element(:snippet_action_button, Page::Dashboard::Snippet::Edit, action: 'Edit')
         end
 
         def click_delete_button

@@ -1,0 +1,13 @@
+{
+    "textQuery": "foo",
+    "authorUsernameQuery": "root",
+    "assigneeUsernameQuery": "root",
+    "projectPath": "gitlab-org/gitlab",
+    "enableAlertManagementPath": "/link",
+    "populatingAlertsHelpUrl": "/link",
+    "emptyAlertSvgPath": "/link",
+    "alertManagementEnabled": false,
+    "userCanEnableAlertManagement": false,
+    "opsgenieMvcTargetUrl": "/link",
+    "opsgenieMvcEnabled": false
+}

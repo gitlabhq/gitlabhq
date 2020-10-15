@@ -20,18 +20,12 @@ RSpec.describe 'User searches Alert Management alerts', :js do
   end
 
   context 'when a developer displays the alert list and the alert service is enabled they can search an alert' do
-    it 'shows the alert table with an alert for a valid search' do
-      expect(page).to have_selector('[data-testid="search-icon"]')
-
-      find('.gl-search-box-by-type-input').set('Alert')
-
-      expect(all('.dropdown-menu-selectable').count).to be(1)
-    end
-
-    it 'shows the an empty table with an invalid search' do
-      find('.gl-search-box-by-type-input').set('invalid search text')
-
-      expect(page).not_to have_selector('.dropdown-menu-selectable')
+    it 'shows the incident table with an incident for a valid search filter bar' do
+      expect(page).to have_selector('.filtered-search-wrapper')
+      expect(page).to have_selector('.gl-table')
+      expect(page).to have_css('[data-testid="severityField"]')
+      expect(all('tbody tr').count).to be(1)
+      expect(page).not_to have_selector('.empty-state')
     end
   end
 end

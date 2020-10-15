@@ -31,8 +31,8 @@ module Gitlab
 
         TOKEN_RESET_MODELS = %i[Project Namespace Group Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
-        def self.create(*args)
-          new(*args).create
+        def self.create(*args, **kwargs)
+          new(*args, **kwargs).create
         end
 
         def self.relation_class(relation_name)

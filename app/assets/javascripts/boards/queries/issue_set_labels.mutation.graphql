@@ -1,0 +1,15 @@
+mutation issueSetLabels($input: UpdateIssueInput!) {
+  updateIssue(input: $input) {
+    issue {
+      labels {
+        nodes {
+          id
+          title
+          color
+          description
+        }
+      }
+    }
+    errors
+  }
+}

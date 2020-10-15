@@ -182,4 +182,46 @@ RSpec.describe 'User page' do
 
     it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
+
+  context 'with a bot user' do
+    let(:user) { create(:user, user_type: :security_bot) }
+
+    describe 'feature flag enabled' do
+      before do
+        stub_feature_flags(security_auto_fix: true)
+      end
+
+      it 'only shows Overview and Activity tabs' do
+        visit(user_path(user))
+
+        page.within '.nav-links' do
+          expect(page).to have_link('Overview')
+          expect(page).to have_link('Activity')
+          expect(page).not_to have_link('Groups')
+          expect(page).not_to have_link('Contributed projects')
+          expect(page).not_to have_link('Personal projects')
+          expect(page).not_to have_link('Snippets')
+        end
+      end
+    end
+
+    describe 'feature flag disabled' do
+      before do
+        stub_feature_flags(security_auto_fix: false)
+      end
+
+      it 'only shows Overview and Activity tabs' do
+        visit(user_path(user))
+
+        page.within '.nav-links' do
+          expect(page).to have_link('Overview')
+          expect(page).to have_link('Activity')
+          expect(page).to have_link('Groups')
+          expect(page).to have_link('Contributed projects')
+          expect(page).to have_link('Personal projects')
+          expect(page).to have_link('Snippets')
+        end
+      end
+    end
+  end
 end

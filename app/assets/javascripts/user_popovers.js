@@ -42,6 +42,7 @@ const populateUserInfo = user => {
           bio: userData.bio,
           bioHtml: sanitize(userData.bio_html),
           workInformation: userData.work_information,
+          websiteUrl: userData.website_url,
           loaded: true,
         });
       }

@@ -10,6 +10,7 @@ describe('Editor Lite component', () => {
   const onDidChangeModelContent = jest.fn();
   const updateModelLanguage = jest.fn();
   const getValue = jest.fn();
+  const setValue = jest.fn();
   const value = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const fileName = 'lorem.txt';
   const fileGlobalId = 'snippet_777';
@@ -17,6 +18,7 @@ describe('Editor Lite component', () => {
     onDidChangeModelContent,
     updateModelLanguage,
     getValue,
+    setValue,
     dispose: jest.fn(),
   }));
   Editor.mockImplementation(() => {
@@ -68,7 +70,7 @@ describe('Editor Lite component', () => {
       createComponent({ value: undefined });
 
       expect(spy).not.toHaveBeenCalled();
-      expect(wrapper.find('#editor').exists()).toBe(true);
+      expect(wrapper.find('[id^="editor-lite-"]').exists()).toBe(true);
     });
 
     it('initialises Editor Lite instance', () => {
@@ -92,6 +94,17 @@ describe('Editor Lite component', () => {
       return nextTick().then(() => {
         expect(updateModelLanguage).toHaveBeenCalledWith(newFileName);
       });
+    });
+
+    it('reacts to the changes in the pased value', async () => {
+      const newValue = 'New Value';
+
+      wrapper.setProps({
+        value: newValue,
+      });
+
+      await nextTick();
+      expect(setValue).toHaveBeenCalledWith(newValue);
     });
 
     it('registers callback with editor onChangeContent', () => {

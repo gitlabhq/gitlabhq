@@ -264,6 +264,10 @@ module LabelsHelper
     ['issues', 'merge requests']
   end
 
+  def show_labels_full_path?(project, group)
+    project || group&.subgroup?
+  end
+
   private
 
   def render_label_link(label_html, link:, title:, dataset:)

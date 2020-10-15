@@ -6,11 +6,10 @@ module QA
       module Snippet
         class Edit < Page::Base
           view 'app/assets/javascripts/snippets/components/edit.vue' do
-            element :submit_button
+            element :submit_button, required: true
           end
 
           def add_to_file_content(content)
-            finished_loading?
             text_area.set content
             text_area.has_text?(content) # wait for changes to take effect
           end
@@ -26,7 +25,7 @@ module QA
           private
 
           def text_area
-            find('#editor textarea', visible: false)
+            find('.monaco-editor textarea', visible: false)
           end
         end
       end

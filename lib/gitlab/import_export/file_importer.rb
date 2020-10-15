@@ -10,8 +10,8 @@ module Gitlab
       MAX_RETRIES = 8
       IGNORED_FILENAMES = %w(. ..).freeze
 
-      def self.import(*args)
-        new(*args).import
+      def self.import(*args, **kwargs)
+        new(*args, **kwargs).import
       end
 
       def initialize(importable:, archive_file:, shared:)

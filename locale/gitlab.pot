@@ -185,6 +185,11 @@ msgid_plural "%d failed"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d failed security job"
+msgid_plural "%d failed security jobs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
 msgstr[0] ""
@@ -2813,6 +2818,9 @@ msgid "An error occurred fetching the project authors."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
+msgstr ""
+
+msgid "An error occurred when removing the label."
 msgstr ""
 
 msgid "An error occurred when toggling the notification subscription"
@@ -15244,6 +15252,9 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
+msgid "Learn more about %{username}"
+msgstr ""
+
 msgid "Learn more about Auto DevOps"
 msgstr ""
 
@@ -27553,6 +27564,9 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
+msgid "Toggle project select"
+msgstr ""
+
 msgid "Toggle sidebar"
 msgstr ""
 
@@ -27962,6 +27976,9 @@ msgid "Unable to save iteration. Please try again"
 msgstr ""
 
 msgid "Unable to save your changes. Please try again."
+msgstr ""
+
+msgid "Unable to save your preference"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
@@ -28598,6 +28615,9 @@ msgid "UserProfile|Already reported for abuse"
 msgstr ""
 
 msgid "UserProfile|Blocked user"
+msgstr ""
+
+msgid "UserProfile|Bot activity"
 msgstr ""
 
 msgid "UserProfile|Contributed projects"
@@ -31215,6 +31235,9 @@ msgid "metric_id must be unique across a project"
 msgstr ""
 
 msgid "missing"
+msgstr ""
+
+msgid "more information"
 msgstr ""
 
 msgid "most recent deployment"

@@ -72,12 +72,7 @@ export default {
         css-class="deploy-link js-deploy-url inline"
       />
       <gl-dropdown size="small" class="js-mr-wigdet-deployment-dropdown">
-        <gl-search-box-by-type
-          v-model.trim="searchTerm"
-          v-autofocusonshow
-          autofocus
-          class="gl-m-3"
-        />
+        <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
         <gl-dropdown-item
           v-for="change in filteredChanges"
           :key="change.path"

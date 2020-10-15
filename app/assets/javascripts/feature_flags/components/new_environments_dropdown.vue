@@ -80,7 +80,6 @@ export default {
     <gl-search-box-by-type
       ref="searchBox"
       v-model.trim="environmentSearch"
-      class="gl-m-3"
       @focus="fetchEnvironments"
       @keyup="fetchEnvironments"
     />

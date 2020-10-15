@@ -237,7 +237,6 @@ export default {
         <gl-search-box-by-type
           v-model.trim="searchTerm"
           :placeholder="__('Search branches and tags')"
-          class="gl-p-2"
         />
         <gl-dropdown-item
           v-for="(ref, index) in filteredRefs"

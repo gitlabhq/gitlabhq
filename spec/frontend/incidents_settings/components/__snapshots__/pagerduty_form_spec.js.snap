@@ -23,7 +23,6 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
     <gl-form-group-stub
       class="col-8 col-md-9 gl-p-0"
       label="Webhook URL"
-      label-class="label-bold"
       label-for="url"
     >
       <gl-form-input-group-stub

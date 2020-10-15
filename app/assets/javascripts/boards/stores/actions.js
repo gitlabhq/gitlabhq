@@ -19,6 +19,7 @@ import boardListsQuery from '../queries/board_lists.query.graphql';
 import createBoardListMutation from '../queries/board_list_create.mutation.graphql';
 import updateBoardListMutation from '../queries/board_list_update.mutation.graphql';
 import issueMoveListMutation from '../queries/issue_move_list.mutation.graphql';
+import issueSetLabels from '../queries/issue_set_labels.mutation.graphql';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -279,6 +280,31 @@ export default {
 
   addListIssueFailure: ({ commit }, { list, issue }) => {
     commit(types.ADD_ISSUE_TO_LIST_FAILURE, { list, issue });
+  },
+
+  setActiveIssueLabels: async ({ commit, getters }, input) => {
+    const activeIssue = getters.getActiveIssue;
+    const { data } = await gqlClient.mutate({
+      mutation: issueSetLabels,
+      variables: {
+        input: {
+          iid: String(activeIssue.iid),
+          addLabelIds: input.addLabelIds ?? [],
+          removeLabelIds: input.removeLabelIds ?? [],
+          projectPath: input.projectPath,
+        },
+      },
+    });
+
+    if (data.updateIssue?.errors?.length > 0) {
+      throw new Error(data.updateIssue.errors);
+    }
+
+    commit(types.UPDATE_ISSUE_BY_ID, {
+      issueId: activeIssue.id,
+      prop: 'labels',
+      value: data.updateIssue.issue.labels.nodes,
+    });
   },
 
   fetchBacklog: () => {

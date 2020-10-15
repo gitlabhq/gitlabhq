@@ -324,15 +324,8 @@ img.emoji {
 }
 
 .project-item-select-holder {
-  display: inline-block;
-  position: relative;
-
   .project-item-select {
-    position: absolute;
-    top: 0;
-    right: 0;
     min-width: 250px;
-    visibility: hidden;
   }
 }
 

@@ -18,8 +18,8 @@ export default () => {
     publishedAvailable,
     emptyListSvgPath,
     textQuery,
-    authorUsernamesQuery,
-    assigneeUsernamesQuery,
+    authorUsernameQuery,
+    assigneeUsernameQuery,
     slaFeatureAvailable,
   } = domEl.dataset;
 
@@ -38,8 +38,8 @@ export default () => {
       publishedAvailable: parseBoolean(publishedAvailable),
       emptyListSvgPath,
       textQuery,
-      authorUsernamesQuery,
-      assigneeUsernamesQuery,
+      authorUsernameQuery,
+      assigneeUsernameQuery,
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
     },
     apolloProvider,

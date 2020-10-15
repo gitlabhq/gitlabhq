@@ -31,7 +31,7 @@ module Spec
           end
 
           def snippet_get_first_blob_value
-            page.find('.file-content', match: :first)
+            page.find('.gl-editor-lite', match: :first)
           end
 
           def snippet_description_value
@@ -53,7 +53,7 @@ module Spec
           end
 
           def snippet_fill_in_content(value)
-            page.within('.file-editor') do
+            page.within('.gl-editor-lite') do
               el = find('.inputarea')
               el.send_keys value
             end

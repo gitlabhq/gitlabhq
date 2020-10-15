@@ -82,7 +82,7 @@ export default {
       <gl-icon name="chevron-down" />
     </template>
 
-    <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus class="gl-m-3" />
+    <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
     <gl-deprecated-dropdown-item
       v-for="timezone in filteredResults"
       :key="timezone.formattedTimezone"

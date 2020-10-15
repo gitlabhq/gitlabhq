@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe SnippetsController do
   let_it_be(:user) { create(:user) }
+  let_it_be(:other_user) { create(:user) }
+  let_it_be(:public_snippet) { create(:personal_snippet, :public, :repository, author: user) }
 
   describe 'GET #index' do
     let(:base_params) { { username: user.username } }
@@ -12,10 +14,6 @@ RSpec.describe SnippetsController do
       it_behaves_like 'paginated collection' do
         let(:collection) { Snippet.all }
         let(:params) { { username: user.username } }
-
-        before do
-          create(:personal_snippet, :public, author: user)
-        end
       end
 
       it 'renders snippets of a user when username is present' do
@@ -97,8 +95,7 @@ RSpec.describe SnippetsController do
         end
 
         context 'when signed in user is not the author' do
-          let(:other_author) { create(:author) }
-          let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_author) }
+          let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_user) }
 
           it 'responds with status 404' do
             get :show, params: { id: other_personal_snippet.to_param }
@@ -158,7 +155,7 @@ RSpec.describe SnippetsController do
     end
 
     context 'when the personal snippet is public' do
-      let_it_be(:personal_snippet) { create(:personal_snippet, :public, :repository, author: user) }
+      let(:personal_snippet) { public_snippet }
 
       context 'when signed in' do
         before do
@@ -166,22 +163,22 @@ RSpec.describe SnippetsController do
         end
 
         it_behaves_like 'successful response' do
-          subject { get :show, params: { id: personal_snippet.to_param } }
+          subject { get :show, params: { id: public_snippet.to_param } }
         end
 
         it 'responds with status 200 when embeddable content is requested' do
-          get :show, params: { id: personal_snippet.to_param }, format: :js
+          get :show, params: { id: public_snippet.to_param }, format: :js
 
-          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(assigns(:snippet)).to eq(public_snippet)
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
       context 'when not signed in' do
         it 'renders the snippet' do
-          get :show, params: { id: personal_snippet.to_param }
+          get :show, params: { id: public_snippet.to_param }
 
-          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(assigns(:snippet)).to eq(public_snippet)
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
@@ -211,37 +208,34 @@ RSpec.describe SnippetsController do
 
     context 'when requesting JSON' do
       it 'renders the blob from the repository' do
-        personal_snippet = create(:personal_snippet, :public, :repository, author: user)
+        get :show, params: { id: public_snippet.to_param }, format: :json
 
-        get :show, params: { id: personal_snippet.to_param }, format: :json
-
-        expect(assigns(:blob)).to eq(personal_snippet.blobs.first)
+        expect(assigns(:blob)).to eq(public_snippet.blobs.first)
       end
     end
   end
 
   describe 'POST #mark_as_spam' do
-    let(:snippet) { create(:personal_snippet, :public, author: user) }
-
     before do
       allow_next_instance_of(Spam::AkismetService) do |instance|
         allow(instance).to receive_messages(submit_spam: true)
       end
+
       stub_application_setting(akismet_enabled: true)
     end
 
     def mark_as_spam
       admin = create(:admin)
-      create(:user_agent_detail, subject: snippet)
+      create(:user_agent_detail, subject: public_snippet)
       sign_in(admin)
 
-      post :mark_as_spam, params: { id: snippet.id }
+      post :mark_as_spam, params: { id: public_snippet.id }
     end
 
     it 'updates the snippet' do
       mark_as_spam
 
-      expect(snippet.reload).not_to be_submittable_as_spam
+      expect(public_snippet.reload).not_to be_submittable_as_spam
     end
   end
 
@@ -269,9 +263,7 @@ RSpec.describe SnippetsController do
     shared_examples 'CRLF line ending' do
       let(:content) { "first line\r\nsecond line\r\nthird line" }
       let(:formatted_content) { content.gsub(/\r\n/, "\n") }
-      let(:snippet) do
-        create(:personal_snippet, :public, :repository, author: user, content: content)
-      end
+      let(:snippet) { public_snippet }
 
       before do
         allow_next_instance_of(Blob) do |instance|
@@ -340,8 +332,7 @@ RSpec.describe SnippetsController do
         end
 
         context 'when signed in user is not the author' do
-          let(:other_author) { create(:author) }
-          let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_author) }
+          let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_user) }
 
           it 'responds with status 404' do
             get :raw, params: { id: other_personal_snippet.to_param }
@@ -385,7 +376,7 @@ RSpec.describe SnippetsController do
     end
 
     context 'when the personal snippet is public' do
-      let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: user) }
+      let(:snippet) { public_snippet }
 
       context 'when signed in' do
         before do
@@ -429,11 +420,10 @@ RSpec.describe SnippetsController do
   end
 
   context 'award emoji on snippets' do
-    let(:personal_snippet) { create(:personal_snippet, :public, author: user) }
-    let(:another_user) { create(:user) }
+    let(:personal_snippet) { public_snippet }
 
     before do
-      sign_in(another_user)
+      sign_in(other_user)
     end
 
     describe 'POST #toggle_award_emoji' do
@@ -458,12 +448,10 @@ RSpec.describe SnippetsController do
   end
 
   describe 'POST #preview_markdown' do
-    let(:snippet) { create(:personal_snippet, :public) }
-
     it 'renders json in a correct format' do
       sign_in(user)
 
-      post :preview_markdown, params: { id: snippet, text: '*Markdown* text' }
+      post :preview_markdown, params: { id: public_snippet, text: '*Markdown* text' }
 
       expect(json_response.keys).to match_array(%w(body references))
     end

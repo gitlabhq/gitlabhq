@@ -139,7 +139,6 @@ export default {
       <gl-search-box-by-type
         ref="searchBox"
         v-model.trim="query"
-        class="gl-m-3"
         :placeholder="i18n.searchPlaceholder"
         @input="onSearchBoxInput"
         @keydown.enter.prevent="onSearchBoxEnter"

@@ -123,7 +123,7 @@ export default {
 };
 </script>
 <template>
-  <div class="form-group file-editor">
+  <div class="form-group">
     <label :for="firstInputId">{{ s__('Snippets|Files') }}</label>
     <snippet-blob-edit
       v-for="(blobId, index) in blobIds"

@@ -1,5 +1,0 @@
----
-title: Improve merge error when pre-receive hooks fail in fast-forward merge
-merge_request: 44843
-author:
-type: fixed

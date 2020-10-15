@@ -19,20 +19,55 @@ RSpec.describe 'shared/_label_row.html.haml' do
       render
     end
 
+    it 'has label title' do
+      expect(rendered).to have_text(label.title)
+    end
+
     it 'has a non-linked label title' do
-      expect(rendered).not_to have_css('a', text: label.title)
+      expect(rendered).not_to have_link(label.title)
     end
 
-    it "has Issues link" do
-      expect(rendered).to have_css('a', text: 'Issues')
+    it 'has Issues link' do
+      expect(rendered).to have_link('Issues')
     end
 
-    it "has Merge request link" do
-      expect(rendered).to have_css('a', text: 'Merge requests')
+    it 'has Merge request link' do
+      expect(rendered).to have_link('Merge requests')
     end
 
-    it "shows the path from where the label was created" do
+    it 'shows the path from where the label was created' do
       expect(rendered).to have_css('.label-badge', text: project.full_name)
+    end
+  end
+
+  context 'with a subgroup context' do
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let(:label) { build_stubbed(:group_label, group: subgroup).present(issuable_subject: subgroup) }
+
+    before do
+      assign(:group, label.group)
+
+      render
+    end
+
+    it 'has label title' do
+      expect(rendered).to have_text(label.title)
+    end
+
+    it 'has a non-linked label title' do
+      expect(rendered).not_to have_link(label.title)
+    end
+
+    it 'has Issues link' do
+      expect(rendered).to have_link('Issues')
+    end
+
+    it 'has Merge request link' do
+      expect(rendered).to have_link('Merge requests')
+    end
+
+    it 'shows the path from where the label was created' do
+      expect(rendered).to have_css('.label-badge', text: subgroup.full_name)
     end
   end
 
@@ -43,19 +78,23 @@ RSpec.describe 'shared/_label_row.html.haml' do
       render
     end
 
+    it 'has label title' do
+      expect(rendered).to have_text(label.title)
+    end
+
     it 'has a non-linked label title' do
-      expect(rendered).not_to have_css('a', text: label.title)
+      expect(rendered).not_to have_link(label.title)
     end
 
-    it "has Issues link" do
-      expect(rendered).to have_css('a', text: 'Issues')
+    it 'has Issues link' do
+      expect(rendered).to have_link('Issues')
     end
 
-    it "has Merge request link" do
-      expect(rendered).to have_css('a', text: 'Merge requests')
+    it 'has Merge request link' do
+      expect(rendered).to have_link('Merge requests')
     end
 
-    it "does not show a path from where the label was created" do
+    it 'does not show a path from where the label was created' do
       expect(rendered).not_to have_css('.label-badge')
     end
   end
@@ -65,19 +104,23 @@ RSpec.describe 'shared/_label_row.html.haml' do
       render
     end
 
+    it 'has label title' do
+      expect(rendered).to have_text(label.title)
+    end
+
     it 'has a non-linked label title' do
-      expect(rendered).not_to have_css('a', text: label.title)
+      expect(rendered).not_to have_link(label.title)
     end
 
-    it "does not show Issues link" do
-      expect(rendered).not_to have_css('a', text: 'Issues')
+    it 'does not show Issues link' do
+      expect(rendered).not_to have_link('Issues')
     end
 
-    it "does not show Merge request link" do
-      expect(rendered).not_to have_css('a', text: 'Merge requests')
+    it 'does not show Merge request link' do
+      expect(rendered).not_to have_link('Merge requests')
     end
 
-    it "does not show a path from where the label was created" do
+    it 'does not show a path from where the label was created' do
       expect(rendered).not_to have_css('.label-badge')
     end
   end
