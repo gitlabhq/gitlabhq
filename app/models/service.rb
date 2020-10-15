@@ -245,7 +245,7 @@ class Service < ApplicationRecord
     group_ids = scope.ancestors.select(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
 
-    where(type: type, group_id: group_ids)
+    where(type: type, group_id: group_ids, inherit_from_id: nil)
       .order(Arel.sql("array_position(#{array}::bigint[], services.group_id)"))
       .first
   end
@@ -263,7 +263,7 @@ class Service < ApplicationRecord
     from_union([
       with_templates ? active.where(template: true) : none,
       active.where(instance: true),
-      active.where(group_id: group_ids)
+      active.where(group_id: group_ids, inherit_from_id: nil)
     ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], services.group_id), instance DESC")).group_by(&:type).each do |type, records|
       build_from_integration(records.first, association => scope.id).save!
     end

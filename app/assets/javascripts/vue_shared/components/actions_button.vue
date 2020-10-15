@@ -3,7 +3,7 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownDivider,
-  GlLink,
+  GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
 
@@ -12,7 +12,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
-    GlLink,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -26,6 +26,16 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    category: {
+      type: String,
+      required: false,
+      default: 'secondary',
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: 'default',
     },
   },
   computed: {
@@ -54,6 +64,8 @@ export default {
     class="gl-button-deprecated-adapter"
     :text="selectedAction.text"
     :split-href="selectedAction.href"
+    :variant="variant"
+    :category="category"
     split
     @click="handleClick(selectedAction, $event)"
   >
@@ -77,14 +89,15 @@ export default {
       <gl-dropdown-divider v-if="index != actions.length - 1" :key="action.key + '_divider'" />
     </template>
   </gl-dropdown>
-  <gl-link
+  <gl-button
     v-else-if="selectedAction"
     v-gl-tooltip="selectedAction.tooltip"
     v-bind="selectedAction.attrs"
-    class="btn"
+    :variant="variant"
+    :category="category"
     :href="selectedAction.href"
     @click="handleClick(selectedAction, $event)"
   >
     {{ selectedAction.text }}
-  </gl-link>
+  </gl-button>
 </template>

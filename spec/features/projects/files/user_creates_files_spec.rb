@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User creates files', :js do
+  include BlobSpecHelpers
+
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -103,6 +105,8 @@ RSpec.describe 'Projects > Files > User creates files', :js do
       end
 
       it 'creates and commit a new file with new lines at the end of file' do
+        set_default_button('edit')
+
         find('#editor')
         execute_script('monaco.editor.getModels()[0].setValue("Sample\n\n\n")')
         fill_in(:file_name, with: 'not_a_file.md')
@@ -113,7 +117,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
 
         expect(current_path).to eq(new_file_path)
 
-        find('.js-edit-blob').click
+        click_link('Edit')
 
         find('#editor')
         expect(evaluate_script('monaco.editor.getModels()[0].getValue()')).to eq("Sample\n\n\n")

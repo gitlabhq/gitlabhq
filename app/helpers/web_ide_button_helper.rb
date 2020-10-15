@@ -1,0 +1,61 @@
+# frozen_string_literal: true
+
+module WebIdeButtonHelper
+  def project_fork
+    current_user&.fork_of(@project)
+  end
+
+  def project_to_use
+    fork? ? project_fork : @project
+  end
+
+  def can_collaborate?
+    can_collaborate_with_project?(@project)
+  end
+
+  def can_create_mr_from_fork?
+    can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
+  end
+
+  def show_web_ide_button?
+    can_collaborate? || can_create_mr_from_fork?
+  end
+
+  def show_edit_button?
+    readable_blob? && show_web_ide_button?
+  end
+
+  def show_gitpod_button?
+    show_web_ide_button? && Gitlab::Gitpod.feature_and_settings_enabled?(@project)
+  end
+
+  def can_push_code?
+    current_user&.can?(:push_code, @project)
+  end
+
+  def fork?
+    !project_fork.nil? && !can_push_code?
+  end
+
+  def readable_blob?
+    !readable_blob({}, @path, @project, @ref).nil?
+  end
+
+  def needs_to_fork?
+    !can_collaborate? && !current_user&.already_forked?(@project)
+  end
+
+  def web_ide_url
+    ide_edit_path(project_to_use, @ref, @path || '')
+  end
+
+  def edit_url
+    readable_blob? ? edit_blob_path(@project, @ref, @path || '') : ''
+  end
+
+  def gitpod_url
+    return "" unless Gitlab::Gitpod.feature_and_settings_enabled?(@project)
+
+    "#{Gitlab::CurrentSettings.gitpod_url}##{project_tree_url(@project, tree_join(@ref, @path || ''))}"
+  end
+end

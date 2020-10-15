@@ -1,17 +1,17 @@
 import Vue from 'vue';
 import PathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
-import { escapeFileUrl, joinPaths, webIDEUrl } from '../lib/utils/url_utility';
+import { escapeFileUrl } from '../lib/utils/url_utility';
 import createRouter from './router';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import LastCommit from './components/last_commit.vue';
 import TreeActionLink from './components/tree_action_link.vue';
-import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import apolloProvider from './graphql';
 import { setTitle } from './utils/title';
 import { updateFormAction } from './utils/dom';
-import { convertObjectPropsToCamelCase, parseBoolean } from '../lib/utils/common_utils';
+import { parseBoolean } from '../lib/utils/common_utils';
 import { __ } from '../locale';
 
 export default function setupVueRepositoryList() {
@@ -138,31 +138,7 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  const webIdeLinkEl = document.getElementById('js-tree-web-ide-link');
-
-  if (webIdeLinkEl) {
-    const {
-      webIdeUrlData: { path: ideBasePath, isFork: webIdeIsFork },
-      ...options
-    } = convertObjectPropsToCamelCase(JSON.parse(webIdeLinkEl.dataset.options), { deep: true });
-
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: webIdeLinkEl,
-      router,
-      render(h) {
-        return h(WebIdeLink, {
-          props: {
-            webIdeUrl: webIDEUrl(
-              joinPaths('/', ideBasePath, 'edit', ref, '-', this.$route.params.path || '', '/'),
-            ),
-            webIdeIsFork,
-            ...options,
-          },
-        });
-      },
-    });
-  }
+  initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
 
   const directoryDownloadLinks = document.getElementById('js-directory-downloads');
 

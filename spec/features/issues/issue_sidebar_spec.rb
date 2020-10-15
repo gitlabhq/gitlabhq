@@ -42,8 +42,7 @@ RSpec.describe 'Issue Sidebar' do
 
       it 'shows author when filtering assignee dropdown' do
         page.within '.dropdown-menu-user' do
-          find('.dropdown-input-field').native.send_keys user2.name
-          sleep 1 # Required to wait for end of input delay
+          find('.dropdown-input-field').set(user2.name)
 
           wait_for_requests
 
@@ -67,7 +66,7 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       it 'keeps your filtered term after filtering and dismissing the dropdown' do
-        find('.dropdown-input-field').native.send_keys user2.name
+        find('.dropdown-input-field').set(user2.name)
 
         wait_for_requests
 

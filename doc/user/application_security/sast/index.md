@@ -365,8 +365,8 @@ analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`,
 The SAST tool emits a JSON report file. For more information, see the
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
 
-The JSON report file can be downloaded from the CI pipelines page, for more
-information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
+The JSON report file can be downloaded from the CI pipelines page, or the
+pipelines tab on merge requests. For more information see [Downloading artifacts](../../../ci/pipelines/job_artifacts.md).
 
 Here's an example SAST report:
 

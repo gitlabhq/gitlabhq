@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 
+const KEY_EDIT = 'edit';
 const KEY_WEB_IDE = 'webide';
 const KEY_GITPOD = 'gitpod';
 
@@ -13,12 +14,7 @@ export default {
     LocalStorageSync,
   },
   props: {
-    webIdeUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    webIdeIsFork: {
+    isFork: {
       type: Boolean,
       required: false,
       default: false,
@@ -27,6 +23,21 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    gitpodEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isBlob: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showEditButton: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     showWebIdeButton: {
       type: Boolean,
@@ -38,15 +49,20 @@ export default {
       required: false,
       default: false,
     },
-    gitpodUrl: {
+    editUrl: {
       type: String,
       required: false,
       default: '',
     },
-    gitpodEnabled: {
-      type: Boolean,
+    webIdeUrl: {
+      type: String,
       required: false,
-      default: false,
+      default: '',
+    },
+    gitpodUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -56,7 +72,33 @@ export default {
   },
   computed: {
     actions() {
-      return [this.webIdeAction, this.gitpodAction].filter(x => x);
+      return [this.webIdeAction, this.editAction, this.gitpodAction].filter(action => action);
+    },
+    editAction() {
+      if (!this.showEditButton) {
+        return null;
+      }
+
+      const handleOptions = this.needsToFork
+        ? {
+            href: '#modal-confirm-fork-edit',
+            handle: () => this.showModal('#modal-confirm-fork-edit'),
+          }
+        : { href: this.editUrl };
+
+      return {
+        key: KEY_EDIT,
+        text: __('Edit'),
+        secondaryText: __('Edit this file only.'),
+        tooltip: '',
+        attrs: {
+          'data-qa-selector': 'edit_button',
+          'data-track-event': 'click_edit',
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          'data-track-label': 'Edit',
+        },
+        ...handleOptions,
+      };
     },
     webIdeAction() {
       if (!this.showWebIdeButton) {
@@ -64,10 +106,19 @@ export default {
       }
 
       const handleOptions = this.needsToFork
-        ? { href: '#modal-confirm-fork', handle: () => this.showModal('#modal-confirm-fork') }
+        ? {
+            href: '#modal-confirm-fork-webide',
+            handle: () => this.showModal('#modal-confirm-fork-webide'),
+          }
         : { href: this.webIdeUrl };
 
-      const text = this.webIdeIsFork ? __('Edit fork in Web IDE') : __('Web IDE');
+      let text = __('Web IDE');
+
+      if (this.isBlob) {
+        text = __('Edit in Web IDE');
+      } else if (this.isFork) {
+        text = __('Edit fork in Web IDE');
+      }
 
       return {
         key: KEY_WEB_IDE,
@@ -76,6 +127,9 @@ export default {
         tooltip: '',
         attrs: {
           'data-qa-selector': 'web_ide_button',
+          'data-track-event': 'click_edit_ide',
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          'data-track-label': 'Web IDE',
         },
         ...handleOptions,
       };
@@ -115,8 +169,14 @@ export default {
 </script>
 
 <template>
-  <div>
-    <actions-button :actions="actions" :selected-key="selection" @select="select" />
+  <div class="d-inline-block gl-ml-3">
+    <actions-button
+      :actions="actions"
+      :selected-key="selection"
+      :variant="isBlob ? 'info' : 'default'"
+      :category="isBlob ? 'primary' : 'secondary'"
+      @select="select"
+    />
     <local-storage-sync
       storage-key="gl-web-ide-button-selected"
       :value="selection"

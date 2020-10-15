@@ -291,3 +291,15 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
+- name: g_project_management_issue_due_date_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_time_estimate_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_time_spent_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily

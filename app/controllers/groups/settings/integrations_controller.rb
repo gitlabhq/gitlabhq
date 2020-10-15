@@ -26,7 +26,7 @@ module Groups
       end
 
       def integrations_enabled?
-        Feature.enabled?(:group_level_integrations, group)
+        Feature.enabled?(:group_level_integrations, group, default_enabled: true)
       end
 
       def scoped_edit_integration_path(integration)

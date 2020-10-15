@@ -4,4 +4,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44639
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/249543
 type: development
 group: group::static analysis
-default_enabled: false
+default_enabled: true

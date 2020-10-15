@@ -11,8 +11,7 @@
     'empty-state-meta': data_empty_state_meta.to_json,
     'can-bulk-edit': @can_bulk_update.to_json,
     'sort-key': @sort,
-    type: type,
-    'scoped-labels': @project.feature_available?(:scoped_labels).to_json } }
+    type: type } }
 - else
   - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
   %ul.content-list.issues-list.issuable-list{ class: ("manual-ordering" if @sort == 'relative_position') }

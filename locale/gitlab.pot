@@ -9545,6 +9545,9 @@ msgstr ""
 msgid "Edit stage"
 msgstr ""
 
+msgid "Edit this file only."
+msgstr ""
+
 msgid "Edit this release"
 msgstr ""
 

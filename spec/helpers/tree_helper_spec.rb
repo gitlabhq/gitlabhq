@@ -167,31 +167,60 @@ RSpec.describe TreeHelper do
     end
   end
 
-  describe '#vue_ide_link_data' do
+  describe '#web_ide_button_data' do
+    let(:blob) { project.repository.blob_at('refs/heads/master', @path) }
+
     before do
+      @path = ''
+      @project = project
+      @ref = sha
+
       allow(helper).to receive(:current_user).and_return(nil)
       allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
       allow(helper).to receive(:can?).and_return(true)
     end
 
-    subject { helper.vue_ide_link_data(project, sha) }
+    subject { helper.web_ide_button_data(blob: blob) }
 
     it 'returns a list of attributes related to the project' do
       expect(subject).to include(
-        web_ide_url_data: { path: project.full_path, is_fork: false },
+        project_path: project.full_path,
+        ref: sha,
+
+        is_fork: false,
         needs_to_fork: false,
+        gitpod_enabled: false,
+        is_blob: false,
+
+        show_edit_button: false,
         show_web_ide_button: true,
         show_gitpod_button: false,
-        gitpod_url: "",
-        gitpod_enabled: nil
+
+        edit_url: '',
+        web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}",
+        gitpod_url: ''
       )
+    end
+
+    context 'a blob is passed' do
+      before do
+        @path = 'README.md'
+      end
+
+      it 'returns edit url and webide url for the blob' do
+        expect(subject).to include(
+          show_edit_button: true,
+          edit_url: "/#{project.full_path}/-/edit/#{sha}/#{@path}",
+          web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}/-/#{@path}"
+        )
+      end
     end
 
     context 'user does not have write access but a personal fork exists' do
       include ProjectForksHelper
 
       let_it_be(:user) { create(:user) }
-      let!(:forked_project) { create(:project, :repository, namespace: user.namespace) }
+      let(:forked_project) { create(:project, :repository, namespace: user.namespace) }
 
       before do
         project.add_guest(user)
@@ -200,9 +229,49 @@ RSpec.describe TreeHelper do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'includes web_ide_url_data: forked_project.full_path' do
+      it 'includes forked project path as project_path' do
         expect(subject).to include(
-          web_ide_url_data: { path: forked_project.full_path, is_fork: true }
+          project_path: forked_project.full_path,
+          is_fork: true,
+          needs_to_fork: false,
+          show_edit_button: false,
+          web_ide_url: "/-/ide/project/#{forked_project.full_path}/edit/#{sha}"
+        )
+      end
+
+      context 'a blob is passed' do
+        before do
+          @path = 'README.md'
+        end
+
+        it 'returns edit url and web ide for the blob in the fork' do
+          expect(subject).to include(
+            is_blob: true,
+            show_edit_button: true,
+            # edit urls are automatically redirected to the fork
+            edit_url: "/#{project.full_path}/-/edit/#{sha}/#{@path}",
+            web_ide_url: "/-/ide/project/#{forked_project.full_path}/edit/#{sha}/-/#{@path}"
+          )
+        end
+      end
+    end
+
+    context 'for archived project' do
+      before do
+        allow(helper).to receive(:can_collaborate_with_project?).and_return(false)
+        allow(helper).to receive(:can?).and_return(false)
+
+        project.update!(archived: true)
+
+        @path = 'README.md'
+      end
+
+      it 'does not show any buttons' do
+        expect(subject).to include(
+          is_blob: true,
+          show_edit_button: false,
+          show_web_ide_button: false,
+          show_gitpod_button: false
         )
       end
     end
@@ -216,10 +285,31 @@ RSpec.describe TreeHelper do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'includes web_ide_url_data: project.full_path' do
+      it 'includes original project path as project_path' do
         expect(subject).to include(
-          web_ide_url_data: { path: project.full_path, is_fork: false }
+          project_path: project.full_path,
+
+          is_fork: false,
+          needs_to_fork: false,
+
+          show_edit_button: false,
+          web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}"
         )
+      end
+
+      context 'a blob is passed' do
+        before do
+          @path = 'README.md'
+        end
+
+        it 'returns edit url and web ide for the blob in the fork' do
+          expect(subject).to include(
+            is_blob: true,
+            show_edit_button: true,
+            edit_url: "/#{project.full_path}/-/edit/#{sha}/#{@path}",
+            web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}/-/#{@path}"
+          )
+        end
       end
     end
 

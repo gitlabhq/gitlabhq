@@ -30,6 +30,9 @@ module Gitlab
       ISSUE_DESIGNS_ADDED = 'g_project_management_issue_designs_added'
       ISSUE_DESIGNS_MODIFIED = 'g_project_management_issue_designs_modified'
       ISSUE_DESIGNS_REMOVED = 'g_project_management_issue_designs_removed'
+      ISSUE_DUE_DATE_CHANGED = 'g_project_management_issue_due_date_changed'
+      ISSUE_TIME_ESTIMATE_CHANGED = 'g_project_management_issue_time_estimate_changed'
+      ISSUE_TIME_SPENT_CHANGED = 'g_project_management_issue_time_spent_changed'
 
       class << self
         def track_issue_created_action(author:, time: Time.zone.now)
@@ -130,6 +133,18 @@ module Gitlab
 
         def track_issue_designs_removed_action(author:, time: Time.zone.now)
           track_unique_action(ISSUE_DESIGNS_REMOVED, author, time)
+        end
+
+        def track_issue_due_date_changed_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_DUE_DATE_CHANGED, author, time)
+        end
+
+        def track_issue_time_estimate_changed_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_TIME_ESTIMATE_CHANGED, author, time)
+        end
+
+        def track_issue_time_spent_changed_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_TIME_SPENT_CHANGED, author, time)
         end
 
         private

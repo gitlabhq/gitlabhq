@@ -46,7 +46,9 @@ describe('Issuable component', () => {
         ...props,
       },
       provide: {
-        scopedLabels,
+        glFeatures: {
+          scopedLabels,
+        },
       },
       stubs: {
         'gl-sprintf': GlSprintf,

@@ -28,6 +28,7 @@ import initUserPopovers from '~/user_popovers';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { convertToCamelCase } from '~/lib/utils/text_utility';
 
@@ -35,9 +36,6 @@ export default {
   i18n: {
     openedAgo: __('opened %{timeAgoString} by %{user}'),
     openedAgoJira: __('opened %{timeAgoString} by %{user} in Jira'),
-  },
-  inject: {
-    scopedLabels: ['scopedLabels'],
   },
   components: {
     IssueAssignees,
@@ -52,6 +50,7 @@ export default {
     GlTooltip,
     SafeHtml,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     issuable: {
       type: Object,
@@ -85,6 +84,9 @@ export default {
       const { title } = this.issuable.milestone;
 
       return this.issuableLink({ milestone_title: title });
+    },
+    scopedLabelsAvailable() {
+      return this.glFeatures.scopedLabels;
     },
     hasWeight() {
       return isNumber(this.issuable.weight);
@@ -219,7 +221,7 @@ export default {
       return mergeUrlParams(params, this.baseUrl);
     },
     isScoped({ name }) {
-      return isScopedLabel({ title: name }) && this.scopedLabels;
+      return isScopedLabel({ title: name }) && this.scopedLabelsAvailable;
     },
     labelHref({ name }) {
       if (this.isJiraIssue) {

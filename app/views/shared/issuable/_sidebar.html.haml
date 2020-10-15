@@ -103,7 +103,7 @@
                     .js-due-date-calendar
 
 
-      - if Feature.enabled?(:vue_sidebar_labels, @project)
+      - if Feature.enabled?(:vue_sidebar_labels, @project, default_enabled: true)
         .js-sidebar-labels{ data: { allow_label_create: issuable_sidebar.dig(:current_user, :can_admin_label).to_s,
           allow_scoped_labels: issuable_sidebar[:scoped_labels_available].to_s,
           can_edit: can_edit_issuable.to_s,

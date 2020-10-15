@@ -18,7 +18,7 @@ module Gitlab
       # During db:create and db:bootstrap skip feature query as DB is not available yet.
       return false unless Gitlab::Database.cached_table_exists?('features')
 
-      self.enabled = Feature.enabled?(:marginalia)
+      self.enabled = Feature.enabled?(:marginalia, type: :ops)
     end
   end
 end

@@ -21,6 +21,13 @@ module QA
           new_snippet.set_visibility(@visibility)
           new_snippet.fill_file_name(@file_name)
           new_snippet.fill_file_content(@file_content)
+
+          @files.each.with_index(2) do |file, i|
+            new_snippet.click_add_file
+            new_snippet.fill_file_name(file[:name], i)
+            new_snippet.fill_file_content(file[:content], i)
+          end
+
           new_snippet.click_create_snippet_button
         end
       end
