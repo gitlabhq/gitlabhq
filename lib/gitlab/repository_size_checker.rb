@@ -42,7 +42,9 @@ module Gitlab
     end
 
     def error_message
-      @error_message_object ||= Gitlab::RepositorySizeErrorMessage.new(self)
+      @error_message_object ||= ::Gitlab::RepositorySizeErrorMessage.new(self)
     end
   end
 end
+
+Gitlab::RepositorySizeChecker.prepend_if_ee('EE::Gitlab::RepositorySizeChecker')

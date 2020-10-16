@@ -11,12 +11,6 @@ module Webauthn
     def execute
       parsed_device_response = Gitlab::Json.parse(@device_response)
 
-      # appid is set for legacy U2F devices, will be used in a future iteration
-      # rp_id = @app_id
-      # unless parsed_device_response['clientExtensionResults'] && parsed_device_response['clientExtensionResults']['appid']
-      # rp_id = URI(@app_id).host
-      # end
-
       webauthn_credential = WebAuthn::Credential.from_get(parsed_device_response)
       encoded_raw_id = Base64.strict_encode64(webauthn_credential.raw_id)
       stored_webauthn_credential = @user.webauthn_registrations.find_by_credential_xid(encoded_raw_id)
@@ -52,10 +46,14 @@ module Webauthn
     # Verifies that webauthn_credential matches stored_credential with the given challenge
     #
     def verify_webauthn_credential(webauthn_credential, stored_credential, challenge, encoder)
+      # We need to adjust the relaying party id (RP id) we verify against if the registration in question
+      # is a migrated U2F registration. This is beacuse the appid of U2F and the rp id of WebAuthn differ.
+      rp_id = webauthn_credential.client_extension_outputs['appid'] ? WebAuthn.configuration.origin : URI(WebAuthn.configuration.origin).host
       webauthn_credential.response.verify(
         encoder.decode(challenge),
           public_key: encoder.decode(stored_credential.public_key),
-          sign_count: stored_credential.counter)
+          sign_count: stored_credential.counter,
+          rp_id: rp_id)
     end
   end
 end

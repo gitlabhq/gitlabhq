@@ -56,7 +56,9 @@ RSpec.describe Snippets::RepositoryValidationService do
     end
 
     it 'returns error when the repository size is over the limit' do
-      expect_any_instance_of(Gitlab::RepositorySizeChecker).to receive(:above_size_limit?).and_return(true)
+      expect_next_instance_of(Gitlab::RepositorySizeChecker) do |checker|
+        expect(checker).to receive(:above_size_limit?).and_return(true)
+      end
 
       expect(subject).to be_error
       expect(subject.message).to match /Repository size is above the limit/

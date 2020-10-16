@@ -115,10 +115,14 @@ module MergeRequests
 
     def update_merge_status
       return unless merge_request.recheck_merge_status?
+      return merge_request.mark_as_unmergeable if merge_request.broken?
 
-      if can_git_merge? && merge_to_ref
+      merge_to_ref_success = merge_to_ref
+
+      update_diff_discussion_positions! if merge_to_ref_success
+
+      if merge_to_ref_success && can_git_merge?
         merge_request.mark_as_mergeable
-        update_diff_discussion_positions!
       else
         merge_request.mark_as_unmergeable
       end
@@ -149,13 +153,14 @@ module MergeRequests
     end
 
     def can_git_merge?
-      !merge_request.broken? && repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
+      repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
     end
 
     def merge_to_ref
       return true unless merge_ref_auto_sync_enabled?
 
-      result = MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+      params = { allow_conflicts: Feature.enabled?(:display_merge_conflicts_in_diff, project) }
+      result = MergeRequests::MergeToRefService.new(project, merge_request.author, params).execute(merge_request)
       result[:status] == :success
     end
 

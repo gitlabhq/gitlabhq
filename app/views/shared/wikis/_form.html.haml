@@ -17,10 +17,10 @@
     = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
 
   .form-group.row
-    .col-sm-12= f.label :title, class: 'control-label-full-width'
-    .col-sm-12
+    .col-sm-2.col-form-label= f.label :title, class: 'control-label-full-width'
+    .col-sm-10
       = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: s_('Wiki|Page title')
-      %span.d-inline-block.mw-100.gl-mt-2
+      %span.gl-display-inline-block.gl-max-w-full.gl-mt-2.gl-text-gray-600
         = sprite_icon('bulb', size: 12, css_class: 'gl-mr-n1')
         - if @page.persisted?
           = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")
@@ -29,18 +29,18 @@
         - else
           = s_("WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories.")
         = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/project/wiki/index', anchor: 'creating-a-new-wiki-page'),
+          = link_to _('More information'), help_page_path('user/project/wiki/index', anchor: 'creating-a-new-wiki-page'),
               target: '_blank', rel: 'noopener noreferrer'
   .form-group.row
-    .col-sm-12= f.label :format, class: 'control-label-full-width'
-    .col-sm-12
+    .col-sm-2.col-form-label= f.label :format, class: 'control-label-full-width'
+    .col-sm-10
       .select-wrapper
         = f.select :format, options_for_select(Wiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control select-control'
         = icon('chevron-down')
 
   .form-group.row
-    .col-sm-12= f.label :content, class: 'control-label-full-width'
-    .col-sm-12
+    .col-sm-2.col-form-label= f.label :content, class: 'control-label-full-width'
+    .col-sm-10
       = render layout: 'shared/md_preview', locals: { url: wiki_page_path(@wiki, @page, action: :preview_markdown) } do
         = render 'shared/zen', f: f, attr: :content, classes: 'note-textarea qa-wiki-content-textarea', placeholder: s_("WikiPage|Write your content or drag files here…")
         = render 'shared/notes/hints'
@@ -48,7 +48,7 @@
       .clearfix
       .error-alert
 
-      .form-text.text-muted
+      .form-text.gl-text-gray-600
         = succeed '.' do
           - case @page.format.to_s
             - when 'rdoc'
@@ -65,8 +65,8 @@
           = (s_("WikiMarkdownDocs|More examples are in the %{docs_link}") % { docs_link: markdown_link }).html_safe
 
   .form-group.row
-    .col-sm-12= f.label :commit_message, class: 'control-label-full-width'
-    .col-sm-12= f.text_field :message, class: 'form-control qa-wiki-message-textbox', rows: 18, value: nil
+    .col-sm-2.col-form-label= f.label :commit_message, class: 'control-label-full-width'
+    .col-sm-10= f.text_field :message, class: 'form-control qa-wiki-message-textbox', rows: 18, value: nil
 
   .form-actions
     - if @page && @page.persisted?

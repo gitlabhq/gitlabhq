@@ -24,17 +24,6 @@ RSpec.describe ResourceAccessTokens::CreateService do
       end
     end
 
-    # Remove this shared example when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43190 merges
-    shared_examples 'fails on gitlab.com' do
-      before do
-        allow(Gitlab).to receive(:com?) { true }
-      end
-
-      it 'returns nil' do
-        expect(subject).to be nil
-      end
-    end
-
     shared_examples 'allows creation of bot with valid params' do
       it { expect { subject }.to change { User.count }.by(1) }
 
@@ -192,7 +181,6 @@ RSpec.describe ResourceAccessTokens::CreateService do
       let_it_be(:resource) { project }
 
       it_behaves_like 'fails when user does not have the permission to create a Resource Bot'
-      it_behaves_like 'fails on gitlab.com'
 
       context 'user with valid permission' do
         before_all do

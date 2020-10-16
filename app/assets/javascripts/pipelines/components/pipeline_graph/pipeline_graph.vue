@@ -97,6 +97,19 @@ export default {
         this.reportFailure(DRAW_FAILURE);
       }
     },
+    getStageBackgroundClass(index) {
+      const { length } = this.pipelineData.stages;
+
+      if (length === 1) {
+        return 'stage-rounded';
+      } else if (index === 0) {
+        return 'stage-left-rounded';
+      } else if (index === length - 1) {
+        return 'stage-right-rounded';
+      }
+
+      return '';
+    },
     highlightNeeds(uniqueJobId) {
       // The first time we hover, we create the object where
       // we store all the data to properly highlight the needs.
@@ -177,10 +190,7 @@ export default {
       >
         <div
           class="gl-display-flex gl-align-items-center gl-bg-white gl-w-full gl-px-8 gl-py-4 gl-mb-5"
-          :class="{
-            'stage-left-rounded': index === 0,
-            'stage-right-rounded': index === pipelineData.stages.length - 1,
-          }"
+          :class="getStageBackgroundClass(index)"
         >
           <stage-pill :stage-name="stage.name" :is-empty="stage.groups.length === 0" />
         </div>

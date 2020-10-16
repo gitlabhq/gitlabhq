@@ -1,21 +1,28 @@
 <script>
-import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlButton, GlModalDirective, GlTab, GlTabs } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { s__ } from '~/locale';
 import emptyState from './empty_state.vue';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
 import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
-import EnableReviewAppButton from './enable_review_app_button.vue';
+import EnableReviewAppModal from './enable_review_app_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 
 export default {
+  i18n: {
+    newEnvironmentButtonLabel: s__('Environments|New environment'),
+    reviewAppButtonLabel: s__('Environments|Enable review app'),
+  },
+  modal: {
+    id: 'enable-review-app-info',
+  },
   components: {
     ConfirmRollbackModal,
     emptyState,
-    EnableReviewAppButton,
+    EnableReviewAppModal,
     GlBadge,
     GlButton,
     GlTab,
@@ -23,9 +30,10 @@ export default {
     StopEnvironmentModal,
     DeleteEnvironmentModal,
   },
-
+  directives: {
+    'gl-modal': GlModalDirective,
+  },
   mixins: [CIPaginationMixin, environmentsMixin],
-
   props: {
     endpoint: {
       type: String,
@@ -140,17 +148,25 @@ export default {
         gl-mt-3
         gl-display-md-none!"
       >
-        <enable-review-app-button
+        <gl-button
           v-if="state.reviewAppDetails.can_setup_review_app"
+          v-gl-modal="$options.modal.id"
+          data-testid="enable-review-app"
+          variant="info"
+          category="secondary"
+          type="button"
           class="gl-mb-3 gl-flex-fill-1"
-        />
+        >
+          {{ $options.i18n.reviewAppButtonLabel }}
+        </gl-button>
         <gl-button
           v-if="canCreateEnvironment"
           :href="newEnvironmentPath"
+          data-testid="new-environment"
           category="primary"
           variant="success"
         >
-          {{ s__('Environments|New environment') }}
+          {{ $options.i18n.newEnvironmentButtonLabel }}
         </gl-button>
       </div>
       <gl-tabs content-class="gl-display-none">
@@ -176,17 +192,25 @@ export default {
             gl-lg-justify-content-end
             gl-lg-mt-0"
           >
-            <enable-review-app-button
+            <gl-button
               v-if="state.reviewAppDetails.can_setup_review_app"
+              v-gl-modal="$options.modal.id"
+              data-testid="enable-review-app"
+              variant="info"
+              category="secondary"
+              type="button"
               class="gl-mb-3 gl-lg-mr-3 gl-lg-mb-0"
-            />
+            >
+              {{ $options.i18n.reviewAppButtonLabel }}
+            </gl-button>
             <gl-button
               v-if="canCreateEnvironment"
               :href="newEnvironmentPath"
+              data-testid="new-environment"
               category="primary"
               variant="success"
             >
-              {{ s__('Environments|New environment') }}
+              {{ $options.i18n.newEnvironmentButtonLabel }}
             </gl-button>
           </div>
         </template>
@@ -208,6 +232,11 @@ export default {
           <empty-state :help-path="helpPagePath" />
         </template>
       </container>
+      <enable-review-app-modal
+        v-if="state.reviewAppDetails.can_setup_review_app"
+        :modal-id="$options.modal.id"
+        data-testid="enable-review-app-modal"
+      />
     </div>
   </div>
 </template>

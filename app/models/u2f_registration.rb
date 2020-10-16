@@ -4,6 +4,19 @@
 
 class U2fRegistration < ApplicationRecord
   belongs_to :user
+  after_commit :schedule_webauthn_migration, on: :create
+  after_commit :update_webauthn_registration, on: :update, if: :counter_changed?
+
+  def schedule_webauthn_migration
+    BackgroundMigrationWorker.perform_async('MigrateU2fWebauthn', [id, id])
+  end
+
+  def update_webauthn_registration
+    # When we update the sign count of this registration
+    # we need to update the sign count of the corresponding webauthn registration
+    # as well if it exists already
+    WebauthnRegistration.find_by_credential_xid(webauthn_credential_xid)&.update_attribute(:counter, counter)
+  end
 
   def self.register(user, app_id, params, challenges)
     u2f = U2F::U2F.new(app_id)
@@ -39,5 +52,14 @@ class U2fRegistration < ApplicationRecord
     end
   rescue JSON::ParserError, NoMethodError, ArgumentError, U2F::Error
     false
+  end
+
+  private
+
+  def webauthn_credential_xid
+    # To find the corresponding webauthn registration, we use that
+    # the key handle of the u2f reg corresponds to the credential xid of the webauthn reg
+    # (with some base64 back and forth)
+    Base64.strict_encode64(Base64.urlsafe_decode64(key_handle))
   end
 end

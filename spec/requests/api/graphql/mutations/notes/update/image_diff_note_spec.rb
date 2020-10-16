@@ -178,6 +178,12 @@ RSpec.describe 'Updating an image DiffNote' do
       it_behaves_like 'a mutation that returns top-level errors', errors: ['body or position arguments are required']
     end
 
+    context 'when the resource is not a Note' do
+      let(:diff_note) { note }
+
+      it_behaves_like 'a Note mutation when the given resource id is not for a Note'
+    end
+
     context 'when resource is not a DiffNote on an image' do
       let!(:diff_note) { create(:diff_note_on_merge_request, note: original_body) }
 

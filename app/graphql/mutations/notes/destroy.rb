@@ -15,8 +15,6 @@ module Mutations
       def resolve(id:)
         note = authorized_find!(id: id)
 
-        check_object_is_note!(note)
-
         ::Notes::DestroyService.new(note.project, current_user).execute(note)
 
         {

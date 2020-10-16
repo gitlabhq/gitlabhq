@@ -6,7 +6,7 @@ module Resolvers
 
     type Types::BoardType, null: true
 
-    argument :id, GraphQL::ID_TYPE,
+    argument :id, ::Types::GlobalIDType[::Board],
              required: true,
              description: 'The board\'s ID'
 

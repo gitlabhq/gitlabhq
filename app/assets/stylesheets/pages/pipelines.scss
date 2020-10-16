@@ -89,11 +89,6 @@
   }
 }
 
-.ci-build-text,
-.ci-status-text {
-  font-weight: 200;
-}
-
 /**
  * Terminal
  */
@@ -128,6 +123,10 @@
 
 .pipeline-job-pill {
   width: 8rem;
+}
+
+.stage-rounded {
+  border-radius: 2rem;
 }
 
 .stage-left-rounded {

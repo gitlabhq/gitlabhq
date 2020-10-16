@@ -1,6 +1,6 @@
 import { trimText } from 'helpers/text_helper';
 import { emojiFixtureMap, initEmojiMock, describeEmojiFields } from 'helpers/emoji';
-import { glEmojiTag, searchEmoji } from '~/emoji';
+import { glEmojiTag, searchEmoji, getEmoji } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isRainbowFlagEmoji,
@@ -352,6 +352,20 @@ describe('gl_emoji', () => {
     });
   });
 
+  describe('getEmoji', () => {
+    const { grey_question } = emojiFixtureMap;
+
+    describe('when query is undefined', () => {
+      it('should return null by default', () => {
+        expect(getEmoji()).toBe(null);
+      });
+
+      it('should return fallback emoji when fallback is true', () => {
+        expect(getEmoji(undefined, true).name).toEqual(grey_question.name);
+      });
+    });
+  });
+
   describe('searchEmoji', () => {
     const { atom, grey_question } = emojiFixtureMap;
     const search = (query, opts) => searchEmoji(query, opts).map(({ name }) => name);
@@ -381,6 +395,10 @@ describe('gl_emoji', () => {
 
       it('should not return a fallback value', () => {
         expect(subject('foo bar baz')).toHaveLength(0);
+      });
+
+      it('should not return a fallback value when query is falsey', () => {
+        expect(subject()).toHaveLength(0);
       });
     });
 
@@ -427,8 +445,12 @@ describe('gl_emoji', () => {
     describe('with fallback', () => {
       const subject = query => search(query, { fallback: true });
 
-      it('should return a fallback value', () =>
-        expect(subject('foo bar baz')).toContain(grey_question.name));
+      it.each`
+        query
+        ${'foo bar baz'} | ${undefined}
+      `('should return a fallback value when given $query', ({ query }) => {
+        expect(subject(query)).toContain(grey_question.name);
+      });
     });
 
     describe('with name and alias fields', () => {

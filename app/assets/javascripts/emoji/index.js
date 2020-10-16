@@ -82,6 +82,12 @@ export function getAllEmoji() {
  * @returns {Object} The matching emoji.
  */
 export function getEmoji(query, fallback = false) {
+  // TODO https://gitlab.com/gitlab-org/gitlab/-/issues/268208
+  const fallbackEmoji = emojiMap.grey_question;
+  if (!query) {
+    return fallback ? fallbackEmoji : null;
+  }
+
   if (!emojiMap) {
     // eslint-disable-next-line @gitlab/require-i18n-strings
     throw new Error('The emoji map is uninitialized or initialization has not completed');
@@ -94,11 +100,7 @@ export function getEmoji(query, fallback = false) {
     return emojiMap[name];
   }
 
-  if (fallback) {
-    return emojiMap.grey_question;
-  }
-
-  return null;
+  return fallback ? fallbackEmoji : null;
 }
 
 const searchMatchers = {
@@ -178,6 +180,15 @@ export function searchEmoji(query, opts) {
     raw = false,
   } = opts || {};
 
+  const fallbackEmoji = emojiMap.grey_question;
+  if (!query) {
+    if (fallback) {
+      return raw ? [{ emoji: fallbackEmoji }] : [fallbackEmoji];
+    }
+
+    return [];
+  }
+
   // optimization for an exact match in name and alias
   if (match === 'exact' && new Set([...fields, 'name', 'alias']).size === 2) {
     const emoji = getEmoji(query, fallback);
@@ -193,16 +204,10 @@ export function searchEmoji(query, opts) {
 
   // Fallback to question mark for unknown emojis
   if (fallback && results.length === 0) {
-    if (raw) {
-      return [{ emoji: emojiMap.grey_question }];
-    }
-    return [emojiMap.grey_question];
+    return raw ? [{ emoji: fallbackEmoji }] : [fallbackEmoji];
   }
 
-  if (raw) {
-    return results;
-  }
-  return results.map(r => r.emoji);
+  return raw ? results : results.map(r => r.emoji);
 }
 
 let emojiCategoryMap;

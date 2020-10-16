@@ -335,7 +335,7 @@ export default {
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >
-    <header v-if="showToolbar" class="row-content-block border-top-0 p-2 d-flex">
+    <header v-if="showToolbar" class="row-content-block gl-border-t-0 gl-p-3 gl-display-flex">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
         <div>
           <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
@@ -375,7 +375,7 @@ export default {
         </div>
       </div>
     </header>
-    <div class="mt-4">
+    <div class="gl-mt-6">
       <gl-loading-icon v-if="isLoading" size="md" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ __('An error occurred while loading designs. Please try again.') }}
@@ -385,7 +385,7 @@ export default {
         class="card"
         data-testid="design-collection-is-copying"
       >
-        <div class="card-header design-card-header border-bottom-0">
+        <div class="card-header design-card-header gl-border-b-0">
           <div class="card-title gl-display-flex gl-align-items-center gl-my-0 gl-h-7">
             {{
               s__(

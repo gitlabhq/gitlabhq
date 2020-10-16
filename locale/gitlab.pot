@@ -12699,7 +12699,7 @@ msgstr ""
 msgid "Group avatar"
 msgstr ""
 
-msgid "Group by:"
+msgid "Group by"
 msgstr ""
 
 msgid "Group description"

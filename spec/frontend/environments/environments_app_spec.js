@@ -1,6 +1,7 @@
-import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import EnableReviewAppModal from '~/environments/components/enable_review_app_modal.vue';
 import Container from '~/environments/components/container.vue';
 import EmptyState from '~/environments/components/empty_state.vue';
 import EnvironmentsApp from '~/environments/components/environments_app.vue';
@@ -35,13 +36,15 @@ describe('Environment', () => {
     });
   };
 
-  const createWrapper = (shallow = false) => {
+  const createWrapper = (shallow = false, props = {}) => {
     const fn = shallow ? shallowMount : mount;
-    wrapper = fn(EnvironmentsApp, { propsData: mockData });
+    wrapper = extendedWrapper(fn(EnvironmentsApp, { propsData: { ...mockData, ...props } }));
     return axios.waitForAll();
   };
 
-  const findNewEnvironmentButton = () => wrapper.find(GlButton);
+  const findEnableReviewAppButton = () => wrapper.findByTestId('enable-review-app');
+  const findEnableReviewAppModal = () => wrapper.findAll(EnableReviewAppModal);
+  const findNewEnvironmentButton = () => wrapper.findByTestId('new-environment');
   const findEnvironmentsTabAvailable = () => wrapper.find('.js-environments-tab-available > a');
   const findEnvironmentsTabStopped = () => wrapper.find('.js-environments-tab-stopped > a');
 
@@ -64,19 +67,6 @@ describe('Environment', () => {
       it('should render the empty state', () => {
         expect(wrapper.find(EmptyState).exists()).toBe(true);
       });
-
-      describe('when it is possible to enable a review app', () => {
-        beforeEach(() => {
-          mockRequest(200, { environments: [], review_app: { can_setup_review_app: true } });
-          return createWrapper();
-        });
-
-        it('should render the enable review app button', () => {
-          expect(wrapper.find('.js-enable-review-app-button').text()).toContain(
-            'Enable review app',
-          );
-        });
-      });
     });
 
     describe('with paginated environments', () => {
@@ -91,7 +81,7 @@ describe('Environment', () => {
         return createWrapper();
       });
 
-      it('should render a conatiner table with environments', () => {
+      it('should render a container table with environments', () => {
         const containerTable = wrapper.find(Container);
 
         expect(containerTable.exists()).toBe(true);
@@ -181,8 +171,8 @@ describe('Environment', () => {
   describe('environment button', () => {
     describe('when user can create environment', () => {
       beforeEach(() => {
-        mockRequest([environment]);
-        wrapper = shallowMount(EnvironmentsApp, { propsData: mockData });
+        mockRequest(200, { environments: [] });
+        return createWrapper(true);
       });
 
       it('should render', () => {
@@ -192,14 +182,49 @@ describe('Environment', () => {
 
     describe('when user can not create environment', () => {
       beforeEach(() => {
-        mockRequest([environment]);
-        wrapper = shallowMount(EnvironmentsApp, {
-          propsData: { ...mockData, canCreateEnvironment: false },
-        });
+        mockRequest(200, { environments: [] });
+        return createWrapper(true, { ...mockData, canCreateEnvironment: false });
       });
 
       it('should not render', () => {
         expect(findNewEnvironmentButton().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('review app modal', () => {
+    describe('when it is not possible to enable a review app', () => {
+      beforeEach(() => {
+        mockRequest(200, { environments: [] });
+        return createWrapper(true);
+      });
+
+      it('should not render the enable review app button', () => {
+        expect(findEnableReviewAppButton().exists()).toBe(false);
+      });
+
+      it('should not render a review app modal', () => {
+        const modal = findEnableReviewAppModal();
+        expect(modal).toHaveLength(0);
+        expect(modal.exists()).toBe(false);
+      });
+    });
+
+    describe('when it is possible to enable a review app', () => {
+      beforeEach(() => {
+        mockRequest(200, { environments: [], review_app: { can_setup_review_app: true } });
+        return createWrapper(true);
+      });
+
+      it('should render the enable review app button', () => {
+        expect(findEnableReviewAppButton().exists()).toBe(true);
+        expect(findEnableReviewAppButton().text()).toContain('Enable review app');
+      });
+
+      it('should render only one review app modal', () => {
+        const modal = findEnableReviewAppModal();
+        expect(modal).toHaveLength(1);
+        expect(modal.at(0).exists()).toBe(true);
       });
     });
   });

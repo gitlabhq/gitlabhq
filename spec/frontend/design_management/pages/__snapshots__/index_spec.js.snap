@@ -8,7 +8,7 @@ exports[`Design management index page designs does not render toolbar when there
   <!---->
    
   <div
-    class="mt-4"
+    class="gl-mt-6"
   >
     <ol
       class="list-unstyled row"
@@ -92,7 +92,7 @@ exports[`Design management index page designs renders designs list and header wi
   data-testid="designs-root"
 >
   <header
-    class="row-content-block border-top-0 p-2 d-flex"
+    class="row-content-block gl-border-t-0 gl-p-3 gl-display-flex"
   >
     <div
       class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full"
@@ -142,7 +142,7 @@ exports[`Design management index page designs renders designs list and header wi
   </header>
    
   <div
-    class="mt-4"
+    class="gl-mt-6"
   >
     <ol
       class="list-unstyled row"
@@ -243,7 +243,7 @@ exports[`Design management index page designs renders error 1`] = `
   <!---->
    
   <div
-    class="mt-4"
+    class="gl-mt-6"
   >
     <gl-alert-stub
       dismisslabel="Dismiss"
@@ -274,7 +274,7 @@ exports[`Design management index page designs renders loading icon 1`] = `
   <!---->
    
   <div
-    class="mt-4"
+    class="gl-mt-6"
   >
     <gl-loading-icon-stub
       color="orange"
@@ -297,7 +297,7 @@ exports[`Design management index page when has no designs renders design dropzon
   <!---->
    
   <div
-    class="mt-4"
+    class="gl-mt-6"
   >
     <ol
       class="list-unstyled row"

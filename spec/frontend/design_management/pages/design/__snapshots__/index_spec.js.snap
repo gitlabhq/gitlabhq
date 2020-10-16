@@ -2,10 +2,10 @@
 
 exports[`Design management design index page renders design index 1`] = `
 <div
-  class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+  class="design-detail js-design-detail fixed-top gl-w-full gl-bottom-0 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
 >
   <div
-    class="d-flex overflow-hidden flex-grow-1 flex-column position-relative"
+    class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
   >
     <design-destroyer-stub
       filenames="test.jpg"
@@ -23,7 +23,7 @@ exports[`Design management design index page renders design index 1`] = `
     />
      
     <div
-      class="design-scaler-wrapper position-absolute mb-4 d-flex-center"
+      class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
     >
       <design-scaler-stub />
     </div>
@@ -132,10 +132,10 @@ exports[`Design management design index page renders design index 1`] = `
 
 exports[`Design management design index page sets loading state 1`] = `
 <div
-  class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+  class="design-detail js-design-detail fixed-top gl-w-full gl-bottom-0 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
 >
   <gl-loading-icon-stub
-    class="align-self-center"
+    class="gl-align-self-center"
     color="orange"
     label="Loading"
     size="xl"
@@ -145,10 +145,10 @@ exports[`Design management design index page sets loading state 1`] = `
 
 exports[`Design management design index page with error GlAlert is rendered in correct position with correct content 1`] = `
 <div
-  class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+  class="design-detail js-design-detail fixed-top gl-w-full gl-bottom-0 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
 >
   <div
-    class="d-flex overflow-hidden flex-grow-1 flex-column position-relative"
+    class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
   >
     <design-destroyer-stub
       filenames="test.jpg"
@@ -157,7 +157,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     />
      
     <div
-      class="p-3"
+      class="gl-p-5"
     >
       <gl-alert-stub
         dismissible="true"
@@ -183,7 +183,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     />
      
     <div
-      class="design-scaler-wrapper position-absolute mb-4 d-flex-center"
+      class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
     >
       <design-scaler-stub />
     </div>

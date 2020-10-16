@@ -4228,14 +4228,26 @@ RSpec.describe MergeRequest, factory_default: :keep do
         it 'returns true' do
           expect(subject.diffable_merge_ref?).to eq(true)
         end
-      end
-    end
 
-    context 'merge request cannot be merged' do
-      it 'returns false' do
-        subject.mark_as_unchecked!
+        context 'merge request cannot be merged' do
+          before do
+            subject.mark_as_unchecked!
+          end
 
-        expect(subject.diffable_merge_ref?).to eq(false)
+          it 'returns false' do
+            expect(subject.diffable_merge_ref?).to eq(true)
+          end
+
+          context 'display_merge_conflicts_in_diff is disabled' do
+            before do
+              stub_feature_flags(display_merge_conflicts_in_diff: false)
+            end
+
+            it 'returns false' do
+              expect(subject.diffable_merge_ref?).to eq(false)
+            end
+          end
+        end
       end
     end
   end

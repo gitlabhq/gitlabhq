@@ -83,7 +83,11 @@ There are several ways to authenticate with the GitLab API:
 
 1. [OAuth2 tokens](#oauth2-tokens)
 1. [Personal access tokens](../user/profile/personal_access_tokens.md)
-1. [Project access tokens](../user/project/settings/project_access_tokens.md) **(CORE ONLY)**
+1. [Project access tokens](../user/project/settings/project_access_tokens.md)
+
+NOTE: **Note:**
+Project access tokens are supported for self-managed instances on Core and above. They are also supported on GitLab.com Bronze and above.
+
 1. [Session cookie](#session-cookie)
 1. [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 

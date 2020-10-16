@@ -48,7 +48,9 @@ export default {
     >
       <ci-icon :status="group.status" />
 
-      <span class="ci-status-text text-truncate mw-70p gl-pl-2 d-inline-block align-bottom">
+      <span
+        class="gl-text-truncate mw-70p gl-pl-2 gl-display-inline-block gl-vertical-align-bottom"
+      >
         {{ group.name }}
       </span>
 

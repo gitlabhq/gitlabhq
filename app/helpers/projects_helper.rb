@@ -782,8 +782,6 @@ module ProjectsHelper
   end
 
   def project_access_token_available?(project)
-    return false if ::Gitlab.com?
-
     can?(current_user, :admin_resource_access_tokens, project)
   end
 end

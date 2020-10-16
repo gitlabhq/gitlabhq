@@ -252,5 +252,16 @@ RSpec.describe MergeRequests::MergeToRefService do
         end
       end
     end
+
+    context 'allow conflicts to be merged in diff' do
+      let(:params) { { allow_conflicts: true } }
+
+      it 'calls merge_to_ref with allow_conflicts param' do
+        expect(project.repository).to receive(:merge_to_ref)
+          .with(anything, anything, anything, anything, anything, anything, true)
+
+        service.execute(merge_request)
+      end
+    end
   end
 end

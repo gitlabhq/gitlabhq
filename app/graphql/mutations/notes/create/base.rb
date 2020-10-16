@@ -26,8 +26,6 @@ module Mutations
         def resolve(args)
           noteable = authorized_find!(id: args[:noteable_id])
 
-          check_object_is_noteable!(noteable)
-
           note = ::Notes::CreateService.new(
             noteable.project,
             current_user,
