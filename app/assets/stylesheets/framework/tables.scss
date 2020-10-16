@@ -186,6 +186,7 @@ table {
     .checkbox {
       padding-left: $gl-spacing-scale-4;
       padding-right: 0;
+      width: 1px;
 
       + td,
       + th {
@@ -205,12 +206,20 @@ table {
       width: 10%;
     }
 
+    .description {
+      max-width: 0;
+    }
+
     .identifier {
       width: 16%;
     }
 
     .scanner {
-      width: 15%;
+      width: 10%;
+    }
+
+    .activity {
+      width: 5%;
     }
   }
 }

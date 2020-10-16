@@ -1,7 +1,7 @@
 ---
 name: global_default_branch_name
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35269
+rollout_issue_url:
+group: group::source code
 type: development
 default_enabled: true

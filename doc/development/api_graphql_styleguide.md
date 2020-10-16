@@ -385,8 +385,8 @@ end
 GitLab's GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change. Rather
 than removing a field or [enum value](#enums), we need to _deprecate_ it instead.
-In future, GitLab
-[may remove deprecated parts of the schema](https://gitlab.com/gitlab-org/gitlab/-/issues/32292).
+The deprecated parts of the schema can then be removed in a future release
+in accordance with [GitLab's deprecation process](../api/graphql/index.md#deprecation-process).
 
 Fields and enum values are deprecated using the `deprecated` property.
 The value of the property is a `Hash` of:

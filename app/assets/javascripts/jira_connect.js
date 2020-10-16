@@ -18,6 +18,13 @@ function onLoaded() {
     alert(res.responseJSON.error);
   };
 
+  AP.getLocation(function(location) {
+    $('.js-jira-connect-sign-in').each(function() {
+      var updatedLink = `${$(this).attr('href')}?return_to=${location}`;
+      $(this).attr('href', updatedLink);
+    });
+  });
+
   $('#add-subscription-form').on('submit', function(e) {
     var actionUrl = $(this).attr('action');
     e.preventDefault();

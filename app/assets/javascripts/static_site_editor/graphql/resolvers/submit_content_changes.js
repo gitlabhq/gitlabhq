@@ -1,3 +1,4 @@
+import { produce } from 'immer';
 import submitContentChanges from '../../services/submit_content_changes';
 import savedContentMetaQuery from '../queries/saved_content_meta.query.graphql';
 
@@ -14,14 +15,18 @@ const submitContentChangesResolver = (
     images,
     mergeRequestMeta,
   }).then(savedContentMeta => {
-    cache.writeQuery({
-      query: savedContentMetaQuery,
-      data: {
+    const data = produce(savedContentMeta, draftState => {
+      return {
         savedContentMeta: {
           __typename: 'SavedContentMeta',
-          ...savedContentMeta,
+          ...draftState,
         },
-      },
+      };
+    });
+
+    cache.writeQuery({
+      query: savedContentMetaQuery,
+      data,
     });
   });
 };

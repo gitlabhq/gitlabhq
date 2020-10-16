@@ -1,16 +1,24 @@
+import { produce } from 'immer';
 import query from '../queries/app_data.query.graphql';
 
 const hasSubmittedChangesResolver = (_, { input: { hasSubmittedChanges } }, { cache }) => {
-  const { appData } = cache.readQuery({ query });
-  cache.writeQuery({
-    query,
-    data: {
+  const oldData = cache.readQuery({ query });
+
+  const data = produce(oldData, draftState => {
+    // punctually modifying draftState as per immer docs upsets our linters
+    return {
+      ...draftState,
       appData: {
         __typename: 'AppData',
-        ...appData,
+        ...draftState.appData,
         hasSubmittedChanges,
       },
-    },
+    };
+  });
+
+  cache.writeQuery({
+    query,
+    data,
   });
 };
 

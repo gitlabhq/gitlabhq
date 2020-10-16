@@ -14149,6 +14149,9 @@ msgstr ""
 msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use instance-level defaults."
 msgstr ""
 
+msgid "Integrations|Return to GitLab for Jira"
+msgstr ""
+
 msgid "Integrations|Save settings?"
 msgstr ""
 
@@ -14171,6 +14174,9 @@ msgid "Integrations|Use the GitLab Slack application"
 msgstr ""
 
 msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created."
+msgstr ""
+
+msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -24241,6 +24247,9 @@ msgstr ""
 msgid "Sign in to \"%{group_name}\""
 msgstr ""
 
+msgid "Sign in to GitLab"
+msgstr ""
+
 msgid "Sign in using smart card"
 msgstr ""
 
@@ -24284,6 +24293,9 @@ msgid "SignUp|Username is too short (minimum is %{min_length} characters)."
 msgstr ""
 
 msgid "Signed in"
+msgstr ""
+
+msgid "Signed in to GitLab as %{user_link}"
 msgstr ""
 
 msgid "Signed in with %{authentication} authentication"
@@ -29857,6 +29869,9 @@ msgid "You are on a read-only GitLab instance."
 msgstr ""
 
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
+msgstr ""
+
+msgid "You are signed into GitLab as %{user_link}"
 msgstr ""
 
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
