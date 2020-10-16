@@ -553,7 +553,7 @@ POST /runners
 |--------------|---------|----------|---------------------|
 | `token`      | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
 | `description`| string  | no       | Runner's description|
-| `info`       | hash    | no       | Runner's metadata   |
+| `info`       | hash    | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI. |
 | `active`     | boolean | no       | Whether the runner is active   |
 | `locked`     | boolean | no       | Whether the runner should be locked for current project |
 | `run_untagged` | boolean | no     | Whether the runner should handle untagged jobs |

@@ -1,13 +1,12 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   components: {
     GlIcon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     title: {
@@ -51,7 +50,7 @@ export default {
 
 <template>
   <span
-    v-tooltip
+    v-gl-tooltip
     :data-placement="tooltipPlacement"
     :class="cssClass"
     :title="title"

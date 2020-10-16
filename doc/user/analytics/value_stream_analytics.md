@@ -96,8 +96,7 @@ Value Stream Analytics records stage time and data based on the project issues w
 exception of the staging stage, where only data deployed to
 production are measured.
 
-Specifically, if your CI is not set up and you have not defined a `production`
-or `production/*` [environment](../../ci/yaml/README.md#environment), then you will not have any
+Specifically, if your CI is not set up and you have not defined a [production environment](#how-the-production-environment-is-identified), then you will not have any
 data for this stage.
 
 Each stage of Value Stream Analytics is further described in the table below.
@@ -109,7 +108,7 @@ Each stage of Value Stream Analytics is further described in the table below.
 | Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically) to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the issue closing pattern is not present in the merge request description, the MR is not considered to the measurement time of the stage. |
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
 | Review    | Measures the median time taken to review the merge request that has a closing issue pattern, between its creation and until it's merged. |
-| Staging   | Measures the median time between merging the merge request with a closing issue pattern until the very first deployment to production. It's tracked by the environment set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI/CD configuration. If there isn't a production environment, this is not tracked. |
+| Staging   | Measures the median time between merging the merge request with a closing issue pattern until the very first deployment to a [production environment](#how-the-production-environment-is-identified). If there isn't a production environment, this is not tracked. |
 
 How this works, behind the scenes:
 
@@ -128,8 +127,18 @@ Value Stream Analytics dashboard will not present any data for:
 
 - Merge requests that do not close an issue.
 - Issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
-- Staging stage, if the project has no `production` or `production/*`
-  environment.
+- Staging stage, if the project has no [production environment](#how-the-production-environment-is-identified).
+
+## How the production environment is identified
+
+Value Stream Analytics identifies production environments by looking for project [environments](../../ci/yaml/README.md#environment) with a name matching any of these patterns:
+
+- `prod` or `prod/*`
+- `production` or `production/*`
+
+These patterns are not case-sensitive.
+
+You can change the name of a project environment in your GitLab CI/CD configuration.
 
 ## Example workflow
 

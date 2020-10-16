@@ -49,7 +49,7 @@ describe('ItemStatsValue', () => {
       });
 
       it('renders element tooltip correctly', () => {
-        expect(wrapper.attributes('data-original-title')).toBe('Subgroups');
+        expect(wrapper.attributes('title')).toBe('Subgroups');
         expect(wrapper.attributes('data-placement')).toBe('left');
       });
 

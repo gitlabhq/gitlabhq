@@ -161,29 +161,6 @@ RSpec.describe Ci::PipelineTriggerService do
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
               expect(job.sourced_pipelines.last.pipeline_id).to eq(result[:pipeline].id)
             end
-
-            context 'when the config has workflow rule with the variable' do
-              let(:config) do
-                <<-EOY
-                  workflow:
-                    rules:
-                      - if: $AAA
-
-                  regular-job:
-                    script: 'echo Hello, World!'
-                EOY
-              end
-
-              before do
-                stub_ci_pipeline_yaml_file(config)
-              end
-
-              it 'runs the pipeline' do
-                expect { result }.to change { Ci::Pipeline.count }.by(1)
-
-                expect(result[:status]).to eq(:success)
-              end
-            end
           end
         end
 

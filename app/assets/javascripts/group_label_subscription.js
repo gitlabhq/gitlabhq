@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from './flash';
+import { fixTitle, hide } from '~/tooltips';
 
 const tooltipTitles = {
   group: __('Unsubscribe at group level'),
@@ -59,9 +60,9 @@ export default class GroupLabelSubscription {
     const type = $button.hasClass('js-group-level') ? 'group' : 'project';
     const newTitle = tooltipTitles[type];
 
-    $('.js-unsubscribe-button', $button.closest('.label-actions-list'))
-      .tooltip('hide')
-      .attr('title', newTitle)
-      .tooltip('_fixTitle');
+    const $el = $('.js-unsubscribe-button', $button.closest('.label-actions-list'));
+    hide($el);
+    $el.attr('title', `${newTitle}`);
+    fixTitle($el);
   }
 }

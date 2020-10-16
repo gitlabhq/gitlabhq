@@ -14557,9 +14557,9 @@ CREATE TABLE plan_limits (
     nuget_max_file_size bigint DEFAULT 524288000 NOT NULL,
     pypi_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
     generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
-    project_feature_flags integer DEFAULT 200 NOT NULL,
     golang_max_file_size bigint DEFAULT 104857600 NOT NULL,
     debian_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
+    project_feature_flags integer DEFAULT 200 NOT NULL,
     ci_max_artifact_size_api_fuzzing integer DEFAULT 0 NOT NULL
 );
 

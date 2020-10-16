@@ -4028,9 +4028,6 @@ msgstr ""
 msgid "Badges|Badge image preview"
 msgstr ""
 
-msgid "Badges|Delete badge"
-msgstr ""
-
 msgid "Badges|Delete badge?"
 msgstr ""
 
@@ -8559,6 +8556,9 @@ msgid "Delete account"
 msgstr ""
 
 msgid "Delete artifacts"
+msgstr ""
+
+msgid "Delete badge"
 msgstr ""
 
 msgid "Delete board"

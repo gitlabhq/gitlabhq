@@ -312,18 +312,25 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
   describe '#update_merge_request_metrics?' do
     {
+      'gprd' => false,
+      'prod' => true,
+      'prod-test' => false,
+      'PROD' => true,
       'production' => true,
+      'production-test' => false,
+      'PRODUCTION' => true,
       'production/eu' => true,
+      'PRODUCTION/EU' => true,
       'production/www.gitlab.com' => true,
       'productioneu' => false,
-      'Production' => false,
-      'Production/eu' => false,
+      'Production' => true,
+      'Production/eu' => true,
       'test-production' => false
     }.each do |name, expected_value|
       it "returns #{expected_value} for #{name}" do
         env = create(:environment, name: name)
 
-        expect(env.update_merge_request_metrics?).to eq(expected_value)
+        expect(env.update_merge_request_metrics?).to eq(expected_value), "Expected the name '#{name}' to result in #{expected_value}, but it didn't."
       end
     end
   end

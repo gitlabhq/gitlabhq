@@ -1,117 +1,71 @@
-import Vue from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vuex from 'vuex';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlModal } from '@gitlab/ui';
 import store from '~/badges/store';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
+import BadgeList from '~/badges/components/badge_list.vue';
+import BadgeListRow from '~/badges/components/badge_list_row.vue';
 import { createDummyBadge } from '../dummy_badge';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('BadgeSettings component', () => {
-  const Component = Vue.extend(BadgeSettings);
-  let vm;
+  let wrapper;
+  const badge = createDummyBadge();
+
+  const createComponent = (isEditing = false) => {
+    store.state.badges = [badge];
+    store.state.kind = 'project';
+    store.state.isEditing = isEditing;
+
+    wrapper = shallowMount(BadgeSettings, {
+      store,
+      localVue,
+      stubs: {
+        'badge-list': BadgeList,
+        'badge-list-row': BadgeListRow,
+      },
+    });
+  };
 
   beforeEach(() => {
-    setFixtures(`
-      <div id="dummy-element"></div>
-      <button
-        id="dummy-modal-button"
-        type="button"
-        data-toggle="modal"
-        data-target="#delete-badge-modal"
-      >Show modal</button>
-    `);
-
-    // Can be removed once GlLoadingIcon no longer throws a warning
-    jest.spyOn(global.console, 'warn').mockImplementation(() => jest.fn());
-
-    vm = mountComponentWithStore(Component, {
-      el: '#dummy-element',
-      store,
-    });
+    createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  it('displays modal if button is clicked', done => {
-    const badge = createDummyBadge();
-    store.state.badgeInModal = badge;
-    const modal = vm.$el.querySelector('#delete-badge-modal');
-    const button = document.getElementById('dummy-modal-button');
+  it('displays modal if button for deleting a badge is clicked', async () => {
+    const button = wrapper.find('[data-testid="delete-badge"]');
 
-    button.click();
+    button.vm.$emit('click');
+    await wrapper.vm.$nextTick();
 
-    Vue.nextTick()
-      .then(() => {
-        expect(modal.innerText).toMatch('Delete badge?');
-        const badgeElement = modal.querySelector('img.project-badge');
-        expect(badgeElement).not.toBe(null);
-        expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
-      })
-      .then(done)
-      .catch(done.fail);
+    const modal = wrapper.find(GlModal);
+    expect(modal.isVisible()).toBe(true);
   });
 
   it('displays a form to add a badge', () => {
-    const form = vm.$el.querySelector('form:nth-of-type(2)');
-
-    expect(form).not.toBe(null);
-    const button = form.querySelector('.btn-success');
-
-    expect(button).not.toBe(null);
-    expect(button).toHaveText(/Add badge/);
+    expect(wrapper.find('[data-testid="add-new-badge"]').isVisible()).toBe(true);
   });
 
   it('displays badge list', () => {
-    const badgeListElement = vm.$el.querySelector('.card');
-
-    expect(badgeListElement).not.toBe(null);
-    expect(badgeListElement).toBeVisible();
-    expect(badgeListElement.innerText).toMatch('Your badges');
+    expect(wrapper.find(BadgeList).isVisible()).toBe(true);
   });
 
   describe('when editing', () => {
-    beforeEach(done => {
-      store.state.isEditing = true;
-
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+    beforeEach(() => {
+      createComponent(true);
     });
 
     it('displays a form to edit a badge', () => {
-      const form = vm.$el.querySelector('form:nth-of-type(1)');
-
-      expect(form).not.toBe(null);
-      const cancelButton = form.querySelector('[data-testid="cancelEditing"]');
-
-      expect(cancelButton).not.toBe(null);
-      expect(cancelButton).toHaveText(/Cancel/);
-      const submitButton = form.querySelector('[data-testid="saveEditing"]');
-
-      expect(submitButton).not.toBe(null);
-      expect(submitButton).toHaveText(/Save changes/);
+      expect(wrapper.find('[data-testid="edit-badge"]').isVisible()).toBe(true);
     });
 
     it('displays no badge list', () => {
-      const badgeListElement = vm.$el.querySelector('.card');
-
-      expect(badgeListElement).toBeHidden();
-    });
-  });
-
-  describe('methods', () => {
-    describe('onSubmitModal', () => {
-      it('triggers ', () => {
-        jest.spyOn(vm, 'deleteBadge').mockImplementation(() => Promise.resolve());
-        const modal = vm.$el.querySelector('#delete-badge-modal');
-        const deleteButton = modal.querySelector('.btn-danger');
-
-        deleteButton.click();
-
-        const badge = store.state.badgeInModal;
-
-        expect(vm.deleteBadge).toHaveBeenCalledWith(badge);
-      });
+      expect(wrapper.find(BadgeList).isVisible()).toBe(false);
     });
   });
 });
