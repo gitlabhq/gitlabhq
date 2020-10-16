@@ -573,4 +573,19 @@ RSpec.describe Projects::ProjectMembersController do
       end
     end
   end
+
+  describe 'POST resend_invite' do
+    let(:member) { create(:project_member, project: project) }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    it 'is successful' do
+      post :resend_invite, params: { namespace_id: project.namespace, project_id: project, id: member }
+
+      expect(response).to have_gitlab_http_status(:found)
+    end
+  end
 end

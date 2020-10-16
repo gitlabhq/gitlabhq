@@ -50,6 +50,12 @@ module Gitlab
             variables.values.flatten(1).all?(&method(:validate_alphanumeric))
         end
 
+        def validate_string_or_hash_value_variables(variables, allowed_value_data)
+          variables.is_a?(Hash) &&
+            variables.keys.all?(&method(:validate_alphanumeric)) &&
+            variables.values.all? { |value| validate_string_or_hash_value_variable(value, allowed_value_data) }
+        end
+
         def validate_alphanumeric(value)
           validate_string(value) || validate_integer(value)
         end
@@ -60,6 +66,14 @@ module Gitlab
 
         def validate_string(value)
           value.is_a?(String) || value.is_a?(Symbol)
+        end
+
+        def validate_string_or_hash_value_variable(value, allowed_value_data)
+          if value.is_a?(Hash)
+            (value.keys - allowed_value_data).empty? && value.values.all?(&method(:validate_alphanumeric))
+          else
+            validate_alphanumeric(value)
+          end
         end
 
         def validate_regexp(value)

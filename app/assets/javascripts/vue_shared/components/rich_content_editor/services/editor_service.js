@@ -3,7 +3,7 @@ import { defaults } from 'lodash';
 import ToolbarItem from '../toolbar_item.vue';
 import buildHtmlToMarkdownRenderer from './build_html_to_markdown_renderer';
 import buildCustomHTMLRenderer from './build_custom_renderer';
-import { TOOLBAR_ITEM_CONFIGS } from '../constants';
+import { TOOLBAR_ITEM_CONFIGS, VIDEO_ATTRIBUTES } from '../constants';
 import sanitizeHTML from './sanitize_html';
 
 const buildWrapper = propsData => {
@@ -15,6 +15,23 @@ const buildWrapper = propsData => {
 
   instance.$mount();
   return instance.$el;
+};
+
+const buildVideoIframe = src => {
+  const wrapper = document.createElement('figure');
+  const iframe = document.createElement('iframe');
+  const videoAttributes = { ...VIDEO_ATTRIBUTES, src };
+  const wrapperClasses = ['gl-relative', 'gl-h-0', 'video_container'];
+  const iframeClasses = ['gl-absolute', 'gl-top-0', 'gl-left-0', 'gl-w-full', 'gl-h-full'];
+
+  wrapper.setAttribute('contenteditable', 'false');
+  wrapper.classList.add(...wrapperClasses);
+  iframe.classList.add(...iframeClasses);
+  Object.assign(iframe, videoAttributes);
+
+  wrapper.appendChild(iframe);
+
+  return wrapper;
 };
 
 export const generateToolbarItem = config => {
@@ -43,6 +60,16 @@ export const removeCustomEventListener = (editorApi, event, handler) =>
   editorApi.eventManager.removeEventHandler(event, handler);
 
 export const addImage = ({ editor }, image) => editor.exec('AddImage', image);
+
+export const insertVideo = ({ editor }, url) => {
+  const videoIframe = buildVideoIframe(url);
+
+  if (editor.isWysiwygMode()) {
+    editor.getSquire().insertElement(videoIframe);
+  } else {
+    editor.insertText(videoIframe.outerHTML);
+  }
+};
 
 export const getMarkdown = editorInstance => editorInstance.invoke('getMarkdown');
 

@@ -208,6 +208,10 @@ class Service < ApplicationRecord
     DEV_SERVICE_NAMES
   end
 
+  def self.project_specific_services_names
+    []
+  end
+
   def self.available_services_types
     available_services_names.map { |service_name| "#{service_name}_service".camelize }
   end

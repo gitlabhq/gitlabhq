@@ -10,6 +10,8 @@ import {
   TH_CREATED_AT_TEST_ID,
   TH_SEVERITY_TEST_ID,
   TH_PUBLISHED_TEST_ID,
+  trackIncidentCreateNewOptions,
+  trackIncidentListViewsOptions,
 } from '~/incidents/constants';
 import mockIncidents from '../mocks/incidents.json';
 
@@ -289,6 +291,27 @@ describe('Incidents List', () => {
       columnHeader().trigger('click');
       await wrapper.vm.$nextTick();
       expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
+    });
+  });
+
+  describe('Snowplow tracking', () => {
+    beforeEach(() => {
+      mountComponent({
+        data: { incidents: { list: mockIncidents }, incidentsCount: {} },
+        loading: false,
+      });
+    });
+
+    it('should track incident list views', () => {
+      const { category, action } = trackIncidentListViewsOptions;
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track incident creation events', async () => {
+      findCreateIncidentBtn().vm.$emit('click');
+      await wrapper.vm.$nextTick();
+      const { category, action } = trackIncidentCreateNewOptions;
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
   });
 });

@@ -310,7 +310,7 @@ export default {
           category="primary"
           variant="success"
           :href="newIncidentPath"
-          @click="redirecting = true"
+          @click="navigateToCreateNewIncident"
         >
           {{ $options.i18n.createIncidentBtnLabel }}
         </gl-button>

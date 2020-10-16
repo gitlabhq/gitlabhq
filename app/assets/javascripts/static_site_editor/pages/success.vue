@@ -61,45 +61,46 @@ export default {
 };
 </script>
 <template>
-  <div class="container gl-flex-grow-1 gl-display-flex gl-flex-direction-column">
-    <div
-      v-if="savedContentMeta"
-      class="gl-fixed gl-left-0 gl-right-0 gl-border-b-solid gl-border-b-1 gl-border-b-gray-100"
-    >
+  <div>
+    <div class="gl-border-b-solid gl-border-b-1 gl-border-b-gray-100">
       <div class="container gl-py-4">
-        <gl-button
-          v-if="appData.returnUrl"
-          ref="returnToSiteButton"
-          class="gl-mr-5"
-          :href="appData.returnUrl"
-          >{{ $options.returnToSiteBtnText }}</gl-button
-        >
-        <strong>
-          {{ updatedFileDescription }}
-        </strong>
+        <div class="gl-display-flex">
+          <gl-button
+            v-if="appData.returnUrl"
+            ref="returnToSiteButton"
+            class="gl-mr-5 gl-align-self-start"
+            :href="appData.returnUrl"
+            >{{ $options.returnToSiteBtnText }}</gl-button
+          >
+          <strong class="gl-mt-2">
+            {{ updatedFileDescription }}
+          </strong>
+        </div>
       </div>
     </div>
-    <gl-empty-state
-      class="gl-my-9"
-      :title="savedContentMeta ? $options.title : $options.submittingTitle"
-      :primary-button-text="savedContentMeta && $options.primaryButtonText"
-      :primary-button-link="savedContentMeta && savedContentMeta.mergeRequest.url"
-      :svg-path="mergeRequestsIllustrationPath"
-      :svg-height="146"
-    >
-      <template #description>
-        <div v-if="savedContentMeta">
-          <p>{{ $options.mergeRequestInstructionsHeading }}</p>
-          <p>{{ $options.addTitleInstruction }}</p>
-          <p>{{ $options.addDescriptionInstruction }}</p>
-          <p>{{ $options.assignMergeRequestInstruction }}</p>
-        </div>
-        <div v-else>
-          <p>{{ $options.submittingNotePrimary }}</p>
-          <p>{{ $options.submittingNoteSecondary }}</p>
-          <gl-loading-icon size="xl" />
-        </div>
-      </template>
-    </gl-empty-state>
+    <div class="container">
+      <gl-empty-state
+        class="gl-my-7"
+        :title="savedContentMeta ? $options.title : $options.submittingTitle"
+        :primary-button-text="savedContentMeta && $options.primaryButtonText"
+        :primary-button-link="savedContentMeta && savedContentMeta.mergeRequest.url"
+        :svg-path="mergeRequestsIllustrationPath"
+        :svg-height="146"
+      >
+        <template #description>
+          <div v-if="savedContentMeta">
+            <p>{{ $options.mergeRequestInstructionsHeading }}</p>
+            <p>{{ $options.addTitleInstruction }}</p>
+            <p>{{ $options.addDescriptionInstruction }}</p>
+            <p>{{ $options.assignMergeRequestInstruction }}</p>
+          </div>
+          <div v-else>
+            <p>{{ $options.submittingNotePrimary }}</p>
+            <p>{{ $options.submittingNoteSecondary }}</p>
+            <gl-loading-icon size="xl" />
+          </div>
+        </template>
+      </gl-empty-state>
+    </div>
   </div>
 </template>

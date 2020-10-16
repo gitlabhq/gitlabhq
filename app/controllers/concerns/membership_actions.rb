@@ -105,7 +105,7 @@ module MembershipActions
   # rubocop: enable CodeReuse/ActiveRecord
 
   def resend_invite
-    member = membershipable.members.find(params[:id])
+    member = membershipable_members.find(params[:id])
 
     if member.invite?
       member.resend_invite
@@ -119,6 +119,10 @@ module MembershipActions
   protected
 
   def membershipable
+    raise NotImplementedError
+  end
+
+  def membershipable_members
     raise NotImplementedError
   end
 

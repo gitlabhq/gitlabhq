@@ -302,6 +302,10 @@ class MergeRequest < ApplicationRecord
     includes(:metrics)
   end
 
+  scope :reviewer_assigned_to, ->(user) do
+    where("EXISTS (SELECT TRUE FROM merge_request_reviewers WHERE user_id = ? AND merge_request_id = merge_requests.id)", user.id)
+  end
+
   after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project

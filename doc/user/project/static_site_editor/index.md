@@ -115,6 +115,17 @@ company and a new feature has been added to the company product.
 1. You edit the file right there and click **Submit changes**.
 1. A new merge request is automatically created and you assign it to your colleague for review.
 
+## Videos
+
+> - Support for embedding YouTube videos through the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216642) in GitLab 13.5.
+
+You can embed YouTube videos on the WYSIWYG mode by clicking the video icon (**{live-preview}**).
+The following URL/ID formats are supported:
+
+- YouTube watch URL (e.g. `https://www.youtube.com/watch?v=0t1DgySidms`)
+- YouTube embed URL (e.g. `https://www.youtube.com/embed/0t1DgySidms`)
+- YouTube video ID (e.g. `0t1DgySidms`)
+
 ## Limitations
 
 - The Static Site Editor still cannot be quickly added to existing Middleman sites. Follow this [epic](https://gitlab.com/groups/gitlab-org/-/epics/2784) for updates.

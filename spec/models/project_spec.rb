@@ -5509,12 +5509,13 @@ RSpec.describe Project do
   describe '#find_or_initialize_services' do
     it 'returns only enabled services' do
       allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
+      allow(Service).to receive(:project_specific_services_names).and_return(%w[asana])
       allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
 
       services = subject.find_or_initialize_services
 
-      expect(services.count).to eq(2)
-      expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
+      expect(services.count).to eq(3)
+      expect(services.map(&:title)).to eq(['Asana', 'JetBrains TeamCity CI', 'Pushover'])
     end
   end
 

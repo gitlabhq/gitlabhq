@@ -34,6 +34,12 @@ describe('Release detail actions', () => {
       isExistingRelease: true,
     };
 
+    const rootState = {
+      featureFlags: {
+        graphqlIndividualReleasePage: false,
+      },
+    };
+
     state = {
       ...createState({
         projectId: '18',
@@ -44,6 +50,7 @@ describe('Release detail actions', () => {
         updateReleaseApiDocsPath: 'path/to/api/docs',
       }),
       ...getters,
+      ...rootState,
       ...updates,
     };
   };
@@ -154,7 +161,7 @@ describe('Release detail actions', () => {
         });
 
         it(`shows a flash message`, () => {
-          return actions.fetchRelease({ commit: jest.fn(), state }).then(() => {
+          return actions.fetchRelease({ commit: jest.fn(), state, rootState: state }).then(() => {
             expect(createFlash).toHaveBeenCalledTimes(1);
             expect(createFlash).toHaveBeenCalledWith(
               'Something went wrong while getting the release details',

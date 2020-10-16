@@ -1051,6 +1051,9 @@ msgstr ""
 msgid "0 for unlimited, only effective with remote storage enabled."
 msgstr ""
 
+msgid "0t1DgySidms"
+msgstr ""
+
 msgid "1 %{type} addition"
 msgid_plural "%{count} %{type} additions"
 msgstr[0] ""
@@ -13549,6 +13552,9 @@ msgstr ""
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
+msgid "If the YouTube URL is https://www.youtube.com/watch?v=0t1DgySidms then the video ID is %{id}"
+msgstr ""
+
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
@@ -14021,6 +14027,9 @@ msgstr ""
 msgid "Insert a quote"
 msgstr ""
 
+msgid "Insert a video"
+msgstr ""
+
 msgid "Insert an image"
 msgstr ""
 
@@ -14034,6 +14043,9 @@ msgid "Insert inline code"
 msgstr ""
 
 msgid "Insert suggestion"
+msgstr ""
+
+msgid "Insert video"
 msgstr ""
 
 msgid "Insights"
@@ -19544,6 +19556,9 @@ msgid "Please provide a name"
 msgstr ""
 
 msgid "Please provide a valid URL"
+msgstr ""
+
+msgid "Please provide a valid YouTube URL or ID"
 msgstr ""
 
 msgid "Please provide a valid email address."
@@ -30298,6 +30313,9 @@ msgid "You've already enabled two-factor authentication using one time password 
 msgstr ""
 
 msgid "YouTube"
+msgstr ""
+
+msgid "YouTube URL or ID"
 msgstr ""
 
 msgid "Your %{host} account was signed in to from a new location"

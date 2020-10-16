@@ -13,6 +13,9 @@ export default () => {
     modules: {
       detail: createDetailModule(el.dataset),
     },
+    featureFlags: {
+      graphqlIndividualReleasePage: Boolean(gon.features?.graphqlIndividualReleasePage),
+    },
   });
 
   return new Vue({

@@ -159,7 +159,6 @@ module NotesHelper
         members: autocomplete,
         issues: autocomplete,
         mergeRequests: autocomplete,
-        vulnerabilities: autocomplete,
         epics: autocomplete,
         milestones: autocomplete,
         labels: autocomplete

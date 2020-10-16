@@ -145,6 +145,10 @@ class MergeRequestsFinder < IssuableFinder
       .execute(items)
   end
   # rubocop: enable CodeReuse/Finder
+
+  def items_assigned_to(items, user)
+    MergeRequest.from_union([super, items.reviewer_assigned_to(user)])
+  end
 end
 
 MergeRequestsFinder.prepend_if_ee('EE::MergeRequestsFinder')

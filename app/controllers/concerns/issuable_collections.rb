@@ -150,7 +150,7 @@ module IssuableCollections
                                   common_attributes + [:project, project: :namespace]
                                 when 'MergeRequest'
                                   common_attributes + [
-                                    :target_project, :latest_merge_request_diff, :approvals, :approved_by_users,
+                                    :target_project, :latest_merge_request_diff, :approvals, :approved_by_users, :reviewers,
                                     source_project: :route, head_pipeline: :project, target_project: :namespace
                                   ]
                                 end

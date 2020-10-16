@@ -71,6 +71,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def filter_params
     params.permit(:two_factor, :search).merge(sort: @sort)
   end
+
+  def membershipable_members
+    group.members
+  end
 end
 
 Groups::GroupMembersController.prepend_if_ee('EE::Groups::GroupMembersController')

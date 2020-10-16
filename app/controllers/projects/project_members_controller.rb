@@ -57,6 +57,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def filter_params
     params.permit(:search).merge(sort: @sort)
   end
+
+  def membershipable_members
+    project.members
+  end
 end
 
 Projects::ProjectMembersController.prepend_if_ee('EE::Projects::ProjectMembersController')

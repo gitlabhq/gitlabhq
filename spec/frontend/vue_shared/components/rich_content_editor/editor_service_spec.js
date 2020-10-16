@@ -4,6 +4,7 @@ import {
   removeCustomEventListener,
   registerHTMLToMarkdownRenderer,
   addImage,
+  insertVideo,
   getMarkdown,
   getEditorOptions,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
@@ -19,11 +20,21 @@ describe('Editor Service', () => {
   let mockInstance;
   let event;
   let handler;
+  const parseHtml = str => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = str;
+    return wrapper.firstChild;
+  };
 
   beforeEach(() => {
     mockInstance = {
       eventManager: { addEventType: jest.fn(), removeEventHandler: jest.fn(), listen: jest.fn() },
-      editor: { exec: jest.fn() },
+      editor: {
+        exec: jest.fn(),
+        isWysiwygMode: jest.fn(),
+        getSquire: jest.fn(),
+        insertText: jest.fn(),
+      },
       invoke: jest.fn(),
       toMarkOptions: {
         renderer: {
@@ -86,6 +97,38 @@ describe('Editor Service', () => {
       addImage(mockInstance, mockImage);
 
       expect(mockInstance.editor.exec).toHaveBeenCalledWith('AddImage', mockImage);
+    });
+  });
+
+  describe('insertVideo', () => {
+    const mockUrl = 'some/url';
+    const htmlString = `<figure contenteditable="false" class="gl-relative gl-h-0 video_container"><iframe class="gl-absolute gl-top-0 gl-left-0 gl-w-full gl-h-full" width="560" height="315" frameborder="0" src="some/url"></iframe></figure>`;
+    const mockInsertElement = jest.fn();
+
+    beforeEach(() =>
+      mockInstance.editor.getSquire.mockReturnValue({ insertElement: mockInsertElement }),
+    );
+
+    describe('WYSIWYG mode', () => {
+      it('calls the insertElement method on the squire instance with an iFrame element', () => {
+        mockInstance.editor.isWysiwygMode.mockReturnValue(true);
+
+        insertVideo(mockInstance, mockUrl);
+
+        expect(mockInstance.editor.getSquire().insertElement).toHaveBeenCalledWith(
+          parseHtml(htmlString),
+        );
+      });
+    });
+
+    describe('Markdown mode', () => {
+      it('calls the insertText method on the editor instance with the iFrame element HTML', () => {
+        mockInstance.editor.isWysiwygMode.mockReturnValue(false);
+
+        insertVideo(mockInstance, mockUrl);
+
+        expect(mockInstance.editor.insertText).toHaveBeenCalledWith(htmlString);
+      });
     });
   });
 

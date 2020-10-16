@@ -5,8 +5,10 @@ import HighlightBar from './highlight_bar.vue';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import Tracking from '~/tracking';
 
 import getAlert from './graphql/queries/get_alert.graphql';
+import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 
 export default {
   components: {
@@ -44,6 +46,15 @@ export default {
   computed: {
     loading() {
       return this.$apollo.queries.alert.loading;
+    },
+  },
+  mounted() {
+    this.trackPageViews();
+  },
+  methods: {
+    trackPageViews() {
+      const { category, action } = trackIncidentDetailsViewsOptions;
+      Tracking.event(category, action);
     },
   },
 };

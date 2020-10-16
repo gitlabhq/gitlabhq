@@ -34,6 +34,13 @@ export const INCIDENT_STATUS_TABS = [
   },
 ];
 
+export const DEFAULT_PAGE_SIZE = 20;
+export const TH_CREATED_AT_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
+export const TH_SEVERITY_TEST_ID = { 'data-testid': 'incident-management-severity-sort' };
+export const TH_INCIDENT_SLA_TEST_ID = { 'data-testid': 'incident-management-sla' };
+export const TH_PUBLISHED_TEST_ID = { 'data-testid': 'incident-management-published-sort' };
+export const INCIDENT_DETAILS_PATH = 'incident';
+
 /**
  * Tracks snowplow event when user clicks create new incident
  */
@@ -43,16 +50,17 @@ export const trackIncidentCreateNewOptions = {
 };
 
 /**
- * Tracks snowplow event when user views incident list
+ * Tracks snowplow event when user views incidents list
  */
 export const trackIncidentListViewsOptions = {
   category: 'Incident Management',
   action: 'view_incidents_list',
 };
 
-export const DEFAULT_PAGE_SIZE = 20;
-export const TH_CREATED_AT_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
-export const TH_SEVERITY_TEST_ID = { 'data-testid': 'incident-management-severity-sort' };
-export const TH_INCIDENT_SLA_TEST_ID = { 'data-testid': 'incident-management-sla' };
-export const TH_PUBLISHED_TEST_ID = { 'data-testid': 'incident-management-published-sort' };
-export const INCIDENT_DETAILS_PATH = 'incident';
+/**
+ * Tracks snowplow event when user views incident details
+ */
+export const trackIncidentDetailsViewsOptions = {
+  category: 'Incident Management',
+  action: 'view_incident_details',
+};

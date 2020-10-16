@@ -2465,13 +2465,13 @@ module Gitlab
         context 'returns errors if variables is not a map' do
           let(:config) { YAML.dump({ variables: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs'
+          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs, value can be a hash'
         end
 
         context 'returns errors if variables is not a map of key-value strings' do
           let(:config) { YAML.dump({ variables: { test: false }, rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs'
+          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs, value can be a hash'
         end
 
         context 'returns errors if job when is not on_success, on_failure or always' do
