@@ -50,8 +50,8 @@ POST /import/bitbucket_server
 | `personal_access_token` | string | yes | Bitbucket Server personal access token/password |
 | `bitbucket_server_project` | string | yes | Bitbucket Project Key |
 | `bitbucket_server_repo` | string | yes | Bitbucket Repository Name |
-| `new_name` | string | no | New repo name |
-| `target_namespace` | string | no | Namespace to import repo into |
+| `new_name` | string | no | New repository name |
+| `target_namespace` | string | no | Namespace to import repository into |
 
 ```shell
 curl --request POST \

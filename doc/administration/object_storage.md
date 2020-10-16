@@ -17,7 +17,7 @@ GitLab has been tested on a number of object storage providers:
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
@@ -383,7 +383,7 @@ and comparing the output of the returned headers.
 
 The following YAML shows how the `object_store` section defines
 object-specific configuration block and how the `enabled` and
-`proxy_download` flags can be overriden. The `bucket` is the only
+`proxy_download` flags can be overridden. The `bucket` is the only
 required parameter within each type:
 
 ```yaml
@@ -687,7 +687,7 @@ in the `storage_options` configuration section:
 
 |            Setting                  | Description |
 |-------------------------------------|-------------|
-| `server_side_encryption`            | Encryption mode (AES256 or aws:kms) |
+| `server_side_encryption`            | Encryption mode (`AES256` or `aws:kms`) |
 | `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html) |
 
 As with the case for default encryption, these options only work when

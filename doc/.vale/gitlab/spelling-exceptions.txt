@@ -257,6 +257,7 @@ memoize
 memoized
 memoizing
 Memorystore
+mergeability
 mergeable
 Microsoft
 middleware
@@ -371,6 +372,8 @@ reindex
 reindexed
 reindexes
 reindexing
+reinitialize
+reinitializing
 relicensing
 remediations
 repmgr
@@ -462,6 +465,7 @@ substring
 substrings
 subtree
 subtrees
+sudo
 syslog
 tcpdump
 Tiller

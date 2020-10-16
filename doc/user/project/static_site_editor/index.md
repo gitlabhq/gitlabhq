@@ -13,7 +13,7 @@ description: "The static site editor enables users to edit content on static web
 > - Support for adding images through the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216640) in GitLab 13.1.
 > - Markdown front matter hidden on the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216834) in GitLab 13.1.
 > - Support for `*.md.erb` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223171) in GitLab 13.2.
-> - Non-Markdown content blocks uneditable on the WYSIWYG mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216836) in GitLab 13.3.
+> - Non-Markdown content blocks not editable on the WYSIWYG mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216836) in GitLab 13.3.
 > - Ability to edit page front matter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235921) in GitLab 13.4.
 
 DANGER: **Danger:**
@@ -92,7 +92,7 @@ content of the pages without prior knowledge of Git or of your site's
 codebase.
 
 NOTE: **Note:**
-From GitLab 13.1 onwards, the YAML front matter of Markdown files is hidden on the
+From GitLab 13.1 onward, the YAML front matter of Markdown files is hidden on the
 WYSIWYG editor to avoid unintended changes. To edit it, use the Markdown editing mode, the regular
 GitLab file editor, or the Web IDE.
 

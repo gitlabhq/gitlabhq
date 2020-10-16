@@ -58,7 +58,7 @@ This configuration relies on valid AWS credentials to be configured already.
 [Read more about using object storage with GitLab](object_storage.md).
 
 NOTE: **Note:**
-We recommend using the [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original config format.
+We recommend using the [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original configuration format.
 
 ## Object Storage Settings
 

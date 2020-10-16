@@ -9,12 +9,12 @@ module TimeFrameArguments
     argument :start_date, Types::TimeType,
              required: false,
              description: OVERLAPPING_TIMEFRAME_DESC,
-             deprecated: { reason: 'Use timeframe.start', milestone: '14.0' }
+             deprecated: { reason: 'Use timeframe.start', milestone: '13.5' }
 
     argument :end_date, Types::TimeType,
              required: false,
              description: OVERLAPPING_TIMEFRAME_DESC,
-             deprecated: { reason: 'Use timeframe.end', milestone: '14.0' }
+             deprecated: { reason: 'Use timeframe.end', milestone: '13.5' }
 
     argument :timeframe, Types::TimeframeInputType,
              required: false,

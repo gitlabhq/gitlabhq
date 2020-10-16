@@ -1,0 +1,13 @@
+---
+# Warning: gitlab.AdminArea
+#
+# You should not use "admin", but "Admin Area" is OK.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Use "administration", "administrator", "administer", or "Admin Area" instead of "admin" or "admin area".'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html
+level: warning
+ignorecase: true
+swap:
+  'admin ?\w*': '(?:Admin Area|[Aa]dministrat(ion|or|e))'

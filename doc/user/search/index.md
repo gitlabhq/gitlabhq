@@ -32,7 +32,7 @@ You can also filter the results using the search and filter field, as described 
 You'll also find shortcuts to issues and merge requests created by you or assigned to you
 on the search field on the top-right of your screen:
 
-![shortcut to your issues and mrs](img/issues_mrs_shortcut.png)
+![shortcut to your issues and merge requests](img/issues_mrs_shortcut.png)
 
 ### Filtering issue and merge request lists
 

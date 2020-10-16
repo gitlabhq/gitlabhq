@@ -1,7 +1,0 @@
----
-name: incident_sla_dev
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43648
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/266931
-group: group::health
-type: development
-default_enabled: false

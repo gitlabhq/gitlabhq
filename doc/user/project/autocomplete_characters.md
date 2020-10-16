@@ -35,6 +35,8 @@ Autocomplete characters are useful when combined with [Quick Actions](quick_acti
 
 Assume your GitLab instance includes the following users:
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Username        | Name |
 | :-------------- | :--- |
 | alessandra      | Rosy Grant |
@@ -42,6 +44,8 @@ Assume your GitLab instance includes the following users:
 | leanna          | Rosemarie Rogahn |
 | logan_gutkowski | Lee Wuckert |
 | shelba          | Josefine Haley |
+
+<!-- vale gitlab.Spelling = YES -->
 
 In an Issue comment, entering `@l` results in the following popup list
 appearing. Note that user `shelba` is not included, because the list includes

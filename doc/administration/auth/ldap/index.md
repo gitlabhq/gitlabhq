@@ -510,7 +510,7 @@ GitLab group membership to be automatically updated based on LDAP group members.
 The `group_base` configuration should be a base LDAP 'container', such as an
 'organization' or 'organizational unit', that contains LDAP groups that should
 be available to GitLab. For example, `group_base` could be
-`ou=groups,dc=example,dc=com`. In the config file it will look like the
+`ou=groups,dc=example,dc=com`. In the configuration file it will look like the
 following.
 
 **Omnibus configuration**

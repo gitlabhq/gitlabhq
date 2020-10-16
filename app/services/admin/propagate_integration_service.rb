@@ -8,7 +8,7 @@ module Admin
       update_inherited_integrations
 
       if integration.instance?
-        create_integration_for_groups_without_integration if Feature.enabled?(:group_level_integrations, default_enabled: true)
+        create_integration_for_groups_without_integration if Feature.enabled?(:group_level_integrations)
         create_integration_for_projects_without_integration
       else
         create_integration_for_groups_without_integration_belonging_to_group

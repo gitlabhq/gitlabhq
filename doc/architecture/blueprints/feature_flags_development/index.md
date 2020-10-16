@@ -120,6 +120,8 @@ describes a meta reasons for making these changes.
 
 Proposal:
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Role                         | Who
 |------------------------------|-------------------------|
 | Author                       | Kamil Trzciński         |
@@ -134,3 +136,5 @@ DRIs:
 | Product                      | Kenny Johnston         |
 | Leadership                   | Craig Gomes            |
 | Engineering                  | Kamil Trzciński        |
+
+<!-- vale gitlab.Spelling = YES -->

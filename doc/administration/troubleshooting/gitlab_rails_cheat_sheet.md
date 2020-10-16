@@ -565,7 +565,7 @@ emails = [email1, email2]
 
 emails.each do |e|
   delete_bad_scim(e,'GROUPPATH')
-end  
+end
 ```
 
 ## Routes

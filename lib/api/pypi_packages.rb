@@ -33,7 +33,7 @@ module API
 
       def find_package_versions
         packages = packages_finder
-          .with_name(params[:package_name])
+          .with_normalized_pypi_name(params[:package_name])
 
         not_found!('Package') if packages.empty?
 

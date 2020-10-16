@@ -120,6 +120,8 @@ available](https://gitlab.com/groups/gitlab-org/-/epics/3791) for everyone.
 
 Proposal:
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Role                         | Who
 |------------------------------|-------------------------|
 | Author                       |     Grzegorz Bizon      |
@@ -135,3 +137,5 @@ DRIs:
 | Product                      |     Jason Yavorska     |
 | Leadership                   |       Darby Frey       |
 | Engineering                  |     Grzegorz Bizon     |
+
+<!-- vale gitlab.Spelling = YES -->

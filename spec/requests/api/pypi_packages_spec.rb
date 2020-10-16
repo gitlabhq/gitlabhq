@@ -57,6 +57,16 @@ RSpec.describe API::PypiPackages do
       end
     end
 
+    context 'with a normalized package name' do
+      let_it_be(:package) { create(:pypi_package, project: project, name: 'my.package') }
+      let(:url) { "/projects/#{project.id}/packages/pypi/simple/my-package" }
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+
+      subject { get api(url), headers: headers }
+
+      it_behaves_like 'PyPI package versions', :developer, :success
+    end
+
     it_behaves_like 'deploy token for package GET requests'
 
     it_behaves_like 'job token for package GET requests'

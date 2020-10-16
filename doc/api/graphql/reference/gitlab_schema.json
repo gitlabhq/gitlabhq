@@ -3191,7 +3191,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -3201,7 +3201,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -16726,7 +16726,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -16736,7 +16736,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -18980,7 +18980,7 @@
             },
             {
               "name": "slaDueAt",
-              "description": "Timestamp of when the issue SLA expires. Returns null if `incident_sla_dev` feature flag is disabled.",
+              "description": "Timestamp of when the issue SLA expires.",
               "args": [
 
               ],
@@ -20810,7 +20810,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -20820,7 +20820,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -20959,7 +20959,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -20969,7 +20969,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -21600,7 +21600,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -21610,7 +21610,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -22056,7 +22056,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -22066,7 +22066,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -24752,7 +24752,7 @@
             },
             {
               "name": "slaDueAt",
-              "description": "Timestamp of when the issue SLA expires. Returns null if `incident_sla_dev` feature flag is disabled.",
+              "description": "Timestamp of when the issue SLA expires.",
               "args": [
 
               ],
@@ -40745,7 +40745,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -40755,7 +40755,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -41327,7 +41327,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -41337,7 +41337,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 14.0: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",

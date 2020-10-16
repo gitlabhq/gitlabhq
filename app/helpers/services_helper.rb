@@ -121,7 +121,7 @@ module ServicesHelper
   end
 
   def group_level_integrations?
-    @group.present? && Feature.enabled?(:group_level_integrations, @group, default_enabled: true)
+    @group.present? && Feature.enabled?(:group_level_integrations, @group)
   end
 
   def instance_level_integrations?

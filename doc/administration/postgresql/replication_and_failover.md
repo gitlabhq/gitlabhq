@@ -425,7 +425,7 @@ Check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`CONSUL_PASSWORD_HASH`](#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information) before executing the next step.
 
-1. One each node, edit the `/etc/gitlab/gitlab.rb` config file and replace values noted in the `# START user configuration` section as below:
+1. One each node, edit the `/etc/gitlab/gitlab.rb` configuration file and replace values noted in the `# START user configuration` section as below:
 
    ```ruby
    # Disable all components except PgBouncer and Consul agent

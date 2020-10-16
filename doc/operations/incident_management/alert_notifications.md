@@ -24,7 +24,7 @@ you never miss a page.
 ## Email notifications
 
 Email notifications are available in projects that have been
-[configured to create incidents automatically](incidents.md#configure-incidents)
+[configured to create incidents automatically](incidents.md#create-incidents-automatically)
 for triggered alerts. Project members with the **Owner** or **Maintainer** roles are
 sent an email notification automatically. (This is not configurable.) To optionally
 send additional email notifications to project members with the **Developer** role:

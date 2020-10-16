@@ -516,6 +516,14 @@ RSpec.describe Packages::Package, type: :model do
 
       it { is_expected.to match_array([package1, package2]) }
     end
+
+    describe '.with_normalized_pypi_name' do
+      let_it_be(:pypi_package) { create(:pypi_package, name: 'Foo.bAr---BAZ_buz') }
+
+      subject { described_class.with_normalized_pypi_name('foo-bar-baz-buz') }
+
+      it { is_expected.to match_array([pypi_package]) }
+    end
   end
 
   describe '.select_distinct_name' do

@@ -14,7 +14,7 @@ can create a fork.
 
 A fork is a personal copy of the repository and all its branches, which you create
 in a namespace of your choice. This way you can make changes in your own fork and
-submit them through a merge request to the repo you don't have access to.
+submit them through a merge request to the repository you don't have access to.
 
 ## Creating a fork
 

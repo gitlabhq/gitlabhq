@@ -13,6 +13,17 @@ GitLab can accept alerts from any source via a webhook receiver. This can be con
 [External Prometheus instances](../metrics/alerts.md#external-prometheus-instances)
 to use this endpoint.
 
+## Integrations list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in [GitLab Core](https://about.gitlab.com/pricing/) 13.5.
+
+With Maintainer or higher [permissions](../../user/permissions.md), you can view
+the list of configured alerts integrations by navigating to
+**Settings > Operations** in your project's sidebar menu, and expanding **Alerts** section.
+The list displays the integration name, type, and status (enabled or disabled):
+
+![Current Integrations](img/integrations_list_v13_5.png)
+
 ## Configuration
 
 You can either configure alerts to integrate with an [external Prometheus server](#external-prometheus-integration),
@@ -128,7 +139,7 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ![Alert Management List](./img/alert_list_v13_1.png)
 
-### Link to your Opsgenie Alerts
+## Link to your Opsgenie Alerts
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 

@@ -649,15 +649,18 @@ job:
 
 > Introduced in GitLab 8.7 and requires GitLab Runner v1.2.
 
-`before_script` is used to define a command that should be run before each
+`before_script` is used to define commands that should be run before each
 job, including deploy jobs, but after the restoration of any [artifacts](#artifacts).
 This must be an array.
 
 Scripts specified in `before_script` are concatenated with any scripts specified
 in the main [`script`](#script), and executed together in a single shell.
 
-`after_script` is used to define the command that runs after each
-job, including failed ones. This must be an array.
+`after_script` is used to define commands that run after each
+job, including failed jobs. This must be an array. If a job times out or is cancelled,
+the `after_script` commands are not executed. Support for executing `after_script`
+commands for timed-out or cancelled jobs
+[is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/15603).
 
 Scripts specified in `after_script` are executed in a new shell, separate from any
 `before_script` or `script` scripts. As a result, they:

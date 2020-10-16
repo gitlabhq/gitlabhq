@@ -80,7 +80,7 @@ Examples:
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31684) in GitLab Starter 13.3.
 
-Filters can be inversed to **filter out** results from the result set, by prefixing the filter name with a `-` (hyphen) character, such as:
+Filters can be inverted to **filter out** results from the result set, by prefixing the filter name with a `-` (hyphen) character, such as:
 
 - `-filename`
 - `-path`

@@ -48,7 +48,7 @@ list page.
 To edit a requirement:
 
 1. From the requirements list, click **Edit** (**{pencil}**).
-1. Update the title in text input field. You can also mark (and unmark) a requirement as satisfied in the edit form by using the checkbox labeled "Satisfied".
+1. Update the title in text input field. You can also mark a requirement as satisfied in the edit form by using the checkbox labeled "Satisfied".
 1. Click **Save changes**.
 
 ## Archive a requirement

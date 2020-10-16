@@ -111,6 +111,11 @@ touch setup.py
 
 This file contains all the information about our package. For more information
 about this file, see [creating setup.py](https://packaging.python.org/tutorials/packaging-projects/#creating-setup-py).
+GitLab identifies packages based on
+[Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names),
+so ensure your package name meets these requirements.
+See the [installation section](#install-packages) for more details.
+
 For this guide, we don't need to extensively fill out this file, simply add the
 below to your `setup.py`:
 
@@ -299,6 +304,12 @@ Collecting mypypipackage
 Installing collected packages: mypypipackage
 Successfully installed mypypipackage-0.0.1
 ```
+
+GitLab looks for packages using
+[Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names),
+so the characters `-`, `_`, and `.` are all treated the same and repeated characters are removed.
+A `pip install` request for `my.package` looks for packages that match any of
+the three characters, such as `my-package`, `my_package`, and `my....package`.
 
 ## Using GitLab CI with PyPI packages
 

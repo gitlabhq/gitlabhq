@@ -103,6 +103,8 @@ epic with detailed roadmap is also available.
 
 Proposal:
 
+<!-- vale gitlab.Spelling = NO -->
+
 | Role                         | Who
 |------------------------------|-------------------------|
 | Author                       |    Grzegorz Bizon       |
@@ -129,3 +131,5 @@ Domain Experts:
 | Domain Expert                |    Vladimir Shushlin   |
 | Domain Expert                |    Jaime Martinez      |
 | Domain Expert                |    Krasimir Angelov    |
+
+<!-- vale gitlab.Spelling = YES -->

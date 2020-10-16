@@ -7,7 +7,7 @@ but if they are not available you can still quickly parse
 
 ## What is JQ?
 
-As noted in its [manual](https://stedolan.github.io/jq/manual/), jq is a command-line JSON processor. The following examples
+As noted in its [manual](https://stedolan.github.io/jq/manual/), `jq` is a command-line JSON processor. The following examples
 include use cases targeted for parsing GitLab log files.
 
 ## Parsing Logs
