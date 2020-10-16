@@ -21253,7 +21253,7 @@ msgstr ""
 msgid "ProtectedBranch|Code owner approval"
 msgstr ""
 
-msgid "ProtectedBranch|Does not apply to users allowed to merge or push."
+msgid "ProtectedBranch|Does not apply to users allowed to push."
 msgstr ""
 
 msgid "ProtectedBranch|Protect"
@@ -22310,6 +22310,9 @@ msgid "Requirement %{reference} has been reopened"
 msgstr ""
 
 msgid "Requirement %{reference} has been updated"
+msgstr ""
+
+msgid "Requirement title"
 msgstr ""
 
 msgid "Requirement title cannot have more than %{limit} characters."

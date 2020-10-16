@@ -58,6 +58,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def update_registration
+    return redirect_to new_user_registration_path unless current_user
+
     user_params = params.require(:user).permit(:role, :setup_for_company)
     result = ::Users::SignupService.new(current_user, user_params).execute
 

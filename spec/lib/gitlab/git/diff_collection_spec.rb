@@ -9,8 +9,11 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
     MutatingConstantIterator.class_eval do
       include Enumerable
 
+      attr_reader :size
+
       def initialize(count, value)
         @count = count
+        @size  = count
         @value = value
       end
 
@@ -517,14 +520,30 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
             .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
-        it 'prunes diffs that are quite big' do
-          diff = nil
+        context 'single-file collections' do
+          it 'does not prune diffs' do
+            diff = nil
 
-          subject.each do |d|
-            diff = d
+            subject.each do |d|
+              diff = d
+            end
+
+            expect(diff.diff).not_to eq('')
           end
+        end
 
-          expect(diff.diff).to eq('')
+        context 'multi-file collections' do
+          let(:iterator) { [{ diff: 'b' }, { diff: 'a' * 20480 }]}
+
+          it 'prunes diffs that are quite big' do
+            diff = nil
+
+            subject.each do |d|
+              diff = d
+            end
+
+            expect(diff.diff).to eq('')
+          end
         end
 
         context 'when go over safe limits on files' do

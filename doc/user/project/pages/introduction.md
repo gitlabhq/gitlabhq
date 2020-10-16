@@ -259,9 +259,8 @@ instead. Here are some examples of what will happen given the above Pages site:
 | `/other/index`       | `200 OK`      | `public/other/index.html` |
 | `/other/index.html`  | `200 OK`      | `public/other/index.html` |
 
-NOTE: **Note:**
-When `public/data/index.html` exists, it takes priority over the `public/data.html`
-file for both the `/data` and `/data/` URL paths.
+Note that when `public/data/index.html` exists, it takes priority over the `public/data.html` file
+for both the `/data` and `/data/` URL paths.
 
 ## Frequently Asked Questions
 

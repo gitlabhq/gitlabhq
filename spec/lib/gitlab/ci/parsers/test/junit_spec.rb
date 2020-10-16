@@ -4,11 +4,12 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
-    subject { described_class.new.parse!(junit, test_suite, **args) }
+    subject { described_class.new.parse!(junit, test_suite, job: job) }
 
     let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
     let(:test_cases) { flattened_test_cases(test_suite) }
-    let(:args) { { job: { id: 1, project: "project" } } }
+    let(:job) { double(max_test_cases_per_report: max_test_cases) }
+    let(:max_test_cases) { 0 }
 
     context 'when data is JUnit style XML' do
       context 'when there are no <testcases> in <testsuite>' do
@@ -230,6 +231,55 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
           )
         end
       end
+
+      context 'when number of test cases exceeds the max_test_cases limit' do
+        let(:max_test_cases) { 1 }
+
+        shared_examples_for 'rejecting too many test cases' do
+          it 'attaches an error to the TestSuite object' do
+            expect { subject }.not_to raise_error
+            expect(test_suite.suite_error).to eq("JUnit data parsing failed: number of test cases exceeded the limit of #{max_test_cases}")
+          end
+        end
+
+        context 'and test cases are unique' do
+          let(:junit) do
+            <<-EOF.strip_heredoc
+            <testsuites>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+                <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
+              </testsuite>
+              <testsuite>
+                <testcase classname='Statemachine' name='happy path' time='100'></testcase>
+                <testcase classname='Statemachine' name='unhappy path' time='200'></testcase>
+              </testsuite>
+            </testsuites>
+            EOF
+          end
+
+          it_behaves_like 'rejecting too many test cases'
+        end
+
+        context 'and test cases are duplicates' do
+          let(:junit) do
+            <<-EOF.strip_heredoc
+            <testsuites>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+                <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
+              </testsuite>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+                <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
+              </testsuite>
+            </testsuites>
+            EOF
+          end
+
+          it_behaves_like 'rejecting too many test cases'
+        end
+      end
     end
 
     context 'when data is not JUnit style XML' do
@@ -316,9 +366,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         expect(test_cases[0].has_attachment?).to be_truthy
         expect(test_cases[0].attachment).to eq("some/path.png")
 
-        expect(test_cases[0].job).to be_present
-        expect(test_cases[0].job[:id]).to eq(1)
-        expect(test_cases[0].job[:project]).to eq("project")
+        expect(test_cases[0].job).to eq(job)
       end
     end
 

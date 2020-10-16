@@ -20066,7 +20066,7 @@
             },
             {
               "name": "mergeRequestDiffRegistries",
-              "description": "Find merge request diff registries on this Geo node. Available only when feature flag `geo_merge_request_diff_replication` is enabled",
+              "description": "Find merge request diff registries on this Geo node",
               "args": [
                 {
                   "name": "ids",

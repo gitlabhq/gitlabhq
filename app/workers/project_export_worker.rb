@@ -8,7 +8,7 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :memory
   urgency :throttled
   loggable_arguments 2, 3
-  sidekiq_options retry: false
+  sidekiq_options retry: false, dead: false
   sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
 
   def perform(current_user_id, project_id, after_export_strategy = {}, params = {})

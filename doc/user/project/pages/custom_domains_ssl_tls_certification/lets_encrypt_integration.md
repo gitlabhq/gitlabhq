@@ -33,7 +33,6 @@ Before you can enable automatic provisioning of an SSL certificate for your doma
   and verified your ownership.
 - Verified your website is up and running, accessible through your custom domain.
 
-NOTE: **Note:**
 GitLab's Let's Encrypt integration is enabled and available on GitLab.com.
 For **self-managed** GitLab instances, make sure your administrator has
 [enabled it](../../../../administration/pages/index.md#lets-encrypt-integration).

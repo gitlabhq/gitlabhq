@@ -22,8 +22,10 @@ GitLab Pages only supports the
 [`_redirects` plain text file syntax](https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file),
 and `.toml` files are not supported.
 
-Redirects are only supported at a basic level, and GitLab Pages doesn't support all
-[special options offered by Netlify](https://docs.netlify.com/routing/redirects/redirect-options/):
+Redirects are only supported at a basic level. GitLab Pages doesn't support all
+[special options offered by Netlify](https://docs.netlify.com/routing/redirects/redirect-options/).
+
+Note that supported paths must start with a forward slash `/`.
 
 | Feature | Supported | Example |
 | ------- | --------- | ------- |
@@ -36,9 +38,6 @@ Redirects are only supported at a basic level, and GitLab Pages doesn't support 
 | Domain-level redirects | **{dotted-circle}** No | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
 | Redirect by country or language | **{dotted-circle}** No | `/  /anz     302  Country=au,nz` |
 | Redirect by role | **{dotted-circle}** No | `/admin/*  200!  Role=admin` |
-
-NOTE: **Note:**
-Supported paths must start with a forward slash `/`.
 
 ## Create redirects
 
@@ -78,8 +77,7 @@ is ignored because `hello.html` exists:
 /projectname/hello.html /projectname/world.html 302
 ```
 
-NOTE: **Note:**
-GitLab does not support Netlify's
+GitLab doesn't support Netlify's
 [force option](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)
 to change this behavior.
 

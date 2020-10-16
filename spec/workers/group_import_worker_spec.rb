@@ -16,6 +16,16 @@ RSpec.describe GroupImportWorker do
     end
   end
 
+  describe 'sidekiq options' do
+    it 'disables retry' do
+      expect(described_class.sidekiq_options['retry']).to eq(false)
+    end
+
+    it 'disables dead' do
+      expect(described_class.sidekiq_options['dead']).to eq(false)
+    end
+  end
+
   describe '#perform' do
     context 'when it succeeds' do
       before do

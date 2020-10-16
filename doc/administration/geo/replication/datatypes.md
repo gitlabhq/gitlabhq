@@ -23,32 +23,34 @@ We currently distinguish between three different data types:
 See the list below of each feature or component we replicate, its corresponding data type, replication, and
 verification methods:
 
-| Type     | Feature / component                           | Replication method                    | Verification method    |
-|:---------|:----------------------------------------------|:--------------------------------------|:-----------------------|
-| Database | Application data in PostgreSQL                | Native                                | Native                 |
-| Database | Redis                                         | _N/A_ (*1*)                           | _N/A_                  |
-| Database | Elasticsearch                                 | Native                                | Native                 |
-| Database | Personal snippets                             | PostgreSQL Replication                | PostgreSQL Replication |
-| Database | Project snippets                              | PostgreSQL Replication                | PostgreSQL Replication |
-| Database | SSH public keys                               | PostgreSQL Replication                | PostgreSQL Replication |
-| Git      | Project repository                            | Geo with Gitaly                       | Gitaly Checksum        |
-| Git      | Project wiki repository                       | Geo with Gitaly                       | Gitaly Checksum        |
-| Git      | Project designs repository                    | Geo with Gitaly                       | Gitaly Checksum        |
-| Git      | Object pools for forked project deduplication | Geo with Gitaly                       | _Not implemented_      |
-| Blobs    | User uploads _(filesystem)_                   | Geo with API                          | _Not implemented_      |
-| Blobs    | User uploads _(object storage)_               | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | LFS objects _(filesystem)_                    | Geo with API                          | _Not implemented_      |
-| Blobs    | LFS objects _(object storage)_                | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | CI job artifacts _(filesystem)_               | Geo with API                          | _Not implemented_      |
-| Blobs    | CI job artifacts _(object storage)_           | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Archived CI build traces _(filesystem)_       | Geo with API                          | _Not implemented_      |
-| Blobs    | Archived CI build traces _(object storage)_   | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Container registry _(filesystem)_             | Geo with API/Docker API               | _Not implemented_      |
-| Blobs    | Container registry _(object storage)_         | Geo with API/Managed/Docker API (*2*) | _Not implemented_      |
-| Blobs    | Package registry _(filesystem)_               | Geo with API                          | _Not implemented_      |
-| Blobs    | Package registry _(object storage)_           | Geo with API/Managed (*2*)            | _Not implemented_      |
-| Blobs    | Versioned Terraform State _(filesystem)_      | Geo with API                          | _Not implemented_      |
-| Blobs    | Versioned Terraform State _(object storage)_  | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Type     | Feature / component                             | Replication method                    | Verification method    |
+|:---------|:------------------------------------------------|:--------------------------------------|:-----------------------|
+| Database | Application data in PostgreSQL                  | Native                                | Native                 |
+| Database | Redis                                           | _N/A_ (*1*)                           | _N/A_                  |
+| Database | Elasticsearch                                   | Native                                | Native                 |
+| Database | Personal snippets                               | PostgreSQL Replication                | PostgreSQL Replication |
+| Database | Project snippets                                | PostgreSQL Replication                | PostgreSQL Replication |
+| Database | SSH public keys                                 | PostgreSQL Replication                | PostgreSQL Replication |
+| Git      | Project repository                              | Geo with Gitaly                       | Gitaly Checksum        |
+| Git      | Project wiki repository                         | Geo with Gitaly                       | Gitaly Checksum        |
+| Git      | Project designs repository                      | Geo with Gitaly                       | Gitaly Checksum        |
+| Git      | Object pools for forked project deduplication   | Geo with Gitaly                       | _Not implemented_      |
+| Blobs    | User uploads _(filesystem)_                     | Geo with API                          | _Not implemented_      |
+| Blobs    | User uploads _(object storage)_                 | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | LFS objects _(filesystem)_                      | Geo with API                          | _Not implemented_      |
+| Blobs    | LFS objects _(object storage)_                  | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | CI job artifacts _(filesystem)_                 | Geo with API                          | _Not implemented_      |
+| Blobs    | CI job artifacts _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | Archived CI build traces _(filesystem)_         | Geo with API                          | _Not implemented_      |
+| Blobs    | Archived CI build traces _(object storage)_     | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | Container registry _(filesystem)_               | Geo with API/Docker API               | _Not implemented_      |
+| Blobs    | Container registry _(object storage)_           | Geo with API/Managed/Docker API (*2*) | _Not implemented_      |
+| Blobs    | Package registry _(filesystem)_                 | Geo with API                          | _Not implemented_      |
+| Blobs    | Package registry _(object storage)_             | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | Versioned Terraform State _(filesystem)_        | Geo with API                          | _Not implemented_      |
+| Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | External Merge Request Diffs _(filesystem)_     | Geo with API                          | _Not implemented_      |
+| Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed (*2*)            | _Not implemented_      |
 
 - (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo nodes.
 - (*2*): Object storage replication can be performed by Geo or by your object storage provider/appliance
@@ -185,7 +187,7 @@ successfully, you must replicate their data using some other means.
 | [Composer Repository](../../../user/packages/composer_repository/index.md)                                     | **Yes** (13.2)                                                                     | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817)   | Via Object Storage provider if supported. Native Geo support (Beta).                 | Behind feature flag `geo_package_file_replication`, enabled by default                                                                                                                                                                                                                                                     |
 | [Generic packages](../../../user/packages/generic_packages/index.md)                                | **Yes** (13.5)                                                                     | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817)   | Via Object Storage provider if supported. Native Geo support (Beta).                 | Behind feature flag `geo_package_file_replication`, enabled by default                                                                                                                                                                                                                                                     |
 | [Versioned Terraform State](../../terraform_state.md)                                                          | **Yes** (13.5)                                                                     | No                                                        | Via Object Storage provider if supported. Native Geo support (Beta).                 | Behind feature flag `geo_terraform_state_version_replication`, enabled by default                                                                                                                                                                                                                                          |
-| [External merge request diffs](../../merge_request_diffs.md)                                                   | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/33817)                          | No                                                        | Via Object Storage provider if supported. Native Geo support (Beta).                 |                                                                                                                                                                                                                                                                                                                            |
+| [External merge request diffs](../../merge_request_diffs.md)                                                   | **Yes** (13.5)                          | No                                                        |  Behind feature flag `geo_merge_request_diff_replication`, enabled by default                 |                                                                                                                                                                                                                                                                                                                            |
 | [Versioned snippets](../../../user/snippets.md#versioned-snippets)                                             | [No](https://gitlab.com/groups/gitlab-org/-/epics/2809)                            | [No](https://gitlab.com/groups/gitlab-org/-/epics/2810)   | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Server-side Git hooks](../../server_hooks.md)                                                                 | [No](https://gitlab.com/groups/gitlab-org/-/epics/1867)                            | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Elasticsearch integration](../../../integration/elasticsearch.md)                                             | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/1186)                           | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |

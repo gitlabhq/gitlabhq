@@ -3,7 +3,7 @@
 class GroupImportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  sidekiq_options retry: false
+  sidekiq_options retry: false, dead: false
   feature_category :importers
 
   def perform(user_id, group_id)

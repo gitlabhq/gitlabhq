@@ -61,7 +61,6 @@ according to the type of domain you want to use with your Pages site:
 - [For subdomains](#for-subdomains), `subdomain.example.com`.
 - [For both](#for-both-root-and-subdomains).
 
-NOTE: **Note:**
 You can [configure IPv6 on self-managed instances](../../../../administration/pages/index.md#advanced-configuration),
 but IPv6 is not currently configured for Pages on GitLab.com.
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214718) for details.
@@ -250,8 +249,8 @@ You can use any certificate satisfying the following requirements:
 - **A private key**, it's an encrypted key which validates
   your PEM against your domain.
 
-NOTE: **Note:**
-[Cloudflare certificates](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/), for example, meet these requirements.
+For example, [Cloudflare certificates](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
+meet these requirements.
 
 #### Steps
 
@@ -269,7 +268,6 @@ NOTE: **Note:**
   just jumping a line between them.
 1. Copy your private key and paste it in the last field.
 
-NOTE: **Note:**
 **Do not** open certificates or encryption keys in
 regular text editors. Always use code editors (such as
 Sublime Text, Atom, Dreamweaver, Brackets, etc).
@@ -290,8 +288,8 @@ To enable this setting:
 1. Navigate to your project's **Settings > Pages**.
 1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
 
-NOTE: **Note:**
-If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to `full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://support.cloudflare.com/hc/en-us/articles/200170416-End-to-end-HTTPS-with-Cloudflare-Part-3-SSL-options#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
+If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to
+`full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://support.cloudflare.com/hc/en-us/articles/200170416-End-to-end-HTTPS-with-Cloudflare-Part-3-SSL-options#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
 
 <!-- ## Troubleshooting
 

@@ -1599,6 +1599,12 @@ class MergeRequest < ApplicationRecord
       .find_by(sha: diff_base_sha, ref: target_branch)
   end
 
+  def merge_base_pipeline
+    @merge_base_pipeline ||= project.ci_pipelines
+      .order(id: :desc)
+      .find_by(sha: actual_head_pipeline.target_sha, ref: target_branch)
+  end
+
   def discussions_rendered_on_frontend?
     true
   end

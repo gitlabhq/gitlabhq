@@ -13,6 +13,7 @@ ignorecase: true
 swap:
   frontmatter: front matter
   GitLabber: GitLab team member
+  GitLab-shell: GitLab Shell
   gitlab omnibus: Omnibus GitLab
   param: parameter
   params: parameters

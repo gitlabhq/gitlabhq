@@ -3,7 +3,7 @@
 module Avatarable
   extend ActiveSupport::Concern
 
-  USER_AVATAR_SIZES = [16, 20, 23, 24, 26, 32, 36, 38, 40, 48, 60, 64, 96, 120, 160].freeze
+  USER_AVATAR_SIZES = [16, 20, 23, 24, 26, 32, 36, 38, 40, 48, 60, 64, 90, 96, 120, 160].freeze
   PROJECT_AVATAR_SIZES = [15, 40, 48, 64, 88].freeze
   GROUP_AVATAR_SIZES = [15, 37, 38, 39, 40, 64, 96].freeze
 

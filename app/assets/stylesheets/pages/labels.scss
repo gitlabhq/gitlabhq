@@ -343,3 +343,9 @@
     box-shadow: 0 0 0 1px inset;
   }
 }
+
+/* Fix scoped label padding in cases where old markdown uses the old label structure */
+.gl-label-text + .gl-label-text {
+  @include gl-pl-2;
+  @include gl-pr-3;
+}

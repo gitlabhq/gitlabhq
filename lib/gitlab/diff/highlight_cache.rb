@@ -24,6 +24,10 @@ module Gitlab
 
         return [] unless content
 
+        # TODO: We could add some kind of flag to #initialize that would allow
+        #   us to force re-caching
+        #   https://gitlab.com/gitlab-org/gitlab/-/issues/263508
+        #
         if content.empty? && recache_due_to_size?(diff_file)
           # If the file is missing from the cache and there's reason to believe
           #   it is uncached due to a size issue around changing the values for

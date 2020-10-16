@@ -8,12 +8,17 @@ module Gitlab
           JunitParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
           ATTACHMENT_TAG_REGEX = /\[\[ATTACHMENT\|(?<path>.+?)\]\]/.freeze
 
-          def parse!(xml_data, test_suite, **args)
+          def parse!(xml_data, test_suite, job:)
             root = Hash.from_xml(xml_data)
+            total_parsed = 0
+            max_test_cases = job.max_test_cases_per_report
 
             all_cases(root) do |test_case|
-              test_case = create_test_case(test_case, test_suite, args)
+              test_case = create_test_case(test_case, test_suite, job)
               test_suite.add_test_case(test_case)
+              total_parsed += 1
+
+              ensure_test_cases_limited!(total_parsed, max_test_cases)
             end
           rescue Nokogiri::XML::SyntaxError => e
             test_suite.set_suite_error("JUnit XML parsing failed: #{e}")
@@ -22,6 +27,12 @@ module Gitlab
           end
 
           private
+
+          def ensure_test_cases_limited!(total_parsed, limit)
+            return unless limit > 0 && total_parsed > limit
+
+            raise JunitParserError.new("number of test cases exceeded the limit of #{limit}")
+          end
 
           def all_cases(root, parent = nil, &blk)
             return unless root.present?
@@ -50,7 +61,7 @@ module Gitlab
             end
           end
 
-          def create_test_case(data, test_suite, args)
+          def create_test_case(data, test_suite, job)
             if data.key?('failure')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
@@ -75,7 +86,7 @@ module Gitlab
               status: status,
               system_output: system_output,
               attachment: attachment,
-              job: args.fetch(:job)
+              job: job
             )
           end
 

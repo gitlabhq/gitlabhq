@@ -118,11 +118,17 @@ module Gitlab
         files >= safe_max_files || @line_count > safe_max_lines || @byte_count >= safe_max_bytes
       end
 
+      def expand_diff?
+        # Force single-entry diff collections to always present as expanded
+        #
+        @iterator.size == 1 || !@enforce_limits || @expanded
+      end
+
       def each_gitaly_patch
         i = @array.length
 
         @iterator.each do |raw|
-          diff = Gitlab::Git::Diff.new(raw, expanded: !@enforce_limits || @expanded)
+          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff?)
 
           if raw.overflow_marker
             @overflow = true
@@ -145,11 +151,9 @@ module Gitlab
             break
           end
 
-          expanded = !@enforce_limits || @expanded
+          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff?)
 
-          diff = Gitlab::Git::Diff.new(raw, expanded: expanded)
-
-          if !expanded && over_safe_limits?(i) && diff.line_count > 0
+          if !expand_diff? && over_safe_limits?(i) && diff.line_count > 0
             diff.collapse!
           end
 
