@@ -67,7 +67,7 @@ Images follow this naming convention:
 ```
 
 If your project is `gitlab.example.com/mynamespace/myproject`, for example,
-then your image must be named `gitlab.example.com/mynamespace/myproject/my-app` at a mimimum.
+then your image must be named `gitlab.example.com/mynamespace/myproject/my-app` at a minimum.
 
 You can append additional names to the end of an image name, up to three levels deep.
 

@@ -3,7 +3,7 @@ import mockData from '../services/mock_data';
 
 describe('Ci variable getters', () => {
   describe('joinedEnvironments', () => {
-    it('should join fetched enviroments with variable environment scopes', () => {
+    it('should join fetched environments with variable environment scopes', () => {
       const state = {
         environments: ['All (default)', 'staging', 'deployment', 'prod'],
         variables: mockData.mockVariableScopes,

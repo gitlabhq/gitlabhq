@@ -8,12 +8,17 @@ module MergeRequests
     # Target attachment size before base64 encoding
     TARGET_FILESIZE = 15.megabytes
 
-    def initialize(merge_requests)
+    def initialize(merge_requests, project)
+      @project = project
       @merge_requests = merge_requests
     end
 
     def csv_data
       csv_builder.render(TARGET_FILESIZE)
+    end
+
+    def email(user)
+      Notify.merge_requests_csv_email(user, @project, csv_data, csv_builder.status).deliver_now
     end
 
     private

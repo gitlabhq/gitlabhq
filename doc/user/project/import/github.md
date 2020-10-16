@@ -101,7 +101,7 @@ If you are using a self-managed GitLab instance or if you are importing from Git
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
 1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
-1. Click **Authorize gitlabhq**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
+1. Click **Authorize GitlabHQ**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 
 ### Using a GitHub token
@@ -119,7 +119,7 @@ If you are not using the GitHub integration, you can still perform an authorizat
 
 1. Go to <https://github.com/settings/tokens/new>
 1. Enter a token description.
-1. Select the repo scope.
+1. Select the repository scope.
 1. Click **Generate token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the GitHub importer.
@@ -136,10 +136,10 @@ your GitHub repositories are listed.
 1. Select the **Import** button next to any number of repositories, or select **Import all repositories**. Additionally,
    you can filter projects by name. If filter is applied, **Import all repositories** only imports matched repositories.
 1. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
-   update in realtime or you can return to it later.
+   update in real-time or you can return to it later.
 1. Once a repository has been imported, click its GitLab path to open its GitLab URL.
 
-![Github importer page](img/import_projects_from_github_importer_v12_3.png)
+![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
 
 ## Mirroring and pipeline status sharing
 
@@ -149,7 +149,7 @@ your imported repository in sync with its GitHub copy.
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the
 [GitHub Project Integration](../integrations/github.md). **(PREMIUM)**
 
-If you import your project using [CI/CD for external repo](../../../ci/ci_cd_for_external_repos/index.md), then both
+If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/index.md), then both
 of the above are automatically configured. **(PREMIUM)**
 
 ## Improving the speed of imports on self-managed instances

@@ -6,7 +6,7 @@ RSpec.describe MergeRequests::ExportCsvService do
   let_it_be(:merge_request) { create(:merge_request) }
   let(:csv) { CSV.parse(subject.csv_data, headers: true).first }
 
-  subject { described_class.new(MergeRequest.where(id: merge_request.id)) }
+  subject { described_class.new(MergeRequest.where(id: merge_request.id), merge_request.project) }
 
   describe 'csv_data' do
     it 'contains the correct information', :aggregate_failures do

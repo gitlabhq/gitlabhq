@@ -82,7 +82,7 @@ We flag any significant differences between Redcarpet and CommonMark Markdown in
 
 If you have a large volume of Markdown files, it can be tedious to determine
 if they display correctly or not. You can use the
-[diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
+[`diff_redcarpet_cmark`](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
 tool (not an officially supported product) to generate a list of files and the
 differences between how RedCarpet and CommonMark render the files. It gives
 an indication if anything needs to be changed - often nothing needs

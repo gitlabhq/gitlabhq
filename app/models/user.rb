@@ -793,7 +793,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_otp_enabled?
-    otp_required_for_login?
+    otp_required_for_login? || Feature.enabled?(:forti_authenticator, self)
   end
 
   def two_factor_u2f_enabled?

@@ -789,7 +789,7 @@ or with other versions of Python.
    kubectl edit gateway knative-ingress-gateway --namespace knative-serving
    ```
 
-   Update the gateway to include the following tls: section and configuration:
+   Update the gateway to include the following `tls:` section and configuration:
 
    ```shell
    tls:

@@ -30,6 +30,8 @@ to do it for you.
 To help you out, we've gathered some instructions on how to do that
 for the most popular hosting services:
 
+<!-- vale gitlab.Spelling = NO -->
+
 - [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html)
 - [Bluehost](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
 - [Cloudflare](https://support.cloudflare.com/hc/en-us/articles/201720164-Creating-a-Cloudflare-account-and-adding-a-website)
@@ -40,6 +42,8 @@ for the most popular hosting services:
 - [Inmotion hosting](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
 - [Media Temple](https://mediatemple.net/community/products/dv/204403794/how-can-i-change-the-dns-records-for-my-domain)
 - [Microsoft](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb727018(v=technet.10))
+
+<!-- vale gitlab.Spelling = YES -->
 
 If your hosting service is not listed above, you can just try to
 search the web for `how to add dns record on <my hosting service>`.

@@ -75,7 +75,6 @@ be used for merge request approvals:
 - As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
-NOTE: **Note:**
 Developer or higher [permissions](../permissions.md) are required in order to
 approve a merge request.
 
@@ -93,11 +92,13 @@ to specify the actual owners and granular permissions.
 
 Using Code Owners in conjunction with [Protected Branches](protected_branches.md#protected-branches-approval-by-code-owners)
 will prevent any user who is not specified in the `CODEOWNERS` file from pushing
-changes for the specified files/paths, even if their role is included in the
+changes for the specified files/paths, except those included in the
 **Allowed to push** column. This allows for a more inclusive push strategy, as
 administrators don't have to restrict developers from pushing directly to the
 protected branch, but can restrict pushing to certain files where a review by
 Code Owners is required.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5, users and groups who are allowed to push to protected branches do not require a merge request to merge their feature branches. Thus, they can skip merge request approval rules, Code Owners included.
 
 ## The syntax of Code Owners files
 

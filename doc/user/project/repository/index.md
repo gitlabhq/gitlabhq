@@ -86,7 +86,7 @@ according to the markup language.
 | [reStructuredText](https://docutils.sourceforge.io/rst.html) | `rst` |
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/) | `textile` |
-| [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
+| [Rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
 | [Org mode](https://orgmode.org/) | `org` |
 | [creole](http://www.wikicreole.org/) | `creole` |
 | [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
@@ -234,7 +234,7 @@ lock your files to prevent any conflicting changes.
 
 ## Repository's API
 
-You can access your repos via [repository API](../../../api/repositories.md).
+You can access your repositories via [repository API](../../../api/repositories.md).
 
 ## Clone in Apple Xcode
 

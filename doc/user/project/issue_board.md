@@ -368,7 +368,7 @@ If you're not able to do some of the things above, make sure you have the right
 
 ### First time using an issue board
 
-> The automatic creation of the **To Do** and **Doing** lists was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202144) in GitLab 13.4.
+> The automatic creation of the **To Do** and **Doing** lists was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202144) in GitLab 13.5.
 
 The first time you open an issue board, you are presented with the default lists
 (**Open**, **To Do**, **Doing**, and **Closed**).

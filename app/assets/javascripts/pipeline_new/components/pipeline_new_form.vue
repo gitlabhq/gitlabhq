@@ -392,6 +392,7 @@ export default {
         type="submit"
         category="primary"
         variant="success"
+        class="js-no-auto-disable"
         data-qa-selector="run_pipeline_button"
         >{{ s__('Pipeline|Run Pipeline') }}</gl-button
       >

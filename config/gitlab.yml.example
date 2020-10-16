@@ -1022,6 +1022,21 @@ production: &base
     # cas3:
     #   session_duration: 28800
 
+  # FortiAuthenticator settings
+  forti_authenticator:
+    # Allow using FortiAuthenticator as OTP provider
+    enabled: false
+
+    # Host and port of FortiAuthenticator instance
+    # host: forti_authenticator.example.com
+    # port: 443
+
+    # Username for accessing FortiAuthenticator API
+    # username: john
+
+    # Access token for FortiAuthenticator API
+    # access_token: 123s3cr3t456
+
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared

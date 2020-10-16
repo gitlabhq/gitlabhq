@@ -544,6 +544,16 @@ module Gitlab
         rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function, batch_column_name: batch_column_name)
       end
 
+      # Reverses operations performed by change_column_type_concurrently.
+      #
+      # table - The table containing the column.
+      # column - The name of the column to change.
+      def undo_change_column_type_concurrently(table, column)
+        temp_column = "#{column}_for_type_change"
+
+        undo_rename_column_concurrently(table, column, temp_column)
+      end
+
       # Performs cleanup of a concurrent type change.
       #
       # table - The table containing the column.
@@ -557,6 +567,65 @@ module Gitlab
           # inconsistent data.
           cleanup_concurrent_column_rename(table, column, temp_column)
           rename_column(table, temp_column, column)
+        end
+      end
+
+      # Reverses operations performed by cleanup_concurrent_column_type_change.
+      #
+      # table - The table containing the column.
+      # column - The name of the column to change.
+      # old_type - The type of the original column used with change_column_type_concurrently.
+      # type_cast_function - Required if the conversion back to the original type is not automatic
+      # batch_column_name - option for tables without a primary key, in this case
+      #            another unique integer column can be used. Example: :user_id
+      def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id)
+        temp_column = "#{column}_for_type_change"
+
+        # Using a descriptive name that includes orinal column's name risks
+        # taking us above the 63 character limit, so we use a hash
+        identifier = "#{table}_#{column}_for_type_change"
+        hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
+        temp_undo_cleanup_column = "tmp_undo_cleanup_column_#{hashed_identifier}"
+
+        unless column_exists?(table, batch_column_name)
+          raise "Column #{batch_column_name} does not exist on #{table}"
+        end
+
+        if transaction_open?
+          raise 'undo_cleanup_concurrent_column_type_change can not be run inside a transaction'
+        end
+
+        check_trigger_permissions!(table)
+
+        begin
+          create_column_from(
+            table,
+            column,
+            temp_undo_cleanup_column,
+            type: old_type,
+            batch_column_name: batch_column_name,
+            type_cast_function: type_cast_function
+          )
+
+          transaction do
+            # This has to be performed in a transaction as otherwise we might
+            # have inconsistent data.
+            rename_column(table, column, temp_column)
+            rename_column(table, temp_undo_cleanup_column, column)
+
+            install_rename_triggers(table, column, temp_column)
+          end
+        rescue
+          # create_column_from can not run inside a transaction, which means
+          #  that there is a risk that if any of the operations that follow it
+          #  fail, we'll be left with an inconsistent schema
+          # For those reasons, we make sure that we drop temp_undo_cleanup_column
+          #  if an error is caught
+          if column_exists?(table, temp_undo_cleanup_column)
+            remove_column(table, temp_undo_cleanup_column)
+          end
+
+          raise
         end
       end
 

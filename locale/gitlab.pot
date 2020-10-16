@@ -3923,7 +3923,7 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
-msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
+msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "AutoRemediation|If you're using dependency and/or container scanning, and auto-fix is enabled, auto-fix automatically creates merge requests with fixes to vulnerabilities."
@@ -4113,6 +4113,9 @@ msgid "BambooService|You must set up automatic revision labeling and a repositor
 msgstr ""
 
 msgid "Based on"
+msgstr ""
+
+msgid "Basic Sample Data template with Issues, Merge Requests and Milestones."
 msgstr ""
 
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
@@ -14095,6 +14098,36 @@ msgstr ""
 msgid "Instance administrators group already exists"
 msgstr ""
 
+msgid "InstanceAnalytics|Canceled"
+msgstr ""
+
+msgid "InstanceAnalytics|Could not load the pipelines chart. Please refresh the page to try again."
+msgstr ""
+
+msgid "InstanceAnalytics|Failed"
+msgstr ""
+
+msgid "InstanceAnalytics|Items"
+msgstr ""
+
+msgid "InstanceAnalytics|Month"
+msgstr ""
+
+msgid "InstanceAnalytics|Pipelines"
+msgstr ""
+
+msgid "InstanceAnalytics|Skipped"
+msgstr ""
+
+msgid "InstanceAnalytics|Succeeded"
+msgstr ""
+
+msgid "InstanceAnalytics|There is no data available."
+msgstr ""
+
+msgid "InstanceAnalytics|Total"
+msgstr ""
+
 msgid "InstanceStatistics|Groups"
 msgstr ""
 
@@ -20773,6 +20806,9 @@ msgstr ""
 msgid "ProjectTemplates|Android"
 msgstr ""
 
+msgid "ProjectTemplates|Basic"
+msgstr ""
+
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
@@ -20825,6 +20861,9 @@ msgid "ProjectTemplates|Ruby on Rails"
 msgstr ""
 
 msgid "ProjectTemplates|SalesforceDX"
+msgstr ""
+
+msgid "ProjectTemplates|Serenity Valley"
 msgstr ""
 
 msgid "ProjectTemplates|Serverless Framework/JS"
@@ -22806,6 +22845,9 @@ msgstr ""
 msgid "SSL Verification:"
 msgstr ""
 
+msgid "Sample Data"
+msgstr ""
+
 msgid "Satisfied"
 msgstr ""
 
@@ -23737,6 +23779,9 @@ msgid "Separate topics with commas."
 msgstr ""
 
 msgid "September"
+msgstr ""
+
+msgid "Serenity Valley Sample Data template."
 msgstr ""
 
 msgid "SeriesFinalConjunction|and"
@@ -26690,7 +26735,13 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgstr ""
+
 msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{issues_count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgstr ""
+
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{merge_requests_count} issues have been included. Consider re-exporting with a narrower selection of issues."
 msgstr ""
 
 msgid "This block is self-referential"
@@ -30339,7 +30390,7 @@ msgstr ""
 msgid "Your CSV export has started. It will be emailed to %{email} when complete."
 msgstr ""
 
-msgid "Your CSV export of %{issues_count} from project %{project_link} has been added to this email as an attachment."
+msgid "Your CSV export of %{count} from project %{project_link} has been added to this email as an attachment."
 msgstr ""
 
 msgid "Your CSV export of %{written_count} from project %{project_name} (%{project_url}) has been added to this email as an attachment."

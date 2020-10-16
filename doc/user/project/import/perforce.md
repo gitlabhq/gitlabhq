@@ -20,7 +20,7 @@ Git:
    it creates an integration record in their proprietary database for every file
    in the branch, regardless how many were actually changed. Whereas Git was
    implemented with a different architecture so that a single SHA acts as a pointer
-   to the state of the whole repo after the changes, making it very easy to branch.
+   to the state of the whole repository after the changes, making it very easy to branch.
    This is what made feature branching workflows so easy to adopt with Git.
 1. Also, context switching between branches is much easier in Git. If your manager
    said 'You need to stop work on that new feature and fix this security

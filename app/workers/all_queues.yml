@@ -1571,6 +1571,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: issuable_export_csv
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: issue_placement
   :feature_category: :issue_tracking
   :has_external_dependencies:

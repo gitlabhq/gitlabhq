@@ -299,9 +299,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
   describe 'user callouts' do
     context 'when suggest pipeline feature is enabled' do
-      before do
-        stub_experiment(suggest_pipeline: true)
-      end
+      subject { described_class.new(resource, request: request, experiment_enabled: :suggest_pipeline).as_json }
 
       it 'provides a valid path value for user callout path' do
         expect(subject[:user_callouts_path]).to eq '/-/user_callouts'
@@ -335,10 +333,6 @@ RSpec.describe MergeRequestWidgetEntity do
     end
 
     context 'when suggest pipeline feature is not enabled' do
-      before do
-        stub_experiment(suggest_pipeline: false)
-      end
-
       it 'provides no valid value for user callout path' do
         expect(subject[:user_callouts_path]).to be_nil
       end

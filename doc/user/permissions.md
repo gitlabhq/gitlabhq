@@ -399,7 +399,7 @@ Administrators can add members with a "minimal access" role to a parent group. S
 automatically have access to projects and subgroups underneath. To support such access, administrators must explicitly add these "minimal access" users to the specific subgroups/projects.
 
 Users with minimal access can list the group in the UI and through the API. However, they cannot see
-details such as projects or subgroups. They do not have access to the group's page or list any of itssubgroups or projects.
+details such as projects or subgroups. They do not have access to the group's page or list any of its subgroups or projects.
 
 ## Project features
 

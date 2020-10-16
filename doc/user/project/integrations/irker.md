@@ -14,8 +14,8 @@ See the project homepage for further information: <https://gitlab.com/esr/irker>
 
 ## Needed setup
 
-You will first need an Irker daemon. You can download the Irker code from its
-repository on <https://gitlab.com/esr/irker>:
+You will first need an Irker daemon. You can download the Irker code
+[from its repository](https://gitlab.com/esr/irker):
 
 ```shell
 git clone https://gitlab.com/esr/irker.git
@@ -55,6 +55,6 @@ case, `Aorimn` is treated as a nick and no more as a channel name.
 Irker can also join password-protected channels. Users need to append
 `?key=thesecretpassword` to the channel name. When using this feature remember to
 **not** put the `#` sign in front of the channel name; failing to do so will
-result on irker joining a channel literally named `#chan?key=password` henceforth
+result on Irker joining a channel literally named `#chan?key=password` henceforth
 leaking the channel key through the `/whois` IRC command (depending on IRC server
-configuration). This is due to a long standing irker bug.
+configuration). This is due to a long standing Irker bug.

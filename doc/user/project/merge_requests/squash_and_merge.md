@@ -65,8 +65,8 @@ meaningful commit messages and:
 ## Enabling squash for a merge request
 
 Anyone who can create or edit a merge request can choose for it to be squashed
-on the merge request form. Users can select or unselect the checkbox at the moment
-they are creating the merge request:
+on the merge request form. Users can select or clear the check box when they
+create the merge request:
 
 ![Squash commits checkbox on edit form](img/squash_edit_form.png)
 

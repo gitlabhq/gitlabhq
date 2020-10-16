@@ -933,6 +933,19 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#undo_change_column_type_concurrently' do
+    it 'reverses the operations of change_column_type_concurrently' do
+      expect(model).to receive(:check_trigger_permissions!).with(:users)
+
+      expect(model).to receive(:remove_rename_triggers_for_postgresql)
+        .with(:users, /trigger_.{12}/)
+
+      expect(model).to receive(:remove_column).with(:users, "old_for_type_change")
+
+      model.undo_change_column_type_concurrently(:users, :old)
+    end
+  end
+
   describe '#cleanup_concurrent_column_type_change' do
     it 'cleans up the type changing procedure' do
       expect(model).to receive(:cleanup_concurrent_column_rename)
@@ -942,6 +955,94 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         .with('users', 'username_for_type_change', 'username')
 
       model.cleanup_concurrent_column_type_change('users', 'username')
+    end
+  end
+
+  describe '#undo_cleanup_concurrent_column_type_change' do
+    context 'in a transaction' do
+      it 'raises RuntimeError' do
+        allow(model).to receive(:transaction_open?).and_return(true)
+
+        expect { model.undo_cleanup_concurrent_column_type_change(:users, :old, :new) }
+          .to raise_error(RuntimeError)
+      end
+    end
+
+    context 'outside a transaction' do
+      let(:temp_column) { "old_for_type_change" }
+
+      let(:temp_undo_cleanup_column) do
+        identifier = "users_old_for_type_change"
+        hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
+        "tmp_undo_cleanup_column_#{hashed_identifier}"
+      end
+
+      let(:trigger_name) { model.rename_trigger_name(:users, :old, :old_for_type_change) }
+
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      it 'reverses the operations of cleanup_concurrent_column_type_change' do
+        expect(model).to receive(:check_trigger_permissions!).with(:users)
+
+        expect(model).to receive(:create_column_from).with(
+          :users,
+          :old,
+          temp_undo_cleanup_column,
+          type: :string,
+          batch_column_name: :id,
+          type_cast_function: nil
+        ).and_return(true)
+
+        expect(model).to receive(:rename_column)
+          .with(:users, :old, temp_column)
+
+        expect(model).to receive(:rename_column)
+          .with(:users, temp_undo_cleanup_column, :old)
+
+        expect(model).to receive(:install_rename_triggers_for_postgresql)
+          .with(trigger_name, '"users"', '"old"', '"old_for_type_change"')
+
+        model.undo_cleanup_concurrent_column_type_change(:users, :old, :string)
+      end
+
+      it 'passes the type_cast_function and batch_column_name' do
+        expect(model).to receive(:column_exists?).with(:users, :other_batch_column).and_return(true)
+        expect(model).to receive(:check_trigger_permissions!).with(:users)
+
+        expect(model).to receive(:create_column_from).with(
+          :users,
+          :old,
+          temp_undo_cleanup_column,
+          type: :string,
+          batch_column_name: :other_batch_column,
+          type_cast_function: :custom_type_cast_function
+        ).and_return(true)
+
+        expect(model).to receive(:rename_column)
+          .with(:users, :old, temp_column)
+
+        expect(model).to receive(:rename_column)
+          .with(:users, temp_undo_cleanup_column, :old)
+
+        expect(model).to receive(:install_rename_triggers_for_postgresql)
+          .with(trigger_name, '"users"', '"old"', '"old_for_type_change"')
+
+        model.undo_cleanup_concurrent_column_type_change(
+          :users,
+          :old,
+          :string,
+          type_cast_function: :custom_type_cast_function,
+          batch_column_name: :other_batch_column
+        )
+      end
+
+      it 'raises an error with invalid batch_column_name' do
+        expect do
+          model.undo_cleanup_concurrent_column_type_change(:users, :old, :new, batch_column_name: :invalid)
+        end.to raise_error(RuntimeError, /Column invalid does not exist on users/)
+      end
     end
   end
 

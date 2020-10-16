@@ -58,7 +58,7 @@ To create a new blank project on the **New project** page:
 Project templates can pre-populate a new project with the necessary files to get you
 started quickly.
 
-There are two types of project templates:
+There are two main types of project templates:
 
 - [Built-in templates](#built-in-templates), sourced from the following groups:
   - [`project-templates`](https://gitlab.com/gitlab-org/project-templates)

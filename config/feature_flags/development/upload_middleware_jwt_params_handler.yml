@@ -4,4 +4,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33277
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/233895
 group: group::package
 type: development
-default_enabled: false
+default_enabled: true

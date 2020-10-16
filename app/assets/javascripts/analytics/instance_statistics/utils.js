@@ -1,4 +1,5 @@
 import { masks } from 'dateformat';
+import { mapKeys, mapValues, pick, sortBy } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
 const { isoDate } = masks;
@@ -37,4 +38,32 @@ export function getAverageByMonth(items = [], options = {}) {
 
     return [month, avg];
   });
+}
+
+/**
+ * Extracts values given a data set and a set of keys
+ * @example
+ * const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
+ * extractValues(data, ['fooBar'], 'foo', 'baz') => { bazBar: 'quis' }
+ * @param  {Object} data set to extract values from
+ * @param  {Array}  dataKeys keys describing where to look for values in the data set
+ * @param  {String} replaceKey name key to be replaced in the data set
+ * @param  {String} nestedKey key nested in the data set to be extracted,
+ *                  this is also used to rename the newly created data set
+ * @return {Object} the newly created data set with the extracted values
+ */
+export function extractValues(data, dataKeys = [], replaceKey, nestedKey) {
+  return mapKeys(pick(mapValues(data, nestedKey), dataKeys), (value, key) =>
+    key.replace(replaceKey, nestedKey),
+  );
+}
+
+/**
+ * Creates a new array of items sorted by the date string of each item
+ * @param  {Array} items [description]
+ * @param  {String} items[0] date string
+ * @return {Array} the new sorted array.
+ */
+export function sortByDate(items = []) {
+  return sortBy(items, ({ recordedAt }) => new Date(recordedAt).getTime());
 }

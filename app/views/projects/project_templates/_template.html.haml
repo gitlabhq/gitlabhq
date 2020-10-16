@@ -1,0 +1,16 @@
+.template-option.d-flex.align-items-center{ data: { qa_selector: 'template_option_row' } }
+  .logo.gl-mr-3.px-1
+    = image_tag template.logo, size: 32, class: "btn-template-icon icon-#{template.name}"
+  .description
+    %strong
+      = template.title
+    %br
+    .text-muted
+      = template.description
+  .controls.d-flex.align-items-center
+    %a.btn.gl-button.btn-default.gl-mr-3{ href: template.preview, rel: 'noopener noreferrer', target: '_blank', data: { track_label: "template_preview", track_property: template.name, track_event: "click_button", track_value: "" } }
+      = _("Preview")
+    %label.btn.gl-button.btn-success.template-button.choose-template.gl-mb-0{ for: template.name }
+      %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "template_use", track_property: template.name, track_event: "click_button", track_value: "" } }
+      %span{ data: { qa_selector: 'use_template_button' } }
+        = _("Use template")

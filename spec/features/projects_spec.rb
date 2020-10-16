@@ -6,25 +6,35 @@ RSpec.describe 'Project' do
   include ProjectForksHelper
   include MobileHelpers
 
-  describe 'creating from template' do
+  describe 'template' do
     let(:user) { create(:user) }
-    let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
       sign_in user
       visit new_project_path
     end
 
-    it "allows creation from templates", :js do
-      find('#create-from-template-tab').click
-      find("label[for=#{template.name}]").click
-      fill_in("project_name", with: template.name)
+    shared_examples 'creates from template' do |template, sub_template_tab = nil|
+      it "is created from template", :js do
+        find('#create-from-template-tab').click
+        find(".project-template #{sub_template_tab}").click if sub_template_tab
+        find("label[for=#{template.name}]").click
+        fill_in("project_name", with: template.name)
 
-      page.within '#content-body' do
-        click_button "Create project"
+        page.within '#content-body' do
+          click_button "Create project"
+        end
+
+        expect(page).to have_content template.name
       end
+    end
 
-      expect(page).to have_content template.name
+    context 'create with project template' do
+      it_behaves_like 'creates from template', Gitlab::ProjectTemplate.find(:rails)
+    end
+
+    context 'create with sample data template' do
+      it_behaves_like 'creates from template', Gitlab::SampleDataTemplate.find(:basic), '.sample-data-templates-tab'
     end
   end
 

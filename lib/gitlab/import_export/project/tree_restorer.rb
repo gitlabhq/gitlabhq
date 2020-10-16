@@ -70,7 +70,7 @@ module Gitlab
         end
 
         def relation_tree_restorer
-          @relation_tree_restorer ||= RelationTreeRestorer.new(
+          @relation_tree_restorer ||= relation_tree_restorer_class.new(
             user: @user,
             shared: @shared,
             relation_reader: relation_reader,
@@ -82,6 +82,14 @@ module Gitlab
             importable_attributes: @project_attributes,
             importable_path: importable_path
           )
+        end
+
+        def relation_tree_restorer_class
+          sample_data_template? ? Sample::SampleDataRelationTreeRestorer : RelationTreeRestorer
+        end
+
+        def sample_data_template?
+          @project&.import_data&.data&.dig('sample_data')
         end
 
         def members_mapper

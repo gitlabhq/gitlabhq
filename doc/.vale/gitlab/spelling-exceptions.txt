@@ -146,6 +146,7 @@ failsafe
 Falco
 fastlane
 favicon
+Figma
 Filebeat
 Fio
 firewalled
@@ -312,6 +313,7 @@ passwordless
 Patroni
 performant
 PgBouncer
+Phabricator
 phaser
 phasers
 Pipfile
@@ -352,6 +354,7 @@ Python
 Qualys
 Rackspace
 Raspbian
+Rdoc
 reachability
 rebase
 rebased
@@ -433,7 +436,10 @@ smartcard
 smartcards
 SMTP
 Sobelow
+Solarized
 Sourcegraph
+sparkline
+sparklines
 spidering
 Splunk
 SpotBugs
@@ -449,6 +455,8 @@ subfolder
 subfolders
 subgraph
 subgraphs
+subkey
+subkeys
 sublicense
 sublicensed
 sublicenses
@@ -468,6 +476,7 @@ subtrees
 sudo
 syslog
 tcpdump
+Thanos
 Tiller
 timecop
 todos
@@ -490,6 +499,7 @@ unarchived
 unarchives
 unarchiving
 unassign
+unassigning
 unassigns
 uncheck
 unchecked

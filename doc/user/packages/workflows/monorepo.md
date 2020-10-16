@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Monorepo package management workflows
 
 Oftentimes, one project or Git repository may contain multiple different
-subprojects or submodules that all get packaged and published individually.
+sub-projects or submodules that all get packaged and published individually.
 
 ## Publishing different packages to the parent project
 
@@ -36,9 +36,9 @@ as well as `Foo`.
 Following the instructions in the
 [GitLab NPM registry documentation](../npm_registry/index.md),
 publishing `MyProject` consists of modifying the `package.json` file with a
-`publishConfig` section, as well as either modifying your local NPM config with
+`publishConfig` section, as well as either modifying your local NPM configuration with
 CLI commands like `npm config set`, or saving a `.npmrc` file in the root of the
-project specifying these config settings.
+project specifying these configuration settings.
 
 If you follow the instructions you can publish `MyProject` by running
 `npm publish` from the root directory.
@@ -65,7 +65,7 @@ A package is associated with a project on GitLab, but the package does not
 need to be associated with the code in that project. Notice when configuring
 NPM or Maven, you only use the `Project ID` to set the registry URL that the
 package is to be uploaded to. If you set this to any project that you have
-access to and update any other config similarly depending on the package type,
+access to and update any other configuration similarly depending on the package type,
 your packages are published to that project. This means you can publish
 multiple packages to one project, even if their code does not exist in the same
 place. See the [project registry workflow documentation](./project_registry.md)

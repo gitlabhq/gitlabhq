@@ -229,7 +229,7 @@ module Gitlab
       private
 
       def handler_class
-        if Feature.enabled?(:upload_middleware_jwt_params_handler)
+        if Feature.enabled?(:upload_middleware_jwt_params_handler, default_enabled: true)
           ::Gitlab::Middleware::Multipart::HandlerForJWTParams
         else
           ::Gitlab::Middleware::Multipart::Handler

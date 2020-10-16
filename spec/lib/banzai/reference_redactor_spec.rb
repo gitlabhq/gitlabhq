@@ -182,5 +182,12 @@ RSpec.describe Banzai::ReferenceRedactor do
 
       expect(redactor.nodes_visible_to_user([node])).to eq(Set.new([node]))
     end
+
+    it 'handles invalid references gracefully' do
+      doc = Nokogiri::HTML.fragment('<a data-reference-type="some_invalid_type"></a>')
+      node = doc.children[0]
+
+      expect(redactor.nodes_visible_to_user([node])).to be_empty
+    end
   end
 end
