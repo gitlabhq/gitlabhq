@@ -46,10 +46,6 @@ module Gitlab
         Feature.enabled?(:project_transactionless_destroy, project, default_enabled: false)
       end
 
-      def self.child_of_child_pipeline_enabled?(project)
-        ::Feature.enabled?(:ci_child_of_child_pipeline, project, default_enabled: true)
-      end
-
       def self.trace_overwrite?
         ::Feature.enabled?(:ci_trace_overwrite, type: :ops, default_enabled: false)
       end

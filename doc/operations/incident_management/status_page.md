@@ -4,7 +4,7 @@ group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Status Page **(ULTIMATE)**
+# Status Page
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 
@@ -25,7 +25,7 @@ Clicking an incident displays a detail page with more information about a partic
   valid image extension. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
 - A chronological ordered list of updates to the incident.
 
-## Set up a GitLab Status Page
+## Set up a Status Page
 
 To configure a GitLab Status Page you must:
 

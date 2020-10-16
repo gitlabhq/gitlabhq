@@ -15,3 +15,11 @@ export const updateMemberRole = async ({ state, commit }, { memberId, accessLeve
     throw error;
   }
 };
+
+export const showRemoveGroupLinkModal = ({ commit }, groupLink) => {
+  commit(types.SHOW_REMOVE_GROUP_LINK_MODAL, groupLink);
+};
+
+export const hideRemoveGroupLinkModal = ({ commit }) => {
+  commit(types.HIDE_REMOVE_GROUP_LINK_MODAL);
+};

@@ -1,11 +1,12 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 
 export default {
   name: 'AssigneeTitle',
   components: {
     GlLoadingIcon,
+    GlIcon,
   },
   props: {
     loading: {
@@ -64,7 +65,7 @@ export default {
       href="#"
       role="button"
     >
-      <i aria-hidden="true" data-hidden="true" class="fa fa-angle-double-right"></i>
+      <gl-icon aria-hidden="true" data-hidden="true" name="chevron-double-lg-right" :size="12" />
     </a>
   </div>
 </template>

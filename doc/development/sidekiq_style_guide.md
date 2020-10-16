@@ -215,6 +215,85 @@ From the rails console:
 Feature.enable!(:disable_authorized_projects_deduplication)
 ```
 
+## Limited capacity worker
+
+It is possible to limit the number of concurrent running jobs for a worker class
+by using the `LimitedCapacity::Worker` concern.
+
+The worker must implement three methods:
+
+- `perform_work` - the concern implements the usual `perform` method and calls
+`perform_work` if there is any capacity available.
+- `remaining_work_count` - number of jobs that will have work to perform.
+- `max_running_jobs` - maximum number of jobs allowed to run concurrently.
+
+```ruby
+class MyDummyWorker
+  include ApplicationWorker
+  include LimitedCapacity::Worker
+
+  def perform_work(*args)
+  end
+
+  def remaining_work_count(*args)
+    5
+  end
+
+  def max_running_jobs
+    25
+  end
+end
+```
+
+Additional to the regular worker, a cron worker must be defined as well to
+backfill the queue with jobs. the arguments passed to `perform_with_capacity`
+will be passed along to the `perform_work` method.
+
+```ruby
+class ScheduleMyDummyCronWorker
+  include ApplicationWorker
+  include CronjobQueue
+
+  def perform(*args)
+    MyDummyWorker.perform_with_capacity(*args)
+  end
+end
+```
+
+### How many jobs are running?
+
+It will be running `max_running_jobs` at almost all times.
+
+The cron worker will check the remaining capacity on each execution and it
+will schedule at most `max_running_jobs` jobs. Those jobs on completion will
+re-enqueue themselves immediately, but not on failure. The cron worker is in
+charge of replacing those failed jobs.
+
+### Handling errors and idempotence
+
+This concern disables Sidekiq retries, logs the errors, and sends the job to the
+dead queue. This is done to have only one source that produces jobs and because
+the retry would occupy a slot with a job that will be performed in the distant future.
+
+We let the cron worker enqueue new jobs, this could be seen as our retry and
+back off mechanism because the job might fail again if executed immediately.
+This means that for every failed job, we will be running at a lower capacity
+until the cron worker fills the capacity again. If it is important for the
+worker not to get a backlog, exceptions must be handled in `#perform_work` and
+the job should not raise.
+
+The jobs are deduplicated using the `:none` strategy, but the worker is not
+marked as `idempotent!`.
+
+### Metrics
+
+This concern exposes three Prometheus metrics of gauge type with the worker class
+name as label:
+
+- `limited_capacity_worker_running_jobs`
+- `limited_capacity_worker_max_running_jobs`
+- `limited_capacity_worker_remaining_work_count`
+
 ## Job urgency
 
 Jobs can have an `urgency` attribute set, which can be `:high`,

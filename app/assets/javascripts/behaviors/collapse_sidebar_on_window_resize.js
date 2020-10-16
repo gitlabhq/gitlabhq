@@ -32,11 +32,12 @@ export default () => {
 
         // Sidebar has an icon which corresponds to collapsing the sidebar
         // only then trigger the click.
-        if (sidebarGutterVueToggleEl) {
-          const collapseIcon = sidebarGutterVueToggleEl.querySelector('i.fa-angle-double-right');
-
-          if (collapseIcon) {
-            collapseIcon.click();
+        if (
+          sidebarGutterVueToggleEl &&
+          !sidebarGutterVueToggleEl.classList.contains('js-sidebar-collapsed')
+        ) {
+          if (sidebarGutterVueToggleEl) {
+            sidebarGutterVueToggleEl.click();
           }
         }
       }

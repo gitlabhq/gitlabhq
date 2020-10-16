@@ -88,9 +88,14 @@ RSpec.describe Groups::GroupMembersHelper do
   describe '#linked_groups_list_data_attributes' do
     include_context 'group_group_link'
 
+    before do
+      allow(helper).to receive(:group_group_link_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
+    end
+
     it 'returns expected hash' do
       expect(helper.linked_groups_list_data_attributes(shared_group)).to include({
         members: helper.linked_groups_data_json(shared_group.shared_with_group_links),
+        member_path: '/groups/foo-bar/-/group_links/:id',
         group_id: shared_group.id
       })
     end

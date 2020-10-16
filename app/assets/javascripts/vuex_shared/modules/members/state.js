@@ -14,4 +14,6 @@ export default ({
   requestFormatter,
   showError: false,
   errorMessage: '',
+  removeGroupLinkModalVisible: false,
+  groupLinkToRemove: null,
 });

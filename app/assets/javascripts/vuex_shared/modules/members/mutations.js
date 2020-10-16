@@ -23,4 +23,11 @@ export default {
     state.showError = false;
     state.errorMessage = '';
   },
+  [types.SHOW_REMOVE_GROUP_LINK_MODAL](state, groupLink) {
+    state.removeGroupLinkModalVisible = true;
+    state.groupLinkToRemove = groupLink;
+  },
+  [types.HIDE_REMOVE_GROUP_LINK_MODAL](state) {
+    state.removeGroupLinkModalVisible = false;
+  },
 };

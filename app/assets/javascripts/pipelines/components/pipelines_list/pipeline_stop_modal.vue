@@ -1,10 +1,9 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { isEmpty } from 'lodash';
-import { GlLink } from '@gitlab/ui';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import { GlLink, GlModal } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 /**
  * Pipeline Stop Modal.
@@ -13,7 +12,7 @@ import { s__, sprintf } from '~/locale';
  */
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
     GlLink,
     CiIcon,
   },
@@ -46,6 +45,17 @@ export default {
     hasRef() {
       return !isEmpty(this.pipeline.ref);
     },
+    primaryProps() {
+      return {
+        text: s__('Pipeline|Stop pipeline'),
+        attributes: [{ variant: 'danger' }],
+      };
+    },
+    cancelProps() {
+      return {
+        text: __('Cancel'),
+      };
+    },
   },
   methods: {
     emitSubmit(event) {
@@ -56,11 +66,11 @@ export default {
 </script>
 <template>
   <gl-modal
-    id="confirmation-modal"
-    :header-title-text="modalTitle"
-    :footer-primary-button-text="s__('Pipeline|Stop pipeline')"
-    footer-primary-button-variant="danger"
-    @submit="emitSubmit($event)"
+    modal-id="confirmation-modal"
+    :title="modalTitle"
+    :action-primary="primaryProps"
+    :action-cancel="cancelProps"
+    @primary="emitSubmit($event)"
   >
     <p v-html="modalText"></p>
 

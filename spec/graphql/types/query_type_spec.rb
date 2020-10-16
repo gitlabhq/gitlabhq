@@ -22,6 +22,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       users
       issue
       instance_statistics_measurements
+      runner_platforms
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -67,8 +68,16 @@ RSpec.describe GitlabSchema.types['Query'] do
   describe 'instance_statistics_measurements field' do
     subject { described_class.fields['instanceStatisticsMeasurements'] }
 
-    it 'returns issue' do
+    it 'returns instance statistics measurements' do
       is_expected.to have_graphql_type(Types::Admin::Analytics::InstanceStatistics::MeasurementType.connection_type)
+    end
+  end
+
+  describe 'runner_platforms field' do
+    subject { described_class.fields['runnerPlatforms'] }
+
+    it 'returns runner platforms' do
+      is_expected.to have_graphql_type(Types::Ci::RunnerPlatformType.connection_type)
     end
   end
 end

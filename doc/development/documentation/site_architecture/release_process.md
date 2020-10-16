@@ -121,10 +121,11 @@ versions (stable branches `X.Y` of the `gitlab-docs` project):
    pipelines succeed:
 
    NOTE: **Note:**
-   The `release-X-Y` branch needs to be present locally, otherwise the Rake
-   task will abort.
+   The `release-X-Y` branch needs to be present locally,
+   and you need to have switched to it, otherwise the Rake task will fail.
 
    ```shell
+   git checkout release-X-Y
    ./bin/rake release:dropdowns
    ```
 

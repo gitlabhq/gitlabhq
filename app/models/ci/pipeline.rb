@@ -829,16 +829,9 @@ module Ci
     end
 
     def same_family_pipeline_ids
-      if ::Gitlab::Ci::Features.child_of_child_pipeline_enabled?(project)
-        ::Gitlab::Ci::PipelineObjectHierarchy.new(
-          base_and_ancestors(same_project: true), options: { same_project: true }
-        ).base_and_descendants.select(:id)
-      else
-        # If pipeline is a child of another pipeline, include the parent
-        # and the siblings, otherwise return only itself and children.
-        parent = parent_pipeline || self
-        [parent.id] + parent.child_pipelines.pluck(:id)
-      end
+      ::Gitlab::Ci::PipelineObjectHierarchy.new(
+        base_and_ancestors(same_project: true), options: { same_project: true }
+      ).base_and_descendants.select(:id)
     end
 
     def build_with_artifacts_in_self_and_descendants(name)

@@ -1,11 +1,15 @@
 import { noop } from 'lodash';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { members } from 'jest/vue_shared/components/members/mock_data';
+import { members, group } from 'jest/vue_shared/components/members/mock_data';
 import testAction from 'helpers/vuex_action_helper';
 import httpStatusCodes from '~/lib/utils/http_status';
 import * as types from '~/vuex_shared/modules/members/mutation_types';
-import { updateMemberRole } from '~/vuex_shared/modules/members/actions';
+import {
+  updateMemberRole,
+  showRemoveGroupLinkModal,
+  hideRemoveGroupLinkModal,
+} from '~/vuex_shared/modules/members/actions';
 
 describe('Vuex members actions', () => {
   let mock;
@@ -30,6 +34,8 @@ describe('Vuex members actions', () => {
       members,
       memberPath: '/groups/foo-bar/-/group_members/:id',
       requestFormatter: noop,
+      removeGroupLinkModalVisible: false,
+      groupLinkToRemove: null,
     };
 
     describe('successful request', () => {
@@ -70,6 +76,34 @@ describe('Vuex members actions', () => {
 
       it('throws error', async () => {
         await expect(testAction(updateMemberRole, payload, state)).rejects.toThrowError();
+      });
+    });
+  });
+
+  describe('Group Link Modal', () => {
+    const state = {
+      removeGroupLinkModalVisible: false,
+      groupLinkToRemove: null,
+    };
+
+    describe('showRemoveGroupLinkModal', () => {
+      it(`commits ${types.SHOW_REMOVE_GROUP_LINK_MODAL} mutation`, () => {
+        testAction(showRemoveGroupLinkModal, group, state, [
+          {
+            type: types.SHOW_REMOVE_GROUP_LINK_MODAL,
+            payload: group,
+          },
+        ]);
+      });
+    });
+
+    describe('hideRemoveGroupLinkModal', () => {
+      it(`commits ${types.HIDE_REMOVE_GROUP_LINK_MODAL} mutation`, () => {
+        testAction(hideRemoveGroupLinkModal, group, state, [
+          {
+            type: types.HIDE_REMOVE_GROUP_LINK_MODAL,
+          },
+        ]);
       });
     });
   });

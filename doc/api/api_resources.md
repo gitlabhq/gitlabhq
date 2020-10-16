@@ -80,7 +80,7 @@ The following API resources are available in the project context:
 | [Vulnerability exports](vulnerability_exports.md) **(ULTIMATE)**    | `/projects/:id/vulnerability_exports`                                                                                                                                                                       |
 | [Project vulnerabilities](project_vulnerabilities.md) **(ULTIMATE)**   | `/projects/:id/vulnerabilities`                                                                                                                                                                            |
 | [Vulnerability findings](vulnerability_findings.md) **(ULTIMATE)**  | `/projects/:id/vulnerability_findings`                                                                                                                                                                |
-| [Wikis](wikis.md)                                                   | `/projects/:id/wikis`                                                                                                                                                                                 |
+| [Project wikis](wikis.md)                                           | `/projects/:id/wikis`                                                                                                                                                                                 |
 
 ## Group resources
 
@@ -108,6 +108,7 @@ The following API resources are available in the group context:
 | [Notification settings](notification_settings.md)                | `/groups/:id/notification_settings` (also available for projects and standalone) |
 | [Resource label events](resource_label_events.md)                | `/groups/:id/epics/.../resource_label_events` (also available for projects)      |
 | [Search](search.md)                                              | `/groups/:id/search` (also available for projects and standalone)                |
+| [Group wikis](group_wikis.md) **(PREMIUM)**                      | `/groups/:id/wikis`                                                              |
 
 ## Standalone resources
 

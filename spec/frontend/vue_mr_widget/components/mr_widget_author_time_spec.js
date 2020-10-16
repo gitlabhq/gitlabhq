@@ -35,9 +35,7 @@ describe('MrWidgetAuthorTime', () => {
   });
 
   it('renders provided time', () => {
-    expect(vm.$el.querySelector('time').getAttribute('data-original-title')).toEqual(
-      '2017-03-23T23:02:00.807Z',
-    );
+    expect(vm.$el.querySelector('time').getAttribute('title')).toEqual('2017-03-23T23:02:00.807Z');
 
     expect(vm.$el.querySelector('time').textContent.trim()).toEqual('12 hours ago');
   });

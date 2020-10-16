@@ -325,20 +325,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
             expect(bridge.reload).to be_success
           end
-
-          context 'when FF ci_child_of_child_pipeline is disabled' do
-            before do
-              stub_feature_flags(ci_child_of_child_pipeline: false)
-            end
-
-            it 'does not create a further child pipeline' do
-              expect { service.execute(bridge) }
-                .not_to change { Ci::Pipeline.count }
-
-              expect(bridge.reload).to be_failed
-              expect(bridge.failure_reason).to eq 'bridge_pipeline_is_child_pipeline'
-            end
-          end
         end
 
         context 'when upstream pipeline has a parent pipeline, which has a parent pipeline' do

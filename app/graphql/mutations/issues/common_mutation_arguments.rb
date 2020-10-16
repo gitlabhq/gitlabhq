@@ -26,5 +26,3 @@ module Mutations
     end
   end
 end
-
-Mutations::Issues::CommonMutationArguments.prepend_if_ee('::EE::Mutations::Issues::CommonMutationArguments')

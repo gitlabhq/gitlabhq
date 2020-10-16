@@ -19,6 +19,9 @@ You can create Wiki pages in the web interface or
 [locally using Git](#adding-and-editing-wiki-pages-locally) since every Wiki is
 a separate Git repository.
 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5,
+**group wikis** became available. Their usage is similar to project wikis, with a few [limitations](../../group/index.md#group-wikis).
+
 ## First time creating the Home page
 
 The first time you visit a Wiki, you will be directed to create the Home page.

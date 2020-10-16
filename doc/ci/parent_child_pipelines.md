@@ -164,35 +164,12 @@ This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues
 ## Nested child pipelines
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-nested-child-pipelines). **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243747) in GitLab 13.5.
 
 Parent and child pipelines were introduced with a maximum depth of one level of child
 pipelines, which was later increased to two. A parent pipeline can trigger many child
 pipelines, and these child pipelines can trigger their own child pipelines. It's not
 possible to trigger another level of child pipelines.
-
-### Enable or disable nested child pipelines **(CORE ONLY)**
-
-Nested child pipelines with a depth of two are under development but ready for
-production use. This feature is deployed behind a feature flag that is **enabled by default**.
-
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_child_of_child_pipeline)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_child_of_child_pipeline)
-```
 
 ## Pass variables to a child pipeline
 

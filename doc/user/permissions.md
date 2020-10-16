@@ -243,6 +243,7 @@ group.
 | Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
 |--------------------------------------------------------|-------|----------|-----------|------------|-------|
 | Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
 | View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group epic **(ULTIMATE)**                         | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Create/edit group epic **(ULTIMATE)**                  |       | ✓        | ✓         | ✓          | ✓     |
@@ -256,10 +257,12 @@ group.
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy **(PREMIUM)**        |       |          | ✓         | ✓          | ✓     |
+| Create and edit group wiki pages **(PREMIUM)**         |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 | Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
+| Delete group wiki pages **(PREMIUM)**                  |       |          |           | ✓          | ✓     |
 | Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
 | Edit group settings                                    |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                     |       |          |           |            | ✓     |
@@ -273,7 +276,7 @@ group.
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Issue analytics **(PREMIUM)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Billing **(FREE ONLY)**                           |       |          |           |            | ✓ (4) |
@@ -287,6 +290,7 @@ group.
    - The [group level](group/index.md#default-project-creation-level).
 1. Does not apply to subgroups.
 1. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#changing-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
+1. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 
 ### Subgroup permissions
 

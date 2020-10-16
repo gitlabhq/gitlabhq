@@ -478,13 +478,14 @@ export default class MergeRequestTabs {
   }
 
   shrinkView() {
-    const $gutterIcon = $('.js-sidebar-toggle i:visible');
+    const $gutterBtn = $('.js-sidebar-toggle:visible');
+    const $expandSvg = $gutterBtn.find('.js-sidebar-expand');
 
     // Wait until listeners are set
     setTimeout(() => {
       // Only when sidebar is expanded
-      if ($gutterIcon.is('.fa-angle-double-right')) {
-        $gutterIcon.closest('a').trigger('click', [true]);
+      if ($expandSvg.length && $expandSvg.hasClass('hidden')) {
+        $gutterBtn.trigger('click', [true]);
       }
     }, 0);
   }
@@ -494,13 +495,14 @@ export default class MergeRequestTabs {
     if (parseBoolean(Cookies.get('collapsed_gutter'))) {
       return;
     }
-    const $gutterIcon = $('.js-sidebar-toggle i:visible');
+    const $gutterBtn = $('.js-sidebar-toggle');
+    const $collapseSvg = $gutterBtn.find('.js-sidebar-collapse');
 
     // Wait until listeners are set
     setTimeout(() => {
       // Only when sidebar is collapsed
-      if ($gutterIcon.is('.fa-angle-double-left')) {
-        $gutterIcon.closest('a').trigger('click', [true]);
+      if ($collapseSvg.length && !$collapseSvg.hasClass('hidden')) {
+        $gutterBtn.trigger('click', [true]);
       }
     }, 0);
   }

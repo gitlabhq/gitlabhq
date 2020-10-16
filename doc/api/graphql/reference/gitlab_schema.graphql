@@ -3472,6 +3472,11 @@ input CreateIssueInput {
   epicId: EpicID
 
   """
+  The desired health status
+  """
+  healthStatus: HealthStatus
+
+  """
   The IID (internal ID) of a project issue. Only admins and project owners can modify
   """
   iid: Int
@@ -3510,6 +3515,11 @@ input CreateIssueInput {
   Title of the issue
   """
   title: String!
+
+  """
+  The weight of the issue
+  """
+  weight: Int
 }
 
 """
@@ -15539,6 +15549,31 @@ type Query {
   ): ProjectConnection
 
   """
+  Supported runner platforms
+  """
+  runnerPlatforms(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): RunnerPlatformConnection
+
+  """
   Find Snippets visible to the current user
   """
   snippets(
@@ -16710,6 +16745,125 @@ type RunDASTScanPayload {
   URL of the pipeline that was created.
   """
   pipelineUrl: String
+}
+
+type RunnerArchitecture {
+  """
+  Download location for the runner for the platform architecture
+  """
+  downloadLocation: String!
+
+  """
+  Name of the runner platform architecture
+  """
+  name: String!
+}
+
+"""
+The connection type for RunnerArchitecture.
+"""
+type RunnerArchitectureConnection {
+  """
+  A list of edges.
+  """
+  edges: [RunnerArchitectureEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [RunnerArchitecture]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type RunnerArchitectureEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: RunnerArchitecture
+}
+
+type RunnerPlatform {
+  """
+  Runner architectures supported for the platform
+  """
+  architectures(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): RunnerArchitectureConnection
+
+  """
+  Human readable name of the runner platform
+  """
+  humanReadableName: String!
+
+  """
+  Name slug of the runner platform
+  """
+  name: String!
+}
+
+"""
+The connection type for RunnerPlatform.
+"""
+type RunnerPlatformConnection {
+  """
+  A list of edges.
+  """
+  edges: [RunnerPlatformEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [RunnerPlatform]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type RunnerPlatformEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: RunnerPlatform
 }
 
 """
@@ -19658,6 +19812,11 @@ input UpdateIssueInput {
   epicId: ID
 
   """
+  The desired health status
+  """
+  healthStatus: HealthStatus
+
+  """
   The IID of the issue to mutate
   """
   iid: String!
@@ -19691,6 +19850,11 @@ input UpdateIssueInput {
   Title of the issue
   """
   title: String
+
+  """
+  The weight of the issue
+  """
+  weight: Int
 }
 
 """

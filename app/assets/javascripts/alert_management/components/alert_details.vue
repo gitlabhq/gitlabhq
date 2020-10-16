@@ -285,10 +285,9 @@ export default {
           variant="default"
           class="d-sm-none gl-absolute toggle-sidebar-mobile-button"
           type="button"
+          icon="chevron-double-lg-left"
           @click="toggleSidebar"
-        >
-          <i class="fa fa-angle-double-left"></i>
-        </gl-button>
+        />
       </div>
       <div
         v-if="alert"

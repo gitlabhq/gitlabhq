@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import eventHub from '../../event_hub';
 import { __ } from '~/locale';
 import PipelinesActionsComponent from './pipelines_actions.vue';
@@ -24,6 +24,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModalDirective,
   },
   components: {
     PipelinesActionsComponent,
@@ -366,12 +367,11 @@ export default {
         <gl-button
           v-if="pipeline.flags.cancelable"
           v-gl-tooltip.hover
+          v-gl-modal-directive="'confirmation-modal'"
           :aria-label="$options.i18n.cancelTitle"
           :title="$options.i18n.cancelTitle"
           :loading="isCancelling"
           :disabled="isCancelling"
-          data-toggle="modal"
-          data-target="#confirmation-modal"
           icon="close"
           variant="danger"
           category="primary"

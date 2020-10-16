@@ -33,6 +33,7 @@ module Groups::GroupMembersHelper
   def linked_groups_list_data_attributes(group)
     {
       members: linked_groups_data_json(group.shared_with_group_links),
+      member_path: group_group_link_path(group, ':id'),
       group_id: group.id
     }
   end

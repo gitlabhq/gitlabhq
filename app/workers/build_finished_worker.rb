@@ -9,6 +9,8 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :cpu
   tags :requires_disk_io
 
+  ARCHIVE_TRACES_IN = 2.minutes.freeze
+
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
@@ -33,9 +35,22 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
 
     # We execute these async as these are independent operations.
     BuildHooksWorker.perform_async(build.id)
-    ArchiveTraceWorker.perform_async(build.id)
     ExpirePipelineCacheWorker.perform_async(build.pipeline_id) if build.pipeline.cacheable?
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
+
+    ##
+    # We want to delay sending a build trace to object storage operation to
+    # validate that this fixes a race condition between this and flushing live
+    # trace chunks and chunks being removed after consolidation and putting
+    # them into object storage archive.
+    #
+    # TODO This is temporary fix we should improve later, after we validate
+    # that this is indeed the culprit.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/267112 for more
+    # details.
+    #
+    ArchiveTraceWorker.perform_in(ARCHIVE_TRACES_IN, build.id)
   end
 end
 

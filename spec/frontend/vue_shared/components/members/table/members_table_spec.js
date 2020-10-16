@@ -43,6 +43,7 @@ describe('MemberList', () => {
         'created-at',
         'member-action-buttons',
         'role-dropdown',
+        'remove-group-link-modal',
       ],
     });
   };

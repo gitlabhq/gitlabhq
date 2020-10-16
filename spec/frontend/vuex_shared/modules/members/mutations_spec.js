@@ -1,4 +1,4 @@
-import { members } from 'jest/vue_shared/components/members/mock_data';
+import { members, group } from 'jest/vue_shared/components/members/mock_data';
 import mutations from '~/vuex_shared/modules/members/mutations';
 import * as types from '~/vuex_shared/modules/members/mutation_types';
 
@@ -57,6 +57,34 @@ describe('Vuex members mutations', () => {
       mutations[types.HIDE_ERROR](state);
 
       expect(state.errorMessage).toBe('');
+    });
+  });
+
+  describe(types.SHOW_REMOVE_GROUP_LINK_MODAL, () => {
+    it('sets `removeGroupLinkModalVisible` and `groupLinkToRemove`', () => {
+      const state = {
+        removeGroupLinkModalVisible: false,
+        groupLinkToRemove: null,
+      };
+
+      mutations[types.SHOW_REMOVE_GROUP_LINK_MODAL](state, group);
+
+      expect(state).toEqual({
+        removeGroupLinkModalVisible: true,
+        groupLinkToRemove: group,
+      });
+    });
+  });
+
+  describe(types.HIDE_REMOVE_GROUP_LINK_MODAL, () => {
+    it('sets `removeGroupLinkModalVisible` to `false`', () => {
+      const state = {
+        removeGroupLinkModalVisible: false,
+      };
+
+      mutations[types.HIDE_REMOVE_GROUP_LINK_MODAL](state);
+
+      expect(state.removeGroupLinkModalVisible).toBe(false);
     });
   });
 });

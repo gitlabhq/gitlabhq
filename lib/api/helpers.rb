@@ -522,7 +522,7 @@ module API
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
-        body
+        body ""
       end
     end
 

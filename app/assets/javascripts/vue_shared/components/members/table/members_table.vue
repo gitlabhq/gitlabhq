@@ -10,6 +10,7 @@ import ExpiresAt from './expires_at.vue';
 import MemberActionButtons from './member_action_buttons.vue';
 import MembersTableCell from './members_table_cell.vue';
 import RoleDropdown from './role_dropdown.vue';
+import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 
 export default {
   name: 'MembersTable',
@@ -23,6 +24,7 @@ export default {
     MemberSource,
     MemberActionButtons,
     RoleDropdown,
+    RemoveGroupLinkModal,
   },
   computed: {
     ...mapState(['members', 'tableFields']),
@@ -37,69 +39,72 @@ export default {
 </script>
 
 <template>
-  <gl-table
-    class="members-table"
-    head-variant="white"
-    stacked="lg"
-    :fields="filteredFields"
-    :items="members"
-    primary-key="id"
-    thead-class="border-bottom"
-    :empty-text="__('No members found')"
-    show-empty
-  >
-    <template #cell(account)="{ item: member }">
-      <members-table-cell #default="{ memberType, isCurrentUser }" :member="member">
-        <member-avatar
-          :member-type="memberType"
-          :is-current-user="isCurrentUser"
-          :member="member"
-        />
-      </members-table-cell>
-    </template>
+  <div>
+    <gl-table
+      class="members-table"
+      head-variant="white"
+      stacked="lg"
+      :fields="filteredFields"
+      :items="members"
+      primary-key="id"
+      thead-class="border-bottom"
+      :empty-text="__('No members found')"
+      show-empty
+    >
+      <template #cell(account)="{ item: member }">
+        <members-table-cell #default="{ memberType, isCurrentUser }" :member="member">
+          <member-avatar
+            :member-type="memberType"
+            :is-current-user="isCurrentUser"
+            :member="member"
+          />
+        </members-table-cell>
+      </template>
 
-    <template #cell(source)="{ item: member }">
-      <members-table-cell #default="{ isDirectMember }" :member="member">
-        <member-source :is-direct-member="isDirectMember" :member-source="member.source" />
-      </members-table-cell>
-    </template>
+      <template #cell(source)="{ item: member }">
+        <members-table-cell #default="{ isDirectMember }" :member="member">
+          <member-source :is-direct-member="isDirectMember" :member-source="member.source" />
+        </members-table-cell>
+      </template>
 
-    <template #cell(granted)="{ item: { createdAt, createdBy } }">
-      <created-at :date="createdAt" :created-by="createdBy" />
-    </template>
+      <template #cell(granted)="{ item: { createdAt, createdBy } }">
+        <created-at :date="createdAt" :created-by="createdBy" />
+      </template>
 
-    <template #cell(invited)="{ item: { createdAt, createdBy } }">
-      <created-at :date="createdAt" :created-by="createdBy" />
-    </template>
+      <template #cell(invited)="{ item: { createdAt, createdBy } }">
+        <created-at :date="createdAt" :created-by="createdBy" />
+      </template>
 
-    <template #cell(requested)="{ item: { createdAt } }">
-      <created-at :date="createdAt" />
-    </template>
+      <template #cell(requested)="{ item: { createdAt } }">
+        <created-at :date="createdAt" />
+      </template>
 
-    <template #cell(expires)="{ item: { expiresAt } }">
-      <expires-at :date="expiresAt" />
-    </template>
+      <template #cell(expires)="{ item: { expiresAt } }">
+        <expires-at :date="expiresAt" />
+      </template>
 
-    <template #cell(maxRole)="{ item: member }">
-      <members-table-cell #default="{ permissions }" :member="member">
-        <role-dropdown v-if="permissions.canUpdate" :member="member" />
-        <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
-      </members-table-cell>
-    </template>
+      <template #cell(maxRole)="{ item: member }">
+        <members-table-cell #default="{ permissions }" :member="member">
+          <role-dropdown v-if="permissions.canUpdate" :member="member" />
+          <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
+        </members-table-cell>
+      </template>
 
-    <template #cell(actions)="{ item: member }">
-      <members-table-cell #default="{ memberType, isCurrentUser, permissions }" :member="member">
-        <member-action-buttons
-          :member-type="memberType"
-          :is-current-user="isCurrentUser"
-          :permissions="permissions"
-          :member="member"
-        />
-      </members-table-cell>
-    </template>
+      <template #cell(actions)="{ item: member }">
+        <members-table-cell #default="{ memberType, isCurrentUser, permissions }" :member="member">
+          <member-action-buttons
+            :member-type="memberType"
+            :is-current-user="isCurrentUser"
+            :permissions="permissions"
+            :member="member"
+          />
+        </members-table-cell>
+      </template>
 
-    <template #head(actions)="{ label }">
-      <span data-testid="col-actions" class="gl-sr-only">{{ label }}</span>
-    </template>
-  </gl-table>
+      <template #head(actions)="{ label }">
+        <span data-testid="col-actions" class="gl-sr-only">{{ label }}</span>
+      </template>
+    </gl-table>
+    <remove-group-link-modal />
+  </div>
 </template>

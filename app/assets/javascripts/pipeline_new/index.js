@@ -6,6 +6,7 @@ export default () => {
   const {
     projectId,
     pipelinesPath,
+    configVariablesPath,
     refParam,
     varParam,
     fileParam,
@@ -25,6 +26,7 @@ export default () => {
         props: {
           projectId,
           pipelinesPath,
+          configVariablesPath,
           refParam,
           variableParams,
           fileParams,
