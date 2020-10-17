@@ -285,12 +285,10 @@ a node and change its status from primary to replica (and vice versa).
 #### Configuring the primary Redis instance
 
 1. SSH in to the **Primary** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -363,12 +361,10 @@ run: redis-exporter: (pid 30075) 76861s; run: log: (pid 29674) 76896s
 #### Configuring the replica Redis instances
 
 1. SSH in to the **replica** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -456,14 +452,11 @@ clients to report `NOAUTH Authentication required.`.
 
 To configure the Sentinel:
 
-1. SSH into the server that will host Consul/Sentinel.
-1. [Download/install](https://about.gitlab.com/install/) the
-   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
-   GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     the GitLab application is running.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the server that will host Consul/Sentinel.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -623,7 +616,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
 #### PostgreSQL primary node
 
-1. SSH into the PostgreSQL primary node.
+1. SSH in to the PostgreSQL primary node.
 1. Generate a password hash for the PostgreSQL username/password pair. This assumes you will use the default
    username of `gitlab` (recommended). The command will request a password
    and confirmation. Use the value that is output by this command in the next
@@ -808,7 +801,7 @@ are supported and can be added if needed.
 
 #### PostgreSQL post-configuration
 
-SSH into the **primary node**:
+SSH in to the **primary node**:
 
 1. Open a database prompt:
 
@@ -844,7 +837,7 @@ SSH into the **primary node**:
    is not an IP address, it will need to be a resolvable name (via DNS or
    `/etc/hosts`)
 
-SSH into the **secondary node**:
+SSH in to the **secondary node**:
 
 1. Set up the repmgr standby:
 
@@ -1115,8 +1108,8 @@ and that your GitLab installation has three repository storages:
 On each node:
 
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want (based on _steps 1 and 2_ on the GitLab downloads page), but
-   _without_ providing the `EXTERNAL_URL` value.
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit `/etc/gitlab/gitlab.rb` to configure the storage paths, enable
    the network listener, and configure the token:
 
@@ -1309,10 +1302,10 @@ The following IPs will be used as an example:
 
 To configure the Sidekiq nodes, one each one:
 
-1. SSH into the Sidekiq server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab package
-you want using steps 1 and 2 from the GitLab downloads page.
-**Do not complete any other steps on the download page.**
+1. SSH in to the Sidekiq server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Open `/etc/gitlab/gitlab.rb` with your editor:
 
    ```ruby
@@ -1458,9 +1451,9 @@ On each node perform the following:
       mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
       ```
 
-1. Download and install Omnibus GitLab using **steps 1 and 2** from
-   [GitLab downloads](https://about.gitlab.com/install/). Do not complete other
-   steps on the download page.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
@@ -1630,10 +1623,10 @@ The Omnibus GitLab package can be used to configure a standalone Monitoring node
 running [Prometheus](../monitoring/prometheus/index.md) and
 [Grafana](../monitoring/performance/grafana_configuration.md):
 
-1. SSH into the Monitoring node.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   Do not complete any other steps on the download page.
+1. SSH in to the Monitoring node.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby

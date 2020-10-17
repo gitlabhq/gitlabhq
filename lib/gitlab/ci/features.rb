@@ -68,7 +68,7 @@ module Gitlab
       end
 
       def self.manual_bridges_enabled?(project)
-        ::Feature.enabled?(:ci_manual_bridges, project, default_enabled: false)
+        ::Feature.enabled?(:ci_manual_bridges, project, default_enabled: true)
       end
     end
   end

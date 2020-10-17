@@ -38,6 +38,7 @@ The following API resources are available in the project context:
 | [Issues Statistics](issues_statistics.md)                           | `/projects/:id/issues_statistics` (also available for groups and standalone)                                                                                                                          |
 | [Issue boards](boards.md)                                           | `/projects/:id/boards`                                                                                                                                                                                |
 | [Issue links](issue_links.md) **(STARTER)**                         | `/projects/:id/issues/.../links`                                                                                                                                                                      |
+| [Iterations](iterations.md) **(STARTER)**                           | `/projects/:id/iterations` (also available for groups)                                                                                                                                                                     |
 | [Jobs](jobs.md)                                                     | `/projects/:id/jobs`, `/projects/:id/pipelines/.../jobs`                                                                                                                                              |
 | [Labels](labels.md)                                                 | `/projects/:id/labels`                                                                                                                                                                                |
 | [Managed licenses](managed_licenses.md) **(ULTIMATE)**              | `/projects/:id/managed_licenses`                                                                                                                                                                      |
@@ -97,6 +98,7 @@ The following API resources are available in the group context:
 | [Groups](groups.md)                                              | `/groups`, `/groups/.../subgroups`                                               |
 | [Group badges](group_badges.md)                                  | `/groups/:id/badges`                                                             |
 | [Group issue boards](group_boards.md)                            | `/groups/:id/boards`                                                             |
+| [Group iterations](group_iterations.md) **(STARTER)**            | `/groups/:id/iterations` (also available for projects)                           |
 | [Group labels](group_labels.md)                                  | `/groups/:id/labels`                                                             |
 | [Group-level variables](group_level_variables.md)                | `/groups/:id/variables`                                                          |
 | [Group milestones](group_milestones.md)                          | `/groups/:id/milestones`                                                         |

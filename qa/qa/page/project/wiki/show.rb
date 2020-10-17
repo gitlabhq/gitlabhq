@@ -11,12 +11,12 @@ module QA
           view 'app/views/shared/wikis/show.html.haml' do
             element :wiki_page_title
             element :wiki_page_content
+            element :edit_page_button
           end
 
           view 'app/views/shared/wikis/_main_links.html.haml' do
             element :new_page_button
             element :page_history_button
-            element :edit_page_button
           end
 
           view 'app/views/shared/empty_states/_wikis.html.haml' do

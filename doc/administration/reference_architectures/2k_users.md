@@ -207,10 +207,10 @@ further configuration steps.
 
 ### Standalone PostgreSQL using Omnibus GitLab
 
-1. SSH into the PostgreSQL server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Do not complete any other steps on the download page.
+1. SSH in to the PostgreSQL server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Generate a password hash for PostgreSQL. This assumes you will use the default
    username of `gitlab` (recommended). The command will request a password
    and confirmation. Use the value that is output by this command in the next
@@ -301,11 +301,10 @@ The Omnibus GitLab package can be used to configure a standalone Redis server.
 The steps below are the minimum necessary to configure a Redis server with
 Omnibus:
 
-1. SSH into the Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-     - Do not complete any other steps on the download page.
-
+1. SSH in to the Redis server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -394,12 +393,11 @@ The following procedure describes how to configure a single Gitaly server named
 `gitaly1.internal` with the secret token `gitalysecret`. We assume your GitLab
 installation has two repository storages: `default` and `storage1`.
 
-To configure the Gitaly server:
+To configure the Gitaly server, on the server node you want to use for Gitaly:
 
-1. On the server node you want to use for Gitaly,
-   [download and install](https://about.gitlab.com/install/) your selected
-   Omnibus GitLab package using *steps 1 and 2* from the GitLab downloads page,
-   but *without* providing the `EXTERNAL_URL` value.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
@@ -570,9 +568,9 @@ On each node perform the following:
       mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
       ```
 
-1. Download and install Omnibus GitLab using **steps 1 and 2** from
-   [GitLab downloads](https://about.gitlab.com/install/). Do not complete other
-   steps on the download page.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
@@ -704,10 +702,10 @@ The Omnibus GitLab package can be used to configure a standalone Monitoring node
 running [Prometheus](../monitoring/prometheus/index.md) and
 [Grafana](../monitoring/performance/grafana_configuration.md):
 
-1. SSH into the Monitoring node.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   Do not complete any other steps on the download page.
+1. SSH in to the Monitoring node.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby

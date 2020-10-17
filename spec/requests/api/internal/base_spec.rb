@@ -50,43 +50,63 @@ RSpec.describe API::Internal::Base do
     end
   end
 
+  shared_examples 'actor key validations' do
+    context 'key id is not provided' do
+      let(:key_id) { nil }
+
+      it 'returns an error message' do
+        subject
+
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq('Could not find a user without a key')
+      end
+    end
+
+    context 'key does not exist' do
+      let(:key_id) { non_existing_record_id }
+
+      it 'returns an error message' do
+        subject
+
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq('Could not find the given key')
+      end
+    end
+
+    context 'key without user' do
+      let(:key_id) { create(:key, user: nil).id }
+
+      it 'returns an error message' do
+        subject
+
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq('Could not find a user for the given key')
+      end
+    end
+  end
+
   describe 'GET /internal/two_factor_recovery_codes' do
-    it 'returns an error message when the key does not exist' do
+    let(:key_id) { key.id }
+
+    subject do
       post api('/internal/two_factor_recovery_codes'),
            params: {
              secret_token: secret_token,
-             key_id: non_existing_record_id
+             key_id: key_id
            }
-
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq('Could not find the given key')
     end
 
-    it 'returns an error message when the key is a deploy key' do
-      deploy_key = create(:deploy_key)
+    it_behaves_like 'actor key validations'
 
-      post api('/internal/two_factor_recovery_codes'),
-           params: {
-             secret_token: secret_token,
-             key_id: deploy_key.id
-           }
+    context 'key is a deploy key' do
+      let(:key_id) { create(:deploy_key).id }
 
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq('Deploy keys cannot be used to retrieve recovery codes')
-    end
+      it 'returns an error message' do
+        subject
 
-    it 'returns an error message when the user does not exist' do
-      key_without_user = create(:key, user: nil)
-
-      post api('/internal/two_factor_recovery_codes'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_without_user.id
-           }
-
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq('Could not find a user for the given key')
-      expect(json_response['recovery_codes']).to be_nil
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq('Deploy keys cannot be used to retrieve recovery codes')
+      end
     end
 
     context 'when two-factor is enabled' do
@@ -95,11 +115,7 @@ RSpec.describe API::Internal::Base do
         allow_any_instance_of(User)
           .to receive(:generate_otp_backup_codes!).and_return(%w(119135e5a3ebce8e 34bd7b74adbc8861))
 
-        post api('/internal/two_factor_recovery_codes'),
-             params: {
-               secret_token: secret_token,
-               key_id: key.id
-             }
+        subject
 
         expect(json_response['success']).to be_truthy
         expect(json_response['recovery_codes']).to match_array(%w(119135e5a3ebce8e 34bd7b74adbc8861))
@@ -110,11 +126,7 @@ RSpec.describe API::Internal::Base do
       it 'returns an error message' do
         allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(false)
 
-        post api('/internal/two_factor_recovery_codes'),
-             params: {
-               secret_token: secret_token,
-               key_id: key.id
-             }
+        subject
 
         expect(json_response['success']).to be_falsey
         expect(json_response['recovery_codes']).to be_nil
@@ -123,42 +135,27 @@ RSpec.describe API::Internal::Base do
   end
 
   describe 'POST /internal/personal_access_token' do
-    it 'returns an error message when the key does not exist' do
+    let(:key_id) { key.id }
+
+    subject do
       post api('/internal/personal_access_token'),
            params: {
              secret_token: secret_token,
-             key_id: non_existing_record_id
+             key_id: key_id
            }
-
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq('Could not find the given key')
     end
 
-    it 'returns an error message when the key is a deploy key' do
-      deploy_key = create(:deploy_key)
+    it_behaves_like 'actor key validations'
 
-      post api('/internal/personal_access_token'),
-           params: {
-             secret_token: secret_token,
-             key_id: deploy_key.id
-           }
+    context 'key is a deploy key' do
+      let(:key_id) { create(:deploy_key).id }
 
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq('Deploy keys cannot be used to create personal access tokens')
-    end
+      it 'returns an error message' do
+        subject
 
-    it 'returns an error message when the user does not exist' do
-      key_without_user = create(:key, user: nil)
-
-      post api('/internal/personal_access_token'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_without_user.id
-           }
-
-      expect(json_response['success']).to be_falsey
-      expect(json_response['message']).to eq('Could not find a user for the given key')
-      expect(json_response['token']).to be_nil
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq('Deploy keys cannot be used to create personal access tokens')
+      end
     end
 
     it 'returns an error message when given an non existent user' do
@@ -1206,6 +1203,73 @@ RSpec.describe API::Internal::Base do
       post api("/internal/pre_receive"), params: valid_params
 
       expect(json_response['reference_counter_increased']).to be(true)
+    end
+  end
+
+  describe 'POST /internal/two_factor_config' do
+    let(:key_id) { key.id }
+
+    before do
+      stub_feature_flags(two_factor_for_cli: true)
+    end
+
+    subject do
+      post api('/internal/two_factor_config'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id
+           }
+    end
+
+    it_behaves_like 'actor key validations'
+
+    context 'when the key is a deploy key' do
+      let(:key) { create(:deploy_key) }
+
+      it 'does not required two factor' do
+        subject
+
+        expect(json_response['success']).to be_truthy
+        expect(json_response['two_factor_required']).to be_falsey
+      end
+    end
+
+    context 'when two-factor is enabled' do
+      it 'returns user two factor config' do
+        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
+
+        subject
+
+        expect(json_response['success']).to be_truthy
+        expect(json_response['two_factor_required']).to be_truthy
+      end
+    end
+
+    context 'when two-factor is not enabled' do
+      it 'returns an error message' do
+        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(false)
+
+        subject
+
+        expect(json_response['success']).to be_truthy
+        expect(json_response['two_factor_required']).to be_falsey
+      end
+    end
+
+    context 'two_factor_for_cli feature is disabled' do
+      before do
+        stub_feature_flags(two_factor_for_cli: false)
+      end
+
+      context 'when two-factor is enabled for the user' do
+        it 'returns user two factor config' do
+          allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
+
+          subject
+
+          expect(json_response['success']).to be_falsey
+        end
+      end
     end
   end
 

@@ -248,14 +248,11 @@ with the other servers.
 
 To configure Consul:
 
-1. SSH into the server that will host Consul.
-1. [Download/install](https://about.gitlab.com/install/) the
-   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
-   GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     the GitLab application is running.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the server that will host Consul.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -352,7 +349,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
 #### PostgreSQL primary node
 
-1. SSH into the PostgreSQL primary node.
+1. SSH in to the PostgreSQL primary node.
 1. Generate a password hash for the PostgreSQL username/password pair. This assumes you will use the default
    username of `gitlab` (recommended). The command will request a password
    and confirmation. Use the value that is output by this command in the next
@@ -513,7 +510,7 @@ are supported and can be added if needed.
 
 #### PostgreSQL post-configuration
 
-SSH into the **primary node**:
+SSH in to the **primary node**:
 
 1. Open a database prompt:
 
@@ -548,7 +545,7 @@ SSH into the **primary node**:
    is not an IP address, it will need to be a resolvable name (via DNS or
    `/etc/hosts`)
 
-SSH into the **secondary node**:
+SSH in to the **secondary node**:
 
 1. Set up the repmgr standby:
 
@@ -815,13 +812,11 @@ a node and change its status from primary to replica (and vice versa).
 
 #### Configure the primary Redis Cache node
 
-1. SSH into the **Primary** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the **Primary** Redis server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -871,13 +866,11 @@ You can specify multiple roles, like sentinel and Redis, as:
 
 #### Configure the replica Redis Cache nodes
 
-1. SSH into the **replica** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the **replica** Redis server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -965,14 +958,11 @@ clients to report `NOAUTH Authentication required.`.
 
 To configure the Sentinel Cache server:
 
-1. SSH into the server that will host Consul/Sentinel.
-1. [Download/install](https://about.gitlab.com/install/) the
-   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
-   GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     the GitLab application is running.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the server that will host Consul/Sentinel.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -1081,13 +1071,11 @@ a node and change its status from primary to replica (and vice versa).
 
 #### Configure the primary Redis Queues node
 
-1. SSH into the **Primary** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the **Primary** Redis server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -1142,13 +1130,11 @@ You can specify multiple roles, like sentinel and Redis, as:
 
 #### Configure the replica Redis Queues nodes
 
-1. SSH into the **replica** Redis Queue server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the **replica** Redis Queue server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -1236,14 +1222,11 @@ clients to report `NOAUTH Authentication required.`.
 
 To configure the Sentinel Queues server:
 
-1. SSH into the server that will host Sentinel.
-1. [Download/install](https://about.gitlab.com/install/) the
-   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
-   GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     the GitLab application is running.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the server that will host Sentinel.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -1402,8 +1385,8 @@ and that your GitLab installation has three repository storages:
 On each node:
 
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want (based on _steps 1 and 2_ on the GitLab downloads page), but
-   _without_ providing the `EXTERNAL_URL` value.
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit `/etc/gitlab/gitlab.rb` to configure the storage paths, enable
    the network listener, and configure the token:
 
@@ -1565,10 +1548,10 @@ The following IPs will be used as an example:
 
 To configure the Sidekiq nodes, on each one:
 
-1. SSH into the Sidekiq server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab package
-you want using steps 1 and 2 from the GitLab downloads page.
-**Do not complete any other steps on the download page.**
+1. SSH in to the Sidekiq server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Open `/etc/gitlab/gitlab.rb` with your editor:
 
    ```ruby
@@ -1702,10 +1685,9 @@ The following IPs will be used as an example:
 
 On each node perform the following:
 
-1. Download and install Omnibus GitLab using **steps 1 and 2** from
-   [GitLab downloads](https://about.gitlab.com/install/). Do not complete other
-   steps on the download page.
-
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from your Consul server, and replace
    the file of the same name on this server. If that file is not on this server,
    add the file from your Consul server to this server.
@@ -1905,11 +1887,10 @@ The following IP will be used as an example:
 
 To configure the Monitoring node:
 
-1. SSH into the Monitoring node.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   Do not complete any other steps on the download page.
-
+1. SSH in to the Monitoring node.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from your Consul server, and replace
    the file of the same name on this server. If that file is not on this server,
    add the file from your Consul server to this server.
