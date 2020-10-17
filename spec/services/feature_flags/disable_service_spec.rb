@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe FeatureFlags::DisableService do
   include FeatureFlagHelpers
 
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:service) { described_class.new(project, user, params) }
   let(:params) { {} }
+  let(:service) { described_class.new(project, user, params) }
 
-  before do
+  before_all do
     project.add_developer(user)
   end
 

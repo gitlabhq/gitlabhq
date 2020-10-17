@@ -3024,9 +3024,6 @@ msgstr ""
 msgid "An error occurred while loading the pipelines jobs."
 msgstr ""
 
-msgid "An error occurred while loading the subscription details."
-msgstr ""
-
 msgid "An error occurred while making the request."
 msgstr ""
 
@@ -4200,6 +4197,15 @@ msgid "BillingPlan|Upgrade"
 msgstr ""
 
 msgid "Billing|An error occurred while loading billable members list"
+msgstr ""
+
+msgid "Billing|No users to display."
+msgstr ""
+
+msgid "Billing|Updated live"
+msgstr ""
+
+msgid "Billing|Users occupying seats in %{namespaceName} Group (%{total})"
 msgstr ""
 
 msgid "Bitbucket Server Import"
@@ -23182,7 +23188,7 @@ msgstr ""
 msgid "Seat Link is disabled, and cannot be configured through this form."
 msgstr ""
 
-msgid "Seats usage data as of %{last_enqueue_time}"
+msgid "Seats usage data as of %{last_enqueue_time} (Updated daily)"
 msgstr ""
 
 msgid "Seats usage data is updated every day at 12:00pm UTC"
@@ -25364,6 +25370,12 @@ msgid "Subscription successfully created."
 msgstr ""
 
 msgid "Subscription successfully deleted."
+msgstr ""
+
+msgid "SubscriptionTable|An error occurred while loading billable members list"
+msgstr ""
+
+msgid "SubscriptionTable|An error occurred while loading the subscription details."
 msgstr ""
 
 msgid "SubscriptionTable|Billing"
