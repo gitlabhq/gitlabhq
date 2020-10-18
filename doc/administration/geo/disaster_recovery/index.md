@@ -98,16 +98,16 @@ must disable the **primary** node.
 
 Note the following when promoting a secondary:
 
-- If replication was paused on the secondary node, for example as a part of upgrading,
-  while you were running a version of GitLab lower than 13.4, you _must_
-  [enable the node via the database](../replication/troubleshooting.md#while-promoting-the-secondary-i-got-an-error-activerecordrecordinvalid)
+- If replication was paused on the secondary node (for example as a part of
+  upgrading, while you were running a version of GitLab earlier than 13.4), you
+  _must_ [enable the node by using the database](../replication/troubleshooting.md#message-activerecordrecordinvalid-validation-failed-enabled-geo-primary-node-cannot-be-disabled)
   before proceeding.
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
-  error during this process, please read
-  [the troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
+  error message during this process, for more information, see this
+  [troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
 
 #### Promoting a **secondary** node running on a single machine
 

@@ -614,46 +614,18 @@ or `gitlab-ctl promote-to-primary-node`, either:
 
 ### Message: ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled
 
-This error may occur if you have paused replication from the original primary node before attempting to promote this node.
-To double check this, you can do the following:
-
-- Get the current secondary node's ID using:
-
-  ```shell
-  sudo gitlab-rails runner 'puts GeoNode.current_node.id'
-  ```
-
-- Double check that the node is active through the database by running the following
-  on the secondary node, replacing `ID_FROM_ABOVE`:
-
-  ```shell
-  sudo gitlab-rails dbconsole
-
-  SELECT enabled FROM geo_nodes WHERE id = ID_FROM_ABOVE;
-  ```
-
-- If the above returned `f` it means that the replication was paused.
-  You can re-enable it through an `UPDATE` statement in the database:
-
-  ```shell
-  sudo gitlab-rails dbconsole
-
-  UPDATE geo_nodes SET enabled = 't' WHERE id = ID_FROM_ABOVE;
-  ```
-
-### While Promoting the secondary, I got an error `ActiveRecord::RecordInvalid`
-
 If you disabled a secondary node, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
-(13.2) or via the UI (13.1 and earlier), you must first re-enable the
-node before you can continue. This is fixed in 13.4.
+(13.2) or by using the user interface (13.1 and earlier), you must first
+re-enable the node before you can continue. This is fixed in 13.4.
 
-From `gitlab-psql`, execute the following, replacing  `<your secondary url>`
-with the URL for your secondary server starting with `http` or `https` and ending with a `/`.
+Run the following command, replacing  `https://<secondary url>/` with the URL
+for your secondary server, using either `http` or `https`, and ensuring that you
+end the URL with a slash (`/`):
 
 ```shell
-SECONDARY_URL="https://<secondary url>/"
-DATABASE_NAME="gitlabhq_production"
-sudo gitlab-psql -d "$DATABASE_NAME" -c "UPDATE geo_nodes SET enabled = true WHERE url = '$SECONDARY_URL';"
+sudo gitlab-rails dbconsole
+
+UPDATE geo_nodes SET enabled = true WHERE url = 'https://<secondary url>/' AND enabled = false;"
 ```
 
 This should update 1 row.
