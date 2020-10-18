@@ -1273,6 +1273,92 @@ RSpec.describe API::Internal::Base do
     end
   end
 
+  describe 'POST /internal/two_factor_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    before do
+      stub_feature_flags(two_factor_for_cli: true)
+    end
+
+    subject do
+      post api('/internal/two_factor_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it_behaves_like 'actor key validations'
+
+    context 'when the key is a deploy key' do
+      let(:key_id) { create(:deploy_key).id }
+
+      it 'returns an error message' do
+        subject
+
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq('Deploy keys cannot be used for Two Factor')
+      end
+    end
+
+    context 'when the two factor is enabled' do
+      before do
+        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
+      end
+
+      context 'when the OTP is valid' do
+        it 'returns success' do
+          allow_any_instance_of(Users::ValidateOtpService).to receive(:execute).with(otp).and_return(status: :success)
+
+          subject
+
+          expect(json_response['success']).to be_truthy
+        end
+      end
+
+      context 'when the OTP is invalid' do
+        it 'is not success' do
+          allow_any_instance_of(Users::ValidateOtpService).to receive(:execute).with(otp).and_return(status: :error)
+
+          subject
+
+          expect(json_response['success']).to be_falsey
+        end
+      end
+    end
+
+    context 'when the two factor is disabled' do
+      before do
+        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(false)
+      end
+
+      it 'returns an error message' do
+        subject
+
+        expect(json_response['success']).to be_falsey
+        expect(json_response['message']).to eq 'Two-factor authentication is not enabled for this user'
+      end
+    end
+
+    context 'two_factor_for_cli feature is disabled' do
+      before do
+        stub_feature_flags(two_factor_for_cli: false)
+      end
+
+      context 'when two-factor is enabled for the user' do
+        it 'returns user two factor config' do
+          allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
+
+          subject
+
+          expect(json_response['success']).to be_falsey
+        end
+      end
+    end
+  end
+
   def lfs_auth_project(project)
     post(
       api("/internal/lfs_authenticate"),
