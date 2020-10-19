@@ -1,34 +1,39 @@
-# Auditor users **(PREMIUM ONLY)**
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/998) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.17.
+# Auditor users **(PREMIUM ONLY)**
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
 
 ## Overview
 
-Auditor users can have full access to their own resources (projects, groups,
-snippets, etc.), and read-only access to **all** other resources, except the
-Admin Area. To put another way, they are just regular users (who can be added
-to projects, create personal snippets, create milestones on their groups, etc.)
-who also happen to have read-only access to all projects on the system that
-they haven't been explicitly [given access](../user/permissions.md) to.
+Auditor users are able to have both full access to their own resources
+(including projects, groups, and snippets) and read-only access to _all_ other
+resources, except the [Admin Area](../user/admin_area/index.md). These user
+accounts are regular users who can be added to projects, create personal
+snippets, and create milestones on their groups, while also having read-only
+access to all projects on the server to which they haven't been explicitly
+[given access](../user/permissions.md).
 
 The Auditor role is _not_ a read-only version of the Admin role. Auditor users
-will not be able to access the project/group settings pages, or the Admin Area.
+can't access the project or group settings pages, or the Admin Area.
 
-To sum up, assuming you have logged-in as an Auditor user:
+Assuming you have signed in as an Auditor user:
 
 - For a project the Auditor is not member of, the Auditor should have
-  read-only access. If the project is public or internal, they would have the
-  same access as the users that are not members of that project/group.
+  read-only access. If the project is public or internal, they have the same
+  access as users that aren't members of that project or group.
 - For a project the Auditor owns, the Auditor should have full access to
   everything.
-- For a project the Auditor has been added to as a member, the Auditor should
-  have the same access as the [permissions](../user/permissions.md) they were given to. For example, if
-  they were added as a Developer, they could then push commits or comment on
-  issues.
-- The Auditor cannot view the Admin Area, or perform any admin actions.
+- For a project to which the Auditor is added as a member, the Auditor should
+  have the same access as their given [permissions](../user/permissions.md).
+  For example, if they were added as a Developer, they can push commits or
+  comment on issues.
+- The Auditor can't view the Admin Area, or perform any admin actions.
 
 For more information about what an Auditor can or can't do, see the
 [Permissions and restrictions of an Auditor user](#permissions-and-restrictions-of-an-auditor-user)
@@ -36,33 +41,37 @@ section.
 
 ## Use cases
 
-1. Your compliance department wants to run tests against the entire GitLab base
-   to ensure users are complying with password, credit card, and other sensitive
-   data policies. With Auditor users, this can be achieved very easily without
-   resulting to tactics like giving a user admin rights or having to use the API
-   to add them to all projects.
-1. If particular users need visibility or access to most of all projects in
-   your GitLab instance, instead of manually adding the user to all projects,
-   you can simply create an Auditor user and share the credentials with those
-   that you want to grant access to.
+The following use cases describe some situations where Auditor users could be
+helpful:
+
+- Your compliance department wants to run tests against the entire GitLab base
+  to ensure users are complying with password, credit card, and other sensitive
+  data policies. With Auditor users, this can be achieved very without having
+  to give them user admin rights or using the API to add them to all projects.
+- If particular users need visibility or access to most of all projects in
+  your GitLab instance, instead of manually adding the user to all projects,
+  you can create an Auditor user and then share the credentials with those users
+  to which you want to grant access.
 
 ## Adding an Auditor user
 
+To create a new Auditor user:
+
 1. Create a new user or edit an existing one by navigating to
-   **Admin Area > Users**. You will find the option of the access level under
+   **Admin Area > Users**. You will find the option of the access level in
    the 'Access' section.
 
    ![Admin Area Form](img/auditor_access_form.png)
 
-1. Click **Save changes** or **Create user** for the changes to take effect.
+1. Select **Save changes** or **Create user** for the changes to take effect.
 
-To revoke the Auditor permissions from a user, simply make them a Regular user
-following the same steps as above.
+To revoke Auditor permissions from a user, make them a regular user by
+following the previous steps.
 
 ## Permissions and restrictions of an Auditor user
 
 An Auditor user should be able to access all projects and groups of a GitLab
-instance, with the following permissions/restrictions:
+instance, with the following permissions and restrictions:
 
 - Has read-only access to the API
 - Can access projects that are:
@@ -70,15 +79,15 @@ instance, with the following permissions/restrictions:
   - Public
   - Internal
 - Can read all files in a repository
-- Can read issues / MRs
+- Can read issues and MRs
 - Can read project snippets
 - Cannot be Admin and Auditor at the same time
 - Cannot access the Admin Area
-- In a group / project they're not a member of:
+- In a group or project they're not a member of:
   - Cannot access project settings
   - Cannot access group settings
   - Cannot commit to repository
-  - Cannot create / comment on issues / MRs
-  - Cannot create/modify files from the Web UI
+  - Cannot create or comment on issues and MRs
+  - Cannot create or modify files from the Web UI
   - Cannot merge a merge request
   - Cannot create project snippets

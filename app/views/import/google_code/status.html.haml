@@ -1,7 +1,8 @@
 - page_title _("Google Code import")
 - header_title _("Projects"), root_path
-%h3.page-title
-  %i.fa.fa-google
+%h3.page-title.gl-display-flex
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('google', css_class: 'gl-mr-2')
   = _('Import projects from Google Code')
 
 - if @repos.any?

@@ -48,7 +48,7 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
 
       expect_rejection { make_request(request_args) }
 
-      Timecop.travel(period.from_now) do
+      travel_to(period.from_now) do
         requests_per_period.times do
           make_request(request_args)
           expect(response).not_to have_gitlab_http_status(:too_many_requests)
@@ -175,7 +175,7 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
 
       expect_rejection { request_authenticated_web_url }
 
-      Timecop.travel(period.from_now) do
+      travel_to(period.from_now) do
         requests_per_period.times do
           request_authenticated_web_url
           expect(response).not_to have_gitlab_http_status(:too_many_requests)

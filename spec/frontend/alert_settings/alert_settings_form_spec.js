@@ -1,10 +1,12 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlAlert } from '@gitlab/ui';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import IntegrationsList from '~/alerts_settings/components/alerts_integrations_list.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
+import { i18n } from '~/alerts_settings/constants';
+import service from '~/alerts_settings/services';
+
+jest.mock('~/alerts_settings/services');
 
 const PROMETHEUS_URL = '/prometheus/alerts/notify.json';
 const GENERIC_URL = '/alerts/notify.json';
@@ -14,7 +16,6 @@ const ACTIVATED = false;
 
 describe('AlertsSettingsForm', () => {
   let wrapper;
-  let mockAxios;
 
   const createComponent = ({ methods } = {}, data) => {
     wrapper = shallowMount(AlertsSettingsForm, {
@@ -54,7 +55,6 @@ describe('AlertsSettingsForm', () => {
   const findApiUrl = () => wrapper.find('#api-url');
 
   beforeEach(() => {
-    mockAxios = new MockAdapter(axios);
     setFixtures(`
     <div>
       <span class="js-service-active-status fa fa-circle" data-value="true"></span>
@@ -64,7 +64,6 @@ describe('AlertsSettingsForm', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    mockAxios.restore();
   });
 
   describe('with default values', () => {
@@ -105,8 +104,7 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('shows a alert message on error', () => {
-      const formPath = 'some/path';
-      mockAxios.onPut(formPath).replyOnce(404);
+      service.updateGenericKey.mockRejectedValueOnce({});
 
       createComponent();
 
@@ -128,8 +126,7 @@ describe('AlertsSettingsForm', () => {
 
     describe('error is encountered', () => {
       it('restores previous value', () => {
-        const formPath = 'some/path';
-        mockAxios.onPut(formPath).replyOnce(500);
+        service.updateGenericKey.mockRejectedValueOnce({});
         createComponent();
         return wrapper.vm.resetKey().then(() => {
           expect(wrapper.find(ToggleButton).props('value')).toBe(false);
@@ -199,18 +196,34 @@ describe('AlertsSettingsForm', () => {
     });
 
     describe('alert service is toggled', () => {
-      it('should show a error alert if failed', () => {
-        const formPath = 'some/path';
+      describe('error handling', () => {
         const toggleService = true;
-        mockAxios.onPut(formPath).replyOnce(422, {
-          errors: 'Error message to display',
-        });
 
-        createComponent();
+        it('should show generic error', async () => {
+          service.updateGenericActive.mockRejectedValueOnce({});
 
-        return wrapper.vm.toggleActivated(toggleService).then(() => {
+          createComponent();
+
+          await wrapper.vm.toggleActivated(toggleService);
           expect(wrapper.vm.active).toBe(false);
           expect(wrapper.find(GlAlert).attributes('variant')).toBe('danger');
+          expect(wrapper.find(GlAlert).text()).toBe(i18n.errorMsg);
+        });
+
+        it('should show first field specific error when available', async () => {
+          const err1 = "can't be blank";
+          const err2 = 'is not a valid URL';
+          const key = 'api_url';
+          service.updateGenericActive.mockRejectedValueOnce({
+            response: { data: { errors: { [key]: [err1, err2] } } },
+          });
+
+          createComponent();
+
+          await wrapper.vm.toggleActivated(toggleService);
+
+          expect(wrapper.find(GlAlert).text()).toContain(i18n.errorMsg);
+          expect(wrapper.find(GlAlert).text()).toContain(`${key} ${err1}`);
         });
       });
     });

@@ -21,11 +21,11 @@ to uncover, triage, and identify the root cause of slowdowns in the software dev
 
 For information on how to contribute to the development of Value Stream Analytics, see our [contributor documentation](../../development/value_stream_analytics.md).
 
-## Project Level Value Stream Analytics **CORE**
+## Project Level Value Stream Analytics **(CORE)**
 
 Project Level Value Stream Analytics is available via **Project > Analytics > Value Stream**.
 
-## Group Level Value Stream Analytics **PREMIUM**
+## Group Level Value Stream Analytics **(PREMIUM)**
 
 From GitLab 12.9, group level Value Stream Analytics is available via **Group > Analytics > Value Stream**.
 
@@ -354,7 +354,7 @@ administrator can open a Rails console and disable it with the following command
 Feature.disable(:cycle_analytics_scatterplot_enabled)
 ```
 
-## Type of work - Tasks by type chart **(PREMIUM)**
+## Type of work - Tasks by type chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 
@@ -377,11 +377,8 @@ The current permissions on the Project Value Stream Analytics dashboard are:
 
 You can [read more about permissions](../../user/permissions.md) in general.
 
-For Value Stream Analytics functionality introduced in GitLab 12.3 and later:
-
-- Users must have Reporter access or above.
-- Features are available only on
-  [Premium or Silver tiers](https://about.gitlab.com/pricing/) and above.
+For Value Stream Analytics functionality introduced in GitLab 12.3 and later, 
+users must have Reporter access or above.
 
 ## More resources
 

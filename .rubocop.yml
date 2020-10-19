@@ -301,7 +301,7 @@ RSpec/TimecopFreeze:
     - 'qa/spec/**/*.rb'
 
 RSpec/TimecopTravel:
-  Enabled: false
+  Enabled: true
   AutoCorrect: true
   Include:
     - 'spec/**/*.rb'

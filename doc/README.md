@@ -85,7 +85,7 @@ The following sections provide links to documentation for each DevOps stage:
 
 ### Manage
 
-GitLab provides statistics and insight into ways you can maximize the value of GitLab in your organization.
+GitLab provides statistics and insights into ways you can maximize the value of GitLab in your organization.
 
 The following documentation relates to the DevOps **Manage** stage:
 

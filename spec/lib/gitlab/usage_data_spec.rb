@@ -1035,7 +1035,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
   def for_defined_days_back(days: [31, 3])
     days.each do |n|
-      Timecop.travel(n.days.ago) do
+      travel_to(n.days.ago) do
         yield
       end
     end

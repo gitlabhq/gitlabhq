@@ -34,16 +34,16 @@ To create a new blank project on the **New project** page:
 1. On the **Blank project** tab, provide the following information:
    - The name of your project in the **Project name** field. You can't use
      special characters, but you can use spaces, hyphens, underscores, or even
-     emoji. When adding the name, the **Project slug** will auto populate.
-     The slug is what the GitLab instance will use as the URL path to the project.
+     emoji. When adding the name, the **Project slug** auto populates.
+     The slug is what the GitLab instance uses as the URL path to the project.
      If you want a different slug, input the project name first,
      then change the slug after.
    - The path to your project in the **Project slug** field. This is the URL
-     path for your project that the GitLab instance will use. If the
-     **Project name** is blank, it will auto populate when you fill in
+     path for your project that the GitLab instance uses. If the
+     **Project name** is blank, it auto populates when you fill in
      the **Project slug**.
    - The **Project description (optional)** field enables you to enter a
-     description for your project's dashboard, which will help others
+     description for your project's dashboard, which helps others
      understand what your project is about. Though it's not required, it's a good
      idea to fill this in.
    - Changing the **Visibility Level** modifies the project's
@@ -128,11 +128,11 @@ To use a custom project template on the **New project** page:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
-When you create a new repository locally, instead of going to GitLab to manually
-create a new project and then [clone the repository](start-using-git.md#clone-a-repository)
+When you create a new repository locally, instead of manually creating a new project in GitLab 
+and then [cloning the repository](start-using-git.md#clone-a-repository)
 locally, you can directly push it to GitLab to create the new project, all without leaving
-your terminal. If you have access rights to the associated namespace, GitLab will
-automatically create a new project under that GitLab namespace with its visibility
+your terminal. If you have access rights to the associated namespace, GitLab 
+automatically creates a new project under that GitLab namespace with its visibility
 set to Private by default (you can later change it in the [project's settings](../public_access/public_access.md#how-to-change-project-visibility)).
 
 This can be done by using either SSH or HTTPS:
@@ -145,7 +145,7 @@ git push --set-upstream git@gitlab.example.com:namespace/nonexistent-project.git
 git push --set-upstream https://gitlab.example.com/namespace/nonexistent-project.git master
 ```
 
-Once the push finishes successfully, a remote message will indicate
+Once the push finishes successfully, a remote message indicates
 the command to set the remote and the URL to the new project:
 
 ```plaintext

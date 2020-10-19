@@ -258,7 +258,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(deployment.finished_at)
 
             # Current deploy
-            Timecop.travel(12.hours.from_now) do
+            travel_to(12.hours.from_now) do
               service.execute
 
               expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(deployment.finished_at)

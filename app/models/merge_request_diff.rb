@@ -106,6 +106,17 @@ class MergeRequestDiff < ApplicationRecord
     joins(merge_request: :metrics).where(condition)
   end
 
+  scope :latest_diff_for_merge_requests, -> (merge_requests) do
+    inner_select = MergeRequestDiff
+      .default_scoped
+      .distinct
+      .select("FIRST_VALUE(id) OVER (PARTITION BY merge_request_id ORDER BY created_at DESC) as id")
+      .where(merge_request: merge_requests)
+
+    joins("INNER JOIN (#{inner_select.to_sql}) latest_diffs ON latest_diffs.id = merge_request_diffs.id")
+      .includes(:merge_request_diff_commits)
+  end
+
   class << self
     def ids_for_external_storage_migration(limit:)
       return [] unless Gitlab.config.external_diffs.enabled
@@ -280,7 +291,13 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def commit_shas(limit: nil)
-    merge_request_diff_commits.limit(limit).pluck(:sha)
+    if association(:merge_request_diff_commits).loaded?
+      sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
+      sorted_diff_commits = sorted_diff_commits.take(limit) if limit
+      sorted_diff_commits.map(&:sha)
+    else
+      merge_request_diff_commits.limit(limit).pluck(:sha)
+    end
   end
 
   def includes_any_commits?(shas)

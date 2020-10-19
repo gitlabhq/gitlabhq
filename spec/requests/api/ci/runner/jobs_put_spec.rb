@@ -241,7 +241,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       end
 
       def update_job_after_time(update_interval = 20.minutes, state = 'running')
-        Timecop.travel(job.updated_at + update_interval) do
+        travel_to(job.updated_at + update_interval) do
           update_job(job.token, state: state)
         end
       end

@@ -17,7 +17,7 @@ RSpec.describe Metrics::Dashboard::PruneOldAnnotationsWorker do
 
         # is idempotent in the scope of 24h
         expect { described_class.new.perform }.not_to change { Metrics::Dashboard::Annotation.all.to_a }
-        Timecop.travel(24.hours.from_now) do
+        travel_to(24.hours.from_now) do
           described_class.new.perform
           expect(Metrics::Dashboard::Annotation.all).to match_array([one_day_old_annotation])
         end

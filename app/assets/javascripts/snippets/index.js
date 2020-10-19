@@ -44,11 +44,3 @@ export default function appFactory(el, Component) {
     },
   });
 }
-
-export const SnippetEditInit = () => {
-  import('./components/edit.vue')
-    .then(({ default: SnippetsEdit }) => {
-      appFactory(document.getElementById('js-snippet-edit'), SnippetsEdit);
-    })
-    .catch(() => {});
-};

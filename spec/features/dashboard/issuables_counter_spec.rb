@@ -23,7 +23,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
 
     user.invalidate_cache_counts
 
-    Timecop.travel(3.minutes.from_now) do
+    travel_to(3.minutes.from_now) do
       visit issues_path
 
       expect_counters('issues', '0')
@@ -39,7 +39,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
 
     user.invalidate_cache_counts
 
-    Timecop.travel(3.minutes.from_now) do
+    travel_to(3.minutes.from_now) do
       visit merge_requests_path
 
       expect_counters('merge_requests', '0')

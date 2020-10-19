@@ -2514,7 +2514,10 @@ msgstr ""
 msgid "AlertSettings|HTTP endpoint"
 msgstr ""
 
-msgid "AlertSettings|Learn more about our %{linkStart}upcoming integrations%{linkEnd}"
+msgid "AlertSettings|Integration"
+msgstr ""
+
+msgid "AlertSettings|Learn more about our improvements for %{linkStart}integrations%{linkEnd}"
 msgstr ""
 
 msgid "AlertSettings|Opsgenie"
@@ -2538,7 +2541,7 @@ msgstr ""
 msgid "AlertSettings|Test failed. Do you still want to save your changes anyway?"
 msgstr ""
 
-msgid "AlertSettings|There was an error updating the alert settings"
+msgid "AlertSettings|There was an error updating the alert settings."
 msgstr ""
 
 msgid "AlertSettings|There was an error while trying to reset the key. Please refresh the page to try again."

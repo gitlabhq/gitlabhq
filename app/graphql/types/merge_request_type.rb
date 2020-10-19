@@ -182,18 +182,7 @@ module Types
     end
 
     def diff_stats_summary
-      metrics = object.metrics
-
-      if metrics && metrics.added_lines && metrics.removed_lines
-        return { additions: metrics.added_lines, deletions: metrics.removed_lines, file_count: object.merge_request_diff&.files_count || 0 }
-      end
-
-      nil_stats = { additions: 0, deletions: 0, file_count: 0 }
-      return nil_stats unless object.diff_stats.present?
-
-      object.diff_stats.each_with_object(nil_stats) do |status, hash|
-        hash.merge!(additions: status.additions, deletions: status.deletions, file_count: 1) { |_, x, y| x + y }
-      end
+      BatchLoaders::MergeRequestDiffSummaryBatchLoader.load_for(object)
     end
 
     def commit_count

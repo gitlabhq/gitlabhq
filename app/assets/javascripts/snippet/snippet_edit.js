@@ -1,7 +1,6 @@
 import ZenMode from '~/zen_mode';
-import { SnippetEditInit } from '~/snippets';
+import SnippetsEdit from '~/snippets/components/edit.vue';
+import SnippetsAppFactory from '~/snippets';
 
-document.addEventListener('DOMContentLoaded', () => {
-  SnippetEditInit();
-  new ZenMode(); // eslint-disable-line no-new
-});
+SnippetsAppFactory(document.getElementById('js-snippet-edit'), SnippetsEdit);
+new ZenMode(); // eslint-disable-line no-new
