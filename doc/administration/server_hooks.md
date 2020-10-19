@@ -156,22 +156,6 @@ NOTE: **Note:**
 While other environment variables can be passed to server hooks, your application should not rely on
 them as they can change.
 
-## Transition to Go
-
-> - Introduced in GitLab 13.2 using feature flags.
-> - In GitLab 13.4, `update` Ruby [implementation removed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2501).
-> - In GitLab 13.4, `post-receive` Go implementation [made default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2502).
-
-The following server hooks have been re-implemented in Go:
-
-- `pre-receive`, with the Go implementation used by default. To use the Ruby implementation instead,
-  [disable](feature_flags.md#enable-or-disable-the-feature) the `:gitaly_go_preceive_hook` feature
-  flag.
-- `update`, with Go implementation always used. No Ruby implementation is available.
-- `post-receive`, with the Go implementation used by default. To use the Ruby implementation
-  instead, [disable](feature_flags.md#enable-or-disable-the-feature) the
-  `:gitaly_go_postreceive_hook` feature flag.
-
 ## Custom error messages
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5073) in GitLab 8.10.
