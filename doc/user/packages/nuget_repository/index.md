@@ -19,7 +19,7 @@ The GitLab NuGet Repository works with:
 
 ## Setting up your development environment
 
-[NuGet CLI 5.2 or later](https://www.nuget.org/downloads) is required. Earlier versions have not been tested
+[NuGet CLI 5.1 or later](https://www.nuget.org/downloads) is required. Earlier versions have not been tested
 against the GitLab NuGet Repository and might not work. If you have [Visual Studio](https://visualstudio.microsoft.com/vs/),
 NuGet CLI is probably already installed.
 
@@ -34,7 +34,7 @@ nuget help
 You should see something similar to:
 
 ```plaintext
-NuGet Version: 5.2.0.6090
+NuGet Version: 5.1.0.6013
 usage: NuGet <command> [args] [options]
 Type 'NuGet help <command>' for help on a specific command.
 
@@ -44,7 +44,7 @@ Available commands:
 ```
 
 NOTE: **Note:**
-GitLab currently only supports NuGet v3. Earlier versions are not supported.
+GitLab currently only supports NuGet's protocol version 3. Earlier versions are not supported.
 
 ### macOS support
 

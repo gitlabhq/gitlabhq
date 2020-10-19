@@ -2,14 +2,18 @@
 
 # trigger stackprof by sending a SIGUSR2 signal
 #
-# default settings:
-# * collect raw samples
-# * sample at 100hz (every 10k microseconds)
-# * timeout profile after 30 seconds
-# * write to $TMPDIR/stackprof.$PID.$RAND.profile
+# Docs: https://docs.gitlab.com/ee/development/performance.html#production
 
 module Gitlab
   class StackProf
+    DEFAULT_FILE_PREFIX = Dir.tmpdir
+    DEFAULT_TIMEOUT_SEC = 30
+    DEFAULT_MODE = :cpu
+    # Sample interval as a frequency in microseconds (~100hz); appropriate for CPU profiles
+    DEFAULT_INTERVAL_US = 10_000
+    # Sample interval in event occurrences (n = every nth event); appropriate for allocation profiles
+    DEFAULT_INTERVAL_EVENTS = 1_000
+
     # this is a workaround for sidekiq, which defines its own SIGUSR2 handler.
     # by defering to the sidekiq startup event, we get to set up our own
     # handler late enough.
@@ -32,11 +36,7 @@ module Gitlab
     end
 
     def self.on_worker_start
-      Gitlab::AppJsonLogger.info(
-        event: "stackprof",
-        message: "listening on SIGUSR2 signal",
-        pid: Process.pid
-      )
+      log_event('listening for SIGUSR2 signal')
 
       # create a pipe in order to propagate signal out of the signal handler
       # see also: https://cr.yp.to/docs/selfpipe.html
@@ -55,43 +55,46 @@ module Gitlab
       # a given interval (by default 30 seconds), avoiding unbounded memory
       # growth from a profile that was started and never stopped.
       t = Thread.new do
-        timeout_s = ENV['STACKPROF_TIMEOUT_S']&.to_i || 30
+        timeout_s = ENV['STACKPROF_TIMEOUT_S']&.to_i || DEFAULT_TIMEOUT_SEC
         current_timeout_s = nil
         loop do
-          got_value = IO.select([read], nil, nil, current_timeout_s)
-          read.getbyte if got_value
+          read.getbyte if IO.select([read], nil, nil, current_timeout_s)
 
           if ::StackProf.running?
-            stackprof_file_prefix = ENV['STACKPROF_FILE_PREFIX'] || Dir.tmpdir
+            stackprof_file_prefix = ENV['STACKPROF_FILE_PREFIX'] || DEFAULT_FILE_PREFIX
             stackprof_out_file = "#{stackprof_file_prefix}/stackprof.#{Process.pid}.#{SecureRandom.hex(6)}.profile"
 
-            Gitlab::AppJsonLogger.info(
-              event: "stackprof",
-              message: "stopping profile",
-              output_filename: stackprof_out_file,
-              pid: Process.pid,
-              timeout_s: timeout_s,
-              timed_out: got_value.nil?
+            log_event(
+              'stopping profile',
+              profile_filename: stackprof_out_file,
+              profile_timeout_s: timeout_s
             )
 
             ::StackProf.stop
             ::StackProf.results(stackprof_out_file)
             current_timeout_s = nil
           else
-            Gitlab::AppJsonLogger.info(
-              event: "stackprof",
-              message: "starting profile",
-              pid: Process.pid
+            mode = ENV['STACKPROF_MODE']&.to_sym || DEFAULT_MODE
+            interval = ENV['STACKPROF_INTERVAL']&.to_i
+            interval ||= (mode == :object ? DEFAULT_INTERVAL_EVENTS : DEFAULT_INTERVAL_US)
+
+            log_event(
+              'starting profile',
+              profile_mode: mode,
+              profile_interval: interval,
+              profile_timeout: timeout_s
             )
 
             ::StackProf.start(
-              mode: :cpu,
+              mode: mode,
               raw: Gitlab::Utils.to_boolean(ENV['STACKPROF_RAW'] || 'true'),
-              interval: ENV['STACKPROF_INTERVAL_US']&.to_i || 10_000
+              interval: interval
             )
             current_timeout_s = timeout_s
           end
         end
+      rescue => e
+        log_event("stackprof failed: #{e}")
       end
       t.abort_on_exception = true
 
@@ -120,6 +123,14 @@ module Gitlab
       Signal.trap('SIGUSR2') do
         write.write('.')
       end
+    end
+
+    def self.log_event(event, labels = {})
+      Gitlab::AppJsonLogger.info({
+        event: 'stackprof',
+        message: event,
+        pid: Process.pid
+      }.merge(labels.compact))
     end
   end
 end

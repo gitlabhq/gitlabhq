@@ -4,7 +4,7 @@ group: Knowledge
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 ---
 
-# Design Management
+# Design Management **(CORE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 > - Support for SVGs was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
@@ -226,11 +226,11 @@ available in the **Resolved Comment** area at the bottom of the right sidebar.
 ## Add to dos for designs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198439) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245074) in **GitLab 13.5**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245074) in GitLab 13.5.
 
-Add a to do for a design by clicking **Add a To-Do** on the design sidebar:
+Add a to do for a design by clicking **Add a To Do** on the design sidebar:
 
-![To-Do button](img/design_todo_button_v13_4.png)
+![To-do button](img/design_todo_button_v13_5.png)
 
 ## Referring to designs in Markdown
 

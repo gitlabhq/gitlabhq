@@ -4,6 +4,7 @@ class AuditEvent < ApplicationRecord
   include CreatedAtFilterable
   include IgnorableColumns
   include BulkInsertSafe
+  include EachBatch
 
   PARALLEL_PERSISTENCE_COLUMNS = [
     :author_name,
@@ -54,7 +55,9 @@ class AuditEvent < ApplicationRecord
   end
 
   def initialize_details
-    self.details = {} if details.nil?
+    return unless self.has_attribute?(:details)
+
+    self.details = {} if details&.nil?
   end
 
   def author_name
