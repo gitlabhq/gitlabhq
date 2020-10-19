@@ -63,6 +63,7 @@ module Releases
           project: project,
           current_user: current_user,
           project_ids: Array(project.id),
+          group_ids: Array(project_group_id),
           state: 'all',
           title: params[:milestones]
         ).execute
@@ -79,5 +80,10 @@ module Releases
     def param_for_milestone_titles_provided?
       params.key?(:milestones)
     end
+
+    # overridden in EE
+    def project_group_id; end
   end
 end
+
+Releases::BaseService.prepend_if_ee('EE::Releases::BaseService')

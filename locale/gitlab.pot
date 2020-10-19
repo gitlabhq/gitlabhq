@@ -18035,6 +18035,9 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+msgid "None of the group milestones have the same project as the release"
+msgstr ""
+
 msgid "Not Implemented"
 msgstr ""
 
