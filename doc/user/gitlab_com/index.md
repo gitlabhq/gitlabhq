@@ -542,9 +542,9 @@ Source:
 For performance reasons, if a query returns more than 10,000 records, GitLab
 doesn't return the following headers:
 
-- `X-Total`.
-- `X-Total-Pages`.
-- `rel="last"` `Link`.
+- `x-total`.
+- `x-total-pages`.
+- `rel="last"` `link`.
 
 ### Rack Attack initializer
 

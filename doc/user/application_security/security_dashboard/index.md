@@ -69,12 +69,15 @@ At the project level, the Security Dashboard displays the vulnerabilities merged
 to **Security & Compliance > Security Dashboard**. By default, the Security Dashboard displays all
 detected and confirmed vulnerabilities.
 
-The Security Dashboard first displays the total number of vulnerabilities by severity (for example,
+The Security Dashboard first displays the time at which the last pipeline completed on the project's
+default branch. There's also a link to view this in more detail.
+
+The Security Dashboard next displays the total number of vulnerabilities by severity (for example,
 Critical, High, Medium, Low, Info, Unknown). Below this, a table shows each vulnerability's status, severity,
 and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
 page to view more information about that vulnerability.
 
-![Project Security Dashboard](img/project_security_dashboard_v13_4.png)
+![Project Security Dashboard](img/project_security_dashboard_v13_5.png)
 
 You can filter the vulnerabilities by one or more of the following:
 

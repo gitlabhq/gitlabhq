@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.AdminArea
+# Warning: gitlab.Admin
 #
 # You should not use "admin", but "Admin Area" is OK.
 #
@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html
 level: warning
 ignorecase: true
 swap:
-  'admin ?\w*': '(?:Admin Area|[Aa]dministrat(ion|or|e))'
+  'admin ?\w*': '(?:Admin Area|[Aa]dminist(ration|rator|er))'

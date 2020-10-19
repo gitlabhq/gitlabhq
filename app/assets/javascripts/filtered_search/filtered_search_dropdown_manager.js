@@ -13,6 +13,7 @@ export default class FilteredSearchDropdownManager {
     labelsEndpoint = '',
     milestonesEndpoint = '',
     releasesEndpoint = '',
+    environmentsEndpoint = '',
     epicsEndpoint = '',
     tokenizer,
     page,
@@ -29,6 +30,7 @@ export default class FilteredSearchDropdownManager {
     this.milestonesEndpoint = removeTrailingSlash(milestonesEndpoint);
     this.releasesEndpoint = removeTrailingSlash(releasesEndpoint);
     this.epicsEndpoint = removeTrailingSlash(epicsEndpoint);
+    this.environmentsEndpoint = removeTrailingSlash(environmentsEndpoint);
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');

@@ -15,6 +15,7 @@ export default class AvailableDropdownMappings {
     labelsEndpoint,
     milestonesEndpoint,
     releasesEndpoint,
+    environmentsEndpoint,
     groupsOnly,
     includeAncestorGroups,
     includeDescendantGroups,
@@ -24,6 +25,7 @@ export default class AvailableDropdownMappings {
     this.labelsEndpoint = labelsEndpoint;
     this.milestonesEndpoint = milestonesEndpoint;
     this.releasesEndpoint = releasesEndpoint;
+    this.environmentsEndpoint = environmentsEndpoint;
     this.groupsOnly = groupsOnly;
     this.includeAncestorGroups = includeAncestorGroups;
     this.includeDescendantGroups = includeDescendantGroups;
@@ -149,6 +151,16 @@ export default class AvailableDropdownMappings {
         },
         element: this.container.querySelector('#js-dropdown-target-branch'),
       },
+      environment: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getEnvironmentsEndpoint(),
+          symbol: '',
+          preprocessing: data => data.map(env => ({ title: env })),
+        },
+        element: this.container.querySelector('#js-dropdown-environment'),
+      },
     };
   }
 
@@ -192,6 +204,10 @@ export default class AvailableDropdownMappings {
     };
 
     return mergeUrlParams(params, endpoint);
+  }
+
+  getEnvironmentsEndpoint() {
+    return `${this.environmentsEndpoint}.json`;
   }
 
   getGroupId() {

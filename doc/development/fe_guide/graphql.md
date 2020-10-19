@@ -308,7 +308,7 @@ const resolvers = {
 export default resolvers;
 ```
 
-We need to pass resolvers object to our existing Apollo Client:
+We need to pass a resolvers object to our existing Apollo Client:
 
 ```javascript
 // graphql.js
@@ -319,13 +319,13 @@ import resolvers from './graphql/resolvers';
 const defaultClient = createDefaultClient(resolvers);
 ```
 
-Now every single time on attempt to fetch a version, our client will fetch `id` and `sha` from the remote API endpoint and will assign our hardcoded values to `author` and `createdAt` version properties. With this data, frontend developers are able to work on UI part without being blocked by backend. When actual response is added to the API, a custom local resolver can be removed fast and the only change to query/fragment is `@client` directive removal.
+For each attempt to fetch a version, our client will fetch `id` and `sha` from the remote API endpoint and will assign our hardcoded values to the `author` and `createdAt` version properties. With this data, frontend developers are able to work on their UI without being blocked by backend. When the actual response is added to the API, our custom local resolver can be removed and the only change to the query/fragment is to remove the `@client` directive.
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.app/guide/local-state.html#local-state).
 
 ### Using with Vuex
 
-When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need in keeping Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. More to say, with Apollo's default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache passing a valid `fetchPolicy` option to its constructor:
+When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need to keep Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. With Apollo's default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache by passing a valid `fetchPolicy` option to its constructor:
 
 ```javascript
 import fetchPolicies from '~/graphql_shared/fetch_policy_constants';

@@ -70,6 +70,7 @@ class Environment < ApplicationRecord
   scope :order_by_last_deployed_at_desc, -> do
     order(Gitlab::Database.nulls_last_order("(#{max_deployment_id_sql})", 'DESC'))
   end
+  scope :order_by_name, -> { order('environments.name ASC') }
 
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
@@ -120,6 +121,10 @@ class Environment < ApplicationRecord
 
   def self.pluck_names
     pluck(:name)
+  end
+
+  def self.pluck_unique_names
+    pluck('DISTINCT(environments.name)')
   end
 
   def self.find_or_create_by_name(name)
