@@ -29,7 +29,7 @@ RSpec.shared_examples 'checker size exceeded' do
     let(:current_size) { 51 }
 
     it 'returns zero' do
-      expect(subject.exceeded_size).to eq(1)
+      expect(subject.exceeded_size).to eq(1.megabytes)
     end
   end
 
@@ -37,7 +37,7 @@ RSpec.shared_examples 'checker size exceeded' do
     let(:current_size) { 50 }
 
     it 'returns zero' do
-      expect(subject.exceeded_size(1)).to eq(1)
+      expect(subject.exceeded_size(1.megabytes)).to eq(1.megabytes)
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.shared_examples 'checker size exceeded' do
     let(:current_size) { 49 }
 
     it 'returns zero' do
-      expect(subject.exceeded_size(1)).to eq(0)
+      expect(subject.exceeded_size(1.megabytes)).to eq(0)
     end
   end
 end

@@ -69,7 +69,7 @@ module API
         success Entities::ProjectRepositoryStorageMove
       end
       params do
-        requires :destination_storage_name, type: String, desc: 'The destination storage shard'
+        optional :destination_storage_name, type: String, desc: 'The destination storage shard'
       end
       post ':id/repository_storage_moves' do
         storage_move = user_project.repository_storage_moves.build(

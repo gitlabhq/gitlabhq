@@ -750,7 +750,8 @@ The following is example content of the Usage Ping payload.
   },
   "database": {
     "adapter": "postgresql",
-    "version": "9.6.15"
+    "version": "9.6.15",
+    "pg_system_id": 6842684531675334351
   },
   "avg_cycle_analytics": {
     "issue": {
@@ -909,6 +910,10 @@ The following is example content of the Usage Ping payload.
   }
 }
 ```
+
+## Notable changes
+
+In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
 
 ## Exporting Usage Ping SQL queries and definitions
 

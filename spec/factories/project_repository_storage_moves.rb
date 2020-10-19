@@ -5,7 +5,6 @@ FactoryBot.define do
     project
 
     source_storage_name { 'default' }
-    destination_storage_name { 'default' }
 
     trait :scheduled do
       state { ProjectRepositoryStorageMove.state_machines[:state].states[:scheduled].value }

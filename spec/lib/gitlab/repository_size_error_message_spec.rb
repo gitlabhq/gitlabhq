@@ -3,17 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RepositorySizeErrorMessage do
+  let_it_be(:namespace) { build(:namespace) }
   let(:checker) do
     Gitlab::RepositorySizeChecker.new(
       current_size_proc: -> { 15.megabytes },
-      total_repository_size_excess: 0,
-      additional_purchased_storage: 0,
+      namespace: namespace,
       limit: 10.megabytes
     )
   end
 
   let(:message) { checker.error_message }
   let(:base_message) { 'because this repository has exceeded its size limit of 10 MB by 5 MB' }
+
+  before do
+    allow(namespace).to receive(:total_repository_size_excess).and_return(0)
+  end
 
   describe 'error messages' do
     describe '#commit_error' do

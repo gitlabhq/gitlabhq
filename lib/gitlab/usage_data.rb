@@ -303,7 +303,8 @@ module Gitlab
           },
           database: {
             adapter: alt_usage_data { Gitlab::Database.adapter_name },
-            version: alt_usage_data { Gitlab::Database.version }
+            version: alt_usage_data { Gitlab::Database.version },
+            pg_system_id: alt_usage_data { Gitlab::Database.system_id }
           },
           mail: {
             smtp_server: alt_usage_data { ActionMailer::Base.smtp_settings[:address] }

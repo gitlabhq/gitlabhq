@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this */
+/* eslint-disable class-methods-use-this */
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
@@ -34,7 +34,6 @@ const TYPES = {
 class List {
   constructor(obj) {
     this.id = obj.id;
-    this._uid = this.guid();
     this.position = obj.position;
     this.title = (obj.list_type || obj.listType) === 'backlog' ? __('Open') : obj.title;
     this.type = obj.list_type || obj.listType;

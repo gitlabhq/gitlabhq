@@ -75,6 +75,7 @@ module Ci
 
       unless live_chunks_pending?
         metrics.increment_trace_operation(operation: :finalized)
+        metrics.observe_migration_duration(pending_state_seconds)
       end
 
       ::Gitlab::Ci::Trace::Checksum.new(build).then do |checksum|
@@ -130,7 +131,15 @@ module Ci
     end
 
     def pending_state_outdated?
-      Time.current - pending_state.created_at > ACCEPT_TIMEOUT
+      pending_state_duration > ACCEPT_TIMEOUT
+    end
+
+    def pending_state_duration
+      Time.current - pending_state.created_at
+    end
+
+    def pending_state_seconds
+      pending_state_duration.seconds
     end
 
     def build_state

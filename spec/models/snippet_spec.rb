@@ -666,8 +666,7 @@ RSpec.describe Snippet do
 
     let(:checker) { subject.repository_size_checker }
     let(:current_size) { 60 }
-    let(:total_repository_size_excess) { 0 }
-    let(:additional_purchased_storage) { 0 }
+    let(:namespace) { nil }
 
     before do
       allow(subject.repository).to receive(:size).and_return(current_size)

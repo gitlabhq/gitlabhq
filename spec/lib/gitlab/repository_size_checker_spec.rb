@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RepositorySizeChecker do
+  let_it_be(:namespace) { nil }
   let(:current_size) { 0 }
   let(:limit) { 50 }
   let(:enabled) { true }
 
   subject do
     described_class.new(
-      current_size_proc: -> { current_size },
-      limit: limit,
-      total_repository_size_excess: 0,
-      additional_purchased_storage: 0,
+      current_size_proc: -> { current_size.megabytes },
+      limit: limit.megabytes,
+      namespace: namespace,
       enabled: enabled
     )
   end
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::RepositorySizeChecker do
   describe '#enabled?' do
     context 'when enabled' do
       it 'returns true' do
-        expect(subject.enabled?).to be_truthy
+        expect(subject.enabled?).to eq(true)
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::RepositorySizeChecker do
       let(:limit) { 0 }
 
       it 'returns false' do
-        expect(subject.enabled?).to be_falsey
+        expect(subject.enabled?).to eq(false)
       end
     end
   end
@@ -37,11 +37,11 @@ RSpec.describe Gitlab::RepositorySizeChecker do
     let(:current_size) { 49 }
 
     it 'returns true when changes go over' do
-      expect(subject.changes_will_exceed_size_limit?(2)).to be_truthy
+      expect(subject.changes_will_exceed_size_limit?(2.megabytes)).to eq(true)
     end
 
     it 'returns false when changes do not go over' do
-      expect(subject.changes_will_exceed_size_limit?(1)).to be_falsey
+      expect(subject.changes_will_exceed_size_limit?(1.megabytes)).to eq(false)
     end
   end
 

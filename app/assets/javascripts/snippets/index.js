@@ -8,7 +8,7 @@ import { SNIPPET_LEVELS_MAP, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/const
 Vue.use(VueApollo);
 Vue.use(Translate);
 
-function appFactory(el, Component) {
+export default function appFactory(el, Component) {
   if (!el) {
     return false;
   }
@@ -44,14 +44,6 @@ function appFactory(el, Component) {
     },
   });
 }
-
-export const SnippetShowInit = () => {
-  import('./components/show.vue')
-    .then(({ default: SnippetsShow }) => {
-      appFactory(document.getElementById('js-snippet-view'), SnippetsShow);
-    })
-    .catch(() => {});
-};
 
 export const SnippetEditInit = () => {
   import('./components/edit.vue')

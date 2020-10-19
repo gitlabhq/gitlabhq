@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Wiki
+# Wiki **(CORE)**
 
 A separate system for documentation called Wiki, is built right into each
 GitLab project. It is enabled by default on all new projects and you can find
@@ -130,10 +130,12 @@ be preceded by the slash (`/`) character.
 
 ## Viewing a list of all created wiki pages
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17673/) in GitLab 13.5, wiki pages are displayed as a nested tree in the sidebar and pages overview.
+
 Every wiki has a sidebar from which a short list of the created pages can be
 found. The list is ordered alphabetically.
 
-![Wiki sidebar](img/wiki_sidebar.png)
+![Wiki sidebar](img/wiki_sidebar_v13_5.png)
 
 If you have many pages, not all will be listed in the sidebar. Click on
 **View All Pages** to see all of them.

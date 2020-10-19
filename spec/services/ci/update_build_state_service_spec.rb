@@ -131,6 +131,18 @@ RSpec.describe Ci::UpdateBuildStateService do
           .with(operation: :finalized)
       end
 
+      it 'records migration duration in a histogram' do
+        freeze_time do
+          create(:ci_build_pending_state, build: build, created_at: 0.5.seconds.ago)
+
+          execute_with_stubbed_metrics!
+        end
+
+        expect(metrics)
+          .to have_received(:observe_migration_duration)
+          .with(0.5)
+      end
+
       context 'when trace checksum is not valid' do
         it 'increments invalid trace metric' do
           execute_with_stubbed_metrics!

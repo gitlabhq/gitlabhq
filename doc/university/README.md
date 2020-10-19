@@ -175,10 +175,10 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [High Availability - Video](https://www.youtube.com/watch?v=36KS808u6bE&index=15&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
 1. [High Availability Documentation](https://about.gitlab.com/solutions/reference-architectures/)
 
-### 3.8 Cycle Analytics
+### 3.8 Value Stream Analytics
 
-1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/)
-1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/)
+1. [GitLab Value Stream Analytics Overview (as of 2016)](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/)
+1. [GitLab Value Stream Analytics - Product Page](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/)
 
 ### 3.9. Integrations
 

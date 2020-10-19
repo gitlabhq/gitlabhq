@@ -20,6 +20,10 @@ class ProjectRepositoryStorageMove < ApplicationRecord
     inclusion: { in: ->(_) { Gitlab.config.repositories.storages.keys } }
   validate :project_repository_writable, on: :create
 
+  default_value_for(:destination_storage_name, allows_nil: false) do
+    pick_repository_storage
+  end
+
   state_machine initial: :initial do
     event :schedule do
       transition initial: :scheduled
@@ -76,6 +80,12 @@ class ProjectRepositoryStorageMove < ApplicationRecord
 
   scope :order_created_at_desc, -> { order(created_at: :desc) }
   scope :with_projects, -> { includes(project: :route) }
+
+  class << self
+    def pick_repository_storage
+      Project.pick_repository_storage
+    end
+  end
 
   private
 

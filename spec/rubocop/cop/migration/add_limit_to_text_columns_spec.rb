@@ -129,6 +129,28 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, type: :rubocop do
       end
     end
 
+    context 'when text columns are used for encryption' do
+      it 'registers no offenses' do
+        expect_no_offenses(<<~RUBY)
+          class TestTextLimits < ActiveRecord::Migration[6.0]
+            DOWNTIME = false
+            disable_ddl_transaction!
+
+            def up
+              create_table :test_text_limits, id: false do |t|
+                t.integer :test_id, null: false
+                t.text :encrypted_name
+              end
+
+              add_column :encrypted_test_text_limits, :encrypted_email, :text
+              add_column_with_default :encrypted_test_text_limits, :encrypted_role, :text, default: 'default'
+              change_column_type_concurrently :encrypted_test_text_limits, :encrypted_test_id, :text
+            end
+          end
+        RUBY
+      end
+    end
+
     context 'on down' do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)

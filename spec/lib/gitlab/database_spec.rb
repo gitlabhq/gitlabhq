@@ -39,6 +39,12 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.system_id' do
+    it 'returns the PostgreSQL system identifier' do
+      expect(described_class.system_id).to be_an_instance_of(Integer)
+    end
+  end
+
   describe '.postgresql?' do
     subject { described_class.postgresql? }
 

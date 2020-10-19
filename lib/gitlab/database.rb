@@ -250,6 +250,12 @@ module Gitlab
       false
     end
 
+    def self.system_id
+      row = connection.execute('SELECT system_identifier FROM pg_control_system()').first
+
+      row['system_identifier']
+    end
+
     def self.get_write_location(ar_connection)
       row = ar_connection
         .select_all("SELECT pg_current_wal_insert_lsn()::text AS location")

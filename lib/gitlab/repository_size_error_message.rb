@@ -4,7 +4,7 @@ module Gitlab
   class RepositorySizeErrorMessage
     include ActiveSupport::NumberHelper
 
-    delegate :current_size, :limit, :total_repository_size_excess, :additional_purchased_storage, :exceeded_size, to: :@checker
+    delegate :current_size, :limit, :exceeded_size, to: :@checker
 
     # @param checher [RepositorySizeChecker]
     def initialize(checker)

@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, how-to
+---
+
 # Kerberos integration **(STARTER ONLY)**
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
@@ -156,6 +163,13 @@ Kerberos account, as well as your standard GitLab credentials.
 GitLab users with a linked Kerberos account can also `git pull` and `git push`
 using Kerberos tokens, i.e., without having to send their password with each
 operation.
+
+DANGER: **Danger:**
+There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
+older than version 7.64.1 wherein it won't reuse connections when negotiating.
+This leads to authorization issues when push is larger than `http.postBuffer`
+config. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
+know the `libcurl` version installed, run `curl-config --version`.
 
 ### HTTP Git access with Kerberos token (passwordless authentication)
 

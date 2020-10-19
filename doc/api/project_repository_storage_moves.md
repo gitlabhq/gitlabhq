@@ -194,7 +194,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `project_id` | integer | yes | ID of the project |
-| `destination_storage_name` | string | yes | Name of the destination storage shard |
+| `destination_storage_name` | string | no | Name of the destination storage shard. If not provided the storage will be selected automatically. |
 
 Example request:
 

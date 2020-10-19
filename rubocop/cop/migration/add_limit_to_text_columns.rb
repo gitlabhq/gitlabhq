@@ -6,6 +6,10 @@ module RuboCop
   module Cop
     module Migration
       # Cop that enforces always adding a limit on text columns
+      #
+      # Text columns starting with `encrypted_` are very likely used
+      # by `attr_encrypted` which controls the text length. Those columns
+      # should not add a text limit.
       class AddLimitToTextColumns < RuboCop::Cop::Cop
         include MigrationHelpers
 
@@ -102,6 +106,8 @@ module RuboCop
         # Check if there is an `add_text_limit` call for the provided
         # table and attribute name
         def text_limit_missing?(node, table_name, attribute_name)
+          return false if encrypted_attribute_name?(attribute_name)
+
           limit_found = false
 
           node.each_descendant(:send) do |send_node|
@@ -117,6 +123,10 @@ module RuboCop
           end
 
           !limit_found
+        end
+
+        def encrypted_attribute_name?(attribute_name)
+          attribute_name.to_s.start_with?('encrypted_')
         end
       end
     end

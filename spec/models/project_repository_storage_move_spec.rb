@@ -43,6 +43,18 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
     end
   end
 
+  describe 'defaults' do
+    context 'destination_storage_name' do
+      subject { build(:project_repository_storage_move) }
+
+      it 'picks storage from ApplicationSetting' do
+        expect(Gitlab::CurrentSettings).to receive(:pick_repository_storage).and_return('picked').at_least(:once)
+
+        expect(subject.destination_storage_name).to eq('picked')
+      end
+    end
+  end
+
   describe 'state transitions' do
     let(:project) { create(:project) }
 

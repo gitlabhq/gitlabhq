@@ -73,11 +73,9 @@ export function initIde(el, options = {}) {
  * @param {Objects} options - Extra options for the IDE (Used by EE).
  */
 export function startIde(options) {
-  document.addEventListener('DOMContentLoaded', () => {
-    const ideElement = document.getElementById('ide');
-    if (ideElement) {
-      resetServiceWorkersPublicPath();
-      initIde(ideElement, options);
-    }
-  });
+  const ideElement = document.getElementById('ide');
+  if (ideElement) {
+    resetServiceWorkersPublicPath();
+    initIde(ideElement, options);
+  }
 }
