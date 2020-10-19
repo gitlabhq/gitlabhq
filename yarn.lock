@@ -12368,10 +12368,10 @@ vue-loader@^15.9.3:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-router@^3.4.6:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.4.6.tgz#f7bda2c9a43d39837621c9a02ba7789f5daa24b2"
-  integrity sha512-kaXnB3pfFxhAJl/Mp+XG1HJMyFqrL/xPqV7oXlpXn4AwMmm6VNgf0nllW8ksflmZANfI4kdo0bVn/FYSsAolPQ==
+vue-router@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.4.7.tgz#bf189bafd16f4e4ef783c4a6250a3090f2c1fa1b"
+  integrity sha512-CbHXue5BLrDivOk5O4eZ0WT4Yj8XwdXa4kCnsEIOzYUPF/07ZukayA2jGxDCJxLc9SgVQX9QX0OuGOwGlVB4Qg==
 
 vue-runtime-helpers@^1.1.2:
   version "1.1.2"

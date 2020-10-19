@@ -597,7 +597,7 @@ database encryption. Proceed with caution.
    ```ruby
    pages_external_url "http://<pages_server_URL>"
    gitlab_pages['enable'] = false
-   gitlab_rails['pages_enabled']=false
+   pages_nginx['enable'] = false
    gitlab_rails['pages_path'] = "/mnt/pages"
    ```
 
@@ -788,3 +788,9 @@ This problem most likely results from an [out-dated operating system](https://do
 The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [crypto/rand in Go](https://golang.org/pkg/crypto/rand/#pkg-variables).
 This requires the `getrandom` syscall or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.
+
+### The requested scope is invalid, malformed, or unknown
+
+This problem comes from the permissions of the GitLab Pages OAuth application. To fix it, go to
+**Admin > Applications > GitLab Pages** and edit the application. Under **Scopes**, ensure that the
+`api` scope is selected and save your changes.

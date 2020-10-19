@@ -17,7 +17,7 @@ module MergeRequests
       @repository = merge_request.project.repository
       @ref_path = merge_request.ref_path
       @merge_ref_path = merge_request.merge_ref_path
-      @ref_head_sha = @repository.commit(merge_request.ref_path).id
+      @ref_head_sha = @repository.commit(merge_request.ref_path)&.id
       @merge_ref_sha = merge_request.merge_ref_head&.id
     end
 

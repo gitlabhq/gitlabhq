@@ -19622,6 +19622,8 @@ CREATE INDEX idx_audit_events_on_entity_id_desc_author_id_created_at ON audit_ev
 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
+CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at_enabled ON container_expiration_policies USING btree (project_id, next_run_at, enabled);
+
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
 
 CREATE UNIQUE INDEX idx_deployment_merge_requests_unique_index ON deployment_merge_requests USING btree (deployment_id, merge_request_id);

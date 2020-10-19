@@ -35,6 +35,17 @@ RSpec.describe MergeRequests::CleanupRefsService do
         end
       end
 
+      context 'when merge request has no head ref' do
+        before do
+          # Simulate a merge request with no head ref
+          merge_request.project.repository.delete_refs(merge_request.ref_path)
+        end
+
+        it 'does not fail' do
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
       context 'when merge request has merge ref' do
         before do
           MergeRequests::MergeToRefService

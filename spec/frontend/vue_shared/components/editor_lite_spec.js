@@ -96,17 +96,6 @@ describe('Editor Lite component', () => {
       });
     });
 
-    it('reacts to the changes in the pased value', async () => {
-      const newValue = 'New Value';
-
-      wrapper.setProps({
-        value: newValue,
-      });
-
-      await nextTick();
-      expect(setValue).toHaveBeenCalledWith(newValue);
-    });
-
     it('registers callback with editor onChangeContent', () => {
       expect(onDidChangeModelContent).toHaveBeenCalledWith(expect.any(Function));
     });
@@ -126,6 +115,30 @@ describe('Editor Lite component', () => {
       await el.dispatchEvent(new Event('editor-ready'));
 
       expect(wrapper.emitted()['editor-ready']).toBeDefined();
+    });
+
+    describe('reaction to the value update', () => {
+      it('reacts to the changes in the passed value', async () => {
+        const newValue = 'New Value';
+
+        wrapper.setProps({
+          value: newValue,
+        });
+
+        await nextTick();
+        expect(setValue).toHaveBeenCalledWith(newValue);
+      });
+
+      it("does not update value if the passed one is exactly the same as the editor's content", async () => {
+        const newValue = `${value}`; // to make sure we're creating a new String with the same content and not just a reference
+
+        wrapper.setProps({
+          value: newValue,
+        });
+
+        await nextTick();
+        expect(setValue).not.toHaveBeenCalled();
+      });
     });
   });
 });

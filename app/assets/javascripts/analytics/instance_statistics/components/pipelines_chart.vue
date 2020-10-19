@@ -4,7 +4,11 @@ import { GlAlert } from '@gitlab/ui';
 import { mapKeys, mapValues, pick, some, sum } from 'lodash';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import { s__ } from '~/locale';
-import { formatDateAsMonth, getDayDifference } from '~/lib/utils/datetime_utility';
+import {
+  differenceInMonths,
+  formatDateAsMonth,
+  getDayDifference,
+} from '~/lib/utils/datetime_utility';
 import { getAverageByMonth, sortByDate, extractValues } from '../utils';
 import pipelineStatsQuery from '../graphql/queries/pipeline_stats.query.graphql';
 import { TODAY, START_DATE } from '../constants';
@@ -150,19 +154,14 @@ export default {
         max: this.$options.endDate,
       };
     },
-    differenceInMonths() {
-      const yearDiff = this.$options.endDate.getYear() - this.$options.startDate.getYear();
-      const monthDiff = this.$options.endDate.getMonth() - this.$options.startDate.getMonth();
-
-      return monthDiff + 12 * yearDiff;
-    },
     chartOptions() {
+      const { endDate, startDate, i18n } = this.$options;
       return {
         xAxis: {
           ...this.range,
-          name: this.$options.i18n.xAxisTitle,
+          name: i18n.xAxisTitle,
           type: 'time',
-          splitNumber: this.differenceInMonths + 1,
+          splitNumber: differenceInMonths(startDate, endDate) + 1,
           axisLabel: {
             interval: 0,
             showMinLabel: false,
@@ -172,7 +171,7 @@ export default {
           },
         },
         yAxis: {
-          name: this.$options.i18n.yAxisTitle,
+          name: i18n.yAxisTitle,
         },
       };
     },

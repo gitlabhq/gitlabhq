@@ -58,7 +58,9 @@ export default {
       this.editor.updateModelLanguage(newVal);
     },
     value(newVal) {
-      this.editor.setValue(newVal);
+      if (this.editor.getValue() !== newVal) {
+        this.editor.setValue(newVal);
+      }
     },
   },
   mounted() {
