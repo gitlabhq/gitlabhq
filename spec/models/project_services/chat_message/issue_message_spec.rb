@@ -44,7 +44,7 @@ RSpec.describe ChatMessage::IssueMessage do
     context 'open' do
       it 'returns a message regarding opening of issues' do
         expect(subject.pretext).to eq(
-          '[<http://somewhere.com|project_name>] Issue opened by Test User (test.user)')
+          '[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> opened by Test User (test.user)')
         expect(subject.attachments).to eq([
           {
             title: "#100 Issue title",
@@ -91,7 +91,7 @@ RSpec.describe ChatMessage::IssueMessage do
     context 'open' do
       it 'returns a message regarding opening of issues' do
         expect(subject.pretext).to eq(
-          '[[project_name](http://somewhere.com)] Issue opened by Test User (test.user)')
+          '[[project_name](http://somewhere.com)] Issue [#100 Issue title](http://url.com) opened by Test User (test.user)')
         expect(subject.attachments).to eq('issue description')
         expect(subject.activity).to eq({
           title: 'Issue opened by Test User (test.user)',

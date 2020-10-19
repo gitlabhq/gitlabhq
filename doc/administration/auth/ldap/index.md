@@ -116,7 +116,6 @@ gitlab_rails['ldap_servers'] = {
   'verify_certificates' => true,
   'bind_dn' => '_the_full_dn_of_the_user_you_will_bind_with',
   'password' => '_the_password_of_the_bind_user',
-  'encryption' => 'plain',
   'verify_certificates' => true,
   'tls_options' => {
     'ca_file' => '',

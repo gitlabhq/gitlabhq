@@ -1,6 +1,5 @@
 <script>
-import { GlIcon, GlSprintf } from '@gitlab/ui';
-import tooltip from '../../vue_shared/directives/tooltip';
+import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '../../locale';
 
 export default {
@@ -13,7 +12,7 @@ export default {
     GlSprintf,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 };
 </script>
@@ -28,7 +27,7 @@ export default {
       </gl-sprintf>
     </span>
     <gl-icon
-      v-tooltip
+      v-gl-tooltip.hover
       :title="$options.i18n.tooltipTitle"
       :aria-label="$options.i18n.tooltipTitle"
       name="question-o"

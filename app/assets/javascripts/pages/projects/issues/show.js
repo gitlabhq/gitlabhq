@@ -14,13 +14,20 @@ import { parseIssuableData } from '~/issue_show/utils/parse_data';
 import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
 import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 
+import { IssuableType } from '~/issuable_show/constants';
+
 export default function() {
   const { issueType, ...issuableData } = parseIssuableData();
 
-  if (issueType === 'incident') {
-    initIncidentApp(issuableData);
-  } else if (issueType === 'issue') {
-    initIssueApp(issuableData);
+  switch (issueType) {
+    case IssuableType.Incident:
+      initIncidentApp(issuableData);
+      break;
+    case IssuableType.Issue:
+      initIssueApp(issuableData);
+      break;
+    default:
+      break;
   }
 
   initIssuableHeaderWarning(store);
@@ -31,12 +38,14 @@ export default function() {
     .then(module => module.default())
     .catch(() => {});
 
-  new Issue(); // eslint-disable-line no-new
-  new ShortcutsIssuable(); // eslint-disable-line no-new
   new ZenMode(); // eslint-disable-line no-new
-  initIssuableSidebar();
 
-  loadAwardsHandler();
-  initInviteMemberModal();
-  initInviteMemberTrigger();
+  if (issueType !== IssuableType.TestCase) {
+    new Issue(); // eslint-disable-line no-new
+    new ShortcutsIssuable(); // eslint-disable-line no-new
+    initIssuableSidebar();
+    loadAwardsHandler();
+    initInviteMemberModal();
+    initInviteMemberTrigger();
+  }
 }

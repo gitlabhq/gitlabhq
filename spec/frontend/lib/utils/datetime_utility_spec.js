@@ -682,6 +682,20 @@ describe('differenceInSeconds', () => {
   });
 });
 
+describe('differenceInMonths', () => {
+  const startDateTime = new Date('2019-07-17T00:00:00.000Z');
+
+  it.each`
+    startDate                               | endDate                                 | expected
+    ${startDateTime}                        | ${startDateTime}                        | ${0}
+    ${startDateTime}                        | ${new Date('2019-12-17T12:00:00.000Z')} | ${5}
+    ${startDateTime}                        | ${new Date('2021-02-18T00:00:00.000Z')} | ${19}
+    ${new Date('2021-02-18T00:00:00.000Z')} | ${startDateTime}                        | ${-19}
+  `('returns $expected for $endDate - $startDate', ({ startDate, endDate, expected }) => {
+    expect(datetimeUtility.differenceInMonths(startDate, endDate)).toBe(expected);
+  });
+});
+
 describe('differenceInMilliseconds', () => {
   const startDateTime = new Date('2019-07-17T00:00:00.000Z');
 

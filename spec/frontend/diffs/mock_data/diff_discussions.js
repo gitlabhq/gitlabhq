@@ -260,7 +260,7 @@ export default {
       name: 'CHANGELOG',
       mode: '100644',
       readable_text: true,
-      icon: 'file-text-o',
+      icon: 'doc-text',
     },
     blob_path: 'CHANGELOG',
     blob_name: 'CHANGELOG',

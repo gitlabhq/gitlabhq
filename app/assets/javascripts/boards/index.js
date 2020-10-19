@@ -1,6 +1,6 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import { mapActions, mapState } from 'vuex';
+import { GlTooltip, GlButton } from '@gitlab/ui';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
@@ -299,6 +299,10 @@ export default () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: issueBoardsModal,
+      components: {
+        GlTooltip,
+        GlButton,
+      },
       mixins: [modalMixin],
       data() {
         return {
@@ -323,26 +327,7 @@ export default () => {
           return '';
         },
       },
-      watch: {
-        disabled() {
-          this.updateTooltip();
-        },
-      },
-      mounted() {
-        this.updateTooltip();
-      },
       methods: {
-        updateTooltip() {
-          const $tooltip = $(this.$refs.addIssuesButton);
-
-          this.$nextTick(() => {
-            if (this.disabled) {
-              $tooltip.tooltip();
-            } else {
-              $tooltip.tooltip('dispose');
-            }
-          });
-        },
         openModal() {
           if (!this.disabled) {
             this.toggleModal(true);
@@ -351,20 +336,25 @@ export default () => {
       },
       template: `
         <div class="board-extra-actions">
-          <button
-            class="btn btn-success gl-ml-3"
-            type="button"
-            data-placement="bottom"
-            data-track-event="click_button"
-            data-track-label="board_add_issues"
-            ref="addIssuesButton"
-            :class="{ 'disabled': disabled }"
-            :title="tooltipTitle"
-            :aria-disabled="disabled"
-            v-if="canAdminList"
-            @click="openModal">
-            Add issues
-          </button>
+          <span ref="addIssuesButtonTooltip" class="gl-ml-3">
+            <gl-button
+              type="button"
+              data-placement="bottom"
+              data-track-event="click_button"
+              data-track-label="board_add_issues"
+              :disabled="disabled"
+              :aria-disabled="disabled"
+              v-if="canAdminList"
+              @click="openModal">
+              Add issues
+            </button>
+          </span>
+          <gl-tooltip
+            v-if="disabled"
+            :target="() => $refs.addIssuesButtonTooltip"
+            placement="bottom">
+            {{tooltipTitle}}
+          </gl-tooltip>
         </div>
       `,
     });

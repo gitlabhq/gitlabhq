@@ -421,6 +421,25 @@ describe('Api', () => {
     });
   });
 
+  describe('addProjectIssueAsTodo', () => {
+    it('adds issue ID as a todo', () => {
+      const projectId = 1;
+      const issueIid = 11;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/issues/11/todo`;
+      mock.onPost(expectedUrl).reply(200, {
+        id: 112,
+        project: {
+          id: 1,
+        },
+      });
+
+      return Api.addProjectIssueAsTodo(projectId, issueIid).then(({ data }) => {
+        expect(data.id).toBe(112);
+        expect(data.project.id).toBe(projectId);
+      });
+    });
+  });
+
   describe('newLabel', () => {
     it('creates a new label', done => {
       const namespace = 'some namespace';

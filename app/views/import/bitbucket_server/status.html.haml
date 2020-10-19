@@ -1,8 +1,9 @@
 - page_title _('Bitbucket Server import')
 - header_title _('Projects'), root_path
 
-%h3.page-title
-  %i.fa.fa-bitbucket-square
+%h3.page-title.d-flex
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('bitbucket', css_class: 'gl-mr-2')
   = _('Import projects from Bitbucket Server')
 
 = render 'import/githubish_status', provider: 'bitbucket_server', paginatable: true, extra_data: { reconfigure_path: configure_import_bitbucket_server_path }

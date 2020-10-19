@@ -189,6 +189,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipelines.css"
+    config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/xterm.css"

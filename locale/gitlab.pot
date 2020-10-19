@@ -3425,6 +3425,9 @@ msgstr ""
 msgid "Archive project"
 msgstr ""
 
+msgid "Archive test case"
+msgstr ""
+
 msgid "Archived"
 msgstr ""
 
@@ -22070,6 +22073,9 @@ msgstr ""
 msgid "Reopen milestone"
 msgstr ""
 
+msgid "Reopen test case"
+msgstr ""
+
 msgid "Reopen this %{quick_action_target}"
 msgstr ""
 
@@ -25897,13 +25903,28 @@ msgstr ""
 msgid "TestCases|Search test cases"
 msgstr ""
 
+msgid "TestCases|Something went wrong while adding test case to Todo."
+msgstr ""
+
 msgid "TestCases|Something went wrong while creating a test case."
 msgstr ""
 
 msgid "TestCases|Something went wrong while fetching count of test cases."
 msgstr ""
 
+msgid "TestCases|Something went wrong while fetching test case."
+msgstr ""
+
 msgid "TestCases|Something went wrong while fetching test cases list."
+msgstr ""
+
+msgid "TestCases|Something went wrong while marking test case todo as done."
+msgstr ""
+
+msgid "TestCases|Something went wrong while updating the test case labels."
+msgstr ""
+
+msgid "TestCases|Something went wrong while updating the test case."
 msgstr ""
 
 msgid "TestCases|Submit test case"
@@ -25990,7 +26011,7 @@ msgstr ""
 msgid "Thanks! Don't show me this again"
 msgstr ""
 
-msgid "That's it, well done!%{celebrate}"
+msgid "That's it, well done!"
 msgstr ""
 
 msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"

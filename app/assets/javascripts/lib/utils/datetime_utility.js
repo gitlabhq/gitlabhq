@@ -745,6 +745,21 @@ export const differenceInSeconds = (startDate, endDate) => {
 };
 
 /**
+ * A utility function which computes the difference in months
+ * between 2 dates.
+ *
+ * @param {Date} startDate the start date
+ * @param {Date} endDate the end date
+ *
+ * @return {Int} the difference in months
+ */
+export const differenceInMonths = (startDate, endDate) => {
+  const yearDiff = endDate.getYear() - startDate.getYear();
+  const monthDiff = endDate.getMonth() - startDate.getMonth();
+  return monthDiff + 12 * yearDiff;
+};
+
+/**
  * A utility function which computes the difference in milliseconds
  * between 2 dates.
  *

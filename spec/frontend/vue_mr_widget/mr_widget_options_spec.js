@@ -536,7 +536,7 @@ describe('mrWidgetOptions', () => {
           const tooltip = vm.$el.querySelector('[data-testid="question-o-icon"]');
 
           expect(vm.$el.textContent).toContain('Deletes source branch');
-          expect(tooltip.getAttribute('data-original-title')).toBe(
+          expect(tooltip.getAttribute('title')).toBe(
             'A user with write access to the source branch selected this option',
           );
 

@@ -2,7 +2,7 @@
   .file-holder
     .js-file-title.file-title{ data: { qa_selector: 'file_title_content' } }
       = link_to blob_link, data: {track_event: 'click_text', track_label: 'blob_path', track_property: 'search_result'} do
-        %i.fa.fa-file
+        = sprite_icon('document')
         %strong
           = search_blob_title(project, path)
     - if blob.data

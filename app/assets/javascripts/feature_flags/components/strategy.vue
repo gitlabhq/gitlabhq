@@ -26,10 +26,10 @@ export default {
   },
   inject: {
     strategyTypeDocsPagePath: {
-      type: String,
+      default: '',
     },
     environmentsScopeDocsPath: {
-      type: String,
+      default: '',
     },
   },
   props: {

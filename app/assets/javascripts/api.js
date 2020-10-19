@@ -30,6 +30,7 @@ const Api = {
   projectProtectedBranchesPath: '/api/:version/projects/:id/protected_branches',
   projectSearchPath: '/api/:version/projects/:id/search',
   projectMilestonesPath: '/api/:version/projects/:id/milestones',
+  projectIssuePath: '/api/:version/projects/:id/issues/:issue_iid',
   mergeRequestsPath: '/api/:version/merge_requests',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
@@ -326,6 +327,14 @@ const Api = {
     return axios.get(url, {
       params,
     });
+  },
+
+  addProjectIssueAsTodo(projectId, issueIid) {
+    const url = Api.buildUrl(Api.projectIssuePath)
+      .replace(':id', encodeURIComponent(projectId))
+      .replace(':issue_iid', encodeURIComponent(issueIid));
+
+    return axios.post(`${url}/todo`);
   },
 
   mergeRequests(params = {}) {

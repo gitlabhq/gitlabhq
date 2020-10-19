@@ -20,7 +20,7 @@ const diffFile = Object.freeze(
       name: 'base.js',
       mode: '100644',
       readable_text: true,
-      icon: 'file-text-o',
+      icon: 'doc-text',
     },
   }),
 );

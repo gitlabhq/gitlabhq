@@ -1,8 +1,7 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import Cookies from 'js-cookie';
-import { sprintf, s__, __ } from '~/locale';
-import { glEmojiTag } from '~/emoji';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();
@@ -12,21 +11,6 @@ export default {
     'https://about.gitlab.com/blog/2018/01/22/a-beginners-guide-to-continuous-integration/',
   exampleLink: 'https://docs.gitlab.com/ee/ci/examples/',
   codeQualityLink: 'https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html',
-  bodyMessage: s__(
-    `MR widget|The pipeline will test your code on every commit. A %{codeQualityLinkStart}code quality report%{codeQualityLinkEnd} will appear in your merge requests to warn you about potential code degradations.`,
-  ),
-  helpMessage: s__(
-    `MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to learn more.`,
-  ),
-  pipelinesButton: s__('MR widget|See your pipeline in action'),
-  mergeRequestButton: s__('MR widget|Back to the Merge request'),
-  modalTitle: sprintf(
-    __("That's it, well done!%{celebrate}"),
-    {
-      celebrate: glEmojiTag('tada'),
-    },
-    false,
-  ),
   goToTrackValuePipelines: 10,
   goToTrackValueMergeRequest: 20,
   trackEvent: 'click_button',
@@ -78,6 +62,17 @@ export default {
       return '';
     },
   },
+  i18n: {
+    modalTitle: s__("That's it, well done!"),
+    pipelinesButton: s__('MR widget|See your pipeline in action'),
+    mergeRequestButton: s__('MR widget|Back to the Merge request'),
+    bodyMessage: s__(
+      `MR widget|The pipeline will test your code on every commit. A %{codeQualityLinkStart}code quality report%{codeQualityLinkEnd} will appear in your merge requests to warn you about potential code degradations.`,
+    ),
+    helpMessage: s__(
+      `MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to learn more.`,
+    ),
+  },
   mounted() {
     this.track();
     this.disableModalFromRenderingAgain();
@@ -90,14 +85,13 @@ export default {
 };
 </script>
 <template>
-  <gl-modal
-    visible
-    size="sm"
-    :title="$options.modalTitle"
-    modal-id="success-pipeline-modal-id-not-used"
-  >
+  <gl-modal visible size="sm" modal-id="success-pipeline-modal-id-not-used">
+    <template #modal-title>
+      {{ $options.i18n.modalTitle }}
+      <gl-emoji class="gl-vertical-align-baseline font-size-inherit gl-mr-1" data-name="tada" />
+    </template>
     <p>
-      <gl-sprintf :message="$options.bodyMessage">
+      <gl-sprintf :message="$options.i18n.bodyMessage">
         <template #codeQualityLink="{content}">
           <gl-link :href="$options.codeQualityLink" target="_blank" class="font-size-inherit">{{
             content
@@ -105,7 +99,7 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <gl-sprintf :message="$options.helpMessage">
+    <gl-sprintf :message="$options.i18n.helpMessage">
       <template #beginnerLink="{content}">
         <gl-link :href="$options.beginnerLink" target="_blank">
           {{ content }}
@@ -127,7 +121,7 @@ export default {
         :data-track-event="$options.trackEvent"
         :data-track-label="trackLabel"
       >
-        {{ $options.mergeRequestButton }}
+        {{ $options.i18n.mergeRequestButton }}
       </gl-button>
       <gl-button
         ref="goToPipelines"
@@ -138,7 +132,7 @@ export default {
         :data-track-event="$options.trackEvent"
         :data-track-label="trackLabel"
       >
-        {{ $options.pipelinesButton }}
+        {{ $options.i18n.pipelinesButton }}
       </gl-button>
     </template>
   </gl-modal>
