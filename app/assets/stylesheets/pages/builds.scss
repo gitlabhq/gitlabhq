@@ -347,3 +347,20 @@
     }
   }
 }
+
+@include media-breakpoint-down(md) {
+  .content-list {
+    &.builds-content-list {
+      width: 100%;
+      overflow: auto;
+    }
+  }
+}
+
+[data-page='admin:jobs:index'] {
+  .admin-builds-table {
+    td:last-child {
+      min-width: 120px;
+    }
+  }
+}

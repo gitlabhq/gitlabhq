@@ -117,15 +117,19 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           end
 
           context 'when alert cannot be created' do
+            let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] })}
+
             before do
-              payload['annotations']['title'] = 'description' * 50
+              allow(service).to receive(:alert).and_call_original
+              allow(service).to receive_message_chain(:alert, :save).and_return(false)
+              allow(service).to receive_message_chain(:alert, :errors).and_return(errors)
             end
 
             it 'writes a warning to the log' do
               expect(Gitlab::AppLogger).to receive(:warn).with(
                 message: 'Unable to create AlertManagement::Alert',
                 project_id: project.id,
-                alert_errors: { title: ["is too long (maximum is 200 characters)"] }
+                alert_errors: { hosts: ['hosts array is over 255 chars'] }
               )
 
               execute

@@ -56,6 +56,9 @@ export default {
       // Note: Realtime is only available on issues right now, future support for MR wil be built later.
       return this.glFeatures.realTimeIssueSidebar && this.issuableType === 'issue';
     },
+    relativeUrlRoot() {
+      return gon.relative_url_root ?? '';
+    },
   },
   created() {
     this.removeAssignee = this.store.removeAssignee.bind(this.store);
@@ -119,7 +122,7 @@ export default {
     />
     <assignees
       v-if="!store.isFetching.assignees"
-      :root-path="store.rootPath"
+      :root-path="relativeUrlRoot"
       :users="store.assignees"
       :editable="store.editable"
       :issuable-type="issuableType"

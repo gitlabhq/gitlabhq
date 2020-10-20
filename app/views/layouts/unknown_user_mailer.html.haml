@@ -1,0 +1,8 @@
+= content_for :footer do
+  %tr.footer
+    %td.gitlab-info
+      %img.footer-logo{ alt: "GitLab", src: image_url('mailers/gitlab_footer_logo.gif') }
+      %p.gitlab-info-text
+        = html_escape(_("GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way%{br_tag}Development, Security, and Ops teams collaborate")) % { br_tag: '<br/>'.html_safe }
+
+= render 'layouts/mailer'

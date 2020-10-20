@@ -180,6 +180,7 @@ Rails.application.routes.draw do
     get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
 
     draw :snippets
+    draw :profile
 
     # Product analytics collector
     match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
@@ -266,7 +267,6 @@ Rails.application.routes.draw do
   draw :uploads
   draw :explore
   draw :admin
-  draw :profile
   draw :dashboard
   draw :user
   draw :project
@@ -274,13 +274,6 @@ Rails.application.routes.draw do
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
   scope as: 'deprecated' do
     draw :snippets
-  end
-
-  # Serve profile routes under /-/ scope.
-  # To ensure an old unscoped routing is used for the UI we need to
-  # add prefix 'as' to the scope routing and place it below original routing.
-  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
-  scope '-', as: :scoped do
     draw :profile
   end
 

@@ -1,4 +1,9 @@
-You have been invited <%= "by #{sanitize_name(member.created_by.name)} " if member.created_by %>to join the <%= member_source.human_name %> <%= member_source.model_name.singular %> as <%= member.human_access %>.
+<% placeholders = { project_or_group_name: member_source.human_name, project_or_group: member_source.model_name.singular, role: member.human_access.downcase } %>
 
-Accept invitation: <%= invite_url(@token, @invite_url_params) %>
-Decline invitation: <%= decline_invite_url(@token) %>
+<% if member.created_by %>
+<%= s_('InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} as a %{role}') % placeholders.merge({ inviter: sanitize_name(member.created_by.name) }) %>
+<% else %>
+<%= s_('InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}') % placeholders %>
+<% end %>
+
+<%= s_('InviteEmail|Join now') %>: <%= invite_url(@token) %>

@@ -15681,7 +15681,7 @@ type Query {
     """
     ID of the User
     """
-    id: ID
+    id: UserID
 
     """
     Username of the User

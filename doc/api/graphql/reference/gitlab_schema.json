@@ -45328,7 +45328,7 @@
                   "description": "ID of the User",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "UserID",
                     "ofType": null
                   },
                   "defaultValue": null

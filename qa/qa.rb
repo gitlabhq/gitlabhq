@@ -18,6 +18,7 @@ module QA
     autoload :Project, 'qa/flow/project'
     autoload :Saml, 'qa/flow/saml'
     autoload :User, 'qa/flow/user'
+    autoload :MergeRequest, 'qa/flow/merge_request'
   end
 
   ##
@@ -191,6 +192,7 @@ module QA
       autoload :Projects, 'qa/page/dashboard/projects'
       autoload :Groups, 'qa/page/dashboard/groups'
       autoload :Welcome, 'qa/page/dashboard/welcome'
+      autoload :Todos, 'qa/page/dashboard/todos'
 
       module Snippet
         autoload :New, 'qa/page/dashboard/snippet/new'

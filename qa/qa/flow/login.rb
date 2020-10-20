@@ -23,6 +23,7 @@ module QA
       end
 
       def sign_in(as: nil, address: :gitlab, skip_page_validation: false)
+        Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform(&:signed_in?)
         Runtime::Browser.visit(address, Page::Main::Login)
         Page::Main::Login.perform { |login| login.sign_in_using_credentials(user: as, skip_page_validation: skip_page_validation) }
       end

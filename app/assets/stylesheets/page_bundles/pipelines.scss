@@ -5,6 +5,10 @@
  * Pipelines Bundle: Pipeline lists and Mini Pipelines
  */
 
+.pipelines-container .top-area .nav-controls > .btn:last-child {
+  float: none;
+}
+
 // Pipelines list
 // Should affect pipelines table components rendered by:
 // - app/assets/javascripts/commit/pipelines/pipelines_bundle.js

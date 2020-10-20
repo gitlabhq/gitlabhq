@@ -50,6 +50,11 @@ export default {
       loading: false,
     };
   },
+  computed: {
+    relativeUrlRoot() {
+      return gon.relative_url_root ?? '';
+    },
+  },
   created() {
     this.removeReviewer = this.store.removeReviewer.bind(this.store);
     this.addReviewer = this.store.addReviewer.bind(this.store);
@@ -97,7 +102,7 @@ export default {
     />
     <reviewers
       v-if="!store.isFetching.reviewers"
-      :root-path="store.rootPath"
+      :root-path="relativeUrlRoot"
       :users="store.reviewers"
       :editable="store.editable"
       :issuable-type="issuableType"

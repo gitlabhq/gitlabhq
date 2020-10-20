@@ -1298,7 +1298,6 @@ Graphql/IDType:
     - 'app/graphql/resolvers/error_tracking/sentry_error_stack_trace_resolver.rb'
     - 'app/graphql/resolvers/snippets_resolver.rb'
     - 'app/graphql/resolvers/user_merge_requests_resolver.rb'
-    - 'app/graphql/resolvers/user_resolver.rb'
 
 # Offense count: 86
 # Cop supports --auto-correct.
@@ -1328,7 +1327,6 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/notes.rb'
     - 'spec/factories/packages.rb'
     - 'spec/factories/packages/package_file.rb'
-    - 'spec/factories/prometheus_alert.rb'
     - 'spec/factories/resource_label_events.rb'
     - 'spec/factories/resource_milestone_event.rb'
     - 'spec/factories/resource_state_event.rb'

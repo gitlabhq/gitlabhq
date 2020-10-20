@@ -33,7 +33,7 @@ RSpec.describe 'Profile > Account', :js do
       end
 
       it 'allows the user to disconnect when there is an existing identity' do
-        expect(page).to have_link('Disconnect Twitter', href: '/profile/account/unlink?provider=twitter')
+        expect(page).to have_link('Disconnect Twitter', href: '/-/profile/account/unlink?provider=twitter')
       end
 
       it 'shows active for a provider that is not allowed to unlink' do

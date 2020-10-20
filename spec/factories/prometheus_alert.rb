@@ -7,11 +7,11 @@ FactoryBot.define do
     threshold { 1 }
 
     environment do |alert|
-      build(:environment, project: alert.project)
+      association(:environment, project: alert.project)
     end
 
     prometheus_metric do |alert|
-      build(:prometheus_metric, project: alert.project)
+      association(:prometheus_metric, project: alert.project)
     end
 
     trait :with_runbook_url do

@@ -83,7 +83,7 @@
 
 .todos-list-container.js-todos-all
   - if @todos.any?
-    .js-todos-list-container
+    .js-todos-list-container{ data: { qa_selector: "todos_list_container" } }
       .js-todos-options{ data: { per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages } }
         .card.card-without-border.card-without-margin
           %ul.content-list.todos-list

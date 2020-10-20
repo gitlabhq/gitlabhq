@@ -38,12 +38,16 @@ module AlertManagement
 
     sha_attribute :fingerprint
 
+    TITLE_MAX_LENGTH = 200
+    DESCRIPTION_MAX_LENGTH = 1_000
+    SERVICE_MAX_LENGTH = 100
+    TOOL_MAX_LENGTH = 100
     HOSTS_MAX_LENGTH = 255
 
-    validates :title,           length: { maximum: 200 }, presence: true
-    validates :description,     length: { maximum: 1_000 }
-    validates :service,         length: { maximum: 100 }
-    validates :monitoring_tool, length: { maximum: 100 }
+    validates :title,           length: { maximum: TITLE_MAX_LENGTH }, presence: true
+    validates :description,     length: { maximum: DESCRIPTION_MAX_LENGTH }
+    validates :service,         length: { maximum: SERVICE_MAX_LENGTH }
+    validates :monitoring_tool, length: { maximum: TOOL_MAX_LENGTH }
     validates :project,         presence: true
     validates :events,          presence: true
     validates :severity,        presence: true
@@ -54,7 +58,7 @@ module AlertManagement
       conditions: -> { not_resolved },
       message: -> (object, data) { _('Cannot have multiple unresolved alerts') }
     }, unless: :resolved?
-    validate :hosts_length
+    validate :hosts_format
 
     enum severity: {
       critical: 0,
@@ -251,10 +255,11 @@ module AlertManagement
       Gitlab::DataBuilder::Alert.build(self)
     end
 
-    def hosts_length
+    def hosts_format
       return unless hosts
 
       errors.add(:hosts, "hosts array is over #{HOSTS_MAX_LENGTH} chars") if hosts.join.length > HOSTS_MAX_LENGTH
+      errors.add(:hosts, "hosts array cannot be nested") if hosts.flatten != hosts
     end
   end
 end

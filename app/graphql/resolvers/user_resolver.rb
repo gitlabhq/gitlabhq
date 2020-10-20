@@ -6,7 +6,7 @@ module Resolvers
 
     type Types::UserType, null: true
 
-    argument :id, GraphQL::ID_TYPE,
+    argument :id, Types::GlobalIDType[User],
              required: false,
              description: 'ID of the User'
 

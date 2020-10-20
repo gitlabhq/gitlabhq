@@ -170,6 +170,12 @@ RSpec.describe AlertManagement::Alert do
 
         it { is_expected.to be_valid }
       end
+
+      context 'nested array' do
+        let(:hosts) { ['111.111.111.111', ['111.111.111.111']] }
+
+        it { is_expected.not_to be_valid }
+      end
     end
   end
 

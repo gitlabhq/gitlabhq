@@ -1,11 +1,17 @@
-@include media-breakpoint-down(md) {
-  .content-list {
-    &.builds-content-list {
-      width: 100%;
-      overflow: auto;
-    }
-  }
-}
+/**
+ * !! NOTE: Do not add more code in this file:
+ *
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/267602
+ *
+ * For new pipeline CSS please consider:
+ *
+ * For pipelines tables and lists:
+ * - `app/assets/stylesheets/page_bundles/pipelines.scss`
+ *
+ * For individual pipelines and mini-pipelines:
+ * - `app/assets/stylesheets/page_bundles/pipeline.scss`
+ *
+**/
 
 .ci-table {
   .avatar {
@@ -79,40 +85,4 @@
   .build-link a {
     color: $gl-text-color;
   }
-}
-
-[data-page='admin:jobs:index'] {
-  .admin-builds-table {
-    td:last-child {
-      min-width: 120px;
-    }
-  }
-}
-
-.pipelines-container .top-area .nav-controls > .btn:last-child {
-  float: none;
-}
-
-.progress-bar.bg-primary {
-  background-color: $blue-500 !important;
-}
-
-.pipeline-stage-pill {
-  width: 10rem;
-}
-
-.pipeline-job-pill {
-  width: 8rem;
-}
-
-.stage-rounded {
-  border-radius: 2rem;
-}
-
-.stage-left-rounded {
-  border-radius: 2rem 0 0 2rem;
-}
-
-.stage-right-rounded {
-  border-radius: 0 2rem 2rem 0;
 }

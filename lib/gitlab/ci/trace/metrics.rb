@@ -59,7 +59,7 @@ module Gitlab
           strong_memoize(:finalize_histogram) do
             name = :gitlab_ci_trace_finalize_duration_seconds
             comment = 'Duration of build trace chunks migration to object storage'
-            buckets = [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 10.0, 30.0, 60.0, 300.0]
+            buckets = [0.1, 0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0, 20.0, 30.0, 60.0, 300.0]
             labels = {}
 
             ::Gitlab::Metrics.histogram(name, comment, labels, buckets)

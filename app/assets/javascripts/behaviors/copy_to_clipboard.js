@@ -10,7 +10,7 @@ function showTooltip(target, title) {
     setTimeout(() => {
       target.setAttribute('title', originalTitle);
       fixTitle(target);
-    }, 300);
+    }, 100);
   };
 
   target.setAttribute('title', title);
