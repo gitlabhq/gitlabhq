@@ -177,7 +177,7 @@ You can also consult the [group permissions table](../../permissions.md#group-me
 
 Once you write your comment, you can either:
 
-- Click **Comment** to publish your comment. 
+- Click **Comment** to publish your comment.
 - Click **Start thread** to start a thread within that epic's discussion.
 
 ### Activity sort order

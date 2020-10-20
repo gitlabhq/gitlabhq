@@ -2613,7 +2613,7 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `environment:action`
 
 Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
-or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. 
+or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration.
 
 In the example above, if the configuration is not identical:
 
@@ -4409,7 +4409,7 @@ You can use the `$CI_COMMIT_REF_SLUG` variable to specify your [`cache:key`](#ca
 For example, if your `$CI_COMMIT_REF_SLUG` is `test` you can set a job
 to download cache that's tagged with `test`.
 
-If a cache with this tag is not found, you can use `CACHE_FALLBACK_KEY` to 
+If a cache with this tag is not found, you can use `CACHE_FALLBACK_KEY` to
 specify a cache to use when none exists.
 
 For example:

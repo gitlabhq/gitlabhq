@@ -21,12 +21,7 @@ export default {
     GlIcon,
     GlLoadingIcon,
   },
-  props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: ['environmentsEndpoint'],
   data() {
     return {
       environmentSearch: '',
@@ -52,7 +47,7 @@ export default {
     fetchEnvironments: debounce(function debouncedFetchEnvironments() {
       this.isLoading = true;
       axios
-        .get(this.endpoint, { params: { query: this.environmentSearch } })
+        .get(this.environmentsEndpoint, { params: { query: this.environmentSearch } })
         .then(({ data }) => {
           this.results = data || [];
         })

@@ -24,18 +24,23 @@ describe('feature flag form', () => {
   const requiredProps = {
     cancelPath: 'feature_flags',
     submitText: 'Create',
-    environmentsEndpoint: '/environments.json',
-    projectId: '1',
   };
 
-  const factory = (props = {}) => {
+  const requiredInjections = {
+    environmentsEndpoint: '/environments.json',
+    projectId: '1',
+    glFeatures: {
+      featureFlagPermissions: true,
+      featureFlagsNewVersion: true,
+    },
+  };
+
+  const factory = (props = {}, provide = {}) => {
     wrapper = shallowMount(Form, {
-      propsData: props,
+      propsData: { ...requiredProps, ...props },
       provide: {
-        glFeatures: {
-          featureFlagPermissions: true,
-          featureFlagsNewVersion: true,
-        },
+        ...requiredInjections,
+        ...provide,
       },
     });
   };
@@ -67,10 +72,13 @@ describe('feature flag form', () => {
   });
 
   it('renders the related issues widget when the featureFlagIssuesEndpoint is provided', () => {
-    factory({
-      ...requiredProps,
-      featureFlagIssuesEndpoint: '/some/endpoint',
-    });
+    factory(
+      {},
+      {
+        ...requiredInjections,
+        featureFlagIssuesEndpoint: '/some/endpoint',
+      },
+    );
 
     expect(wrapper.find(RelatedIssuesRoot).exists()).toBe(true);
   });

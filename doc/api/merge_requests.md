@@ -1007,7 +1007,7 @@ order for it to take effect:
    value of zero disables approvals for that project.
 1. The provided value of `approvals_before_merge` must be greater than the
    target project's `approvals_before_merge`.
-1. This API returns 201 (created) for a successful response. 
+1. This API returns 201 (created) for a successful response.
 
 ```json
 {

@@ -440,6 +440,7 @@ Example response:
       "import_status":"failed",
       "open_issues_count":10,
       "ci_default_git_depth":50,
+      "ci_forward_deployment_enabled":true,
       "public_jobs":true,
       "build_timeout":3600,
       "auto_cancel_pending_pipelines":"enabled",

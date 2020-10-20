@@ -70,7 +70,7 @@ class Deployment < ApplicationRecord
     end
 
     after_transition any => :running do |deployment|
-      next unless deployment.project.forward_deployment_enabled?
+      next unless deployment.project.ci_forward_deployment_enabled?
 
       deployment.run_after_commit do
         Deployments::DropOlderDeploymentsWorker.perform_async(id)

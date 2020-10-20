@@ -222,7 +222,7 @@ curl --request POST "https://gitlab.example.com/api/v4/snippets" \
 
 ```json
 {
-  "title": "This is a snippet", 
+  "title": "This is a snippet",
   "description": "Hello World snippet",
   "visibility": "internal",
   "files": [
@@ -310,10 +310,10 @@ curl --request PUT "https://gitlab.example.com/api/v4/snippets/1" \
 
 ```json
 {
-  "title": "foo", 
+  "title": "foo",
   "files": [
     {
-      "action": "move", 
+      "action": "move",
       "previous_path": "test.txt",
       "file_path": "renamed.md"
     }

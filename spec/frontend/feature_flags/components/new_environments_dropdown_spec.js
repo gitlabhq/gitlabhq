@@ -14,7 +14,9 @@ describe('New Environments Dropdown', () => {
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
-    wrapper = shallowMount(NewEnvironmentsDropdown, { propsData: { endpoint: TEST_HOST } });
+    wrapper = shallowMount(NewEnvironmentsDropdown, {
+      provide: { environmentsEndpoint: TEST_HOST },
+    });
   });
 
   afterEach(() => {

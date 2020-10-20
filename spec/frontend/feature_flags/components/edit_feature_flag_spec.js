@@ -32,21 +32,16 @@ describe('Edit feature flag form', () => {
     }
     wrapper = shallowMount(EditFeatureFlag, {
       localVue,
-      propsData: {
-        environmentsEndpoint: 'environments.json',
-        projectId: '8',
-        featureFlagIssuesEndpoint: `${TEST_HOST}/feature_flags/5/issues`,
+      store,
+      provide: {
         showUserCallout: true,
         userCalloutId,
         userCalloutsPath,
-      },
-      store,
-      provide: {
         glFeatures: {
           featureFlagsNewVersion: true,
         },
+        ...opts,
       },
-      ...opts,
     });
   };
 
@@ -145,12 +140,6 @@ describe('Edit feature flag form', () => {
       });
     });
 
-    it('renders the related issues widget', () => {
-      const expected = `${TEST_HOST}/feature_flags/5/issues`;
-
-      expect(wrapper.find(Form).props('featureFlagIssuesEndpoint')).toBe(expected);
-    });
-
     it('should track when the toggle is clicked', () => {
       const toggle = wrapper.find(GlToggle);
       const spy = mockTracking('_category_', toggle.element, jest.spyOn);
@@ -164,7 +153,7 @@ describe('Edit feature flag form', () => {
   });
 
   describe('without new version flags', () => {
-    beforeEach(() => factory({ provide: { glFeatures: { featureFlagsNewVersion: false } } }));
+    beforeEach(() => factory({ glFeatures: { featureFlagsNewVersion: false } }));
 
     it('should alert users that feature flags are changing soon', () => {
       expect(findAlert().text()).toBe(NEW_FLAG_ALERT);
@@ -173,7 +162,7 @@ describe('Edit feature flag form', () => {
 
   describe('dismissing new version alert', () => {
     beforeEach(() => {
-      factory({ provide: { glFeatures: { featureFlagsNewVersion: false } } });
+      factory({ glFeatures: { featureFlagsNewVersion: false } });
       mock.onPost(userCalloutsPath, { feature_name: userCalloutId }).reply(200);
       findAlert().vm.$emit('dismiss');
       return wrapper.vm.$nextTick();

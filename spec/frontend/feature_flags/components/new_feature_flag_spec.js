@@ -35,20 +35,18 @@ describe('New feature flag form', () => {
     }
     wrapper = shallowMount(NewFeatureFlag, {
       localVue,
-      propsData: {
-        environmentsEndpoint: 'environments.json',
-        projectId: '8',
+      store,
+      provide: {
         showUserCallout: true,
         userCalloutId,
         userCalloutsPath,
-      },
-      store,
-      provide: {
+        environmentsEndpoint: 'environments.json',
+        projectId: '8',
         glFeatures: {
           featureFlagsNewVersion: true,
         },
+        ...opts,
       },
-      ...opts,
     });
   };
 
@@ -80,10 +78,6 @@ describe('New feature flag form', () => {
     expect(wrapper.find(Form).exists()).toEqual(true);
   });
 
-  it('does not render the related issues widget', () => {
-    expect(wrapper.find(Form).props('featureFlagIssuesEndpoint')).toBe('');
-  });
-
   it('should render default * row', () => {
     const defaultScope = {
       id: expect.any(String),
@@ -102,10 +96,6 @@ describe('New feature flag form', () => {
     expect(wrapper.find(GlAlert).exists()).toBe(false);
   });
 
-  it('should pass in the project ID', () => {
-    expect(wrapper.find(Form).props('projectId')).toBe('8');
-  });
-
   it('has an all users strategy by default', () => {
     const strategies = wrapper.find(Form).props('strategies');
 
@@ -113,7 +103,7 @@ describe('New feature flag form', () => {
   });
 
   describe('without new version flags', () => {
-    beforeEach(() => factory({ provide: { glFeatures: { featureFlagsNewVersion: false } } }));
+    beforeEach(() => factory({ glFeatures: { featureFlagsNewVersion: false } }));
 
     it('should alert users that feature flags are changing soon', () => {
       expect(findAlert().text()).toBe(NEW_FLAG_ALERT);
@@ -126,7 +116,7 @@ describe('New feature flag form', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
       mock.onPost(userCalloutsPath, { feature_name: userCalloutId }).reply(200);
-      factory({ provide: { glFeatures: { featureFlagsNewVersion: false } } });
+      factory({ glFeatures: { featureFlagsNewVersion: false } });
       findAlert().vm.$emit('dismiss');
       return wrapper.vm.$nextTick();
     });

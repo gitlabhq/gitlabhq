@@ -400,7 +400,7 @@ class Project < ApplicationRecord
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci
-  delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings
+  delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings, prefix: :ci
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?,

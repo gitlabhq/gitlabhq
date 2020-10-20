@@ -6,7 +6,7 @@ module RuboCop
       class IDType < RuboCop::Cop::Cop
         MSG = 'Do not use GraphQL::ID_TYPE, use a specific GlobalIDType instead'
 
-        WHITELISTED_ARGUMENTS = %i[iid full_path project_path group_path].freeze
+        WHITELISTED_ARGUMENTS = %i[iid full_path project_path group_path target_project_path].freeze
 
         def_node_search :graphql_id_type?, <<~PATTERN
           (send nil? :argument (_ #does_not_match?) (const (const nil? :GraphQL) :ID_TYPE) ...)

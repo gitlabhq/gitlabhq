@@ -225,7 +225,7 @@ In the upstream pipeline:
 
 1. Save the variables in a `.env` file.
 1. Save the `.env` file as a `dotenv` report.
-1. Trigger the downstream pipeline. 
+1. Trigger the downstream pipeline.
 
 ```yaml
 build_vars:

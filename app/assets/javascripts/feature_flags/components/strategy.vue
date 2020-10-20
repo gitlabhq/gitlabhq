@@ -41,11 +41,6 @@ export default {
       type: Number,
       required: true,
     },
-    endpoint: {
-      type: String,
-      required: false,
-      default: '',
-    },
     userLists: {
       type: Array,
       required: false,
@@ -182,7 +177,6 @@ export default {
         >
           <new-environments-dropdown
             :id="environmentsDropdownId"
-            :endpoint="endpoint"
             class="gl-mr-3"
             @add="addEnvironment"
           />

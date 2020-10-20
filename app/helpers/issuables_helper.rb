@@ -49,12 +49,6 @@ module IssuablesHelper
     "#{due_date.to_s(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
   end
 
-  def sidebar_label_filter_path(base_path, label_name)
-    query_params = { label_name: [label_name] }.to_query
-
-    "#{base_path}?#{query_params}"
-  end
-
   def multi_label_name(current_labels, default_label)
     return default_label if current_labels.blank?
 
@@ -226,19 +220,6 @@ module IssuablesHelper
   # This is a dummy method, and has an override defined in ee
   def issuable_meta_author_slot(author, css_class: nil)
     nil
-  end
-
-  def issuable_labels_tooltip(labels, limit: 5)
-    first, last = labels.partition.with_index { |_, i| i < limit }
-
-    if labels && labels.any?
-      label_names = first.collect { |label| label.fetch(:title) }
-      label_names << "and #{last.size} more" unless last.empty?
-
-      label_names.join(', ')
-    else
-      _("Labels")
-    end
   end
 
   def issuables_state_counter_text(issuable_type, state, display_count)

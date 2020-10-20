@@ -98,7 +98,7 @@ If you delete a label, it is permanently deleted. All references to the label ar
 If you previously created a project label and now want to make it available for other
 projects within the same group, you can promote it to a group label.
 
-If other projects in the same group have a label with the same title, they are all 
+If other projects in the same group have a label with the same title, they are all
 merged with the new group label. If a group label with the same title exists, it is
 also merged.
 
@@ -126,7 +126,7 @@ follow the same process as [creating a project label](#project-labels).
 
 #### Create group labels from epics **(ULTIMATE)**
 
-You can create group labels from the epic sidebar. The labels you create 
+You can create group labels from the epic sidebar. The labels you create
 belong to the immediate group to which the epic belongs. The process is the same as
 creating a [project label from an issue or merge request](#project-labels).
 
@@ -160,7 +160,7 @@ title, for example:
 ![Scoped labels](img/labels_key_value_v13_5.png)
 
 An issue, merge request or epic cannot have two scoped labels, of the form `key::value`,
-with the same `key`. Adding a new label with the same `key`, but a different `value` 
+with the same `key`. Adding a new label with the same `key`, but a different `value`
 causes the previous `key` label to be replaced with the new label.
 
 For example:

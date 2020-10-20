@@ -32,10 +32,6 @@ export default {
     GlSearchBoxByType,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
     value: {
       type: String,
       required: false,
@@ -57,6 +53,7 @@ export default {
       required: false,
     },
   },
+  inject: ['environmentsEndpoint'],
   data() {
     return {
       environmentSearch: this.value,
@@ -82,7 +79,7 @@ export default {
       this.isLoading = true;
       this.openSuggestions();
       axios
-        .get(this.endpoint, { params: { query: this.environmentSearch } })
+        .get(this.environmentsEndpoint, { params: { query: this.environmentSearch } })
         .then(({ data }) => {
           this.results = data || [];
           this.isLoading = false;

@@ -18,6 +18,7 @@ import { userList } from '../mock_data';
 const provide = {
   strategyTypeDocsPagePath: 'link-to-strategy-docs',
   environmentsScopeDocsPath: 'link-scope-docs',
+  environmentsEndpoint: '',
 };
 
 describe('Feature flags strategy', () => {
@@ -31,7 +32,6 @@ describe('Feature flags strategy', () => {
       propsData: {
         strategy: {},
         index: 0,
-        endpoint: '',
         userLists: [userList],
       },
       provide,
@@ -52,7 +52,7 @@ describe('Feature flags strategy', () => {
   });
 
   describe('helper links', () => {
-    const propsData = { strategy: {}, index: 0, endpoint: '', userLists: [userList] };
+    const propsData = { strategy: {}, index: 0, userLists: [userList] };
     factory({ propsData, provide });
 
     it('should display 2 helper links', () => {
@@ -76,7 +76,7 @@ describe('Feature flags strategy', () => {
 
     beforeEach(() => {
       strategy = { name, parameters: {}, scopes: [] };
-      propsData = { strategy, index: 0, endpoint: '' };
+      propsData = { strategy, index: 0 };
       factory({ propsData, provide });
       return wrapper.vm.$nextTick();
     });
@@ -102,7 +102,7 @@ describe('Feature flags strategy', () => {
         parameters: { percentage: '50', groupId: 'default' },
         scopes: [{ environmentScope: 'production' }],
       };
-      const propsData = { strategy, index: 0, endpoint: '' };
+      const propsData = { strategy, index: 0 };
       factory({ propsData, provide });
     });
 
@@ -123,7 +123,7 @@ describe('Feature flags strategy', () => {
           parameters: { percentage: '50', groupId: 'default' },
           scopes: [{ environmentScope: 'production' }],
         };
-        const propsData = { strategy, index: 0, endpoint: '' };
+        const propsData = { strategy, index: 0 };
         factory({ propsData, provide });
       });
 
@@ -152,7 +152,7 @@ describe('Feature flags strategy', () => {
           parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
           scopes: [{ environmentScope: '*' }],
         };
-        const propsData = { strategy, index: 0, endpoint: '' };
+        const propsData = { strategy, index: 0 };
         factory({ propsData, provide });
       });
 
@@ -221,7 +221,7 @@ describe('Feature flags strategy', () => {
           parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
           scopes: [],
         };
-        const propsData = { strategy, index: 0, endpoint: '' };
+        const propsData = { strategy, index: 0 };
         factory({ propsData, provide });
       });
 

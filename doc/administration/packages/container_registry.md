@@ -180,7 +180,7 @@ docker login gitlab.example.com:5050
 ### Configure Container Registry under its own domain
 
 When the Registry is configured to use its own domain, you need a TLS
-certificate for that specific domain (for example, `registry.example.com`). You might need 
+certificate for that specific domain (for example, `registry.example.com`). You might need
 a wildcard certificate if hosted under a subdomain of your existing GitLab
 domain, for example, `registry.gitlab.example.com`.
 

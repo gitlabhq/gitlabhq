@@ -25,7 +25,7 @@
       .block.assignee.qa-assignee-block
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
-      - if Feature.enabled?(:merge_request_reviewers, @project, default_enabled: true) && reviewers
+      - if Feature.enabled?(:merge_request_reviewers, @project) && reviewers
         .block.reviewer.qa-reviewer-block
           = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers, signed_in: signed_in
 
@@ -103,49 +103,17 @@
                     .js-due-date-calendar
 
 
-      - if Feature.enabled?(:vue_sidebar_labels, @project, default_enabled: true)
-        .js-sidebar-labels{ data: { allow_label_create: issuable_sidebar.dig(:current_user, :can_admin_label).to_s,
-          allow_scoped_labels: issuable_sidebar[:scoped_labels_available].to_s,
-          can_edit: can_edit_issuable.to_s,
-          iid: issuable_sidebar[:iid],
-          issuable_type: issuable_type,
-          labels_fetch_path: issuable_sidebar[:project_labels_path],
-          labels_manage_path: project_labels_path(@project),
-          labels_update_path: issuable_sidebar[:issuable_json_path],
-          project_issues_path: issuable_sidebar[:project_issuables_path],
-          project_path: @project.full_path,
-          selected_labels: issuable_sidebar[:labels].to_json } }
-      - else
-        - selected_labels = issuable_sidebar[:labels]
-        .block.labels{ data: { qa_selector: 'labels_block' } }
-          .sidebar-collapsed-icon.has-tooltip.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(selected_labels), data: { placement: "left", container: "body", boundary: 'viewport' } }
-            = sprite_icon('labels')
-            %span
-              = selected_labels.size
-          .title.hide-collapsed
-            = _('Labels')
-            = loading_icon(css_class: 'gl-vertical-align-text-bottom hidden block-loading')
-            - if can_edit_issuable
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { qa_selector: "labels_edit_button", track_label: "right_sidebar", track_property: "labels", track_event: "click_edit_button", track_value: "" }
-          .value.issuable-show-labels.dont-hide.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
-            - if selected_labels.any?
-              - selected_labels.each do |label_hash|
-                = render_label(label_from_hash(label_hash).present(issuable_subject: nil), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]), dataset: { qa_selector: 'selected_label_content', qa_label_name: label_hash[:title] })
-            - else
-              %span.no-value
-                = _('None')
-          .selectbox.hide-collapsed
-            - selected_labels.each do |label|
-              = hidden_field_tag "#{issuable_type}[label_names][]", label[:id], id: nil
-            .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: sidebar_label_dropdown_data(issuable_type, issuable_sidebar) }
-                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
-                  = multi_label_name(selected_labels, "Labels")
-                = icon('chevron-down', 'aria-hidden': 'true')
-              .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height{ data: { qa_selector: "labels_dropdown_content"} }
-                = render partial: "shared/issuable/label_page_default"
-                - if issuable_sidebar.dig(:current_user, :can_admin_label)
-                  = render partial: "shared/issuable/label_page_create"
+      .js-sidebar-labels{ data: { allow_label_create: issuable_sidebar.dig(:current_user, :can_admin_label).to_s,
+        allow_scoped_labels: issuable_sidebar[:scoped_labels_available].to_s,
+        can_edit: can_edit_issuable.to_s,
+        iid: issuable_sidebar[:iid],
+        issuable_type: issuable_type,
+        labels_fetch_path: issuable_sidebar[:project_labels_path],
+        labels_manage_path: project_labels_path(@project),
+        labels_update_path: issuable_sidebar[:issuable_json_path],
+        project_issues_path: issuable_sidebar[:project_issuables_path],
+        project_path: @project.full_path,
+        selected_labels: issuable_sidebar[:labels].to_json } }
 
       = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar
 

@@ -1,5 +1,5 @@
 - page_title _("Terminal for environment"), @environment.name
-
+- add_page_specific_style 'page_bundles/terminal'
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag "xterm.css"
 
@@ -18,4 +18,4 @@
         = render 'projects/deployments/actions', deployment: @environment.last_deployment
 
 .terminal-container{ class: container_class }
-  #terminal{ data: { project_path: "#{terminal_project_environment_path(@project, @environment)}.ws" } }
+  #terminal.gl-mt-4{ data: { project_path: "#{terminal_project_environment_path(@project, @environment)}.ws" } }

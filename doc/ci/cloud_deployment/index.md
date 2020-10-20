@@ -9,7 +9,7 @@ type: howto
 
 Interacting with a major cloud provider may have become a much needed task that's
 part of your delivery process. With GitLab you can
-[deploy your application anywhere](https://about.gitlab.com/stages-devops-lifecycle/deploy-targets/). 
+[deploy your application anywhere](https://about.gitlab.com/stages-devops-lifecycle/deploy-targets/).
 
 For some specific deployment targets, GitLab makes this process less painful by providing Docker images
 that come with the needed libraries and tools pre-installed.

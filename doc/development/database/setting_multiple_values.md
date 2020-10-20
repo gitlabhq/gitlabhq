@@ -22,7 +22,7 @@ with updates(obj_id, new_title, new_weight) as (
   values (1 :: integer, 'Very difficult issue' :: text, 8 :: integer),
          (2, 'Very easy issue', 1)
 )
-update issues 
+update issues
   set title = new_title, weight = new_weight
   from updates
   where id = obj_id
@@ -88,7 +88,7 @@ objects = Foo.from_union([
 # At this point, all the objects are instances of Foo, even the ones from the
 # Bar table
 mapping = objects.to_h { |obj| [obj, bazzes[obj.id] }
-    
+
 # Issues at most 2 queries
 ::Gitlab::Database::BulkUpdate.execute(%i[baz], mapping) do |obj|
   obj.object_type.constantize

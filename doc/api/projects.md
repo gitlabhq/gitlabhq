@@ -156,6 +156,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -248,6 +249,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -410,6 +412,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -502,6 +505,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -856,6 +860,7 @@ GET /projects/:id
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -1218,6 +1223,7 @@ PUT /projects/:id
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI configuration file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#git-shallow-clone) |
+| `ci_forward_deployment_enabled` | boolean | no | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
@@ -1701,6 +1707,7 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -1811,6 +1818,7 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

@@ -89,26 +89,6 @@
   }
 }
 
-/**
- * Terminal
- */
-[data-page='projects:jobs:terminal'],
-[data-page='projects:environments:terminal'] {
-  .terminal-container {
-    .content-block {
-      border-bottom: 0;
-    }
-
-    #terminal {
-      margin-top: 10px;
-
-      > div {
-        min-height: 450px;
-      }
-    }
-  }
-}
-
 .pipelines-container .top-area .nav-controls > .btn:last-child {
   float: none;
 }

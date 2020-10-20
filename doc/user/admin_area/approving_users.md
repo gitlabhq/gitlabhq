@@ -11,7 +11,7 @@ type: howto
 
 When [Require admin approval for new sign-ups](settings/sign_up_restrictions.md#require-admin-approval-for-new-sign-ups) is enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state.
 
-A user pending approval is functionally identical to a [blocked](blocking_unblocking_users.md) user. 
+A user pending approval is functionally identical to a [blocked](blocking_unblocking_users.md) user.
 
 A user pending approval:
 

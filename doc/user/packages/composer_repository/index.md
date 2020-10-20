@@ -136,7 +136,7 @@ Install a package from the Package Registry so you can use it as a dependency.
 Prerequisites:
 
 - A package in the Package Registry.
-- The group ID, which is on the group's home page. 
+- The group ID, which is on the group's home page.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to, at minimum, `read_api`.
 
   NOTE: **Note:**
@@ -155,7 +155,7 @@ To install a package:
 
    - Set the required package version:
 
-   ```shell 
+   ```shell
    composer require <package_name>:<version>
    ```
 
@@ -223,7 +223,7 @@ To install a package:
    ```
 
    Result in the `composer.json` file:
-   
+
    ```json
    {
      ...
@@ -240,7 +240,7 @@ To install a package:
      },
      ...
    }
-   ```   
+   ```
 
    You can unset this with the command:
 

@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 .title .edit-wiki-header {
   width: 780px;
   margin-left: auto;
@@ -9,7 +11,7 @@
   position: relative;
 
   .wiki-breadcrumb {
-    border-bottom: 1px solid $white-normal;
+    border-bottom: 1px solid var(--gray-50, $gray-50);
     padding: 11px 0;
   }
 
@@ -20,16 +22,16 @@
 
   .wiki-last-edit-by {
     display: block;
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gray-500);
 
     strong {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
     }
   }
 
   .light {
     font-weight: $gl-font-weight-normal;
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gray-500);
   }
 
   .git-clone-holder {
@@ -92,7 +94,7 @@
   }
 
   a {
-    color: $layout-link-gray;
+    color: var(--gray-400, $gray-400);
 
     &:hover,
     &.active {
@@ -105,7 +107,7 @@
   }
 
   .active > a {
-    color: $black;
+    color: var(--black, $black);
   }
 
   ul.wiki-pages,
@@ -134,7 +136,7 @@
 
 ul.wiki-pages-list.content-list {
   a {
-    color: $blue-600;
+    color: var(--blue-600, $blue-600);
   }
 
   ul {

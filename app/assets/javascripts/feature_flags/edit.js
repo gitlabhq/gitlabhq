@@ -13,6 +13,12 @@ export default () => {
     strategyTypeDocsPagePath,
     endpoint,
     featureFlagsPath,
+    environmentsEndpoint,
+    projectId,
+    featureFlagIssuesEndpoint,
+    userCalloutsPath,
+    userCalloutId,
+    showUserCallout,
   } = el.dataset;
 
   return new Vue({
@@ -21,18 +27,15 @@ export default () => {
     provide: {
       environmentsScopeDocsPath,
       strategyTypeDocsPagePath,
+      environmentsEndpoint,
+      projectId,
+      featureFlagIssuesEndpoint,
+      userCalloutsPath,
+      userCalloutId,
+      showUserCallout: parseBoolean(showUserCallout),
     },
     render(createElement) {
-      return createElement(EditFeatureFlag, {
-        props: {
-          environmentsEndpoint: el.dataset.environmentsEndpoint,
-          projectId: el.dataset.projectId,
-          featureFlagIssuesEndpoint: el.dataset.featureFlagIssuesEndpoint,
-          userCalloutsPath: el.dataset.userCalloutsPath,
-          userCalloutId: el.dataset.userCalloutId,
-          showUserCallout: parseBoolean(el.dataset.showUserCallout),
-        },
-      });
+      return createElement(EditFeatureFlag);
     },
   });
 };

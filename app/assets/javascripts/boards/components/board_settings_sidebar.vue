@@ -34,14 +34,14 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isSidebarOpen']),
+    ...mapGetters(['isSidebarOpen', 'shouldUseGraphQL']),
     ...mapState(['activeId', 'sidebarType', 'boardLists']),
     activeList() {
       /*
         Warning: Though a computed property it is not reactive because we are
         referencing a List Model class. Reactivity only applies to plain JS objects
       */
-      if (this.glFeatures.graphqlBoardLists) {
+      if (this.shouldUseGraphQL) {
         return this.boardLists[this.activeId];
       }
       return boardsStore.state.lists.find(({ id }) => id === this.activeId);

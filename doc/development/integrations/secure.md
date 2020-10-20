@@ -384,6 +384,9 @@ reported for the same commit, except for `CWE` and `WASC`.
 Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. As a result, a CVE
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
+The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
+the system will save only the first 20 of them.
+
 ### Location
 
 The `location` indicates where the vulnerability has been detected.

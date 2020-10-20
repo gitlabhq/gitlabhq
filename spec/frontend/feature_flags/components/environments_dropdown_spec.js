@@ -14,8 +14,10 @@ describe('Feature flags > Environments dropdown ', () => {
   const factory = props => {
     wrapper = shallowMount(EnvironmentsDropdown, {
       propsData: {
-        endpoint: `${TEST_HOST}/environments.json'`,
         ...props,
+      },
+      provide: {
+        environmentsEndpoint: `${TEST_HOST}/environments.json'`,
       },
     });
   };

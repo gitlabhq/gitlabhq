@@ -44,23 +44,6 @@ RSpec.describe IssuablesHelper do
     end
   end
 
-  describe '#issuable_labels_tooltip' do
-    let(:label_entity) { LabelEntity.represent(label).as_json }
-    let(:label2_entity) { LabelEntity.represent(label2).as_json }
-
-    it 'returns label text with no labels' do
-      expect(issuable_labels_tooltip([])).to eq(_('Labels'))
-    end
-
-    it 'returns label text with labels within max limit' do
-      expect(issuable_labels_tooltip([label_entity])).to eq(label[:title])
-    end
-
-    it 'returns label text with labels exceeding max limit' do
-      expect(issuable_labels_tooltip([label_entity, label2_entity], limit: 1)).to eq("#{label[:title]}, and 1 more")
-    end
-  end
-
   describe '#issuables_state_counter_text' do
     let(:user) { create(:user) }
 

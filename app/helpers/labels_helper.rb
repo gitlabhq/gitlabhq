@@ -241,25 +241,6 @@ module LabelsHelper
     }.merge(opts)
   end
 
-  def sidebar_label_dropdown_data(issuable_type, issuable_sidebar)
-    label_dropdown_data(nil, {
-     default_label: "Labels",
-     field_name: "#{issuable_type}[label_names][]",
-     ability_name: issuable_type,
-     namespace_path: issuable_sidebar[:namespace_path],
-     project_path: issuable_sidebar[:project_path],
-     issue_update: issuable_sidebar[:issuable_json_path],
-     labels: issuable_sidebar[:project_labels_path],
-     display: 'static'
-    })
-  end
-
-  def label_from_hash(hash)
-    klass = hash[:group_id] ? GroupLabel : ProjectLabel
-
-    klass.new(hash.slice(:color, :description, :title, :group_id, :project_id))
-  end
-
   def issuable_types
     ['issues', 'merge requests']
   end
