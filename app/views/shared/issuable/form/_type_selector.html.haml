@@ -1,4 +1,4 @@
-- return unless issuable.supports_issue_type? && can?(current_user, :admin_issue, @project)
+- return unless issuable.supports_issue_type? && can?(current_user, :create_issue, @project)
 
 .form-group.row.gl-mb-0
   = form.label :type, 'Type', class: 'col-form-label col-sm-2'

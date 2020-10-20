@@ -387,7 +387,7 @@ module QA
       end
 
       def verify_storage_move_to_praefect(repo_path, virtual_storage)
-        wait_until_shell_command("docker exec #{@gitlab} bash -c 'tail -n 50 /var/log/gitlab/praefect/current'") do |line|
+        wait_until_shell_command("docker exec #{@praefect} bash -c 'tail -n 50 /var/log/gitlab/praefect/current'") do |line|
           log = JSON.parse(line)
 
           log['grpc.method'] == 'ReplicateRepository' && log['virtual_storage'] == virtual_storage && log['relative_path'] == repo_path

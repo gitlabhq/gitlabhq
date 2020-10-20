@@ -392,6 +392,7 @@ The following table lists variables used to disable jobs.
 | `SAST_DISABLED`                         | From GitLab 11.0, used to disable the `sast` job. If the variable is present, the job won't be created. |
 | `TEST_DISABLED`                         | From GitLab 11.0, used to disable the `test` job. If the variable is present, the job won't be created. |
 | `SECRET_DETECTION_DISABLED`             | From GitLab 13.1, used to disable the `secret_detection` job. If the variable is present, the job won't be created. |
+| `CODE_INTELLIGENCE_DISABLED`            | From GitLab 13.6, used to disable the `code_intelligence` job. If the variable is present, the job won't be created. |
 
 ### Application secret variables
 

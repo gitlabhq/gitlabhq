@@ -7513,6 +7513,9 @@ msgstr ""
 msgid "Could not load instance counts. Please refresh the page to try again."
 msgstr ""
 
+msgid "Could not load the user chart. Please refresh the page to try again."
+msgstr ""
+
 msgid "Could not remove the trigger."
 msgstr ""
 
@@ -26510,6 +26513,9 @@ msgstr ""
 msgid "There is no chart data available."
 msgstr ""
 
+msgid "There is no data available."
+msgstr ""
+
 msgid "There is no data available. Please change your selection."
 msgstr ""
 
@@ -27778,6 +27784,9 @@ msgid "Total memory (GB)"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
+msgstr ""
+
+msgid "Total users"
 msgstr ""
 
 msgid "Total weight"

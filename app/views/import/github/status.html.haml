@@ -2,7 +2,9 @@
 - page_title title
 - breadcrumb_title title
 - header_title _("Projects"), root_path
-%h3.page-title.mb-0
-  = icon 'github', class: 'fa-2x', text: _('Import repositories from GitHub')
+%h3.page-title.mb-0.gl-display-flex
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('github', css_class: 'gl-mr-2')
+  = _('Import repositories from GitHub')
 
 = render 'import/githubish_status', provider: 'github'

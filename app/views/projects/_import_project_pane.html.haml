@@ -15,7 +15,8 @@
       - if github_import_enabled?
         %div
           = link_to new_import_github_path, class: 'btn js-import-github', **tracking_attrs(track_label, 'click_button', 'github') do
-            = icon('github', text: 'GitHub')
+            = sprite_icon('github')
+            GitHub
 
       - if bitbucket_import_enabled?
         %div

@@ -95,6 +95,7 @@ project in a simple and automatic way:
 1. [Auto Deploy](stages.md#auto-deploy)
 1. [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) **(PREMIUM)**
 1. [Auto Monitoring](stages.md#auto-monitoring)
+1. [Auto Code Intelligence](stages.md#auto-code-intelligence)
 
 As Auto DevOps relies on many different components, you should have a basic
 knowledge of the following:

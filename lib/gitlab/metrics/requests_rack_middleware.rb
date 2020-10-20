@@ -3,15 +3,7 @@
 module Gitlab
   module Metrics
     class RequestsRackMiddleware
-      HTTP_METHODS = {
-        "delete" => %w(200 202 204 303 400 401 403 404 500 503),
-        "get" => %w(200 204 301 302 303 304 307 400 401 403 404 410 422 429 500 503),
-        "head" => %w(200 204 301 302 303 401 403 404 410 500),
-        "options" => %w(200 404),
-        "patch" => %w(200 202 204 400 403 404 409 416 500),
-        "post" => %w(200 201 202 204 301 302 303 304 400 401 403 404 406 409 410 412 422 429 500 503),
-        "put" => %w(200 202 204 400 401 403 404 405 406 409 410 422 500)
-      }.freeze
+      HTTP_METHODS = %w(delete get head options patch post put).to_set.freeze
 
       HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
 
@@ -40,16 +32,14 @@ module Gitlab
       end
 
       def self.initialize_http_request_duration_seconds
-        HTTP_METHODS.each do |method, statuses|
-          statuses.each do |status|
-            http_request_duration_seconds.get({ method: method, status: status.to_s })
-          end
+        HTTP_METHODS.each do |method|
+          http_request_duration_seconds.get({ method: method })
         end
       end
 
       def call(env)
         method = env['REQUEST_METHOD'].downcase
-        method = 'INVALID' unless HTTP_METHODS.key?(method)
+        method = 'INVALID' unless HTTP_METHODS.include?(method)
         started = Time.now.to_f
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
@@ -62,7 +52,7 @@ module Gitlab
           feature_category = headers&.fetch(FEATURE_CATEGORY_HEADER, nil)
 
           unless health_endpoint
-            RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method, status: status.to_s }, elapsed)
+            RequestsRackMiddleware.http_request_duration_seconds.observe({ method: method }, elapsed)
           end
 
           [status, headers, body]

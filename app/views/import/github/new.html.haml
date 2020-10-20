@@ -10,7 +10,9 @@
   = import_github_authorize_message
 
 - if github_import_configured? && !has_ci_cd_only_params?
-  = link_to icon('github', text: title), status_import_github_path, class: 'btn btn-success'
+  = link_to status_import_github_path, class: 'btn btn-success gl-button' do
+    = sprite_icon('github', css_class: 'gl-mr-2')
+    = title
 
   %hr
 

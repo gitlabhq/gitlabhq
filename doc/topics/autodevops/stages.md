@@ -665,3 +665,7 @@ To use Auto Monitoring:
    whole Kubernetes cluster, navigate to **Operations > Metrics**.
 
 ![Auto Metrics](img/auto_monitoring.png)
+
+## Auto Code Intelligence
+
+Code Intelligence is powered by [LSIF](https://lsif.dev/) and available for Go at this stage. We'll support more languages as they become available.

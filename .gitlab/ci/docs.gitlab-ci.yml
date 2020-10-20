@@ -4,7 +4,7 @@
     - .docs:rules:review-docs
   image: ruby:2.6-alpine
   stage: review
-  dependencies: []
+  needs: []
   variables:
     # We're cloning the repo instead of downloading the script for now
     # because some repos are private and CI_JOB_TOKEN cannot access files.

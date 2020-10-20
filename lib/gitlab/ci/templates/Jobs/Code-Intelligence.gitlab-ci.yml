@@ -1,0 +1,16 @@
+code_intelligence_go:
+  stage: test
+  needs: []
+  allow_failure: true
+  image: sourcegraph/lsif-go:v1
+  rules:
+    - if: $CODE_INTELLIGENCE_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.go'
+  script:
+    - lsif-go
+  artifacts:
+    reports:
+      lsif: dump.lsif
