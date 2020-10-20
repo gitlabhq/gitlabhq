@@ -343,10 +343,32 @@ for more details.
 1. Make sure that tests you write are not false positives.
 1. Make sure that if the data being migrated is critical and cannot be lost, the
    clean-up migration also checks the final state of the data before completing.
-1. Make sure to know how much time it'll take to run all scheduled migrations.
 1. When migrating many columns, make sure it won't generate too many
    dead tuples in the process (you may need to directly query the number of dead tuples
    and adjust the scheduling according to this piece of data).
 1. Make sure to discuss the numbers with a database specialist, the migration may add
    more pressure on DB than you expect (measure on staging,
    or ask someone to measure on production).
+1. Make sure to know how much time it'll take to run all scheduled migrations.
+1. Provide an estimation section in the description, explaining timings from the
+   linked query plans and batches as described in the migration.
+
+   For example, assuming a migration that deletes data, include information similar to
+   the following section:
+
+   ```ruby
+   Background Migration Details:
+
+   47600 items to delete
+   batch size = 1000
+   47600 / 1000 = 48 loops
+
+   Estimated times per batch:
+   - 900ms for select statement with 1000 items
+   - 2100ms for delete statement with 1000 items
+   Total: ~3sec per batch
+
+   2 mins delay per loop (safe for the given total time per batch)
+
+   48 * ( 120 + 3)  = ~98.4 mins to run all the scheduled jobs
+   ```

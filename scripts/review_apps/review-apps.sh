@@ -75,7 +75,7 @@ function kubectl_cleanup_release() {
   kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
     | grep "${release}" \
     | awk '{print $1}' \
-    | xargs kubectl --namespace "${namespace}" delete \
+    | xargs kubectl --namespace "${namespace}" delete --ignore-not-found \
     || true
 }
 
