@@ -658,15 +658,19 @@ Review the general punctuation rules for the GitLab documentation in the
 following table. Check specific punctuation rules for [lists](#lists) below.
 Additional examples are available in the [Pajamas guide for punctuation](https://design.gitlab.com/content/punctuation/).
 
+<!-- vale gitlab.Repetition = NO -->
+
 | Rule                                                             | Example                                                |
 |------------------------------------------------------------------|--------------------------------------------------------|
 | Always end full sentences with a period.                         | _For a complete overview, read through this document._ |
 | Always add a space after a period when beginning a new sentence. | _For a complete overview, check this doc. For other references, check out this guide._ |
 | Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).) | --- |
 | Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
-| Use serial commas ("Oxford commas") before the final 'and/or' in a list. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | _You can create new issues, merge requests, and milestones._ |
+| Use serial commas (_Oxford commas_) before the final _and_ or _or_ in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | _You can create new issues, merge requests, and milestones._ |
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
 | Always use lowercase after a colon.                              | _Related Issues: a way to create a relationship between issues._ |
+
+<!-- vale gitlab.Repetition = YES -->
 
 ### Placeholder text
 

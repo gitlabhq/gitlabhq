@@ -5501,6 +5501,9 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
+msgid "ClusterAgents|An error occurred while loading your GitLab Agents"
+msgstr ""
+
 msgid "ClusterAgents|Configuration"
 msgstr ""
 
@@ -9982,7 +9985,10 @@ msgstr ""
 msgid "Enter a number"
 msgstr ""
 
-msgid "Enter a whole number between 0 and 100"
+msgid "Enter an integer number between 0 and 100"
+msgstr ""
+
+msgid "Enter an integer number number between 0 and 100"
 msgstr ""
 
 msgid "Enter at least three characters to search"
@@ -11343,7 +11349,7 @@ msgstr ""
 msgid "FeatureFlags|Percent rollout (logged in users)"
 msgstr ""
 
-msgid "FeatureFlags|Percent rollout must be a whole number between 0 and 100"
+msgid "FeatureFlags|Percent rollout must be an integer number between 0 and 100"
 msgstr ""
 
 msgid "FeatureFlags|Protected"
@@ -19102,7 +19108,7 @@ msgstr ""
 msgid "People without permission will never get a notification."
 msgstr ""
 
-msgid "Percent rollout must be a whole number between 0 and 100"
+msgid "Percent rollout must be an integer number between 0 and 100"
 msgstr ""
 
 msgid "Percentage"

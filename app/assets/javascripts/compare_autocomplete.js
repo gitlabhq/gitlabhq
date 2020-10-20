@@ -5,6 +5,7 @@ import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from './flash';
 import { capitalizeFirstCharacter } from './lib/utils/text_utility';
+import { fixTitle } from '~/tooltips';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {
@@ -76,7 +77,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
     $dropdownContainer.on('click', '.dropdown-content a', e => {
       $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
       if ($dropdown.hasClass('has-tooltip')) {
-        $dropdown.tooltip('_fixTitle');
+        fixTitle($dropdown);
       }
     });
   });

@@ -1,6 +1,5 @@
 import {
   formatRelevantDigits,
-  bytesToKB,
   bytesToKiB,
   bytesToMiB,
   bytesToGiB,
@@ -52,16 +51,6 @@ describe('Number Utils', () => {
 
       expect(rightFromDecimal.length).toBe(1);
       expect(leftFromDecimal.length).toBe(3);
-    });
-  });
-
-  describe('bytesToKB', () => {
-    it.each`
-      input   | output
-      ${1000} | ${1}
-      ${1024} | ${1.024}
-    `('returns $output KB for $input bytes', ({ input, output }) => {
-      expect(bytesToKB(input)).toBe(output);
     });
   });
 

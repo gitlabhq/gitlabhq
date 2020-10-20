@@ -97,19 +97,19 @@ RSpec.describe IconsHelper do
     it 'returns right icon name for standard auth' do
       icon_name = 'standard'
       expect(audit_icon(icon_name).to_s)
-          .to eq '<i class="fa fa-key"></i>'
+          .to eq sprite_icon('key')
     end
 
     it 'returns right icon name for two-factor auth' do
       icon_name = 'two-factor'
       expect(audit_icon(icon_name).to_s)
-          .to eq '<i class="fa fa-key"></i>'
+          .to eq sprite_icon('key')
     end
 
     it 'returns right icon name for google_oauth2 auth' do
       icon_name = 'google_oauth2'
       expect(audit_icon(icon_name).to_s)
-          .to eq '<i class="fa fa-google"></i>'
+          .to eq sprite_icon('google')
     end
   end
 

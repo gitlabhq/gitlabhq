@@ -2,7 +2,6 @@
 import { mapGetters, mapActions } from 'vuex';
 import Sortable from 'sortablejs';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
-import Tooltip from '~/vue_shared/directives/tooltip';
 import EmptyComponent from '~/vue_shared/components/empty_component';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardList from './board_list.vue';
@@ -17,9 +16,6 @@ export default {
     BoardPromotionState: EmptyComponent,
     BoardListHeader,
     BoardList: gon.features?.graphqlBoardLists ? BoardListNew : BoardList,
-  },
-  directives: {
-    Tooltip,
   },
   mixins: [glFeatureFlagMixin()],
   props: {

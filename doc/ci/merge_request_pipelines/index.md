@@ -56,7 +56,7 @@ below.
 When you use this method, you have to specify `only: - merge_requests` for each job. In this
 example, the pipeline contains a `test` job that is configured to run on merge requests.
 
-The `build` and `deploy` jobs don't have the `only: - merge_requests` parameter,
+The `build` and `deploy` jobs don't have the `only: - merge_requests` keyword,
 so they will not run on merge requests.
 
 ```yaml
@@ -81,8 +81,8 @@ deploy:
 
 #### Excluding certain jobs
 
-The behavior of the `only: [merge_requests]` parameter is such that _only_ jobs with
-that parameter are run in the context of a merge request; no other jobs will be run.
+The behavior of the `only: [merge_requests]` keyword is such that _only_ jobs with
+that keyword are run in the context of a merge request; no other jobs will be run.
 
 However, you can invert this behavior and have all of your jobs run _except_
 for one or two.

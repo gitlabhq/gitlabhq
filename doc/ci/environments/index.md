@@ -304,7 +304,7 @@ Dynamic environments are a fundamental part of [Review apps](../review_apps/inde
 
 #### Allowed variables
 
-The `name` and `url` parameters for dynamic environments can use most available CI/CD variables,
+The `name` and `url` keywords for dynamic environments can use most available CI/CD variables,
 including:
 
 - [Predefined environment variables](../variables/README.md#predefined-environment-variables)

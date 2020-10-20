@@ -44,7 +44,7 @@ are relative to the repository that was cloned during the build.
 
 By default, the artifacts upload when the job succeeds. You can also set artifacts to upload
 when the job fails, or always, by using [`artifacts:when`](../yaml/README.md#artifactswhen)
-parameter. GitLab keeps these uploaded artifacts for 1 week, as defined
+keyword. GitLab keeps these uploaded artifacts for 1 week, as defined
 by the `expire_in` definition. You can keep the artifacts from expiring
 via the [web interface](#browsing-artifacts). If the expiry time is not defined, it defaults
 to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).

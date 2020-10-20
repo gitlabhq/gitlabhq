@@ -93,11 +93,11 @@ If you get validation error when using specific values (for example, `true` or `
 - Quote them.
 - Change them to a different form. For example, `/bin/true`.
 
-## Configuration parameters
+## Job keywords
 
-A job is defined as a list of parameters that define the job's behavior.
+A job is defined as a list of keywords that define the job's behavior.
 
-The following table lists available parameters for jobs:
+The following table lists available keywords for jobs:
 
 | Keyword                                            | Description                                                                                                                                                                         |
 |:---------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -130,17 +130,17 @@ The following table lists available parameters for jobs:
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                |
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                  |
 
-## Global parameters
+## Global keywords
 
-Some parameters must be defined at a global level, affecting all jobs in the pipeline.
+Some keywords must be defined at a global level, affecting all jobs in the pipeline.
 
 ### Global defaults
 
-Some parameters can be set globally as the default for all jobs using the
-`default:` keyword. Default parameters can then be overridden by job-specific
+Some keywords can be set globally as the default for all jobs using the
+`default:` keyword. Default keywords can then be overridden by job-specific
 configuration.
 
-The following job parameters can be defined inside a `default:` block:
+The following job keywords can be defined inside a `default:` block:
 
 - [`image`](#image)
 - [`services`](#services)
@@ -173,20 +173,20 @@ rspec 2.6:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
 
 You can disable inheritance of globally defined defaults
-and variables with the `inherit:` parameter.
+and variables with the `inherit:` keyword.
 
-To enable or disable the inheritance of all `variables:` or `default:` parameters, use the following format:
+To enable or disable the inheritance of all `variables:` or `default:` keywords, use the following format:
 
 - `default: true` or `default: false`
 - `variables: true` or `variables: false`
 
-To inherit only a subset of `default:` parameters or `variables:`, specify what
+To inherit only a subset of `default:` keywords or `variables:`, specify what
 you wish to inherit. Anything not listed is **not** inherited. Use
 one of the following formats:
 
 ```yaml
 inherit:
-  default: [parameter1, parameter2]
+  default: [keyword1, keyword2]
   variables: [VARIABLE1, VARIABLE2]
 ```
 
@@ -195,8 +195,8 @@ Or:
 ```yaml
 inherit:
   default:
-    - parameter1
-    - parameter2
+    - keyword1
+    - keyword2
   variables:
     - VARIABLE1
     - VARIABLE2
@@ -405,7 +405,7 @@ of using YAML anchors, you can use the [`extends` keyword](#extends).
 
 `include` supports the following inclusion methods:
 
-| Method                          | Description                                                       |
+| Keyword                          | Method                                                       |
 |:--------------------------------|:------------------------------------------------------------------|
 | [`local`](#includelocal)        | Include a file from the local project repository.                 |
 | [`file`](#includefile)          | Include a file from a different project repository.               |
@@ -548,9 +548,9 @@ for resolving all files is 30 seconds.
 
 There is a list of [additional `includes` examples](includes.md) available.
 
-## Parameter details
+## Keyword details
 
-The following are detailed explanations for parameters used to configure CI/CD pipelines.
+The following are detailed explanations for keywords used to configure CI/CD pipelines.
 
 ### `image`
 
@@ -619,7 +619,7 @@ job:
 
 [YAML anchors for scripts](#yaml-anchors-for-script) are available.
 
-This parameter can also contain several commands using an array:
+This keyword can also contain several commands using an array:
 
 ```yaml
 job:
@@ -1567,7 +1567,7 @@ The [`rules`](#rules) syntax is an improved, more powerful solution for defining
 when jobs should run or not. Consider using `rules` instead of `only/except` to get
 the most out of your pipelines.
 
-`only` and `except` are two parameters that set a job policy to limit when
+`only` and `except` are two keywords that set a job policy to limit when
 jobs are created:
 
 1. `only` defines the names of branches and tags the job runs for.
@@ -1695,7 +1695,7 @@ while just `/issue/` would also match a branch called `severe-issues`.
 #### Supported `only`/`except` regexp syntax
 
 In GitLab 11.9.4, GitLab began internally converting the regexp used
-in `only` and `except` parameters to [RE2](https://github.com/google/re2/wiki/Syntax).
+in `only` and `except` keywords to [RE2](https://github.com/google/re2/wiki/Syntax).
 
 [RE2](https://github.com/google/re2/wiki/Syntax) limits the set of available features
 due to computational complexity, and some features, like negative lookaheads, became unavailable.
@@ -2489,7 +2489,7 @@ deployment to the `production` environment.
 > - Before GitLab 8.11, the name of an environment could be defined as a string like
 >   `environment: production`. The recommended way now is to define it under the
 >   `name` keyword.
-> - The `name` parameter can use any of the defined CI variables,
+> - The `name` keyword can use any of the defined CI variables,
 >   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
 >   You however can't use variables defined under `script`.
 
@@ -2525,7 +2525,7 @@ deploy to production:
 > - Introduced in GitLab 8.11.
 > - Before GitLab 8.11, the URL could be added only in GitLab's UI. The
 >   recommended way now is to define it in `.gitlab-ci.yml`.
-> - The `url` parameter can use any of the defined CI variables,
+> - The `url` keyword can use any of the defined CI variables,
 >   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
 >   You however can't use variables defined under `script`.
 
@@ -2679,7 +2679,7 @@ To follow progress on support for GitLab-managed clusters, see the
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21971) in GitLab 8.12 and GitLab Runner 1.6.
 > - The `$CI_ENVIRONMENT_SLUG` was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/22864) in GitLab 8.15.
-> - The `name` and `url` parameters can use any of the defined CI variables,
+> - The `name` and `url` keywords can use any of the defined CI variables,
 >   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
 >   You however can't use variables defined under `script`.
 
@@ -2778,7 +2778,7 @@ The cache is shared between jobs, so if you're using different
 paths for different jobs, you should also set a different `cache:key`.
 Otherwise cache content can be overwritten.
 
-The `key` parameter defines the affinity of caching between jobs.
+The `key` keyword defines the affinity of caching between jobs.
 You can have a single cache for all jobs, cache per-job, cache per-branch,
 or any other way that fits your workflow. This way, you can fine tune caching,
 including caching data between different jobs or even different branches.
@@ -2847,7 +2847,7 @@ use the new cache, instead of rebuilding the dependencies.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab v12.5.
 
 When you want to combine a prefix with the SHA computed for `cache:key:files`,
-use the `prefix` parameter with `key:files`.
+use the `prefix` keyword with `key:files`.
 For example, if you add a `prefix` of `test`, the resulting key is: `test-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`.
 If neither file was changed in any commits, the prefix is added to `default`, so the
 key in the example would be `test-default`.
@@ -3307,7 +3307,7 @@ It also exposes these reports in GitLab's UI (merge requests, pipeline views, an
 
 These are the available report types:
 
-| Parameter                                                                                                                            | Description |
+| Keyword                                                                                                                            | Description |
 |--------------------------------------------------------------------------------------------------------------------------------------|-------------|
 | [`artifacts:reports:cobertura`](../pipelines/job_artifacts.md#artifactsreportscobertura)                                             | The `cobertura` report collects Cobertura coverage XML files.                    |
 | [`artifacts:reports:codequality`](../pipelines/job_artifacts.md#artifactsreportscodequality)                                         | The `codequality` report collects CodeQuality issues.                            |
@@ -3329,7 +3329,7 @@ These are the available report types:
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 By default, all [`artifacts`](#artifacts) from previous [stages](#stages)
-are passed to each job. However, you can use the `dependencies` parameter to
+are passed to each job. However, you can use the `dependencies` keyword to
 define a limited list of jobs to fetch artifacts from. You can also set a job to download no artifacts at all.
 
 To use this feature, define `dependencies` in context of the job and pass
@@ -3784,7 +3784,7 @@ starting, which reduces parallelization.
 To force a rebuild of a specific branch, tag, or commit, you can use an API call
 with a trigger token.
 
-The trigger token is different than the [`trigger`](#trigger) parameter.
+The trigger token is different than the [`trigger`](#trigger) keyword.
 
 [Read more in the triggers documentation.](../triggers/README.md)
 
@@ -4573,7 +4573,7 @@ feature. Anchors are only valid within the file they were defined in. Instead
 of using YAML anchors, you can use the [`extends` keyword](#extends).
 
 The following example uses anchors and map merging. It creates two jobs,
-`test1` and `test2`, that inherit the parameters of `.job_template`, each
+`test1` and `test2`, that inherit the `.job_template` configuration, each
 with their own custom `script` defined:
 
 ```yaml
@@ -4809,9 +4809,9 @@ This limitation does not affect any of the updated merge request pipelines.
 All updated merge requests have a pipeline created when using
 [pipelines for merge requests](../merge_request_pipelines/index.md).
 
-## Deprecated parameters
+## Deprecated keywords
 
-The following parameters are deprecated.
+The following keywords are deprecated.
 
 ### Globally-defined `types`
 

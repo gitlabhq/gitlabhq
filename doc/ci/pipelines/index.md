@@ -157,7 +157,7 @@ For each `var` or `file_var`, a key and value are required.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7931) in GitLab 8.15.
 
-Manual actions, configured using the [`when:manual`](../yaml/README.md#whenmanual) parameter,
+Manual actions, configured using the [`when:manual`](../yaml/README.md#whenmanual) keyword,
 allow you to require manual interaction before moving forward in the pipeline.
 
 You can do this straight from the pipeline graph. Just click the play button
@@ -394,7 +394,7 @@ for a single run of the manual job.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21767) in GitLab 11.4.
 
-When you do not want to run a job immediately, you can use the [`when:delayed`](../yaml/README.md#whendelayed) parameter to
+When you do not want to run a job immediately, you can use the [`when:delayed`](../yaml/README.md#whendelayed) keyword to
 delay a job's execution for a certain period.
 
 This is especially useful for timed incremental rollout where new code is rolled out gradually.

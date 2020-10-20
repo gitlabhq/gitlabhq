@@ -135,7 +135,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   describe '#full_access_token' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:token) { described_class.full_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -148,7 +148,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   describe '#pull_access_token' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:token) { described_class.pull_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -161,7 +161,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'user authorization' do
-    let(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
 
     context 'for registry catalog' do
       let(:current_params) do
@@ -175,14 +175,14 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for private project' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       context 'allow to use scope-less authentication' do
         it_behaves_like 'a valid token'
       end
 
       context 'allow developer to push images' do
-        before do
+        before_all do
           project.add_developer(current_user)
         end
 
@@ -195,7 +195,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow developer to delete images' do
-        before do
+        before_all do
           project.add_developer(current_user)
         end
 
@@ -222,7 +222,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow developer to delete images since registry 2.7' do
-        before do
+        before_all do
           project.add_developer(current_user)
         end
 
@@ -235,7 +235,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'allow reporter to pull images' do
-        before do
+        before_all do
           project.add_reporter(current_user)
         end
 
@@ -250,7 +250,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow reporter to delete images' do
-        before do
+        before_all do
           project.add_reporter(current_user)
         end
 
@@ -263,7 +263,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow reporter to delete images since registry 2.7' do
-        before do
+        before_all do
           project.add_reporter(current_user)
         end
 
@@ -276,7 +276,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'return a least of privileges' do
-        before do
+        before_all do
           project.add_reporter(current_user)
         end
 
@@ -289,7 +289,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow guest to pull or push images' do
-        before do
+        before_all do
           project.add_guest(current_user)
         end
 
@@ -302,7 +302,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow guest to delete images' do
-        before do
+        before_all do
           project.add_guest(current_user)
         end
 
@@ -315,7 +315,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'disallow guest to delete images since registry 2.7' do
-        before do
+        before_all do
           project.add_guest(current_user)
         end
 
@@ -329,7 +329,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for public project' do
-      let(:project) { create(:project, :public) }
+      let_it_be(:project) { create(:project, :public) }
 
       context 'allow anyone to pull images' do
         let(:current_params) do
@@ -378,7 +378,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for internal project' do
-      let(:project) { create(:project, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
 
       context 'for internal user' do
         context 'allow anyone to pull images' do
@@ -420,7 +420,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
 
       context 'for external user' do
         context 'disallow anyone to pull or push images' do
-          let(:current_user) { create(:user, external: true) }
+          let_it_be(:current_user) { create(:user, external: true) }
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:pull,push"] }
           end
@@ -430,7 +430,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
         end
 
         context 'disallow anyone to delete images' do
-          let(:current_user) { create(:user, external: true) }
+          let_it_be(:current_user) { create(:user, external: true) }
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:*"] }
           end
@@ -440,7 +440,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
         end
 
         context 'disallow anyone to delete images since registry 2.7' do
-          let(:current_user) { create(:user, external: true) }
+          let_it_be(:current_user) { create(:user, external: true) }
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:delete"] }
           end
@@ -453,14 +453,14 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'delete authorized as maintainer' do
-    let(:current_project) { create(:project) }
-    let(:current_user) { create(:user) }
+    let_it_be(:current_project) { create(:project) }
+    let_it_be(:current_user) { create(:user) }
 
     let(:authentication_abilities) do
       [:admin_container_image]
     end
 
-    before do
+    before_all do
       current_project.add_maintainer(current_user)
     end
 
@@ -488,14 +488,14 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'build authorized as user' do
-    let(:current_project) { create(:project) }
-    let(:current_user) { create(:user) }
+    let_it_be(:current_project) { create(:project) }
+    let_it_be(:current_user) { create(:user) }
 
     let(:authentication_abilities) do
       [:build_read_container_image, :build_create_container_image, :build_destroy_container_image]
     end
 
-    before do
+    before_all do
       current_project.add_developer(current_user)
     end
 
@@ -550,7 +550,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
         end
 
         context 'allow for public' do
-          let(:project) { create(:project, :public) }
+          let_it_be(:project) { create(:project, :public) }
 
           it_behaves_like 'a pullable'
           it_behaves_like 'not a container repository factory'
@@ -563,7 +563,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
           end
 
           context 'when you are member' do
-            before do
+            before_all do
               project.add_developer(current_user)
             end
 
@@ -572,7 +572,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
           end
 
           context 'when you are owner' do
-            let(:project) { create(:project, namespace: current_user.namespace) }
+            let_it_be(:project) { create(:project, namespace: current_user.namespace) }
 
             it_behaves_like 'a pullable'
             it_behaves_like 'not a container repository factory'
@@ -580,12 +580,12 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
         end
 
         context 'for private' do
-          let(:project) { create(:project, :private) }
+          let_it_be(:project) { create(:project, :private) }
 
           it_behaves_like 'pullable for being team member'
 
           context 'when you are admin' do
-            let(:current_user) { create(:admin) }
+            let_it_be(:current_user) { create(:admin) }
 
             context 'when you are not member' do
               it_behaves_like 'an inaccessible'
@@ -593,7 +593,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
             end
 
             context 'when you are member' do
-              before do
+              before_all do
                 project.add_developer(current_user)
               end
 
@@ -602,7 +602,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
             end
 
             context 'when you are owner' do
-              let(:project) { create(:project, namespace: current_user.namespace) }
+              let_it_be(:project) { create(:project, namespace: current_user.namespace) }
 
               it_behaves_like 'a pullable'
               it_behaves_like 'not a container repository factory'
@@ -618,9 +618,9 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
 
         context 'disallow for all' do
           context 'when you are member' do
-            let(:project) { create(:project, :public) }
+            let_it_be(:project) { create(:project, :public) }
 
-            before do
+            before_all do
               project.add_developer(current_user)
             end
 
@@ -629,7 +629,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
           end
 
           context 'when you are owner' do
-            let(:project) { create(:project, :public, namespace: current_user.namespace) }
+            let_it_be(:project) { create(:project, :public, namespace: current_user.namespace) }
 
             it_behaves_like 'an inaccessible'
             it_behaves_like 'not a container repository factory'
@@ -639,7 +639,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for project without container registry' do
-      let(:project) { create(:project, :public, container_registry_enabled: false) }
+      let_it_be(:project) { create(:project, :public, container_registry_enabled: false) }
 
       before do
         project.update(container_registry_enabled: false)
@@ -656,7 +656,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for project that disables repository' do
-      let(:project) { create(:project, :public, :repository_disabled) }
+      let_it_be(:project) { create(:project, :public, :repository_disabled) }
 
       context 'disallow when pulling' do
         let(:current_params) do
@@ -670,8 +670,8 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'registry catalog browsing authorized as admin' do
-    let(:current_user) { create(:user, :admin) }
-    let(:project) { create(:project, :public) }
+    let_it_be(:current_user) { create(:user, :admin) }
+    let_it_be(:project) { create(:project, :public) }
 
     let(:current_params) do
       { scopes: ["registry:catalog:*"] }
@@ -681,8 +681,8 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'support for multiple scopes' do
-    let(:internal_project) { create(:project, :internal) }
-    let(:private_project) { create(:project, :private) }
+    let_it_be(:internal_project) { create(:project, :internal) }
+    let_it_be(:private_project) { create(:project, :private) }
 
     let(:current_params) do
       {
@@ -694,7 +694,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'user has access to all projects' do
-      let(:current_user) { create(:user, :admin) }
+      let_it_be(:current_user) { create(:user, :admin) }
 
       it_behaves_like 'a browsable' do
         let(:access) do
@@ -711,7 +711,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'user only has access to internal project' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
       it_behaves_like 'a browsable' do
         let(:access) do
@@ -747,7 +747,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for private project' do
-      let(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
 
       let(:current_params) do
         { scopes: ["repository:#{project.full_path}:pull"] }
@@ -757,7 +757,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for public project' do
-      let(:project) { create(:project, :public) }
+      let_it_be(:project) { create(:project, :public) }
 
       context 'when pulling and pushing' do
         let(:current_params) do
@@ -806,7 +806,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for public project' do
-        let(:project) { create(:project, :public) }
+        let_it_be(:project) { create(:project, :public) }
 
         context 'when pulling' do
           it_behaves_like 'a pullable'
@@ -824,7 +824,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for internal project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         context 'when pulling' do
           it_behaves_like 'a pullable'
@@ -842,7 +842,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for private project' do
-        let(:project) { create(:project, :private) }
+        let_it_be(:project) { create(:project, :private) }
 
         context 'when pulling' do
           it_behaves_like 'a pullable'
@@ -880,7 +880,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for public project' do
-        let(:project) { create(:project, :public) }
+        let_it_be(:project) { create(:project, :public) }
 
         context 'when pulling' do
           it_behaves_like 'a pullable'
@@ -890,7 +890,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for internal project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         context 'when pulling' do
           it_behaves_like 'an inaccessible'
@@ -900,7 +900,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for private project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         context 'when pulling' do
           it_behaves_like 'an inaccessible'
@@ -918,10 +918,10 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'when deploy token is not related to the project' do
-      let(:current_user) { create(:deploy_token, read_registry: false) }
+      let_it_be(:current_user) { create(:deploy_token, read_registry: false) }
 
       context 'for public project' do
-        let(:project) { create(:project, :public) }
+        let_it_be(:project) { create(:project, :public) }
 
         context 'when pulling' do
           it_behaves_like 'a pullable'
@@ -929,7 +929,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for internal project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         context 'when pulling' do
           it_behaves_like 'an inaccessible'
@@ -937,7 +937,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       end
 
       context 'for private project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         context 'when pulling' do
           it_behaves_like 'an inaccessible'
@@ -949,19 +949,19 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       let(:current_user) { create(:deploy_token, :revoked, projects: [project]) }
 
       context 'for public project' do
-        let(:project) { create(:project, :public) }
+        let_it_be(:project) { create(:project, :public) }
 
         it_behaves_like 'a pullable'
       end
 
       context 'for internal project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         it_behaves_like 'an inaccessible'
       end
 
       context 'for private project' do
-        let(:project) { create(:project, :internal) }
+        let_it_be(:project) { create(:project, :internal) }
 
         it_behaves_like 'an inaccessible'
       end
@@ -969,14 +969,13 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'user authorization' do
-    let(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
 
     context 'with multiple scopes' do
-      let(:project) { create(:project) }
-      let(:project2) { create }
+      let_it_be(:project) { create(:project) }
 
       context 'allow developer to push images' do
-        before do
+        before_all do
           project.add_developer(current_user)
         end
 

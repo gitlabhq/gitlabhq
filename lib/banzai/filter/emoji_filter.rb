@@ -8,6 +8,7 @@ module Banzai
     # Based on HTML::Pipeline::EmojiFilter
     class EmojiFilter < HTML::Pipeline::Filter
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+      IGNORE_UNICODE_EMOJIS = %w(™ © ®).freeze
 
       def call
         doc.search(".//text()").each do |node|
@@ -60,7 +61,11 @@ module Banzai
 
       # Build a regexp that matches all valid unicode emojis names.
       def self.emoji_unicode_pattern
-        @emoji_unicode_pattern ||= /(#{Gitlab::Emoji.emojis_unicodes.map { |moji| Regexp.escape(moji) }.join('|')})/
+        @emoji_unicode_pattern ||=
+          begin
+            filtered_emojis = Gitlab::Emoji.emojis_unicodes - IGNORE_UNICODE_EMOJIS
+            /(#{filtered_emojis.map { |moji| Regexp.escape(moji) }.join('|')})/
+          end
       end
 
       private
