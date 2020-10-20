@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Stores the authentication data required to access another GitLab instance on
+# behalf of a user, to import Groups and Projects directly from that instance.
 class BulkImports::Configuration < ApplicationRecord
   self.table_name = 'bulk_import_configurations'
 

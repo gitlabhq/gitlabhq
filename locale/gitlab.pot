@@ -16244,6 +16244,9 @@ msgstr ""
 msgid "Members|%{time} by %{user}"
 msgstr ""
 
+msgid "Members|An error occurred while updating the member's expiration date, please try again."
+msgstr ""
+
 msgid "Members|An error occurred while updating the member's role, please try again."
 msgstr ""
 
@@ -16266,6 +16269,12 @@ msgid "Members|Are you sure you want to revoke the invitation for %{inviteEmail}
 msgstr ""
 
 msgid "Members|Are you sure you want to withdraw your access request for \"%{source}\""
+msgstr ""
+
+msgid "Members|Expiration date removed successfully."
+msgstr ""
+
+msgid "Members|Expiration date updated successfully."
 msgstr ""
 
 msgid "Members|Expired"
@@ -19832,9 +19841,6 @@ msgid "Prevent project forking outside current group"
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
-msgstr ""
-
-msgid "Prevent users from modifying merge request approvers list"
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."

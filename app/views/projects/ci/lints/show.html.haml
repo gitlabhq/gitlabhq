@@ -20,13 +20,13 @@
           = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
         .col-sm-12
           .float-left.gl-mt-3
-            = submit_tag(_('Validate'), class: 'btn btn-success submit-yml')
+            = submit_tag(_('Validate'), class: 'gl-button btn btn-success submit-yml')
             - if Gitlab::Ci::Features.lint_creates_pipeline_with_dry_run?(@project)
               = check_box_tag(:dry_run, 'true', params[:dry_run])
               = label_tag(:dry_run, _('Simulate a pipeline created for the default branch'))
               = link_to sprite_icon('question-o'), help_page_path('ci/lint', anchor: 'pipeline-simulation'), target: '_blank', rel: 'noopener noreferrer'
           .float-right.prepend-top-10
-            = button_tag(_('Clear'), type: 'button', class: 'btn btn-default clear-yml')
+            = button_tag(_('Clear'), type: 'button', class: 'gl-button btn btn-default clear-yml')
 
     .row.prepend-top-20
       .col-sm-12

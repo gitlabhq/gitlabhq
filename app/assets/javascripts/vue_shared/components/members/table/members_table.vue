@@ -11,6 +11,7 @@ import MemberActionButtons from './member_action_buttons.vue';
 import MembersTableCell from './members_table_cell.vue';
 import RoleDropdown from './role_dropdown.vue';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
+import ExpirationDatepicker from './expiration_datepicker.vue';
 
 export default {
   name: 'MembersTable',
@@ -25,6 +26,7 @@ export default {
     MemberActionButtons,
     RoleDropdown,
     RemoveGroupLinkModal,
+    ExpirationDatepicker,
   },
   computed: {
     ...mapState(['members', 'tableFields']),
@@ -87,6 +89,12 @@ export default {
         <members-table-cell #default="{ permissions }" :member="member">
           <role-dropdown v-if="permissions.canUpdate" :member="member" />
           <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
+        </members-table-cell>
+      </template>
+
+      <template #cell(expiration)="{ item: member }">
+        <members-table-cell #default="{ permissions }" :member="member">
+          <expiration-datepicker :permissions="permissions" :member="member" />
         </members-table-cell>
       </template>
 

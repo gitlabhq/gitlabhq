@@ -10,6 +10,7 @@ module Issues
     end
 
     def execute
+      record_import_attempt
       process_csv
       email_results_to_user
 
@@ -17,6 +18,10 @@ module Issues
     end
 
     private
+
+    def record_import_attempt
+      CsvIssueImport.create!(user: @user, project: @project)
+    end
 
     def process_csv
       csv_data = @csv_io.open(&:read).force_encoding(Encoding::UTF_8)

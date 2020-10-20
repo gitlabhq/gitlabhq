@@ -19,6 +19,21 @@ export default {
     );
     state.showError = true;
   },
+  [types.RECEIVE_MEMBER_EXPIRATION_SUCCESS](state, { memberId, expiresAt }) {
+    const member = findMember(state, memberId);
+
+    if (!member) {
+      return;
+    }
+
+    Vue.set(member, 'expiresAt', expiresAt);
+  },
+  [types.RECEIVE_MEMBER_EXPIRATION_ERROR](state) {
+    state.errorMessage = s__(
+      "Members|An error occurred while updating the member's expiration date, please try again.",
+    );
+    state.showError = true;
+  },
   [types.HIDE_ERROR](state) {
     state.showError = false;
     state.errorMessage = '';

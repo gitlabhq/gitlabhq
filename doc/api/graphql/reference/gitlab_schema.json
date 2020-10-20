@@ -2936,7 +2936,7 @@
                   "description": "Find a list by its global ID",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "ListID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -8349,7 +8349,7 @@
               "description": "The ID of the milestone to be assigned to the board.",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "MilestoneID",
                 "ofType": null
               },
               "defaultValue": null
@@ -8375,7 +8375,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "LabelID",
                     "ofType": null
                   }
                 }
@@ -26137,7 +26137,7 @@
               "description": "Global ID of the epic to be assigned to the issue, epic will be removed if absent or set to null",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "EpicID",
                 "ofType": null
               },
               "defaultValue": null
@@ -56828,7 +56828,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "ListID",
                   "ofType": null
                 }
               },

@@ -200,6 +200,9 @@ module Gitlab
         %r{\Alocale/gitlab\.pot\z} => :none,
         %r{\Adata/whats_new/} => :none,
 
+        # GraphQL auto generated doc files and schema
+        %r{\Adoc/api/graphql/reference/} => :backend,
+
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,
         %r{(

@@ -4,7 +4,7 @@
 
   .file-actions<
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
-    - if Feature.enabled?(:consolidated_edit_button)
+    - if Feature.enabled?(:consolidated_edit_button, @project)
       = render 'shared/web_ide_button', blob: blob
     - else
       = edit_blob_button(@project, @ref, @path, blob: blob)

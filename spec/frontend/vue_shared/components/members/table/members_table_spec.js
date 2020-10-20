@@ -11,6 +11,7 @@ import MemberSource from '~/vue_shared/components/members/table/member_source.vu
 import ExpiresAt from '~/vue_shared/components/members/table/expires_at.vue';
 import CreatedAt from '~/vue_shared/components/members/table/created_at.vue';
 import RoleDropdown from '~/vue_shared/components/members/table/role_dropdown.vue';
+import ExpirationDatepicker from '~/vue_shared/components/members/table/expiration_datepicker.vue';
 import MemberActionButtons from '~/vue_shared/components/members/table/member_action_buttons.vue';
 import * as initUserPopovers from '~/user_popovers';
 import { member as memberMock, invite, accessRequest } from '../mock_data';
@@ -44,6 +45,7 @@ describe('MemberList', () => {
         'member-action-buttons',
         'role-dropdown',
         'remove-group-link-modal',
+        'expiration-datepicker',
       ],
     });
   };
@@ -75,7 +77,7 @@ describe('MemberList', () => {
       ${'requested'}  | ${'Requested'}      | ${accessRequest}   | ${CreatedAt}
       ${'expires'}    | ${'Access expires'} | ${memberMock}      | ${ExpiresAt}
       ${'maxRole'}    | ${'Max role'}       | ${memberCanUpdate} | ${RoleDropdown}
-      ${'expiration'} | ${'Expiration'}     | ${memberMock}      | ${null}
+      ${'expiration'} | ${'Expiration'}     | ${memberMock}      | ${ExpirationDatepicker}
     `('renders the $label field', ({ field, label, member, expectedComponent }) => {
       createComponent({
         members: [member],

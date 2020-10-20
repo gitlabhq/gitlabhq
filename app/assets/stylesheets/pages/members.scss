@@ -228,6 +228,11 @@
       width: px-to-rem(50px);
     }
   }
+
+  .gl-datepicker-input {
+    width: px-to-rem(165px);
+    max-width: 100%;
+  }
 }
 
 .card-mobile {

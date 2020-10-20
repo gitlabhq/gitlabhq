@@ -33,7 +33,7 @@
       - if show_recaptcha_sign_up?
         = recaptcha_tags
       .submit-container.mt-3
-        = f.submit _("Register"), class: "btn-register btn btn-block btn-success mb-0 p-2", data: { qa_selector: 'new_user_register_button' }
+        = f.submit _("Register"), class: "btn-register gl-button btn btn-block btn-success mb-0 p-2", data: { qa_selector: 'new_user_register_button' }
       = render 'devise/shared/terms_of_service_notice'
       - if omniauth_enabled? && button_based_providers_enabled?
         = render 'devise/shared/experimental_separate_sign_up_flow_omniauth_box'

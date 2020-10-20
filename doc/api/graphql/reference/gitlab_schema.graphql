@@ -1134,7 +1134,7 @@ type Board {
     """
     Find a list by its global ID
     """
-    id: ID
+    id: ListID
 
     """
     Filters applied when getting issue metadata in the board list
@@ -3119,12 +3119,12 @@ input CreateBoardInput {
   """
   The IDs of labels to be added to the board.
   """
-  labelIds: [ID!]
+  labelIds: [LabelID!]
 
   """
   The ID of the milestone to be assigned to the board.
   """
-  milestoneId: ID
+  milestoneId: MilestoneID
 
   """
   The board name.
@@ -9568,7 +9568,7 @@ input IssueSetEpicInput {
   """
   Global ID of the epic to be assigned to the issue, epic will be removed if absent or set to null
   """
-  epicId: ID
+  epicId: EpicID
 
   """
   The IID of the issue to mutate
@@ -19553,7 +19553,7 @@ input UpdateBoardListInput {
   """
   Global ID of the list.
   """
-  listId: ID!
+  listId: ListID!
 
   """
   Position of list within the board

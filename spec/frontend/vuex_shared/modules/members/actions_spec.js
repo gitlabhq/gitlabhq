@@ -3,79 +3,121 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { members, group } from 'jest/vue_shared/components/members/mock_data';
 import testAction from 'helpers/vuex_action_helper';
+import { useFakeDate } from 'helpers/fake_date';
 import httpStatusCodes from '~/lib/utils/http_status';
 import * as types from '~/vuex_shared/modules/members/mutation_types';
 import {
   updateMemberRole,
   showRemoveGroupLinkModal,
   hideRemoveGroupLinkModal,
+  updateMemberExpiration,
 } from '~/vuex_shared/modules/members/actions';
 
 describe('Vuex members actions', () => {
-  let mock;
+  describe('update member actions', () => {
+    let mock;
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-  });
-
-  afterEach(() => {
-    mock.restore();
-  });
-
-  describe('updateMemberRole', () => {
-    const memberId = members[0].id;
-    const accessLevel = { integerValue: 30, stringValue: 'Developer' };
-
-    const payload = {
-      memberId,
-      accessLevel,
-    };
     const state = {
       members,
       memberPath: '/groups/foo-bar/-/group_members/:id',
       requestFormatter: noop,
-      removeGroupLinkModalVisible: false,
-      groupLinkToRemove: null,
     };
 
-    describe('successful request', () => {
-      it(`commits ${types.RECEIVE_MEMBER_ROLE_SUCCESS} mutation`, async () => {
-        let requestPath;
-        mock.onPut().replyOnce(config => {
-          requestPath = config.url;
-          return [httpStatusCodes.OK, {}];
-        });
-
-        await testAction(updateMemberRole, payload, state, [
-          {
-            type: types.RECEIVE_MEMBER_ROLE_SUCCESS,
-            payload,
-          },
-        ]);
-
-        expect(requestPath).toBe('/groups/foo-bar/-/group_members/238');
-      });
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
     });
 
-    describe('unsuccessful request', () => {
-      beforeEach(() => {
-        mock.onPut().replyOnce(httpStatusCodes.BAD_REQUEST, { message: 'Bad request' });
-      });
+    afterEach(() => {
+      mock.restore();
+    });
 
-      it(`commits ${types.RECEIVE_MEMBER_ROLE_ERROR} mutation`, async () => {
-        try {
+    describe('updateMemberRole', () => {
+      const memberId = members[0].id;
+      const accessLevel = { integerValue: 30, stringValue: 'Developer' };
+
+      const payload = {
+        memberId,
+        accessLevel,
+      };
+
+      describe('successful request', () => {
+        it(`commits ${types.RECEIVE_MEMBER_ROLE_SUCCESS} mutation`, async () => {
+          mock.onPut().replyOnce(httpStatusCodes.OK);
+
           await testAction(updateMemberRole, payload, state, [
             {
               type: types.RECEIVE_MEMBER_ROLE_SUCCESS,
+              payload,
             },
           ]);
-        } catch {
-          // Do nothing
-        }
+
+          expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
+        });
       });
 
-      it('throws error', async () => {
-        await expect(testAction(updateMemberRole, payload, state)).rejects.toThrowError();
+      describe('unsuccessful request', () => {
+        it(`commits ${types.RECEIVE_MEMBER_ROLE_ERROR} mutation and throws error`, async () => {
+          mock.onPut().networkError();
+
+          await expect(
+            testAction(updateMemberRole, payload, state, [
+              {
+                type: types.RECEIVE_MEMBER_ROLE_ERROR,
+              },
+            ]),
+          ).rejects.toThrowError(new Error('Network Error'));
+        });
+      });
+    });
+
+    describe('updateMemberExpiration', () => {
+      useFakeDate(2020, 2, 15, 3);
+
+      const memberId = members[0].id;
+      const expiresAt = '2020-3-17';
+
+      describe('successful request', () => {
+        describe('changing expiration date', () => {
+          it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_SUCCESS} mutation`, async () => {
+            mock.onPut().replyOnce(httpStatusCodes.OK);
+
+            await testAction(updateMemberExpiration, { memberId, expiresAt }, state, [
+              {
+                type: types.RECEIVE_MEMBER_EXPIRATION_SUCCESS,
+                payload: { memberId, expiresAt: '2020-03-17T00:00:00Z' },
+              },
+            ]);
+
+            expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
+          });
+        });
+
+        describe('removing the expiration date', () => {
+          it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_SUCCESS} mutation`, async () => {
+            mock.onPut().replyOnce(httpStatusCodes.OK);
+
+            await testAction(updateMemberExpiration, { memberId, expiresAt: null }, state, [
+              {
+                type: types.RECEIVE_MEMBER_EXPIRATION_SUCCESS,
+                payload: { memberId, expiresAt: null },
+              },
+            ]);
+          });
+        });
+      });
+
+      describe('unsuccessful request', () => {
+        it(`commits ${types.RECEIVE_MEMBER_EXPIRATION_ERROR} mutation and throws error`, async () => {
+          mock.onPut().networkError();
+
+          await expect(
+            testAction(updateMemberExpiration, { memberId, expiresAt }, state, [
+              {
+                type: types.RECEIVE_MEMBER_EXPIRATION_ERROR,
+              },
+            ]),
+          ).rejects.toThrowError(new Error('Network Error'));
+        });
       });
     });
   });

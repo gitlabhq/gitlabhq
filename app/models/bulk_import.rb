@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# The BulkImport import model links together all the models required to for a
+# bulk import of groups and projects to a GitLab instance, and associates these
+# with the user that initiated the import.
 class BulkImport < ApplicationRecord
   belongs_to :user, optional: false
 

@@ -28,7 +28,7 @@ module Mutations
                 required: false,
                 description: 'The ID of the user to be assigned to the board.'
       argument :milestone_id,
-               GraphQL::ID_TYPE,
+               Types::GlobalIDType[Milestone],
                required: false,
                description: 'The ID of the milestone to be assigned to the board.'
       argument :weight,
@@ -36,7 +36,7 @@ module Mutations
                required: false,
                description: 'The weight of the board.'
       argument :label_ids,
-               [GraphQL::ID_TYPE],
+               [Types::GlobalIDType[Label]],
                required: false,
                description: 'The IDs of labels to be added to the board.'
 

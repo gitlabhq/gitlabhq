@@ -31,9 +31,8 @@ Merge request approval rules that can be set at an instance level are:
 - **Prevent approval of merge requests by merge request committers**. Prevents project
   maintainers from allowing users to approve merge requests if they have submitted
   any commits to the source branch.
-- **Prevent users from modifying merge request approvers list**. Prevents project
-  maintainers from allowing users to modify the approvers list in project settings
-  or in individual merge requests.
+- **Can override approvers and approvals required per merge request**. Allows project
+  maintainers to modify the approvers list in individual merge requests.
 
 ## Scope rules to compliance-labeled projects
 
@@ -52,4 +51,4 @@ Maintainer role and above can modify these.
 
 | Instance-level | Project-level |
 | -------------- | ------------- |
-| ![Scope MR approval settings to compliance frameworks](img/scope_mr_approval_settings_v13_1.png) | ![MR approval settings on compliance projects](img/mr_approval_settings_compliance_project_v13_1.png) |
+| ![Scope MR approval settings to compliance frameworks](img/scope_mr_approval_settings_v13_5.png) | ![MR approval settings on compliance projects](img/mr_approval_settings_compliance_project_v13_5.png) |

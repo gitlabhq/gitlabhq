@@ -1,5 +1,6 @@
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { formatDate } from '~/lib/utils/datetime_utility';
 
 export const updateMemberRole = async ({ state, commit }, { memberId, accessLevel }) => {
   try {
@@ -22,4 +23,22 @@ export const showRemoveGroupLinkModal = ({ commit }, groupLink) => {
 
 export const hideRemoveGroupLinkModal = ({ commit }) => {
   commit(types.HIDE_REMOVE_GROUP_LINK_MODAL);
+};
+
+export const updateMemberExpiration = async ({ state, commit }, { memberId, expiresAt }) => {
+  try {
+    await axios.put(
+      state.memberPath.replace(':id', memberId),
+      state.requestFormatter({ expires_at: expiresAt ? formatDate(expiresAt, 'isoDate') : '' }),
+    );
+
+    commit(types.RECEIVE_MEMBER_EXPIRATION_SUCCESS, {
+      memberId,
+      expiresAt: expiresAt ? formatDate(expiresAt, 'isoUtcDateTime') : null,
+    });
+  } catch (error) {
+    commit(types.RECEIVE_MEMBER_EXPIRATION_ERROR);
+
+    throw error;
+  }
 };

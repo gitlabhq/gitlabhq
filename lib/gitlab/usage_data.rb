@@ -577,7 +577,8 @@ module Gitlab
           issues_imported: {
             jira: distinct_count(::JiraImportState.where(time_period), :user_id),
             fogbugz: projects_imported_count('fogbugz', time_period),
-            phabricator: projects_imported_count('phabricator', time_period)
+            phabricator: projects_imported_count('phabricator', time_period),
+            csv: distinct_count(CsvIssueImport.where(time_period), :user_id)
           },
           groups_imported: distinct_count(::GroupImportState.where(time_period), :user_id)
         }

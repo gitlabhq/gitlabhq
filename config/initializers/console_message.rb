@@ -4,6 +4,7 @@ if Gitlab::Runtime.console?
   justify = 15
 
   puts '-' * 80
+  puts " Ruby:".ljust(justify) + RUBY_DESCRIPTION
   puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision}) #{Gitlab.ee? ? 'EE' : 'FOSS'}"
   puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.version)}"
 

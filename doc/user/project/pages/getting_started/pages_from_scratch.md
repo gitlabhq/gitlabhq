@@ -162,6 +162,10 @@ with [any of the available settings](../../../../ci/yaml/README.md). See
 [Validate the `.gitlab-ci.yml`](../../../../ci/yaml/README.md#validate-the-gitlab-ciyml)
 for instructions on validating your YAML file with the Lint tool included with GitLab.
 
+After successful execution of this `pages` job, a special `pages:deploy` job appears in the
+pipeline view. It prepares the content of the website for GitLab Pages daemon. GitLab executes it in
+the background and doesn't use runner.
+
 The following topics show other examples of other options you can add to your CI/CD file.
 
 ## Deploy specific branches to a Pages site

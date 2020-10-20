@@ -207,6 +207,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
         jira_project = create(:project, creator_id: user.id)
         create(:jira_import_state, :finished, project: jira_project)
+
+        create(:csv_issue_import, user: user)
       end
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(
@@ -224,7 +226,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           issues_imported: {
             jira: 2,
             fogbugz: 2,
-            phabricator: 2
+            phabricator: 2,
+            csv: 2
           }
         }
       )
@@ -243,7 +246,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           issues_imported: {
             jira: 1,
             fogbugz: 1,
-            phabricator: 1
+            phabricator: 1,
+            csv: 1
           }
         }
       )
