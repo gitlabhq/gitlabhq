@@ -59,7 +59,7 @@ There are several components that work in concert for the Agent to accomplish Gi
 
 The setup process involves a few steps to enable GitOps deployments:
 
-1. Installing the Agent server via GitLab Helm chart.
+1. Installing the Agent server.
 1. Defining a configuration directory.
 1. Creating an Agent record in GitLab.
 1. Generating and copying a Secret token used to connect to the Agent.
@@ -68,13 +68,24 @@ The setup process involves a few steps to enable GitOps deployments:
 
 ### Install the Agent server
 
-The GitLab Kubernetes Agent can only be deployed through our
-[Helm chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already
-have GitLab installed via Helm, please refer to our
-[installation documentation](https://docs.gitlab.com/charts/installation/).
+The GitLab Kubernetes Agent can be deployed using [Omnibus
+GitLab](https://docs.gitlab.com/omnibus/) or the [GitLab
+chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already have
+GitLab installed, please refer to our [installation
+documentation](https://docs.gitlab.com/ee/install/README.html).
 
 NOTE: **Note:**
-GitLab plans to include the Agent in the [official Linux Package](https://gitlab.com/gitlab-org/gitlab/-/issues/223060) and on [GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3834).
+GitLab plans to include the Agent on [GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3834).
+
+When using the [Omnibus GitLab](https://docs.gitlab.com/omnibus/) package:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+```plaintext
+gitlab_kas['enable'] = true
+```
+
+1. [Reconfigure GitLab](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 When installing or upgrading the GitLab Helm chart, consider the following Helm 2 example.
 (If you're using Helm 3, you must modify this example.) You must set `global.kas.enabled=true`

@@ -1307,8 +1307,6 @@ Graphql/IDType:
 FactoryBot/InlineAssociation:
   Exclude:
     - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
-    - 'ee/spec/factories/ci/reports/security/findings.rb'
-    - 'ee/spec/factories/ci/reports/security/reports.rb'
     - 'ee/spec/factories/geo/event_log.rb'
     - 'ee/spec/factories/groups.rb'
     - 'ee/spec/factories/merge_request_blocks.rb'
