@@ -10,7 +10,7 @@
           %span.build-link ##{artifact.job_id}
 
         - if artifact.job.ref
-          .icon-container{ "aria-label" => artifact.job.tag? ? _('Tag') : _('Branch') }
+          .icon-container.gl-display-inline-block{ "aria-label" => artifact.job.tag? ? _('Tag') : _('Branch') }
             = artifact.job.tag? ? sprite_icon('tag', css_class: 'sprite') : sprite_icon('branch', css_class: 'sprite')
           = link_to artifact.job.ref, project_ref_path(@project, artifact.job.ref), class: 'ref-name'
         - else
@@ -30,7 +30,7 @@
     .table-mobile-header{ role: 'rowheader' }= _('Creation date')
     .table-mobile-content
       %p.finished-at
-        = icon("calendar")
+        = sprite_icon("calendar")
         %span= time_ago_with_tooltip(artifact.created_at)
 
   .table-section.section-20
@@ -38,7 +38,7 @@
     .table-mobile-content
       - if artifact.expire_at
         %p.finished-at
-          = icon("calendar")
+          = sprite_icon("calendar")
           %span= time_ago_with_tooltip(artifact.expire_at)
 
   .table-section.section-10
@@ -57,5 +57,5 @@
             = sprite_icon('folder-open')
 
         - if can?(current_user, :destroy_artifacts, @project)
-          = link_to project_artifact_path(@project, artifact), data: { placement: 'top', container: 'body', confirm: _('Are you sure you want to delete these artifacts?') }, method: :delete, title: _('Delete artifacts'), ref: 'tooltip', aria: { label: _('Delete artifacts') }, class: 'btn btn-remove has-tooltip' do
+          = link_to project_artifact_path(@project, artifact), data: { placement: 'top', container: 'body', confirm: _('Are you sure you want to delete these artifacts?') }, method: :delete, title: _('Delete artifacts'), ref: 'tooltip', aria: { label: _('Delete artifacts') }, class: 'gl-button btn btn-danger has-tooltip' do
             = sprite_icon('remove')

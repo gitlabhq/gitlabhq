@@ -1,14 +1,19 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
+import { createLocalVue, mount } from '@vue/test-utils';
 import IdeReview from '~/ide/components/ide_review.vue';
+import EditorModeDropdown from '~/ide/components/editor_mode_dropdown.vue';
 import { createStore } from '~/ide/stores';
-import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { trimText } from '../../helpers/text_helper';
+import { keepAlive } from '../../helpers/keep_alive_component_helper';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('IDE review mode', () => {
-  const Component = Vue.extend(IdeReview);
-  let vm;
+  let wrapper;
   let store;
 
   beforeEach(() => {
@@ -21,15 +26,53 @@ describe('IDE review mode', () => {
       loading: false,
     });
 
-    vm = createComponentWithStore(Component, store).$mount();
+    wrapper = mount(keepAlive(IdeReview), {
+      store,
+      localVue,
+    });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders list of files', () => {
-    expect(vm.$el.textContent).toContain('fileName');
+    expect(wrapper.text()).toContain('fileName');
+  });
+
+  describe('activated', () => {
+    let inititializeSpy;
+
+    beforeEach(async () => {
+      inititializeSpy = jest.spyOn(wrapper.find(IdeReview).vm, 'initialize');
+      store.state.viewer = 'editor';
+
+      await wrapper.vm.reactivate();
+    });
+
+    it('re initializes the component', () => {
+      expect(inititializeSpy).toHaveBeenCalled();
+    });
+
+    it('updates viewer to "diff" by default', () => {
+      expect(store.state.viewer).toBe('diff');
+    });
+
+    describe('merge request is defined', () => {
+      beforeEach(async () => {
+        store.state.currentMergeRequestId = '1';
+        store.state.projects.abcproject.mergeRequests['1'] = {
+          iid: 123,
+          web_url: 'testing123',
+        };
+
+        await wrapper.vm.reactivate();
+      });
+
+      it('updates viewer to "mrdiff"', async () => {
+        expect(store.state.viewer).toBe('mrdiff');
+      });
+    });
   });
 
   describe('merge request', () => {
@@ -40,32 +83,27 @@ describe('IDE review mode', () => {
         web_url: 'testing123',
       };
 
-      return vm.$nextTick();
+      return wrapper.vm.$nextTick();
     });
 
     it('renders edit dropdown', () => {
-      expect(vm.$el.querySelector('.btn')).not.toBe(null);
+      expect(wrapper.find(EditorModeDropdown).exists()).toBe(true);
     });
 
-    it('renders merge request link & IID', () => {
+    it('renders merge request link & IID', async () => {
       store.state.viewer = 'mrdiff';
 
-      return vm.$nextTick(() => {
-        const link = vm.$el.querySelector('.ide-review-sub-header');
+      await wrapper.vm.$nextTick();
 
-        expect(link.querySelector('a').getAttribute('href')).toBe('testing123');
-        expect(trimText(link.textContent)).toBe('Merge request (!123)');
-      });
+      expect(trimText(wrapper.text())).toContain('Merge request (!123)');
     });
 
-    it('changes text to latest changes when viewer is not mrdiff', () => {
+    it('changes text to latest changes when viewer is not mrdiff', async () => {
       store.state.viewer = 'diff';
 
-      return vm.$nextTick(() => {
-        expect(trimText(vm.$el.querySelector('.ide-review-sub-header').textContent)).toBe(
-          'Latest changes',
-        );
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.text()).toContain('Latest changes');
     });
   });
 });

@@ -33,7 +33,7 @@ describe('Todo Button', () => {
   it.each`
     label             | isTodo
     ${'Mark as done'} | ${true}
-    ${'Add a To-Do'}  | ${false}
+    ${'Add a To Do'}  | ${false}
   `('sets correct label when isTodo is $isTodo', ({ label, isTodo }) => {
     createComponent({ isTodo });
 

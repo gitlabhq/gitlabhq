@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module RackAttackSpecHelpers
-  def post_args_with_token_headers(url, token_headers)
-    [url, params: nil, headers: token_headers]
-  end
-
   def api_get_args_with_token_headers(partial_url, token_headers)
     ["/api/#{API::API.version}#{partial_url}", params: nil, headers: token_headers]
   end

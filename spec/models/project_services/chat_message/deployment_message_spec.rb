@@ -70,6 +70,17 @@ RSpec.describe ChatMessage::DeploymentMessage do
 
       expect(message.pretext).to eq('Deploy to staging unknown')
     end
+
+    it 'returns a message for a running deployment' do
+      data = {
+          status: 'running',
+          environment: 'production'
+      }
+
+      message = described_class.new(data)
+
+      expect(message.pretext).to eq('Starting deploy to production')
+    end
   end
 
   describe '#attachments' do

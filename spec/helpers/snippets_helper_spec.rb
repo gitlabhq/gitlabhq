@@ -63,32 +63,6 @@ RSpec.describe SnippetsHelper do
     end
   end
 
-  describe '#snippet_embed_tag' do
-    subject { snippet_embed_tag(snippet) }
-
-    context 'personal snippets' do
-      let(:snippet) { public_personal_snippet }
-
-      context 'public' do
-        it 'returns a script tag with the snippet full url' do
-          expect(subject).to eq(script_embed("http://test.host/-/snippets/#{snippet.id}"))
-        end
-      end
-    end
-
-    context 'project snippets' do
-      let(:snippet) { public_project_snippet }
-
-      it 'returns a script tag with the snippet full url' do
-        expect(subject).to eq(script_embed("http://test.host/#{snippet.project.path_with_namespace}/-/snippets/#{snippet.id}"))
-      end
-    end
-
-    def script_embed(url)
-      "<script src=\"#{url}.js\"></script>"
-    end
-  end
-
   describe '#download_raw_snippet_button' do
     subject { download_raw_snippet_button(snippet) }
 
@@ -140,30 +114,6 @@ RSpec.describe SnippetsHelper do
       it 'does not return anything' do
         expect(subject).to be_nil
       end
-    end
-  end
-
-  describe '#snippet_embed_input' do
-    subject { snippet_embed_input(snippet) }
-
-    context 'with PersonalSnippet' do
-      let(:snippet) { public_personal_snippet }
-
-      it 'returns the input component' do
-        expect(subject).to eq embed_input(snippet_url(snippet))
-      end
-    end
-
-    context 'with ProjectSnippet' do
-      let(:snippet) { public_project_snippet }
-
-      it 'returns the input component' do
-        expect(subject).to eq embed_input(project_snippet_url(snippet.project, snippet))
-      end
-    end
-
-    def embed_input(url)
-      "<input type=\"text\" readonly=\"readonly\" class=\"js-snippet-url-area snippet-embed-input form-control\" data-url=\"#{url}\" value=\"<script src=&quot;#{url}.js&quot;></script>\" autocomplete=\"off\"></input>"
     end
   end
 end

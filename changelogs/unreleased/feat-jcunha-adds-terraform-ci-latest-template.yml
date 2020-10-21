@@ -1,0 +1,6 @@
+---
+title: Adds a Terraform.latest.gitlab-ci.yml to support quick development of Terraform
+  related features
+merge_request: 43802
+author:
+type: added

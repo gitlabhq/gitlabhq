@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import { sortBy, pull } from 'lodash';
+import { pull, union } from 'lodash';
 import { formatIssue, moveIssueListHelper } from '../boards_util';
 import * as mutationTypes from './mutation_types';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 const notImplemented = () => {
@@ -10,11 +10,13 @@ const notImplemented = () => {
   throw new Error('Not implemented!');
 };
 
-const removeIssueFromList = (state, listId, issueId) => {
+export const removeIssueFromList = ({ state, listId, issueId }) => {
   Vue.set(state.issuesByListId, listId, pull(state.issuesByListId[listId], issueId));
+  const list = state.boardLists[listId];
+  Vue.set(state.boardLists, listId, { ...list, issuesSize: list.issuesSize - 1 });
 };
 
-const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atIndex }) => {
+export const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atIndex }) => {
   const listIssues = state.issuesByListId[listId];
   let newIndex = atIndex || 0;
   if (moveBeforeId) {
@@ -24,6 +26,8 @@ const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atI
   }
   listIssues.splice(newIndex, 0, issueId);
   Vue.set(state.issuesByListId, listId, listIssues);
+  const list = state.boardLists[listId];
+  Vue.set(state.boardLists, listId, { ...list, issuesSize: list.issuesSize + 1 });
 };
 
 export default {
@@ -39,6 +43,12 @@ export default {
     state.boardLists = lists;
   },
 
+  [mutationTypes.RECEIVE_BOARD_LISTS_FAILURE]: state => {
+    state.error = s__(
+      'Boards|An error occurred while fetching the board lists. Please reload the page.',
+    );
+  },
+
   [mutationTypes.SET_ACTIVE_ID](state, { id, sidebarType }) {
     state.activeId = id;
     state.sidebarType = sidebarType;
@@ -49,15 +59,15 @@ export default {
   },
 
   [mutationTypes.CREATE_LIST_FAILURE]: state => {
-    state.error = __('An error occurred while creating the list. Please try again.');
+    state.error = s__('Boards|An error occurred while creating the list. Please try again.');
   },
 
   [mutationTypes.REQUEST_ADD_LIST]: () => {
     notImplemented();
   },
 
-  [mutationTypes.RECEIVE_ADD_LIST_SUCCESS]: () => {
-    notImplemented();
+  [mutationTypes.RECEIVE_ADD_LIST_SUCCESS]: (state, list) => {
+    Vue.set(state.boardLists, list.id, list);
   },
 
   [mutationTypes.RECEIVE_ADD_LIST_ERROR]: () => {
@@ -66,14 +76,12 @@ export default {
 
   [mutationTypes.MOVE_LIST]: (state, { movedList, listAtNewIndex }) => {
     const { boardLists } = state;
-    const movedListIndex = state.boardLists.findIndex(l => l.id === movedList.id);
-    Vue.set(boardLists, movedListIndex, movedList);
-    Vue.set(boardLists, movedListIndex.position + 1, listAtNewIndex);
-    Vue.set(state, 'boardLists', sortBy(boardLists, 'position'));
+    Vue.set(boardLists, movedList.id, movedList);
+    Vue.set(boardLists, listAtNewIndex.id, listAtNewIndex);
   },
 
   [mutationTypes.UPDATE_LIST_FAILURE]: (state, backupList) => {
-    state.error = __('An error occurred while updating the list. Please try again.');
+    state.error = s__('Boards|An error occurred while updating the list. Please try again.');
     Vue.set(state, 'boardLists', backupList);
   },
 
@@ -89,28 +97,36 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.RECEIVE_ISSUES_FOR_LIST_SUCCESS]: (state, { listIssues, listId }) => {
+  [mutationTypes.REQUEST_ISSUES_FOR_LIST]: (state, { listId, fetchNext }) => {
+    Vue.set(state.listsFlags, listId, { [fetchNext ? 'isLoadingMore' : 'isLoading']: true });
+  },
+
+  [mutationTypes.RECEIVE_ISSUES_FOR_LIST_SUCCESS]: (
+    state,
+    { listIssues, listPageInfo, listId },
+  ) => {
     const { listData, issues } = listIssues;
     Vue.set(state, 'issues', { ...state.issues, ...issues });
-    Vue.set(state.issuesByListId, listId, listData[listId]);
-    const listIndex = state.boardLists.findIndex(l => l.id === listId);
-    Vue.set(state.boardLists[listIndex], 'loading', false);
+    Vue.set(
+      state.issuesByListId,
+      listId,
+      union(state.issuesByListId[listId] || [], listData[listId]),
+    );
+    Vue.set(state.pageInfoByListId, listId, listPageInfo[listId]);
+    Vue.set(state.listsFlags, listId, { isLoading: false, isLoadingMore: false });
   },
 
   [mutationTypes.RECEIVE_ISSUES_FOR_LIST_FAILURE]: (state, listId) => {
-    state.error = __('An error occurred while fetching the board issues. Please reload the page.');
-    const listIndex = state.boardLists.findIndex(l => l.id === listId);
-    Vue.set(state.boardLists[listIndex], 'loading', false);
+    state.error = s__(
+      'Boards|An error occurred while fetching the board issues. Please reload the page.',
+    );
+    Vue.set(state.listsFlags, listId, { isLoading: false, isLoadingMore: false });
   },
 
-  [mutationTypes.REQUEST_ISSUES_FOR_ALL_LISTS]: state => {
-    state.isLoadingIssues = true;
-  },
-
-  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS]: (state, { listData, issues }) => {
-    state.issuesByListId = listData;
-    state.issues = issues;
-    state.isLoadingIssues = false;
+  [mutationTypes.RESET_ISSUES]: state => {
+    Object.keys(state.issuesByListId).forEach(listId => {
+      Vue.set(state.issuesByListId, listId, []);
+    });
   },
 
   [mutationTypes.UPDATE_ISSUE_BY_ID]: (state, { issueId, prop, value }) => {
@@ -120,11 +136,6 @@ export default {
     }
 
     Vue.set(state.issues[issueId], prop, value);
-  },
-
-  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE]: state => {
-    state.error = __('An error occurred while fetching the board issues. Please reload the page.');
-    state.isLoadingIssues = false;
   },
 
   [mutationTypes.REQUEST_ADD_ISSUE]: () => {
@@ -143,13 +154,13 @@ export default {
     state,
     { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId },
   ) => {
-    const fromList = state.boardLists.find(l => l.id === fromListId);
-    const toList = state.boardLists.find(l => l.id === toListId);
+    const fromList = state.boardLists[fromListId];
+    const toList = state.boardLists[toListId];
 
     const issue = moveIssueListHelper(originalIssue, fromList, toList);
     Vue.set(state.issues, issue.id, issue);
 
-    removeIssueFromList(state, fromListId, issue.id);
+    removeIssueFromList({ state, listId: fromListId, issueId: issue.id });
     addIssueToList({ state, listId: toListId, issueId: issue.id, moveBeforeId, moveAfterId });
   },
 
@@ -162,9 +173,9 @@ export default {
     state,
     { originalIssue, fromListId, toListId, originalIndex },
   ) => {
-    state.error = __('An error occurred while moving the issue. Please try again.');
+    state.error = s__('Boards|An error occurred while moving the issue. Please try again.');
     Vue.set(state.issues, originalIssue.id, originalIssue);
-    removeIssueFromList(state, toListId, originalIssue.id);
+    removeIssueFromList({ state, listId: toListId, issueId: originalIssue.id });
     addIssueToList({
       state,
       listId: fromListId,
@@ -193,8 +204,8 @@ export default {
   },
 
   [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issue }) => {
-    state.error = __('An error occurred while creating the issue. Please try again.');
-    removeIssueFromList(state, list.id, issue.id);
+    state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
+    removeIssueFromList({ state, listId: list.id, issueId: issue.id });
   },
 
   [mutationTypes.SET_CURRENT_PAGE]: () => {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Notes < Grape::API::Instance
+  class Notes < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
 

@@ -271,6 +271,7 @@ RSpec.describe Groups::ClustersController do
           expect(cluster).to be_kubernetes
           expect(cluster.provider_gcp).to be_legacy_abac
           expect(cluster).to be_managed
+          expect(cluster).to be_namespace_per_environment
         end
 
         context 'when legacy_abac param is false' do
@@ -358,6 +359,7 @@ RSpec.describe Groups::ClustersController do
           expect(cluster).to be_user
           expect(cluster).to be_kubernetes
           expect(cluster).to be_managed
+          expect(cluster).to be_namespace_per_environment
         end
       end
 
@@ -387,6 +389,7 @@ RSpec.describe Groups::ClustersController do
           expect(cluster).to be_user
           expect(cluster).to be_kubernetes
           expect(cluster).to be_platform_kubernetes_rbac
+          expect(cluster).to be_namespace_per_environment
         end
       end
 
@@ -716,6 +719,7 @@ RSpec.describe Groups::ClustersController do
                 enabled: false,
                 name: 'my-new-cluster-name',
                 managed: false,
+                namespace_per_environment: false,
                 domain: domain
               }
             }
@@ -729,6 +733,7 @@ RSpec.describe Groups::ClustersController do
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
             expect(cluster).not_to be_managed
+            expect(cluster).not_to be_namespace_per_environment
           end
         end
 

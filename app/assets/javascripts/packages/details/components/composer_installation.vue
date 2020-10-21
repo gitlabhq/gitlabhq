@@ -14,12 +14,12 @@ export default {
   },
   computed: {
     ...mapState(['composerHelpPath']),
-    ...mapGetters(['composerRegistryInclude', 'composerPackageInclude']),
+    ...mapGetters(['composerRegistryInclude', 'composerPackageInclude', 'groupExists']),
   },
   i18n: {
-    registryInclude: s__('PackageRegistry|composer.json registry include'),
+    registryInclude: s__('PackageRegistry|Add composer registry'),
     copyRegistryInclude: s__('PackageRegistry|Copy registry include'),
-    packageInclude: s__('PackageRegistry|composer.json require package include'),
+    packageInclude: s__('PackageRegistry|Install package version'),
     copyPackageInclude: s__('PackageRegistry|Copy require package include'),
     infoLine: s__(
       'PackageRegistry|For more information on Composer packages in GitLab, %{linkStart}see the documentation.%{linkEnd}',
@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-if="groupExists" data-testid="root-node">
     <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
 
     <code-instruction

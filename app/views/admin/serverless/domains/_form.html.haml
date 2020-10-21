@@ -16,7 +16,7 @@
             - text, status = @domain.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
             .badge{ class: status }
               = text
-            = link_to sprite_icon("redo"), verify_admin_serverless_domain_path(@domain.id), method: :post, class: "btn has-tooltip", title: _("Retry verification")
+            = link_to sprite_icon("redo"), verify_admin_serverless_domain_path(@domain.id), method: :post, class: "gl-button btn has-tooltip", title: _("Retry verification")
 
         .col-sm-6
           = f.label :serverless_domain_dns, _('DNS'), class: 'label-bold'
@@ -50,7 +50,7 @@
         .d-flex.justify-content-between.align-items-center.p-3
           %span
             = @domain.subject || _('missing')
-          %button.btn.btn-remove.btn-sm.js-domain-cert-replace-btn{ type: 'button' }
+          %button.gl-button.btn.btn-danger.btn-sm.js-domain-cert-replace-btn{ type: 'button' }
             = _('Replace')
 
     .js-domain-cert-inputs{ class: ('hidden' if show_certificate_card) }
@@ -65,9 +65,9 @@
         %span.form-text.text-muted
           = _("Upload a private key for your certificate")
 
-  = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "btn btn-success js-serverless-domain-submit", disabled: @domain.persisted?
+  = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "gl-button btn btn-success js-serverless-domain-submit", disabled: @domain.persisted?
   - if @domain.persisted?
-    %button.btn.btn-remove{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain" } }
+    %button.gl-button.btn.btn-danger{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain" } }
       = _('Delete domain')
 
 -# haml-lint:disable NoPlainNodes
@@ -88,12 +88,12 @@
             = _("You are about to delete %{domain} from your instance. This domain will no longer be available to any Knative application.").html_safe % { domain: "<code>#{@domain.domain}</code>".html_safe }
 
         .modal-footer
-          %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' }
+          %a{ href: '#', data: { dismiss: 'modal' }, class: 'gl-button btn btn-default' }
             = _('Cancel')
 
           = link_to _('Delete domain'),
             admin_serverless_domain_path(@domain.id),
             title: _('Delete'),
             method: :delete,
-            class: "btn btn-remove",
+            class: "gl-button btn btn-danger",
             disabled: domain_attached

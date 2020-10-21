@@ -68,7 +68,7 @@
               %td.responsive-table-cell.build-failure{ data: { column: _('Failure')} }
                 = build.present.callout_failure_message
               %td.responsive-table-cell.build-actions
-                - if can?(current_user, :update_build, job)
+                - if can?(current_user, :update_build, job) && job.retryable?
                   = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build gl-button btn-icon btn-default' do
                     = sprite_icon('repeat', css_class: 'gl-icon')
             - if can?(current_user, :read_build, job)

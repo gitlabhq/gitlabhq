@@ -1,0 +1,5 @@
+---
+title: Preload `user_notes_count` in MergeRequest GraphQL API
+merge_request: 44894
+author:
+type: performance

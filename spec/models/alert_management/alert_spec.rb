@@ -133,7 +133,7 @@ RSpec.describe AlertManagement::Alert do
             let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project) }
 
             before do
-              existing_alert.public_send(described_class::STATUS_EVENTS[existing_status])
+              existing_alert.change_status_to(existing_status)
             end
 
             if params[:valid]
@@ -170,6 +170,12 @@ RSpec.describe AlertManagement::Alert do
 
         it { is_expected.to be_valid }
       end
+
+      context 'nested array' do
+        let(:hosts) { ['111.111.111.111', ['111.111.111.111']] }
+
+        it { is_expected.not_to be_valid }
+      end
     end
   end
 
@@ -189,14 +195,14 @@ RSpec.describe AlertManagement::Alert do
     end
 
     describe '.for_status' do
-      let(:status) { AlertManagement::Alert::STATUSES[:resolved] }
+      let(:status) { :resolved }
 
       subject { AlertManagement::Alert.for_status(status) }
 
       it { is_expected.to match_array(resolved_alert) }
 
       context 'with multiple statuses' do
-        let(:status) { AlertManagement::Alert::STATUSES.values_at(:resolved, :ignored) }
+        let(:status) { [:resolved, :ignored] }
 
         it { is_expected.to match_array([resolved_alert, ignored_alert]) }
       end
@@ -230,6 +236,35 @@ RSpec.describe AlertManagement::Alert do
       it { is_expected.to match_array(env_alert) }
     end
 
+    describe '.for_assignee_username' do
+      let_it_be(:alert) { triggered_alert }
+      let_it_be(:assignee) { create(:user) }
+
+      subject { AlertManagement::Alert.for_assignee_username(assignee_username) }
+
+      before_all do
+        alert.update!(assignees: [assignee])
+      end
+
+      context 'when matching assignee_username' do
+        let(:assignee_username) { assignee.username }
+
+        it { is_expected.to contain_exactly(alert) }
+      end
+
+      context 'when unknown assignee_username' do
+        let(:assignee_username) { 'unknown username' }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with empty assignee_username' do
+        let(:assignee_username) { ' ' }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
     describe '.order_severity_with_open_prometheus_alert' do
       subject { described_class.where(project: alert_project).order_severity_with_open_prometheus_alert }
 
@@ -239,19 +274,6 @@ RSpec.describe AlertManagement::Alert do
       let_it_be(:triggered_high_alert) { create(:alert_management_alert, :triggered, :high, project: alert_project) }
 
       it { is_expected.to eq([triggered_critical_alert, triggered_high_alert]) }
-    end
-
-    describe '.counts_by_status' do
-      subject { described_class.counts_by_status }
-
-      it do
-        is_expected.to eq(
-          triggered_alert.status => 1,
-          acknowledged_alert.status => 1,
-          resolved_alert.status => 1,
-          ignored_alert.status => 1
-        )
-      end
     end
 
     describe '.counts_by_project_id' do
@@ -275,6 +297,55 @@ RSpec.describe AlertManagement::Alert do
       subject { described_class.not_resolved }
 
       it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert, ignored_alert) }
+    end
+  end
+
+  describe '.status_value' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :status_value) do
+      :triggered    | 0
+      :acknowledged | 1
+      :resolved     | 2
+      :ignored      | 3
+      :unknown      | nil
+    end
+
+    with_them do
+      it 'returns status value by its name' do
+        expect(described_class.status_value(status)).to eq(status_value)
+      end
+    end
+  end
+
+  describe '.status_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:raw_status, :status) do
+      0  | :triggered
+      1  | :acknowledged
+      2  | :resolved
+      3  | :ignored
+      -1 | nil
+    end
+
+    with_them do
+      it 'returns status name by its values' do
+        expect(described_class.status_name(raw_status)).to eq(status)
+      end
+    end
+  end
+
+  describe '.counts_by_status' do
+    subject { described_class.counts_by_status }
+
+    it do
+      is_expected.to eq(
+        triggered: 1,
+        acknowledged: 1,
+        resolved: 1,
+        ignored: 1
+      )
     end
   end
 
@@ -360,6 +431,24 @@ RSpec.describe AlertManagement::Alert do
 
     with_them do
       it { expect(described_class.reference_valid?(ref)).to eq(result) }
+    end
+  end
+
+  describe '.open_status?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :is_open_status) do
+      :triggered    | true
+      :acknowledged | true
+      :resolved     | false
+      :ignored      | false
+      nil           | false
+    end
+
+    with_them do
+      it 'returns true when the status is open status' do
+        expect(described_class.open_status?(status)).to eq(is_open_status)
+      end
     end
   end
 
@@ -451,6 +540,56 @@ RSpec.describe AlertManagement::Alert do
 
     it 'increments the events count by 1' do
       expect { subject }.to change { alert.events }.by(1)
+    end
+  end
+
+  describe '#status_event_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:for_status, :event) do
+      :triggered     | :trigger
+      'triggered'    | :trigger
+      :acknowledged  | :acknowledge
+      'acknowledged' | :acknowledge
+      :resolved      | :resolve
+      'resolved'     | :resolve
+      :ignored       | :ignore
+      'ignored'      | :ignore
+      :unknown       | nil
+      nil            | nil
+      ''             | nil
+      1              | nil
+    end
+
+    with_them do
+      let(:alert) { build(:alert_management_alert, project: project) }
+
+      it 'returns event by status name' do
+        expect(alert.status_event_for(for_status)).to eq(event)
+      end
+    end
+  end
+
+  describe '#change_status_to' do
+    let_it_be_with_reload(:alert) { create(:alert_management_alert, project: project) }
+
+    context 'with valid statuses' do
+      it 'changes the status to triggered' do
+        alert.acknowledge! # change to non-triggered status
+        expect { alert.change_status_to(:triggered) }.to change { alert.triggered? }.to(true)
+      end
+
+      %i(acknowledged resolved ignored).each do |status|
+        it "changes the status to #{status}" do
+          expect { alert.change_status_to(status) }.to change { alert.public_send(:"#{status}?") }.to(true)
+        end
+      end
+    end
+
+    context 'with invalid status' do
+      it 'does not change the current status' do
+        expect { alert.change_status_to(nil) }.not_to change { alert.status }
+      end
     end
   end
 end

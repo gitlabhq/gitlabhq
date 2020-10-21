@@ -1,0 +1,316 @@
+@import 'mixins_and_variables_and_functions';
+// Disabled to use the color map for creating color schemes
+// scss-lint:disable ColorVariable
+$colors: (
+  white-header-head-neutral   : #e1fad7,
+  white-line-head-neutral     : #effdec,
+  white-button-head-neutral   : #9adb84,
+
+  white-header-head-chosen    : #baf0a8,
+  white-line-head-chosen      : #e1fad7,
+  white-button-head-chosen    : #52c22d,
+
+  white-header-origin-neutral : #e0f0ff,
+  white-line-origin-neutral   : #f2f9ff,
+  white-button-origin-neutral : #87c2fa,
+
+  white-header-origin-chosen  : #add8ff,
+  white-line-origin-chosen    : #e0f0ff,
+  white-button-origin-chosen  : #268ced,
+
+  white-header-not-chosen     : #f0f0f0,
+  white-line-not-chosen       : $gray-light,
+
+  dark-header-head-neutral   : rgba(#3f3, 0.2),
+  dark-line-head-neutral     : rgba(#3f3, 0.1),
+  dark-button-head-neutral   : #40874f,
+
+  dark-header-head-chosen    : rgba(#3f3, 0.33),
+  dark-line-head-chosen      : rgba(#3f3, 0.2),
+  dark-button-head-chosen    : #258537,
+
+  dark-header-origin-neutral : rgba(#2878c9, 0.4),
+  dark-line-origin-neutral   : rgba(#2878c9, 0.3),
+  dark-button-origin-neutral : #2a5c8c,
+
+  dark-header-origin-chosen  : rgba(#2878c9, 0.6),
+  dark-line-origin-chosen    : rgba(#2878c9, 0.4),
+  dark-button-origin-chosen  : #1d6cbf,
+
+  dark-header-not-chosen     : rgba(#fff, 0.25),
+  dark-line-not-chosen       : rgba(#fff, 0.1),
+
+  monokai-header-head-neutral   : rgba(#a6e22e, 0.25),
+  monokai-line-head-neutral     : rgba(#a6e22e, 0.1),
+  monokai-button-head-neutral   : #376b20,
+
+  monokai-header-head-chosen    : rgba(#a6e22e, 0.4),
+  monokai-line-head-chosen      : rgba(#a6e22e, 0.25),
+  monokai-button-head-chosen    : #39800d,
+
+  monokai-header-origin-neutral : rgba(#60d9f1, 0.35),
+  monokai-line-origin-neutral   : rgba(#60d9f1, 0.15),
+  monokai-button-origin-neutral : #38848c,
+
+  monokai-header-origin-chosen  : rgba(#60d9f1, 0.5),
+  monokai-line-origin-chosen    : rgba(#60d9f1, 0.35),
+  monokai-button-origin-chosen  : #3ea4b2,
+
+  monokai-header-not-chosen     : rgba(#76715d, 0.24),
+  monokai-line-not-chosen       : rgba(#76715d, 0.1),
+
+  solarized-light-header-head-neutral   : rgba(#859900, 0.37),
+  solarized-light-line-head-neutral     : rgba(#859900, 0.2),
+  solarized-light-button-head-neutral   : #afb262,
+
+  solarized-light-header-head-chosen    : rgba(#859900, 0.5),
+  solarized-light-line-head-chosen      : rgba(#859900, 0.37),
+  solarized-light-button-head-chosen    : #94993d,
+
+  solarized-light-header-origin-neutral : rgba(#2878c9, 0.37),
+  solarized-light-line-origin-neutral   : rgba(#2878c9, 0.15),
+  solarized-light-button-origin-neutral : #60a1bf,
+
+  solarized-light-header-origin-chosen  : rgba(#2878c9, 0.6),
+  solarized-light-line-origin-chosen    : rgba(#2878c9, 0.37),
+  solarized-light-button-origin-chosen  : #2482b2,
+
+  solarized-light-header-not-chosen     : rgba(#839496, 0.37),
+  solarized-light-line-not-chosen       : rgba(#839496, 0.2),
+
+  solarized-dark-header-head-neutral   : rgba(#859900, 0.35),
+  solarized-dark-line-head-neutral     : rgba(#859900, 0.15),
+  solarized-dark-button-head-neutral   : #376b20,
+
+  solarized-dark-header-head-chosen    : rgba(#859900, 0.5),
+  solarized-dark-line-head-chosen      : rgba(#859900, 0.35),
+  solarized-dark-button-head-chosen    : #39800d,
+
+  solarized-dark-header-origin-neutral : rgba(#2878c9, 0.35),
+  solarized-dark-line-origin-neutral   : rgba(#2878c9, 0.15),
+  solarized-dark-button-origin-neutral : #086799,
+
+  solarized-dark-header-origin-chosen  : rgba(#2878c9, 0.6),
+  solarized-dark-line-origin-chosen    : rgba(#2878c9, 0.35),
+  solarized-dark-button-origin-chosen  : #0082cc,
+
+  solarized_dark_header_not_chosen     : rgba(#839496, 0.25),
+  solarized_dark_line_not_chosen       : rgba(#839496, 0.15),
+
+  none_header_head_neutral   : $gray-normal,
+  none_line_head_neutral     : $gray-normal,
+  none_button_head_neutral   : $gray-normal,
+
+  none_header_head_chosen    : $gray-darker,
+  none_line_head_chosen      : $gray-darker,
+  none_button_head_chosen    : $gray-darker,
+
+  none_header_origin_neutral : $gray-normal,
+  none_line_origin_neutral   : $gray-normal,
+  none_button_origin_neutral : $gray-normal,
+
+  none_header_origin_chosen  : $gray-darker,
+  none_line_origin_chosen    : $gray-darker,
+  none_button_origin_chosen  : $gray-darker,
+
+  none_header_not_chosen     : $gray-light,
+  none_line_not_chosen       : $gray-light
+
+);
+// scss-lint:enable ColorVariable
+
+@mixin color-scheme($color) {
+  .header.line_content,
+  .diff-line-num {
+    &.origin {
+      background-color: map-get($colors, #{$color}-header-origin-neutral);
+      border-color: map-get($colors, #{$color}-header-origin-neutral);
+
+      button {
+        background-color: map-get($colors, #{$color}-button-origin-neutral);
+        border-color: darken(map-get($colors, #{$color}-button-origin-neutral), 15);
+      }
+
+      &.selected {
+        background-color: map-get($colors, #{$color}-header-origin-chosen);
+        border-color: map-get($colors, #{$color}-header-origin-chosen);
+
+        button {
+          background-color: map-get($colors, #{$color}-button-origin-chosen);
+          border-color: darken(map-get($colors, #{$color}-button-origin-chosen), 15);
+        }
+      }
+
+      &.unselected {
+        background-color: map-get($colors, #{$color}-header-not-chosen);
+        border-color: map-get($colors, #{$color}-header-not-chosen);
+
+        button {
+          background-color: lighten(map-get($colors, #{$color}-button-origin-neutral), 15);
+          border-color: map-get($colors, #{$color}-button-origin-neutral);
+        }
+      }
+    }
+
+    &.head {
+      background-color: map-get($colors, #{$color}-header-head-neutral);
+      border-color: map-get($colors, #{$color}-header-head-neutral);
+
+      button {
+        background-color: map-get($colors, #{$color}-button-head-neutral);
+        border-color: darken(map-get($colors, #{$color}-button-head-neutral), 15);
+      }
+
+      &.selected {
+        background-color: map-get($colors, #{$color}-header-head-chosen);
+        border-color: map-get($colors, #{$color}-header-head-chosen);
+
+        button {
+          background-color: map-get($colors, #{$color}-button-head-chosen);
+          border-color: darken(map-get($colors, #{$color}-button-head-chosen), 15);
+        }
+      }
+
+      &.unselected {
+        background-color: map-get($colors, #{$color}-header-not-chosen);
+        border-color: map-get($colors, #{$color}-header-not-chosen);
+
+        button {
+          background-color: lighten(map-get($colors, #{$color}-button-head-neutral), 15);
+          border-color: map-get($colors, #{$color}-button-head-neutral);
+        }
+      }
+    }
+  }
+
+  .line_content {
+    &.origin {
+      background-color: map-get($colors, #{$color}-line-origin-neutral);
+
+      &.selected {
+        background-color: map-get($colors, #{$color}-line-origin-chosen);
+      }
+
+      &.unselected {
+        background-color: map-get($colors, #{$color}-line-not-chosen);
+      }
+    }
+
+    &.head {
+      background-color: map-get($colors, #{$color}-line-head-neutral);
+
+      &.selected {
+        background-color: map-get($colors, #{$color}-line-head-chosen);
+      }
+
+      &.unselected {
+        background-color: map-get($colors, #{$color}-line-not-chosen);
+      }
+    }
+  }
+}
+
+#conflicts {
+  .white {
+    @include color-scheme('white'); }
+
+  .dark {
+    @include color-scheme('dark'); }
+
+  .monokai {
+    @include color-scheme('monokai'); }
+
+  .solarized-light {
+    @include color-scheme('solarized-light'); }
+
+  .solarized-dark {
+    @include color-scheme('solarized-dark'); }
+
+  .none {
+    .line_content.header {
+      button {
+        color: $gray-900;
+      }
+    }
+  }
+
+  .diff-wrap-lines .line_content {
+    white-space: normal;
+    min-height: 19px;
+  }
+
+  .line_content.header {
+    position: relative;
+
+    button {
+      border-radius: 2px;
+      font-size: 10px;
+      position: absolute;
+      right: 10px;
+      padding: 0;
+      outline: none;
+      color: var(--white, $white);
+      width: 75px; // static width to make 2 buttons have same width
+      height: 19px;
+    }
+  }
+
+  .btn-success .fa-spinner {
+    color: var(--white, $white);
+  }
+
+  .editor-wrap {
+    &.is-loading {
+      .editor {
+        display: none;
+      }
+
+      .loading {
+        display: block;
+      }
+    }
+
+    &.saved {
+      .editor {
+        border-top: solid 2px var(--green-300, $green-300);
+      }
+    }
+
+    .editor {
+      pre {
+        height: 350px;
+        border: 0;
+        border-radius: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .loading {
+      display: none;
+    }
+  }
+
+  .discard-changes-alert {
+    background-color: var(--gray-10, $gray-10);
+    text-align: right;
+    padding: $gl-padding-top $gl-padding;
+    color: var(--gl-text-color, $gl-text-color);
+
+    .discard-actions {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  }
+
+  .resolve-conflicts-form {
+    h4 {
+      margin-top: 0;
+    }
+
+    .resolve-info {
+      @media(max-width: map-get($grid-breakpoints, lg)-1) {
+        margin-bottom: $gl-padding;
+      }
+    }
+  }
+}

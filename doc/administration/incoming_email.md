@@ -82,15 +82,15 @@ instead of the regular password for the mailbox.
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 [Postfix setup documentation](reply_by_email_postfix_setup.md).
 
-### Security Concerns
+### Security concerns
 
-WARNING: **WARNING:**
+CAUTION: **Caution:**
 Be careful when choosing the domain used for receiving incoming email.
 
-For the sake of example, suppose your top-level company domain is `hooli.com`.
+For example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain via Google
 Apps, and your company's private Slack instance requires a valid `@hooli.com`
-email address in order to sign up.
+email address to sign up.
 
 If you also host a public-facing GitLab instance at `hooli.com` and set your
 incoming email domain to `hooli.com`, an attacker could abuse the "Create new
@@ -112,7 +112,7 @@ See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/303
 for a real-world example of this exploit.
 
 CAUTION: **Caution:**
-Be sure to use a mail server that has been configured to reduce
+Use a mail server that has been configured to reduce
 spam.
 A Postfix mail server that is running on a default configuration, for example,
 can result in abuse. All messages received on the configured mailbox will be processed

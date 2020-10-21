@@ -7,7 +7,7 @@ class AddUsersFkToJiraImportsTable < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :jira_imports, :users, on_delete: :nullify # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :jira_imports, :users, on_delete: :nullify
     end
   end
 

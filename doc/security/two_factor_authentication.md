@@ -65,8 +65,21 @@ The following are important notes about 2FA:
   2FA enabled, 2FA is **not** required for those individually added members.
 - If there are multiple 2FA requirements (for example, group + all users, or multiple
   groups) the shortest grace period will be used.
+- It is possible to disallow subgroups from setting up their own 2FA requirements.
+  Navigate to the top-level group's **Settings > General > Permissions, LFS, 2FA > Two-factor authentication** and uncheck the **Allow subgroups to set up their own two-factor authentication rule** field. This action will cause all subgroups with 2FA requirements to stop requiring that from their members.
 
 ## Disabling 2FA for everyone
+
+CAUTION: **Caution:**
+Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
+or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
+settings. In addition to the steps in this section, you will need to disable any enforced 2FA
+settings so users aren't asked to set up 2FA again, the next time the user signs in to GitLab.
+Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
+or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
+settings if they have been configured. In addition to the steps in this section,
+you will need to disable any enforced 2FA settings so users aren't asked to setup
+2FA again when the next login to GitLab.
 
 There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a Rake task for that:

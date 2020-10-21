@@ -6,7 +6,7 @@
 - if diff_file.submodule?
   - blob = diff_file.blob
   %span
-    = icon('archive fw')
+    = sprite_icon('archive')
 
     %strong.file-title-name
       = submodule_link(blob, diff_file.content_sha, diff_file.repository)

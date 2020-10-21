@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectImport < Grape::API::Instance
+  class ProjectImport < ::API::Base
     include PaginationParams
-
-    MAXIMUM_FILE_SIZE = 50.megabytes
 
     helpers Helpers::ProjectsHelpers
     helpers Helpers::FileUploadHelpers

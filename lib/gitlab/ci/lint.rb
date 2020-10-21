@@ -4,10 +4,11 @@ module Gitlab
   module Ci
     class Lint
       class Result
-        attr_reader :jobs, :errors, :warnings
+        attr_reader :jobs, :merged_yaml, :errors, :warnings
 
-        def initialize(jobs:, errors:, warnings:)
+        def initialize(jobs:, merged_yaml:, errors:, warnings:)
           @jobs = jobs
+          @merged_yaml = merged_yaml
           @errors = errors
           @warnings = warnings
         end
@@ -39,6 +40,7 @@ module Gitlab
 
         Result.new(
           jobs: dry_run_convert_to_jobs(pipeline.stages),
+          merged_yaml: pipeline.merged_yaml,
           errors: pipeline.error_messages.map(&:content),
           warnings: pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content)
         )
@@ -54,6 +56,7 @@ module Gitlab
 
         Result.new(
           jobs: static_validation_convert_to_jobs(result),
+          merged_yaml: result.merged_yaml,
           errors: result.errors,
           warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT) # rubocop: disable CodeReuse/ActiveRecord
         )

@@ -471,12 +471,6 @@ $mr-widget-min-height: 69px;
       flex: 1;
     }
 
-    .issuable-meta {
-      .author-link {
-        display: inline-block;
-      }
-    }
-
     .merge-request-title {
       margin-bottom: 2px;
 
@@ -770,8 +764,14 @@ $mr-widget-min-height: 69px;
     position: -webkit-sticky;
     position: sticky;
     top: $header-height + $mr-tabs-height;
-    margin-left: -16px;
-    width: calc(100% + 32px);
+
+    .with-system-header & {
+      top: $header-height + $mr-tabs-height + $system-header-height;
+    }
+
+    .with-system-header.with-performance-bar & {
+      top: $header-height + $mr-tabs-height + $system-header-height + $performance-bar-height;
+    }
 
     .mr-version-menus-container {
       flex-wrap: nowrap;
@@ -789,6 +789,14 @@ $mr-widget-min-height: 69px;
   z-index: 250;
   background-color: $white;
   border-bottom: 1px solid $border-color;
+
+  .with-system-header & {
+    top: $header-height + $system-header-height;
+  }
+
+  .with-system-header.with-performance-bar & {
+    top: $header-height + $system-header-height + $performance-bar-height;
+  }
 
   @include media-breakpoint-up(sm) {
     position: -webkit-sticky;
@@ -865,6 +873,13 @@ $mr-widget-min-height: 69px;
 
   .merge-request-tabs {
     height: $grid-size * 6;
+  }
+}
+
+.container-fluid {
+  // Negative margins for mobile/tablet screen
+  .diffs.tab-pane {
+    margin: 0 (-$gl-padding);
   }
 }
 

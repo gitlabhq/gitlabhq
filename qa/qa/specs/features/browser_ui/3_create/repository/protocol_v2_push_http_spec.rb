@@ -37,8 +37,10 @@ module QA
         project.wait_for_push_new_branch
 
         # Check that the push worked
-        expect(page).to have_content(file_name)
-        expect(page).to have_content(file_content)
+        Page::Project::Show.perform do |project_page|
+          expect(project_page).to have_file(file_name)
+          expect(project_page).to have_readme_content(file_content)
+        end
 
         # And check that the correct Git protocol was used
         expect(git_protocol_reported).to eq(git_protocol)

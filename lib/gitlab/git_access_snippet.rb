@@ -21,6 +21,11 @@ module Gitlab
       @authentication_abilities &= [:download_code, :push_code]
     end
 
+    override :project
+    def project
+      container.project if container.is_a?(ProjectSnippet)
+    end
+
     override :check
     def check(cmd, changes)
       check_snippet_accessibility!
@@ -46,29 +51,19 @@ module Gitlab
       # snippets never return custom actions, such as geo replication.
     end
 
-    override :project?
-    def project?
-      project_snippet?
-    end
-
-    override :project
-    def project
-      snippet&.project
-    end
-
     override :check_valid_actor!
     def check_valid_actor!
       # TODO: Investigate if expanding actor/authentication types are needed.
       # https://gitlab.com/gitlab-org/gitlab/issues/202190
-      if actor && !actor.is_a?(User) && !actor.instance_of?(Key)
+      if actor && !allowed_actor?
         raise ForbiddenError, ERROR_MESSAGES[:authentication_mechanism]
       end
 
       super
     end
 
-    def project_snippet?
-      snippet.is_a?(ProjectSnippet)
+    def allowed_actor?
+      actor.is_a?(User) || actor.instance_of?(Key)
     end
 
     override :check_push_access!
@@ -120,7 +115,7 @@ module Gitlab
     override :check_single_change_access
     def check_single_change_access(change, _skip_lfs_integrity_check: false)
       Checks::SnippetCheck.new(change, default_branch: snippet.default_branch, logger: logger).validate!
-      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit(user), logger: logger).validate!
+      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit, logger: logger).validate!
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message
     end
@@ -138,3 +133,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GitAccessSnippet.prepend_if_ee('EE::Gitlab::GitAccessSnippet')

@@ -68,6 +68,10 @@ which is enabled for the `cache` and `shared_state`
 
 ## Redis in structured logging
 
+For GitLab Team Members: There are [basic](https://www.youtube.com/watch?v=Uhdj19Dc6vU) and
+[advanced](https://youtu.be/jw1Wv2IJxzs) videos that show how you can work with the Redis
+structured logging fields on GitLab.com.
+
 Our [structured logging](logging.md#use-structured-json-logging) for web
 requests and Sidekiq jobs contains fields for the duration, call count,
 bytes written, and bytes read per Redis instance, along with a total for
@@ -96,10 +100,14 @@ requests that read the most data from the cache, we can just sort by
 
 ### The slow log
 
+TIP: **Tip:**
+There is a [video showing how to see the slow log](https://youtu.be/BBI68QuYRH8) (GitLab internal)
+on GitLab.com
+
 On GitLab.com, entries from the [Redis
 slow log](https://redis.io/commands/slowlog) are available in the
 `pubsub-redis-inf-gprd*` index with the [`redis.slowlog`
-tag](https://log.gprd.gitlab.net/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_a=(columns:!(json.type,json.command,json.exec_time),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AWSQX_Vf93rHTYrsexmk,key:json.tag,negate:!f,params:(query:redis.slowlog),type:phrase),query:(match:(json.tag:(query:redis.slowlog,type:phrase))))),index:AWSQX_Vf93rHTYrsexmk)).
+tag](https://log.gprd.gitlab.net/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_a=(columns:!(json.type,json.command,json.exec_time_s),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AWSQX_Vf93rHTYrsexmk,key:json.tag,negate:!f,params:(query:redis.slowlog),type:phrase),query:(match:(json.tag:(query:redis.slowlog,type:phrase))))),index:AWSQX_Vf93rHTYrsexmk)).
 This shows commands that have taken a long time and may be a performance
 concern.
 
@@ -113,7 +121,7 @@ passing to fluentd (and ultimately Elasticsearch).
 The [Redis Keyspace
 Analyzer](https://gitlab.com/gitlab-com/gl-infra/redis-keyspace-analyzer)
 project contains tools for dumping the full key list and memory usage of a Redis
-instance, and then analyzing those lists while elimating potentially sensitive
+instance, and then analyzing those lists while eliminating potentially sensitive
 data from the results. It can be used to find the most frequent key patterns, or
 those that use the most memory.
 

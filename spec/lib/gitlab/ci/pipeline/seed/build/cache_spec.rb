@@ -224,7 +224,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           key: 'a-key',
           paths: ['vendor/ruby'],
           untracked: true,
-          policy: 'push'
+          policy: 'push',
+          when: 'on_success'
         }
       end
 

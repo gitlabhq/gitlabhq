@@ -104,9 +104,69 @@ RSpec.describe Gitlab::Database::WithLockRetries do
       end
 
       context 'after 3 iterations' do
-        let(:retry_count) { 4 }
+        it_behaves_like 'retriable exclusive lock on `projects`' do
+          let(:retry_count) { 4 }
+        end
 
-        it_behaves_like 'retriable exclusive lock on `projects`'
+        context 'setting the idle transaction timeout' do
+          context 'when there is no outer transaction: disable_ddl_transaction! is set in the migration' do
+            it 'does not disable the idle transaction timeout' do
+              allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+              allow(subject).to receive(:run_block_with_transaction).once.and_raise(ActiveRecord::LockWaitTimeout)
+              allow(subject).to receive(:run_block_with_transaction).once
+
+              expect(subject).not_to receive(:disable_idle_in_transaction_timeout)
+
+              subject.run {}
+            end
+          end
+
+          context 'when there is outer transaction: disable_ddl_transaction! is not set in the migration' do
+            it 'disables the idle transaction timeout so the code can sleep and retry' do
+              allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(true)
+
+              n = 0
+              allow(subject).to receive(:run_block_with_transaction).twice do
+                n += 1
+                raise(ActiveRecord::LockWaitTimeout) if n == 1
+              end
+
+              expect(subject).to receive(:disable_idle_in_transaction_timeout).once
+
+              subject.run {}
+            end
+          end
+        end
+      end
+
+      context 'after the retries are exhausted' do
+        let(:timing_configuration) do
+          [
+            [1.second, 1.second]
+          ]
+        end
+
+        context 'when there is no outer transaction: disable_ddl_transaction! is set in the migration' do
+          it 'does not disable the lock_timeout' do
+            allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+            allow(subject).to receive(:run_block_with_transaction).once.and_raise(ActiveRecord::LockWaitTimeout)
+
+            expect(subject).not_to receive(:disable_lock_timeout)
+
+            subject.run {}
+          end
+        end
+
+        context 'when there is outer transaction: disable_ddl_transaction! is not set in the migration' do
+          it 'disables the lock_timeout' do
+            allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(true)
+            allow(subject).to receive(:run_block_with_transaction).once.and_raise(ActiveRecord::LockWaitTimeout)
+
+            expect(subject).to receive(:disable_lock_timeout)
+
+            subject.run {}
+          end
+        end
       end
 
       context 'after the retries, without setting lock_timeout' do

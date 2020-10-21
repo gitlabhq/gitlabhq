@@ -48,6 +48,9 @@ module DesignManagement
       # Store and process the file
       action.image_v432x230.store!(raw_file)
       action.save!
+    rescue CarrierWave::IntegrityError => e
+      Gitlab::ErrorTracking.log_exception(e, project_id: project.id, design_id: action.design_id, version_id: action.version_id)
+      log_error(e.message)
     rescue CarrierWave::UploadError => e
       Gitlab::ErrorTracking.track_exception(e, project_id: project.id, design_id: action.design_id, version_id: action.version_id)
       log_error(e.message)

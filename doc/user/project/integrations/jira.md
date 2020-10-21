@@ -23,7 +23,7 @@ Features include:
 - **View a list of Jira issues directly in GitLab** **(PREMIUM)**
 
 For additional features, you can install the
-[Jira Development Panel integration](../../../integration/jira_development_panel.md) **(PREMIUM)**.
+[Jira Development Panel integration](../../../integration/jira_development_panel.md).
 This enables you to:
 
 - In a Jira issue, display relevant GitLab information in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/), including related branches, commits, and merge requests.
@@ -121,6 +121,8 @@ By now you should have [configured Jira](#configuring-jira) and enabled the
 [Jira service in GitLab](#configuring-gitlab). If everything is set up correctly
 you should be able to reference and close Jira issues by just mentioning their
 ID in GitLab commits and merge requests.
+
+Jira issue IDs must be formatted in uppercase for the integration to work.
 
 ### Reference Jira issues
 

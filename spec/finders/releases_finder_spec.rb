@@ -77,6 +77,34 @@ RSpec.describe ReleasesFinder do
         expect(subject).to eq([v1_1_0, v1_0_0])
       end
 
+      context 'with sorting parameters' do
+        before do
+          v1_1_0.update_attribute(:created_at, 3.days.ago)
+        end
+
+        context 'by default is released_at in descending order' do
+          it { is_expected.to eq([v1_1_0, v1_0_0]) }
+        end
+
+        context 'released_at in ascending order' do
+          let(:params) { { sort: 'asc' } }
+
+          it { is_expected.to eq([v1_0_0, v1_1_0]) }
+        end
+
+        context 'order by created_at in descending order' do
+          let(:params) { { order_by: 'created_at' } }
+
+          it { is_expected.to eq([v1_0_0, v1_1_0]) }
+        end
+
+        context 'order by created_at in ascending order' do
+          let(:params) { { order_by: 'created_at', sort: 'asc' } }
+
+          it { is_expected.to eq([v1_1_0, v1_0_0]) }
+        end
+      end
+
       it_behaves_like 'preload'
       it_behaves_like 'when tag is nil'
       it_behaves_like 'when a tag parameter is passed'

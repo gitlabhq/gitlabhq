@@ -75,6 +75,10 @@ RSpec.describe ProjectExportWorker do
       expect(described_class.sidekiq_options['retry']).to eq(false)
     end
 
+    it 'disables dead' do
+      expect(described_class.sidekiq_options['dead']).to eq(false)
+    end
+
     it 'sets default status expiration' do
       expect(described_class.sidekiq_options['status_expiration']).to eq(StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION)
     end

@@ -13,9 +13,7 @@ class RemovePipelineIdFromTestReports < ActiveRecord::Migration[6.0]
     add_column :requirements_management_test_reports, :pipeline_id, :integer
 
     with_lock_retries do
-      # rubocop:disable Migration/AddConcurrentForeignKey
       add_foreign_key :requirements_management_test_reports, :ci_pipelines, column: :pipeline_id, on_delete: :nullify
-      # rubocop:enable Migration/AddConcurrentForeignKey
     end
   end
 end

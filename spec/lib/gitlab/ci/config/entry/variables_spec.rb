@@ -3,56 +3,109 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Variables do
-  let(:entry) { described_class.new(config) }
+  subject { described_class.new(config) }
 
-  describe 'validations' do
-    context 'when entry config value is correct' do
-      let(:config) do
-        { 'VARIABLE_1' => 'value 1', 'VARIABLE_2' => 'value 2' }
-      end
-
-      describe '#value' do
-        it 'returns hash with key value strings' do
-          expect(entry.value).to eq config
-        end
-
-        context 'with numeric keys and values in the config' do
-          let(:config) { { 10 => 20 } }
-
-          it 'converts numeric key and numeric value into strings' do
-            expect(entry.value).to eq('10' => '20')
-          end
-        end
-      end
-
-      describe '#errors' do
-        it 'does not append errors' do
-          expect(entry.errors).to be_empty
-        end
-      end
-
-      describe '#valid?' do
-        it 'is valid' do
-          expect(entry).to be_valid
-        end
+  shared_examples 'valid config' do
+    describe '#value' do
+      it 'returns hash with key value strings' do
+        expect(subject.value).to eq result
       end
     end
 
-    context 'when entry value is not correct' do
-      let(:config) { [:VAR, 'test'] }
-
-      describe '#errors' do
-        it 'saves errors' do
-          expect(entry.errors)
-            .to include /should be a hash of key value pairs/
-        end
-      end
-
-      describe '#valid?' do
-        it 'is not valid' do
-          expect(entry).not_to be_valid
-        end
+    describe '#errors' do
+      it 'does not append errors' do
+        expect(subject.errors).to be_empty
       end
     end
+
+    describe '#valid?' do
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+    end
+  end
+
+  shared_examples 'invalid config' do
+    describe '#valid?' do
+      it 'is not valid' do
+        expect(subject).not_to be_valid
+      end
+    end
+
+    describe '#errors' do
+      it 'saves errors' do
+        expect(subject.errors)
+          .to include /should be a hash of key value pairs/
+      end
+    end
+  end
+
+  context 'when entry config value has key-value pairs' do
+    let(:config) do
+      { 'VARIABLE_1' => 'value 1', 'VARIABLE_2' => 'value 2' }
+    end
+
+    let(:result) do
+      { 'VARIABLE_1' => 'value 1', 'VARIABLE_2' => 'value 2' }
+    end
+
+    it_behaves_like 'valid config'
+  end
+
+  context 'with numeric keys and values in the config' do
+    let(:config) { { 10 => 20 } }
+    let(:result) do
+      { '10' => '20' }
+    end
+
+    it_behaves_like 'valid config'
+  end
+
+  context 'when entry config value has key-value pair and hash' do
+    let(:config) do
+      { 'VARIABLE_1' => { value: 'value 1', description: 'variable 1' },
+        'VARIABLE_2' => 'value 2' }
+    end
+
+    let(:result) do
+      { 'VARIABLE_1' => 'value 1', 'VARIABLE_2' => 'value 2' }
+    end
+
+    it_behaves_like 'valid config'
+  end
+
+  context 'when entry value is an array' do
+    let(:config) { [:VAR, 'test'] }
+
+    it_behaves_like 'invalid config'
+  end
+
+  context 'when entry value has hash with other key-pairs' do
+    let(:config) do
+      { 'VARIABLE_1' => { value: 'value 1', hello: 'variable 1' },
+        'VARIABLE_2' => 'value 2' }
+    end
+
+    it_behaves_like 'invalid config'
+  end
+
+  context 'when entry config value has hash with nil description' do
+    let(:config) do
+      { 'VARIABLE_1' => { value: 'value 1', description: nil } }
+    end
+
+    it_behaves_like 'invalid config'
+  end
+
+  context 'when entry config value has hash without description' do
+    let(:config) do
+      { 'VARIABLE_1' => { value: 'value 1' } }
+    end
+
+    let(:result) do
+      { 'VARIABLE_1' => 'value 1' }
+    end
+
+    it_behaves_like 'valid config'
   end
 end

@@ -1508,12 +1508,44 @@ RSpec.describe Notify do
       )
     end
 
-    describe 'group invitation' do
+    describe 'invitations' do
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) { invite_to_group(group, inviter: inviter) }
       let(:inviter) { owner }
 
-      subject { described_class.member_invited_email('group', group_member.id, group_member.invite_token) }
+      subject { described_class.member_invited_email('Group', group_member.id, group_member.invite_token) }
+
+      shared_examples "tracks the 'sent' event for the invitation reminders experiment" do
+        before do
+          stub_experiment(invitation_reminders: true)
+          allow(Gitlab::Experimentation).to receive(:enabled_for_attribute?).with(:invitation_reminders, group_member.invite_email).and_return(experimental_group)
+        end
+
+        it "tracks the 'sent' event", :snowplow do
+          subject.deliver_now
+
+          expect_snowplow_event(
+            category: 'Growth::Acquisition::Experiment::InvitationReminders',
+            label: Digest::MD5.hexdigest(group_member.to_global_id.to_s),
+            property: experimental_group ? 'experimental_group' : 'control_group',
+            action: 'sent'
+          )
+        end
+      end
+
+      describe 'tracking for the invitation reminders experiment' do
+        context 'when invite email is in the experimental group' do
+          let(:experimental_group) { true }
+
+          it_behaves_like "tracks the 'sent' event for the invitation reminders experiment"
+        end
+
+        context 'when invite email is in the control group' do
+          let(:experimental_group) { false }
+
+          it_behaves_like "tracks the 'sent' event for the invitation reminders experiment"
+        end
+      end
 
       context 'when invite_email_experiment is disabled' do
         before do
@@ -1604,6 +1636,88 @@ RSpec.describe Notify do
           )
 
           subject.deliver_now
+        end
+      end
+    end
+
+    describe 'group invitation reminders' do
+      let_it_be(:inviter) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+
+      let(:group_member) { invite_to_group(group, inviter: inviter) }
+
+      subject { described_class.member_invited_reminder_email('Group', group_member.id, group_member.invite_token, reminder_index) }
+
+      describe 'not sending a reminder' do
+        let(:reminder_index) { 0 }
+
+        context 'member does not exist' do
+          let(:group_member) { double(id: nil, invite_token: nil) }
+
+          it_behaves_like 'no email is sent'
+        end
+
+        context 'member is not created by a user' do
+          before do
+            group_member.update(created_by: nil)
+          end
+
+          it_behaves_like 'no email is sent'
+        end
+
+        context 'member is a known user' do
+          before do
+            group_member.update(user: create(:user))
+          end
+
+          it_behaves_like 'no email is sent'
+        end
+      end
+
+      describe 'the first reminder' do
+        let(:reminder_index) { 0 }
+
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like 'a user cannot unsubscribe through footer link'
+
+        it 'contains all the useful information' do
+          is_expected.to have_subject "#{inviter.name}'s invitation to GitLab is pending"
+          is_expected.to have_body_text group.human_name
+          is_expected.to have_body_text group_member.human_access.downcase
+          is_expected.to have_body_text invite_url(group_member.invite_token)
+          is_expected.to have_body_text decline_invite_url(group_member.invite_token)
+        end
+      end
+
+      describe 'the second reminder' do
+        let(:reminder_index) { 1 }
+
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like 'a user cannot unsubscribe through footer link'
+
+        it 'contains all the useful information' do
+          is_expected.to have_subject "#{inviter.name} is waiting for you to join GitLab"
+          is_expected.to have_body_text group.human_name
+          is_expected.to have_body_text group_member.human_access.downcase
+          is_expected.to have_body_text invite_url(group_member.invite_token)
+          is_expected.to have_body_text decline_invite_url(group_member.invite_token)
+        end
+      end
+
+      describe 'the third reminder' do
+        let(:reminder_index) { 2 }
+
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like 'a user cannot unsubscribe through footer link'
+
+        it 'contains all the useful information' do
+          is_expected.to have_subject "#{inviter.name} is still waiting for you to join GitLab"
+          is_expected.to have_body_text group.human_name
+          is_expected.to have_body_text group_member.human_access.downcase
+          is_expected.to have_body_text invite_url(group_member.invite_token)
+          is_expected.to have_body_text decline_invite_url(group_member.invite_token)
         end
       end
     end

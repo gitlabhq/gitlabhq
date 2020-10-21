@@ -195,7 +195,8 @@ export default {
         :disabled="isSubmitButtonDisabled"
         :loading="isSubmitting"
         type="submit"
-        class="js-add-issuable-form-add-button float-left qa-add-issue-button"
+        class="js-add-issuable-form-add-button float-left"
+        data-qa-selector="add_issue_button"
       >
         {{ __('Add') }}
       </gl-button>

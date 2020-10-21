@@ -7,7 +7,7 @@ module Members
     def execute(source)
       return error(s_('AddMember|No users specified.')) if params[:user_ids].blank?
 
-      user_ids = params[:user_ids].split(',').uniq
+      user_ids = params[:user_ids].split(',').uniq.flatten
 
       return error(s_("AddMember|Too many users specified (limit is %{user_limit})") % { user_limit: user_limit }) if
         user_limit && user_ids.size > user_limit

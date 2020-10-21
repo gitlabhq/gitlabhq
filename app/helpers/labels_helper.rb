@@ -36,11 +36,11 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, type: :issue, tooltip: true, small: false, &block)
+  def link_to_label(label, type: :issue, tooltip: true, small: false, css_class: nil, &block)
     link = label.filter_path(type: type)
 
     if block_given?
-      link_to link, &block
+      link_to link, class: css_class, &block
     else
       render_label(label, link: link, tooltip: tooltip, small: small)
     end
@@ -61,7 +61,7 @@ module LabelsHelper
     render_label_text(
       label.name,
       suffix: suffix,
-      css_class: text_color_class_for_bg(label.color),
+      css_class: "gl-label-text #{text_color_class_for_bg(label.color)}",
       bg_color: label.color
     )
   end
@@ -241,27 +241,12 @@ module LabelsHelper
     }.merge(opts)
   end
 
-  def sidebar_label_dropdown_data(issuable_type, issuable_sidebar)
-    label_dropdown_data(nil, {
-     default_label: "Labels",
-     field_name: "#{issuable_type}[label_names][]",
-     ability_name: issuable_type,
-     namespace_path: issuable_sidebar[:namespace_path],
-     project_path: issuable_sidebar[:project_path],
-     issue_update: issuable_sidebar[:issuable_json_path],
-     labels: issuable_sidebar[:project_labels_path],
-     display: 'static'
-    })
-  end
-
-  def label_from_hash(hash)
-    klass = hash[:group_id] ? GroupLabel : ProjectLabel
-
-    klass.new(hash.slice(:color, :description, :title, :group_id, :project_id))
-  end
-
   def issuable_types
     ['issues', 'merge requests']
+  end
+
+  def show_labels_full_path?(project, group)
+    project || group&.subgroup?
   end
 
   private
@@ -281,7 +266,7 @@ module LabelsHelper
   def render_label_text(name, suffix: '', css_class: nil, bg_color: nil)
     <<~HTML.chomp.html_safe
       <span
-        class="gl-label-text #{css_class}"
+        class="#{css_class}"
         data-container="body"
         data-html="true"
         #{"style=\"background-color: #{bg_color}\"" if bg_color}

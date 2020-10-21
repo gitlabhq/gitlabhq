@@ -13,6 +13,23 @@ describe('init markdown', () => {
     textArea.parentNode.removeChild(textArea);
   });
 
+  describe('insertMarkdownText', () => {
+    it('will not error if selected text is a number', () => {
+      const selected = 2;
+
+      insertMarkdownText({
+        textArea,
+        text: '',
+        tag: '',
+        blockTag: null,
+        selected,
+        wrap: false,
+      });
+
+      expect(textArea.value).toBe(selected.toString());
+    });
+  });
+
   describe('textArea', () => {
     describe('without selection', () => {
       it('inserts the tag on an empty line', () => {
@@ -251,88 +268,10 @@ describe('init markdown', () => {
     });
   });
 
-  describe('Ace Editor', () => {
-    let editor;
-
-    beforeEach(() => {
-      editor = {
-        getSelectionRange: jest.fn().mockReturnValue({
-          start: 0,
-          end: 0,
-        }),
-        getValue: jest.fn().mockReturnValue('this is text \n in two lines'),
-        insert: jest.fn(),
-        navigateLeft: jest.fn(),
-      };
-    });
-
-    it('uses ace editor insert text when editor is passed in', () => {
-      insertMarkdownText({
-        text: editor.getValue,
-        tag: '*',
-        blockTag: null,
-        selected: '',
-        wrap: false,
-        editor,
-      });
-
-      expect(editor.insert).toHaveBeenCalled();
-    });
-
-    it('adds block tags on line above and below selection', () => {
-      const selected = 'this text \n is multiple \n lines';
-      const text = `before \n ${selected} \n after`;
-
-      insertMarkdownText({
-        text,
-        tag: '',
-        blockTag: '***',
-        selected,
-        wrap: true,
-        editor,
-      });
-
-      expect(editor.insert).toHaveBeenCalledWith(`***\n${selected}\n***`);
-    });
-
-    it('uses ace editor to navigate back tag length when nothing is selected', () => {
-      insertMarkdownText({
-        text: editor.getValue,
-        tag: '*',
-        blockTag: null,
-        selected: '',
-        wrap: true,
-        editor,
-      });
-
-      expect(editor.navigateLeft).toHaveBeenCalledWith(1);
-    });
-
-    it('ace editor does not navigate back when there is selected text', () => {
-      insertMarkdownText({
-        text: editor.getValue,
-        tag: '*',
-        blockTag: null,
-        selected: 'foobar',
-        wrap: true,
-        editor,
-      });
-
-      expect(editor.navigateLeft).not.toHaveBeenCalled();
-    });
-  });
-
   describe('Editor Lite', () => {
     let editor;
-    let origGon;
 
     beforeEach(() => {
-      origGon = window.gon;
-      window.gon = {
-        features: {
-          monacoBlobs: true,
-        },
-      };
       editor = {
         getSelection: jest.fn().mockReturnValue({
           startLineNumber: 1,
@@ -345,10 +284,6 @@ describe('init markdown', () => {
         replaceSelectedText: jest.fn(),
         moveCursor: jest.fn(),
       };
-    });
-
-    afterEach(() => {
-      window.gon = origGon;
     });
 
     it('replaces selected text', () => {

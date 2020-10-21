@@ -10,6 +10,10 @@ import { validateParams } from '~/pipelines/utils';
 export default {
   methods: {
     onChangeTab(scope) {
+      if (this.scope === scope) {
+        return;
+      }
+
       let params = {
         scope,
         page: '1',

@@ -6,7 +6,7 @@ module DiffViewer
 
     included do
       self.type = :rich
-      self.switcher_icon = 'file-text-o'
+      self.switcher_icon = 'doc-text'
       self.switcher_title = _('rendered diff')
     end
   end

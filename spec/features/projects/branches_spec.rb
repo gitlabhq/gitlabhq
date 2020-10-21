@@ -21,11 +21,11 @@ RSpec.describe 'Branches' do
       before do
         # Add 4 stale branches
         (1..4).reverse_each do |i|
-          Timecop.freeze((threshold + i).ago) { create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}") }
+          travel_to((threshold + i).ago) { create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}") }
         end
         # Add 6 active branches
         (1..6).each do |i|
-          Timecop.freeze((threshold - i).ago) { create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}") }
+          travel_to((threshold - i).ago) { create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}") }
         end
       end
 
@@ -101,7 +101,7 @@ RSpec.describe 'Branches' do
         visit project_branches_filtered_path(project, state: 'all')
 
         expect(all('.all-branches').last).to have_selector('li', count: 20)
-        accept_confirm { first('.js-branch-item .btn-remove').click }
+        accept_confirm { first('.js-branch-item .btn-danger').click }
 
         expect(all('.all-branches').last).to have_selector('li', count: 19)
       end
@@ -163,7 +163,7 @@ RSpec.describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        accept_confirm { find('.js-branch-fix .btn-remove').click }
+        accept_confirm { find('.js-branch-fix .btn-danger').click }
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)

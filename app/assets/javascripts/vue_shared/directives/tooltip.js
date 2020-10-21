@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import '~/commons/bootstrap';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default {
   bind(el) {
@@ -9,6 +10,10 @@ export default {
     $(el).tooltip({
       trigger: 'hover',
       delay,
+      // By default, sanitize is run even if there is no `html` or `template` present
+      // so let's optimize to only run this when necessary.
+      // https://github.com/twbs/bootstrap/blob/c5966de27395a407f9a3d20d0eb2ff8e8fb7b564/js/src/tooltip.js#L716
+      sanitize: parseBoolean(el.dataset.html) || Boolean(el.dataset.template),
     });
   },
 

@@ -18,26 +18,14 @@ RSpec.describe 'Snippets' do
 
   describe 'rendering engine' do
     let_it_be(:snippet) { create(:personal_snippet, :public) }
-    let(:snippets_vue_feature_flag_enabled) { true }
 
     before do
-      stub_feature_flags(snippets_vue: snippets_vue_feature_flag_enabled)
-
       visit snippet_path(snippet)
     end
 
     it 'renders Vue application' do
       expect(page).to have_selector('#js-snippet-view')
       expect(page).not_to have_selector('.personal-snippets')
-    end
-
-    context 'when feature flag is disabled' do
-      let(:snippets_vue_feature_flag_enabled) { false }
-
-      it 'renders HAML application and not Vue' do
-        expect(page).not_to have_selector('#js-snippet-view')
-        expect(page).to have_selector('.personal-snippets')
-      end
     end
   end
 end

@@ -16,6 +16,7 @@ module TodosHelper
   def todo_action_name(todo)
     case todo.action
     when Todo::ASSIGNED then todo.self_added? ? 'assigned' : 'assigned you'
+    when Todo::REVIEW_REQUESTED then 'requested a review of'
     when Todo::MENTIONED then "mentioned #{todo_action_subject(todo)} on"
     when Todo::BUILD_FAILED then 'The build failed for'
     when Todo::MARKED then 'added a todo for'
@@ -23,6 +24,13 @@ module TodosHelper
     when Todo::UNMERGEABLE then 'Could not merge'
     when Todo::DIRECTLY_ADDRESSED then "directly addressed #{todo_action_subject(todo)} on"
     when Todo::MERGE_TRAIN_REMOVED then "Removed from Merge Train:"
+    end
+  end
+
+  def todo_self_addressing(todo)
+    case todo.action
+    when Todo::ASSIGNED then 'to yourself'
+    when Todo::REVIEW_REQUESTED then 'from yourself'
     end
   end
 
@@ -141,6 +149,7 @@ module TodosHelper
     [
       { id: '', text: 'Any Action' },
       { id: Todo::ASSIGNED, text: 'Assigned' },
+      { id: Todo::REVIEW_REQUESTED, text: 'Review requested' },
       { id: Todo::MENTIONED, text: 'Mentioned' },
       { id: Todo::MARKED, text: 'Added' },
       { id: Todo::BUILD_FAILED, text: 'Pipelines' },

@@ -4,6 +4,8 @@ class Admin::ImpersonationsController < Admin::ApplicationController
   skip_before_action :authenticate_admin!
   before_action :authenticate_impersonator!
 
+  feature_category :authentication_and_authorization
+
   def destroy
     original_user = stop_impersonation
     redirect_to admin_user_path(original_user), status: :found

@@ -30,7 +30,7 @@ module Types
         # most recent `Version` for an issue
         Gitlab::SafeRequestStore.fetch([request_cache_base_key, 'stateful_version', object.issue_id, version_gid]) do
           if version_gid
-            GitlabSchema.object_from_id(version_gid)&.sync
+            GitlabSchema.object_from_id(version_gid, expected_type: ::DesignManagement::Version)&.sync
           else
             object.issue.design_versions.most_recent
           end

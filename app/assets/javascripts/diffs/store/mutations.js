@@ -172,7 +172,7 @@ export default {
     state.diffFiles.forEach(file => {
       Object.assign(file, {
         viewer: Object.assign(file.viewer, {
-          collapsed: false,
+          automaticallyCollapsed: false,
         }),
       });
     });
@@ -355,7 +355,7 @@ export default {
     const file = state.diffFiles.find(f => f.file_path === filePath);
 
     if (file && file.viewer) {
-      file.viewer.collapsed = collapsed;
+      file.viewer.automaticallyCollapsed = collapsed;
     }
   },
   [types.SET_HIDDEN_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {

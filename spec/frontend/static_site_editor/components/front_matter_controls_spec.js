@@ -5,17 +5,10 @@ import { humanize } from '~/lib/utils/text_utility';
 
 import FrontMatterControls from '~/static_site_editor/components/front_matter_controls.vue';
 
+import { sourceContentHeaderObjYAML as settings } from '../mock_data';
+
 describe('~/static_site_editor/components/front_matter_controls.vue', () => {
   let wrapper;
-
-  // TODO Refactor and update `sourceContentHeaderObjYAML` in mock_data when !41230 lands
-  const settings = {
-    layout: 'handbook-page-toc',
-    title: 'Handbook',
-    twitter_image: '/images/tweets/handbook-gitlab.png',
-    suppress_header: true,
-    extra_css: ['sales-and-free-trial-common.css', 'form-to-resource.css'],
-  };
 
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMount(FrontMatterControls, {

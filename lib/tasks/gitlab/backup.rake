@@ -107,7 +107,7 @@ namespace :gitlab do
           puts "GITLAB_BACKUP_MAX_CONCURRENCY and GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY must have a value of at least 1".color(:red)
           exit 1
         else
-          Backup::Repository.new(progress).dump(
+          Backup::Repositories.new(progress).dump(
             max_concurrency: max_concurrency,
             max_storage_concurrency: max_storage_concurrency
           )
@@ -117,7 +117,7 @@ namespace :gitlab do
 
       task restore: :gitlab_environment do
         puts_time "Restoring repositories ...".color(:blue)
-        Backup::Repository.new(progress).restore
+        Backup::Repositories.new(progress).restore
         puts_time "done".color(:green)
       end
     end

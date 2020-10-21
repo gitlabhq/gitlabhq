@@ -1,11 +1,11 @@
 <script>
-import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
-import { GlIcon } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,
+  COMMENTS_ONLY_FILTER_VALUE,
   DISCUSSION_TAB_LABEL,
   DISCUSSION_FILTER_TYPES,
   NOTE_UNDERSCORE,
@@ -14,7 +14,9 @@ import notesEventHub from '../event_hub';
 
 export default {
   components: {
-    GlIcon,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownDivider,
   },
   props: {
     filters: {
@@ -37,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNotesDataByProp']),
+    ...mapGetters(['getNotesDataByProp', 'timelineEnabled']),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
       return this.filters.find(filter => filter.value === this.currentValue);
@@ -62,14 +64,20 @@ export default {
     window.removeEventListener('hashchange', this.handleLocationHash);
   },
   methods: {
-    ...mapActions(['filterDiscussion', 'setCommentsDisabled', 'setTargetNoteHash']),
+    ...mapActions([
+      'filterDiscussion',
+      'setCommentsDisabled',
+      'setTargetNoteHash',
+      'setTimelineView',
+    ]),
     selectFilter(value, persistFilter = true) {
       const filter = parseInt(value, 10);
 
-      // close dropdown
-      this.toggleDropdown();
-
       if (filter === this.currentValue) return;
+
+      if (this.timelineEnabled && filter !== COMMENTS_ONLY_FILTER_VALUE) {
+        this.setTimelineView(false);
+      }
       this.currentValue = filter;
       this.filterDiscussion({
         path: this.getNotesDataByProp('discussionsPath'),
@@ -77,9 +85,6 @@ export default {
         persistFilter,
       });
       this.toggleCommentsForm();
-    },
-    toggleDropdown() {
-      $(this.$refs.dropdownToggle).dropdown('toggle');
     },
     toggleCommentsForm() {
       this.setCommentsDisabled(this.currentValue === HISTORY_ONLY_FILTER_VALUE);
@@ -92,7 +97,6 @@ export default {
 
       if (/^note_/.test(hash) && this.currentValue !== DISCUSSION_FILTERS_DEFAULT_VALUE) {
         this.selectFilter(this.defaultValue, false);
-        this.toggleDropdown(); // close dropdown
         this.setTargetNoteHash(hash);
       }
     },
@@ -109,43 +113,24 @@ export default {
 </script>
 
 <template>
-  <div
+  <gl-dropdown
     v-if="displayFilters"
-    class="discussion-filter-container js-discussion-filter-container d-inline-block align-bottom full-width-mobile"
+    id="discussion-filter-dropdown"
+    class="gl-mr-3 full-width-mobile discussion-filter-container js-discussion-filter-container qa-discussion-filter"
+    :text="currentFilter.title"
   >
-    <button
-      id="discussion-filter-dropdown"
-      ref="dropdownToggle"
-      class="btn btn-sm qa-discussion-filter"
-      data-toggle="dropdown"
-      aria-expanded="false"
-    >
-      {{ currentFilter.title }} <gl-icon name="chevron-down" />
-    </button>
-    <div
-      ref="dropdownMenu"
-      class="dropdown-menu dropdown-menu-selectable dropdown-menu-right"
-      aria-labelledby="discussion-filter-dropdown"
-    >
-      <div class="dropdown-content">
-        <ul>
-          <li
-            v-for="filter in filters"
-            :key="filter.value"
-            :data-filter-type="filterType(filter.value)"
-          >
-            <button
-              :class="{ 'is-active': filter.value === currentValue }"
-              class="qa-filter-options"
-              type="button"
-              @click="selectFilter(filter.value)"
-            >
-              {{ filter.title }}
-            </button>
-            <div v-if="filter.value === defaultValue" class="dropdown-divider"></div>
-          </li>
-        </ul>
-      </div>
+    <div v-for="filter in filters" :key="filter.value" class="dropdown-item-wrapper">
+      <gl-dropdown-item
+        :is-check-item="true"
+        :is-checked="filter.value === currentValue"
+        :class="{ 'is-active': filter.value === currentValue }"
+        :data-filter-type="filterType(filter.value)"
+        class="qa-filter-options"
+        @click.prevent="selectFilter(filter.value)"
+      >
+        {{ filter.title }}
+      </gl-dropdown-item>
+      <gl-dropdown-divider v-if="filter.value === defaultValue" />
     </div>
-  </div>
+  </gl-dropdown>
 </template>

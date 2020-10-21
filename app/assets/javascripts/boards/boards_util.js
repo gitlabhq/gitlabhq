@@ -2,9 +2,22 @@ import { sortBy } from 'lodash';
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import { ListType } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import boardsStore from '~/boards/stores/boards_store';
 
 export function getMilestone() {
   return null;
+}
+
+export function formatBoardLists(lists) {
+  const formattedLists = lists.nodes.map(list =>
+    boardsStore.updateListPosition({ ...list, doNotFetchIssues: true }),
+  );
+  return formattedLists.reduce((map, list) => {
+    return {
+      ...map,
+      [list.id]: list,
+    };
+  }, {});
 }
 
 export function formatIssue(issue) {
@@ -17,9 +30,15 @@ export function formatIssue(issue) {
 
 export function formatListIssues(listIssues) {
   const issues = {};
+  let listIssuesCount;
 
   const listData = listIssues.nodes.reduce((map, list) => {
-    const sortedIssues = sortBy(list.issues.nodes, 'relativePosition');
+    listIssuesCount = list.issues.count;
+    let sortedIssues = list.issues.edges.map(issueNode => ({
+      ...issueNode.node,
+    }));
+    sortedIssues = sortBy(sortedIssues, 'relativePosition');
+
     return {
       ...map,
       [list.id]: sortedIssues.map(i => {
@@ -39,11 +58,28 @@ export function formatListIssues(listIssues) {
     };
   }, {});
 
-  return { listData, issues };
+  return { listData, issues, listIssuesCount };
+}
+
+export function formatListsPageInfo(lists) {
+  const listData = lists.nodes.reduce((map, list) => {
+    return {
+      ...map,
+      [list.id]: list.issues.pageInfo,
+    };
+  }, {});
+  return listData;
 }
 
 export function fullBoardId(boardId) {
   return `gid://gitlab/Board/${boardId}`;
+}
+
+export function fullLabelId(label) {
+  if (label.project_id !== null) {
+    return `gid://gitlab/ProjectLabel/${label.id}`;
+  }
+  return `gid://gitlab/GroupLabel/${label.id}`;
 }
 
 export function moveIssueListHelper(issue, fromList, toList) {
@@ -69,4 +105,5 @@ export default {
   formatIssue,
   formatListIssues,
   fullBoardId,
+  fullLabelId,
 };

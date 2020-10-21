@@ -38,6 +38,7 @@ module Groups
     # Overridden in EE
     def post_update_hooks(updated_project_ids)
       refresh_project_authorizations
+      refresh_descendant_groups if @new_parent_group
     end
 
     def ensure_allowed_transfer
@@ -101,8 +102,13 @@ module Groups
         @group.visibility_level = @new_parent_group.visibility_level
       end
 
+      update_two_factor_authentication if @new_parent_group
+
       @group.parent = @new_parent_group
       @group.clear_memoization(:self_and_ancestors_ids)
+
+      inherit_group_shared_runners_settings
+
       @group.save!
     end
 
@@ -126,7 +132,25 @@ module Groups
       projects_to_update
         .update_all(visibility_level: @new_parent_group.visibility_level)
     end
+
+    def update_two_factor_authentication
+      return if namespace_parent_allows_two_factor_auth
+
+      @group.require_two_factor_authentication = false
+    end
+
+    def refresh_descendant_groups
+      return if namespace_parent_allows_two_factor_auth
+
+      if @group.descendants.where(require_two_factor_authentication: true).any?
+        DisallowTwoFactorForSubgroupsWorker.perform_async(@group.id)
+      end
+    end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def namespace_parent_allows_two_factor_auth
+      @new_parent_group.namespace_settings.allow_mfa_for_subgroups
+    end
 
     def ensure_ownership
       return if @new_parent_group
@@ -160,6 +184,17 @@ module Groups
         cannot_transfer_to_subgroup: s_('TransferGroup|Cannot transfer group to one of its subgroup.'),
         group_contains_npm_packages: s_('TransferGroup|Group contains projects with NPM packages.')
       }.freeze
+    end
+
+    def inherit_group_shared_runners_settings
+      parent_setting = @group.parent&.shared_runners_setting
+      return unless parent_setting
+
+      if @group.shared_runners_setting_higher_than?(parent_setting)
+        result = Groups::UpdateSharedRunnersService.new(@group, current_user, shared_runners_setting: parent_setting).execute
+
+        raise TransferError, result[:message] unless result[:status] == :success
+      end
     end
   end
 end

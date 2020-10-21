@@ -192,7 +192,7 @@ export default {
       >
         <div class="d-flex flex-column overflow-hidden">
           <gl-dropdown-section-header>{{ __('Environment') }}</gl-dropdown-section-header>
-          <gl-search-box-by-type class="gl-m-3" @input="debouncedEnvironmentsSearch" />
+          <gl-search-box-by-type @input="debouncedEnvironmentsSearch" />
 
           <gl-loading-icon v-if="environmentsLoading" :inline="true" />
           <div v-else class="flex-fill overflow-auto">

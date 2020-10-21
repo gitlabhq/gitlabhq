@@ -172,6 +172,7 @@ RSpec.describe API::GroupClusters do
         name: 'test-cluster',
         domain: 'domain.example.com',
         managed: false,
+        namespace_per_environment: false,
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         management_project_id: management_project_id
       }
@@ -206,6 +207,7 @@ RSpec.describe API::GroupClusters do
           expect(cluster_result.domain).to eq('domain.example.com')
           expect(cluster_result.managed).to be_falsy
           expect(cluster_result.management_project_id).to eq management_project_id
+          expect(cluster_result.namespace_per_environment).to eq(false)
           expect(platform_kubernetes.rbac?).to be_truthy
           expect(platform_kubernetes.api_url).to eq(api_url)
           expect(platform_kubernetes.token).to eq('sample-token')
@@ -234,6 +236,22 @@ RSpec.describe API::GroupClusters do
           cluster_result = Clusters::Cluster.find(json_response['id'])
 
           expect(cluster_result.platform.abac?).to be_truthy
+        end
+      end
+
+      context 'when namespace_per_environment is not set' do
+        let(:cluster_params) do
+          {
+            name: 'test-cluster',
+            domain: 'domain.example.com',
+            platform_kubernetes_attributes: platform_kubernetes_attributes
+          }
+        end
+
+        it 'defaults to true' do
+          cluster_result = Clusters::Cluster.find(json_response['id'])
+
+          expect(cluster_result).to be_namespace_per_environment
         end
       end
 

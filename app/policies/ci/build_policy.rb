@@ -60,6 +60,8 @@ module Ci
 
     rule { can?(:update_build) & terminal }.enable :create_build_terminal
 
+    rule { can?(:update_build) }.enable :play_job
+
     rule { is_web_ide_terminal & can?(:create_web_ide_terminal) & (admin | owner_of_job) }.policy do
       enable :read_web_ide_terminal
       enable :update_web_ide_terminal

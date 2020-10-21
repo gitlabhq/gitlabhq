@@ -36,7 +36,7 @@ RSpec.describe 'gitlab:web_hook namespace rake tasks' do
     it 'raises an error if an unknown namespace is specified' do
       stub_env('URL' => url, 'NAMESPACE' => group.full_path)
 
-      group.destroy
+      group.destroy!
 
       expect { run_rake_task('gitlab:web_hook:add') }.to raise_error(SystemExit)
     end
@@ -69,7 +69,7 @@ RSpec.describe 'gitlab:web_hook namespace rake tasks' do
     it 'raises an error if an unknown namespace is specified' do
       stub_env('URL' => url, 'NAMESPACE' => group.full_path)
 
-      group.destroy
+      group.destroy!
 
       expect { run_rake_task('gitlab:web_hook:rm') }.to raise_error(SystemExit)
     end

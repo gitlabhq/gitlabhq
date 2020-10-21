@@ -22,8 +22,8 @@ class MergeRequestContextCommit < ApplicationRecord
   end
 
   # create MergeRequestContextCommit by given commit sha and it's diff file record
-  def self.bulk_insert(*args)
-    Gitlab::Database.bulk_insert('merge_request_context_commits', *args) # rubocop:disable Gitlab/BulkInsert
+  def self.bulk_insert(rows, **args)
+    Gitlab::Database.bulk_insert('merge_request_context_commits', rows, **args) # rubocop:disable Gitlab/BulkInsert
   end
 
   def to_commit

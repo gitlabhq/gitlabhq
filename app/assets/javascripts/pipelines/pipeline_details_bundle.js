@@ -7,10 +7,11 @@ import pipelineGraph from './components/graph/graph_component.vue';
 import createDagApp from './pipeline_details_dag';
 import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import PipelinesMediator from './pipeline_details_mediator';
-import pipelineHeader from './components/header_component.vue';
+import legacyPipelineHeader from './components/legacy_header_component.vue';
 import eventHub from './event_hub';
 import TestReports from './components/test_reports/test_reports.vue';
 import createTestReportsStore from './stores/test_reports';
+import { createPipelineHeaderApp } from './pipeline_details_header';
 
 Vue.use(Translate);
 
@@ -56,7 +57,7 @@ const createPipelinesDetailApp = mediator => {
   });
 };
 
-const createPipelineHeaderApp = mediator => {
+const createLegacyPipelineHeaderApp = mediator => {
   if (!document.querySelector(SELECTORS.PIPELINE_HEADER)) {
     return;
   }
@@ -64,7 +65,7 @@ const createPipelineHeaderApp = mediator => {
   new Vue({
     el: SELECTORS.PIPELINE_HEADER,
     components: {
-      pipelineHeader,
+      legacyPipelineHeader,
     },
     data() {
       return {
@@ -95,7 +96,7 @@ const createPipelineHeaderApp = mediator => {
       },
     },
     render(createElement) {
-      return createElement('pipeline-header', {
+      return createElement('legacy-pipeline-header', {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
@@ -132,7 +133,12 @@ export default () => {
   mediator.fetchPipeline();
 
   createPipelinesDetailApp(mediator);
-  createPipelineHeaderApp(mediator);
+
+  if (gon.features.graphqlPipelineHeader) {
+    createPipelineHeaderApp(SELECTORS.PIPELINE_HEADER);
+  } else {
+    createLegacyPipelineHeaderApp(mediator);
+  }
   createTestDetails();
   createDagApp();
 };

@@ -36,8 +36,10 @@ module QA
 
         project.visit!
 
-        expect(page).to have_content('README.md')
-        expect(page).to have_content("This is a test project named #{project.name}")
+        Page::Project::Show.perform do |project_page|
+          expect(project_page).to have_file('README.md')
+          expect(project_page).to have_readme_content("This is a test project named #{project.name}")
+        end
       end
     end
   end

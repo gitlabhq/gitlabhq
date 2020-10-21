@@ -6,6 +6,18 @@ module Resolvers
 
     alias_method :project, :synchronized_object
 
+    def self.accept_assignee
+      argument :assignee_username, GraphQL::STRING_TYPE,
+             required: false,
+             description: 'Username of the assignee'
+    end
+
+    def self.accept_author
+      argument :author_username, GraphQL::STRING_TYPE,
+             required: false,
+             description: 'Username of the author'
+    end
+
     argument :iids, [GraphQL::STRING_TYPE],
               required: false,
               description: 'Array of IIDs of merge requests, for example `[1, 2]`'

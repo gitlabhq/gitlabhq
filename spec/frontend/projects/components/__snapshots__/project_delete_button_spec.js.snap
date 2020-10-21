@@ -17,6 +17,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
   />
    
   <gl-button-stub
+    buttontextclasses=""
     category="primary"
     icon=""
     role="button"

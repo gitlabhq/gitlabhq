@@ -75,8 +75,8 @@ To run Knative on GitLab, you will need:
 
 ## Installing Knative via GitLab's Kubernetes integration
 
-NOTE: **Note:**
-The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory. **RBAC must be enabled.**
+The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB
+memory. **RBAC must be enabled.**
 
 1. [Add a Kubernetes cluster](../add_remove_clusters.md).
 1. Select the **Applications** tab and scroll down to the Knative app section. Enter the domain to be used with
@@ -99,22 +99,19 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
    ![DNS entry](img/dns-entry.png)
 
-NOTE: **Note:**
 You can deploy either [functions](#deploying-functions) or [serverless applications](#deploying-serverless-applications)
-on a given project but not both. The current implementation makes use of a `serverless.yml` file to signal a FaaS project.
+on a given project, but not both. The current implementation makes use of a
+`serverless.yml` file to signal a FaaS project.
 
 ## Using an existing installation of Knative
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58941) in GitLab 12.0.
 
-NOTE: **Note:**
-The "invocations" monitoring feature of GitLab serverless will not work when
+The _invocations_ monitoring feature of GitLab serverless won't work when
 adding an existing installation of Knative.
 
-It is also possible to use GitLab Serverless with an existing Kubernetes
-cluster which already has Knative installed.
-
-You must do the following:
+It's also possible to use GitLab Serverless with an existing Kubernetes cluster
+which already has Knative installed. You must do the following:
 
 1. Follow the steps to
    [add an existing Kubernetes
@@ -453,16 +450,16 @@ To run a function locally:
 
 > Introduced in GitLab 11.5.
 
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
 Serverless applications are an alternative to [serverless functions](#deploying-functions).
-They are useful in scenarios where an existing runtime does not meet the needs of an application,
-such as one written in a language that has no runtime available. Note though that serverless
-applications should be stateless!
+They're useful in scenarios where an existing runtime does not meet the needs of
+an application, such as one written in a language that has no runtime available.
+Note though that serverless applications should be stateless.
 
-NOTE: **Note:**
-You can reference and import the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
-
-Add the following `.gitlab-ci.yml` to the root of your repository
-(you may skip this step if you've previously cloned the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) mentioned above):
+You can reference and import the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app)
+to get started. Add the following `.gitlab-ci.yml` to the root of your repository
+(you may skip this step if you've previously cloned the previously mentioned,
+sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app)):
 
 ```yaml
 include:
@@ -561,14 +558,18 @@ Or:
 
 ## Enabling TLS for Knative services
 
-By default, a GitLab serverless deployment will be served over `http`. In order to serve over `https` you
-must manually obtain and install TLS certificates.
+By default, a GitLab serverless deployment will be served over `http`. To serve
+over `https`, you must manually obtain and install TLS certificates.
 
-The simplest way to accomplish this is to
-use [Certbot to manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates). Certbot is a free, open source software tool for automatically using Let’s Encrypt certificates on manually-administrated websites to enable HTTPS.
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+The simplest way to accomplish this is to use Certbot to
+[manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates).
+Certbot is a free, open source software tool for automatically using Let’s Encrypt
+certificates on manually-administered websites to enable HTTPS.
 
-NOTE: **Note:**
-The instructions below relate to installing and running Certbot on a Linux server that has Python 3 installed and may not work on other operating systems or with other versions of Python.
+The following instructions relate to installing and running Certbot on a Linux
+server that has Python 3 installed, and may not work on other operating systems
+or with other versions of Python.
 
 1. Install Certbot by running the
    [`certbot-auto` wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto).
@@ -788,7 +789,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    kubectl edit gateway knative-ingress-gateway --namespace knative-serving
    ```
 
-   Update the gateway to include the following tls: section and configuration:
+   Update the gateway to include the following `tls:` section and configuration:
 
    ```shell
    tls:

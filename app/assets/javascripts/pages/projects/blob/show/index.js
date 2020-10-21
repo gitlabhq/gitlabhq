@@ -3,34 +3,33 @@ import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_sta
 import BlobViewer from '~/blob/viewer/index';
 import initBlob from '~/pages/projects/init_blob';
 import GpgBadges from '~/gpg_badges';
+import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import '~/sourcegraph/load';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { isExperimentEnabled } from '~/lib/utils/experimentation';
 
 const createGitlabCiYmlVisualization = (containerId = '#js-blob-toggle-graph-preview') => {
   const el = document.querySelector(containerId);
-  const { filename, blobData } = el?.dataset;
+  const { isCiConfigFile, blobData } = el?.dataset;
 
-  const nameRegexp = /\.gitlab-ci.yml/;
-
-  if (!el || !nameRegexp.test(filename)) {
-    return;
+  if (el && parseBoolean(isCiConfigFile)) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el,
+      components: {
+        GitlabCiYamlVisualization: () =>
+          import('~/pipelines/components/pipeline_graph/gitlab_ci_yaml_visualization.vue'),
+      },
+      render(createElement) {
+        return createElement('gitlabCiYamlVisualization', {
+          props: {
+            blobData,
+          },
+        });
+      },
+    });
   }
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el,
-    components: {
-      GitlabCiYamlVisualization: () =>
-        import('~/pipelines/components/pipeline_graph/gitlab_ci_yaml_visualization.vue'),
-    },
-    render(createElement) {
-      return createElement('gitlabCiYamlVisualization', {
-        props: {
-          blobData,
-        },
-      });
-    },
-  });
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -57,11 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  initWebIdeLink({ el: document.getElementById('js-blob-web-ide-link') });
+
   GpgBadges.fetch();
 
   const codeNavEl = document.getElementById('js-code-navigation');
 
-  if (gon.features?.codeNavigation && codeNavEl) {
+  if (codeNavEl) {
     const { codeNavigationPath, blobPath, definitionPathPrefix } = codeNavEl.dataset;
 
     // eslint-disable-next-line promise/catch-or-return
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  if (gon.features?.suggestPipeline) {
+  if (isExperimentEnabled('suggestPipeline')) {
     const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
 
     if (successPipelineEl) {

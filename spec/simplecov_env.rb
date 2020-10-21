@@ -2,7 +2,6 @@
 
 require 'simplecov'
 require 'simplecov-cobertura'
-require 'active_support/core_ext/numeric/time'
 require_relative '../lib/gitlab/utils'
 
 module SimpleCovEnv
@@ -75,7 +74,7 @@ module SimpleCovEnv
       add_group 'Libraries',    %w[/lib /ee/lib]
       add_group 'Tooling',      %w[/haml_lint /rubocop /tooling]
 
-      merge_timeout 365.days
+      merge_timeout 365 * 24 * 3600
     end
   end
 end

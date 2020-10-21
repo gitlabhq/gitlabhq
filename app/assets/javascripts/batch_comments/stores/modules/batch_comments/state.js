@@ -4,6 +4,4 @@ export default () => ({
   drafts: [],
   isPublishing: false,
   currentlyPublishingDrafts: [],
-  isDiscarding: false,
-  showPreviewDropdown: false,
 });

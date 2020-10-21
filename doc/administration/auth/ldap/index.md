@@ -12,6 +12,7 @@ GitLab integrates with LDAP to support user authentication.
 This integration works with most LDAP-compliant directory servers, including:
 
 - Microsoft Active Directory
+  - [Microsoft Active Directory Trusts](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)) are not supported.
 - Apple Open Directory
 - Open LDAP
 - 389 Server
@@ -20,9 +21,6 @@ Users added through LDAP take a [licensed seat](../../../subscriptions/self_mana
 
 GitLab Enterprise Editions (EE) include enhanced integration,
 including group membership syncing as well as multiple LDAP servers support.
-
-NOTE: **Note:**
-[Microsoft Active Directory Trusts](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)) are not supported.
 
 ## Overview
 
@@ -55,9 +53,8 @@ are already logged in or are using Git over SSH will still be able to access
 GitLab for up to one hour. Manually block the user in the GitLab Admin Area to
 immediately block all access.
 
-NOTE: **Note:**
 GitLab Enterprise Edition Starter supports a
-[configurable sync time](#adjusting-ldap-user-sync-schedule).
+[configurable sync time](#adjusting-ldap-user-sync-schedule). **(STARTER)**
 
 ## Git password authentication **(CORE ONLY)**
 
@@ -100,7 +97,6 @@ library. `start_tls` corresponds to StartTLS, not to be confused with regular TL
 Normally, if you specify `simple_tls` it will be on port 636, while `start_tls` (StartTLS)
 would be on port 389. `plain` also operates on port 389. Removed values: `tls` was replaced with `start_tls` and `ssl` was replaced with `simple_tls`.
 
-NOTE: **Note:**
 LDAP users must have an email address set, regardless of whether it is used to sign-in.
 
 ### Example Configurations **(CORE ONLY)**
@@ -120,7 +116,6 @@ gitlab_rails['ldap_servers'] = {
   'verify_certificates' => true,
   'bind_dn' => '_the_full_dn_of_the_user_you_will_bind_with',
   'password' => '_the_password_of_the_bind_user',
-  'encryption' => 'plain',
   'verify_certificates' => true,
   'tls_options' => {
     'ca_file' => '',
@@ -430,8 +425,7 @@ gitlab_rails['ldap_servers'] = {
 }
 ```
 
-NOTE: **Note:**
-Any number of LDAP servers can be configured. However, make sure to use a unique naming convention for the `label` section of each entry as this will be the display name of the tab shown on the sign-in page.
+If you configure multiple LDAP servers, use a unique naming convention for the `label` section of each entry. That label is used as the display name of the tab shown on the sign-in page.
 
 ## User sync **(STARTER ONLY)**
 
@@ -445,11 +439,10 @@ The process executes the following access checks:
   blocked/disabled state). This will only be checked if
   `active_directory: true` is set in the LDAP configuration.
 
-NOTE: **Note:**
 In Active Directory, a user is marked as disabled/blocked if the user
 account control attribute (`userAccountControl:1.2.840.113556.1.4.803`)
-has bit 2 set. See <https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/>
-for more information.
+has bit 2 set.
+For more information, see <https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/>
 
 The user will be set to `ldap_blocked` state in GitLab if the above conditions
 fail. This means the user will not be able to sign-in or push/pull code.
@@ -460,8 +453,10 @@ The process will also update the following user information:
 - If `sync_ssh_keys` is set, SSH public keys.
 - If Kerberos is enabled, Kerberos identity.
 
-NOTE: **Note:**
-The LDAP sync process updates existing users while new users are created on first sign in.
+The LDAP sync process:
+
+- Updates existing users.
+- Creates new users on first sign in.
 
 ### Adjusting LDAP user sync schedule **(STARTER ONLY)**
 
@@ -469,11 +464,13 @@ NOTE: **Note:**
 These are cron formatted values. You can use a crontab generator to create
 these values, for example <http://www.crontabgenerator.com/>.
 
-By default, GitLab will run a worker once per day at 01:30 a.m. server time to
+By default, GitLab runs a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
 
 You can manually configure LDAP user sync times by setting the
-following configuration values. The example below shows how to set LDAP user
+following configuration values, in cron format. If needed, you can
+use a [crontab generator](http://crontabgenerator.com).
+The example below shows how to set LDAP user
 sync to run once every 12 hours at the top of the hour.
 
 **Omnibus installations**
@@ -512,7 +509,7 @@ GitLab group membership to be automatically updated based on LDAP group members.
 The `group_base` configuration should be a base LDAP 'container', such as an
 'organization' or 'organizational unit', that contains LDAP groups that should
 be available to GitLab. For example, `group_base` could be
-`ou=groups,dc=example,dc=com`. In the config file it will look like the
+`ou=groups,dc=example,dc=com`. In the configuration file it will look like the
 following.
 
 **Omnibus configuration**
@@ -617,14 +614,12 @@ To enable it you need to:
 
 ### Adjusting LDAP group sync schedule **(STARTER ONLY)**
 
-NOTE: **Note:**
-These are cron formatted values. You can use a crontab generator to create
-these values, for example [Crontab Generator](http://www.crontabgenerator.com/).
-
 By default, GitLab runs a group sync process every hour, on the hour.
+The values shown are in cron format. If needed, you can use a
+[Crontab Generator](http://www.crontabgenerator.com).
 
 CAUTION: **Important:**
-It's recommended that you do not start the sync process too frequently as this
+Do not start the sync process too frequently as this
 could lead to multiple syncs running concurrently. This is primarily a concern
 for installations with a large number of LDAP users. Please review the
 [LDAP group sync benchmark metrics](#benchmarks) to see how
@@ -727,7 +722,8 @@ Other LDAP servers should work, too.
 Active Directory also supports nested groups. Group sync will recursively
 resolve membership if `active_directory: true` is set in the configuration file.
 
-NOTE: **Note:**
+##### Nested group memberships
+
 Nested group memberships are resolved only if the nested group
 is found within the configured `group_base`. For example, if GitLab sees a
 nested group with DN `cn=nested_group,ou=special_groups,dc=example,dc=com` but

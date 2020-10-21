@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ResourceLabelEvents < Grape::API::Instance
+  class ResourceLabelEvents < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
 

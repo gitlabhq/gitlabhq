@@ -1,0 +1,159 @@
+@import 'mixins_and_variables_and_functions';
+
+.title .edit-wiki-header {
+  width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 7px;
+}
+
+.wiki-page-header {
+  position: relative;
+
+  .wiki-breadcrumb {
+    border-bottom: 1px solid var(--gray-50, $gray-50);
+    padding: 11px 0;
+  }
+
+  .wiki-page-title {
+    margin: 0;
+    font-size: 22px;
+  }
+
+  .wiki-last-edit-by {
+    display: block;
+    color: var(--gray-500, $gray-500);
+
+    strong {
+      color: var(--gl-text-color, $gl-text-color);
+    }
+  }
+
+  .light {
+    font-weight: $gl-font-weight-normal;
+    color: var(--gray-500, $gray-500);
+  }
+
+  .git-clone-holder {
+    .input-group-prepend,
+    .input-group-append {
+      background-color: transparent;
+    }
+  }
+
+  button.sidebar-toggle {
+    position: absolute;
+    right: 0;
+    top: 11px;
+    display: block;
+  }
+
+  &.has-sidebar-toggle .git-access-header {
+    padding-right: $sidebar-toggle-width;
+  }
+
+  @include media-breakpoint-up(md) {
+    &.has-sidebar-toggle {
+      padding-right: 0;
+    }
+
+    button.sidebar-toggle {
+      display: none;
+    }
+  }
+}
+
+.wiki-git-access {
+  margin: $gl-padding 0;
+
+  h3 {
+    font-size: 19px;
+    font-weight: $gl-font-weight-normal;
+    margin: $gl-padding 0;
+  }
+}
+
+.right-sidebar.wiki-sidebar {
+  padding: 0;
+
+  &.right-sidebar-collapsed {
+    display: none;
+  }
+
+  .sidebar-container {
+    padding: $gl-padding 0;
+    padding-right: 100px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .blocks-container {
+    padding: 0 $gl-padding;
+  }
+
+  a {
+    color: var(--gray-400, $gray-400);
+
+    &:hover,
+    &.active {
+      text-decoration: none;
+
+      span {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .active > a {
+    color: var(--black, $black);
+  }
+
+  ul.wiki-pages,
+  ul.wiki-pages li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  ul.wiki-pages li {
+    margin: 5px 0 10px;
+  }
+
+  ul.wiki-pages ul {
+    padding-left: 15px;
+  }
+
+  .wiki-sidebar-header {
+    padding: 0 $gl-padding $gl-padding;
+
+    .gutter-toggle {
+      margin-top: 0;
+    }
+  }
+}
+
+ul.wiki-pages-list.content-list {
+  a {
+    color: var(--blue-600, $blue-600);
+  }
+
+  ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 15px;
+
+    li {
+      padding: 5px 0;
+    }
+  }
+}
+
+.empty-state-wiki .text-content {
+  max-width: 490px; // Widen to allow for the Confluence button
+}
+
+.wiki-form .markdown-area {
+  max-height: none;
+}

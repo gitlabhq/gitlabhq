@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -11,8 +11,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   GitLab 11.6 for [groups](../../group/clusters/index.md).
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
-
-## Overview
 
 Using the GitLab project Kubernetes integration, you can:
 
@@ -30,6 +28,11 @@ Using the GitLab project Kubernetes integration, you can:
 Besides integration at the project level, Kubernetes clusters can also be
 integrated at the [group level](../../group/clusters/index.md) or
 [GitLab instance level](../../instance/clusters/index.md).
+
+To view your project level Kubernetes clusters, navigate to **Operations > Kubernetes**
+from your project. On this page, you can [add a new cluster](#adding-and-removing-clusters)
+and view information about your existing clusters, such as nodes count and rough estimates
+of memory and CPU usage.
 
 ## Setting up
 
@@ -49,10 +52,9 @@ Currently, GitLab supports the following Kubernetes versions:
 - 1.17
 - 1.16
 - 1.15
-- 1.14
+- 1.14 (deprecated, support ends on December 22, 2020)
 - 1.13 (deprecated, support ends on November 22, 2020)
 
-NOTE: **Note:**
 Some GitLab features may support versions outside the range provided here.
 
 ### Adding and removing clusters
@@ -192,7 +194,6 @@ To clear the cache:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
-NOTE: **Note:**
 You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
 will be specified as part of the Knative installation. See [Installing Applications](#installing-applications).
 
@@ -220,12 +221,10 @@ Auto DevOps automatically detects, builds, tests, deploys, and monitors your
 applications.
 
 To make full use of Auto DevOps (Auto Deploy, Auto Review Apps, and
-Auto Monitoring) you will need the Kubernetes project integration enabled.
+Auto Monitoring) you will need the Kubernetes project integration enabled, but
+Kubernetes clusters can be used without Auto DevOps.
 
 [Read more about Auto DevOps](../../../topics/autodevops/index.md)
-
-NOTE: **Note:**
-Kubernetes clusters can be used without Auto DevOps.
 
 ## Deploying to a Kubernetes cluster
 
@@ -249,36 +248,51 @@ GitLab CI/CD build environment.
 | Variable | Description |
 | -------- | ----------- |
 | `KUBE_URL` | Equal to the API URL. |
-| `KUBE_TOKEN` | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). |
-| `KUBE_NAMESPACE` | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. |
+| `KUBE_TOKEN` | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
+| `KUBE_NAMESPACE` | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
-| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
+| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This configuration also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
 | `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](#base-domain) for more information. |
-
-NOTE: **Note:**
-Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
-service account of the cluster integration.
-
-NOTE: **Note:**
-If your cluster was created before GitLab 12.2, default `KUBE_NAMESPACE` will be set to `<project_name>-<project_id>`.
 
 ### Custom namespace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - An option to use project-wide namespaces [was added](https://gitlab.com/gitlab-org/gitlab/-/issues/38054) in GitLab 13.5.
 
-The Kubernetes integration defaults to project-environment-specific namespaces
-of the form `<project_name>-<project_id>-<environment>` (see [Deployment
-variables](#deployment-variables)).
+The Kubernetes integration provides a `KUBECONFIG` with an auto-generated namespace
+to deployment jobs. It defaults to using project-environment specific namespaces
+of the form `<prefix>-<environment>`, where `<prefix>` is of the form
+`<project_name>-<project_id>`. To learn more, read [Deployment variables](#deployment-variables).
 
-For **non**-GitLab-managed clusters, the namespace can be customized using
-[`environment:kubernetes:namespace`](../../../ci/environments/index.md#configuring-kubernetes-deployments)
-in `.gitlab-ci.yml`.
+You can customize the deployment namespace in a few ways:
 
-NOTE: **Note:**
-When using a [GitLab-managed cluster](#gitlab-managed-clusters), the
-namespaces are created automatically prior to deployment and [can not be
-customized](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+- You can choose between a **namespace per [environment](../../../ci/environments/index.md)**
+  or a **namespace per project**. A namespace per environment is the default and recommended
+  setting, as it prevents the mixing of resources between production and non-production environments.
+- When using a project-level cluster, you can additionally customize the namespace prefix.
+  When using namespace-per-environment, the deployment namespace is `<prefix>-<environment>`,
+  but otherwise just `<prefix>`.
+- For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
+  but the user is responsible for ensuring its existence. You can fully customize
+  this value using
+  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configuring-kubernetes-deployments)
+  in `.gitlab-ci.yml`.
+
+When you customize the namespace, existing environments remain linked to their current
+namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
+
+CAUTION: **Warning:**
+By default, anyone who can create a deployment job can access any CI variable within
+an environment's deployment job. This includes `KUBECONFIG`, which gives access to
+any secret available to the associated service account in your cluster.
+To keep your production credentials safe, consider using
+[Protected Environments](../../../ci/environments/protected_environments.md),
+combined with either
+
+- a GitLab-managed cluster and namespace per environment,
+- *or*, an environment-scoped cluster per protected environment. The same cluster
+  can be added multiple times with multiple restricted service accounts.
 
 ### Integrations
 

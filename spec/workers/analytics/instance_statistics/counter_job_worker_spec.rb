@@ -18,7 +18,7 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
     it 'counts a scope and stores the result' do
       subject
 
-      measurement = Analytics::InstanceStatistics::Measurement.first
+      measurement = Analytics::InstanceStatistics::Measurement.users.first
       expect(measurement.recorded_at).to be_like_time(recorded_at)
       expect(measurement.identifier).to eq('users')
       expect(measurement.count).to eq(2)
@@ -33,7 +33,7 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
     it 'sets 0 as the count' do
       subject
 
-      measurement = Analytics::InstanceStatistics::Measurement.first
+      measurement = Analytics::InstanceStatistics::Measurement.groups.first
       expect(measurement.recorded_at).to be_like_time(recorded_at)
       expect(measurement.identifier).to eq('groups')
       expect(measurement.count).to eq(0)
@@ -50,5 +50,21 @@ RSpec.describe Analytics::InstanceStatistics::CounterJobWorker do
     allow(Gitlab::Database::BatchCount).to receive(:batch_count).and_return(Gitlab::Database::BatchCounter::FALLBACK)
 
     expect { subject }.not_to change { Analytics::InstanceStatistics::Measurement.count }
+  end
+
+  context 'when pipelines_succeeded identifier is passed' do
+    let_it_be(:pipeline) { create(:ci_pipeline, :success) }
+
+    let(:successful_pipelines_measurement_identifier) { ::Analytics::InstanceStatistics::Measurement.identifiers.fetch(:pipelines_succeeded) }
+    let(:job_args) { [successful_pipelines_measurement_identifier, pipeline.id, pipeline.id, recorded_at] }
+
+    it 'counts successful pipelines' do
+      subject
+
+      measurement = Analytics::InstanceStatistics::Measurement.pipelines_succeeded.first
+      expect(measurement.recorded_at).to be_like_time(recorded_at)
+      expect(measurement.identifier).to eq('pipelines_succeeded')
+      expect(measurement.count).to eq(1)
+    end
   end
 end

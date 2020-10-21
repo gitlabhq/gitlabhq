@@ -13,9 +13,6 @@ export default () => {
     modules: {
       detail: createDetailModule(el.dataset),
     },
-    featureFlags: {
-      releaseShowPage: Boolean(gon.features?.releaseShowPage),
-    },
   });
 
   return new Vue({

@@ -26,8 +26,8 @@ point them at the same project on GitLab.
 There are a few reasons you might want to publish all your packages to one project on GitLab:
 
 1. You want to publish your packages on GitLab, but to a project that is different from where your code is stored.
-1. You would like to group packages together in ways that make sense for your usage (all NPM packages in one project,
-   all packages being used by a specific department in one project, all private packages in one project, etc.)
+1. You would like to group packages together in ways that make sense for your usage (such as all NPM packages in one project,
+   all packages being used by a specific department in one project, or all private packages in one project)
 1. You want to use one remote for all of your packages when installing them into other projects.
 1. You would like to migrate your packages to a single place on GitLab from a third-party package registry and do not
    want to worry about setting up separate projects for each package.
@@ -44,7 +44,7 @@ Let's take a look at how you might create a public place to hold all of your pub
 ### Create a project
 
 First, create a new project on GitLab. It does not have to have any code or content. Make note of the project ID
-displayed on the project overview page, as you will need this later.
+displayed on the project overview page for use later in this process.
 
 ### Create an access token
 
@@ -67,24 +67,24 @@ If you are using NPM, this involves creating an `.npmrc` file and adding the app
 to your project using your project ID, then adding a section to your `package.json` file with a similar URL.
 
 Follow
-the instructions in the [GitLab NPM Registry documentation](../npm_registry/index.md#authenticating-to-the-gitlab-npm-registry). Once
-you do this, you will be able to push your NPM package to your project using `npm publish`, as described in the
+the instructions in the [GitLab NPM Registry documentation](../npm_registry/index.md#authenticating-to-the-gitlab-npm-registry). After
+you do this, you can push your NPM package to your project using `npm publish`, as described in the
 [uploading packages](../npm_registry/index.md#uploading-packages) section of the docs.
 
 #### Maven
 
 If you are using Maven, this involves updating your `pom.xml` file with distribution sections, including the
 appropriate URL for your project, as described in the [GitLab Maven Repository documentation](../maven_repository/index.md#project-level-maven-endpoint).
-Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/index.md#authenticating-with-a-personal-access-token).
+Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/index.md#authenticate-with-a-personal-access-token).
 Now you can [deploy Maven packages](../maven_repository/index.md#uploading-packages) to your project.
 
 #### Conan
 
-For Conan, first you need to add GitLab as a Conan registry remote. Follow the instructions in the [GitLab Conan Repository docs](../conan_repository/index.md#adding-the-gitlab-package-registry-as-a-conan-remote)
+For Conan, first you need to add GitLab as a Conan registry remote. Follow the instructions in the [GitLab Conan Repository docs](../conan_repository/index.md#add-the-package-registry-as-a-conan-remote)
 to do so. Then, create your package using the plus-separated (`+`) project path as your Conan user. For example,
 if your project is located at `https://gitlab.com/foo/bar/my-proj`, then you can [create your Conan package](../conan_repository/index.md)
-using `conan create . foo+bar+my-proj/channel`, where `channel` is your package channel (`stable`, `beta`, etc.). Once your package
-is created, you are ready to [upload your package](../conan_repository/index.md#uploading-a-package) depending on your final package recipe. For example:
+using `conan create . foo+bar+my-proj/channel`, where `channel` is your package channel (such as `stable` or `beta`). After your package
+is created, you are ready to [upload your package](../conan_repository/index.md#publish-a-conan-package) depending on your final package recipe. For example:
 
 ```shell
 CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload MyPackage/1.0.0@foo+bar+my-proj/channel --all --remote=gitlab

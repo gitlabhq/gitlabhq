@@ -40,6 +40,8 @@ import { trackDesignDetailView } from '../../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 
+const DEFAULT_SCALE = 1;
+
 export default {
   components: {
     ApolloMutation,
@@ -65,7 +67,7 @@ export default {
       comment: '',
       annotationCoordinates: null,
       errorMessage: '',
-      scale: 1,
+      scale: DEFAULT_SCALE,
       resolvedDiscussionsExpanded: false,
     };
   },
@@ -156,6 +158,11 @@ export default {
   },
   beforeDestroy() {
     Mousetrap.unbind('esc', this.closeDesign);
+  },
+  beforeRouteUpdate(to, from, next) {
+    // reset scale when the active design changes
+    this.scale = DEFAULT_SCALE;
+    next();
   },
   methods: {
     addImageDiffNoteToStore(
@@ -300,11 +307,13 @@ export default {
 
 <template>
   <div
-    class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+    class="design-detail js-design-detail fixed-top gl-w-full gl-bottom-0 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
   >
-    <gl-loading-icon v-if="isFirstLoading" size="xl" class="align-self-center" />
+    <gl-loading-icon v-if="isFirstLoading" size="xl" class="gl-align-self-center" />
     <template v-else>
-      <div class="d-flex overflow-hidden flex-grow-1 flex-column position-relative">
+      <div
+        class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
+      >
         <design-destroyer
           :filenames="[design.filename]"
           :project-path="projectPath"
@@ -323,7 +332,7 @@ export default {
           </template>
         </design-destroyer>
 
-        <div v-if="errorMessage" class="p-3">
+        <div v-if="errorMessage" class="gl-p-5">
           <gl-alert variant="danger" @dismiss="errorMessage = null">
             {{ errorMessage }}
           </gl-alert>
@@ -340,7 +349,9 @@ export default {
           @moveNote="onMoveNote"
         />
 
-        <div class="design-scaler-wrapper position-absolute mb-4 d-flex-center">
+        <div
+          class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+        >
           <design-scaler @scale="scale = $event" />
         </div>
       </div>

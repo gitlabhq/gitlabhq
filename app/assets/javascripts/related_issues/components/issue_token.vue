@@ -90,6 +90,7 @@ export default {
           :size="12"
           :title="stateTitle"
           :aria-label="state"
+          data-testid="referenceIcon"
         />
         {{ displayReference }}
       </component>
@@ -105,6 +106,7 @@ export default {
       :title="removeButtonLabel"
       :aria-label="removeButtonLabel"
       :disabled="removeDisabled"
+      data-testid="removeBtn"
       type="button"
       class="js-issue-token-remove-button"
       @click="onRemoveRequest"

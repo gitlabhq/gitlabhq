@@ -48,7 +48,7 @@ RSpec.describe 'Group Packages' do
 
       it 'allows you to navigate to the project page' do
         page.within('[data-qa-selector="packages-table"]') do
-          click_link project.name
+          find('[data-qa-selector="package-path"]', text: project.name).click
         end
 
         expect(page).to have_current_path(project_path(project))

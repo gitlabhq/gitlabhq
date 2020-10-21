@@ -34,13 +34,21 @@ class DiffFileBaseEntity < Grape::Entity
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    next unless merge_request.merged? || merge_request.source_branch_exists?
+    next unless has_edit_path?(merge_request)
 
     target_project, target_branch = edit_project_branch_options(merge_request)
 
     options = merge_request.persisted? && merge_request.source_branch_exists? && !merge_request.merged? ? { from_merge_request_iid: merge_request.iid } : {}
 
     project_edit_blob_path(target_project, tree_join(target_branch, diff_file.new_path), options)
+  end
+
+  expose :ide_edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+    merge_request = options[:merge_request]
+
+    next unless has_edit_path?(merge_request)
+
+    gitlab_ide_merge_request_path(merge_request)
   end
 
   expose :old_path_html do |diff_file|
@@ -124,5 +132,9 @@ class DiffFileBaseEntity < Grape::Entity
     else
       [merge_request.target_project, merge_request.target_branch]
     end
+  end
+
+  def has_edit_path?(merge_request)
+    merge_request.merged? || merge_request.source_branch_exists?
   end
 end

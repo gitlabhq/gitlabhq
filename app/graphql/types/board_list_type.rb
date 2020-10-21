@@ -32,17 +32,14 @@ module Types
       metadata[:size]
     end
 
-    def total_weight
-      metadata[:total_weight]
-    end
-
     def metadata
       strong_memoize(:metadata) do
         list = self.object
         user = context[:current_user]
+        params = (context[:issue_filters] || {}).merge(board_id: list.board_id, id: list.id)
 
         ::Boards::Issues::ListService
-          .new(list.board.resource_parent, user, board_id: list.board_id, id: list.id)
+          .new(list.board.resource_parent, user, params)
           .metadata
       end
     end

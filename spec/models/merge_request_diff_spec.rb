@@ -180,6 +180,17 @@ RSpec.describe MergeRequestDiff do
       expect(diff.external_diff_store).to eq(file_store)
     end
 
+    it 'migrates a nil diff file' do
+      expect(diff).not_to be_stored_externally
+      MergeRequestDiffFile.where(merge_request_diff_id: diff.id).update_all(diff: nil)
+
+      stub_external_diffs_setting(enabled: true)
+
+      diff.migrate_files_to_external_storage!
+
+      expect(diff).to be_stored_externally
+    end
+
     it 'safely handles a transaction error when migrating to external storage' do
       expect(diff).not_to be_stored_externally
       expect(diff.external_diff).not_to be_exists
@@ -646,11 +657,30 @@ RSpec.describe MergeRequestDiff do
       expect(diff_with_commits.commit_shas).to all(match(/\h{40}/))
     end
 
-    context 'with limit attribute' do
+    shared_examples 'limited number of shas' do
       it 'returns limited number of shas' do
         expect(diff_with_commits.commit_shas(limit: 2).size).to eq(2)
         expect(diff_with_commits.commit_shas(limit: 100).size).to eq(29)
         expect(diff_with_commits.commit_shas.size).to eq(29)
+      end
+    end
+
+    context 'with limit attribute' do
+      it_behaves_like 'limited number of shas'
+    end
+
+    context 'with preloaded diff commits' do
+      before do
+        # preloads the merge_request_diff_commits association
+        diff_with_commits.merge_request_diff_commits.to_a
+      end
+
+      it_behaves_like 'limited number of shas'
+
+      it 'does not trigger any query' do
+        count = ActiveRecord::QueryRecorder.new { diff_with_commits.commit_shas(limit: 2) }.count
+
+        expect(count).to eq(0)
       end
     end
   end
@@ -863,6 +893,27 @@ RSpec.describe MergeRequestDiff do
 
     it 'returns sum of all changed lines count in diff files' do
       expect(subject.lines_count).to eq 189
+    end
+  end
+
+  describe '.latest_diff_for_merge_requests' do
+    let_it_be(:merge_request_1) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_1_diff_1) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 3.days.ago) }
+    let_it_be(:merge_request_1_diff_2) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 1.day.ago) }
+
+    let_it_be(:merge_request_2) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_2_diff_1) { create(:merge_request_diff, merge_request: merge_request_2, created_at: 3.days.ago) }
+
+    let_it_be(:merge_request_3) { create(:merge_request_without_merge_request_diff) }
+
+    subject { described_class.latest_diff_for_merge_requests([merge_request_1, merge_request_2]) }
+
+    it 'loads the latest merge_request_diff record for the given merge requests' do
+      expect(subject).to match_array([merge_request_1_diff_2, merge_request_2_diff_1])
+    end
+
+    it 'loads nothing if the merge request has no diff record' do
+      expect(described_class.latest_diff_for_merge_requests(merge_request_3)).to be_empty
     end
   end
 end

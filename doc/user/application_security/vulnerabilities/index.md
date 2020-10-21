@@ -14,6 +14,7 @@ Each security vulnerability in a project's [Security Dashboard](../security_dash
 - Details of the vulnerability.
 - The status of the vulnerability within the project.
 - Available actions for the vulnerability.
+- Issues related to the vulnerability.
 
 On the vulnerability page, you can interact with the vulnerability in
 several different ways:
@@ -23,6 +24,7 @@ several different ways:
 - [Create issue](#creating-an-issue-for-a-vulnerability) - Create a new issue with the
   title and description pre-populated with information from the vulnerability report.
   By default, such issues are [confidential](../../project/issues/confidential_issues.md).
+- [Link issues](#link-issues-to-the-vulnerability) - Link existing issues to vulnerability.
 - [Solution](#automatic-remediation-for-vulnerabilities) - For some vulnerabilities,
   a solution is provided for how to fix the vulnerability.
 
@@ -38,6 +40,9 @@ the following values:
 | Dismissed | A user has seen this vulnerability and dismissed it               |
 | Resolved  | The vulnerability has been fixed and is no longer in the codebase |
 
+A timeline shows you when the vulnerability status has changed,
+and allows you to comment on a change.
+
 ## Creating an issue for a vulnerability
 
 You can create an issue for a vulnerability by selecting the **Create issue** button.
@@ -46,6 +51,12 @@ This creates a [confidential issue](../../project/issues/confidential_issues.md)
 project the vulnerability came from, and pre-populates it with useful information from
 the vulnerability report. After the issue is created, GitLab redirects you to the
 issue page so you can edit, assign, or comment on the issue.
+
+## Link issues to the vulnerability
+
+You can link one or more existing issues to the vulnerability. This allows you to
+indicate that this vulnerability affects multiple issues. It also allows you to indicate
+that the resolution of one issue would resolve multiple vulnerabilities.
 
 ## Automatic remediation for vulnerabilities
 

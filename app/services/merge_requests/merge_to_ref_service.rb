@@ -58,8 +58,15 @@ module MergeRequests
       params[:first_parent_ref] || merge_request.target_branch_ref
     end
 
+    ##
+    # The parameter `allow_conflicts` is a flag whether merge conflicts should be merged into diff
+    # Default is false
+    def allow_conflicts
+      params[:allow_conflicts] || false
+    end
+
     def commit
-      repository.merge_to_ref(current_user, source, merge_request, target_ref, commit_message, first_parent_ref)
+      repository.merge_to_ref(current_user, source, merge_request, target_ref, commit_message, first_parent_ref, allow_conflicts)
     rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => error
       raise MergeError, error.message
     end

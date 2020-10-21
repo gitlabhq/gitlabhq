@@ -16,7 +16,7 @@ module Banzai
       end
 
       def nodes_visible_to_user(user, nodes)
-        groups = lazy { grouped_objects_for_nodes(nodes, Group, GROUP_ATTR) }
+        groups = lazy { grouped_objects_for_nodes(nodes, references_relation, GROUP_ATTR) }
 
         nodes.select do |node|
           node.has_attribute?(GROUP_ATTR) && can_read_group_reference?(node, user, groups)

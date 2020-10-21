@@ -48,7 +48,7 @@ that the `master` branch is protected by default.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081) in GitLab 8.11.
 
-Since GitLab 8.11, we added another layer of branch protection which provides
+In GitLab 8.11 and later, we added another layer of branch protection which provides
 more granular management of protected branches. The "Developers can push"
 option was replaced by an "Allowed to push" setting which can be set to
 allow/prohibit Maintainers and/or Developers to push to a protected branch.
@@ -184,6 +184,8 @@ To enable Code Owner's approval to branches already protected:
 When enabled, all merge requests targeting these branches will require approval
 by a Code Owner per matched rule before they can be merged.
 Additionally, direct pushes to the protected branch are denied if a rule is matched.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5, users and groups who are allowed to push to protected branches do not require a merge request to merge their feature branches. Thus, they can skip merge request approval rules.
 
 ## Running pipelines on protected branches
 

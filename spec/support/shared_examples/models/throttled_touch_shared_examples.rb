@@ -13,8 +13,8 @@ RSpec.shared_examples 'throttled touch' do
       first_updated_at = Time.zone.now - (ThrottledTouch::TOUCH_INTERVAL * 2)
       second_updated_at = Time.zone.now - (ThrottledTouch::TOUCH_INTERVAL * 1.5)
 
-      Timecop.freeze(first_updated_at) { subject.touch }
-      Timecop.freeze(second_updated_at) { subject.touch }
+      travel_to(first_updated_at) { subject.touch }
+      travel_to(second_updated_at) { subject.touch }
 
       expect(subject.updated_at).to be_like_time(first_updated_at)
     end

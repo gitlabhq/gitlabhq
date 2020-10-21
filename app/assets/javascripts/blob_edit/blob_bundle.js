@@ -2,19 +2,17 @@
 
 import $ from 'jquery';
 import NewCommitForm from '../new_commit_form';
-import EditBlob from './edit_blob';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
-import initWebIdeAlert from '~/blob/suggest_web_ide_ci';
 
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
   const uploadBlobForm = $('.js-upload-blob-form');
   const deleteBlobForm = $('.js-delete-blob-form');
   const suggestEl = document.querySelector('.js-suggest-gitlab-ci-yml');
-  const alertEl = document.getElementById('js-suggest-web-ide-ci');
 
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relativeUrlRoot');
@@ -26,6 +24,18 @@ export default () => {
     const commitButton = $('.js-commit-button');
     const cancelLink = $('.btn.btn-cancel');
 
+    import('./edit_blob')
+      .then(({ default: EditBlob } = {}) => {
+        new EditBlob({
+          assetsPath: `${urlRoot}${assetsPath}`,
+          filePath,
+          currentAction,
+          projectId,
+          isMarkdown,
+        });
+      })
+      .catch(e => createFlash(e));
+
     cancelLink.on('click', () => {
       window.onbeforeunload = null;
     });
@@ -34,13 +44,6 @@ export default () => {
       window.onbeforeunload = null;
     });
 
-    new EditBlob({
-      assetsPath: `${urlRoot}${assetsPath}`,
-      filePath,
-      currentAction,
-      projectId,
-      isMarkdown,
-    });
     new NewCommitForm(editBlobForm);
 
     // returning here blocks page navigation
@@ -84,9 +87,5 @@ export default () => {
         });
       });
     }
-  }
-
-  if (alertEl) {
-    initWebIdeAlert(alertEl);
   }
 };

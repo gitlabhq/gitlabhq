@@ -32,7 +32,7 @@ export default {
       <gl-icon :size="12" name="angle-down" class="position-absolute" />
     </a>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
-      <div class="dropdown-content">
+      <div class="dropdown-content" data-qa-selector="dropdown_content">
         <ul>
           <li v-for="version in versions" :key="version.id">
             <a :class="{ 'is-active': version.selected }" :href="version.href">

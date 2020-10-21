@@ -1,0 +1,55 @@
+- issuable_type = issuable_sidebar[:type]
+
+#js-vue-sidebar-reviewers{ data: { field: issuable_type, signed_in: signed_in } }
+  .title.hide-collapsed
+    = _('Reviewer')
+    = loading_icon(css_class: 'gl-vertical-align-text-bottom')
+
+.selectbox.hide-collapsed
+  - if reviewers.none?
+    = hidden_field_tag "#{issuable_type}[reviewer_ids][]", 0, id: nil
+  - else
+    - reviewers.each do |reviewer|
+      = hidden_field_tag "#{issuable_type}[reviewer_ids][]", reviewer.id, id: nil, data: reviewer_sidebar_data(reviewer, merge_request: @merge_request)
+
+  - options = { toggle_class: 'js-reviewer-search js-author-search',
+    title: _('Request review from'),
+    filter: true,
+    dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author',
+    placeholder: _('Search users'),
+    data: { first_user: issuable_sidebar.dig(:current_user, :username),
+      current_user: true,
+      iid: issuable_sidebar[:iid],
+      issuable_type: issuable_type,
+      project_id: issuable_sidebar[:project_id],
+      author_id: issuable_sidebar[:author_id],
+      field_name: "#{issuable_type}[reviewer_ids][]",
+      issue_update: issuable_sidebar[:issuable_json_path],
+      ability_name: issuable_type,
+      null_user: true,
+      display: 'static' } }
+
+  - dropdown_options = reviewers_dropdown_options(issuable_type)
+  - title = dropdown_options[:title]
+  - options[:toggle_class] += ' js-multiselect js-save-user-data'
+  - data = { field_name: "#{issuable_type}[reviewer_ids][]" }
+  - data[:multi_select] = true
+  - data['dropdown-title'] = title
+  - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
+  - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
+  - options[:data].merge!(data)
+
+  - if experiment_enabled?(:invite_members_version_a) && can_import_members?
+    - options[:dropdown_class] += ' dropdown-extended-height'
+    - options[:footer_content] = true
+    - options[:wrapper_class] = 'js-sidebar-reviewer-dropdown'
+
+    = dropdown_tag(title, options: options) do
+      %ul.dropdown-footer-list
+        %li
+          = link_to _('Invite Members'),
+            project_project_members_path(@project),
+            title: _('Invite Members'),
+            data: { 'is-link': true, 'track-event': 'click_invite_members', 'track-label': 'edit_reviewer' }
+  - else
+    = dropdown_tag(title, options: options)

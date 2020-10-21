@@ -1,3 +1,5 @@
+import { createUniqueJobId } from '~/pipelines/utils';
+
 export const yamlString = `stages:
 - empty
 - build
@@ -39,18 +41,20 @@ deploy_a:
   script: echo hello
 `;
 
+const jobId1 = createUniqueJobId('build', 'build_1');
+const jobId2 = createUniqueJobId('test', 'test_1');
+const jobId3 = createUniqueJobId('test', 'test_2');
+const jobId4 = createUniqueJobId('deploy', 'deploy_1');
+
 export const pipelineData = {
   stages: [
-    {
-      name: 'build',
-      groups: [],
-    },
     {
       name: 'build',
       groups: [
         {
           name: 'build_1',
           jobs: [{ script: 'echo hello', stage: 'build' }],
+          id: jobId1,
         },
       ],
     },
@@ -60,10 +64,12 @@ export const pipelineData = {
         {
           name: 'test_1',
           jobs: [{ script: 'yarn test', stage: 'test' }],
+          id: jobId2,
         },
         {
           name: 'test_2',
           jobs: [{ script: 'yarn karma', stage: 'test' }],
+          id: jobId3,
         },
       ],
     },
@@ -73,8 +79,15 @@ export const pipelineData = {
         {
           name: 'deploy_1',
           jobs: [{ script: 'yarn magick', stage: 'deploy' }],
+          id: jobId4,
         },
       ],
     },
   ],
+  jobs: {
+    [jobId1]: {},
+    [jobId2]: {},
+    [jobId3]: {},
+    [jobId4]: {},
+  },
 };

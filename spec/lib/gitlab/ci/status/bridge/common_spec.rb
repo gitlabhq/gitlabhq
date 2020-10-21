@@ -30,15 +30,6 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Common do
 
       it { expect(subject).to have_details }
       it { expect(subject.details_path).to include "pipelines/#{downstream_pipeline.id}" }
-
-      context 'when ci_bridge_pipeline_details is disabled' do
-        before do
-          stub_feature_flags(ci_bridge_pipeline_details: false)
-        end
-
-        it { expect(subject).not_to have_details }
-        it { expect(subject.details_path).to be_nil }
-      end
     end
 
     context 'when user does not have access to read downstream pipeline' do

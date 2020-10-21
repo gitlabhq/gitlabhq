@@ -163,10 +163,7 @@ export default {
         </p>
       </template>
     </gl-table>
-    <div
-      class="ci-variable-actions d-flex justify-content-end"
-      :class="{ 'justify-content-center': !tableIsNotEmpty }"
-    >
+    <div class="ci-variable-actions" :class="{ 'justify-content-center': !tableIsNotEmpty }">
       <gl-button
         v-if="tableIsNotEmpty"
         ref="secret-value-reveal-button"

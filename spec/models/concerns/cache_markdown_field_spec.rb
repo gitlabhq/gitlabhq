@@ -285,7 +285,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
     it_behaves_like 'a class with cached markdown fields'
 
     describe '#attribute_invalidated?' do
-      let(:thing) { klass.create(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+      let(:thing) { klass.create!(description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
       it 'returns true when cached_markdown_version is different' do
         thing.cached_markdown_version += 1
@@ -318,7 +318,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       let(:thing) do
         # This forces the record to have outdated HTML. We can't use `create` because the `before_create` hook
         # would re-render the HTML to the latest version
-        klass.create.tap do |thing|
+        klass.create!.tap do |thing|
           thing.update_columns(description: markdown, description_html: old_html, cached_markdown_version: old_version)
         end
       end
@@ -326,7 +326,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       it 'correctly updates cached HTML even if refresh_markdown_cache is called before updating the attribute' do
         thing.refresh_markdown_cache
 
-        thing.update(description: updated_markdown)
+        thing.update!(description: updated_markdown)
 
         expect(thing.description_html).to eq(updated_html)
       end

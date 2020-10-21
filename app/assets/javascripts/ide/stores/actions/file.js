@@ -59,7 +59,7 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
 
 export const getFileData = (
   { state, commit, dispatch, getters },
-  { path, makeFileActive = true, openFile = makeFileActive },
+  { path, makeFileActive = true, openFile = makeFileActive, toggleLoading = true },
 ) => {
   const file = state.entries[path];
   const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
@@ -99,7 +99,7 @@ export const getFileData = (
       });
     })
     .finally(() => {
-      commit(types.TOGGLE_LOADING, { entry: file, forceValue: false });
+      if (toggleLoading) commit(types.TOGGLE_LOADING, { entry: file, forceValue: false });
     });
 };
 

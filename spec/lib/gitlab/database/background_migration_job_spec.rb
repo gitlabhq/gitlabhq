@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Database::BackgroundMigrationJob do
       let!(:job1) { create(:background_migration_job, :succeeded, created_at: initial_time, updated_at: initial_time) }
 
       it 'does not update non-pending jobs' do
-        Timecop.freeze(initial_time + 1.day) do
+        travel_to(initial_time + 1.day) do
           expect { described_class.mark_all_as_succeeded('TestJob', [1, 100]) }
             .to change { described_class.succeeded.count }.from(1).to(2)
         end

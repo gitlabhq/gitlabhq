@@ -24,10 +24,10 @@ export default {
   },
   inject: {
     autoDevopsHelpPath: {
-      type: String,
+      default: '',
     },
     externalEndpointHelpPath: {
-      type: String,
+      default: '',
     },
   },
   data() {

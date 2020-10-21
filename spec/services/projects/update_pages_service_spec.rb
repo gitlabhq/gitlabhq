@@ -16,8 +16,6 @@ RSpec.describe Projects::UpdatePagesService do
   subject { described_class.new(project, build) }
 
   before do
-    stub_feature_flags(safezip_use_rubyzip: true)
-
     project.remove_pages
   end
 
@@ -59,6 +57,28 @@ RSpec.describe Projects::UpdatePagesService do
         end
       end
 
+      it 'creates pages_deployment and saves it in the metadata' do
+        expect do
+          expect(execute).to eq(:success)
+        end.to change { project.pages_deployments.count }.by(1)
+
+        deployment = project.pages_deployments.last
+
+        expect(deployment.size).to eq(file.size)
+        expect(deployment.file).to be
+        expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
+      end
+
+      it 'does not create deployment when zip_pages_deployments feature flag is disabled' do
+        stub_feature_flags(zip_pages_deployments: false)
+
+        expect do
+          expect(execute).to eq(:success)
+        end.not_to change { project.pages_deployments.count }
+
+        expect(project.pages_metadatum.reload.pages_deployment_id).to be_nil
+      end
+
       it 'limits pages size' do
         stub_application_setting(max_pages_size: 1)
         expect(execute).not_to eq(:success)
@@ -75,14 +95,14 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_deployed?).to be_truthy
         expect(Dir.exist?(File.join(project.pages_path))).to be_truthy
 
-        project.destroy
+        project.destroy!
 
         expect(Dir.exist?(File.join(project.pages_path))).to be_falsey
         expect(ProjectPagesMetadatum.find_by_project_id(project)).to be_nil
       end
 
       it 'fails if sha on branch is not latest' do
-        build.update(ref: 'feature')
+        build.update!(ref: 'feature')
 
         expect(execute).not_to eq(:success)
         expect(project.pages_metadatum).not_to be_deployed
@@ -104,10 +124,6 @@ RSpec.describe Projects::UpdatePagesService do
         let(:file) { fixture_file_upload("spec/fixtures/pages_non_writeable.zip") }
 
         context 'when using RubyZip' do
-          before do
-            stub_feature_flags(safezip_use_rubyzip: true)
-          end
-
           it 'succeeds to extract' do
             expect(execute).to eq(:success)
             expect(project.pages_metadatum).to be_deployed
@@ -175,7 +191,7 @@ RSpec.describe Projects::UpdatePagesService do
   it 'fails to remove project pages when no pages is deployed' do
     expect(PagesWorker).not_to receive(:perform_in)
     expect(project.pages_deployed?).to be_falsey
-    project.destroy
+    project.destroy!
   end
 
   it 'fails if no artifacts' do

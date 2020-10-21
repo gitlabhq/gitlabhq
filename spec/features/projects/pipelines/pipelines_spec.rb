@@ -118,7 +118,7 @@ RSpec.describe 'Pipelines', :js do
         context 'when canceling' do
           before do
             find('.js-pipelines-cancel-button').click
-            find('.js-modal-primary-action').click
+            click_button 'Stop pipeline'
             wait_for_requests
           end
 
@@ -407,7 +407,7 @@ RSpec.describe 'Pipelines', :js do
           context 'when canceling' do
             before do
               find('.js-pipelines-cancel-button').click
-              find('.js-modal-primary-action').click
+              click_button 'Stop pipeline'
             end
 
             it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do

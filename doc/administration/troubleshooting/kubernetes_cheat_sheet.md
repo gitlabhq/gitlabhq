@@ -84,8 +84,7 @@ and they will assist you with any issues you are having.
 
 ## GitLab-specific Kubernetes information
 
-- Minimal config that can be used to test a Kubernetes Helm chart can be found
-  [here](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
+- Minimal configuration that can be used to [test a Kubernetes Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
 
 - Tailing logs of a separate pod. An example for a Webservice pod:
 
@@ -190,7 +189,7 @@ and they will assist you with any issues you are having.
   be possible to use [Updating GitLab using the Helm Chart](https://docs.gitlab.com/charts/index.html#updating-gitlab-using-the-helm-chart)
   for upgrades.
 
-- How to apply changes to GitLab config:
+- How to apply changes to GitLab configuration:
 
   - Modify the `gitlab.yaml` file.
   - Run the following command to apply changes:
@@ -255,7 +254,7 @@ to those documents for details.
   helm install gitlab -f <path-to-yaml-file> gitlab/gitlab
   ```
 
-  If you want to modify some GitLab settings, you can use the above-mentioned config
+  If you want to modify some GitLab settings, you can use the above-mentioned configuration
   as a base and create your own YAML file.
 
 - Monitor the installation progress via `helm status gitlab` and `minikube dashboard`.

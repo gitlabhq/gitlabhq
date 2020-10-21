@@ -76,6 +76,15 @@ module QA
             parse_body(response)[:title].include?(title)
         end
       end
+
+      private
+
+      def api_get
+        with_paginated_response_body(Runtime::API::Request.new(api_client, '/user/keys', per_page: '100').url) do |page|
+          key = page.find { |key| key[:title] == title }
+          break process_api_response(key) if key
+        end
+      end
     end
   end
 end

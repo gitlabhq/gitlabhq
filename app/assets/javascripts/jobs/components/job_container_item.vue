@@ -1,6 +1,5 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { sprintf } from '~/locale';
@@ -12,7 +11,7 @@ export default {
     GlLink,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [delayedJobMixin],
   props: {
@@ -49,10 +48,9 @@ export default {
     }"
   >
     <gl-link
-      v-tooltip
+      v-gl-tooltip
       :href="job.status.details_path"
       :title="tooltipText"
-      data-boundary="viewport"
       class="js-job-link d-flex"
     >
       <gl-icon

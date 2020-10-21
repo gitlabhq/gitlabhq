@@ -2,7 +2,7 @@
   .todo-avatar
     = author_avatar(todo, size: 40)
 
-  .todo-item.todo-block.align-self-center
+  .todo-item.todo-block.align-self-center{ data: { qa_selector: "todo_item_container" } }
     .todo-title
       - if todo_author_display?(todo)
         = todo_target_state_pill(todo)
@@ -13,7 +13,7 @@
           - else
             (removed)
 
-      %span.title-item.action-name
+      %span.title-item.action-name{ data: { qa_selector: "todo_action_name_content" } }
         = todo_action_name(todo)
 
       %span.title-item.todo-label.todo-target-link
@@ -22,7 +22,7 @@
         - else
           = _("(removed)")
 
-      %span.title-item.todo-target-title
+      %span.title-item.todo-target-title{ data: { qa_selector: "todo_target_title_content" } }
         = todo_target_title(todo)
 
       %span.title-item.todo-project.todo-label
@@ -31,7 +31,7 @@
 
       - if todo.self_assigned?
         %span.title-item.action-name
-          to yourself
+          = todo_self_addressing(todo)
 
       %span.title-item
         &middot;
@@ -57,5 +57,5 @@
   - else
     .todo-actions
       = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
-        Add a To Do
+        Add a to do
         %span.spinner.ml-1

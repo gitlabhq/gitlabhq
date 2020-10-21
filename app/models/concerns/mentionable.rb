@@ -81,13 +81,6 @@ module Mentionable
   end
 
   def store_mentions!
-    # if store_mentioned_users_to_db feature flag is not enabled then consider storing operation as succeeded
-    # because we wrap this method in transaction with with_transaction_returning_status, and we need the status to be
-    # successful if mentionable.save is successful.
-    #
-    # This line will get removed when we remove the feature flag.
-    return true unless store_mentioned_users_to_db_enabled?
-
     refs = all_references(self.author)
 
     references = {}
@@ -252,15 +245,6 @@ module Mentionable
   # in a multithreaded environment. Make sure to use it within a *safe_ensure_unique* block.
   def model_user_mention
     user_mentions.where(note_id: nil).first_or_initialize
-  end
-
-  # We need this method to be checking that store_mentioned_users_to_db feature flag is enabled at the group level
-  # and not the project level as epics are defined at group level and we want to have epics store user mentions as well
-  # for the test period.
-  # During the test period the flag should be enabled at the group level.
-  def store_mentioned_users_to_db_enabled?
-    return Feature.enabled?(:store_mentioned_users_to_db, self.project&.group, default_enabled: true) if self.respond_to?(:project)
-    return Feature.enabled?(:store_mentioned_users_to_db, self.group, default_enabled: true) if self.respond_to?(:group)
   end
 end
 

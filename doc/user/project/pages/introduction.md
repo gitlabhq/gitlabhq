@@ -173,7 +173,7 @@ Most modern browsers support downloading files in a compressed format. This
 speeds up downloads by reducing the size of files.
 
 Before serving an uncompressed file, Pages will check whether the same file
-exists with a `.gz` extension. If it does, and the browser supports receiving
+exists with a `.br` or `.gz` extension. If it does, and the browser supports receiving
 compressed files, it will serve that version instead of the uncompressed one.
 
 To take advantage of this feature, the artifact you upload to the Pages should
@@ -182,14 +182,17 @@ have this structure:
 ```plaintext
 public/
 ├─┬ index.html
+│ | index.html.br
 │ └ index.html.gz
 │
 ├── css/
 │   └─┬ main.css
+│     | main.css.br
 │     └ main.css.gz
 │
 └── js/
     └─┬ main.js
+      | main.js.br
       └ main.js.gz
 ```
 
@@ -202,6 +205,7 @@ pages:
   script:
     # Build the public/ directory first
     - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec gzip -f -k {} \;
+    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec brotli -f -k {} \;
 ```
 
 By pre-compressing the files and including both versions in the artifact, Pages
@@ -255,9 +259,8 @@ instead. Here are some examples of what will happen given the above Pages site:
 | `/other/index`       | `200 OK`      | `public/other/index.html` |
 | `/other/index.html`  | `200 OK`      | `public/other/index.html` |
 
-NOTE: **Note:**
-When `public/data/index.html` exists, it takes priority over the `public/data.html`
-file for both the `/data` and `/data/` URL paths.
+Note that when `public/data/index.html` exists, it takes priority over the `public/data.html` file
+for both the `/data` and `/data/` URL paths.
 
 ## Frequently Asked Questions
 

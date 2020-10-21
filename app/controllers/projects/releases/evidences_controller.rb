@@ -7,6 +7,8 @@ module Projects
       before_action :release
       before_action :authorize_read_release_evidence!
 
+      feature_category :release_evidence
+
       def show
         respond_to do |format|
           format.json do

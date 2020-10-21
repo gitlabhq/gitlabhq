@@ -8,7 +8,7 @@ RSpec.describe Keys::LastUsedService do
       key = create(:key, last_used_at: 1.year.ago)
       time = Time.zone.now
 
-      Timecop.freeze(time) { described_class.new(key).execute }
+      travel_to(time) { described_class.new(key).execute }
 
       expect(key.reload.last_used_at).to be_like_time(time)
     end

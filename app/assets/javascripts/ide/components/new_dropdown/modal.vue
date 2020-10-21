@@ -152,6 +152,7 @@ export default {
           v-model.trim="entryName"
           type="text"
           class="form-control"
+          data-testid="file-name-field"
           data-qa-selector="file_name_field"
           :placeholder="placeholder"
         />

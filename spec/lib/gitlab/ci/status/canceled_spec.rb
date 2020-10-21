@@ -26,4 +26,8 @@ RSpec.describe Gitlab::Ci::Status::Canceled do
   describe '#group' do
     it { expect(subject.group).to eq 'canceled' }
   end
+
+  describe '#details_path' do
+    it { expect(subject.details_path).to be_nil }
+  end
 end

@@ -1,7 +1,7 @@
 ---
 name: mr_commit_neighbor_nav
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28596
+rollout_issue_url:
+group: group::source code
 type: development
 default_enabled: true

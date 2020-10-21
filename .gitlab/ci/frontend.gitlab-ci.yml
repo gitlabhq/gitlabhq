@@ -7,19 +7,21 @@
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
 
+.yarn-install: &yarn-install
+  - source scripts/utils.sh
+  - run_timed_command "retry yarn install --frozen-lockfile"
+
 .compile-assets-base:
   extends:
     - .frontend-base
     - .assets-compile-cache
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-git-2.28-lfs-2.9-node-12.x-yarn-1.21-graphicsmagick-1.3.34
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-git-2.28-lfs-2.9-node-12.18-yarn-1.22-graphicsmagick-1.3.34
   variables:
     WEBPACK_VENDOR_DLL: "true"
   stage: prepare
   script:
-    - node --version
-    - run_timed_command "retry yarn install --frozen-lockfile"
-    - free -m
-    - run_timed_command "bin/rake gitlab:assets:compile > assets-compile.log 2>&1"
+    - *yarn-install
+    - run_timed_command "bin/rake gitlab:assets:compile"
     - run_timed_command "scripts/clean-old-cached-assets"
 
 compile-production-assets:
@@ -34,7 +36,6 @@ compile-production-assets:
     name: webpack-report
     expire_in: 31d
     paths:
-      - assets-compile.log
       # These assets are used in multiple locations:
       # - in `build-assets-image` job to create assets image for packaging systems
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
@@ -51,7 +52,6 @@ compile-test-assets:
   artifacts:
     expire_in: 7d
     paths:
-      - assets-compile.log
       - public/assets/
       - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
     when: always
@@ -87,8 +87,7 @@ update-yarn-cache:
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - source scripts/utils.sh
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - *yarn-install
   cache:
     policy: push
 
@@ -139,14 +138,14 @@ eslint-as-if-foss:
     - .as-if-foss
   needs: []
   script:
-    - run_timed_command "retry yarn install --frozen-lockfile"
-    - yarn run eslint
+    - *yarn-install
+    - run_timed_command "yarn run eslint"
 
 .karma-base:
   extends: .frontend-test-base
   script:
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - *yarn-install
     - run_timed_command "yarn karma"
 
 karma:
@@ -177,7 +176,7 @@ karma-as-if-foss:
 .jest-base:
   extends: .frontend-test-base
   script:
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - *yarn-install
     - run_timed_command "yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js"
 
 jest:
@@ -202,7 +201,7 @@ jest-integration:
     - .frontend-test-base
     - .frontend:rules:default-frontend-jobs
   script:
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - *yarn-install
     - run_timed_command "yarn jest:integration --ci"
   needs: ["frontend-fixtures"]
 
@@ -222,8 +221,7 @@ coverage-frontend:
   needs: ["jest"]
   stage: post-test
   before_script:
-    - source scripts/utils.sh
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - *yarn-install
   script:
     - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
   coverage: '/^Statements\s*:\s*?(\d+(?:\.\d+)?)%/'
@@ -243,9 +241,8 @@ coverage-frontend:
   stage: test
   dependencies: []
   script:
-    - source scripts/utils.sh
-    - run_timed_command "yarn install --frozen-lockfile"
-    - run_timed_command "yarn run webpack-prod"
+    - *yarn-install
+    - run_timed_command "retry yarn run webpack-prod"
 
 qa-frontend-node:10:
   extends: .qa-frontend-node
@@ -268,8 +265,7 @@ webpack-dev-server:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
   script:
-    - source scripts/utils.sh
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - *yarn-install
     - run_timed_command "retry yarn webpack-vendor"
     - run_timed_command "node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js"
   artifacts:

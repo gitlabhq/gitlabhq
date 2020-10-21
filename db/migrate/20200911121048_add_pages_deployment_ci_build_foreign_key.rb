@@ -7,7 +7,7 @@ class AddPagesDeploymentCiBuildForeignKey < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :pages_deployments, :ci_builds, column: :ci_build_id, on_delete: :nullify # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :pages_deployments, :ci_builds, column: :ci_build_id, on_delete: :nullify
     end
   end
 

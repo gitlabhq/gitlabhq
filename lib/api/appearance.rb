@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Appearance < Grape::API::Instance
+  class Appearance < ::API::Base
     before { authenticated_as_admin! }
 
     helpers do

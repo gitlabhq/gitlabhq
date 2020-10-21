@@ -111,6 +111,7 @@ module Banzai
         parser = Banzai::ReferenceParser[type].new(context)
 
         visible.merge(parser.nodes_visible_to_user(user, nodes))
+      rescue Banzai::ReferenceParser::InvalidReferenceType
       end
 
       visible

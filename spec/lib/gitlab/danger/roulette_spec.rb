@@ -4,10 +4,13 @@ require 'webmock/rspec'
 require 'timecop'
 
 require 'gitlab/danger/roulette'
+require 'active_support/testing/time_helpers'
 
 RSpec.describe Gitlab::Danger::Roulette do
+  include ActiveSupport::Testing::TimeHelpers
+
   around do |example|
-    Timecop.freeze(Time.utc(2020, 06, 22, 10)) { example.run }
+    travel_to(Time.utc(2020, 06, 22, 10)) { example.run }
   end
 
   let(:backend_available) { true }
@@ -67,14 +70,30 @@ RSpec.describe Gitlab::Danger::Roulette do
     )
   end
 
-  let(:teammate_json) do
+  let(:ci_template_reviewer) do
+    Gitlab::Danger::Teammate.new(
+      'username' => 'ci-template-maintainer',
+      'name' => 'CI Template engineer',
+      'role' => '~"ci::templates"',
+      'projects' => { 'gitlab' => 'reviewer ci_template' },
+      'available' => true,
+      'tz_offset_hours' => 2.0
+    )
+  end
+
+  let(:teammates) do
     [
       backend_maintainer.to_h,
       frontend_maintainer.to_h,
       frontend_reviewer.to_h,
       software_engineer_in_test.to_h,
-      engineering_productivity_reviewer.to_h
-    ].to_json
+      engineering_productivity_reviewer.to_h,
+      ci_template_reviewer.to_h
+    ]
+  end
+
+  let(:teammate_json) do
+    teammates.to_json
   end
 
   subject(:roulette) { Object.new.extend(described_class) }
@@ -162,6 +181,14 @@ RSpec.describe Gitlab::Danger::Roulette do
         end
       end
 
+      context 'when change contains CI/CD Template category' do
+        let(:categories) { [:ci_template] }
+
+        it 'assigns CI/CD Template reviewer and fallback to backend maintainer' do
+          expect(spins).to eq([described_class::Spin.new(:ci_template, ci_template_reviewer, backend_maintainer, false, false)])
+        end
+      end
+
       context 'when change contains test category' do
         let(:categories) { [:test] }
 
@@ -208,6 +235,69 @@ RSpec.describe Gitlab::Danger::Roulette do
             expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, false)])
           end
         end
+      end
+    end
+
+    describe 'reviewer suggestion probability' do
+      let(:reviewer) { teammate_with_capability('reviewer', 'reviewer backend') }
+      let(:hungry_reviewer) { teammate_with_capability('hungry_reviewer', 'reviewer backend', hungry: true) }
+      let(:traintainer) { teammate_with_capability('traintainer', 'trainee_maintainer backend') }
+      let(:hungry_traintainer) { teammate_with_capability('hungry_traintainer', 'trainee_maintainer backend', hungry: true) }
+      let(:teammates) do
+        [
+          reviewer.to_h,
+          hungry_reviewer.to_h,
+          traintainer.to_h,
+          hungry_traintainer.to_h
+        ]
+      end
+
+      let(:categories) { [:backend] }
+
+      # This test is testing probability with inherent randomness.
+      # The variance is inversely related to sample size
+      # Given large enough sample size, the variance would be smaller,
+      # but the test would take longer.
+      # Given smaller sample size, the variance would be larger,
+      # but the test would take less time.
+      let!(:sample_size) { 500 }
+      let!(:variance) { 0.1 }
+
+      before do
+        # This test needs actual randomness to simulate probabilities
+        allow(subject).to receive(:new_random).and_return(Random.new)
+        WebMock
+          .stub_request(:get, described_class::ROULETTE_DATA_URL)
+          .to_return(body: teammate_json)
+      end
+
+      it 'has 1:2:3:4 probability of picking reviewer, hungry_reviewer, traintainer, hungry_traintainer' do
+        picks = Array.new(sample_size).map do
+          spins = subject.spin(project, categories, timezone_experiment: timezone_experiment)
+          spins.first.reviewer.name
+        end
+
+        expect(probability(picks, 'reviewer')).to be_within(variance).of(0.1)
+        expect(probability(picks, 'hungry_reviewer')).to be_within(variance).of(0.2)
+        expect(probability(picks, 'traintainer')).to be_within(variance).of(0.3)
+        expect(probability(picks, 'hungry_traintainer')).to be_within(variance).of(0.4)
+      end
+
+      def probability(picks, role)
+        picks.count(role).to_f / picks.length
+      end
+
+      def teammate_with_capability(name, capability, hungry: false)
+        Gitlab::Danger::Teammate.new(
+          {
+            'name' => name,
+            'projects' => {
+              'gitlab' => capability
+            },
+            'available' => true,
+            'hungry' => hungry
+          }
+        )
       end
     end
   end
@@ -265,7 +355,8 @@ RSpec.describe Gitlab::Danger::Roulette do
           frontend_reviewer,
           frontend_maintainer,
           software_engineer_in_test,
-          engineering_productivity_reviewer
+          engineering_productivity_reviewer,
+          ci_template_reviewer
         ])
       end
 

@@ -196,8 +196,8 @@ end
 
 **What do we test?**
 
-1. Can we log in?
-1. Can we log out?
+1. Can we sign in?
+1. Can we sign out?
 
 **How do we test?**
 

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -47,3 +47,13 @@ using a Prometheus managed application in Kubernetes:
    ```
 
 1. Open `localhost:9090` in your browser to display the Prometheus user interface.
+
+## Script access to Prometheus
+
+You can script the access to Prometheus, extracting the name of the pod automatically like this:
+
+```shell
+POD_INFORMATION=$(kubectl get pods -n gitlab-managed-apps | grep 'prometheus-prometheus-server')
+POD_NAME=$(echo $POD_INFORMATION | awk '{print $1;}')
+kubectl port-forward $POD_NAME 9090:9090 -n gitlab-managed-apps
+```

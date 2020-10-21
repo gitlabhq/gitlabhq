@@ -80,6 +80,7 @@ module Boards
         set_scope
         set_non_archived
         set_attempt_search_optimizations
+        set_issue_types
 
         params
       end
@@ -114,6 +115,10 @@ module Boards
         else
           params[:attempt_project_search_optimizations] = true
         end
+      end
+
+      def set_issue_types
+        params[:issue_types] = Issue::TYPES_FOR_LIST
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

@@ -33,7 +33,7 @@ module Ci
         pipeline_params.fetch(:target_revision))
 
       downstream_pipeline = service.execute(
-        pipeline_params.fetch(:source), pipeline_params[:execute_params]) do |pipeline|
+        pipeline_params.fetch(:source), **pipeline_params[:execute_params]) do |pipeline|
           pipeline.variables.build(@bridge.downstream_variables)
         end
 
@@ -77,16 +77,9 @@ module Ci
 
       # TODO: Remove this condition if favour of model validation
       # https://gitlab.com/gitlab-org/gitlab/issues/38338
-      if ::Gitlab::Ci::Features.child_of_child_pipeline_enabled?(project)
-        if has_max_descendants_depth?
-          @bridge.drop!(:reached_max_descendant_pipelines_depth)
-          return false
-        end
-      else
-        if @bridge.triggers_child_pipeline? && @bridge.pipeline.parent_pipeline.present?
-          @bridge.drop!(:bridge_pipeline_is_child_pipeline)
-          return false
-        end
+      if has_max_descendants_depth?
+        @bridge.drop!(:reached_max_descendant_pipelines_depth)
+        return false
       end
 
       unless can_create_downstream_pipeline?(target_ref)

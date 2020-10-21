@@ -36,5 +36,15 @@ RSpec.describe RuboCop::Cop::Migration::AddConcurrentForeignKey, type: :rubocop 
 
       expect(cop.offenses).to be_empty
     end
+
+    it 'does not register an offense when `add_foreign_key` is within `with_lock_retries`' do
+      inspect_source <<~RUBY
+        with_lock_retries do
+          add_foreign_key :key, :projects, column: :project_id, on_delete: :cascade
+        end
+      RUBY
+
+      expect(cop.offenses).to be_empty
+    end
   end
 end

@@ -16,46 +16,97 @@ In either case, an outcome of the experiment should be posted to the issue with 
 
 ## Code reviews
 
-Since the code of experiments will not be part of the codebase for a long time and we want to iterate fast to retrieve data, the code quality of experiments might sometimes not fulfill our standards but should not negatively impact the availability of GitLab whether the experiment is running or not.
-Initially experiments will only be deployed to a fraction of users but we still want a flawless experience for those users. Therefore, experiments still require tests.
+Experiments' code quality can fail our standards for several reasons. These
+reasons can include not being added to the codebase for a long time, or because
+of fast iteration to retrieve data. However, having the experiment run (or not
+run) shouldn't impact GitLab's availability. To avoid or identify issues,
+experiments are initially deployed to a small number of users. Regardless,
+experiments still need tests.
 
-For reviewers and maintainers: if you find code that would usually not make it through the review, but is temporarily acceptable, please mention your concerns but note that it's not necessary to change.
-The author then adds a comment to this piece of code and adds a link to the issue that resolves the experiment. If the experiment is successful and becomes part of the product these follow up issues should be addressed.
+If, as a reviewer or maintainer, you find code that would usually fail review
+but is acceptable for now, mention your concerns with a note that there's no
+need to change the code. The author can then add a comment to this piece of code
+and link to the issue that resolves the experiment. If the experiment is
+successful and becomes part of the product, any follow up issues should be
+addressed.
 
 ## How to create an A/B test
 
-- Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
+### Implementation
 
-  ```ruby
-  EXPERIMENTS = {
-    other_experiment: {
-      #...
-    },
-    # Add your experiment here:
-    signup_flow: {
-      environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
-      tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
-    }
-  }.freeze
-  ```
+1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
 
-- Use the experiment in a controller:
+   ```ruby
+   EXPERIMENTS = {
+     other_experiment: {
+       #...
+     },
+     # Add your experiment here:
+     signup_flow: {
+       environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
+       tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
+     }
+   }.freeze
+   ```
 
-  ```ruby
-  class RegistrationController < ApplicationController
-   def show
-     # experiment_enabled?(:feature_name) is also available in views and helpers
-     if experiment_enabled?(:signup_flow)
-       # render the experiment
-     else
-       # render the original version
-     end
-   end
-  end
-  ```
+1. Use the experiment in the code.
 
-- Track necessary events. See the [telemetry guide](../telemetry/index.md) for details.
-- After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
+   - Use this standard for the experiment in a controller:
+
+      ```ruby
+      class RegistrationController < ApplicationController
+       def show
+         # experiment_enabled?(:experiment_key) is also available in views and helpers
+         if experiment_enabled?(:signup_flow)
+           # render the experiment
+         else
+           # render the original version
+         end
+       end
+      end
+      ```
+
+   - Make the experiment available to the frontend in a controller:
+
+      ```ruby
+      before_action do
+        push_frontend_experiment(:signup_flow)
+      end
+      ```
+
+      The above will check whether the experiment is enabled and push the result to the frontend.
+
+      You can check the state of the feature flag in JavaScript:
+
+      ```javascript
+      import { isExperimentEnabled } from '~/experimentation';
+
+      if ( isExperimentEnabled('signupFlow') ) {
+        // ...
+      }
+      ```
+
+   - It is also possible to run an experiment outside of the controller scope, for example in a worker:
+
+      ```ruby
+      class SomeWorker
+        def perform
+          # Check if the experiment is enabled at all (the percentage_of_time_value > 0)
+          return unless Gitlab::Experimentation.enabled?(:experiment_key)
+
+          # Since we cannot access cookies in a worker, we need to bucket models based on a unique, unchanging attribute instead.
+          # Use the following method to check if the experiment is enabled for a certain attribute, for example a username or email address:
+          if Gitlab::Experimentation.enabled_for_attribute?(:experiment_key, some_attribute)
+            # execute experimental code
+          else
+            # execute control code
+          end
+        end
+      end
+      ```
+
+1. Track necessary events. See the [product analytics guide](../product_analytics/index.md) for details.
+1. After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
 [appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
 The feature flag should have the name of the experiment with the `_experiment_percentage` suffix appended.
 For visibility, please also share any commands run against production in the `#s_growth` channel:
@@ -69,3 +120,19 @@ For visibility, please also share any commands run against production in the `#s
   ```shell
   /chatops run feature delete signup_flow_experiment_percentage
   ```
+
+### Tests and test helpers
+
+Use the following in Jest to test the experiment is enabled.
+
+```javascript
+import { withGonExperiment } from 'helpers/experimentation_helper';
+
+describe('given experiment is enabled', () => {
+  withGonExperiment('signupFlow');
+
+  it('should do the experimental thing', () => {
+    expect(wrapper.find('.js-some-experiment-triggered-element')).toEqual(expect.any(Element));
+  });
+});
+```

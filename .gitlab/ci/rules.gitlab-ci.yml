@@ -73,6 +73,12 @@
 .if-rspec-fail-fast-skipped: &if-rspec-fail-fast-skipped
   if: '$CI_MERGE_REQUEST_TITLE =~ /SKIP RSPEC FAIL-FAST/'
 
+# For Security merge requests, the gitlab-release-tools-bot triggers a new
+# pipeline for the "Pipelines for merged results" feature. If the pipeline
+# fails, we notify release managers.
+.if-security-pipeline-merge-result: &if-security-pipeline-merge-result
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "gitlab-org/security" && $GITLAB_USER_LOGIN == "gitlab-release-tools-bot"'
+
 ####################
 # Changes patterns #
 ####################
@@ -132,7 +138,10 @@
 
 .db-patterns: &db-patterns
   - "{,ee/}{,spec/}{db,migrations}/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/database{,_spec}.rb"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration{,_spec}.rb"
   - "config/prometheus/common_metrics.yml" # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/}app/models/project_statistics.rb" # Used to calculate sizes in migration specs
 
@@ -282,6 +291,14 @@
       when: manual
       allow_failure: true
 
+##################
+# Delivery rules #
+##################
+.delivery:rules:security-pipeline-merge-result-failure:
+  rules:
+    - <<: *if-security-pipeline-merge-result
+      when: on_failure
+
 ######################
 # Dev fixtures rules #
 ######################
@@ -336,6 +353,7 @@
 .frontend:rules:compile-test-assets:
   rules:
     - changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .frontend:rules:compile-test-assets-as-if-foss:
   rules:
@@ -483,6 +501,7 @@
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-only-migration:
   rules:
@@ -628,6 +647,13 @@
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:rspec-feature-flags:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-merge-request-title-run-all-rspec
+
 .rails:rules:master-schedule-nightly--code-backstage:
   rules:
     - <<: *if-master-schedule-nightly
@@ -700,6 +726,14 @@
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
     - <<: *if-master-schedule-nightly
+      allow_failure: true
+
+.reports:rules:license_scanning:
+  rules:
+    - if: '$LICENSE_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\blicense_scanning\b/'
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
       allow_failure: true
 
 ################
@@ -859,6 +893,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       when: on_success
+    - <<: *if-merge-request-title-run-all-rspec
 
 .test-metadata:rules:update-tests-metadata:
   rules:

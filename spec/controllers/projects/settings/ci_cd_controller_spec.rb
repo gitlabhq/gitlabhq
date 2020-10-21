@@ -230,6 +230,21 @@ RSpec.describe Projects::Settings::CiCdController do
         end
       end
 
+      context 'when forward_deployment_enabled is not specified' do
+        let(:params) { { ci_cd_settings_attributes: { forward_deployment_enabled: false } } }
+
+        before do
+          project.ci_cd_settings.update!(forward_deployment_enabled: nil)
+        end
+
+        it 'sets forward deployment enabled' do
+          subject
+
+          project.reload
+          expect(project.ci_forward_deployment_enabled).to eq(false)
+        end
+      end
+
       context 'when max_artifacts_size is specified' do
         let(:params) { { max_artifacts_size: 10 } }
 
@@ -264,6 +279,23 @@ RSpec.describe Projects::Settings::CiCdController do
           end
         end
       end
+    end
+  end
+
+  describe 'GET #runner_setup_scripts' do
+    it 'renders the setup scripts' do
+      get :runner_setup_scripts, params: { os: 'linux', arch: 'amd64', namespace_id: project.namespace, project_id: project }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to have_key("install")
+      expect(json_response).to have_key("register")
+    end
+
+    it 'renders errors if they occur' do
+      get :runner_setup_scripts, params: { os: 'foo', arch: 'bar', namespace_id: project.namespace, project_id: project }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response).to have_key("errors")
     end
   end
 end

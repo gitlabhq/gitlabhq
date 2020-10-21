@@ -182,7 +182,7 @@ failure. For greater fault tolerance, the following options are available:
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
-     [Relational Database Service](https://aws.amazon.com/rds/)) is recommended.
+     [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 To complete this section you will need:
 
@@ -356,7 +356,7 @@ application server, or a Gitaly node.
    If you want to use a TLS client certificate, the options below can be used:
 
    ```ruby
-   # Connect to PostreSQL using a TLS client certificate
+   # Connect to PostgreSQL using a TLS client certificate
    # praefect['database_sslcert'] = '/path/to/client-cert'
    # praefect['database_sslkey'] = '/path/to/client-key'
 
@@ -547,14 +547,14 @@ To configure Praefect with TLS:
        storages:
          default:
            gitaly_address: tls://praefect1.internal:3305
-           path: /some/dummy/path
+           path: /some/local/path
          storage1:
            gitaly_address: tls://praefect2.internal:3305
-           path: /some/dummy/path
+           path: /some/local/path
    ```
 
    NOTE: **Note:**
-   `/some/dummy/path` should be set to a local folder that exists, however no
+   `/some/local/path` should be set to a local folder that exists, however no
    data will be stored in this folder. This will no longer be necessary after
    [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
@@ -873,10 +873,10 @@ Particular attention should be shown to:
    gitlab-ctl reconfigure
    ```
 
-1. Verify each `gitlab-shell` on each Gitaly node can reach GitLab. On each Gitaly node run:
+1. Verify on each Gitaly node the Git Hooks can reach GitLab. On each Gitaly node run:
 
    ```shell
-   /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
+   /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
    ```
 
 1. Verify that GitLab can reach Praefect:
@@ -943,16 +943,17 @@ cluster.
 ## Distributed reads
 
 > - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
-> - [Made generally available](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
+> - [Made generally available and enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
+> - [Disabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3178) in GitLab 13.5.
 
 Praefect supports distribution of read operations across Gitaly nodes that are
 configured for the virtual node.
 
-The feature is enabled by default. To disable distributed reads, the `gitaly_distributed_reads`
-[feature flag](../feature_flags.md) must be disabled in a Ruby console:
+The feature is disabled by default. To enable distributed reads, the `gitaly_distributed_reads`
+[feature flag](../feature_flags.md) must be enabled in a Ruby console:
 
 ```ruby
-Feature.disable(:gitaly_distributed_reads)
+Feature.enable(:gitaly_distributed_reads)
 ```
 
 If enabled, all RPCs marked with `ACCESSOR` option like
@@ -993,6 +994,8 @@ information, see the [strong consistency epic](https://gitlab.com/groups/gitlab-
 
 To enable strong consistency:
 
+- In GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable
+  strong consistency.
 - In GitLab 13.4 and later, the strong consistency voting strategy has been
   improved. Instead of requiring all nodes to agree, only the primary and half
   of the secondaries need to agree. This strategy is enabled by default. To

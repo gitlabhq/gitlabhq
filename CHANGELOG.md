@@ -23,42 +23,6 @@ entry.
 - Fix large backups not working with Azure Blob storage. !44233
 
 
-## 13.4.2 (2020-10-01)
-
-### Security (14 changes)
-
-- Do not store session id in Redis.
-- Fix permission checks when updating confidentiality and milestone on issues or merge requests.
-- Purge unaccepted member invitations older than 90 days.
-- Adds feature flags plan limits.
-- Prevent SVG XSS via Web IDE.
-- Ensure user has no solo owned groups before triggering account deletion.
-- Security fix safe params helper.
-- Do not bypass admin mode when authenticated with deploy token.
-- Fixes release asset link filepath ReDoS.
-- Ensure global ID is of Annotation type in GraphQL destroy mutation.
-- Validate that membership expiry dates are not in the past.
-- Rate limit adding new email and re-sending email confirmation.
-- Fix redaction of confidential Todos.
-- Update GitLab Runner Helm Chart to 0.20.2.
-
-
-## 13.4.1 (2020-09-24)
-
-### Fixed (2 changes)
-
-- Revert required encryption on CI runner tokens. !42623
-- Allow Unleash clients to request feature flags when repository is private. !43059
-
-### Added (1 change)
-
-- Add missing fontawesome file icon classes. !43091
-
-### Other (1 change)
-
-- Notifications icon: Render empty string for custom setting. !42848
-
-
 ## 13.4.0 (2020-09-22)
 
 ### Security (2 changes, 1 of them is from the community)
@@ -1281,6 +1245,26 @@ entry.
 - Remove a card-small class from HAML files. !39550 (Takuya Noguchi)
 - Provide versioning support to Sidekiq workers. !39562
 - Replace fa-pencil icon with GitLab SVG. !39648
+
+
+## 13.2.10 (2020-10-01)
+
+### Security (14 changes)
+
+- Do not store session id in Redis.
+- Fix permission checks when updating confidentiality and milestone on issues or merge requests.
+- Purge unaccepted member invitations older than 90 days.
+- Adds feature flags plan limits.
+- Prevent SVG XSS via Web IDE.
+- Ensure user has no solo owned groups before triggering account deletion.
+- Security fix safe params helper.
+- Do not bypass admin mode when authenticated with deploy token.
+- Fixes release asset link filepath ReDoS.
+- Ensure global ID is of Annotation type in GraphQL destroy mutation.
+- Validate that membership expiry dates are not in the past.
+- Rate limit adding new email and re-sending email confirmation.
+- Fix redaction of confidential Todos.
+- Update GitLab Runner Helm Chart to 0.19.4.
 
 
 ## 13.2.8 (2020-09-02)

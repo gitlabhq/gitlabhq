@@ -23,15 +23,14 @@ For instances that aren't offline or on a closed network, the maximum number of
 simultaneous users in the self-managed installation is checked each quarter,
 using [Seat Link](#seat-link).
 
-Every occupied seat, whether by person, job, or bot is counted in the subscription,
-with the following exceptions:
+Every occupied seat is counted in the subscription, with the following exceptions:
 
-- [Deactivated](../../user/admin_area/activating_deactivating_users.md#deactivating-a-user) and
+- [Deactivated](../../user/admin_area/activating_deactivating_users.md#deactivating-a-user), [pending approval](../../user/admin_area/approving_users.md) and
   [blocked](../../user/admin_area/blocking_unblocking_users.md) users who are restricted prior to the
   renewal of a subscription won't be counted as active users for the renewal subscription. They may
   count as active users in the subscription period in which they were originally added.
 - Members with Guest permissions on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User`, `Support Bot` and [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users).
+- GitLab-created service accounts: `Ghost User` and bots (`Support Bot`, [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), etc.).
 
 ### Users statistics
 
@@ -254,20 +253,24 @@ production: &base
 
 ## Upgrade your subscription tier
 
-To upgrade your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team as this
-can't be done in the Customers Portal. You can either send an email to `renewals@gitlab.com`, or
-complete the [**Contact Sales**](https://about.gitlab.com/sales/) form. Include details of which subscription you want to upgrade and the desired tier in your message.
+To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
-After messaging the sales team, the workflow is as follows:
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select the **Upgrade** button on the relevant subscription card on the
+   [Manage purchases](https://customers.gitlab.com/subscriptions) page.
+1. Select the desired upgrade.
+1. Confirm the active form of payment, or add a new form of payment.
+1. Select the **I accept the Privacy Policy and Terms of Service** checkbox.
+1. Select **Purchase**.
 
-1. Receive a reply from the sales team, asking for confirmation of the upgrade.
-1. Reply to the sales team, confirming details of the upgrade.
-1. Receive a quote from the sales team.
-1. Sign and return the quote.
-1. Receive the new license.
-1. Upload the new license. For details, see [Uploading your license](../../user/admin_area/license.md#uploading-your-license).
+The following is emailed to you:
 
-The new subscription tier is active when the license file is uploaded.
+- A payment receipt. You can also access this information in the Customers Portal under
+  [**View invoices**](https://customers.gitlab.com/receipts).
+- A new license.
+
+[Upload the new license](../../user/admin_area/license.md#uploading-your-license) to your instance.
+The new tier takes effect when the new license is uploaded.
 
 ## Subscription expiry
 

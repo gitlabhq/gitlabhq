@@ -10,10 +10,6 @@ module Gitlab
         ::Feature.enabled?(:ci_artifacts_exclude, default_enabled: true)
       end
 
-      def self.job_heartbeats_runner?(project)
-        ::Feature.enabled?(:ci_job_heartbeats_runner, project, default_enabled: true)
-      end
-
       def self.instance_variables_ui_enabled?
         ::Feature.enabled?(:ci_instance_variables_ui, default_enabled: true)
       end
@@ -35,10 +31,6 @@ module Gitlab
         ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning, default_enabled: true)
       end
 
-      def self.bulk_insert_on_create?(project)
-        ::Feature.enabled?(:ci_bulk_insert_on_create, project, default_enabled: true)
-      end
-
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
       # is a safe switch to disable the feature for a parituclar project when something went wrong,
       # therefore it's not supposed to be enabled by default.
@@ -54,25 +46,25 @@ module Gitlab
         Feature.enabled?(:project_transactionless_destroy, project, default_enabled: false)
       end
 
-      def self.coverage_report_view?(project)
-        ::Feature.enabled?(:coverage_report_view, project, default_enabled: true)
-      end
-
-      def self.child_of_child_pipeline_enabled?(project)
-        ::Feature.enabled?(:ci_child_of_child_pipeline, project, default_enabled: true)
-      end
-
       def self.trace_overwrite?
         ::Feature.enabled?(:ci_trace_overwrite, type: :ops, default_enabled: false)
       end
 
       def self.accept_trace?(project)
         ::Feature.enabled?(:ci_enable_live_trace, project) &&
-          ::Feature.enabled?(:ci_accept_trace, project, type: :ops, default_enabled: false)
+          ::Feature.enabled?(:ci_accept_trace, project, type: :ops, default_enabled: true)
       end
 
-      def self.new_artifact_file_reader_enabled?(project)
-        ::Feature.enabled?(:ci_new_artifact_file_reader, project, default_enabled: false)
+      def self.log_invalid_trace_chunks?(project)
+        ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
+      end
+
+      def self.one_dimensional_matrix_enabled?
+        ::Feature.enabled?(:one_dimensional_matrix, default_enabled: true)
+      end
+
+      def self.manual_bridges_enabled?(project)
+        ::Feature.enabled?(:ci_manual_bridges, project, default_enabled: true)
       end
     end
   end

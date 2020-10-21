@@ -148,7 +148,7 @@ GitLab. No other error messages appear in any logs.
 
 If there was an issue with SSL/TLS, this error message will be generated.
 
-- The [GitLab Jira integration](jira.md) requires GitLab to connect to Jira. Any
+- The [GitLab Jira integration](../user/project/integrations/jira.md) requires GitLab to connect to Jira. Any
   TLS issues that arise from a private certificate authority or self-signed
   certificate [are resolved on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl.html#other-certificate-authorities),
   as GitLab is the TLS client.
@@ -183,6 +183,16 @@ The message `Successfully connected` indicates a successful TLS handshake.
 
 If there are problems, the Java TLS library generates errors that you can
 look up for more detail.
+
+##### Scope error when connecting Jira via DVCS
+
+```plaintext
+The requested scope is invalid, unknown, or malformed.
+```
+
+Potential resolutions:
+
+- Verify the URL includes `scope=api` on the end of the URL.
 
 ##### Jira error adding account and no repositories listed
 
@@ -253,13 +263,18 @@ The GitLab for Jira App uses an iframe to add namespaces on the settings page. S
 
 > "You need to sign in or sign up before continuing."
 
-In this case, enable cross-site cookies in your browser.
+In this case, use [Firefox](https://www.mozilla.org/en-US/firefox/), [Google Chrome](https://www.google.com/chrome/index.html) or enable cross-site cookies in your browser.
 
 ## Usage
 
-Once the integration is set up on GitLab and Jira you may refer any Jira issue by its ID in branch names, commit messages and merge request titles on GitLab's side,
-and you will be able to see the linked `branches`, `commits`, and `merge requests` when entering a Jira issue
-(inside the Jira issue, merge requests will be called "pull requests").
+After the integration is set up on GitLab and Jira, you can:
+
+- Refer to any Jira issue by its ID in GitLab branch names, commit messages, and merge request
+  titles.
+- See the linked branches, commits, and merge requests in Jira issues (merge requests are
+  called "pull requests" in Jira issues).
+
+Jira issue IDs must be formatted in uppercase for the integration to work.
 
 ![Branch, Commit and Pull Requests links on Jira issue](img/jira_dev_panel_jira_setup_3.png)
 

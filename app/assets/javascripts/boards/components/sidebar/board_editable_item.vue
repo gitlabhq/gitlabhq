@@ -36,16 +36,18 @@ export default {
       }
 
       this.edit = true;
-      this.$emit('changed', this.edit);
+      this.$emit('open');
       window.addEventListener('click', this.collapseWhenOffClick);
     },
-    collapse() {
+    collapse({ emitEvent = true } = {}) {
       if (!this.edit) {
         return;
       }
 
       this.edit = false;
-      this.$emit('changed', this.edit);
+      if (emitEvent) {
+        this.$emit('close');
+      }
       window.removeEventListener('click', this.collapseWhenOffClick);
     },
   },

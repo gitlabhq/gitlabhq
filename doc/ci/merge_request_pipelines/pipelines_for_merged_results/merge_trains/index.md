@@ -37,7 +37,6 @@ run.
 
 To add a merge request to a merge train, you need [permissions](../../../../user/permissions.md) to push to the target branch.
 
-NOTE: **Note:**
 Each merge train can run a maximum of **twenty** pipelines in parallel.
 If more than twenty merge requests are added to the merge train, the merge requests
 will be queued until a slot in the merge train is free. There is no limit to the

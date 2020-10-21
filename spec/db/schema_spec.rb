@@ -11,7 +11,7 @@ RSpec.describe 'Database schema' do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   # List of columns historically missing a FK, don't add more columns
-  # See: https://docs.gitlab.com/ce/development/foreign_keys.html#naming-foreign-keys
+  # See: https://docs.gitlab.com/ee/development/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
@@ -31,6 +31,7 @@ RSpec.describe 'Database schema' do
     ci_trigger_requests: %w[commit_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
     cluster_providers_gcp: %w[gcp_project_id operation_id],
+    compliance_management_frameworks: %w[group_id],
     commit_user_mentions: %w[commit_id],
     deploy_keys_projects: %w[deploy_key_id],
     deployments: %w[deployable_id environment_id user_id],
@@ -234,6 +235,42 @@ RSpec.describe 'Database schema' do
 
     it 'we do not have unexpected schemas' do
       expect(get_schemas.size).to eq(Gitlab::Database::EXTRA_SCHEMAS.size + 1)
+    end
+  end
+
+  context 'primary keys' do
+    let(:exceptions) do
+      %i(
+        analytics_language_trend_repository_languages
+        approval_project_rules_protected_branches
+        ci_build_trace_sections
+        deployment_merge_requests
+        elasticsearch_indexed_namespaces
+        elasticsearch_indexed_projects
+        issue_assignees
+        issues_prometheus_alert_events
+        issues_self_managed_prometheus_alert_events
+        merge_request_context_commit_diff_files
+        merge_request_diff_commits
+        merge_request_diff_files
+        milestone_releases
+        project_authorizations
+        project_pages_metadata
+        push_event_payloads
+        repository_languages
+        user_interacted_projects
+        users_security_dashboard_projects
+      )
+    end
+
+    it 'expects every table to have a primary key defined' do
+      connection = ActiveRecord::Base.connection
+
+      problematic_tables = connection.tables.select do |table|
+        !connection.primary_key(table).present?
+      end.map(&:to_sym)
+
+      expect(problematic_tables - exceptions).to be_empty
     end
   end
 

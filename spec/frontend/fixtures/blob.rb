@@ -33,4 +33,14 @@ RSpec.describe Projects::BlobController, '(JavaScript fixtures)', type: :control
 
     expect(response).to be_successful
   end
+
+  it 'blob/show_readme.html' do
+    get(:show, params: {
+      namespace_id: project.namespace,
+      project_id: project,
+      id: 'master/README.md'
+    })
+
+    expect(response).to be_successful
+  end
 end

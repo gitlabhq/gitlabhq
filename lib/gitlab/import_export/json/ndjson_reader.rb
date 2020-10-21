@@ -35,12 +35,18 @@ module Gitlab
 
             # This reads from `tree/project/merge_requests.ndjson`
             path = file_path(importable_path, "#{key}.ndjson")
+
             next unless File.exist?(path)
 
             File.foreach(path, MAX_JSON_DOCUMENT_SIZE).with_index do |line, line_num|
               documents << [json_decode(line), line_num]
             end
           end
+        end
+
+        # TODO: Move clear logic into main comsume_relation method (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41699#note_430465330)
+        def clear_consumed_relations
+          @consumed_relations.clear
         end
 
         private

@@ -130,7 +130,7 @@ become available, you will be able to share job templates like this
 Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval
 Guidelines](../code_review.md#approval-guidelines). Both [License
-Management](../../user/compliance/license_compliance/index.md)
+Scanning](../../user/compliance/license_compliance/index.md)
 **(ULTIMATE)** and [Dependency
 Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** should be activated on all projects to ensure new dependencies
@@ -138,7 +138,7 @@ security status and license compatibility.
 
 ### Modules
 
-Since Go 1.11, a standard dependency system is available behind the name [Go
+In Go 1.11 and later, a standard dependency system is available behind the name [Go
 Modules](https://github.com/golang/go/wiki/Modules). It provides a way to
 define and lock dependencies for reproducible builds. It should be used
 whenever possible.
@@ -472,7 +472,7 @@ In case we want to drop support for `go 1.11` in GitLab `12.10`, we need to veri
 
 We will not consider the active milestone, `12.10`, because a backport for `12.7` will be required in case of a critical security release.
 
-1. If both [Omnibus and CNG](#updating-go-version) were using Go `1.12` since GitLab `12.7`, then we safely drop support for `1.11`.
+1. If both [Omnibus and CNG](#updating-go-version) were using Go `1.12` in GitLab `12.7` and later, then we safely drop support for `1.11`.
 1. If Omnibus or CNG were using `1.11` in GitLab `12.7`, then we still need to keep support for Go `1.11` for easier backporting of security fixes.
 
 ## Secure Team standards and style guidelines

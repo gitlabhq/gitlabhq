@@ -1,15 +1,12 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Distributed Tracing - development guidelines
 
-NOTE: **Note:**
-Distributed Tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
-
-GitLab is instrumented for distributed tracing.
+GitLab is instrumented for distributed tracing. Distributed Tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
 
 According to [Open Tracing](https://opentracing.io/docs/overview/what-is-tracing/):
 

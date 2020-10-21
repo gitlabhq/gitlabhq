@@ -12,6 +12,8 @@ class Projects::BoardsController < Projects::ApplicationController
     push_frontend_feature_flag(:boards_with_swimlanes, project, default_enabled: false)
   end
 
+  feature_category :boards
+
   private
 
   def assign_endpoint_vars

@@ -7,6 +7,8 @@ module Projects
     before_action :authorize_read_pod_logs!
     before_action :ensure_deployments, only: %i(k8s elasticsearch)
 
+    feature_category :logging
+
     def index
       if environment || cluster
         render :index

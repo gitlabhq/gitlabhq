@@ -24,7 +24,6 @@ how it is defined in `.gitlab-ci.yml`.
 
 ## Cache vs artifacts
 
-NOTE: **Note:**
 Be careful if you use cache and artifacts to store the same path in your jobs
 as **caches are restored before artifacts** and the content could be overwritten.
 
@@ -73,7 +72,6 @@ Artifacts:
 - Are always uploaded to GitLab (known as coordinator).
 - Can have an expiration value for controlling disk usage (30 days by default).
 
-NOTE: **Note:**
 Both artifacts and caches define their paths relative to the project directory, and
 can't link to files outside it.
 
@@ -204,9 +202,7 @@ runs of jobs for things like dependencies and commonly used libraries
 (Node.js packages, PHP packages, rubygems, Python libraries, etc.),
 so they don't have to be re-fetched from the public internet.
 
-NOTE: **Note:**
-For more examples, check out our [GitLab CI/CD
-templates](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
+For more examples, check out our [GitLab CI/CD templates](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
 
 ### Caching Node.js dependencies
 

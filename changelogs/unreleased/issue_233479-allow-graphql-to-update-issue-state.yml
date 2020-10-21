@@ -1,0 +1,5 @@
+---
+title: Allow to update issue state on GraphQL
+merge_request: 44061
+author:
+type: added

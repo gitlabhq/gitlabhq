@@ -86,6 +86,21 @@ export const getDayName = date =>
   ][date.getDay()];
 
 /**
+ * Returns the i18n month name from a given date
+ * @example
+ * formatDateAsMonth(new Date('2020-06-28')) -> 'Jun'
+ * @param  {String} datetime where month is extracted from
+ * @param  {Object} options
+ * @param  {Boolean} options.abbreviated whether to use the abbreviated month string, or not
+ * @return {String} the i18n month name
+ */
+export function formatDateAsMonth(datetime, options = {}) {
+  const { abbreviated = true } = options;
+  const month = new Date(datetime).getMonth();
+  return getMonthNames(abbreviated)[month];
+}
+
+/**
  * @example
  * dateFormat('2017-12-05','mmm d, yyyy h:MMtt Z' ) -> "Dec 5, 2017 12:00am GMT+0000"
  * @param {date} datetime
@@ -730,6 +745,21 @@ export const differenceInSeconds = (startDate, endDate) => {
 };
 
 /**
+ * A utility function which computes the difference in months
+ * between 2 dates.
+ *
+ * @param {Date} startDate the start date
+ * @param {Date} endDate the end date
+ *
+ * @return {Int} the difference in months
+ */
+export const differenceInMonths = (startDate, endDate) => {
+  const yearDiff = endDate.getYear() - startDate.getYear();
+  const monthDiff = endDate.getMonth() - startDate.getMonth();
+  return monthDiff + 12 * yearDiff;
+};
+
+/**
  * A utility function which computes the difference in milliseconds
  * between 2 dates.
  *
@@ -743,3 +773,22 @@ export const differenceInMilliseconds = (startDate, endDate = Date.now()) => {
   const endDateInMS = endDate instanceof Date ? endDate.getTime() : endDate;
   return endDateInMS - startDateInMS;
 };
+
+/**
+ * A utility which returns a new date at the first day of the month for any given date.
+ *
+ * @param {Date} date
+ *
+ * @return {Date} the date at the first day of the month
+ */
+export const dateAtFirstDayOfMonth = date => new Date(newDate(date).setDate(1));
+
+/**
+ * A utility function which checks if two dates match.
+ *
+ * @param {Date|Int} date1 Can be either a date object or a unix timestamp.
+ * @param {Date|Int} date2 Can be either a date object or a unix timestamp.
+ *
+ * @return {Boolean} true if the dates match
+ */
+export const datesMatch = (date1, date2) => differenceInMilliseconds(date1, date2) === 0;

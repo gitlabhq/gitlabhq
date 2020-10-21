@@ -12,12 +12,14 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :set_deprecation_notice_for_prometheus_service, only: [:edit, :update]
   before_action :redirect_deprecated_prometheus_service, only: [:update]
   before_action only: :edit do
-    push_frontend_feature_flag(:jira_issues_integration, @project, { default_enabled: true })
+    push_frontend_feature_flag(:jira_issues_integration, @project, type: :licensed, default_enabled: true)
   end
 
   respond_to :html
 
   layout "project_settings"
+
+  feature_category :integrations
 
   def edit
     @default_integration = Service.default_integration(service.type, project)

@@ -18,18 +18,6 @@
   }
 }
 
-.snippet-form-holder .file-holder .file-title {
-  padding: 2px;
-}
-
-.markdown-snippet-copy {
-  position: fixed;
-  top: -10px;
-  left: -10px;
-  max-height: 0;
-  max-width: 0;
-}
-
 .snippet-file-content {
   border-radius: 3px;
 
@@ -49,21 +37,6 @@
   min-height: $header-height;
 }
 
-.snippet-actions {
-  @include media-breakpoint-up(sm) {
-    float: right;
-  }
-}
-
 .snippet-scope-menu .btn-success {
   margin-top: 15px;
-}
-
-.embed-snippet {
-  padding-right: 0;
-  padding-top: $gl-padding;
-
-  .embed-toggle-list li button {
-    padding: 8px 40px;
-  }
 }

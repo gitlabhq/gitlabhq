@@ -4,6 +4,8 @@ module Types
   class LabelType < BaseObject
     graphql_name 'Label'
 
+    connection_type_class(Types::CountableConnectionType)
+
     authorize :read_label
 
     field :id, GraphQL::ID_TYPE, null: false,

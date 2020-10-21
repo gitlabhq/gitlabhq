@@ -13,8 +13,16 @@ module Resolvers
              description: 'Search query for project name, path, or description'
 
     argument :ids, [GraphQL::ID_TYPE],
-            required: false,
-            description: 'Filter projects by IDs'
+             required: false,
+             description: 'Filter projects by IDs'
+
+    argument :search_namespaces, GraphQL::BOOLEAN_TYPE,
+             required: false,
+             description: 'Include namespace in project search'
+
+    argument :sort, GraphQL::STRING_TYPE,
+             required: false,
+             description: 'Sort order of results'
 
     def resolve(**args)
       ProjectsFinder
@@ -28,7 +36,9 @@ module Resolvers
       {
         without_deleted: true,
         non_public: params[:membership],
-        search: params[:search]
+        search: params[:search],
+        search_namespaces: params[:search_namespaces],
+        sort: params[:sort]
       }.compact
     end
 

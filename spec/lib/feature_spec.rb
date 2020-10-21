@@ -6,6 +6,7 @@ RSpec.describe Feature, stub_feature_flags: false do
   before do
     # reset Flipper AR-engine
     Feature.reset
+    skip_feature_flags_yaml_validation
   end
 
   describe '.get' do
@@ -253,6 +254,9 @@ RSpec.describe Feature, stub_feature_flags: false do
       end
 
       before do
+        stub_env('LAZILY_CREATE_FEATURE_FLAG', '0')
+
+        allow(Feature::Definition).to receive(:valid_usage!).and_call_original
         allow(Feature::Definition).to receive(:definitions) do
           { definition.key => definition }
         end

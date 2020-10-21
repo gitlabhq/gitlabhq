@@ -1,5 +1,5 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- default_branch_name = Gitlab::CurrentSettings.default_branch_name.presence || "master"
+- default_branch_name = @project.default_branch || "master"
 - breadcrumb_title _("Details")
 - page_title _("Details")
 
@@ -11,19 +11,19 @@
   = _('The repository for this project is empty')
 
 - if @project.can_current_user_push_code?
-  %p.gl-mb-0
+  %p
     = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
 .project-buttons.qa-quick-actions
   .project-clone-holder.d-block.d-md-none.mt-2.mr-2
     = render "shared/mobile_clone_panel"
 
-  .project-clone-holder.d-none.d-md-inline-block.mt-2.mr-2.float-left
+  .project-clone-holder.d-none.d-md-inline-block.mb-2.mr-2.float-left
     = render "projects/buttons/clone"
-  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
+  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 
 - if can?(current_user, :push_code, @project)
-  .empty-wrapper.gl-mt-7
+  .empty-wrapper.gl-mt-4
     %h3#repo-command-line-instructions.page-title-empty
       = _('Command line instructions')
     %p

@@ -2,6 +2,8 @@
 
 module Groups
   class ReleasesController < Groups::ApplicationController
+    feature_category :release_evidence
+
     def index
       respond_to do |format|
         format.json do

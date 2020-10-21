@@ -5,6 +5,7 @@ module API
     class Member < Grape::Entity
       expose :user, merge: true, using: UserBasic
       expose :access_level
+      expose :created_at
       expose :expires_at
     end
   end

@@ -11,6 +11,7 @@ import './behaviors';
 // lib/utils
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { initRails } from '~/lib/utils/rails_ujs';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -37,6 +38,8 @@ import initBroadcastNotifications from './broadcast_notification';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
 import { __ } from './locale';
+
+import * as tooltips from '~/tooltips';
 
 import 'ee_else_ce/main_ee';
 
@@ -76,7 +79,7 @@ document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
-  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('dispose');
+  tooltips.dispose(document.querySelectorAll('.has-tooltip, [data-toggle="tooltip"]'));
   // Close any open popover
   $('[data-toggle="popover"]').popover('dispose');
 });
@@ -95,6 +98,8 @@ gl.lazyLoader = new LazyLoader({
   scrollContainer: window,
   observerNode: '#content-body',
 });
+
+initRails();
 
 // Put all initialisations here that can also wait after everything is rendered and ready
 function deferredInitialisation() {
@@ -130,8 +135,10 @@ function deferredInitialisation() {
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
+    tooltips.dispose(this);
+
+    // eslint-disable-next-line no-jquery/no-fade
     $(this)
-      .tooltip('dispose')
       .closest('li')
       .fadeOut();
   });
@@ -151,7 +158,7 @@ function deferredInitialisation() {
   const delay = glTooltipDelay ? JSON.parse(glTooltipDelay) : 0;
 
   // Initialize tooltips
-  $body.tooltip({
+  tooltips.initTooltips({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
     trigger: 'hover',
     boundary: 'viewport',

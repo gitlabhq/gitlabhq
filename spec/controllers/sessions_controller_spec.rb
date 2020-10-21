@@ -78,12 +78,45 @@ RSpec.describe SessionsController do
     end
 
     context 'when using standard authentications' do
+      let(:user) { create(:user) }
+      let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
+
       context 'invalid password' do
         it 'does not authenticate user' do
           post(:create, params: { user: { login: 'invalid', password: 'invalid' } })
 
           expect(response)
             .to set_flash.now[:alert].to /Invalid Login or password/
+        end
+      end
+
+      context 'a blocked user' do
+        it 'does not authenticate the user' do
+          user.block!
+          post_action
+
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(flash[:alert]).to include('Your account has been blocked')
+        end
+      end
+
+      context 'a `blocked pending approval` user' do
+        it 'does not authenticate the user' do
+          user.block_pending_approval!
+          post_action
+
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(flash[:alert]).to include('Your account is pending approval from your GitLab administrator and hence blocked')
+        end
+      end
+
+      context 'an internal user' do
+        it 'does not authenticate the user' do
+          user.ghost!
+          post_action
+
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(flash[:alert]).to include('Your account does not have the required permission to login')
         end
       end
 

@@ -3,27 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe Dashboard::LabelsController do
-  let(:project) { create(:project) }
-  let(:user)    { create(:user) }
-  let!(:label)  { create(:label, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:project_2) { create(:project) }
+
+  let_it_be(:label) { create(:label, project: project, title: 'some_label') }
+  let_it_be(:label_with_same_title) { create(:label, project: project_2, title: 'some_label') }
+  let_it_be(:unrelated_label) { create(:label, project: create(:project, :public)) }
+
+  before_all do
+    project.add_reporter(user)
+    project_2.add_reporter(user)
+  end
 
   before do
     sign_in(user)
-    project.add_reporter(user)
   end
 
   describe "#index" do
-    let!(:unrelated_label) { create(:label, project: create(:project, :public)) }
-
     subject { get :index, format: :json }
 
-    it 'returns global labels for projects the user has a relationship with' do
+    it 'returns labels with unique titles for projects the user has a relationship with' do
       subject
 
       expect(json_response).to be_kind_of(Array)
       expect(json_response.size).to eq(1)
-      expect(json_response[0]["id"]).to be_nil
-      expect(json_response[0]["title"]).to eq(label.title)
+      expect(json_response[0]['title']).to eq(label.title)
     end
 
     it_behaves_like 'disabled when using an external authorization service'

@@ -9,6 +9,11 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
   let(:user) { create(:user) }
   let(:timebox_table_name) { timebox_type.to_s.pluralize.to_sym }
 
+  # Values implementions can override
+  let(:mid_point) { Time.now.utc.to_date }
+  let(:open_on_left) { nil }
+  let(:open_on_right) { nil }
+
   describe 'modules' do
     context 'with a project' do
       it_behaves_like 'AtomicInternalId' do
@@ -238,6 +243,87 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
       timebox = build(timebox_type, *timebox_args)
 
       expect(timebox.to_ability_name).to eq(timebox_type.to_s)
+    end
+  end
+
+  describe '.within_timeframe' do
+    let(:factory) { timebox_type }
+    let(:min_date) { mid_point - 10.days }
+    let(:max_date) { mid_point + 10.days }
+
+    def box(from, to)
+      create(factory, *timebox_args,
+             start_date: from || open_on_left,
+             due_date: to || open_on_right)
+    end
+
+    it 'can find overlapping timeboxes' do
+      fully_open = box(nil, nil)
+      #  ----| ................     # Not overlapping
+      non_overlapping_open_on_left = box(nil, min_date - 1.day)
+      #   |--| ................     # Not overlapping
+      non_overlapping_closed_on_left = box(min_date - 2.days, min_date - 1.day)
+      #  ------|...............     # Overlapping
+      overlapping_open_on_left_just = box(nil, min_date)
+      #  -----------------------|   # Overlapping
+      overlapping_open_on_left_fully = box(nil, max_date + 1.day)
+      #  ---------|............     # Overlapping
+      overlapping_open_on_left_partial = box(nil, min_date + 1.day)
+      #     |-----|............     # Overlapping
+      overlapping_closed_partial = box(min_date - 1.day, min_date + 1.day)
+      #        |--------------|     # Overlapping
+      exact_match = box(min_date, max_date)
+      #     |--------------------|  # Overlapping
+      larger = box(min_date - 1.day, max_date + 1.day)
+      #        ...|-----|......     # Overlapping
+      smaller = box(min_date + 1.day, max_date - 1.day)
+      #        .........|-----|     # Overlapping
+      at_end = box(max_date - 1.day, max_date)
+      #        .........|---------  # Overlapping
+      at_end_open = box(max_date - 1.day, nil)
+      #      |--------------------  # Overlapping
+      cover_from_left = box(min_date - 1.day, nil)
+      #        .........|--------|  # Overlapping
+      cover_from_middle_closed = box(max_date - 1.day, max_date + 1.day)
+      #        ...............|--|  # Overlapping
+      overlapping_at_end_just = box(max_date, max_date + 1.day)
+      #        ............... |-|  # Not Overlapping
+      not_overlapping_at_right_closed = box(max_date + 1.day, max_date + 2.days)
+      #        ............... |--  # Not Overlapping
+      not_overlapping_at_right_open = box(max_date + 1.day, nil)
+
+      matches = described_class.within_timeframe(min_date, max_date)
+
+      expect(matches).to include(
+        overlapping_open_on_left_just,
+        overlapping_open_on_left_fully,
+        overlapping_open_on_left_partial,
+        overlapping_closed_partial,
+        exact_match,
+        larger,
+        smaller,
+        at_end,
+        at_end_open,
+        cover_from_left,
+        cover_from_middle_closed,
+        overlapping_at_end_just
+      )
+
+      expect(matches).not_to include(
+        non_overlapping_open_on_left,
+        non_overlapping_closed_on_left,
+        not_overlapping_at_right_closed,
+        not_overlapping_at_right_open
+      )
+
+      # Whether we match the 'fully-open' range depends on whether
+      # it is in fact open (i.e. whether the class allows infinite
+      # ranges)
+      if open_on_left.nil? && open_on_right.nil?
+        expect(matches).not_to include(fully_open)
+      else
+        expect(matches).to include(fully_open)
+      end
     end
   end
 end

@@ -3,7 +3,7 @@
 module MigrationHelpers
   module NamespacesHelpers
     def create_namespace(name, visibility, options = {})
-      table(:namespaces).create({
+      table(:namespaces).create!({
                           name: name,
                           path: name,
                           type: 'Group',

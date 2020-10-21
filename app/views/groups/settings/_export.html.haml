@@ -24,6 +24,5 @@
     = link_to _('Download export'), download_export_group_path(group),
         rel: 'nofollow', method: :get, class: 'btn btn-default', data: { qa_selector: 'download_export_link' }
   - else
-    .gl-display-flex.gl-justify-content-end
-      = link_to _('Export group'), export_group_path(group),
-          method: :post, class: 'btn btn-default', data: { qa_selector: 'export_group_link' }
+    = link_to _('Export group'), export_group_path(group),
+        method: :post, class: 'btn btn-default', data: { qa_selector: 'export_group_link' }

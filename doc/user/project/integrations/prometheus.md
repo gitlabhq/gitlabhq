@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -57,6 +57,43 @@ The Prometheus server will [automatically detect and monitor](https://prometheus
 CPU and Memory consumption is monitored, but requires [naming conventions](prometheus_library/kubernetes.md#specifying-the-environment) in order to determine the environment. If you are using [Auto DevOps](../../../topics/autodevops/index.md), this is handled automatically.
 
 The [NGINX Ingress](../clusters/index.md#installing-applications) that is deployed by GitLab to clusters, is automatically annotated for monitoring providing key response metrics: latency, throughput, and error rates.
+
+##### Example of Kubernetes service annotations and labels
+
+As an example, to activate Prometheus monitoring of a service:
+
+1. Add at least this annotation: `prometheus.io/scrape: 'true'`.
+1. Add two labels so GitLab can retrieve metrics dynamically for any environment:
+   - `application: ${CI_ENVIRONMENT_SLUG}`
+   - `release: ${CI_ENVIRONMENT_SLUG}`
+1. Create a dynamic PromQL query. For example, a query like
+   `temperature{application="{{ci_environment_slug}}",release="{{ci_environment_slug}}"}` to either:
+   - Add [custom metrics](../../../operations/metrics/index.md#adding-custom-metrics).
+   - Add [custom dashboards](../../../operations/metrics/dashboards/index.md).
+
+The following is a service definition to accomplish this:
+
+```yaml
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-${CI_PROJECT_NAME}-${CI_COMMIT_REF_SLUG}
+  # === Prometheus annotations ===
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    application: ${CI_ENVIRONMENT_SLUG}
+    release: ${CI_ENVIRONMENT_SLUG}
+  # === End of Prometheus ===
+spec:
+  selector:
+    app: ${CI_PROJECT_NAME}
+  ports:
+    - port: ${EXPOSED_PORT}
+      targetPort: ${CONTAINER_PORT}
+```
 
 ### Manual configuration of Prometheus
 
@@ -136,10 +173,7 @@ one of them will be used:
 > - GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27439) of the 30 minute averages.
 
 Developers can view the performance impact of their changes within the merge
-request workflow.
-
-NOTE: **Note:**
-Requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
+request workflow. This feature requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
 
 When a source branch has been deployed to an environment, a sparkline and
 numeric comparison of the average memory consumption will appear. On the

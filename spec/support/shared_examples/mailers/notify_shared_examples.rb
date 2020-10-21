@@ -267,3 +267,9 @@ RSpec.shared_examples 'appearance header and footer not enabled' do
     end
   end
 end
+
+RSpec.shared_examples 'no email is sent' do
+  it 'does not send an email' do
+    expect(subject.message).to be_a_kind_of(ActionMailer::Base::NullMail)
+  end
+end

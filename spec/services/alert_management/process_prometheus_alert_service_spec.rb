@@ -117,15 +117,19 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           end
 
           context 'when alert cannot be created' do
+            let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] })}
+
             before do
-              payload['annotations']['title'] = 'description' * 50
+              allow(service).to receive(:alert).and_call_original
+              allow(service).to receive_message_chain(:alert, :save).and_return(false)
+              allow(service).to receive_message_chain(:alert, :errors).and_return(errors)
             end
 
             it 'writes a warning to the log' do
               expect(Gitlab::AppLogger).to receive(:warn).with(
                 message: 'Unable to create AlertManagement::Alert',
                 project_id: project.id,
-                alert_errors: { title: ["is too long (maximum is 200 characters)"] }
+                alert_errors: { hosts: ['hosts array is over 255 chars'] }
               )
 
               execute
@@ -148,28 +152,20 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               expect { execute }.to change { alert.reload.resolved? }.to(true)
             end
 
-            [true, false].each do |state_tracking_enabled|
-              context 'existing issue' do
-                before do
-                  stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
-                end
+            context 'existing issue' do
+              let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint) }
 
-                let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint) }
+              it 'closes the issue' do
+                issue = alert.issue
 
-                it 'closes the issue' do
-                  issue = alert.issue
+                expect { execute }
+                  .to change { issue.reload.state }
+                  .from('opened')
+                  .to('closed')
+              end
 
-                  expect { execute }
-                    .to change { issue.reload.state }
-                    .from('opened')
-                    .to('closed')
-                end
-
-                if state_tracking_enabled
-                  specify { expect { execute }.to change(ResourceStateEvent, :count).by(1) }
-                else
-                  specify { expect { execute }.to change(Note, :count).by(1) }
-                end
+              it 'creates a resource state event' do
+                expect { execute }.to change(ResourceStateEvent, :count).by(1)
               end
             end
           end

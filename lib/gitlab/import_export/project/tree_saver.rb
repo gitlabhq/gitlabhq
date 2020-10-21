@@ -36,7 +36,7 @@ module Gitlab
         end
 
         def exportable
-          @project.present(exportable_params)
+          @project.present(**exportable_params)
         end
 
         def exportable_params

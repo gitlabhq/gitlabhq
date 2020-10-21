@@ -9,7 +9,9 @@ query getIncidents(
   $lastPageSize: Int
   $prevPageCursor: String = ""
   $nextPageCursor: String = ""
-  $searchTerm: String
+  $searchTerm: String = ""
+  $authorUsername: String = ""
+  $assigneeUsername: String = ""
 ) {
   project(fullPath: $projectPath) {
     issues(
@@ -17,6 +19,8 @@ query getIncidents(
       types: $issueTypes
       sort: $sort
       state: $status
+      authorUsername: $authorUsername
+      assigneeUsername: $assigneeUsername
       first: $firstPageSize
       last: $lastPageSize
       after: $nextPageCursor

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module API
-  class Services < Grape::API::Instance
+  class Services < ::API::Base
     services = Helpers::ServicesHelpers.services
     service_classes = Helpers::ServicesHelpers.service_classes
 

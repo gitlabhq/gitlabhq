@@ -6,6 +6,8 @@ class Projects::RunnersController < Projects::ApplicationController
 
   layout 'project_settings'
 
+  feature_category :continuous_integration
+
   def index
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')
   end
@@ -50,6 +52,10 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def toggle_shared_runners
+    if Feature.enabled?(:disable_shared_runners_on_group, default_enabled: true) && !project.shared_runners_enabled && project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
+      return redirect_to project_runners_path(@project), alert: _("Cannot enable shared runners because parent group does not allow it")
+    end
+
     project.toggle!(:shared_runners_enabled)
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')

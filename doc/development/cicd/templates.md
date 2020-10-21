@@ -13,15 +13,16 @@ This document explains how to develop [GitLab CI/CD templates](../../ci/examples
 
 All template files reside in the `lib/gitlab/ci/templates` directory, and are categorized by the following sub-directories:
 
-| Sub-directory  | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
-|----------------|--------------------------------------------------------------|-----------------------------------------------------------------------|
-| `/AWS/*`       | Cloud Deployment (AWS) related jobs                          | No                                                                    |
-| `/Jobs/*`      | Auto DevOps related jobs                                     | No                                                                    |
-| `/Pages/*`     | Static site generators for GitLab Pages (for example Jekyll) | Yes                                                                   |
-| `/Security/*`  | Security related jobs                                        | Yes                                                                   |
-| `/Verify/*`    | Verify/testing related jobs                                  | Yes                                                                   |
-| `/Workflows/*` | Common uses of the `workflow:` keyword                       | No                                                                    |
-| `/*` (root)    | General templates                                            | Yes                                                                   |
+| Sub-directory  | Content                                            | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
+|----------------|----------------------------------------------------|-----------------------------------------------------------------------|
+| `/AWS/*`       | Cloud Deployment (AWS) related jobs                | No      |
+| `/Jobs/*`      | Auto DevOps related jobs                           | No      |
+| `/Pages/*`     | Static site generators for GitLab Pages (for example Jekyll) | Yes     |
+| `/Security/*`  | Security related jobs                              | Yes     |
+| `/Terraform/*` | Infrastructure as Code related templates           | No      |
+| `/Verify/*`    | Verify/testing related jobs                        | Yes     |
+| `/Workflows/*` | Common uses of the `workflow:` keyword             | No      |
+| `/*` (root)    | General templates                                  | Yes     |
 
 ## Criteria
 
@@ -110,7 +111,7 @@ to include older template versions. If other templates are included with `includ
 they can be combined with the `include: remote`:
 
 ```yaml
-# To use the v13 stable template, which is not included in v14, fetch the specifc
+# To use the v13 stable template, which is not included in v14, fetch the specific
 # template from the remote template repository with the `include:remote:` keyword.
 # If you fetch from the GitLab canonical project, use the following URL format:
 # https://gitlab.com/gitlab-org/gitlab/-/raw/<version>/lib/gitlab/ci/templates/<template-name>

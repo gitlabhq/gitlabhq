@@ -26,7 +26,7 @@ class Packages::Package < ApplicationRecord
   validates :project, presence: true
   validates :name, presence: true
 
-  validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: :conan?
+  validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? }
 
   validates :name,
     uniqueness: { scope: %i[project_id version package_type] }, unless: :conan?
@@ -35,20 +35,24 @@ class Packages::Package < ApplicationRecord
   validate :valid_npm_package_name, if: :npm?
   validate :valid_composer_global_name, if: :composer?
   validate :package_already_taken, if: :npm?
-  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { npm? || nuget? }
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
+  validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
+  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: :npm?
+  validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
+  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
   validates :version,
     presence: true,
     format: { with: Gitlab::Regex.generic_package_version_regex },
     if: :generic?
 
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7 }
+  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7, golang: 8, debian: 9 }
 
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
+  scope :with_normalized_pypi_name, ->(name) { where("LOWER(regexp_replace(name, '[-_.]+', '-', 'g')) = ?", name.downcase) }
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
@@ -117,6 +121,10 @@ class Packages::Package < ApplicationRecord
   def self.by_file_name_and_sha256(file_name, sha256)
     joins(:package_files)
       .where(packages_package_files: { file_name: file_name, file_sha256: sha256 }).last!
+  end
+
+  def self.by_name_and_version!(name, version)
+    find_by!(name: name, version: version)
   end
 
   def self.pluck_names

@@ -153,6 +153,10 @@ class FeatureFlagOptionParser
       end
     end
 
+    def read_ee_only(options)
+      TYPES.dig(options.type, :ee_only)
+    end
+
     def read_rollout_issue_url(options)
       return unless TYPES.dig(options.type, :rollout_issue)
 
@@ -204,6 +208,7 @@ class FeatureFlagCreator
 
     # Read type from $stdin unless is already set
     options.type ||= FeatureFlagOptionParser.read_type
+    options.ee ||= FeatureFlagOptionParser.read_ee_only(options)
     options.group ||= FeatureFlagOptionParser.read_group
     options.introduced_by_url ||= FeatureFlagOptionParser.read_introduced_by_url
     options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
@@ -224,14 +229,22 @@ class FeatureFlagCreator
   private
 
   def contents
-    YAML.dump(
+    # Slice is used to ensure that YAML keys
+    # are always ordered in a predictable way
+    config_hash.slice(
+      *::Feature::Shared::PARAMS.map(&:to_s)
+    ).to_yaml
+  end
+
+  def config_hash
+    {
       'name'              => options.name,
       'introduced_by_url' => options.introduced_by_url,
       'rollout_issue_url' => options.rollout_issue_url,
-      'group'             => options.group.to_s,
+      'group'             => options.group,
       'type'              => options.type.to_s,
       'default_enabled'   => FeatureFlagOptionParser.read_default_enabled(options)
-    ).strip
+    }
   end
 
   def write

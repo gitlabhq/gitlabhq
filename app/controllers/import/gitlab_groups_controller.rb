@@ -6,6 +6,8 @@ class Import::GitlabGroupsController < ApplicationController
   before_action :ensure_group_import_enabled
   before_action :import_rate_limit, only: %i[create]
 
+  feature_category :importers
+
   def create
     unless file_is_valid?(group_params[:file])
       return redirect_back_or_default(options: { alert: s_('GroupImport|Unable to process group import file') })

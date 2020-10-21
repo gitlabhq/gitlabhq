@@ -1,12 +1,11 @@
 <script>
-import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     userAvatarImage,
@@ -87,12 +86,9 @@ export default {
   <div>
     <div
       v-if="showParticipantLabel"
-      v-tooltip
+      v-gl-tooltip.left.viewport
       :title="participantLabel"
       class="sidebar-collapsed-icon"
-      data-container="body"
-      data-placement="left"
-      data-boundary="viewport"
       @click="onClickCollapsedIcon"
     >
       <gl-icon name="users" />

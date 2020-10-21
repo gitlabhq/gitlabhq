@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Wikis < Grape::API::Instance
+  class Wikis < ::API::Base
     helpers ::API::Helpers::WikisHelpers
 
     helpers do

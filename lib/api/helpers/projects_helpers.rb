@@ -83,7 +83,16 @@ module API
       params :optional_filter_params_ee do
       end
 
+      params :optional_update_params_ce do
+        optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Skip older deployment jobs that are still pending'
+      end
+
       params :optional_update_params_ee do
+      end
+
+      params :optional_update_params do
+        use :optional_update_params_ce
+        use :optional_update_params_ee
       end
 
       params :optional_container_expiration_policy_params do
@@ -108,6 +117,7 @@ module API
           :builds_access_level,
           :ci_config_path,
           :ci_default_git_depth,
+          :ci_forward_deployment_enabled,
           :container_registry_enabled,
           :container_expiration_policy_attributes,
           :default_branch,

@@ -19,7 +19,7 @@ before_script:
   - php composer.phar install
 
 # Bring in any services we need http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
-# See http://docs.gitlab.com/ce/ci/services/README.html for examples.
+# See http://docs.gitlab.com/ee/ci/services/README.html for examples.
 services:
   - mysql:5.7
 

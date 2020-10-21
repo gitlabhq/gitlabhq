@@ -23,7 +23,7 @@ module GraphqlHelpers
 
     return early_return unless ready
 
-    resolver.resolve(args)
+    resolver.resolve(**args)
   end
 
   # Eagerly run a loader's named resolver
@@ -219,6 +219,7 @@ module GraphqlHelpers
   def as_graphql_literal(value)
     case value
     when Array then "[#{value.map { |v| as_graphql_literal(v) }.join(',')}]"
+    when Hash then "{#{attributes_to_graphql(value)}}"
     when Integer, Float then value.to_s
     when String then "\"#{value.gsub(/"/, '\\"')}\""
     when Symbol then value
@@ -234,7 +235,8 @@ module GraphqlHelpers
   end
 
   def post_graphql(query, current_user: nil, variables: nil, headers: {})
-    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }, headers: headers
+    params = { query: query, variables: variables&.to_json }
+    post api('/', current_user, version: 'graphql'), params: params, headers: headers
   end
 
   def post_graphql_mutation(mutation, current_user: nil)

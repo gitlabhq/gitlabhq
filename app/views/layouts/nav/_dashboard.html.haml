@@ -3,17 +3,17 @@
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
     = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_value: "" } }) do
-      %button.btn{ type: 'button', data: { toggle: "dropdown" } }
+      %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Projects')
-        = sprite_icon('angle-down', css_class: 'caret-down')
+        = sprite_icon('chevron-down', css_class: 'caret-down')
       .dropdown-menu.frequent-items-dropdown-menu
         = render "layouts/nav/projects_dropdown/show"
 
   - if dashboard_nav_link?(:groups)
     = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "d-none d-md-block home dropdown header-groups qa-groups-dropdown", data: { track_label: "groups_dropdown", track_event: "click_dropdown", track_value: "" } }) do
-      %button.btn{ type: 'button', data: { toggle: "dropdown" } }
+      %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Groups')
-        = sprite_icon('angle-down', css_class: 'caret-down')
+        = sprite_icon('chevron-down', css_class: 'caret-down')
       .dropdown-menu.frequent-items-dropdown-menu
         = render "layouts/nav/groups_dropdown/show"
 
@@ -21,7 +21,7 @@
     %li.header-more.dropdown{ **tracking_attrs('main_navigation', 'click_more_link', 'navigation') }
       %a{ href: "#", data: { toggle: "dropdown", qa_selector: 'more_dropdown' } }
         = _('More')
-        = sprite_icon('angle-down', css_class: 'caret-down')
+        = sprite_icon('chevron-down', css_class: 'caret-down')
       .dropdown-menu
         %ul
           - if dashboard_nav_link?(:groups)

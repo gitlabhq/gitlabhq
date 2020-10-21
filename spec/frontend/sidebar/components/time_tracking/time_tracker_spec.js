@@ -155,8 +155,7 @@ describe('Issuable Time Tracker', () => {
         it('should show the correct tooltip text', done => {
           Vue.nextTick(() => {
             expect(vm.showComparisonState).toBe(true);
-            const $title = vm.$el.querySelector('.time-tracking-content .compare-meter').dataset
-              .originalTitle;
+            const $title = vm.$el.querySelector('.time-tracking-content .compare-meter').title;
 
             expect($title).toBe('Time remaining: 26h 23m');
             done();

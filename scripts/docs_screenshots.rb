@@ -22,7 +22,7 @@ end
 
 def rename_image(file, milestone)
   path = File.dirname(file)
-  basename = File.basename(file)
+  basename = File.basename(file, ".*")
   final_name = File.join(path, "#{basename}_v#{milestone}.png")
   FileUtils.mv(file, final_name)
 end

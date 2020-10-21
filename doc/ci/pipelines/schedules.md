@@ -11,9 +11,6 @@ type: reference, howto
 > - Introduced in GitLab 9.1 as [Trigger Schedule](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10533).
 > - [Renamed to Pipeline Schedule](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10853) in GitLab 9.2.
 
-NOTE: **Note:**
-Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
-
 Pipelines are normally run based on certain conditions being met. For example, when a branch is pushed to repository.
 
 Pipeline schedules can be used to also run [pipelines](index.md) at specific intervals. For example:
@@ -23,6 +20,8 @@ Pipeline schedules can be used to also run [pipelines](index.md) at specific int
 
 In addition to using the GitLab UI, pipeline schedules can be maintained using the
 [Pipeline schedules API](../../api/pipeline_schedules.md).
+
+Schedule timing is configured with cron notation, parsed by [Fugit](https://github.com/floraison/fugit).
 
 ## Prerequisites
 

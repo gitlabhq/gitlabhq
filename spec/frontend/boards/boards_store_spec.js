@@ -1,7 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import boardsStore from '~/boards/stores/boards_store';
+import boardsStore, { gqlClient } from '~/boards/stores/boards_store';
 import eventHub from '~/boards/eventhub';
 import { listObj, listObjDuplicate } from './mock_data';
 
@@ -503,11 +503,15 @@ describe('boardsStore', () => {
       beforeEach(() => {
         requestSpy = jest.fn();
         axiosMock.onPut(url).replyOnce(config => requestSpy(config));
+        jest.spyOn(gqlClient, 'mutate').mockReturnValue(Promise.resolve({}));
       });
 
       it('makes a request to update the board', () => {
         requestSpy.mockReturnValue([200, dummyResponse]);
-        const expectedResponse = expect.objectContaining({ data: dummyResponse });
+        const expectedResponse = [
+          expect.objectContaining({ data: dummyResponse }),
+          expect.objectContaining({}),
+        ];
 
         return expect(
           boardsStore.createBoard({
@@ -555,11 +559,12 @@ describe('boardsStore', () => {
       beforeEach(() => {
         requestSpy = jest.fn();
         axiosMock.onPost(url).replyOnce(config => requestSpy(config));
+        jest.spyOn(gqlClient, 'mutate').mockReturnValue(Promise.resolve({}));
       });
 
       it('makes a request to create a new board', () => {
         requestSpy.mockReturnValue([200, dummyResponse]);
-        const expectedResponse = expect.objectContaining({ data: dummyResponse });
+        const expectedResponse = dummyResponse;
 
         return expect(boardsStore.createBoard(board))
           .resolves.toEqual(expectedResponse)
@@ -738,14 +743,6 @@ describe('boardsStore', () => {
         });
 
         expect(boardsStore.shouldAddBlankState()).toBe(true);
-      });
-
-      it('adds the blank state', () => {
-        boardsStore.addBlankState();
-
-        const list = boardsStore.findList('type', 'blank', 'blank');
-
-        expect(list).toBeDefined();
       });
 
       it('removes list from state', () => {

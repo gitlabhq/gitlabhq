@@ -123,7 +123,7 @@ RSpec.describe Projects::AutocompleteService do
       let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
 
       before do
-        project.update(namespace: subgroup)
+        project.update!(namespace: subgroup)
       end
 
       it 'includes project milestones and all acestors milestones' do
@@ -138,7 +138,7 @@ RSpec.describe Projects::AutocompleteService do
     def expect_labels_to_equal(labels, expected_labels)
       expect(labels.size).to eq(expected_labels.size)
       extract_title = lambda { |label| label['title'] }
-      expect(labels.map(&extract_title)).to eq(expected_labels.map(&extract_title))
+      expect(labels.map(&extract_title)).to match_array(expected_labels.map(&extract_title))
     end
 
     let(:user) { create(:user) }

@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { groupBy } from 'lodash';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { glEmojiTag } from '../../emoji';
 import { __, sprintf } from '~/locale';
@@ -12,6 +12,7 @@ const NO_USER_ID = -1;
 export default {
   components: {
     GlIcon,
+    GlLoadingIcon,
   },
   directives: {
     tooltip,
@@ -184,10 +185,7 @@ export default {
         <span class="award-control-icon award-control-icon-super-positive">
           <gl-icon aria-hidden="true" name="smiley" />
         </span>
-        <i
-          aria-hidden="true"
-          class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"
-        ></i>
+        <gl-loading-icon size="md" color="dark" class="award-control-icon-loading" />
       </button>
     </div>
   </div>

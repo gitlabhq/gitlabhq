@@ -89,42 +89,6 @@ describe('Batch comments mutations', () => {
     });
   });
 
-  describe(types.REQUEST_DISCARD_REVIEW, () => {
-    it('sets isDiscarding to true', () => {
-      mutations[types.REQUEST_DISCARD_REVIEW](state);
-
-      expect(state.isDiscarding).toBe(true);
-    });
-  });
-
-  describe(types.RECEIVE_DISCARD_REVIEW_SUCCESS, () => {
-    it('emptys drafts array', () => {
-      state.drafts.push('test');
-
-      mutations[types.RECEIVE_DISCARD_REVIEW_SUCCESS](state);
-
-      expect(state.drafts).toEqual([]);
-    });
-
-    it('sets isDiscarding to false', () => {
-      state.isDiscarding = true;
-
-      mutations[types.RECEIVE_DISCARD_REVIEW_SUCCESS](state);
-
-      expect(state.isDiscarding).toBe(false);
-    });
-  });
-
-  describe(types.RECEIVE_DISCARD_REVIEW_ERROR, () => {
-    it('updates isDiscarding to false', () => {
-      state.isDiscarding = true;
-
-      mutations[types.RECEIVE_DISCARD_REVIEW_ERROR](state);
-
-      expect(state.isDiscarding).toBe(false);
-    });
-  });
-
   describe(types.RECEIVE_DRAFT_UPDATE_SUCCESS, () => {
     it('updates draft in store', () => {
       state.drafts.push({ id: 1 });
@@ -138,22 +102,6 @@ describe('Batch comments mutations', () => {
           isDraft: true,
         },
       ]);
-    });
-  });
-
-  describe(types.OPEN_REVIEW_DROPDOWN, () => {
-    it('sets showPreviewDropdown to true', () => {
-      mutations[types.OPEN_REVIEW_DROPDOWN](state);
-
-      expect(state.showPreviewDropdown).toBe(true);
-    });
-  });
-
-  describe(types.CLOSE_REVIEW_DROPDOWN, () => {
-    it('sets showPreviewDropdown to false', () => {
-      mutations[types.CLOSE_REVIEW_DROPDOWN](state);
-
-      expect(state.showPreviewDropdown).toBe(false);
     });
   });
 });

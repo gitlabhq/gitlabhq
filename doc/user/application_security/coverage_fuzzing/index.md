@@ -175,6 +175,52 @@ To use coverage fuzzing in an offline environment, follow these steps:
    `NEW_URL_GITLAB_COV_FUZ` is the URL of the private `gitlab-cov-fuzz` clone that you set up in the
    first step.
 
+### Continuous fuzzing (long-running async fuzzing jobs)
+
+It's also possible to run the fuzzing jobs longer and without blocking your main pipeline. This
+configuration uses the GitLab [parent-child pipelines](../../../ci/parent_child_pipelines.md).
+The full example is available in the [repository](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/tree/continuous_fuzzing#running-go-fuzz-from-ci).
+This example uses Go, but is applicable for any other supported languages.
+
+The suggested workflow in this scenario is to have long-running, async fuzzing jobs on a
+main/development branch, and short, blocking sync fuzzing jobs on all other branches and MRs. This
+is a good way to balance the needs of letting a developer's per-commit pipeline complete quickly,
+and also giving the fuzzer a large amount of time to fully explore and test the app.
+
+Long-running fuzzing jobs are usually necessary for the coverage guided fuzzer to find deeper bugs
+in your latest code base. THe following is an example of what `.gitlab-ci.yml` looks like in this
+workflow (for the full example, see the [repository](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/tree/continuous_fuzzing)):
+
+```yaml
+
+sync_fuzzing:
+  variables:
+    COVFUZZ_ADDITIONAL_ARGS: '-max_total_time=300'
+  trigger:
+    include: .covfuzz-ci.yml
+    strategy: depend
+  rules:
+    - if: $CI_COMMIT_BRANCH != 'continuous_fuzzing' && $CI_PIPELINE_SOURCE != 'merge_request_event'
+
+async_fuzzing:
+  variables:
+    COVFUZZ_ADDITIONAL_ARGS: '-max_total_time=3600'  
+  trigger:
+    include: .covfuzz-ci.yml
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'continuous_fuzzing' && $CI_PIPELINE_SOURCE != 'merge_request_event'
+```
+
+This essentially creates two steps:
+
+1. `sync_fuzzing`: Runs all your fuzz targets for a short period of time in a blocking
+   configuration. This finds simple bugs and allows you to be confident that your MRs aren't
+   introducing new bugs or causing old bugs to reappear.
+1. `async_fuzzing`: Runs on your branch and finds deep bugs in your code without blocking your
+   development cycle and MRs.
+
+The `covfuzz-ci.yml` is the same as that in the [original synchronous example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example#running-go-fuzz-from-ci).
+
 ### Glossary
 
 - Seed corpus: The set of test cases given as initial input to the fuzz target. This usually speeds

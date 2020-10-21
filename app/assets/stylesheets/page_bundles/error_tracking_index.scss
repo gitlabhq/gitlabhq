@@ -1,0 +1,40 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
+.error-list {
+  .dropdown {
+    min-width: auto;
+  }
+
+  .sort-control {
+    .btn {
+      padding-right: 2rem;
+    }
+
+    .gl-dropdown-caret {
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .error-list-table {
+      .table-col {
+        min-height: 68px;
+
+        &:last-child {
+          background-color: var(--gray-10, $gray-10);
+
+          &::before {
+            content: none !important;
+          }
+
+          div {
+            width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+      }
+    }
+  }
+}

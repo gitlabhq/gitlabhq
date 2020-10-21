@@ -30,6 +30,7 @@ issues:
 - metrics
 - timelogs
 - issuable_severity
+- issuable_sla
 - issue_assignees
 - closed_by
 - epic_issue
@@ -51,6 +52,7 @@ issues:
 - status_page_published_incident
 - namespace
 - note_authors
+- issue_email_participants
 events:
 - author
 - project
@@ -158,6 +160,8 @@ merge_requests:
 - assignees
 - reviews
 - approval_rules
+- approval_merge_request_rule_sources
+- approval_project_rules
 - approvals
 - approvers
 - approver_users
@@ -242,6 +246,7 @@ ci_pipelines:
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
+- latest_statuses
 ci_refs:
 - project
 - ci_pipelines
@@ -300,6 +305,7 @@ protected_branches:
 - push_access_levels
 - unprotect_access_levels
 - approval_project_rules
+- required_code_owners_sections
 protected_tags:
 - project
 - create_access_levels
@@ -408,6 +414,7 @@ project:
 - stages
 - ci_refs
 - builds
+- processables
 - runner_projects
 - runners
 - variables
@@ -465,6 +472,8 @@ project:
 - feature_usage
 - approval_rules
 - approval_merge_request_rules
+- approval_merge_request_rule_sources
+- approval_project_rules
 - approvers
 - approver_users
 - audit_events
@@ -536,6 +545,8 @@ project:
 - vulnerability_historical_statistics
 - product_analytics_events
 - pipeline_artifacts
+- terraform_states
+- alert_management_http_integrations
 award_emoji:
 - awardable
 - user
@@ -703,3 +714,5 @@ system_note_metadata:
 - description_version
 status_page_published_incident:
 - issue
+issuable_sla:
+  - issue

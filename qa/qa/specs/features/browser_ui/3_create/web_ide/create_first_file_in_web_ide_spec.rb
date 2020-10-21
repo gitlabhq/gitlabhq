@@ -10,7 +10,6 @@ module QA
         end
       end
 
-      let(:web_ide_url) { current_url + '-/ide/project/' + project.path_with_namespace }
       let(:file_name) { 'the very first file.txt' }
 
       before do
@@ -18,10 +17,8 @@ module QA
       end
 
       it "creates the first file in an empty project via Web IDE", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/847' do
-        # In the first iteration, the test opens Web IDE by modifying the URL to address past regressions.
-        # Once the Web IDE button is introduced for empty projects, the test will be modified to go through UI.
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/27915 and https://gitlab.com/gitlab-org/gitlab/-/issues/27535.
-        page.visit(web_ide_url)
+        project.visit!
+        Page::Project::Show.perform(&:create_first_new_file!)
 
         Page::Project::WebIDE::Edit.perform do |ide|
           ide.create_first_file(file_name)

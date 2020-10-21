@@ -1,7 +1,7 @@
 ---
 name: graphql_milestone_stats
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35066
+rollout_issue_url:
+group: group::release management
 type: development
 default_enabled: true

@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe "User views issue" do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:issue) { create(:issue, project: project, description: "# Description header", author: user) }
+  let_it_be(:issue) { create(:issue, project: project, description: "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)", author: user) }
   let_it_be(:note) { create(:note, noteable: issue, project: project, author: user) }
 
   before_all do
@@ -19,6 +19,8 @@ RSpec.describe "User views issue" do
   end
 
   it { expect(page).to have_header_with_correct_id_and_link(1, "Description header", "description-header") }
+
+  it_behaves_like 'page meta description', ' Description header Lorem ipsum dolor sit amet'
 
   it 'shows the merge request and issue actions', :aggregate_failures do
     expect(page).to have_link('New issue')

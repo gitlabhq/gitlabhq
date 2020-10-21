@@ -22,7 +22,7 @@ RSpec.describe BlobEntity do
         name: blob.name,
         mode: "100644",
         readable_text: true,
-        icon: "file-text-o",
+        icon: "doc-text",
         url: "/#{project.full_path}/-/blob/master/bar/branch-test.txt"
       })
     end

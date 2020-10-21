@@ -7,7 +7,7 @@ class AddForeignKeyToProjectIdOnPipelineArtifact < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :ci_pipeline_artifacts, :projects, column: :project_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :ci_pipeline_artifacts, :projects, column: :project_id, on_delete: :cascade
     end
   end
 

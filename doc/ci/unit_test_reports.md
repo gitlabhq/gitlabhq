@@ -10,8 +10,6 @@ type: reference
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39737) from JUnit test reports to Unit test reports in GitLab 13.4.
 
-## Overview
-
 It is very common that a [CI/CD pipeline](pipelines/index.md) contains a
 test job that will verify your code.
 If the tests fail, the pipeline fails and users get notified. The person that
@@ -20,12 +18,12 @@ tests failed so that they can fix them.
 
 You can configure your job to use Unit test reports, and GitLab will display a
 report on the merge request so that it's easier and faster to identify the
-failure without having to check the entire log. Unit test reports currently 
+failure without having to check the entire log. Unit test reports currently
 only support test reports in the JUnit report format.
 
-If you don't use Merge Requests but still want to see the unit test report 
-output without searching through job logs, the full 
-[Unit test reports](#viewing-unit-test-reports-on-gitlab) are available 
+If you don't use Merge Requests but still want to see the unit test report
+output without searching through job logs, the full
+[Unit test reports](#viewing-unit-test-reports-on-gitlab) are available
 in the pipeline detail view.
 
 Consider the following workflow:
@@ -84,7 +82,6 @@ To make the Unit test report output files browsable, include them with the
 To upload the report even if the job fails (for example if the tests do not pass), use the [`artifacts:when:always`](yaml/README.md#artifactswhen)
 keyword.
 
-NOTE: **Note:**
 You cannot have multiple tests with the same name and class in your JUnit report format XML file.
 
 ### Ruby example
@@ -146,8 +143,8 @@ java:
       junit: build/test-results/test/**/TEST-*.xml
 ```
 
-NOTE: **Note:**
-Support for `**` was added in [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620).
+In [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620)
+and later, you can use `**`.
 
 #### Maven
 

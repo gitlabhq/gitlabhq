@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member = true|
+RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member = true|
   RSpec.shared_examples 'creating pypi package files' do
     it 'creates package files' do
       expect { subject }
@@ -52,7 +52,7 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
       context 'with correct params' do
         it_behaves_like 'package workhorse uploads'
         it_behaves_like 'creating pypi package files'
-        it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+        it_behaves_like 'a package tracking event', described_class.name, 'push_package'
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
   end
 end
 
-RSpec.shared_examples 'PyPi package versions' do |user_type, status, add_member = true|
+RSpec.shared_examples 'PyPI package versions' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
@@ -119,11 +119,11 @@ RSpec.shared_examples 'PyPi package versions' do |user_type, status, add_member 
     end
 
     it_behaves_like 'returning response status', status
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'list_package'
+    it_behaves_like 'a package tracking event', described_class.name, 'list_package'
   end
 end
 
-RSpec.shared_examples 'PyPi package download' do |user_type, status, add_member = true|
+RSpec.shared_examples 'PyPI package download' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
@@ -136,11 +136,11 @@ RSpec.shared_examples 'PyPi package download' do |user_type, status, add_member 
     end
 
     it_behaves_like 'returning response status', status
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'pull_package'
+    it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
   end
 end
 
-RSpec.shared_examples 'process PyPi api request' do |user_type, status, add_member = true|
+RSpec.shared_examples 'process PyPI api request' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
       project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
@@ -155,13 +155,13 @@ RSpec.shared_examples 'rejects PyPI access with unknown project id' do
     let(:project) { OpenStruct.new(id: 1234567890) }
 
     context 'as anonymous' do
-      it_behaves_like 'process PyPi api request', :anonymous, :not_found
+      it_behaves_like 'process PyPI api request', :anonymous, :not_found
     end
 
     context 'as authenticated user' do
       subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
-      it_behaves_like 'process PyPi api request', :anonymous, :not_found
+      it_behaves_like 'process PyPI api request', :anonymous, :not_found
     end
   end
 end

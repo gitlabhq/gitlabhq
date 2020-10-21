@@ -11,6 +11,8 @@ class Projects::UploadsController < Projects::ApplicationController
   before_action :authorize_upload_file!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]
 
+  feature_category :not_owned
+
   private
 
   def upload_model_class

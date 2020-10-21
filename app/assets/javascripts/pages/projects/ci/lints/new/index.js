@@ -1,11 +1,17 @@
-import CILintEditor from '../ci_lint_editor';
-import initCILint from '~/ci_lint/index';
+import createFlash from '~/flash';
+import { __ } from '~/locale';
+
+const ERROR = __('An error occurred while rendering the linter');
 
 document.addEventListener('DOMContentLoaded', () => {
   if (gon?.features?.ciLintVue) {
-    initCILint();
+    import(/* webpackChunkName: 'ciLintIndex' */ '~/ci_lint/index')
+      .then(module => module.default())
+      .catch(() => createFlash(ERROR));
   } else {
-    // eslint-disable-next-line no-new
-    new CILintEditor();
+    import(/* webpackChunkName: 'ciLintEditor' */ '../ci_lint_editor')
+      // eslint-disable-next-line new-cap
+      .then(module => new module.default())
+      .catch(() => createFlash(ERROR));
   }
 });

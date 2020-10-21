@@ -11,14 +11,11 @@ RSpec.describe 'User creates release', :js do
   let_it_be(:user) { create(:user) }
 
   let(:new_page_url) { new_project_release_path(project) }
-  let(:show_feature_flag) { true }
 
   before do
-    stub_feature_flags(release_show_page: show_feature_flag)
-
     project.add_developer(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit new_page_url
 
@@ -75,14 +72,6 @@ RSpec.describe 'User creates release', :js do
 
       expect(page).to have_current_path(project_release_path(project, release))
     end
-
-    context 'when the release_show_page feature flag is disabled' do
-      let(:show_feature_flag) { false }
-
-      it 'redirects to the main "Releases" page' do
-        expect(page).to have_current_path(project_releases_path(project))
-      end
-    end
   end
 
   context 'when the "Cancel" button is clicked' do
@@ -104,6 +93,24 @@ RSpec.describe 'User creates release', :js do
 
       it 'redirects to the page specified with back_url' do
         expect(page).to have_current_path(back_path)
+      end
+    end
+  end
+
+  context 'when the release notes "Preview" tab is clicked' do
+    before do
+      find_field('Release notes').click
+
+      fill_release_notes('**some** _markdown_ [content](https://example.com)')
+
+      click_on 'Preview'
+
+      wait_for_all_requests
+    end
+
+    it 'renders a preview of the release notes markdown' do
+      within('[data-testid="release-notes"]') do
+        expect(page).to have_text('some markdown content')
       end
     end
   end

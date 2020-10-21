@@ -13,6 +13,7 @@ module Gitlab
               @paths = local_cache.delete(:paths)
               @policy = local_cache.delete(:policy)
               @untracked = local_cache.delete(:untracked)
+              @when = local_cache.delete(:when)
 
               raise ArgumentError, "unknown cache keys: #{local_cache.keys}" if local_cache.any?
             end
@@ -24,7 +25,8 @@ module Gitlab
                     key: key_string,
                     paths: @paths,
                     policy: @policy,
-                    untracked: @untracked
+                    untracked: @untracked,
+                    when: @when
                   }.compact.presence
                 }.compact
               }

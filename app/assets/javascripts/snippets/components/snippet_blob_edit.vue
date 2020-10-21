@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
-import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';
@@ -11,8 +11,8 @@ import { sprintf } from '~/locale';
 export default {
   components: {
     BlobHeaderEdit,
-    BlobContentEdit,
     GlLoadingIcon,
+    EditorLite,
   },
   inheritAttrs: false,
   props: {
@@ -28,7 +28,7 @@ export default {
     showDelete: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
   },
   computed: {
@@ -69,7 +69,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-holder snippet">
+  <div class="file-holder snippet" data-qa-selector="file_holder_container">
     <blob-header-edit
       :id="inputId"
       :value="blob.path"
@@ -85,7 +85,7 @@ export default {
       size="lg"
       class="loading-animation prepend-top-20 gl-mb-6"
     />
-    <blob-content-edit
+    <editor-lite
       v-else
       :value="blob.content"
       :file-global-id="blob.id"

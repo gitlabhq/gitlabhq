@@ -84,7 +84,7 @@ Click **Expand file** on any file to view the changes for that file.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-by-file-diff-navigation).
 
 For larger merge requests it might sometimes be useful to review single files at a time. To enable,
-from your avatar on the top-right navbar, click **Settings**, and go to **Preferences** on the left
+from your avatar on the top-right navigation bar, click **Settings**, and go to **Preferences** on the left
 sidebar. Scroll down to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
 Click **Save changes** to apply.
 
@@ -121,6 +121,8 @@ To seamlessly navigate among commits in a merge request, from the **Commits** ta
 the commits to open the single-commit view. From there, you can navigate among the commits
 by clicking the **Prev** and **Next** buttons on the top-right of the page or by using the
 <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
+
+![Merge requests commit navigation](img/commit_nav_v13_4.png)
 
 ### Incrementally expand merge request diffs
 

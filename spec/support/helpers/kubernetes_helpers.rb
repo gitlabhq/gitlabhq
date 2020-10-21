@@ -33,6 +33,10 @@ module KubernetesHelpers
     kube_response(kube_deployments_body)
   end
 
+  def kube_ingresses_response
+    kube_response(kube_ingresses_body)
+  end
+
   def stub_kubeclient_discover_base(api_url)
     WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
     WebMock
@@ -63,6 +67,9 @@ module KubernetesHelpers
     WebMock
       .stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1')
       .to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
+    WebMock
+      .stub_request(:get, api_url + '/apis/networking.k8s.io/v1')
+      .to_return(kube_response(kube_v1_networking_discovery_body))
   end
 
   def stub_kubeclient_discover_knative_not_found(api_url)
@@ -148,12 +155,20 @@ module KubernetesHelpers
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
+  def stub_kubeclient_ingresses(namespace, status: nil)
+    stub_kubeclient_discover(service.api_url)
+    ingresses_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{namespace}/ingresses"
+    response = { status: status } if status
+
+    WebMock.stub_request(:get, ingresses_url).to_return(response || kube_ingresses_response)
+  end
+
   def stub_kubeclient_knative_services(options = {})
     namespace_path = options[:namespace].present? ? "namespaces/#{options[:namespace]}/" : ""
 
     options[:name] ||= "kubetest"
     options[:domain] ||= "example.com"
-    options[:response] ||= kube_response(kube_knative_services_body(options))
+    options[:response] ||= kube_response(kube_knative_services_body(**options))
 
     stub_kubeclient_discover(service.api_url)
 
@@ -265,7 +280,7 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
-  def kube_v1_secret_body(**options)
+  def kube_v1_secret_body(options)
     {
       "kind" => "SecretList",
       "apiVersion": "v1",
@@ -301,6 +316,14 @@ module KubernetesHelpers
       "resources" => [
         { "name" => "ingresses", "namespaced" => true, "kind" => "Deployment" }
       ]
+    }
+  end
+
+  # From Kubernetes 1.22+ Ingresses are no longer served from apis/extensions
+  def kube_1_22_extensions_v1beta1_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => []
     }
   end
 
@@ -416,6 +439,17 @@ module KubernetesHelpers
     }
   end
 
+  def kube_v1_networking_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "apiVersion" => "v1",
+      "groupVersion" => "networking.k8s.io/v1",
+      "resources" => [
+        { "name" => "ingresses", "namespaced" => true, "kind" => "Ingress" }
+      ]
+    }
+  end
+
   def kube_istio_gateway_body(name, namespace)
     {
       "apiVersion" => "networking.istio.io/v1alpha3",
@@ -507,6 +541,13 @@ module KubernetesHelpers
     }
   end
 
+  def kube_ingresses_body
+    {
+      "kind" => "List",
+      "items" => [kube_ingress]
+    }
+  end
+
   def kube_knative_pods_body(name, namespace)
     {
       "kind" => "PodList",
@@ -517,7 +558,7 @@ module KubernetesHelpers
   def kube_knative_services_body(**options)
     {
       "kind" => "List",
-      "items" => [knative_09_service(options)]
+      "items" => [knative_09_service(**options)]
     }
   end
 
@@ -545,6 +586,38 @@ module KubernetesHelpers
         ]
       },
       "status" => { "phase" => status }
+    }
+  end
+
+  def kube_ingress(track: :stable)
+    additional_annotations =
+      if track == :canary
+        {
+          "nginx.ingress.kubernetes.io/canary" => "true",
+          "nginx.ingress.kubernetes.io/canary-by-header" => "canary",
+          "nginx.ingress.kubernetes.io/canary-weight" => "50"
+        }
+      else
+        {}
+      end
+
+    {
+      "metadata" => {
+        "name" => "production-auto-deploy",
+        "labels" => {
+          "app" => "production",
+          "app.kubernetes.io/managed-by" => "Helm",
+          "chart" => "auto-deploy-app-2.0.0-beta.2",
+          "heritage" => "Helm",
+          "release" => "production"
+        },
+        "annotations" => {
+          "kubernetes.io/ingress.class" => "nginx",
+          "kubernetes.io/tls-acme" => "true",
+          "meta.helm.sh/release-name" => "production",
+          "meta.helm.sh/release-namespace" => "awesome-app-1-production"
+        }.merge(additional_annotations)
+      }
     }
   end
 
@@ -604,7 +677,7 @@ module KubernetesHelpers
     }
   end
 
-  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil)
+  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil, replicas: 3)
     {
       "metadata" => {
         "name" => name,
@@ -617,7 +690,7 @@ module KubernetesHelpers
           "track" => track
         }.compact
       },
-      "spec" => { "replicas" => 3 },
+      "spec" => { "replicas" => replicas },
       "status" => {
         "observedGeneration" => 4
       }
@@ -862,8 +935,8 @@ module KubernetesHelpers
     end
   end
 
-  def kube_deployment_rollout_status
-    ::Gitlab::Kubernetes::RolloutStatus.from_deployments(kube_deployment)
+  def kube_deployment_rollout_status(ingresses: [])
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments(kube_deployment, ingresses: ingresses)
   end
 
   def empty_deployment_rollout_status

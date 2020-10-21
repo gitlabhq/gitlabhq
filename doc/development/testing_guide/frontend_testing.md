@@ -229,7 +229,7 @@ beforeEach(() => {
 it('exists', () => {
   // Best
 
-  // NOTE: both mount and shallowMount work as long as a DOM element is available  
+  // NOTE: both mount and shallowMount work as long as a DOM element is available
   // Finds a properly formatted link with an accessible name of "Click Me"
   getByRole(el, 'link', { name: /Click Me/i })
   getByRole(el, 'link', { name: 'Click Me' })

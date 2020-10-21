@@ -37,18 +37,11 @@ RSpec.describe RelativePositioning::Mover do
   end
 
   def set_positions(positions)
-    vals = issues.zip(positions).map do |issue, pos|
-      issue.relative_position = pos
-      "(#{issue.id}, #{pos})"
-    end.join(', ')
+    mapping = issues.zip(positions).to_h do |issue, pos|
+      [issue, { relative_position: pos }]
+    end
 
-    Issue.connection.exec_query(<<~SQL, 'set-positions')
-      WITH cte(cte_id, new_pos) AS (
-       SELECT * FROM (VALUES #{vals}) as t (id, pos)
-      )
-      UPDATE issues SET relative_position = new_pos FROM cte WHERE id = cte_id
-      ;
-    SQL
+    ::Gitlab::Database::BulkUpdate.execute([:relative_position], mapping)
   end
 
   def ids_in_position_order

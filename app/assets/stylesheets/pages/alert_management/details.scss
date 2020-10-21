@@ -33,7 +33,7 @@
   }
 
   .main-notes-list::before {
-    left: 15px !important;
+    left: $gl-spacing-scale-5 !important;
   }
 
   .note-header-info {

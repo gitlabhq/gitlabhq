@@ -1,6 +1,6 @@
-import Vue from 'vue';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
-import { waitForCSSLoaded } from '../../../../helpers/startup_css_helper';
+import Vue from 'vue';
+import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 import { __ } from '~/locale';
 import CodeCoverage from '../components/code_coverage.vue';
 import SeriesDataMixin from './series_data_mixin';

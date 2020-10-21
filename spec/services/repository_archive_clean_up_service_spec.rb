@@ -18,6 +18,16 @@ RSpec.describe RepositoryArchiveCleanUpService do
       end
     end
 
+    it 'removes outdated archives and directories in a versioned path' do
+      in_directory_with_files("project-#{non_existing_record_id}/#{sha}/@v2", %w[tar tar.bz2 tar.gz zip], 3.hours) do |dirname, files|
+        service.execute
+
+        files.each { |filename| expect(File.exist?(filename)).to be_falsy }
+        expect(File.directory?(dirname)).to be_falsy
+        expect(File.directory?(File.dirname(dirname))).to be_falsy
+      end
+    end
+
     it 'does not remove directories when they contain outdated non-archives' do
       in_directory_with_files("project-#{non_existing_record_id}/#{sha}", %w[tar conf rb], 2.hours) do |dirname, files|
         service.execute
@@ -64,7 +74,9 @@ RSpec.describe RepositoryArchiveCleanUpService do
       end
 
       it 'removes files older than 2 hours that matches valid archive extensions' do
-        in_directory_with_files('sample.git', %w[tar tar.bz2 tar.gz zip], 2.hours) do |dir, files|
+        # In macOS, the the `mmin` parameter for `find` rounds up, so add a full
+        # minute to ensure these files are deemed old.
+        in_directory_with_files('sample.git', %w[tar tar.bz2 tar.gz zip], 121.minutes) do |dir, files|
           service.execute
 
           files.each { |file| expect(File.exist?(file)).to eq false }
@@ -73,11 +85,11 @@ RSpec.describe RepositoryArchiveCleanUpService do
       end
 
       context 'with files older than 2 hours that does not matches valid archive extensions' do
-        it_behaves_like 'invalid archive files', 'sample.git', %w[conf rb], 2.hours
+        it_behaves_like 'invalid archive files', 'sample.git', %w[conf rb], 121.minutes
       end
 
       context 'with files older than 2 hours inside invalid directories' do
-        it_behaves_like 'invalid archive files', 'john/doe/sample.git', %w[conf rb tar tar.gz], 2.hours
+        it_behaves_like 'invalid archive files', 'john/t/doe/sample.git', %w[conf rb tar tar.gz], 121.minutes
       end
 
       context 'with files newer than 2 hours that matches valid archive extensions' do
@@ -110,8 +122,6 @@ RSpec.describe RepositoryArchiveCleanUpService do
 
   def create_temporary_files(dir, extensions, mtime)
     FileUtils.mkdir_p(dir)
-    # rubocop: disable Rails/TimeZone
-    FileUtils.touch(extensions.map { |ext| File.join(dir, "sample.#{ext}") }, mtime: Time.now - mtime)
-    # rubocop: enable Rails/TimeZone
+    FileUtils.touch(extensions.map { |ext| File.join(dir, "sample.#{ext}") }, mtime: Time.now.utc - mtime)
   end
 end

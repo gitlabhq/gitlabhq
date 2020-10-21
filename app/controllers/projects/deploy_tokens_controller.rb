@@ -3,6 +3,8 @@
 class Projects::DeployTokensController < Projects::ApplicationController
   before_action :authorize_admin_project!
 
+  feature_category :continuous_delivery
+
   def revoke
     @token = @project.deploy_tokens.find(params[:id])
     @token.revoke!

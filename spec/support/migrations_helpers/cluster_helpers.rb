@@ -4,7 +4,7 @@ module MigrationHelpers
   module ClusterHelpers
     # Creates a list of cluster projects.
     def create_cluster_project_list(quantity)
-      group = namespaces_table.create(name: 'gitlab-org', path: 'gitlab-org')
+      group = namespaces_table.create!(name: 'gitlab-org', path: 'gitlab-org')
 
       quantity.times do |id|
         create_cluster_project(group, id)
@@ -25,14 +25,14 @@ module MigrationHelpers
         namespace_id: group.id
       )
 
-      cluster = clusters_table.create(
+      cluster = clusters_table.create!(
         name: 'test-cluster',
         cluster_type: 3,
         provider_type: :gcp,
         platform_type: :kubernetes
       )
 
-      cluster_projects_table.create(project_id: project.id, cluster_id: cluster.id)
+      cluster_projects_table.create!(project_id: project.id, cluster_id: cluster.id)
 
       provider_gcp_table.create!(
         gcp_project_id: "test-gcp-project-#{id}",
@@ -43,7 +43,7 @@ module MigrationHelpers
         zone: 'us-central1-a'
       )
 
-      platform_kubernetes_table.create(
+      platform_kubernetes_table.create!(
         cluster_id: cluster.id,
         api_url: 'https://kubernetes.example.com',
         encrypted_token: 'a' * 40,
@@ -58,7 +58,7 @@ module MigrationHelpers
         project = projects_table.find(cluster_project.project_id)
         namespace = "#{project.path}-#{project.id}"
 
-        cluster_kubernetes_namespaces_table.create(
+        cluster_kubernetes_namespaces_table.create!(
           cluster_project_id: cluster_project.id,
           cluster_id: cluster.id,
           project_id: cluster_project.project_id,

@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlBadge, GlButton, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlBadge, GlButton } from '@gitlab/ui';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import { setUrlParams } from '~/lib/utils/url_utility';
 
@@ -8,7 +8,6 @@ export default {
   components: {
     GlLink,
     GlBadge,
-    GlIcon,
     GlButton,
   },
   directives: {
@@ -55,11 +54,10 @@ export default {
       v-gl-tooltip
       category="primary"
       variant="default"
+      icon="pencil"
       class="gl-mr-3 js-edit-button ml-2 pb-2"
       :title="__('Edit this release')"
       :href="editLink"
-    >
-      <gl-icon name="pencil" />
-    </gl-button>
+    />
   </div>
 </template>

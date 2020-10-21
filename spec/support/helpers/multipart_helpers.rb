@@ -31,7 +31,7 @@ module MultipartHelpers
       raise ArgumentError, "can't handle #{mode} mode"
     end
 
-    return result if ::Feature.disabled?(:upload_middleware_jwt_params_handler)
+    return result if ::Feature.disabled?(:upload_middleware_jwt_params_handler, default_enabled: true)
 
     # the HandlerForJWTParams expects a jwt token with the upload parameters
     # *without* the "#{key}." prefix

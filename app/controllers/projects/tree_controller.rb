@@ -15,6 +15,8 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_edit_tree!, only: [:create_dir]
 
+  feature_category :source_code_management
+
   def show
     return render_404 unless @commit
 

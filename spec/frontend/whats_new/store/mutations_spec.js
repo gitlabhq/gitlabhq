@@ -22,4 +22,11 @@ describe('whats new mutations', () => {
       expect(state.open).toBe(false);
     });
   });
+
+  describe('setFeatures', () => {
+    it('sets features to data', () => {
+      mutations[types.SET_FEATURES](state, 'bells and whistles');
+      expect(state.features).toBe('bells and whistles');
+    });
+  });
 });

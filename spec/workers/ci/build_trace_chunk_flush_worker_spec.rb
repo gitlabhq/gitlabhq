@@ -14,7 +14,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker do
 
     described_class.new.perform(chunk.id)
 
-    expect(chunk.reload).to be_persisted
+    expect(chunk.reload).to be_migrated
   end
 
   describe '#perform' do
@@ -24,7 +24,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker do
       it 'migrates build trace chunk to a safe store' do
         subject
 
-        expect(chunk.reload).to be_persisted
+        expect(chunk.reload).to be_migrated
       end
     end
   end

@@ -1,0 +1,9 @@
+%tr
+  %td.text-content
+    %h2.invite-header
+      = invitation_reminder_salutation(@reminder_index, format: :html)
+    %p.invite-body
+      = invitation_reminder_body(member, @reminder_index, format: :html)
+    %p.invite-actions
+      = invitation_reminder_accept_link(@token, format: :html)
+      = invitation_reminder_decline_link(@token, format: :html)

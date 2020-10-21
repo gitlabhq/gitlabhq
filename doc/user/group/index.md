@@ -371,7 +371,7 @@ To create group links via filter:
 
 ### Overriding user permissions **(STARTER ONLY)**
 
-Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
+In GitLab [8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) and later, LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
 
 1. Go to your group's **Members** page.
 1. Select the pencil icon in the row for the user you are editing.
@@ -391,11 +391,56 @@ milestones.
 
 [Learn more about Epics.](epics/index.md)
 
+## Group wikis **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+> - It's [deployed behind a feature flag](../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-group-wikis).
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Group wikis work the same way as [project wikis](../project/wiki/index.md), please refer to those docs for details on usage.
+
+Group wikis can be edited by members with [Developer permissions](../../user/permissions.md#group-members-permissions)
+and above.
+
+### Group wikis limitations
+
+There are a few limitations compared to project wikis:
+
+- Local Git access is not supported yet.
+- Group wikis are not included in global search, group exports, backups, and Geo replication.
+- Changes to group wikis don't show up in the group's activity feed.
+
+You can follow [this epic](https://gitlab.com/groups/gitlab-org/-/epics/2782) for updates.
+
+### Enable or disable group wikis **(CORE ONLY)**
+
+Group wikis are under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:group_wikis)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:group_wikis)
+```
+
 ## Group Security Dashboard **(ULTIMATE)**
 
 Get an overview of the vulnerabilities of all the projects in a group and its subgroups.
 
-[Learn more about the Group Security Dashboard.](security_dashboard/index.md)
+[Learn more about the Group Security Dashboard.](../application_security/security_dashboard/index.md)
 
 ## Insights **(ULTIMATE)**
 

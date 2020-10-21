@@ -47,9 +47,8 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 ### Verbose mode
 
-In order to get more detailed information about which
-rows and columns cannot be decrypted, you can pass a VERBOSE
-environment variable:
+To get more detailed information about which rows and columns can't be
+decrypted, you can pass a `VERBOSE` environment variable:
 
 **Omnibus Installation**
 

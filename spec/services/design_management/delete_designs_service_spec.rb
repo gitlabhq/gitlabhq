@@ -80,6 +80,16 @@ RSpec.describe DesignManagement::DeleteDesignsService do
           expect { run_service rescue nil }
             .not_to change { [counter.totals, Event.count] }
         end
+
+        it 'does not log any UsageData metrics' do
+          redis_hll = ::Gitlab::UsageDataCounters::HLLRedisCounter
+          event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED
+
+          expect { run_service rescue nil }
+            .not_to change { redis_hll.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }
+
+          run_service rescue nil
+        end
       end
 
       context 'one design is passed' do
@@ -98,6 +108,12 @@ RSpec.describe DesignManagement::DeleteDesignsService do
           expect { run_service }.to change { counter.read(:delete) }.by(1)
         end
 
+        it 'updates UsageData for removed designs' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_removed_action).with(author: user)
+
+          run_service
+        end
+
         it 'creates an event in the activity stream' do
           expect { run_service }
             .to change { Event.count }.by(1)
@@ -105,7 +121,7 @@ RSpec.describe DesignManagement::DeleteDesignsService do
         end
 
         it 'informs the new-version-worker' do
-          expect(::DesignManagement::NewVersionWorker).to receive(:perform_async).with(Integer)
+          expect(::DesignManagement::NewVersionWorker).to receive(:perform_async).with(Integer, false)
 
           run_service
         end

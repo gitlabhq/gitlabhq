@@ -91,14 +91,16 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def cleanup_orphan_lfs_file_references(project)
-    return unless Feature.enabled?(:cleanup_lfs_during_gc, project)
     return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
 
     ::Gitlab::Cleanup::OrphanLfsFileReferences.new(project, dry_run: false, logger: logger).run!
+  rescue => err
+    Gitlab::GitLogger.warn(message: "Cleaning up orphan LFS objects files failed", error: err.message)
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
   end
 
   def flush_ref_caches(project)
-    project.repository.after_create_branch
+    project.repository.expire_branches_cache
     project.repository.branch_names
     project.repository.has_visible_content?
   end

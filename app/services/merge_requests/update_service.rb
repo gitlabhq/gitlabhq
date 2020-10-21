@@ -112,6 +112,8 @@ module MergeRequests
     end
 
     def handle_reviewers_change(merge_request, old_reviewers)
+      create_reviewer_note(merge_request, old_reviewers)
+      notification_service.async.changed_reviewer_of_merge_request(merge_request, current_user, old_reviewers)
       todo_service.reassigned_reviewable(merge_request, current_user, old_reviewers)
     end
 

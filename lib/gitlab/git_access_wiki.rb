@@ -12,6 +12,11 @@ module Gitlab
       write_to_wiki: "You are not allowed to write to this project's wiki."
     }.freeze
 
+    override :project
+    def project
+      container.project if container.is_a?(ProjectWiki)
+    end
+
     override :download_ability
     def download_ability
       :download_wiki_code
@@ -39,11 +44,6 @@ module Gitlab
 
     def not_found_message
       error_message(:not_found)
-    end
-
-    override :repository
-    def repository
-      container.wiki.repository
     end
   end
 end

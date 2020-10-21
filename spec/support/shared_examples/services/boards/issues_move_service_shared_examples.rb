@@ -131,7 +131,7 @@ RSpec.shared_examples 'issues move service' do |group|
       updated_at1 = issue1.updated_at
       updated_at2 = issue2.updated_at
 
-      Timecop.travel(1.minute.from_now) do
+      travel_to(1.minute.from_now) do
         described_class.new(parent, user, params).execute(issue)
       end
 

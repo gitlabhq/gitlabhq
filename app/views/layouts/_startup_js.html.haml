@@ -1,9 +1,11 @@
-- return unless page_startup_api_calls.present?
+- return unless page_startup_api_calls.present? || page_startup_graphql_calls.present?
 
 = javascript_tag nonce: true do
   :plain
     var gl = window.gl || {};
     gl.startup_calls = #{page_startup_api_calls.to_json};
+    gl.startup_graphql_calls = #{page_startup_graphql_calls.to_json};
+
     if (gl.startup_calls && window.fetch) {
       Object.keys(gl.startup_calls).forEach(apiCall => {
         // fetch won’t send cookies in older browsers, unless you set the credentials init option.
@@ -14,3 +16,21 @@
         };
       });
     }
+    if (gl.startup_graphql_calls && window.fetch) {
+      const url = `#{api_graphql_url}`
+
+      const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json", 'X-CSRF-Token': "#{form_authenticity_token}" },
+      };
+
+      gl.startup_graphql_calls = gl.startup_graphql_calls.map(call => ({
+        operationName: call.query.match(/^query (.+)\(/)[1],
+        fetchCall: fetch(url, {
+          ...opts,
+          credentials: 'same-origin',
+          body: JSON.stringify(call)
+        })
+      }))
+    }
+

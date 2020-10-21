@@ -73,18 +73,3 @@ The **Merge Request Analytics** feature can be accessed only:
 
 - On [Starter](https://about.gitlab.com/pricing/) and above.
 - By users with [Reporter access](../permissions.md) and above.
-
-## Enable and disable related feature flags
-
-Merge Request Analytics is disabled by default but can be enabled using the following
-[feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development):
-
-- `project_merge_request_analytics`
-
-A GitLab administrator can:
-
-- Enable this feature by running the following command in a Rails console:
-
-  ```ruby
-  Feature.enable(:project_merge_request_analytics)
-  ```

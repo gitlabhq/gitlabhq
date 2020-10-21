@@ -6,14 +6,16 @@ type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
 
-# GitLab Git Large File Storage (LFS) Administration
+# GitLab Git Large File Storage (LFS) Administration **(CORE ONLY)**
+
+> - Git LFS is supported in GitLab starting with version 8.2.
+> - Support for object storage, such as AWS S3, was introduced in 10.0.
+> - LFS is enabled in GitLab self-managed instances by default.
 
 Documentation on how to use Git LFS are under [Managing large binary files with Git LFS doc](../../topics/git/lfs/index.md).
 
 ## Requirements
 
-- Git LFS is supported in GitLab starting with version 8.2.
-- Support for object storage, such as AWS S3, was introduced in 10.0.
 - Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up.
 
 ## Configuration
@@ -40,6 +42,8 @@ gitlab_rails['lfs_enabled'] = false
 # `/var/opt/gitlab/gitlab-rails/shared/lfs-objects` by default.
 gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
 ```
+
+After you update settings in `/etc/gitlab/gitlab.rb`, make sure to run [Omnibus GitLab reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 ### Configuration for installations from source
 

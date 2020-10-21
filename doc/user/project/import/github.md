@@ -35,25 +35,20 @@ The namespace is a user or group in GitLab, such as `gitlab.com/janedoe` or `git
 
 This process does not migrate or import any types of groups or organizations from GitHub to GitLab.
 
-### If you're using GitLab.com
+### Use cases
 
-If you're using GitLab.com, you can alternatively import
-GitHub repositories using a [personal access token](#using-a-github-token),
-but we don't recommend this method because it can't associate all user activity
-(such as issues and pull requests) with matching GitLab users.
+The steps you take depend on whether you are importing from GitHub.com or GitHub Enterprise, as well as whether you are importing to GitLab.com or self-managed GitLab instance.
 
-### If you're importing from GitLab Enterprise
-
-If you're importing from GitHub Enterprise, you must enable [GitHub integration][gh-import].
-
-### If you're using a self-managed GitLab instance
-
-If you're an administrator of a self-managed GitLab instance, you must enable
-[GitHub integration][gh-import].
-
-If you're an administrator of a self-managed GitLab instance, you can also use the
-[GitHub Rake task](../../../administration/raketasks/github_import.md) to import projects from
-GitHub without the constraints of a Sidekiq worker.
+- If you're importing to GitLab.com, you can alternatively import GitHub repositories
+  using a [personal access token](#using-a-github-token). We do not recommend
+  this method, as it does not associate all user activity (such as issues and
+  pull requests) with matching GitLab users.
+- If you're importing to a self-managed GitLab instance, you can alternatively use the
+  [GitHub Rake task](../../../administration/raketasks/github_import.md) to import
+  projects without the constraints of a [Sidekiq](../../../development/sidekiq_style_guide.md) worker.
+- If you're importing from GitHub Enterprise to your self-managed GitLab instance, you must first enable
+  [GitHub integration](../../../integration/github.md). However, you cannot import projects from GitHub Enterprise to GitLab.com.
+- If you're importing from GitHub.com to your self-managed GitLab instance, you do not need to set up GitHub integration.
 
 ## How it works
 
@@ -106,7 +101,7 @@ If you are using a self-managed GitLab instance or if you are importing from Git
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
 1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
-1. Click **Authorize gitlabhq**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
+1. Click **Authorize GitlabHQ**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 
 ### Using a GitHub token
@@ -124,7 +119,7 @@ If you are not using the GitHub integration, you can still perform an authorizat
 
 1. Go to <https://github.com/settings/tokens/new>
 1. Enter a token description.
-1. Select the repo scope.
+1. Select the repository scope.
 1. Click **Generate token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the GitHub importer.
@@ -141,10 +136,10 @@ your GitHub repositories are listed.
 1. Select the **Import** button next to any number of repositories, or select **Import all repositories**. Additionally,
    you can filter projects by name. If filter is applied, **Import all repositories** only imports matched repositories.
 1. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
-   update in realtime or you can return to it later.
+   update in real-time or you can return to it later.
 1. Once a repository has been imported, click its GitLab path to open its GitLab URL.
 
-![Github importer page](img/import_projects_from_github_importer_v12_3.png)
+![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
 
 ## Mirroring and pipeline status sharing
 
@@ -154,7 +149,7 @@ your imported repository in sync with its GitHub copy.
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the
 [GitHub Project Integration](../integrations/github.md). **(PREMIUM)**
 
-If you import your project using [CI/CD for external repo](../../../ci/ci_cd_for_external_repos/index.md), then both
+If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/index.md), then both
 of the above are automatically configured. **(PREMIUM)**
 
 ## Improving the speed of imports on self-managed instances

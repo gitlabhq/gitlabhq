@@ -41,15 +41,11 @@ module ChatMessage
     private
 
     def message
-      if opened_issue?
-        "[#{project_link}] Issue #{state} by #{user_combined_name}"
-      else
-        "[#{project_link}] Issue #{issue_link} #{state} by #{user_combined_name}"
-      end
+      "[#{project_link}] Issue #{issue_link} #{state} by #{user_combined_name}"
     end
 
     def opened_issue?
-      action == "open"
+      action == 'open'
     end
 
     def description_message
@@ -57,7 +53,7 @@ module ChatMessage
         title: issue_title,
         title_link: issue_url,
         text: format(description),
-        color: "#C95823"
+        color: '#C95823'
       }]
     end
 

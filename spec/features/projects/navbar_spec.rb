@@ -12,20 +12,10 @@ RSpec.describe 'Project navbar' do
   let_it_be(:project) { create(:project, :repository) }
 
   before do
-    stub_feature_flags(project_iterations: false)
-
     insert_package_nav(_('Operations'))
 
     project.add_maintainer(user)
     sign_in(user)
-
-    if Gitlab.ee?
-      insert_after_sub_nav_item(
-        _('Kubernetes'),
-        within: _('Operations'),
-        new_sub_nav_item_name: _('Feature Flags')
-      )
-    end
   end
 
   it_behaves_like 'verified navigation bar' do

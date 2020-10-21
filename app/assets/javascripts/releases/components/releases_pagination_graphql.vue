@@ -13,14 +13,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions('list', ['fetchReleasesGraphQl']),
+    ...mapActions('list', ['fetchReleases']),
     onPrev(before) {
       historyPushState(buildUrlWithCurrentLocation(`?before=${before}`));
-      this.fetchReleasesGraphQl({ before });
+      this.fetchReleases({ before });
     },
     onNext(after) {
       historyPushState(buildUrlWithCurrentLocation(`?after=${after}`));
-      this.fetchReleasesGraphQl({ after });
+      this.fetchReleases({ after });
     },
   },
 };

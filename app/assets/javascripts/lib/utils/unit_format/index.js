@@ -61,8 +61,8 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
      * @function
      * @param {Number} value - Number to format
      * @param {Number} fractionDigits - precision decimals
-     * @param {Number} maxLength - Max lenght of formatted number
-     * if lenght is exceeded, exponential format is used.
+     * @param {Number} maxLength - Max length of formatted number
+     * if length is exceeded, exponential format is used.
      */
     return numberFormatter();
   }
@@ -73,8 +73,8 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
      * @function
      * @param {Number} value - Number to format, `1` is rendered as `100%`
      * @param {Number} fractionDigits - number of precision decimals
-     * @param {Number} maxLength - Max lenght of formatted number
-     * if lenght is exceeded, exponential format is used.
+     * @param {Number} maxLength - Max length of formatted number
+     * if length is exceeded, exponential format is used.
      */
     return numberFormatter('percent');
   }
@@ -85,8 +85,8 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
      * @function
      * @param {Number} value - Number to format, `100` is rendered as `100%`
      * @param {Number} fractionDigits - number of precision decimals
-     * @param {Number} maxLength - Max lenght of formatted number
-     * if lenght is exceeded, exponential format is used.
+     * @param {Number} maxLength - Max length of formatted number
+     * if length is exceeded, exponential format is used.
      */
     return numberFormatter('percent', 1 / 100);
   }
@@ -100,8 +100,8 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
      * @function
      * @param {Number} value - Number to format, `1` is rendered as `1s`
      * @param {Number} fractionDigits - number of precision decimals
-     * @param {Number} maxLength - Max lenght of formatted number
-     * if lenght is exceeded, exponential format is used.
+     * @param {Number} maxLength - Max length of formatted number
+     * if length is exceeded, exponential format is used.
      */
     return suffixFormatter(s__('Units|s'));
   }
@@ -112,8 +112,8 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
      * @function
      * @param {Number} value - Number to format, `1` is formatted as `1ms`
      * @param {Number} fractionDigits - number of precision decimals
-     * @param {Number} maxLength - Max lenght of formatted number
-     * if lenght is exceeded, exponential format is used.
+     * @param {Number} maxLength - Max length of formatted number
+     * if length is exceeded, exponential format is used.
      */
     return suffixFormatter(s__('Units|ms'));
   }

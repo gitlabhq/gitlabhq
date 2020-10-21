@@ -71,4 +71,12 @@ RSpec.describe 'doorkeeper access' do
 
     it_behaves_like 'forbidden request'
   end
+
+  context 'when user is blocked pending approval' do
+    before do
+      user.block_pending_approval
+    end
+
+    it_behaves_like 'forbidden request'
+  end
 end

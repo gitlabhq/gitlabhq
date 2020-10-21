@@ -17,6 +17,8 @@ module Ci
 
       def data(model)
         model.raw_data
+      rescue ActiveModel::MissingAttributeError
+        model.reset.raw_data
       end
 
       def set_data(model, new_data)

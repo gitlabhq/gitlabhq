@@ -1,53 +1,53 @@
-import Vue from 'vue';
-
-import mountComponent from 'helpers/vue_mount_component_helper';
-import itemTypeIconComponent from '~/groups/components/item_type_icon.vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import ItemTypeIcon from '~/groups/components/item_type_icon.vue';
 import { ITEM_TYPE } from '../mock_data';
 
-const createComponent = (itemType = ITEM_TYPE.GROUP, isGroupOpen = false) => {
-  const Component = Vue.extend(itemTypeIconComponent);
+describe('ItemTypeIcon', () => {
+  let wrapper;
 
-  return mountComponent(Component, {
-    itemType,
-    isGroupOpen,
+  const defaultProps = {
+    itemType: ITEM_TYPE.GROUP,
+    isGroupOpen: false,
+  };
+
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(ItemTypeIcon, {
+      propsData: { ...defaultProps, ...props },
+    });
+  };
+
+  afterEach(() => {
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
-};
 
-describe('ItemTypeIconComponent', () => {
+  const findGlIcon = () => wrapper.find(GlIcon);
+
   describe('template', () => {
-    it('should render component template correctly', () => {
-      const vm = createComponent();
+    it('renders component template correctly', () => {
+      createComponent();
 
-      expect(vm.$el.classList.contains('item-type-icon')).toBeTruthy();
-      vm.$destroy();
+      expect(wrapper.classes()).toContain('item-type-icon');
     });
 
-    it('should render folder open or close icon based `isGroupOpen` prop value', () => {
-      let vm;
-
-      vm = createComponent(ITEM_TYPE.GROUP, true);
-
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('folder-open-icon');
-      vm.$destroy();
-
-      vm = createComponent(ITEM_TYPE.GROUP);
-
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('folder-o-icon');
-      vm.$destroy();
-    });
-
-    it('should render bookmark icon based on `isProject` prop value', () => {
-      let vm;
-
-      vm = createComponent(ITEM_TYPE.PROJECT);
-
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('bookmark-icon');
-      vm.$destroy();
-
-      vm = createComponent(ITEM_TYPE.GROUP);
-
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).not.toBe('bookmark-icon');
-      vm.$destroy();
-    });
+    it.each`
+      type                 | isGroupOpen | icon
+      ${ITEM_TYPE.GROUP}   | ${true}     | ${'folder-open'}
+      ${ITEM_TYPE.GROUP}   | ${false}    | ${'folder-o'}
+      ${ITEM_TYPE.PROJECT} | ${true}     | ${'bookmark'}
+      ${ITEM_TYPE.PROJECT} | ${false}    | ${'bookmark'}
+    `(
+      'shows "$icon" icon when `itemType` is "$type" and `isGroupOpen` is $isGroupOpen',
+      ({ type, isGroupOpen, icon }) => {
+        createComponent({
+          itemType: type,
+          isGroupOpen,
+        });
+        expect(findGlIcon().props('name')).toBe(icon);
+      },
+    );
   });
 });

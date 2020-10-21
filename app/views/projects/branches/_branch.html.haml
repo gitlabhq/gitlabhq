@@ -50,13 +50,13 @@
 
     - if can?(current_user, :push_code, @project)
       - if branch.name == @project.repository.root_ref
-        %button{ class: "btn btn-remove remove-row has-tooltip disabled",
+        %button{ class: "gl-button btn btn-danger remove-row has-tooltip disabled",
           disabled: true,
           title: s_('Branches|The default branch cannot be deleted') }
           = sprite_icon("remove")
       - elsif protected_branch?(@project, branch)
         - if can?(current_user, :push_to_delete_protected_branch, @project)
-          %button{ class: "btn btn-remove remove-row has-tooltip",
+          %button{ class: "gl-button btn btn-danger remove-row has-tooltip",
             title: s_('Branches|Delete protected branch'),
             data: { toggle: "modal",
               target: "#modal-delete-branch",
@@ -65,13 +65,13 @@
               is_merged: ("true" if merged) } }
             = sprite_icon("remove")
         - else
-          %button{ class: "btn btn-remove remove-row has-tooltip disabled",
+          %button{ class: "gl-button btn btn-danger remove-row has-tooltip disabled",
             disabled: true,
             title: s_('Branches|Only a project maintainer or owner can delete a protected branch') }
             = sprite_icon("remove")
       - else
         = link_to project_branch_path(@project, branch.name),
-          class: "btn btn-remove remove-row qa-remove-btn js-ajax-loading-spinner has-tooltip",
+          class: "gl-button btn btn-danger remove-row qa-remove-btn js-ajax-loading-spinner has-tooltip",
           title: s_('Branches|Delete branch'),
           method: :delete,
           data: { confirm: s_("Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?") % { branch_name: branch.name } },

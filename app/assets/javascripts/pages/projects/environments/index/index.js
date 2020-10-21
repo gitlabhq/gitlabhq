@@ -1,3 +1,3 @@
-import initEnviroments from '~/environments/';
+import initEnvironments from '~/environments/';
 
-document.addEventListener('DOMContentLoaded', initEnviroments);
+document.addEventListener('DOMContentLoaded', initEnvironments);

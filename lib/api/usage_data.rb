@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module API
-  class UsageData < Grape::API::Instance
+  class UsageData < ::API::Base
     before { authenticate! }
 
     namespace 'usage_data' do
       before do
-        not_found! unless Feature.enabled?(:usage_data_api)
+        not_found! unless Feature.enabled?(:usage_data_api, default_enabled: true)
         forbidden!('Invalid CSRF token is provided') unless verified_request?
       end
 

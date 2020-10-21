@@ -4,7 +4,6 @@ module QA
   RSpec.describe 'Create' do
     describe 'Changing Gitaly repository storage', :requires_admin do
       praefect_manager = Service::PraefectManager.new
-      praefect_manager.gitlab = 'gitlab'
 
       shared_examples 'repository storage move' do
         it 'confirms a `finished` status after moving project repository storage' do
@@ -28,13 +27,16 @@ module QA
       context 'when moving from one Gitaly storage to another', :orchestrated, :repository_storage, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/973' do
         let(:source_storage) { { type: :gitaly, name: 'default' } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
-
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'repo-storage-move-status'
             project.initialize_with_readme = true
             project.api_client = Runtime::API::Client.as_admin
           end
+        end
+
+        before do
+          praefect_manager.gitlab = 'gitlab'
         end
 
         it_behaves_like 'repository storage move'
@@ -46,7 +48,6 @@ module QA
       context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/974' do
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
-
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'repo-storage-move'
@@ -54,6 +55,10 @@ module QA
             project.repository_storage = source_storage[:name]
             project.api_client = Runtime::API::Client.as_admin
           end
+        end
+
+        before do
+          praefect_manager.gitlab = 'gitlab-gitaly-cluster'
         end
 
         it_behaves_like 'repository storage move'

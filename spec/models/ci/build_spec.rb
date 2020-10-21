@@ -1109,7 +1109,8 @@ RSpec.describe Ci::Build do
     let(:environment) { deployment.environment }
 
     before do
-      allow(Deployments::FinishedWorker).to receive(:perform_async)
+      allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
+      allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
     end
 
     it 'has deployments record with created status' do
@@ -1129,7 +1130,8 @@ RSpec.describe Ci::Build do
 
     context 'when transits to success' do
       before do
-        allow(Deployments::SuccessWorker).to receive(:perform_async)
+        allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
+        allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
         build.success!
       end
 
@@ -2305,6 +2307,54 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#has_expired_locked_archive_artifacts?' do
+    subject { build.has_expired_locked_archive_artifacts? }
+
+    context 'when build does not have artifacts' do
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when build has artifacts' do
+      before do
+        create(:ci_job_artifact, :archive, job: build)
+      end
+
+      context 'when artifacts are unlocked' do
+        before do
+          build.pipeline.unlocked!
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when artifacts are locked' do
+        before do
+          build.pipeline.artifacts_locked!
+        end
+
+        context 'when artifacts do not expire' do
+          it { is_expected.to eq(false) }
+        end
+
+        context 'when artifacts expire in the future' do
+          before do
+            build.update!(artifacts_expire_at: 1.day.from_now)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+
+        context 'when artifacts expired in the past' do
+          before do
+            build.update!(artifacts_expire_at: 1.day.ago)
+          end
+
+          it { is_expected.to eq(true) }
+        end
+      end
+    end
+  end
+
   describe '#has_expiring_archive_artifacts?' do
     context 'when artifacts have expiration date set' do
       before do
@@ -2500,94 +2550,6 @@ RSpec.describe Ci::Build do
 
             expect(received_variables).to eq expected_variables
           end
-        end
-      end
-    end
-
-    describe 'CHANGED_PAGES variables' do
-      let(:route_map_yaml) do
-        <<~ROUTEMAP
-        - source: 'bar/branch-test.txt'
-          public: '/bar/branches'
-        - source: 'with space/README.md'
-          public: '/README'
-        ROUTEMAP
-      end
-
-      before do
-        allow_any_instance_of(Project)
-          .to receive(:route_map_for).with(/.+/)
-          .and_return(Gitlab::RouteMap.new(route_map_yaml))
-      end
-
-      context 'with a deployment environment and a merge request' do
-        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-        let(:environment)   { create(:environment, project: merge_request.project, name: "foo-#{project.default_branch}") }
-        let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
-
-        let(:full_urls) do
-          [
-            File.join(environment.external_url, '/bar/branches'),
-            File.join(environment.external_url, '/README')
-          ]
-        end
-
-        it 'populates CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
-          expect(subject).to include(
-            {
-              key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS',
-              value: '/bar/branches,/README',
-              public: true,
-              masked: false
-            },
-            {
-              key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS',
-              value: full_urls.join(','),
-              public: true,
-              masked: false
-            }
-          )
-        end
-
-        context 'with a deployment environment and no merge request' do
-          let(:environment)   { create(:environment, project: project, name: "foo-#{project.default_branch}") }
-          let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
-
-          it 'does not append CHANGED_PAGES variables' do
-            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
-
-            expect(ci_variables).to be_empty
-          end
-        end
-
-        context 'with no deployment environment and a present merge request' do
-          let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project, target_project: project) }
-          let(:build)         { create(:ci_build, pipeline: merge_request.all_pipelines.take) }
-
-          it 'does not append CHANGED_PAGES variables' do
-            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
-
-            expect(ci_variables).to be_empty
-          end
-        end
-
-        context 'with no deployment environment and no merge request' do
-          it 'does not append CHANGED_PAGES variables' do
-            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
-
-            expect(ci_variables).to be_empty
-          end
-        end
-      end
-
-      context 'with the :modified_path_ci_variables feature flag disabled' do
-        before do
-          stub_feature_flags(modified_path_ci_variables: false)
-        end
-
-        it 'does not set CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
-          expect(subject.find { |var| var[:key] == 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS' }).to be_nil
-          expect(subject.find { |var| var[:key] == 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS' }).to be_nil
         end
       end
     end
@@ -4650,6 +4612,26 @@ RSpec.describe Ci::Build do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#run_on_status_commit' do
+    it 'runs provided hook after status commit' do
+      action = spy('action')
+
+      build.run_on_status_commit { action.perform! }
+      build.success!
+
+      expect(action).to have_received(:perform!).once
+    end
+
+    it 'does not run hooks when status has not changed' do
+      action = spy('action')
+
+      build.run_on_status_commit { action.perform! }
+      build.save!
+
+      expect(action).not_to have_received(:perform!)
     end
   end
 end

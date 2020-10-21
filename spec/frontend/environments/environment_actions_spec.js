@@ -1,14 +1,22 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import eventHub from '~/environments/event_hub';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
 
 describe('EnvironmentActions Component', () => {
   let vm;
 
+  const findEnvironmentActionsButton = () => vm.find('[data-testid="environment-actions-button"]');
+
   beforeEach(() => {
-    vm = shallowMount(EnvironmentActions, { propsData: { actions: [] } });
+    vm = shallowMount(EnvironmentActions, {
+      propsData: { actions: [] },
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
+    });
   });
 
   afterEach(() => {
@@ -21,6 +29,11 @@ describe('EnvironmentActions Component', () => {
 
   it('should render a dropdown button with aria-label description', () => {
     expect(vm.find('.dropdown-new').attributes('aria-label')).toEqual('Deploy to...');
+  });
+
+  it('should render a tooltip', () => {
+    const tooltip = getBinding(findEnvironmentActionsButton().element, 'gl-tooltip');
+    expect(tooltip).toBeDefined();
   });
 
   describe('is loading', () => {

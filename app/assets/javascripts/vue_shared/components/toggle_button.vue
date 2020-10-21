@@ -59,7 +59,7 @@ export default {
 </script>
 
 <template>
-  <label class="toggle-wrapper">
+  <label class="gl-mt-2">
     <input v-if="name" :name="name" :value="value" type="hidden" />
     <button
       type="button"

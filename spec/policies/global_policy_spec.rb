@@ -130,6 +130,24 @@ RSpec.describe GlobalPolicy do
     end
   end
 
+  describe 'approving users' do
+    context 'regular user' do
+      it { is_expected.not_to be_allowed(:approve_user) }
+    end
+
+    context 'admin' do
+      let(:current_user) { create(:admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:approve_user) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:approve_user) }
+      end
+    end
+  end
+
   describe 'using project statistics filters' do
     context 'regular user' do
       it { is_expected.not_to be_allowed(:use_project_statistics_filters) }
@@ -187,6 +205,14 @@ RSpec.describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:access_api) }
     end
 
+    context 'user blocked pending approval' do
+      before do
+        current_user.block_pending_approval
+      end
+
+      it { is_expected.not_to be_allowed(:access_api) }
+    end
+
     context 'when terms are enforced' do
       before do
         enforce_terms
@@ -228,12 +254,6 @@ RSpec.describe GlobalPolicy do
         end
 
         it { is_expected.not_to be_allowed(:access_api) }
-      end
-
-      it 'when `inactive_policy_condition` feature flag is turned off' do
-        stub_feature_flags(inactive_policy_condition: false)
-
-        is_expected.to be_allowed(:access_api)
       end
     end
   end
@@ -282,6 +302,14 @@ RSpec.describe GlobalPolicy do
 
       it { is_expected.not_to be_allowed(:receive_notifications) }
     end
+
+    context 'user blocked pending approval' do
+      before do
+        current_user.block_pending_approval
+      end
+
+      it { is_expected.not_to be_allowed(:receive_notifications) }
+    end
   end
 
   describe 'git access' do
@@ -321,12 +349,6 @@ RSpec.describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:access_git) }
-
-      it 'when `inactive_policy_condition` feature flag is turned off' do
-        stub_feature_flags(inactive_policy_condition: false)
-
-        is_expected.to be_allowed(:access_git)
-      end
     end
 
     context 'when terms are enforced' do
@@ -355,6 +377,14 @@ RSpec.describe GlobalPolicy do
       let(:current_user) { project_bot }
 
       it { is_expected.to be_allowed(:access_git) }
+    end
+
+    context 'user blocked pending approval' do
+      before do
+        current_user.block_pending_approval
+      end
+
+      it { is_expected.not_to be_allowed(:access_git) }
     end
   end
 
@@ -403,12 +433,6 @@ RSpec.describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }
-
-      it 'when `inactive_policy_condition` feature flag is turned off' do
-        stub_feature_flags(inactive_policy_condition: false)
-
-        is_expected.to be_allowed(:use_slash_commands)
-      end
     end
 
     context 'when access locked' do
@@ -427,6 +451,14 @@ RSpec.describe GlobalPolicy do
 
     context 'migration bot' do
       let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
+    context 'user blocked pending approval' do
+      before do
+        current_user.block_pending_approval
+      end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }
     end
@@ -459,6 +491,14 @@ RSpec.describe GlobalPolicy do
 
     context 'migration bot' do
       let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:log_in) }
+    end
+
+    context 'user blocked pending approval' do
+      before do
+        current_user.block_pending_approval
+      end
 
       it { is_expected.not_to be_allowed(:log_in) }
     end

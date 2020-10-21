@@ -1,13 +1,16 @@
 <script>
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import Tracking from '~/tracking';
+
 import SkeletonLoader from '../components/skeleton_loader.vue';
 import EditArea from '../components/edit_area.vue';
+import EditMetaModal from '../components/edit_meta_modal.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
+import hasSubmittedChangesMutation from '../graphql/mutations/has_submitted_changes.mutation.graphql';
 import submitContentChangesMutation from '../graphql/mutations/submit_content_changes.mutation.graphql';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
-import Tracking from '~/tracking';
 import { LOAD_CONTENT_ERROR, TRACKING_ACTION_INITIALIZE_EDITOR } from '../constants';
 import { SUCCESS_ROUTE } from '../router/constants';
 
@@ -15,6 +18,7 @@ export default {
   components: {
     SkeletonLoader,
     EditArea,
+    EditMetaModal,
     InvalidContentMessage,
     SubmitChangesError,
   },
@@ -48,6 +52,7 @@ export default {
   data() {
     return {
       content: null,
+      images: null,
       submitChangesError: null,
       isSavingChanges: false,
     };
@@ -64,15 +69,34 @@ export default {
     Tracking.event(document.body.dataset.page, TRACKING_ACTION_INITIALIZE_EDITOR);
   },
   methods: {
+    onHideModal() {
+      this.isSavingChanges = false;
+      this.$refs.editMetaModal.hide();
+    },
     onDismissError() {
       this.submitChangesError = null;
     },
-    onSubmit({ content, images }) {
+    onPrepareSubmit({ content, images }) {
       this.content = content;
-      this.submitChanges(images);
-    },
-    submitChanges(images) {
+      this.images = images;
+
       this.isSavingChanges = true;
+      this.$refs.editMetaModal.show();
+    },
+    onSubmit(mergeRequestMeta) {
+      // eslint-disable-next-line promise/catch-or-return
+      this.$apollo
+        .mutate({
+          mutation: hasSubmittedChangesMutation,
+          variables: {
+            input: {
+              hasSubmittedChanges: true,
+            },
+          },
+        })
+        .finally(() => {
+          this.$router.push(SUCCESS_ROUTE);
+        });
 
       this.$apollo
         .mutate({
@@ -83,12 +107,10 @@ export default {
               username: this.appData.username,
               sourcePath: this.appData.sourcePath,
               content: this.content,
-              images,
+              images: this.images,
+              mergeRequestMeta,
             },
           },
-        })
-        .then(() => {
-          this.$router.push(SUCCESS_ROUTE);
         })
         .catch(e => {
           this.submitChangesError = e.message;
@@ -107,7 +129,7 @@ export default {
       <submit-changes-error
         v-if="submitChangesError"
         :error="submitChangesError"
-        @retry="submitChanges"
+        @retry="onSubmit"
         @dismiss="onDismissError"
       />
       <edit-area
@@ -116,7 +138,13 @@ export default {
         :content="sourceContent.content"
         :saving-changes="isSavingChanges"
         :return-url="appData.returnUrl"
-        @submit="onSubmit"
+        @submit="onPrepareSubmit"
+      />
+      <edit-meta-modal
+        ref="editMetaModal"
+        :source-path="appData.sourcePath"
+        @primary="onSubmit"
+        @hide="onHideModal"
       />
     </template>
 

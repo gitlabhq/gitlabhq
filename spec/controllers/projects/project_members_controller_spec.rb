@@ -228,6 +228,43 @@ RSpec.describe Projects::ProjectMembersController do
         end
       end
     end
+
+    context 'expiration date' do
+      let(:expiry_date) { 1.month.from_now.to_date }
+
+      before do
+        travel_to Time.now.utc.beginning_of_day
+
+        put(
+          :update,
+          params: {
+            project_member: { expires_at: expiry_date },
+            namespace_id: project.namespace,
+            project_id: project,
+            id: requester
+          },
+          format: :json
+        )
+      end
+
+      context 'when `expires_at` is set' do
+        it 'returns correct json response' do
+          expect(json_response).to eq({
+            "expires_in" => "about 1 month",
+            "expires_soon" => false,
+            "expires_at_formatted" => expiry_date.to_time.in_time_zone.to_s(:medium)
+          })
+        end
+      end
+
+      context 'when `expires_at` is not set' do
+        let(:expiry_date) { nil }
+
+        it 'returns empty json response' do
+          expect(json_response).to be_empty
+        end
+      end
+    end
   end
 
   describe 'DELETE destroy' do
@@ -534,6 +571,21 @@ RSpec.describe Projects::ProjectMembersController do
                         }
         end.to change { project.members.count }.by(1)
       end
+    end
+  end
+
+  describe 'POST resend_invite' do
+    let(:member) { create(:project_member, project: project) }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    it 'is successful' do
+      post :resend_invite, params: { namespace_id: project.namespace, project_id: project, id: member }
+
+      expect(response).to have_gitlab_http_status(:found)
     end
   end
 end

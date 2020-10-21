@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Releases
-  class UpdateService < BaseService
-    include Releases::Concerns
-
+  class UpdateService < Releases::BaseService
     def execute
       return error('Tag does not exist', 404) unless existing_tag
       return error('Release does not exist', 404) unless release
@@ -16,10 +14,18 @@ module Releases
         params[:milestones] = milestones
       end
 
-      if release.update(params)
-        success(tag: existing_tag, release: release, milestones_updated: milestones_updated?(previous_milestones))
-      else
-        error(release.errors.messages || '400 Bad request', 400)
+      # transaction needed as Rails applies `save!` to milestone_releases
+      # when it does assign_attributes instead of actual saving
+      # this leads to the validation error being raised
+      # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43385
+      ActiveRecord::Base.transaction do
+        if release.update(params)
+          success(tag: existing_tag, release: release, milestones_updated: milestones_updated?(previous_milestones))
+        else
+          error(release.errors.messages || '400 Bad request', 400)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        error(e.message || '400 Bad request', 400)
       end
     end
 

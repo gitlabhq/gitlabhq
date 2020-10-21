@@ -1,0 +1,195 @@
+@import 'mixins_and_variables_and_functions';
+@import './pipeline_mixins';
+
+/**
+ * Pipelines Bundle: Pipeline lists and Mini Pipelines
+ */
+
+// Pipelines list
+// Should affect pipelines table components rendered by:
+// - app/assets/javascripts/commit/pipelines/pipelines_bundle.js
+
+.pipelines {
+  .badge {
+    margin-bottom: 3px;
+  }
+
+  .pipeline-actions {
+    min-width: 170px; //Guarantees buttons don't break in several lines.
+
+    .btn-default {
+      color: $gl-text-color-secondary;
+    }
+
+    .btn.btn-retry:hover,
+    .btn.btn-retry:focus {
+      border-color: $dropdown-toggle-active-border-color;
+      background-color: $white-normal;
+    }
+
+    svg path {
+      fill: $gl-text-color-secondary;
+    }
+
+    .dropdown-menu {
+      max-height: $dropdown-max-height;
+      overflow-y: auto;
+    }
+
+    .dropdown-toggle,
+    .dropdown-menu {
+      color: $gl-text-color-secondary;
+
+      .fa {
+        color: $gl-text-color-secondary;
+        font-size: 14px;
+      }
+    }
+
+    .btn-group.open .btn-default {
+      background-color: $white-normal;
+      border-color: $border-white-normal;
+    }
+
+    .btn .text-center {
+      display: inline;
+    }
+
+    .tooltip {
+      white-space: nowrap;
+    }
+  }
+
+  .pipeline-tags .label-container {
+    white-space: normal;
+  }
+}
+
+// Mini Pipelines
+
+.stage-cell {
+  .mini-pipeline-graph-dropdown-toggle {
+    svg {
+      height: $ci-action-icon-size;
+      width: $ci-action-icon-size;
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      svg {
+        top: -2px;
+        left: -2px;
+      }
+    }
+  }
+
+  .stage-container {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    height: $ci-action-icon-size;
+    margin: 3px 0;
+
+    + .stage-container {
+      margin-left: 6px;
+    }
+
+    // Hack to show a button tooltip inline
+    button.has-tooltip + .tooltip {
+      min-width: 105px;
+    }
+
+    // Bootstrap way of showing the content inline for anchors.
+    a.has-tooltip {
+      white-space: nowrap;
+    }
+
+    &:not(:last-child) {
+      &::after {
+        content: '';
+        width: 7px;
+        position: absolute;
+        right: -7px;
+        top: 11px;
+        border-bottom: 2px solid $border-color;
+      }
+    }
+
+    //delete when all pipelines are updated to new size
+    &.mr-widget-pipeline-stages {
+      + .stage-container {
+        margin-left: 4px;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          width: 4px;
+          right: -4px;
+          top: 11px;
+        }
+      }
+    }
+  }
+}
+
+// Dropdown button in mini pipeline graph
+button.mini-pipeline-graph-dropdown-toggle {
+  @include mini-pipeline-item();
+}
+
+// Action icons inside dropdowns:
+// mini graph in pipelines table
+// mini graph in MR widget pipeline
+// mini graph in Commit widget pipeline
+.mini-pipeline-graph-dropdown-menu {
+  @include pipeline-graph-dropdown-menu();
+
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: -6px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-width: 0 5px 6px;
+
+    @include media-breakpoint-down(sm) {
+      left: 100%;
+      margin-left: -12px;
+    }
+  }
+
+  &::before {
+    border-width: 0 5px 5px;
+    border-bottom-color: $border-color;
+  }
+
+  &::after {
+    margin-top: 1px;
+    border-bottom-color: $white;
+  }
+
+  /**
+   * Center dropdown menu in mini graph
+   */
+  .dropdown &.dropdown-menu {
+    transform: translate(-80%, 0);
+
+    @media (min-width: map-get($grid-breakpoints, md)) {
+      transform: translate(-50%, 0);
+      right: auto;
+      left: 50%;
+    }
+  }
+}

@@ -12,7 +12,7 @@ module Releases
 
       summary = ::Evidences::EvidenceSerializer.new.represent(evidence, evidence_options) # rubocop: disable CodeReuse/Serializer
       evidence.summary = summary
-      # TODO: fix the sha generating https://gitlab.com/gitlab-org/gitlab/-/issues/209000
+      # TODO: fix the sha generation https://gitlab.com/groups/gitlab-org/-/epics/3683
       evidence.summary_sha = Gitlab::CryptoHelper.sha256(summary)
 
       evidence.save!

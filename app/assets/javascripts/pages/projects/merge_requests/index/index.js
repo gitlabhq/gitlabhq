@@ -7,16 +7,15 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 
-document.addEventListener('DOMContentLoaded', () => {
-  addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
+new IssuableIndex(ISSUABLE_INDEX.MERGE_REQUEST); // eslint-disable-line no-new
 
-  initFilteredSearch({
-    page: FILTERED_SEARCH.MERGE_REQUESTS,
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-    useDefaultState: true,
-  });
+addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
 
-  new IssuableIndex(ISSUABLE_INDEX.MERGE_REQUEST); // eslint-disable-line no-new
-  new ShortcutsNavigation(); // eslint-disable-line no-new
-  new UsersSelect(); // eslint-disable-line no-new
+initFilteredSearch({
+  page: FILTERED_SEARCH.MERGE_REQUESTS,
+  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+  useDefaultState: true,
 });
+
+new UsersSelect(); // eslint-disable-line no-new
+new ShortcutsNavigation(); // eslint-disable-line no-new

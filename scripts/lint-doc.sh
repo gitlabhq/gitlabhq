@@ -40,8 +40,8 @@ then
 fi
 
 # Do not use 'README.md', instead use 'index.md'
-# Number of 'README.md's as of 2020-05-28
-NUMBER_READMES=44
+# Number of 'README.md's as of 2020-10-13
+NUMBER_READMES=36
 FIND_READMES=$(find doc/ -name "README.md" | wc -l)
 echo '=> Checking for new README.md files...'
 echo
@@ -77,7 +77,7 @@ function run_locally_or_in_docker() {
     $cmd $args
   elif hash docker 2>/dev/null
   then
-    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs:lint ${cmd} ${args}
+    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint:latest ${cmd} ${args}
   else
     echo
     echo "  ✖ ERROR: '${cmd}' not found. Install '${cmd}' or Docker to proceed." >&2

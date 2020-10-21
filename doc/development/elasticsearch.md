@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This area is to maintain a compendium of useful information when working with Elasticsearch.
 
 Information on how to enable Elasticsearch and perform the initial indexing is in
-the [Elasticsearch integration documentation](../integration/elasticsearch.md#enabling-elasticsearch).
+the [Elasticsearch integration documentation](../integration/elasticsearch.md#enabling-advanced-search).
 
 ## Deep Dive
 

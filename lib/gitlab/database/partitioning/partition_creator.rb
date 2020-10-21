@@ -72,10 +72,10 @@ module Gitlab
         end
 
         def with_lock_retries(&block)
-          Gitlab::Database::WithLockRetries.new({
+          Gitlab::Database::WithLockRetries.new(
             klass: self.class,
             logger: Gitlab::AppLogger
-          }).run(&block)
+          ).run(&block)
         end
 
         def connection

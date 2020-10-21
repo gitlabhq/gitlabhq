@@ -1144,9 +1144,14 @@ describe('Actions Notes Store', () => {
     it('calls the correct mutation with the correct args', done => {
       testAction(
         actions.setDiscussionSortDirection,
-        notesConstants.DESC,
+        { direction: notesConstants.DESC, persist: false },
         {},
-        [{ type: mutationTypes.SET_DISCUSSIONS_SORT, payload: notesConstants.DESC }],
+        [
+          {
+            type: mutationTypes.SET_DISCUSSIONS_SORT,
+            payload: { direction: notesConstants.DESC, persist: false },
+          },
+        ],
         [],
         done,
       );

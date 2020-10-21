@@ -21,16 +21,6 @@ RSpec.describe ::API::Entities::Snippet do
     it { expect(subject[:visibility]).to eq snippet.visibility }
     it { expect(subject).to include(:author) }
 
-    context 'with snippet_multiple_files feature disabled' do
-      before do
-        stub_feature_flags(snippet_multiple_files: false)
-      end
-
-      it 'does not return files' do
-        expect(subject).not_to include(:files)
-      end
-    end
-
     describe 'file_name' do
       it 'returns attribute from repository' do
         expect(subject[:file_name]).to eq snippet.blobs.first.path
@@ -77,14 +67,6 @@ RSpec.describe ::API::Entities::Snippet do
       let(:blob)   { snippet.blobs.first }
       let(:ref)    { blob.repository.root_ref }
 
-      context 'when repository does not exist' do
-        it 'does not include the files attribute' do
-          allow(snippet).to receive(:repository_exists?).and_return(false)
-
-          expect(subject).not_to include(:files)
-        end
-      end
-
       shared_examples 'snippet files' do
         let(:file) { subject[:files].first }
 
@@ -98,6 +80,14 @@ RSpec.describe ::API::Entities::Snippet do
 
         it 'has the raw url' do
           expect(file[:raw_url]).to match(raw_url)
+        end
+
+        context 'when repository does not exist' do
+          it 'returns empty array' do
+            allow(snippet.repository).to receive(:empty?).and_return(true)
+
+            expect(subject[:files]).to be_empty
+          end
         end
       end
 

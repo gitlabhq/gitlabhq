@@ -24,6 +24,7 @@ exports[`Design management list item component with notes renders item with mult
       <img
         alt="test"
         class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
+        data-qa-filename="test"
         data-qa-selector="design_image"
         src=""
       />
@@ -94,6 +95,7 @@ exports[`Design management list item component with notes renders item with sing
       <img
         alt="test"
         class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
+        data-qa-filename="test"
         data-qa-selector="design_image"
         src=""
       />

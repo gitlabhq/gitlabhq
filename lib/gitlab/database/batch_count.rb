@@ -8,15 +8,20 @@
 # In order to not use a possible complex time consuming query when calculating min and max for batch_distinct_count
 # the start and finish can be sent specifically
 #
+# Grouped relations can be used as well. However, the preferred batch count should be around 10K because group by count is more expensive.
+#
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
 #
 # Examples:
 #  extend ::Gitlab::Database::BatchCount
 #  batch_count(User.active)
 #  batch_count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
+#  batch_count(Namespace.group(:type))
 #  batch_distinct_count(::Project, :creator_id)
 #  batch_distinct_count(::Project.with_active_services.service_desk_enabled.where(time_period), start: ::User.minimum(:id), finish: ::User.maximum(:id))
+#  batch_distinct_count(Project.group(:visibility_level), :creator_id)
 #  batch_sum(User, :sign_in_count)
+#  batch_sum(Issue.group(:state_id), :weight))
 module Gitlab
   module Database
     module BatchCount
@@ -77,33 +82,44 @@ module Gitlab
         raise "Batch counting expects positive values only for #{@column}" if start < 0 || finish < 0
         return FALLBACK if unwanted_configuration?(finish, batch_size, start)
 
-        counter = 0
+        results = nil
         batch_start = start
 
         while batch_start <= finish
+          batch_relation = build_relation_batch(batch_start, batch_start + batch_size, mode)
           begin
-            counter += batch_fetch(batch_start, batch_start + batch_size, mode)
+            results = merge_results(results, batch_relation.send(@operation, *@operation_args)) # rubocop:disable GitlabSecurity/PublicSend
             batch_start += batch_size
-          rescue ActiveRecord::QueryCanceled
+          rescue ActiveRecord::QueryCanceled => error
             # retry with a safe batch size & warmer cache
             if batch_size >= 2 * MIN_REQUIRED_BATCH_SIZE
               batch_size /= 2
             else
+              log_canceled_batch_fetch(batch_start, mode, batch_relation.to_sql, error)
               return FALLBACK
             end
           end
           sleep(SLEEP_TIME_IN_SECONDS)
         end
 
-        counter
+        results
       end
 
-      def batch_fetch(start, finish, mode)
-        # rubocop:disable GitlabSecurity/PublicSend
-        @relation.select(@column).public_send(mode).where(between_condition(start, finish)).send(@operation, *@operation_args)
+      def merge_results(results, object)
+        return object unless results
+
+        if object.is_a?(Hash)
+          results.merge!(object) { |_, a, b| a + b }
+        else
+          results + object
+        end
       end
 
       private
+
+      def build_relation_batch(start, finish, mode)
+        @relation.select(@column).public_send(mode).where(between_condition(start, finish)) # rubocop:disable GitlabSecurity/PublicSend
+      end
 
       def batch_size_for_mode_and_operation(mode, operation)
         return DEFAULT_SUM_BATCH_SIZE if operation == :sum
@@ -118,17 +134,31 @@ module Gitlab
       end
 
       def actual_start(start)
-        start || @relation.minimum(@column) || 0
+        start || @relation.unscope(:group, :having).minimum(@column) || 0
       end
 
       def actual_finish(finish)
-        finish || @relation.maximum(@column) || 0
+        finish || @relation.unscope(:group, :having).maximum(@column) || 0
       end
 
       def check_mode!(mode)
         raise "The mode #{mode.inspect} is not supported" unless ALLOWED_MODES.include?(mode)
         raise 'Use distinct count for optimized distinct counting' if @relation.limit(1).distinct_value.present? && mode != :distinct
         raise 'Use distinct count only with non id fields' if @column == :id && mode == :distinct
+      end
+
+      def log_canceled_batch_fetch(batch_start, mode, query, error)
+        Gitlab::AppJsonLogger
+          .error(
+            event: 'batch_count',
+            relation: @relation.table_name,
+            operation: @operation,
+            operation_args: @operation_args,
+            start: batch_start,
+            mode: mode,
+            query: query,
+            message: "Query has been canceled with message: #{error.message}"
+          )
       end
     end
   end

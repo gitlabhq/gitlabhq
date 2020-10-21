@@ -9,7 +9,7 @@ RSpec.describe Repositories::DestroyService do
   let(:path) { repository.disk_path }
   let(:remove_path) { "#{path}+#{project.id}#{described_class::DELETED_FLAG}" }
 
-  subject { described_class.new(project.repository).execute }
+  subject { described_class.new(repository).execute }
 
   it 'moves the repository to a +deleted folder' do
     expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
@@ -90,6 +90,24 @@ RSpec.describe Repositories::DestroyService do
       expect(Gitlab::AppLogger).to receive(:error)
 
       service.execute
+    end
+  end
+
+  context 'with a project wiki repository' do
+    let(:project) { create(:project, :wiki_repo) }
+    let(:repository) { project.wiki.repository }
+
+    it 'schedules the repository deletion' do
+      subject
+
+      expect(Repositories::ShellDestroyService).to receive(:new).with(repository).and_call_original
+
+      expect(GitlabShellWorker).to receive(:perform_in)
+        .with(Repositories::ShellDestroyService::REPO_REMOVAL_DELAY, :remove_repository, project.repository_storage, remove_path)
+
+      # Because GitlabShellWorker is inside a run_after_commit callback we need to
+      # trigger the callback
+      project.touch
     end
   end
 end

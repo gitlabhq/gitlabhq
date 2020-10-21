@@ -1,9 +1,32 @@
+.whats-new-drawer {
+  margin-top: $header-height;
+  @include gl-shadow-none;
+}
+
+.with-performance-bar .whats-new-drawer {
+  margin-top: calc(#{$performance-bar-height} + #{$header-height});
+}
+
 .gl-badge.whats-new-item-badge {
   background-color: $purple-light;
   color: $purple;
-  font-weight: bold;
+  @include gl-font-weight-bold;
 }
 
 .whats-new-item-image {
   border-color: $gray-50;
+}
+
+.whats-new-modal-backdrop {
+  z-index: 9;
+}
+
+.whats-new-notification-count {
+  @include gl-bg-gray-900;
+  @include gl-font-sm;
+  @include gl-line-height-normal;
+  @include gl-text-white;
+  @include gl-vertical-align-top;
+  border-radius: 20px;
+  padding: 3px 10px;
 }

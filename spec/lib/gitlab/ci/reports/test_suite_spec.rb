@@ -229,6 +229,20 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
     end
   end
 
+  describe '#each_test_case' do
+    before do
+      test_suite.add_test_case(test_case_success)
+      test_suite.add_test_case(test_case_failed)
+      test_suite.add_test_case(test_case_skipped)
+      test_suite.add_test_case(test_case_error)
+    end
+
+    it 'yields each test case to given block' do
+      expect { |b| test_suite.each_test_case(&b) }
+        .to yield_successive_args(test_case_success, test_case_failed, test_case_skipped, test_case_error)
+    end
+  end
+
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|
     describe "##{status_type}_count" do
       subject { test_suite.public_send("#{status_type}_count") }

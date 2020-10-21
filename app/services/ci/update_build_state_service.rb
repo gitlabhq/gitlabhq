@@ -2,7 +2,11 @@
 
 module Ci
   class UpdateBuildStateService
-    Result = Struct.new(:status, keyword_init: true)
+    include ::Gitlab::Utils::StrongMemoize
+    include ::Gitlab::ExclusiveLeaseHelpers
+
+    Result = Struct.new(:status, :backoff, keyword_init: true)
+    InvalidTraceError = Class.new(StandardError)
 
     ACCEPT_TIMEOUT = 5.minutes.freeze
 
@@ -17,31 +21,18 @@ module Ci
     def execute
       overwrite_trace! if has_trace?
 
-      if accept_request?
-        accept_build_state!
-      else
-        check_migration_state
-        update_build_state!
+      unless accept_available?
+        return update_build_state!
+      end
+
+      ensure_pending_state!
+
+      in_build_trace_lock do
+        process_build_state!
       end
     end
 
     private
-
-    def accept_build_state!
-      if Time.current - ensure_pending_state.created_at > ACCEPT_TIMEOUT
-        metrics.increment_trace_operation(operation: :discarded)
-
-        return update_build_state!
-      end
-
-      build.trace_chunks.live.find_each do |chunk|
-        chunk.schedule_to_persist!
-      end
-
-      metrics.increment_trace_operation(operation: :accepted)
-
-      Result.new(status: 202)
-    end
 
     def overwrite_trace!
       metrics.increment_trace_operation(operation: :overwrite)
@@ -49,11 +40,58 @@ module Ci
       build.trace.set(params[:trace]) if Gitlab::Ci::Features.trace_overwrite?
     end
 
-    def check_migration_state
-      return unless accept_available?
+    def ensure_pending_state!
+      pending_state.created_at
+    end
 
-      if has_chunks? && !live_chunks_pending?
+    def process_build_state!
+      if live_chunks_pending?
+        if pending_state_outdated?
+          discard_build_trace!
+          update_build_state!
+        else
+          accept_build_state!
+        end
+      else
+        validate_build_trace!
+        update_build_state!
+      end
+    end
+
+    def accept_build_state!
+      build.trace_chunks.live.find_each do |chunk|
+        chunk.schedule_to_persist!
+      end
+
+      metrics.increment_trace_operation(operation: :accepted)
+
+      ::Gitlab::Ci::Runner::Backoff.new(pending_state.created_at).then do |backoff|
+        Result.new(status: 202, backoff: backoff.to_seconds)
+      end
+    end
+
+    def validate_build_trace!
+      return unless has_chunks?
+
+      unless live_chunks_pending?
         metrics.increment_trace_operation(operation: :finalized)
+        metrics.observe_migration_duration(pending_state_seconds)
+      end
+
+      ::Gitlab::Ci::Trace::Checksum.new(build).then do |checksum|
+        unless checksum.valid?
+          metrics.increment_trace_operation(operation: :invalid)
+
+          next unless log_invalid_chunks?
+
+          ::Gitlab::ErrorTracking.log_exception(InvalidTraceError.new,
+            project_path: build.project.full_path,
+            build_id: build.id,
+            state_crc32: checksum.state_crc32,
+            chunks_crc32: checksum.chunks_crc32,
+            chunks_count: checksum.chunks_count
+          )
+        end
       end
     end
 
@@ -76,12 +114,32 @@ module Ci
       end
     end
 
+    def discard_build_trace!
+      metrics.increment_trace_operation(operation: :discarded)
+    end
+
     def accept_available?
       !build_running? && has_checksum? && chunks_migration_enabled?
     end
 
-    def accept_request?
-      accept_available? && live_chunks_pending?
+    def live_chunks_pending?
+      build.trace_chunks.live.any?
+    end
+
+    def has_chunks?
+      build.trace_chunks.any?
+    end
+
+    def pending_state_outdated?
+      pending_state_duration > ACCEPT_TIMEOUT
+    end
+
+    def pending_state_duration
+      Time.current - pending_state.created_at
+    end
+
+    def pending_state_seconds
+      pending_state_duration.seconds
     end
 
     def build_state
@@ -96,16 +154,12 @@ module Ci
       params.dig(:checksum).present?
     end
 
-    def has_chunks?
-      build.trace_chunks.any?
-    end
-
-    def live_chunks_pending?
-      build.trace_chunks.live.any?
-    end
-
     def build_running?
       build_state == 'running'
+    end
+
+    def pending_state
+      strong_memoize(:pending_state) { ensure_pending_state }
     end
 
     def ensure_pending_state
@@ -121,8 +175,38 @@ module Ci
       build.pending_state
     end
 
+    ##
+    # This method is releasing an exclusive lock on a build trace the moment we
+    # conclude that build status has been written and the build state update
+    # has been committed to the database.
+    #
+    # Because a build state machine schedules a bunch of workers to run after
+    # build status transition to complete, we do not want to keep the lease
+    # until all the workers are scheduled because it opens a possibility of
+    # race conditions happening.
+    #
+    # Instead of keeping the lease until the transition is fully done and
+    # workers are scheduled, we immediately release the lock after the database
+    # commit happens.
+    #
+    def in_build_trace_lock(&block)
+      build.trace.lock do |_, lease| # rubocop:disable CodeReuse/ActiveRecord
+        build.run_on_status_commit { lease.cancel }
+
+        yield
+      end
+    rescue ::Gitlab::Ci::Trace::LockedError
+      metrics.increment_trace_operation(operation: :locked)
+
+      accept_build_state!
+    end
+
     def chunks_migration_enabled?
       ::Gitlab::Ci::Features.accept_trace?(build.project)
+    end
+
+    def log_invalid_chunks?
+      ::Gitlab::Ci::Features.log_invalid_trace_chunks?(build.project)
     end
   end
 end

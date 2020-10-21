@@ -1,0 +1,5 @@
+---
+title: Fix suggested squashed messages for MR
+merge_request: 43508
+author:
+type: fixed

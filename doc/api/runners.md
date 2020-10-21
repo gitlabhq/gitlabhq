@@ -271,20 +271,20 @@ Example response:
 }
 ```
 
-## Remove a runner
+### Pause a runner
 
-Remove a runner.
+Pause a specific runner.
 
 ```plaintext
-DELETE /runners/:id
+PUT --form "active=false"  /runners/:runner_id
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a runner  |
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 ## List runner's jobs
@@ -466,7 +466,7 @@ Example response:
 
 Disable a specific runner from the project. It works only if the project isn't
 the only project associated with the specified runner. If so, an error is
-returned. Use the [Remove a runner](#remove-a-runner) call instead.
+returned. Use the call to [delete a runner](#delete-a-runner) instead.
 
 ```plaintext
 DELETE /projects/:id/runners/:runner_id
@@ -553,7 +553,7 @@ POST /runners
 |--------------|---------|----------|---------------------|
 | `token`      | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
 | `description`| string  | no       | Runner's description|
-| `info`       | hash    | no       | Runner's metadata   |
+| `info`       | hash    | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI. |
 | `active`     | boolean | no       | Whether the runner is active   |
 | `locked`     | boolean | no       | Whether the runner should be locked for current project |
 | `run_untagged` | boolean | no     | Whether the runner should handle untagged jobs |
@@ -580,9 +580,32 @@ Example response:
 }
 ```
 
-## Delete a registered runner
+## Delete a runner
 
-Deletes a registered runner.
+There are two ways to delete a runner:
+
+- By specifying the runner ID.
+- By specifying the runner's authentication token.
+
+### Delete a runner by ID
+
+To delete the runner by ID, use your access token with the runner's ID:
+
+```plaintext
+DELETE /runners/:id
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `id`        | integer | yes      | The ID of a runner. The ID is visible in the UI under **Settings > CI/CD**. Expand **Runners**, and below the **Remove Runner** button is an ID preceded by the pound sign, for example, `#6`. |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+```
+
+### Delete a runner by authentication token
+
+To delete the runner by using its authentication token:
 
 ```plaintext
 DELETE /runners
@@ -590,7 +613,7 @@ DELETE /runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | Runner's [authentication token](#registration-and-authentication-tokens).  |
+| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
 
 ```shell
 curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=<authentication_token>"

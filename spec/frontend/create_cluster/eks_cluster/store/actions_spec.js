@@ -14,6 +14,7 @@ import {
   SET_ROLE,
   SET_SECURITY_GROUP,
   SET_GITLAB_MANAGED_CLUSTER,
+  SET_NAMESPACE_PER_ENVIRONMENT,
   SET_INSTANCE_TYPE,
   SET_NODE_COUNT,
   REQUEST_CREATE_ROLE,
@@ -40,6 +41,7 @@ describe('EKS Cluster Store Actions', () => {
   let instanceType;
   let nodeCount;
   let gitlabManagedCluster;
+  let namespacePerEnvironment;
   let mock;
   let state;
   let newClusterUrl;
@@ -57,6 +59,7 @@ describe('EKS Cluster Store Actions', () => {
     instanceType = 'small-1';
     nodeCount = '5';
     gitlabManagedCluster = true;
+    namespacePerEnvironment = true;
 
     newClusterUrl = '/clusters/1';
 
@@ -76,19 +79,20 @@ describe('EKS Cluster Store Actions', () => {
   });
 
   it.each`
-    action                       | mutation                      | payload                  | payloadDescription
-    ${'setClusterName'}          | ${SET_CLUSTER_NAME}           | ${{ clusterName }}       | ${'cluster name'}
-    ${'setEnvironmentScope'}     | ${SET_ENVIRONMENT_SCOPE}      | ${{ environmentScope }}  | ${'environment scope'}
-    ${'setKubernetesVersion'}    | ${SET_KUBERNETES_VERSION}     | ${{ kubernetesVersion }} | ${'kubernetes version'}
-    ${'setRole'}                 | ${SET_ROLE}                   | ${{ role }}              | ${'role'}
-    ${'setRegion'}               | ${SET_REGION}                 | ${{ region }}            | ${'region'}
-    ${'setKeyPair'}              | ${SET_KEY_PAIR}               | ${{ keyPair }}           | ${'key pair'}
-    ${'setVpc'}                  | ${SET_VPC}                    | ${{ vpc }}               | ${'vpc'}
-    ${'setSubnet'}               | ${SET_SUBNET}                 | ${{ subnet }}            | ${'subnet'}
-    ${'setSecurityGroup'}        | ${SET_SECURITY_GROUP}         | ${{ securityGroup }}     | ${'securityGroup'}
-    ${'setInstanceType'}         | ${SET_INSTANCE_TYPE}          | ${{ instanceType }}      | ${'instance type'}
-    ${'setNodeCount'}            | ${SET_NODE_COUNT}             | ${{ nodeCount }}         | ${'node count'}
-    ${'setGitlabManagedCluster'} | ${SET_GITLAB_MANAGED_CLUSTER} | ${gitlabManagedCluster}  | ${'gitlab managed cluster'}
+    action                          | mutation                         | payload                    | payloadDescription
+    ${'setClusterName'}             | ${SET_CLUSTER_NAME}              | ${{ clusterName }}         | ${'cluster name'}
+    ${'setEnvironmentScope'}        | ${SET_ENVIRONMENT_SCOPE}         | ${{ environmentScope }}    | ${'environment scope'}
+    ${'setKubernetesVersion'}       | ${SET_KUBERNETES_VERSION}        | ${{ kubernetesVersion }}   | ${'kubernetes version'}
+    ${'setRole'}                    | ${SET_ROLE}                      | ${{ role }}                | ${'role'}
+    ${'setRegion'}                  | ${SET_REGION}                    | ${{ region }}              | ${'region'}
+    ${'setKeyPair'}                 | ${SET_KEY_PAIR}                  | ${{ keyPair }}             | ${'key pair'}
+    ${'setVpc'}                     | ${SET_VPC}                       | ${{ vpc }}                 | ${'vpc'}
+    ${'setSubnet'}                  | ${SET_SUBNET}                    | ${{ subnet }}              | ${'subnet'}
+    ${'setSecurityGroup'}           | ${SET_SECURITY_GROUP}            | ${{ securityGroup }}       | ${'securityGroup'}
+    ${'setInstanceType'}            | ${SET_INSTANCE_TYPE}             | ${{ instanceType }}        | ${'instance type'}
+    ${'setNodeCount'}               | ${SET_NODE_COUNT}                | ${{ nodeCount }}           | ${'node count'}
+    ${'setGitlabManagedCluster'}    | ${SET_GITLAB_MANAGED_CLUSTER}    | ${gitlabManagedCluster}    | ${'gitlab managed cluster'}
+    ${'setNamespacePerEnvironment'} | ${SET_NAMESPACE_PER_ENVIRONMENT} | ${namespacePerEnvironment} | ${'namespace per environment'}
   `(`$action commits $mutation with $payloadDescription payload`, data => {
     const { action, mutation, payload } = data;
 
@@ -179,6 +183,7 @@ describe('EKS Cluster Store Actions', () => {
         name: clusterName,
         environment_scope: environmentScope,
         managed: gitlabManagedCluster,
+        namespace_per_environment: namespacePerEnvironment,
         provider_aws_attributes: {
           kubernetes_version: kubernetesVersion,
           region,
@@ -204,6 +209,7 @@ describe('EKS Cluster Store Actions', () => {
         selectedInstanceType: instanceType,
         nodeCount,
         gitlabManagedCluster,
+        namespacePerEnvironment,
       });
     });
 

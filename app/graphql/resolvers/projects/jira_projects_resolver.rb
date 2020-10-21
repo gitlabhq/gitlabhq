@@ -22,7 +22,7 @@ module Resolvers
             projects_array,
             # override default max_page_size to whatever the size of the response is,
             # see https://gitlab.com/gitlab-org/gitlab/-/issues/231394
-            args.merge({ max_page_size: projects_array.size })
+            **args.merge({ max_page_size: projects_array.size })
           )
         else
           raise Gitlab::Graphql::Errors::BaseError, response.message

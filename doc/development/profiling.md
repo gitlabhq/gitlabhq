@@ -91,9 +91,6 @@ that builds on this to add some additional niceties, such as allowing
 configuration with a single YAML file for multiple URLs, and uploading of the
 profile and log output to S3.
 
-For GitLab.com, you can find the latest results here (restricted to GitLab Team members only):
-`https://redash.gitlab.com/dashboard/gitlab-profiler-statistics`
-
 ## Sherlock
 
 Sherlock is a custom profiling tool built into GitLab. Sherlock is _only_

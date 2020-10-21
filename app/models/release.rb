@@ -30,6 +30,12 @@ class Release < ApplicationRecord
   scope :with_project_and_namespace, -> { includes(project: :namespace) }
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
 
+  # Sorting
+  scope :order_created, -> { reorder('created_at ASC') }
+  scope :order_created_desc, -> { reorder('created_at DESC') }
+  scope :order_released, -> { reorder('released_at ASC') }
+  scope :order_released_desc, -> { reorder('released_at DESC') }
+
   delegate :repository, to: :project
 
   MAX_NUMBER_TO_DISPLAY = 3
@@ -91,6 +97,17 @@ class Release < ApplicationRecord
 
   def set_released_at
     self.released_at ||= created_at
+  end
+
+  def self.sort_by_attribute(method)
+    case method.to_s
+    when 'created_at_asc' then order_created
+    when 'created_at_desc' then order_created_desc
+    when 'released_at_asc' then order_released
+    when 'released_at_desc' then order_released_desc
+    else
+      order_created_desc
+    end
   end
 end
 

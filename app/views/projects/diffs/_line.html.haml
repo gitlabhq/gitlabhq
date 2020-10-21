@@ -21,9 +21,6 @@
       - else
         = add_diff_note_button(line_code, diff_file.position(line), type)
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
-      - discussion = line_discussions.try(:first)
-      - if discussion && discussion.resolvable? && !plain
-        %diff-note-avatars{ "discussion-id" => discussion.id }
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
       - link_text = type == "old" ? " " : line.new_pos
       - if plain

@@ -8,13 +8,6 @@ describe('Sketch viewer', () => {
 
   beforeEach(() => {
     loadFixtures('static/sketch_viewer.html');
-    window.URL = {
-      createObjectURL: jest.fn(() => 'http://foo/bar'),
-    };
-  });
-
-  afterEach(() => {
-    window.URL = {};
   });
 
   describe('with error message', () => {

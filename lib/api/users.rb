@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Users < Grape::API::Instance
+  class Users < ::API::Base
     include PaginationParams
     include APIGuard
     include Helpers::CustomAttributes
@@ -348,7 +348,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get the GPG keys of a specified user. Available only for admins.' do
+      desc 'Get the GPG keys of a specified user.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
       end
@@ -358,12 +358,30 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys' do
-        authenticated_as_admin!
-
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
         present paginate(user.gpg_keys), with: Entities::GpgKey
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Get a specific GPG key for a given user.' do
+        detail 'This feature was added in GitLab 13.5'
+        success Entities::GpgKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      get ':id/gpg_keys/:key_id' do
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        present key, with: Entities::GpgKey
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -529,10 +547,15 @@ module API
 
         unless user.can_be_deactivated?
           forbidden!('A blocked user cannot be deactivated by the API') if user.blocked?
+          forbidden!('An internal user cannot be deactivated by the API') if user.internal?
           forbidden!("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
         end
 
-        user.deactivate
+        if user.deactivate
+          true
+        else
+          render_api_error!(user.errors.full_messages, 400)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

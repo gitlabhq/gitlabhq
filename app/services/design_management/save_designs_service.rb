@@ -16,11 +16,15 @@ module DesignManagement
     def execute
       return error("Not allowed!") unless can_create_designs?
       return error("Only #{MAX_FILES} files are allowed simultaneously") if files.size > MAX_FILES
+      return error("Duplicate filenames are not allowed!") if files.map(&:original_filename).uniq.length != files.length
+      return error("Design copy is in progress") if design_collection.copy_in_progress?
 
       uploaded_designs, version = upload_designs!
       skipped_designs = designs - uploaded_designs
 
       create_events
+      design_collection.reset_copy!
+
       success({ designs: uploaded_designs, version: version, skipped_designs: skipped_designs })
     rescue ::ActiveRecord::RecordInvalid => e
       error(e.message)
@@ -34,7 +38,10 @@ module DesignManagement
       ::DesignManagement::Version.with_lock(project.id, repository) do
         actions = build_actions
 
-        [actions.map(&:design), actions.presence && run_actions(actions)]
+        [
+          actions.map(&:design),
+          actions.presence && run_actions(actions)
+        ]
       end
     end
 
@@ -59,7 +66,7 @@ module DesignManagement
 
       action = new_file?(design) ? :create : :update
       on_success do
-        ::Gitlab::UsageDataCounters::DesignsCounter.count(action)
+        track_usage_metrics(action)
       end
 
       DesignManagement::DesignAction.new(design, action, content)
@@ -120,6 +127,16 @@ module DesignManagement
           h[design] = blob
         end
       end
+    end
+
+    def track_usage_metrics(action)
+      if action == :update
+        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_modified_action(author: current_user)
+      else
+        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_added_action(author: current_user)
+      end
+
+      ::Gitlab::UsageDataCounters::DesignsCounter.count(action)
     end
   end
 end

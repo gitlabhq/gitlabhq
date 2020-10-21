@@ -14,7 +14,7 @@ class CiPlatformMetric < ApplicationRecord
     numericality: { only_integer: true, greater_than: 0 }
 
   CI_VARIABLE_KEY = 'AUTO_DEVOPS_PLATFORM_TARGET'
-  ALLOWED_TARGETS = %w[ECS FARGATE].freeze
+  ALLOWED_TARGETS = %w[ECS FARGATE EC2].freeze
 
   def self.insert_auto_devops_platform_targets!
     recorded_at = Time.zone.now

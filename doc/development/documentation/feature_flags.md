@@ -52,7 +52,7 @@ For feature flags disabled by default, if they can be used by end users:
   do not say anything about it.
 - Say whether it's recommended for production use.
 - Document how to enable and disable it.
-- Add a warning to the user saying that the feature is disabled.
+- Add a warning to the user saying that the feature might be disabled.
 
 For example, for a feature disabled by default, disabled on GitLab.com, cannot
 be enabled for a single project, and is not ready for production use:
@@ -250,7 +250,7 @@ be enabled by project, and is ready for production use:
 > - [Introduced](link-to-issue) in GitLab 12.0.
 > - It's [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
-> - It can be enabled or disable for a single project.
+> - It can be enabled or disabled for a single project.
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(CORE ONLY)**
 

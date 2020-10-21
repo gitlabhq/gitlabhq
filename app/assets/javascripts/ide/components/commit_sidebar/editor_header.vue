@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
@@ -8,6 +8,7 @@ import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 export default {
   components: {
     GlModal,
+    GlButton,
     FileIcon,
     ChangedFileIcon,
   },
@@ -52,15 +53,16 @@ export default {
     </strong>
     <changed-file-icon :file="activeFile" :is-centered="false" />
     <div class="ml-auto">
-      <button
+      <gl-button
         v-if="canDiscard"
         ref="discardButton"
-        type="button"
-        class="btn btn-remove btn-inverted gl-mr-3"
+        category="secondary"
+        variant="danger"
+        class="gl-mr-3"
         @click="showDiscardModal"
       >
         {{ __('Discard changes') }}
-      </button>
+      </gl-button>
     </div>
     <gl-modal
       ref="discardModal"

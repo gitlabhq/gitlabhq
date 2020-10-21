@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
 import PackageTags from './package_tags.vue';
+import PackagePath from './package_path.vue';
 import PublishMethod from './publish_method.vue';
 import { getPackageTypeLabel } from '../utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -15,6 +16,7 @@ export default {
     GlSprintf,
     GlTruncate,
     PackageTags,
+    PackagePath,
     PublishMethod,
     ListItem,
   },
@@ -92,22 +94,12 @@ export default {
           </gl-sprintf>
         </div>
 
-        <div v-if="hasProjectLink" class="gl-display-flex gl-align-items-center">
-          <gl-icon name="review-list" class="gl-ml-3 gl-mr-2 gl-min-w-0" />
-
-          <gl-link
-            class="gl-text-body gl-min-w-0"
-            data-testid="packages-row-project"
-            :href="`/${packageEntity.project_path}`"
-          >
-            <gl-truncate :text="packageEntity.projectPathName" />
-          </gl-link>
-        </div>
-
         <div v-if="showPackageType" class="d-flex align-items-center" data-testid="package-type">
           <gl-icon name="package" class="gl-ml-3 gl-mr-2" />
           <span>{{ packageType }}</span>
         </div>
+
+        <package-path v-if="hasProjectLink" :path="packageEntity.project_path" />
       </div>
     </template>
 

@@ -4,6 +4,8 @@ module Groups
   class PackagesController < Groups::ApplicationController
     before_action :verify_packages_enabled!
 
+    feature_category :package_registry
+
     private
 
     def verify_packages_enabled!

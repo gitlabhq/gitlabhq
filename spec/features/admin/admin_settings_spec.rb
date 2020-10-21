@@ -130,6 +130,38 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(user_internal_regex['placeholder']).to eq 'Regex pattern'
       end
 
+      context 'Change Sign-up restrictions' do
+        context 'Require Admin approval for new signup setting' do
+          context 'when feature is enabled' do
+            before do
+              stub_feature_flags(admin_approval_for_new_user_signups: true)
+            end
+
+            it 'changes the setting' do
+              page.within('.as-signup') do
+                check 'Require admin approval for new sign-ups'
+                click_button 'Save changes'
+              end
+
+              expect(current_settings.require_admin_approval_after_user_signup).to be_truthy
+              expect(page).to have_content "Application settings saved successfully"
+            end
+          end
+
+          context 'when feature is disabled' do
+            before do
+              stub_feature_flags(admin_approval_for_new_user_signups: false)
+            end
+
+            it 'does not show the the setting' do
+              page.within('.as-signup') do
+                expect(page).not_to have_selector('.application_setting_require_admin_approval_after_user_signup')
+              end
+            end
+          end
+        end
+      end
+
       it 'Change Sign-in restrictions' do
         page.within('.as-signin') do
           fill_in 'Home page URL', with: 'https://about.gitlab.com/'
@@ -497,18 +529,23 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
       end
 
       it 'Change Help page' do
+        stub_feature_flags(help_page_documentation_redirect: true)
+
         new_support_url = 'http://example.com/help'
+        new_documentation_url = 'https://docs.gitlab.com'
 
         page.within('.as-help-page') do
           fill_in 'Help page text', with: 'Example text'
           check 'Hide marketing-related entries from help'
           fill_in 'Support page URL', with: new_support_url
+          fill_in 'Documentation pages URL', with: new_documentation_url
           click_button 'Save changes'
         end
 
         expect(current_settings.help_page_text).to eq "Example text"
         expect(current_settings.help_page_hide_commercial_content).to be_truthy
         expect(current_settings.help_page_support_url).to eq new_support_url
+        expect(current_settings.help_page_documentation_base_url).to eq new_documentation_url
         expect(page).to have_content "Application settings saved successfully"
       end
 

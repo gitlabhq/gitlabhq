@@ -22,11 +22,7 @@ export default {
       required: true,
     },
   },
-  inject: {
-    groupId: {
-      type: Number,
-    },
-  },
+  inject: ['groupId'],
   data() {
     return {
       title: '',

@@ -10,6 +10,8 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create, :play]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
+  feature_category :continuous_integration
+
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     @scope = params[:scope]

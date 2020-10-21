@@ -15,7 +15,7 @@
         = f.label :email, _('Email'), class: 'label-bold'
         = f.text_field :email, class: 'form-control', data: { qa_selector: 'email_address_field' }
       .gl-mt-3
-        = f.submit _('Add email address'), class: 'btn btn-success', data: { qa_selector: 'add_email_address_button' }
+        = f.submit _('Add email address'), class: 'gl-button btn btn-success', data: { qa_selector: 'add_email_address_button' }
     %hr
     %h4.gl-mt-0
       = _('Linked emails (%{email_count})') % { email_count: @emails.load.size + 1 }
@@ -56,8 +56,8 @@
               %span.badge.badge-info= s_('Profiles|Notification email')
             - unless email.confirmed?
               - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
-              = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'btn btn-sm btn-warning gl-ml-3'
+              = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-warning gl-ml-3'
 
-            = link_to profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, class: 'btn btn-sm btn-danger gl-ml-3' do
+            = link_to profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, class: 'gl-button btn btn-sm btn-danger gl-ml-3' do
               %span.sr-only= _('Remove')
               = sprite_icon('remove')

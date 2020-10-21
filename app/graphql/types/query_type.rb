@@ -49,8 +49,7 @@ module Types
 
     field :milestone, ::Types::MilestoneType,
           null: true,
-          description: 'Find a milestone',
-          resolve: -> (_obj, args, _ctx) { GitlabSchema.find_by_gid(args[:id]) } do
+          description: 'Find a milestone' do
       argument :id, ::Types::GlobalIDType[Milestone],
                required: true,
                description: 'Find a milestone by its ID'
@@ -81,12 +80,26 @@ module Types
           description: 'Get statistics on the instance',
           resolver: Resolvers::Admin::Analytics::InstanceStatistics::MeasurementsResolver
 
+    field :runner_platforms, Types::Ci::RunnerPlatformType.connection_type,
+      null: true, description: 'Supported runner platforms',
+      resolver: Resolvers::Ci::RunnerPlatformsResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end
 
     def issue(id:)
-      GitlabSchema.object_from_id(id, expected_type: ::Issue)
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      id = ::Types::GlobalIDType[::Issue].coerce_isolated_input(id)
+      GitlabSchema.find_by_gid(id)
+    end
+
+    def milestone(id:)
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      id = ::Types::GlobalIDType[Milestone].coerce_isolated_input(id)
+      GitlabSchema.find_by_gid(id)
     end
   end
 end

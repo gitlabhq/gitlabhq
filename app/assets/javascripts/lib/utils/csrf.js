@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 /*
 This module provides easy access to the CSRF token and caches
 it for re-use. It also exposes some values commonly used in relation
@@ -20,7 +18,6 @@ If you need to compose a headers object, use the spread operator:
 see also http://guides.rubyonrails.org/security.html#cross-site-request-forgery-csrf
 and https://github.com/rails/jquery-rails/blob/v4.3.1/vendor/assets/javascripts/jquery_ujs.js#L59-L62
  */
-
 const csrf = {
   init() {
     const tokenEl = document.querySelector('meta[name=csrf-token]');
@@ -51,10 +48,5 @@ const csrf = {
 };
 
 csrf.init();
-
-// use our cached token for any $.rails-generated AJAX requests
-if ($.rails) {
-  $.rails.csrfToken = () => csrf.token;
-}
 
 export default csrf;

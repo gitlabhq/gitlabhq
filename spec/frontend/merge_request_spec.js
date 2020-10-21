@@ -3,8 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
-import CloseReopenReportToggle from '~/close_reopen_report_toggle';
-import IssuablesHelper from '~/helpers/issuables_helper';
 
 describe('MergeRequest', () => {
   const test = {};
@@ -112,66 +110,7 @@ describe('MergeRequest', () => {
     });
   });
 
-  describe('class constructor', () => {
-    beforeEach(() => {
-      jest.spyOn($, 'ajax').mockImplementation();
-    });
-
-    it('calls .initCloseReopenReport', () => {
-      jest.spyOn(IssuablesHelper, 'initCloseReopenReport').mockImplementation(() => {});
-
-      new MergeRequest(); // eslint-disable-line no-new
-
-      expect(IssuablesHelper.initCloseReopenReport).toHaveBeenCalled();
-    });
-
-    it('calls .initDroplab', () => {
-      const container = {
-        querySelector: jest.fn().mockName('container.querySelector'),
-      };
-      const dropdownTrigger = {};
-      const dropdownList = {};
-      const button = {};
-
-      jest.spyOn(CloseReopenReportToggle.prototype, 'initDroplab').mockImplementation(() => {});
-      jest.spyOn(document, 'querySelector').mockReturnValue(container);
-
-      container.querySelector
-        .mockReturnValueOnce(dropdownTrigger)
-        .mockReturnValueOnce(dropdownList)
-        .mockReturnValueOnce(button);
-
-      new MergeRequest(); // eslint-disable-line no-new
-
-      expect(document.querySelector).toHaveBeenCalledWith('.js-issuable-close-dropdown');
-      expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-toggle');
-      expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-menu');
-      expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-button');
-      expect(CloseReopenReportToggle.prototype.initDroplab).toHaveBeenCalled();
-    });
-  });
-
   describe('hideCloseButton', () => {
-    describe('merge request of another user', () => {
-      beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_with_task_list.html');
-        test.el = document.querySelector('.js-issuable-actions');
-        new MergeRequest(); // eslint-disable-line no-new
-        MergeRequest.hideCloseButton();
-      });
-
-      it('hides the dropdown close item and selects the next item', () => {
-        const closeItem = test.el.querySelector('li.close-item');
-        const smallCloseItem = test.el.querySelector('.js-close-item');
-        const reportItem = test.el.querySelector('li.report-item');
-
-        expect(closeItem).toHaveClass('hidden');
-        expect(smallCloseItem).toHaveClass('hidden');
-        expect(reportItem).toHaveClass('droplab-item-selected');
-        expect(reportItem).not.toHaveClass('hidden');
-      });
-    });
-
     describe('merge request of current_user', () => {
       beforeEach(() => {
         loadFixtures('merge_requests/merge_request_of_current_user.html');
@@ -180,10 +119,8 @@ describe('MergeRequest', () => {
       });
 
       it('hides the close button', () => {
-        const closeButton = test.el.querySelector('.btn-close');
         const smallCloseItem = test.el.querySelector('.js-close-item');
 
-        expect(closeButton).toHaveClass('hidden');
         expect(smallCloseItem).toHaveClass('hidden');
       });
     });

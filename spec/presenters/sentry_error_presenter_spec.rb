@@ -26,4 +26,12 @@ RSpec.describe SentryErrorPresenter do
       expect(count).to eq error.frequency.first[1]
     end
   end
+
+  describe '#project_id' do
+    subject { presenter.project_id }
+
+    it 'returns a global ID of the correct type' do
+      expect(subject).to eq(Gitlab::GlobalId.build(model_name: 'SentryProject', id: error.project_id).to_s)
+    end
+  end
 end

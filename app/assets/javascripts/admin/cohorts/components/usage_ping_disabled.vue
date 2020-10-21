@@ -9,13 +9,13 @@ export default {
   },
   inject: {
     svgPath: {
-      type: String,
+      default: '',
     },
     docsLink: {
-      type: String,
+      default: '',
     },
     primaryButtonPath: {
-      type: String,
+      default: '',
     },
   },
 };

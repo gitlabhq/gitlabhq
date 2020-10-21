@@ -47,6 +47,16 @@ module Gitlab
                 :cmd, :changes
     attr_accessor :container
 
+    def self.error_message(key)
+      self.ancestors.each do |cls|
+        return cls.const_get('ERROR_MESSAGES', false).fetch(key)
+      rescue NameError, KeyError
+        next
+      end
+
+      raise ArgumentError, "No error message defined for #{key}"
+    end
+
     def initialize(actor, container, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor     = actor
       @container = container
@@ -137,6 +147,10 @@ module Gitlab
     private
 
     def check_container!
+      # Strict nil check, to avoid any surprises with Object#present?
+      # which can delegate to #empty?
+      raise NotFoundError, not_found_message if container.nil?
+
       check_project! if project?
     end
 
@@ -204,9 +218,7 @@ module Gitlab
     end
 
     def check_project_accessibility!
-      if project.blank? || !can_read_project?
-        raise NotFoundError, not_found_message
-      end
+      raise NotFoundError, not_found_message unless can_read_project?
     end
 
     def not_found_message
@@ -279,10 +291,10 @@ module Gitlab
       error_message(:download)
     end
 
-    # We assume that all git-access classes are in project context by default.
-    # Override this method to be more specific.
     def project?
-      true
+      # Strict nil check, to avoid any surprises with Object#present?
+      # which can delegate to #empty?
+      !project.nil?
     end
 
     def project
@@ -290,7 +302,7 @@ module Gitlab
     end
 
     def check_push_access!
-      if container.repository_read_only?
+      if project&.repository_read_only?
         raise ForbiddenError, error_message(:read_only)
       end
 
@@ -411,13 +423,7 @@ module Gitlab
     protected
 
     def error_message(key)
-      self.class.ancestors.each do |cls|
-        return cls.const_get('ERROR_MESSAGES', false).fetch(key)
-      rescue NameError, KeyError
-        next
-      end
-
-      raise ArgumentError, "No error message defined for #{key}"
+      self.class.error_message(key)
     end
 
     def success_result
@@ -504,7 +510,7 @@ module Gitlab
       changes_size = 0
 
       changes_list.each do |change|
-        changes_size += repository.new_blobs(change[:newrev]).sum(&:size) # rubocop: disable CodeReuse/ActiveRecord
+        changes_size += repository.new_blobs(change[:newrev]).sum(&:size)
 
         check_size_against_limit(changes_size)
       end

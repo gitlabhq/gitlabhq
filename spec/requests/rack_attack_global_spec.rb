@@ -68,7 +68,7 @@ RSpec.describe 'Rack Attack global throttles' do
 
         expect_rejection { get url_that_does_not_require_authentication }
 
-        Timecop.travel(period.from_now) do
+        travel_to(period.from_now) do
           requests_per_period.times do
             get url_that_does_not_require_authentication
             expect(response).to have_gitlab_http_status(:ok)

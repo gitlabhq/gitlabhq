@@ -47,7 +47,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         it_behaves_like 'Merge when pipeline succeeds activator'
       end
 
-      context 'when enabled after pipeline status changed' do
+      context 'when enabled after pipeline status changed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/258667' do
         before do
           pipeline.run!
 

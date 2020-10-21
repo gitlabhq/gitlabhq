@@ -397,7 +397,7 @@ existing repositories was added in GitLab 10.1.
 
 ## Updating to GitLab 10.0
 
-Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
+In GitLab 10.0 and later, we require all **Geo** systems to [use SSH key lookups via
 the database](../../operations/fast_ssh_key_lookup.md) to avoid having to maintain consistency of the
 `authorized_keys` file for SSH access. Failing to do this will prevent users
 from being able to clone via SSH.
@@ -447,8 +447,8 @@ Omnibus is the following:
 
 > **IMPORTANT**:
 With GitLab 9.0, the PostgreSQL version is updated to 9.6 and manual steps are
-required in order to update the **secondary** nodes and keep the Streaming
-Replication working. Downtime is required, so plan ahead.
+required to update the **secondary** nodes and keep the Streaming Replication
+working. Downtime is required, so plan ahead.
 
 The following steps apply only if you update from a 8.17 GitLab version to
 9.0+. For previous versions, update to GitLab 8.17 first before attempting to
@@ -611,9 +611,9 @@ is prepended with the relevant node for better clarity:
 
 ### Update tracking database on **secondary** node
 
-After updating a **secondary** node, you might need to run migrations on
-the tracking database. The tracking database was added in GitLab 9.1,
-and it is required since 10.0.
+After updating a **secondary** node, you might need to run migrations on the
+tracking database. The tracking database was added in GitLab 9.1, and is
+required in GitLab 10.0 and later.
 
 1. Run database migrations on tracking database:
 

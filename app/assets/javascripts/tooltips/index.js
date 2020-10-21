@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import jQuery from 'jquery';
-import { toArray, isFunction } from 'lodash';
+import { toArray, isFunction, isElement } from 'lodash';
 import Tooltips from './components/tooltips.vue';
 
 let app;
@@ -54,10 +54,16 @@ const handleTooltipEvent = (rootTarget, e, selector, config = {}) => {
   }
 };
 
-const applyToElements = (elements, handler) => toArray(elements).forEach(handler);
+const applyToElements = (elements, handler) => {
+  const iterable = isElement(elements) ? [elements] : toArray(elements);
+
+  toArray(iterable).forEach(handler);
+};
 
 const invokeBootstrapApi = (elements, method) => {
   if (isFunction(elements.tooltip)) {
+    elements.tooltip(method);
+  } else {
     jQuery(elements).tooltip(method);
   }
 };

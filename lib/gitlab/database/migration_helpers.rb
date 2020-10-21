@@ -176,7 +176,7 @@ module Gitlab
           name: name.presence || concurrent_foreign_key_name(source, column)
         }
 
-        if foreign_key_exists?(source, target, options)
+        if foreign_key_exists?(source, target, **options)
           warning_message = "Foreign key not created because it exists already " \
             "(this may be due to an aborted migration or similar): " \
             "source: #{source}, target: #{target}, column: #{options[:column]}, "\
@@ -330,13 +330,13 @@ module Gitlab
       # * +timing_configuration+ - [[ActiveSupport::Duration, ActiveSupport::Duration], ...] lock timeout for the block, sleep time before the next iteration, defaults to `Gitlab::Database::WithLockRetries::DEFAULT_TIMING_CONFIGURATION`
       # * +logger+ - [Gitlab::JsonLogger]
       # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
-      def with_lock_retries(**args, &block)
+      def with_lock_retries(*args, **kwargs, &block)
         merged_args = {
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger
-        }.merge(args)
+        }.merge(kwargs)
 
-        Gitlab::Database::WithLockRetries.new(merged_args).run(&block)
+        Gitlab::Database::WithLockRetries.new(**merged_args).run(&block)
       end
 
       def true_value
@@ -544,6 +544,16 @@ module Gitlab
         rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function, batch_column_name: batch_column_name)
       end
 
+      # Reverses operations performed by change_column_type_concurrently.
+      #
+      # table - The table containing the column.
+      # column - The name of the column to change.
+      def undo_change_column_type_concurrently(table, column)
+        temp_column = "#{column}_for_type_change"
+
+        undo_rename_column_concurrently(table, column, temp_column)
+      end
+
       # Performs cleanup of a concurrent type change.
       #
       # table - The table containing the column.
@@ -557,6 +567,65 @@ module Gitlab
           # inconsistent data.
           cleanup_concurrent_column_rename(table, column, temp_column)
           rename_column(table, temp_column, column)
+        end
+      end
+
+      # Reverses operations performed by cleanup_concurrent_column_type_change.
+      #
+      # table - The table containing the column.
+      # column - The name of the column to change.
+      # old_type - The type of the original column used with change_column_type_concurrently.
+      # type_cast_function - Required if the conversion back to the original type is not automatic
+      # batch_column_name - option for tables without a primary key, in this case
+      #            another unique integer column can be used. Example: :user_id
+      def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id)
+        temp_column = "#{column}_for_type_change"
+
+        # Using a descriptive name that includes orinal column's name risks
+        # taking us above the 63 character limit, so we use a hash
+        identifier = "#{table}_#{column}_for_type_change"
+        hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
+        temp_undo_cleanup_column = "tmp_undo_cleanup_column_#{hashed_identifier}"
+
+        unless column_exists?(table, batch_column_name)
+          raise "Column #{batch_column_name} does not exist on #{table}"
+        end
+
+        if transaction_open?
+          raise 'undo_cleanup_concurrent_column_type_change can not be run inside a transaction'
+        end
+
+        check_trigger_permissions!(table)
+
+        begin
+          create_column_from(
+            table,
+            column,
+            temp_undo_cleanup_column,
+            type: old_type,
+            batch_column_name: batch_column_name,
+            type_cast_function: type_cast_function
+          )
+
+          transaction do
+            # This has to be performed in a transaction as otherwise we might
+            # have inconsistent data.
+            rename_column(table, column, temp_column)
+            rename_column(table, temp_undo_cleanup_column, column)
+
+            install_rename_triggers(table, column, temp_column)
+          end
+        rescue
+          # create_column_from can not run inside a transaction, which means
+          #  that there is a risk that if any of the operations that follow it
+          #  fail, we'll be left with an inconsistent schema
+          # For those reasons, we make sure that we drop temp_undo_cleanup_column
+          #  if an error is caught
+          if column_exists?(table, temp_undo_cleanup_column)
+            remove_column(table, temp_undo_cleanup_column)
+          end
+
+          raise
         end
       end
 
@@ -882,7 +951,7 @@ module Gitlab
             # column.
             opclasses[new] = opclasses.delete(old) if opclasses[old]
 
-            options[:opclasses] = opclasses
+            options[:opclass] = opclasses
           end
 
           add_concurrent_index(table, new_columns, options)
@@ -994,10 +1063,10 @@ into similar problems in the future (e.g. when new tables are created).
       def postgres_exists_by_name?(table, name)
         index_sql = <<~SQL
           SELECT COUNT(*)
-          FROM pg_index
-          JOIN pg_class i ON (indexrelid=i.oid)
-          JOIN pg_class t ON (indrelid=t.oid)
-          WHERE i.relname = '#{name}' AND t.relname = '#{table}'
+          FROM pg_catalog.pg_indexes
+          WHERE schemaname = #{connection.quote(current_schema)}
+            AND tablename = #{connection.quote(table)}
+            AND indexname = #{connection.quote(name)}
         SQL
 
         connection.select_value(index_sql).to_i > 0
@@ -1053,11 +1122,15 @@ into similar problems in the future (e.g. when new tables are created).
         # the table name in addition to using the constraint_name
         check_sql = <<~SQL
           SELECT COUNT(*)
-          FROM pg_constraint
-          JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
-          WHERE pg_constraint.contype = 'c'
-          AND pg_constraint.conname = '#{constraint_name}'
-          AND pg_class.relname = '#{table}'
+          FROM pg_catalog.pg_constraint con
+            INNER JOIN pg_catalog.pg_class rel
+              ON rel.oid = con.conrelid
+            INNER JOIN pg_catalog.pg_namespace nsp
+              ON nsp.oid = con.connamespace
+          WHERE con.contype = 'c'
+          AND con.conname = #{connection.quote(constraint_name)}
+          AND nsp.nspname = #{connection.quote(current_schema)}
+          AND rel.relname = #{connection.quote(table)}
         SQL
 
         connection.select_value(check_sql) > 0
@@ -1144,6 +1217,64 @@ into similar problems in the future (e.g. when new tables are created).
           ALTER TABLE #{table}
           DROP CONSTRAINT IF EXISTS #{constraint_name}
           EOF
+        end
+      end
+
+      # Copies all check constraints for the old column to the new column.
+      #
+      # table - The table containing the columns.
+      # old - The old column.
+      # new - The new column.
+      # schema - The schema the table is defined for
+      #          If it is not provided, then the current_schema is used
+      def copy_check_constraints(table, old, new, schema: nil)
+        if transaction_open?
+          raise 'copy_check_constraints can not be run inside a transaction'
+        end
+
+        unless column_exists?(table, old)
+          raise "Column #{old} does not exist on #{table}"
+        end
+
+        unless column_exists?(table, new)
+          raise "Column #{new} does not exist on #{table}"
+        end
+
+        table_with_schema = schema.present? ? "#{schema}.#{table}" : table
+
+        check_constraints_for(table, old, schema: schema).each do |check_c|
+          validate = !(check_c["constraint_def"].end_with? "NOT VALID")
+
+          # Normalize:
+          # - Old constraint definitions:
+          #    '(char_length(entity_path) <= 5500)'
+          # - Definitionss from pg_get_constraintdef(oid):
+          #    'CHECK ((char_length(entity_path) <= 5500))'
+          # - Definitions from pg_get_constraintdef(oid, pretty_bool):
+          #    'CHECK (char_length(entity_path) <= 5500)'
+          # - Not valid constraints: 'CHECK (...) NOT VALID'
+          # to a single format that we can use:
+          #    '(char_length(entity_path) <= 5500)'
+          check_definition = check_c["constraint_def"]
+                              .sub(/^\s*(CHECK)?\s*\({0,2}/, '(')
+                              .sub(/\){0,2}\s*(NOT VALID)?\s*$/, ')')
+
+          constraint_name = begin
+            if check_definition == "(#{old} IS NOT NULL)"
+              not_null_constraint_name(table_with_schema, new)
+            elsif check_definition.start_with? "(char_length(#{old}) <="
+              text_limit_name(table_with_schema, new)
+            else
+              check_constraint_name(table_with_schema, new, 'copy_check_constraint')
+            end
+          end
+
+          add_check_constraint(
+            table_with_schema,
+            check_definition.gsub(old.to_s, new.to_s),
+            constraint_name,
+            validate: validate
+          )
         end
       end
 
@@ -1274,6 +1405,37 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
+      # Returns an ActiveRecord::Result containing the check constraints
+      # defined for the given column.
+      #
+      # If the schema is not provided, then the current_schema is used
+      def check_constraints_for(table, column, schema: nil)
+        check_sql = <<~SQL
+          SELECT
+            ccu.table_schema as schema_name,
+            ccu.table_name as table_name,
+            ccu.column_name as column_name,
+            con.conname as constraint_name,
+            pg_get_constraintdef(con.oid) as constraint_def
+          FROM pg_catalog.pg_constraint con
+            INNER JOIN pg_catalog.pg_class rel
+              ON rel.oid = con.conrelid
+            INNER JOIN pg_catalog.pg_namespace nsp
+              ON nsp.oid = con.connamespace
+            INNER JOIN information_schema.constraint_column_usage ccu
+              ON con.conname = ccu.constraint_name
+                     AND nsp.nspname = ccu.constraint_schema
+                     AND rel.relname = ccu.table_name
+          WHERE  nsp.nspname = #{connection.quote(schema.presence || current_schema)}
+            AND rel.relname = #{connection.quote(table)}
+            AND ccu.column_name = #{connection.quote(column)}
+            AND con.contype = 'c'
+          ORDER BY constraint_name
+        SQL
+
+        connection.exec_query(check_sql)
+      end
+
       def statement_timeout_disabled?
         # This is a string of the form "100ms" or "0" when disabled
         connection.select_value('SHOW statement_timeout') == "0"
@@ -1284,8 +1446,9 @@ into similar problems in the future (e.g. when new tables are created).
         check_sql = <<~SQL
           SELECT c.is_nullable
           FROM information_schema.columns c
-          WHERE c.table_name = '#{table}'
-          AND c.column_name = '#{column}'
+          WHERE c.table_schema = #{connection.quote(current_schema)}
+            AND c.table_name = #{connection.quote(table)}
+            AND c.column_name = #{connection.quote(column)}
         SQL
 
         connection.select_value(check_sql) == 'YES'
@@ -1352,6 +1515,7 @@ into similar problems in the future (e.g. when new tables are created).
 
         copy_indexes(table, old, new)
         copy_foreign_keys(table, old, new)
+        copy_check_constraints(table, old, new)
       end
 
       def validate_timestamp_column_name!(column_name)

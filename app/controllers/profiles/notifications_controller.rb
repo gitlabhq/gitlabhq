@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Profiles::NotificationsController < Profiles::ApplicationController
+  feature_category :users
+
   # rubocop: disable CodeReuse/ActiveRecord
   def show
     @user = current_user

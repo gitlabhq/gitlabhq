@@ -37,7 +37,10 @@ namespace :gitlab do
       web_hooks.find_each do |hook|
         next unless hook.url == web_hook_url
 
-        hook.destroy!
+        result = WebHooks::DestroyService.new(nil).sync_destroy(hook)
+
+        raise "Unable to destroy Web hook" unless result[:status] == :success
+
         count += 1
       end
 

@@ -99,6 +99,36 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('foo-') }
   end
 
+  describe '.build_trace_section_regex' do
+    subject { described_class.build_trace_section_regex }
+
+    context 'without options' do
+      example = "section_start:1600445393032:NAME\r\033\[0K"
+
+      it { is_expected.to match(example) }
+      it { is_expected.to match("section_end:12345678:aBcDeFg1234\r\033\[0K") }
+      it { is_expected.to match("section_start:0:sect_for_alpha-v1.0\r\033\[0K") }
+      it { is_expected.not_to match("section_start:section:0\r\033\[0K") }
+      it { is_expected.not_to match("section_:1600445393032:NAME\r\033\[0K") }
+      it { is_expected.not_to match(example.upcase) }
+    end
+
+    context 'with options' do
+      it { is_expected.to match("section_start:1600445393032:NAME[collapsed=true]\r\033\[0K") }
+      it { is_expected.to match("section_start:1600445393032:NAME[collapsed=true, example_option=false]\r\033\[0K") }
+      it { is_expected.to match("section_start:1600445393032:NAME[collapsed=true,example_option=false]\r\033\[0K") }
+      it { is_expected.to match("section_start:1600445393032:NAME[numeric_option=1234567]\r\033\[0K") }
+      # Without splitting the regex in one for start and one for end,
+      # this is possible, however, it is ignored for section_end.
+      it { is_expected.to match("section_end:1600445393032:NAME[collapsed=true]\r\033\[0K") }
+      it { is_expected.not_to match("section_start:1600445393032:NAME[collapsed=[]]]\r\033\[0K") }
+      it { is_expected.not_to match("section_start:1600445393032:NAME[collapsed = true]\r\033\[0K") }
+      it { is_expected.not_to match("section_start:1600445393032:NAME[collapsed = true, example_option=false]\r\033\[0K") }
+      it { is_expected.not_to match("section_start:1600445393032:NAME[collapsed=true,  example_option=false]\r\033\[0K") }
+      it { is_expected.not_to match("section_start:1600445393032:NAME[]\r\033\[0K") }
+    end
+  end
+
   describe '.container_repository_name_regex' do
     subject { described_class.container_repository_name_regex }
 
@@ -317,6 +347,22 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
+  describe '.nuget_version_regex' do
+    subject { described_class.nuget_version_regex }
+
+    it { is_expected.to match('1.2.3') }
+    it { is_expected.to match('1.2.3.4') }
+    it { is_expected.to match('1.2.3.4-stable.1') }
+    it { is_expected.to match('1.2.3-beta') }
+    it { is_expected.to match('1.2.3-alpha.3') }
+    it { is_expected.to match('1.0.7+r3456') }
+    it { is_expected.not_to match('1') }
+    it { is_expected.not_to match('1.2') }
+    it { is_expected.not_to match('1./2.3') }
+    it { is_expected.not_to match('../../../../../1.2.3') }
+    it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+  end
+
   describe '.pypi_version_regex' do
     subject { described_class.pypi_version_regex }
 
@@ -384,6 +430,140 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
+  describe '.debian_package_name_regex' do
+    subject { described_class.debian_package_name_regex }
+
+    it { is_expected.to match('0ad') }
+    it { is_expected.to match('g++') }
+    it { is_expected.to match('lua5.1') }
+    it { is_expected.to match('samba') }
+
+    # may not be empty string
+    it { is_expected.not_to match('') }
+    # must start with an alphanumeric character
+    it { is_expected.not_to match('-a') }
+    it { is_expected.not_to match('+a') }
+    it { is_expected.not_to match('.a') }
+    it { is_expected.not_to match('_a') }
+    # only letters, digits and characters '-+._'
+    it { is_expected.not_to match('a~') }
+    it { is_expected.not_to match('aé') }
+
+    # More strict Lintian regex
+    # at least 2 chars
+    it { is_expected.not_to match('a') }
+    # lowercase only
+    it { is_expected.not_to match('Aa') }
+    it { is_expected.not_to match('aA') }
+    # No underscore
+    it { is_expected.not_to match('a_b') }
+  end
+
+  describe '.debian_version_regex' do
+    subject { described_class.debian_version_regex }
+
+    context 'valid versions' do
+      it { is_expected.to match('1.0') }
+      it { is_expected.to match('1.0~alpha1') }
+      it { is_expected.to match('2:4.9.5+dfsg-5+deb10u1') }
+    end
+
+    context 'dpkg errors' do
+      # version string is empty
+      it { is_expected.not_to match('') }
+      # version string has embedded spaces
+      it { is_expected.not_to match('1 0') }
+      # epoch in version is empty
+      it { is_expected.not_to match(':1.0') }
+      # epoch in version is not number
+      it { is_expected.not_to match('a:1.0') }
+      # epoch in version is negative
+      it { is_expected.not_to match('-1:1.0') }
+      # epoch in version is too big
+      it { is_expected.not_to match('9999999999:1.0') }
+      # nothing after colon in version number
+      it { is_expected.not_to match('2:') }
+      # revision number is empty
+      # Note: we are less strict here
+      # it { is_expected.not_to match('1.0-') }
+      # version number is empty
+      it { is_expected.not_to match('-1') }
+      it { is_expected.not_to match('2:-1') }
+    end
+
+    context 'dpkg warnings' do
+      # version number does not start with digit
+      it { is_expected.not_to match('a') }
+      it { is_expected.not_to match('a1.0') }
+      # invalid character in version number
+      it { is_expected.not_to match('1_0') }
+      # invalid character in revision number
+      it { is_expected.not_to match('1.0-1_0') }
+    end
+
+    context 'dpkg accepts' do
+      # dpkg accepts leading or trailing space
+      it { is_expected.not_to match(' 1.0') }
+      it { is_expected.not_to match('1.0 ') }
+      # dpkg accepts multiple colons
+      it { is_expected.not_to match('1:2:3') }
+    end
+  end
+
+  describe '.debian_architecture_regex' do
+    subject { described_class.debian_architecture_regex }
+
+    it { is_expected.to match('amd64') }
+    it { is_expected.to match('kfreebsd-i386') }
+
+    # may not be empty string
+    it { is_expected.not_to match('') }
+    # must start with an alphanumeric
+    it { is_expected.not_to match('-a') }
+    it { is_expected.not_to match('+a') }
+    it { is_expected.not_to match('.a') }
+    it { is_expected.not_to match('_a') }
+    # only letters, digits and characters '-'
+    it { is_expected.not_to match('a+b') }
+    it { is_expected.not_to match('a.b') }
+    it { is_expected.not_to match('a_b') }
+    it { is_expected.not_to match('a~') }
+    it { is_expected.not_to match('aé') }
+
+    # More strict
+    # Enforce lowercase
+    it { is_expected.not_to match('AMD64') }
+    it { is_expected.not_to match('Amd64') }
+    it { is_expected.not_to match('aMD64') }
+  end
+
+  describe '.debian_distribution_regex' do
+    subject { described_class.debian_distribution_regex }
+
+    it { is_expected.to match('buster') }
+    it { is_expected.to match('buster-updates') }
+    it { is_expected.to match('Debian10.5') }
+
+    # Do not allow slash, even if this exists in the wild
+    it { is_expected.not_to match('jessie/updates') }
+
+    # Do not allow Unicode
+    it { is_expected.not_to match('hé') }
+  end
+
+  describe '.debian_component_regex' do
+    subject { described_class.debian_component_regex }
+
+    it { is_expected.to match('main') }
+    it { is_expected.to match('non-free') }
+
+    # Do not allow slash
+    it { is_expected.not_to match('non/free') }
+
+    # Do not allow Unicode
+    it { is_expected.not_to match('hé') }
+  end
+
   describe '.semver_regex' do
     subject { described_class.semver_regex }
 
@@ -433,5 +613,46 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('../../../../../1.2.3') }
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
     it { is_expected.not_to match('') }
+  end
+
+  describe '.generic_package_name_regex' do
+    subject { described_class.generic_package_name_regex }
+
+    it { is_expected.to match('123') }
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo.bar.baz-2.0-20190901.47283-1') }
+    it { is_expected.not_to match('../../foo') }
+    it { is_expected.not_to match('..\..\foo') }
+    it { is_expected.not_to match('%2f%2e%2e%2f%2essh%2fauthorized_keys') }
+    it { is_expected.not_to match('$foo/bar') }
+    it { is_expected.not_to match('my file name') }
+    it { is_expected.not_to match('!!()()') }
+  end
+
+  describe '.generic_package_file_name_regex' do
+    subject { described_class.generic_package_file_name_regex }
+
+    it { is_expected.to match('123') }
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo.bar.baz-2.0-20190901.47283-1.jar') }
+    it { is_expected.not_to match('../../foo') }
+    it { is_expected.not_to match('..\..\foo') }
+    it { is_expected.not_to match('%2f%2e%2e%2f%2essh%2fauthorized_keys') }
+    it { is_expected.not_to match('$foo/bar') }
+    it { is_expected.not_to match('my file name') }
+    it { is_expected.not_to match('!!()()') }
+  end
+
+  describe '.prefixed_semver_regex' do
+    subject { described_class.prefixed_semver_regex }
+
+    it { is_expected.to match('v1.2.3') }
+    it { is_expected.to match('v1.2.3-beta') }
+    it { is_expected.to match('v1.2.3-alpha.3') }
+    it { is_expected.not_to match('v1') }
+    it { is_expected.not_to match('v1.2') }
+    it { is_expected.not_to match('v1./2.3') }
+    it { is_expected.not_to match('v../../../../../1.2.3') }
+    it { is_expected.not_to match('v%2e%2e%2f1.2.3') }
   end
 end

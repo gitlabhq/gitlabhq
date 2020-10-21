@@ -241,7 +241,11 @@ All tests expect to be able to log in at the start of the test.
 
 For an example see: <https://gitlab.com/gitlab-org/gitlab/-/issues/34736>
 
-Ideally, any actions performed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-the-ui-in-beforecontext-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
+Ideally, actions performed in an `after(:context)` (or
+[`before(:context)`](#limit-the-use-of-the-ui-in-beforecontext-and-after-hooks))
+block are performed using the API. If it's necessary to do so with the user
+interface (for example, if API functionality doesn't exist), be sure to sign
+out at the end of the block.
 
 ```ruby
 after(:all) do
@@ -310,3 +314,56 @@ end
 # Using native mouse click events in the case of a mask/overlay
 click_element_coordinates(:title)
 ```
+
+## Ensure `expect` statements wait efficiently
+
+In general, we use an `expect` statement to check that something _is_ as we expect it. For example:
+
+```ruby
+Page::Project::Pipeline::Show.perform do |pipeline|
+  expect(pipeline).to have_job("a_job")
+end
+```
+
+### Ensure `expect` checks for negation efficiently
+
+However, sometimes we want to check that something is _not_ as we _don't_ want it to be. In other
+words, we want to make sure something is absent. In such a case we should use an appropriate
+predicate method that returns quickly, rather than waiting for a state that won't appear.
+
+It's most efficient to use a predicate method that returns immediately when there is no job, or waits
+until it disappears:
+
+```ruby
+# Good
+Page::Project::Pipeline::Show.perform do |pipeline|
+  expect(pipeline).to have_no_job("a_job")
+end
+```
+
+### Problematic alternatives
+
+Alternatively, if we want to check that a job doesn't exist it might be tempting to use `not_to`:
+
+```ruby
+# Bad
+Page::Project::Pipeline::Show.perform do |pipeline|
+  expect(pipeline).not_to have_job("a_job")
+end
+```
+
+For this statement to pass, `have_job("a_job")` has to return `false` so that `not_to` can negate it.
+The problem is that `have_job("a_job")` waits up to ten seconds for `"a job"` to appear before
+returning `false`. Under the expected condition this test will take ten seconds longer than it needs to.
+
+Instead, we could force no wait:
+
+```ruby
+# Not as bad but potentially flaky
+Page::Project::Pipeline::Show.perform do |pipeline|
+  expect(pipeline).not_to have_job("a_job", wait: 0)
+end
+```
+
+The problem is that if `"a_job"` is present and we're waiting for it to disappear, this statement
+will fail.

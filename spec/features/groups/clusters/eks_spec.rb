@@ -19,7 +19,7 @@ RSpec.describe 'Group AWS EKS Cluster', :js do
     before do
       visit group_clusters_path(group)
 
-      click_link 'Add Kubernetes cluster'
+      click_link 'Integrate with a cluster certificate'
     end
 
     context 'when user creates a cluster on AWS EKS' do

@@ -17,6 +17,7 @@ exports[`grafana integration component default state to match the default snapsh
     </h3>
      
     <gl-button-stub
+      buttontextclasses=""
       category="primary"
       class="js-settings-toggle"
       icon=""
@@ -92,20 +93,17 @@ exports[`grafana integration component default state to match the default snapsh
         </p>
       </gl-form-group-stub>
        
-      <div
-        class="gl-display-flex gl-justify-content-end"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        icon=""
+        size="medium"
+        variant="success"
       >
-        <gl-button-stub
-          category="primary"
-          icon=""
-          size="medium"
-          variant="success"
-        >
-          
-          Save Changes
         
-        </gl-button-stub>
-      </div>
+        Save Changes
+      
+      </gl-button-stub>
     </form>
   </div>
 </section>

@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { createStore } from '~/ide/stores';
 import { createRouter } from '~/ide/ide_router';
+import { keepAlive } from '../../helpers/keep_alive_component_helper';
 import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
 import EmptyState from '~/ide/components/commit_sidebar/empty_state.vue';
 import { stageKeys } from '~/ide/constants';
@@ -14,7 +15,7 @@ describe('RepoCommitSection', () => {
   let store;
 
   function createComponent() {
-    wrapper = mount(RepoCommitSection, { store });
+    wrapper = mount(keepAlive(RepoCommitSection), { store });
   }
 
   function setupDefaultState() {
@@ -64,6 +65,7 @@ describe('RepoCommitSection', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('empty state', () => {
@@ -166,6 +168,23 @@ describe('RepoCommitSection', () => {
 
     it('does not show empty state', () => {
       expect(wrapper.find(EmptyState).exists()).toBe(false);
+    });
+  });
+
+  describe('activated', () => {
+    let inititializeSpy;
+
+    beforeEach(async () => {
+      createComponent();
+
+      inititializeSpy = jest.spyOn(wrapper.find(RepoCommitSection).vm, 'initialize');
+      store.state.viewer = 'diff';
+
+      await wrapper.vm.reactivate();
+    });
+
+    it('re initializes the component', () => {
+      expect(inititializeSpy).toHaveBeenCalled();
     });
   });
 });

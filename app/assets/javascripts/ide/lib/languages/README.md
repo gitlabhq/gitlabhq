@@ -1,7 +1,7 @@
 # Web IDE Languages
 
 The Web IDE uses the [Monaco editor](https://microsoft.github.io/monaco-editor/) which uses the [Monarch library](https://microsoft.github.io/monaco-editor/monarch.html) for syntax highlighting. 
-The Web IDE currently supports all langauges defined in the [monaco-languages](https://github.com/microsoft/monaco-languages/tree/master/src) repository. 
+The Web IDE currently supports all languages defined in the [monaco-languages](https://github.com/microsoft/monaco-languages/tree/master/src) repository. 
 
 ## Adding New Languages
 
@@ -14,7 +14,7 @@ Should you be willing to help us and add support to GitLab for any missing langu
 2. Create a new file in this folder called `{languageName}.js`, where `{languageName}` is the name of the language you want to add support for.
 3. Follow the [Monarch documentation](https://microsoft.github.io/monaco-editor/monarch.html) to add a configuration for the new language. 
     - Example: The [`vue.js`](./vue.js) file in the current directory adds support for Vue.js Syntax Highlighting.
-4. Add tests for the new langauge implementation in `spec/frontend/ide/lib/languages/{langaugeName}.js`.
+4. Add tests for the new language implementation in `spec/frontend/ide/lib/languages/{langaugeName}.js`.
     - Example: See [`vue_spec.js`](spec/frontend/ide/lib/languages/vue_spec.js).
 5. Create a [Merge Request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) with your newly added language.
 

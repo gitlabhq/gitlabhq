@@ -1,46 +1,30 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'raw snippet files' do
-  let_it_be(:unauthorized_user) { create(:user) }
+  let_it_be(:user_token) { create(:personal_access_token, user: snippet.author) }
   let(:snippet_id) { snippet.id }
   let(:user)       { snippet.author }
   let(:file_path)  { '%2Egitattributes' }
   let(:ref)        { 'master' }
 
-  context 'with no user' do
-    it 'requires authentication' do
-      get api(api_path)
+  subject { get api(api_path, personal_access_token: user_token) }
 
-      expect(response).to have_gitlab_http_status(:unauthorized)
-    end
-  end
+  context 'with an invalid snippet ID' do
+    let(:snippet_id) { non_existing_record_id }
 
-  shared_examples 'not found' do
     it 'returns 404' do
-      get api(api_path, user)
+      subject
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
 
-  context 'when not authorized' do
-    let(:user) { unauthorized_user }
-
-    it_behaves_like 'not found'
-  end
-
-  context 'with an invalid snippet ID' do
-    let(:snippet_id) { 'invalid' }
-
-    it_behaves_like 'not found'
-  end
-
   context 'with valid params' do
     it 'returns the raw file info' do
       expect(Gitlab::Workhorse).to receive(:send_git_blob).and_call_original
 
-      get api(api_path, user)
+      subject
 
       aggregate_failures do
         expect(response).to have_gitlab_http_status(:ok)
@@ -49,6 +33,17 @@ RSpec.shared_examples 'raw snippet files' do
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
         expect(response.header['Content-Disposition']).to match 'filename=".gitattributes"'
       end
+    end
+  end
+
+  context 'with unauthorized user' do
+    let(:user_token) { create(:personal_access_token) }
+
+    it 'returns 404' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
 
@@ -68,12 +63,12 @@ RSpec.shared_examples 'raw snippet files' do
     end
 
     with_them do
-      before do
-        get api(api_path, user)
-      end
+      it 'returns the proper response code and message' do
+        subject
 
-      it { expect(response).to have_gitlab_http_status(status) }
-      it { expect(json_response[key]).to eq(message) }
+        expect(response).to have_gitlab_http_status(status)
+        expect(json_response[key]).to eq(message)
+      end
     end
   end
 end
@@ -215,4 +210,134 @@ RSpec.shared_examples 'invalid snippet updates' do
     expect(response).to have_gitlab_http_status(:bad_request)
     expect(json_response['error']).to eq 'title is empty'
   end
+end
+
+RSpec.shared_examples 'snippet access with different users' do
+  using RSpec::Parameterized::TableSyntax
+
+  where(:requester, :visibility, :status) do
+    :admin   | :public   | :ok
+    :admin   | :private  | :ok
+    :admin   | :internal | :ok
+    :author  | :public   | :ok
+    :author  | :private  | :ok
+    :author  | :internal | :ok
+    :other   | :public   | :ok
+    :other   | :private  | :not_found
+    :other   | :internal | :ok
+    nil      | :public   | :ok
+    nil      | :private  | :not_found
+    nil      | :internal | :not_found
+  end
+
+  with_them do
+    let(:snippet) { snippet_for(visibility) }
+
+    it 'returns the correct response' do
+      request_user = user_for(requester)
+
+      get api(path, request_user)
+
+      expect(response).to have_gitlab_http_status(status)
+    end
+  end
+
+  def user_for(user_type)
+    case user_type
+    when :author
+      user
+    when :other
+      other_user
+    when :admin
+      admin
+    else
+      nil
+    end
+  end
+
+  def snippet_for(snippet_type)
+    case snippet_type
+    when :private
+      private_snippet
+    when :internal
+      internal_snippet
+    when :public
+      public_snippet
+    end
+  end
+end
+
+RSpec.shared_examples 'expected response status' do
+  it 'returns the correct response' do
+    get api(path, personal_access_token: user_token)
+
+    expect(response).to have_gitlab_http_status(status)
+  end
+end
+
+RSpec.shared_examples 'unauthenticated project snippet access' do
+  using RSpec::Parameterized::TableSyntax
+
+  let(:user_token) { nil }
+
+  where(:project_visibility, :snippet_visibility, :status) do
+    :public   | :public   | :ok
+    :public   | :private  | :not_found
+    :public   | :internal | :not_found
+    :internal | :public   | :not_found
+    :private  | :public   | :not_found
+  end
+
+  with_them do
+    it_behaves_like 'expected response status'
+  end
+end
+
+RSpec.shared_examples 'non-member project snippet access' do
+  using RSpec::Parameterized::TableSyntax
+
+  where(:project_visibility, :snippet_visibility, :status) do
+    :public   | :public   | :ok
+    :public   | :internal | :ok
+    :internal | :public   | :ok
+    :public   | :private  | :not_found
+    :private  | :public   | :not_found
+  end
+
+  with_them do
+    it_behaves_like 'expected response status'
+  end
+end
+
+RSpec.shared_examples 'member project snippet access' do
+  using RSpec::Parameterized::TableSyntax
+
+  before do
+    project.add_guest(user)
+  end
+
+  where(:project_visibility, :snippet_visibility, :status) do
+    :public   | :public   | :ok
+    :public   | :internal | :ok
+    :internal | :public   | :ok
+    :public   | :private  | :ok
+    :private  | :public   | :ok
+  end
+
+  with_them do
+    it_behaves_like 'expected response status'
+  end
+end
+
+RSpec.shared_examples 'project snippet access levels' do
+  let_it_be(:user_token) { create(:personal_access_token, user: user) }
+
+  let(:project) { create(:project, project_visibility) }
+  let(:snippet) { create(:project_snippet, :repository, snippet_visibility, project: project) }
+
+  it_behaves_like 'unauthenticated project snippet access'
+
+  it_behaves_like 'non-member project snippet access'
+
+  it_behaves_like 'member project snippet access'
 end

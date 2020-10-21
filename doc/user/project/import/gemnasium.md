@@ -96,7 +96,7 @@ back to both GitLab and GitHub when completed.
    The mirroring is pull-only by default, so you may create or update the file on
    GitHub:
 
-   ![Edit gitlab-ci.yml file](img/gemnasium/edit_gitlab-ci.png)
+   ![Edit YAML file](img/gemnasium/edit_gitlab-ci.png)
 
 1. Once your file has been committed, a new pipeline will be automatically
    triggered if your file is valid:

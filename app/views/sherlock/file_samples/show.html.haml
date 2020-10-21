@@ -5,7 +5,7 @@
 
 .row-content-block
   .float-right
-    = link_to(sherlock_transaction_path(@transaction), class: 'btn') do
+    = link_to(sherlock_transaction_path(@transaction), class: 'btn gl-button') do
       = sprite_icon('arrow-left')
       = t('sherlock.transaction')
   .oneline
@@ -27,7 +27,7 @@
 
 %article.file-holder
   .js-file-title.file-title
-    %i.fa.fa-file-text-o.fa-fw
+    = sprite_icon("doc-text")
     %strong
       = @file_sample.file
   .code.file-content.js-syntax-highlight

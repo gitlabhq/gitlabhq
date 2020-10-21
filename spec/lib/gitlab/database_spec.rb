@@ -39,6 +39,12 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.system_id' do
+    it 'returns the PostgreSQL system identifier' do
+      expect(described_class.system_id).to be_an_instance_of(Integer)
+    end
+  end
+
   describe '.postgresql?' do
     subject { described_class.postgresql? }
 
@@ -67,25 +73,6 @@ RSpec.describe Gitlab::Database do
         .count
 
       expect(count).to eq(1)
-    end
-  end
-
-  describe '.postgresql_9_or_less?' do
-    it 'returns true when using postgresql 8.4' do
-      allow(described_class).to receive(:version).and_return('8.4')
-      expect(described_class.postgresql_9_or_less?).to eq(true)
-    end
-
-    it 'returns true when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:version).and_return('9.6')
-
-      expect(described_class.postgresql_9_or_less?).to eq(true)
-    end
-
-    it 'returns false when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:version).and_return('10')
-
-      expect(described_class.postgresql_9_or_less?).to eq(false)
     end
   end
 
@@ -147,68 +134,6 @@ RSpec.describe Gitlab::Database do
       allow(described_class).to receive(:postgresql_minimum_supported_version?).and_raise(PG::Error)
 
       expect { subject }.not_to raise_error
-    end
-  end
-
-  describe '.pg_wal_lsn_diff' do
-    it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:version).and_return('9.6')
-
-      expect(described_class.pg_wal_lsn_diff).to eq('pg_xlog_location_diff')
-    end
-
-    it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:version).and_return('10')
-
-      expect(described_class.pg_wal_lsn_diff).to eq('pg_wal_lsn_diff')
-    end
-  end
-
-  describe '.pg_current_wal_insert_lsn' do
-    it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:version).and_return('9.6')
-
-      expect(described_class.pg_current_wal_insert_lsn).to eq('pg_current_xlog_insert_location')
-    end
-
-    it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:version).and_return('10')
-
-      expect(described_class.pg_current_wal_insert_lsn).to eq('pg_current_wal_insert_lsn')
-    end
-  end
-
-  describe '.pg_last_wal_receive_lsn' do
-    it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:version).and_return('9.6')
-
-      expect(described_class.pg_last_wal_receive_lsn).to eq('pg_last_xlog_receive_location')
-    end
-
-    it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:version).and_return('10')
-
-      expect(described_class.pg_last_wal_receive_lsn).to eq('pg_last_wal_receive_lsn')
-    end
-  end
-
-  describe '.pg_last_wal_replay_lsn' do
-    it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:version).and_return('9.6')
-
-      expect(described_class.pg_last_wal_replay_lsn).to eq('pg_last_xlog_replay_location')
-    end
-
-    it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:version).and_return('10')
-
-      expect(described_class.pg_last_wal_replay_lsn).to eq('pg_last_wal_replay_lsn')
-    end
-  end
-
-  describe '.pg_last_xact_replay_timestamp' do
-    it 'returns pg_last_xact_replay_timestamp' do
-      expect(described_class.pg_last_xact_replay_timestamp).to eq('pg_last_xact_replay_timestamp')
     end
   end
 
@@ -430,6 +355,20 @@ RSpec.describe Gitlab::Database do
       expect(ActiveRecord::Base).to receive(:connection) { raise ActiveRecord::NoDatabaseError, 'broken' }
 
       expect(described_class.exists?).to be(false)
+    end
+  end
+
+  describe '.get_write_location' do
+    it 'returns a string' do
+      connection = ActiveRecord::Base.connection
+
+      expect(described_class.get_write_location(connection)).to be_a(String)
+    end
+
+    it 'returns nil if there are no results' do
+      connection = double(select_all: [])
+
+      expect(described_class.get_write_location(connection)).to be_nil
     end
   end
 

@@ -4,16 +4,20 @@ require 'spec_helper'
 
 RSpec.describe Users::BuildService do
   describe '#execute' do
-    let(:params) do
-      { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass' }
-    end
+    let(:params) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
 
     context 'with an admin user' do
+      let(:params) { build_stubbed(:user).slice(:name, :username, :email, :password) }
+
       let(:admin_user) { create(:admin) }
       let(:service) { described_class.new(admin_user, ActionController::Parameters.new(params).permit!) }
 
       it 'returns a valid user' do
         expect(service.execute).to be_valid
+      end
+
+      it 'sets the created_by_id' do
+        expect(service.execute.created_by_id).to eq(admin_user.id)
       end
 
       context 'calls the UpdateCanonicalEmailService' do
@@ -127,6 +131,16 @@ RSpec.describe Users::BuildService do
 
       it 'raises AccessDeniedError exception' do
         expect { service.execute }.to raise_error Gitlab::Access::AccessDeniedError
+      end
+
+      context 'when authorization is skipped' do
+        subject(:built_user) { service.execute(skip_authorization: true) }
+
+        it { is_expected.to be_valid }
+
+        it 'sets the created_by_id' do
+          expect(built_user.created_by_id).to eq(user.id)
+        end
       end
     end
 

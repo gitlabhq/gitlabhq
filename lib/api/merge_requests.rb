@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class MergeRequests < Grape::API::Instance
+  class MergeRequests < ::API::Base
     include PaginationParams
 
     CONTEXT_COMMITS_POST_LIMIT = 20

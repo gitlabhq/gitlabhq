@@ -52,6 +52,10 @@ a {
   margin-top: 0;
 }
 
+.invite-body {
+  width: 360px;
+}
+
 .invite-actions {
   margin-top: 24px;
 }
@@ -62,6 +66,15 @@ a {
   cursor: pointer;
   background-color: $purple;
   color: $white;
+}
+
+.invite-btn-decline {
+  border-radius: $border-radius-default;
+  border: 1px solid $purple;
+  padding: $gl-btn-vert-padding $gl-btn-horz-padding;
+  cursor: pointer;
+  color: $purple;
+  margin-left: 4px;
 }
 
 tr td {

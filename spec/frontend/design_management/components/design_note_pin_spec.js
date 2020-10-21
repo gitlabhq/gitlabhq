@@ -29,21 +29,4 @@ describe('Design note pin component', () => {
     createComponent({ label: 1 });
     expect(wrapper.element).toMatchSnapshot();
   });
-
-  it('should match the snapshot of note when repositioning', () => {
-    createComponent({ repositioning: true });
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
-  describe('pinStyle', () => {
-    it('sets cursor to `move` when repositioning = true', () => {
-      createComponent({ repositioning: true });
-      expect(wrapper.vm.pinStyle.cursor).toBe('move');
-    });
-
-    it('does not set cursor when repositioning = false', () => {
-      createComponent();
-      expect(wrapper.vm.pinStyle.cursor).toBe(undefined);
-    });
-  });
 });

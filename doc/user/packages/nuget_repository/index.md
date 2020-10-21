@@ -19,7 +19,7 @@ The GitLab NuGet Repository works with:
 
 ## Setting up your development environment
 
-[NuGet CLI 5.2 or later](https://www.nuget.org/downloads) is required. Earlier versions have not been tested
+[NuGet CLI 5.1 or later](https://www.nuget.org/downloads) is required. Earlier versions have not been tested
 against the GitLab NuGet Repository and might not work. If you have [Visual Studio](https://visualstudio.microsoft.com/vs/),
 NuGet CLI is probably already installed.
 
@@ -34,7 +34,7 @@ nuget help
 You should see something similar to:
 
 ```plaintext
-NuGet Version: 5.2.0.6090
+NuGet Version: 5.1.0.6013
 usage: NuGet <command> [args] [options]
 Type 'NuGet help <command>' for help on a specific command.
 
@@ -44,7 +44,7 @@ Available commands:
 ```
 
 NOTE: **Note:**
-GitLab currently only supports NuGet v3. Earlier versions are not supported.
+GitLab currently only supports NuGet's protocol version 3. Earlier versions are not supported.
 
 ### macOS support
 
@@ -154,7 +154,7 @@ To add the GitLab NuGet Repository as a source for .NET, create a file named `nu
 
 When uploading packages, note that:
 
-- The maximum allowed size is 50 Megabytes.
+- The Package Registry on GitLab.com can store up to 500 MB of content. This limit is [configurable for self-managed GitLab instances](../../../administration/instance_limits.md#package-registry-limits).
 - If you upload the same package with the same version multiple times, each consecutive upload
   is saved as a separate file. When installing a package, GitLab serves the most recent file.
 - When uploading packages to GitLab, they are not displayed in the packages UI of your project
@@ -250,21 +250,21 @@ is updated:
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
    ```yaml
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+   image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
-    stages:
-      - deploy
+   stages:
+     - deploy
 
-    deploy:
-      stage: deploy
-      script:
-        - dotnet restore -p:Configuration=Release
-        - dotnet build -c Release
-        - dotnet pack -c Release
-        - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
-        - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
-      only:
-        - master
+   deploy:
+     stage: deploy
+     script:
+       - dotnet restore -p:Configuration=Release
+       - dotnet build -c Release
+       - dotnet pack -c Release
+       - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
+       - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
+     only:
+       - master
    ```
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI build.

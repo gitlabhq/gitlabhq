@@ -11,7 +11,7 @@ class AddRequirementsBuildReference < ActiveRecord::Migration[6.0]
     add_index :requirements_management_test_reports, :build_id, name: INDEX_NAME # rubocop:disable Migration/AddIndex
 
     with_lock_retries do
-      add_foreign_key :requirements_management_test_reports, :ci_builds, column: :build_id, on_delete: :nullify # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :requirements_management_test_reports, :ci_builds, column: :build_id, on_delete: :nullify
     end
   end
 

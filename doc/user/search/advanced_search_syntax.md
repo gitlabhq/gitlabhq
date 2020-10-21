@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Editor
+stage: Enablement
+group: Global Search
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 type: reference
 ---
@@ -62,6 +62,7 @@ The Advanced Search Syntax also supports the use of filters. The available filte
 - filename: Filters by filename. You can use the glob (`*`) operator for fuzzy matching.
 - path: Filters by path. You can use the glob (`*`) operator for fuzzy matching.
 - extension: Filters by extension in the filename. Please write the extension without a leading dot. Exact match only.
+- blob: Filters by Git `object ID`. Exact match only.
 
 To use them, simply add them to your query in the format `<filter_name>:<value>` without
  any spaces between the colon (`:`) and the value.
@@ -72,17 +73,19 @@ Examples:
 - Finding a file named `found_blob_spec.rb` with the text `CHANGELOG` inside of it: [`CHANGELOG filename:found_blob_spec.rb](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=CHANGELOG+filename%3Afound_blob_spec.rb&group_id=9970&project_id=278964)
 - Finding the text `EpicLinks` inside files with the `.rb` extension: [`EpicLinks extension:rb`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=EpicLinks+extension%3Arb&group_id=9970&project_id=278964)
 - Finding the text `Sidekiq` in a file, when that file is in a path that includes `elastic`: [`Sidekiq path:elastic`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=Sidekiq+path%3Aelastic&group_id=9970&project_id=278964)
+- Finding the files represented by the Git object ID `998707b421c89bd9a3063333f9f728ef3e43d101`: [`* blob:998707b421c89bd9a3063333f9f728ef3e43d101`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=false&scope=blobs&repository_ref=&search=*+blob%3A998707b421c89bd9a3063333f9f728ef3e43d101&group_id=9970)
 - Syntax filters can be combined for complex filtering. Finding any file starting with `search` containing `eventHub` and with the `.js` extension: [`eventHub filename:search* extension:js`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=eventHub+filename%3Asearch*+extension%3Ajs&group_id=9970&project_id=278964)
 
 #### Excluding filters
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31684) in GitLab Starter 13.3.
 
-Filters can be inversed to **filter out** results from the result set, by prefixing the filter name with a `-` (hyphen) character, such as:
+Filters can be inverted to **filter out** results from the result set, by prefixing the filter name with a `-` (hyphen) character, such as:
 
 - `-filename`
 - `-path`
 - `-extension`
+- `-blob`
 
 Examples:
 

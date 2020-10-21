@@ -15,6 +15,12 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
     let_it_be(:now) { Time.now }
     let_it_be(:group) { create(:group, :private) }
 
+    def args(**arguments)
+      satisfy("contain only #{arguments.inspect}") do |passed|
+        expect(passed.compact).to match(arguments)
+      end
+    end
+
     before_all do
       group.add_developer(current_user)
     end
@@ -30,7 +36,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
     context 'without parameters' do
       it 'calls MilestonesFinder to retrieve all milestones' do
         expect(MilestonesFinder).to receive(:new)
-          .with(ids: nil, group_ids: group.id, state: 'all', start_date: nil, end_date: nil)
+          .with(args(group_ids: group.id, state: 'all'))
           .and_call_original
 
         resolve_group_milestones
@@ -43,10 +49,21 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         end_date = start_date + 1.hour
 
         expect(MilestonesFinder).to receive(:new)
-          .with(ids: nil, group_ids: group.id, state: 'closed', start_date: start_date, end_date: end_date)
+          .with(args(group_ids: group.id, state: 'closed', start_date: start_date, end_date: end_date))
           .and_call_original
 
         resolve_group_milestones(start_date: start_date, end_date: end_date, state: 'closed')
+      end
+
+      it 'understands the timeframe argument' do
+        start_date = now
+        end_date = start_date + 1.hour
+
+        expect(MilestonesFinder).to receive(:new)
+          .with(args(group_ids: group.id, state: 'closed', start_date: start_date, end_date: end_date))
+          .and_call_original
+
+        resolve_group_milestones(timeframe: { start: start_date, end: end_date }, state: 'closed')
       end
     end
 
@@ -55,7 +72,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
         milestone = create(:milestone, group: group)
 
         expect(MilestonesFinder).to receive(:new)
-          .with(ids: [milestone.id.to_s], group_ids: group.id, state: 'all', start_date: nil, end_date: nil)
+          .with(args(ids: [milestone.id.to_s], group_ids: group.id, state: 'all'))
           .and_call_original
 
         resolve_group_milestones(ids: [milestone.to_global_id])

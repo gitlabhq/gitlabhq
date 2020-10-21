@@ -12,6 +12,8 @@ module Projects
         respond_error(http_status: :bad_request, message: _('Request parameter %{param} is missing.') % { param: exception.param })
       end
 
+      feature_category :metrics
+
       def create
         result = ::Metrics::Dashboard::CloneDashboardService.new(project, current_user, dashboard_params).execute
 

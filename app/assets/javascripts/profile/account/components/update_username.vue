@@ -1,6 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
+import { GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
@@ -9,6 +10,7 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 export default {
   components: {
     GlModal: DeprecatedModal2,
+    GlButton,
   },
   props: {
     actionUrl: {
@@ -100,15 +102,15 @@ Please update your Git repository remotes as soon as possible.`),
       </div>
       <p class="form-text text-muted">{{ path }}</p>
     </div>
-    <button
+    <gl-button
       :data-target="`#${$options.modalId}`"
       :disabled="isRequestPending || newUsername === username"
-      class="btn btn-warning"
-      type="button"
+      category="primary"
+      variant="warning"
       data-toggle="modal"
     >
       {{ $options.buttonText }}
-    </button>
+    </gl-button>
     <gl-modal
       :id="$options.modalId"
       :header-title-text="s__('Profiles|Change username') + '?'"

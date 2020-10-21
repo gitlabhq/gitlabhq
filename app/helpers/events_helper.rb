@@ -28,19 +28,7 @@ module EventsHelper
   end
 
   def event_action_name(event)
-    target =  if event.target_type
-                if event.design? || event.design_note?
-                  'design'
-                elsif event.wiki_page?
-                  'wiki page'
-                elsif event.note?
-                  event.note_target_type
-                else
-                  event.target_type.titleize.downcase
-                end
-              else
-                'project'
-              end
+    target = event.note_target_type_name || event.target_type_name
 
     [event.action_name, target].join(" ")
   end
@@ -229,7 +217,7 @@ module EventsHelper
   def event_note_title_html(event)
     if event.note_target
       capture do
-        concat content_tag(:span, event.note_target_type, class: "event-target-type gl-mr-2")
+        concat content_tag(:span, event.note_target_type_name, class: "event-target-type gl-mr-2")
         concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'has-tooltip event-target-link gl-mr-2')
       end
     else

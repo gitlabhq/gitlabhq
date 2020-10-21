@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  include AuthenticatesWithTwoFactor
-  include Authenticates2FAForAdminMode
+  include AuthenticatesWithTwoFactorForAdminMode
   include Devise::Controllers::Rememberable
   include AuthHelper
   include InitializesCurrentUserMode
@@ -11,6 +10,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   after_action :verify_known_sign_in
 
   protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
+
+  feature_category :authentication_and_authorization
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)

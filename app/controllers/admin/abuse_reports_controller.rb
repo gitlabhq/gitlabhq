@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::AbuseReportsController < Admin::ApplicationController
+  feature_category :users
+
   def index
     @abuse_reports = AbuseReportsFinder.new(params).execute
   end

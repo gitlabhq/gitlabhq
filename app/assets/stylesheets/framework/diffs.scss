@@ -1,0 +1,1129 @@
+// Common
+.diff-file {
+  margin-bottom: $gl-padding;
+
+  &.conflict {
+    border-top: 1px solid $border-color;
+  }
+
+  .file-title,
+  .file-title-flex-parent {
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+    box-shadow: 0 -2px 0 0 var(--white);
+    cursor: pointer;
+
+    .dropdown-menu {
+      cursor: auto;
+    }
+
+    @media (max-width: map-get($grid-breakpoints, sm)-1) {
+      .file-header-content {
+        width: 0;
+        flex: 1;
+      }
+
+      .file-actions {
+        margin-left: $gl-spacing-scale-2;
+      }
+    }
+
+    @media (min-width: map-get($grid-breakpoints, md)) {
+      // The `+11` is to ensure the file header border shows when scrolled -
+      // the bottom of the compare-versions header and the top of the file header
+      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height + 11;
+
+      position: -webkit-sticky;
+      position: sticky;
+      top: $mr-file-header-top;
+      z-index: 120;
+
+      .with-system-header & {
+        top: $mr-file-header-top + $system-header-height;
+      }
+
+      .with-system-header.with-performance-bar & {
+        top: $mr-file-header-top + $system-header-height + $performance-bar-height;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -11px;
+        width: 10px;
+        height: calc(100% + 1px);
+        background: $white;
+        pointer-events: none;
+      }
+
+      .with-performance-bar & {
+        top: $mr-file-header-top + $performance-bar-height;
+      }
+
+      &.is-commit {
+        top: $header-height + $commit-stat-summary-height;
+
+        .with-performance-bar & {
+          top: $header-height + $commit-stat-summary-height + $performance-bar-height;
+        }
+      }
+
+      &.is-compare {
+        top: $header-height + $compare-branches-sticky-header-height;
+
+        .with-performance-bar & {
+          top: $performance-bar-height + $header-height + $compare-branches-sticky-header-height;
+        }
+      }
+    }
+
+    &:hover {
+      background-color: $gray-normal;
+    }
+
+    svg {
+      vertical-align: middle;
+      top: -1px;
+    }
+  }
+
+  @media (min-width: map-get($grid-breakpoints, md)) {
+    &.conflict .file-title,
+    &.conflict .file-title-flex-parent {
+      top: $header-height;
+    }
+
+    .with-performance-bar &.conflict .file-title,
+    .with-performance-bar &.conflict .file-title-flex-parent {
+      top: $header-height + $performance-bar-height;
+    }
+
+    .with-system-header &.conflict .file-title,
+    .with-system-header &.conflict .file-title-flex-parent {
+      top: $header-height + $system-header-height;
+    }
+
+    .with-system-header.with-performance-bar &.conflict .file-title,
+    .with-system-header.with-performance-bar &.conflict .file-title-flex-parent {
+      top: $header-height + $performance-bar-height + $system-header-height;
+    }
+  }
+
+  .diff-content {
+    background: $white;
+    color: $gl-text-color;
+    border-radius: 0 0 3px 3px;
+
+    .unfold {
+      cursor: pointer;
+    }
+
+    .file-mode-changed {
+      padding: 10px;
+      color: $gray-500;
+    }
+
+    .suppressed-container {
+      padding: ($padding-base-vertical + 5px) $padding-base-horizontal;
+      text-align: center;
+
+      // "Changes suppressed. Click to show." link
+      .show-suppressed-diff {
+        font-size: 110%;
+        font-weight: $gl-font-weight-bold;
+      }
+    }
+
+    .diff-loading-error-block {
+      padding: $gl-padding * 2 $gl-padding;
+      text-align: center;
+    }
+  }
+
+  .image {
+    background: $gray-darker;
+    text-align: center;
+    padding: 30px;
+
+    .wrap {
+      display: inline-block;
+    }
+
+    .frame {
+      display: inline-block;
+      background-color: $white;
+      line-height: 0;
+
+      img {
+        border: 1px solid $white;
+        background-image: linear-gradient(45deg,
+        $border-color 25%,
+        transparent 25%,
+        transparent 75%,
+        $border-color 75%,
+        $border-color 100%),
+          linear-gradient(45deg,
+        $border-color 25%,
+        transparent 25%,
+        transparent 75%,
+        $border-color 75%,
+        $border-color 100%);
+        background-size: 10px 10px;
+        background-position: 0 0, 5px 5px;
+        max-width: 100%;
+      }
+
+      &.deleted {
+        border: 1px solid $deleted;
+      }
+
+      &.added {
+        border: 1px solid $added;
+      }
+    }
+
+    .image-info {
+      font-size: 12px;
+      margin: 5px 0 0;
+      color: $diff-image-info-color;
+    }
+
+    .view.swipe {
+      position: relative;
+
+      .swipe-frame {
+        display: block;
+        margin: auto;
+        position: relative;
+      }
+
+      .swipe-wrap {
+        overflow: hidden;
+        border-right: 1px solid $gray-300;
+        position: absolute;
+        display: block;
+        top: 13px;
+        right: 7px;
+
+        &.left-oriented {
+          /* only for commit view (different swipe viewer) */
+          border-right: 0;
+          border-left: 1px solid $gray-300;
+        }
+      }
+
+      .frame {
+        top: 0;
+        right: 0;
+
+        &.old-diff {
+          /* only for commit / compare view */
+          position: absolute;
+        }
+
+        &.deleted {
+          margin: 0;
+          display: block;
+          top: 13px;
+          right: 7px;
+        }
+      }
+
+      .swipe-bar {
+        display: block;
+        height: 100%;
+        width: 15px;
+        z-index: 100;
+        position: absolute;
+        cursor: pointer;
+
+        &:hover {
+          .top-handle {
+            background-position: -15px 3px;
+          }
+
+          .bottom-handle {
+            background-position: -15px -11px;
+          }
+        }
+
+        .top-handle {
+          display: block;
+          height: 14px;
+          width: 15px;
+          position: absolute;
+          top: 0;
+          background: image-url('swipemode_sprites.gif') 0 3px no-repeat;
+        }
+
+        .bottom-handle {
+          display: block;
+          height: 14px;
+          width: 15px;
+          position: absolute;
+          bottom: 0;
+          background: image-url('swipemode_sprites.gif') 0 -11px no-repeat;
+        }
+      }
+    }
+
+    //.view.swipe
+    .view.onion-skin {
+      .onion-skin-frame {
+        display: block;
+        margin: auto;
+        position: relative;
+      }
+
+      .frame.added,
+      .frame.deleted {
+        position: absolute;
+        display: block;
+        top: 0;
+        left: 0;
+      }
+
+      .controls {
+        display: block;
+        height: 14px;
+        width: 300px;
+        z-index: 100;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        margin-left: -150px;
+
+        .drag-track {
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 12px;
+          height: 10px;
+          width: 276px;
+          background: image-url('onion_skin_sprites.gif') -4px -20px repeat-x;
+        }
+
+        .dragger {
+          display: block;
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 14px;
+          width: 14px;
+          background: image-url('onion_skin_sprites.gif') 0 -34px repeat-x;
+          cursor: pointer;
+        }
+
+        .transparent {
+          display: block;
+          position: absolute;
+          top: 2px;
+          right: 0;
+          height: 10px;
+          width: 10px;
+          background: image-url('onion_skin_sprites.gif') -2px 0 no-repeat;
+        }
+
+        .opaque {
+          display: block;
+          position: absolute;
+          top: 2px;
+          left: 0;
+          height: 10px;
+          width: 10px;
+          background: image-url('onion_skin_sprites.gif') -2px -10px no-repeat;
+        }
+      }
+    }
+
+    //.view.onion-skin
+  }
+
+  .view-modes {
+    padding: 10px;
+    text-align: center;
+    background: $gray-darker;
+
+    ul,
+    li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+    }
+
+    li {
+      color: $diff-view-modes-color;
+      border-left: 1px solid $diff-view-modes-border;
+      padding: 0 12px 0 16px;
+      cursor: pointer;
+
+      &:first-child {
+        border-left: 0;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.active {
+        cursor: default;
+        color: $gl-text-color;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      &.disabled {
+        display: none;
+      }
+    }
+  }
+
+  .diff-file-container {
+    .frame.deleted {
+      border: 1px solid $deleted;
+      background-color: inherit;
+    }
+
+    .frame.added {
+      border: 1px solid $added;
+      background-color: inherit;
+    }
+
+    .swipe.view,
+    .onion-skin.view {
+      .swipe-wrap {
+        top: 0;
+        left: 0;
+      }
+
+      .frame.deleted {
+        top: 0;
+        right: 0;
+      }
+
+      .swipe-bar {
+        top: 0;
+
+        .top-handle {
+          top: -14px;
+          left: -7px;
+        }
+
+        .bottom-handle {
+          bottom: -14px;
+          left: -7px;
+        }
+      }
+
+      .file-container {
+        display: inline-block;
+
+        .file-content {
+          padding: 0;
+
+          img {
+            max-width: none;
+          }
+        }
+      }
+    }
+
+    .onion-skin.view .controls {
+      bottom: -25px;
+    }
+  }
+
+  .discussion-notes .discussion-notes {
+    margin-left: 0;
+    border-left: 0;
+  }
+}
+
+table.code {
+  width: 100%;
+  font-family: $monospace-font;
+  border: 0;
+  border-collapse: separate;
+  margin: 0;
+  padding: 0;
+  table-layout: fixed;
+  border-radius: 0 0 $border-radius-default $border-radius-default;
+
+  tr:first-of-type.line_expansion > td {
+    border-top: 0;
+  }
+
+  tr:nth-last-of-type(2).line_expansion > td {
+    border-bottom: 0;
+  }
+
+  tr.line_holder td {
+    line-height: $code-line-height;
+    font-size: $code-font-size;
+    vertical-align: top;
+
+    span {
+      white-space: break-spaces;
+
+      &.context-cell {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+      }
+
+      &.line {
+        word-wrap: break-word;
+      }
+    }
+
+    &.diff-line-num {
+      user-select: none;
+      margin: 0;
+      padding: 0 10px 0 5px;
+      border-right-width: 1px;
+      border-right-style: solid;
+      text-align: right;
+      width: 50px;
+      position: relative;
+      white-space: nowrap;
+
+      a {
+        transition: none;
+        float: left;
+        width: 100%;
+        font-weight: $gl-font-weight-normal;
+
+        &[disabled] {
+          cursor: default;
+
+          &:hover,
+          &:active {
+            text-decoration: none;
+          }
+        }
+      }
+
+      &:not(.js-unfold-bottom) a::before {
+        content: attr(data-linenumber);
+      }
+    }
+
+    &.line_content {
+      display: block;
+      margin: 0;
+      padding: 0 1.5em;
+      border: 0;
+      position: relative;
+      white-space: pre-wrap;
+
+      &.parallel {
+        display: table-cell;
+        width: 46%;
+
+        span {
+          word-break: break-all;
+        }
+      }
+
+      &.old {
+        &::before {
+          content: '-';
+          position: absolute;
+          left: 0.5em;
+        }
+
+        &.with-coverage::before {
+          left: 0;
+        }
+      }
+
+      &.new {
+        &::before {
+          content: '+';
+          position: absolute;
+          left: 0.5em;
+        }
+
+        &.with-coverage::before {
+          left: 0;
+        }
+      }
+    }
+  }
+
+  .line_holder:last-of-type {
+    td:first-child {
+      border-bottom-left-radius: $border-radius-default;
+    }
+  }
+
+  &.left-side-selected {
+    td.line_content.parallel.right-side {
+      user-select: none;
+    }
+  }
+
+  &.right-side-selected {
+    td.line_content.parallel.left-side {
+      user-select: none;
+    }
+  }
+}
+
+.diff-stats {
+  align-items: center;
+  padding: 0 1rem;
+
+  .diff-stats-group {
+    padding: 0 0.25rem;
+  }
+
+  svg.diff-stats-icon {
+    vertical-align: text-bottom;
+  }
+
+  &.is-compare-versions-header {
+    .diff-stats-group {
+      padding: 0 0.25rem;
+    }
+  }
+}
+
+.file-content .diff-file {
+  margin: 0;
+  border: 0;
+}
+
+.diff-wrap-lines .line_content {
+  white-space: pre-wrap;
+}
+
+.inline-parallel-buttons {
+  float: right;
+}
+
+.files-changed {
+  border-bottom: 0;
+}
+
+.merge-request-details .file-content.image_file img {
+  max-height: 50vh;
+}
+
+.diff-stats-summary-toggler {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: $blue-600;
+  font-weight: $gl-font-weight-bold;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    color: $blue-800;
+  }
+
+  .caret-icon {
+    position: relative;
+    top: 2px;
+    left: -1px;
+  }
+}
+
+// Mobile
+@media (max-width: 480px) {
+  .diff-title {
+    margin: 0;
+
+    .file-mode {
+      display: none;
+    }
+  }
+
+  .diff-controls {
+    position: static;
+    text-align: center;
+  }
+}
+
+// Bigger screens
+@media (min-width: 481px) {
+  .diff-title {
+    margin-right: 200px;
+
+    .file-mode {
+      margin-left: 10px;
+    }
+  }
+
+  .diff-controls {
+    float: right;
+    position: absolute;
+    top: 5px;
+    right: 15px;
+  }
+}
+
+.files {
+  .diff-file:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.diff-comment-avatar-holders {
+  position: absolute;
+  margin-left: -$gl-padding;
+  z-index: 100;
+  @include code-icon-size();
+
+  &:hover {
+    .diff-comment-avatar,
+    .diff-comments-more-count {
+      @for $i from 1 through 4 {
+        $x-pos: 14px;
+
+        &:nth-child(#{$i}) {
+          @if $i == 4 {
+            $x-pos: 14.5px;
+          }
+
+          transform: translateX((($i * $x-pos) - $x-pos));
+
+          &:hover {
+            transform: translateX((($i * $x-pos) - $x-pos));
+          }
+        }
+      }
+    }
+
+    .diff-comments-more-count {
+      padding-left: 2px;
+      padding-right: 2px;
+      width: auto;
+    }
+  }
+}
+
+.diff-comment-avatar,
+.diff-comments-more-count {
+  position: absolute;
+  left: 0;
+  margin-right: 0;
+  border-color: $white;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  @include code-icon-size();
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      z-index: (4 - $i);
+    }
+  }
+
+  .avatar {
+    @include code-icon-size();
+  }
+}
+
+.diff-comments-more-count {
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  @include code-icon-size();
+}
+
+.diff-comments-more-count,
+.diff-notes-collapse {
+  @include avatar-counter(50%);
+}
+
+.diff-notes-collapse {
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  transition: transform 0.1s ease-out;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include code-icon-size();
+
+  .collapse-icon {
+    height: 50%;
+    width: 100%;
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+
+  .collapse-icon,
+  path {
+    fill: $white;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.diff-files-changed {
+  .inline-parallel-buttons {
+    position: relative;
+    z-index: 1;
+  }
+
+  .commit-stat-summary {
+    @include media-breakpoint-up(sm) {
+      margin-left: -$gl-padding;
+      padding-left: $gl-padding;
+      background-color: $white;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: $header-height;
+    background-color: $white;
+    z-index: 200;
+
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height;
+    }
+
+    &.is-stuck {
+      padding-top: 0;
+      padding-bottom: 0;
+      border-top: 1px solid $white-dark;
+      border-bottom: 1px solid $white-dark;
+
+      .diff-stats-additions-deletions-expanded,
+      .inline-parallel-buttons {
+        display: none !important;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    &.is-stuck {
+      .diff-stats-additions-deletions-collapsed {
+        display: block !important;
+      }
+    }
+  }
+}
+
+.diff-file-changes {
+  max-width: 560px;
+  width: 100%;
+  z-index: 150;
+  min-height: $dropdown-min-height;
+  max-height: $dropdown-max-height;
+  overflow-y: auto;
+  margin-bottom: 0;
+
+  @include media-breakpoint-up(sm) {
+    left: $gl-padding;
+  }
+
+  .dropdown-input .dropdown-input-search {
+    pointer-events: all;
+  }
+
+  .diff-changed-file {
+    display: flex;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    min-width: 0;
+  }
+
+  .diff-file-changed-icon {
+    margin-top: 2px;
+  }
+
+  .diff-changed-file-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .diff-changed-file-name,
+  .diff-changed-blank-file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .diff-changed-blank-file-name {
+    color: $gl-text-color-tertiary;
+    font-style: italic;
+  }
+
+  .diff-changed-file-path {
+    color: $gl-text-color-tertiary;
+  }
+
+  .diff-changed-stats {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+}
+
+.diff-file-changes-path {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-container {
+  background-color: $gray-light;
+  border-top: 1px solid $white-normal;
+
+  // double jagged line divider
+  .discussion-notes + .discussion-notes::before,
+  .diff-file-discussions + .discussion-form::before {
+    content: '';
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 10px;
+    background-color: $white;
+    background-image: linear-gradient(45deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white 80%),
+      linear-gradient(225deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white 80%),
+      linear-gradient(135deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white 80%),
+      linear-gradient(-45deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white 80%);
+    background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
+    background-size: 10px 10px;
+    background-repeat: repeat;
+  }
+
+  .diff-file-discussions + .discussion-form {
+    padding: $gl-padding;
+
+    &::before {
+      width: auto;
+      margin-left: -$gl-padding;
+      margin-right: -$gl-padding;
+      margin-bottom: $gl-padding;
+    }
+  }
+
+  .notes {
+    position: relative;
+  }
+
+  .diff-notes-collapse {
+    position: absolute;
+    left: -12px;
+  }
+}
+
+.diff-file .note-container > .new-note,
+.note-container .discussion-notes.diff-discussions {
+  margin-left: 100px;
+  border-left: 1px solid $white-normal;
+}
+
+.notes.active {
+  .diff-file .note-container > .new-note,
+  .note-container .discussion-notes {
+    // Override our margin and border (set for diff tab)
+    // when user is on the discussion tab for MR
+    margin-left: inherit;
+    border-left: inherit;
+  }
+}
+
+.files:not([data-can-create-note]) .frame {
+  cursor: auto;
+}
+
+.frame.click-to-comment,
+.btn-transparent.image-diff-overlay-add-comment {
+  position: relative;
+  cursor: image-url('illustrations/image_comment_light_cursor.svg') $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+    auto;
+
+  // Retina cursor
+  // scss-lint:disable DuplicateProperty
+  cursor: image-set(image-url('illustrations/image_comment_light_cursor.svg') 1x,
+  image-url('illustrations/image_comment_light_cursor@2x.svg') 2x) $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+    auto;
+
+  .comment-indicator {
+    position: absolute;
+    padding: 0;
+    width: (2px * $image-comment-cursor-left-offset);
+    height: (2px * $image-comment-cursor-top-offset);
+    color: $blue-400;
+    // center the indicator to match the top left click region
+    margin-top: (-1px * $image-comment-cursor-top-offset) + 2;
+    margin-left: (-1px * $image-comment-cursor-left-offset) + 1;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.frame .badge.badge-pill,
+.image-diff-avatar-link .badge.badge-pill,
+.user-avatar-link .badge.badge-pill,
+.notes > .badge.badge-pill {
+  position: absolute;
+  background-color: $blue-400;
+  color: $white;
+  border: $white 1px solid;
+  min-height: $gl-padding;
+  padding: 5px 8px;
+  border-radius: 12px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.frame .badge.badge-pill,
+.frame .image-comment-badge,
+.frame .comment-indicator {
+  // Center align badges on the frame
+  transform: translate(-50%, -50%);
+}
+
+.image-comment-badge {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: 0;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.image-diff-avatar-link,
+.user-avatar-link {
+  position: relative;
+
+  .badge.badge-pill,
+  .image-comment-badge {
+    top: 25px;
+    right: 8px;
+  }
+}
+
+.notes > .badge.badge-pill {
+  display: none;
+  left: -13px;
+}
+
+.discussion-notes {
+  min-height: 35px;
+
+  &:first-child {
+    // First child does not have the jagged borders
+    min-height: 25px;
+  }
+
+  &.collapsed {
+    background-color: $white;
+
+    .diff-notes-collapse,
+    .note,
+    .discussion-reply-holder {
+      display: none;
+    }
+
+    .notes > .badge.badge-pill {
+      display: block;
+    }
+  }
+
+  .note-edit-form {
+    margin-left: $note-icon-gutter-width;
+  }
+}
+
+.discussion-body .image .frame {
+  position: relative;
+}
+
+.discussion-collapsible {
+  margin: 0 $gl-padding $gl-padding 71px;
+
+  .notes {
+    border-radius: $border-radius-default;
+  }
+}
+
+.parallel {
+  .discussion-collapsible {
+    margin: $gl-padding;
+    margin-top: 0;
+  }
+}
+
+.image-diff-overlay,
+.image-diff-overlay-add-comment {
+  top: 0;
+  left: 0;
+
+  &:active,
+  &:focus {
+    outline: 0;
+  }
+}
+
+.diff-suggest-popover {
+  &.popover {
+    width: 250px;
+    min-width: 250px;
+    z-index: 210;
+  }
+
+  .popover-header {
+    display: none;
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, md)-1) {
+  .diffs .files {
+    @include fixed-width-container;
+    flex-direction: column;
+  }
+
+  .discussion-collapsible {
+    margin: $gl-padding;
+    margin-top: 0;
+  }
+}

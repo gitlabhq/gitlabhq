@@ -44,23 +44,6 @@ RSpec.describe IssuablesHelper do
     end
   end
 
-  describe '#issuable_labels_tooltip' do
-    let(:label_entity) { LabelEntity.represent(label).as_json }
-    let(:label2_entity) { LabelEntity.represent(label2).as_json }
-
-    it 'returns label text with no labels' do
-      expect(issuable_labels_tooltip([])).to eq(_('Labels'))
-    end
-
-    it 'returns label text with labels within max limit' do
-      expect(issuable_labels_tooltip([label_entity])).to eq(label[:title])
-    end
-
-    it 'returns label text with labels exceeding max limit' do
-      expect(issuable_labels_tooltip([label_entity, label2_entity], limit: 1)).to eq("#{label[:title]}, and 1 more")
-    end
-  end
-
   describe '#issuables_state_counter_text' do
     let(:user) { create(:user) }
 
@@ -306,6 +289,38 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#reviewer_sidebar_data' do
+    let(:user) { create(:user) }
+
+    subject { helper.reviewer_sidebar_data(user, merge_request: merge_request) }
+
+    context 'without merge_request' do
+      let(:merge_request) { nil }
+
+      it 'returns hash of reviewer data' do
+        is_expected.to eql({
+          avatar_url: user.avatar_url,
+          name: user.name,
+          username: user.username
+        })
+      end
+    end
+
+    context 'with merge_request' do
+      let(:merge_request) { build(:merge_request) }
+
+      where(can_merge: [true, false])
+
+      with_them do
+        before do
+          allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
+        end
+
+        it { is_expected.to include({ can_merge: can_merge })}
+      end
+    end
+  end
+
   describe '#issuable_squash_option?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -335,6 +350,37 @@ RSpec.describe IssuablesHelper do
       milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;')
 
       expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
+    end
+  end
+
+  describe '#serialize_issuable' do
+    context 'when it is a merge request' do
+      let(:merge_request) { build(:merge_request) }
+      let(:user) { build(:user) }
+
+      before do
+        allow(helper).to receive(:current_user) { user }
+      end
+
+      it 'has suggest_pipeline experiment enabled' do
+        allow(helper).to receive(:experiment_enabled?).with(:suggest_pipeline) { true }
+
+        expect_next_instance_of(MergeRequestSerializer) do |serializer|
+          expect(serializer).to receive(:represent).with(merge_request, { serializer: 'widget', experiment_enabled: :suggest_pipeline })
+        end
+
+        helper.serialize_issuable(merge_request, serializer: 'widget')
+      end
+
+      it 'suggest_pipeline experiment disabled' do
+        allow(helper).to receive(:experiment_enabled?).with(:suggest_pipeline) { false }
+
+        expect_next_instance_of(MergeRequestSerializer) do |serializer|
+          expect(serializer).to receive(:represent).with(merge_request, { serializer: 'widget' })
+        end
+
+        helper.serialize_issuable(merge_request, serializer: 'widget')
+      end
     end
   end
 end

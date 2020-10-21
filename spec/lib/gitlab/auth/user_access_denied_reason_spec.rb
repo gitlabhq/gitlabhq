@@ -49,5 +49,13 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
 
       it { is_expected.to match /Your primary email address is not confirmed/ }
     end
+
+    context 'when the user is blocked pending approval' do
+      before do
+        user.block_pending_approval!
+      end
+
+      it { is_expected.to eq('Your account is pending approval from your administrator and hence blocked.') }
+    end
   end
 end

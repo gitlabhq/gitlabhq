@@ -6,6 +6,11 @@ module Gitlab
       EMPTY_STRING = Arel.sql("''").freeze
       EXPRESSION_ON_INVALID_INPUT = Arel::Nodes::NamedFunction.new('CAST', [Arel.sql('0').as('integer')]).freeze
       DEFAULT_MULTIPLIER = 1
+      DISPLAY_NAME = self.name.underscore.freeze
+
+      # Adds a "magic" comment in the generated SQL expression in order to be able to tell if we're sorting by similarity.
+      # Example: /* gitlab/database/similarity_score */ SIMILARITY(COALESCE...
+      SIMILARITY_FUNCTION_CALL_WITH_ANNOTATION = "/* #{DISPLAY_NAME} */ SIMILARITY".freeze
 
       # This method returns an Arel expression that can be used in an ActiveRecord query to order the resultset by similarity.
       #
@@ -74,6 +79,10 @@ module Gitlab
         end
       end
 
+      def self.order_by_similarity?(arel_query)
+        arel_query.to_sql.include?(SIMILARITY_FUNCTION_CALL_WITH_ANNOTATION)
+      end
+
       # (SIMILARITY(COALESCE(column, ''), 'search_string') * CAST(multiplier AS numeric))
       def self.rule_to_arel(search, rule)
         Arel::Nodes::Grouping.new(
@@ -91,7 +100,7 @@ module Gitlab
 
       # SIMILARITY(COALESCE(column, ''), 'search_string')
       def self.similarity_function_call(search, column)
-        Arel::Nodes::NamedFunction.new('SIMILARITY', [column, Arel.sql(search)])
+        Arel::Nodes::NamedFunction.new(SIMILARITY_FUNCTION_CALL_WITH_ANNOTATION, [column, Arel.sql(search)])
       end
 
       # CAST(multiplier AS numeric)

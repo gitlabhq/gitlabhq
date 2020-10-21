@@ -3,7 +3,7 @@
 - verified_at = mirror.ssh_known_hosts_verified_at
 
 .form-group.js-ssh-host-keys-section{ class: ('collapse' unless mirror.ssh_mirror_url?) }
-  %button.btn.btn-inverted.btn-secondary.inline.js-detect-host-keys.gl-mr-3{ type: 'button', data: { qa_selector: 'detect_host_keys' } }
+  %button.btn.gl-button.btn-inverted.btn-secondary.inline.js-detect-host-keys.gl-mr-3{ type: 'button', data: { qa_selector: 'detect_host_keys' } }
     .js-spinner.d-none.spinner.mr-1
     = _('Detect host keys')
   .fingerprint-ssh-info.js-fingerprint-ssh-info.gl-mt-3.gl-mb-3{ class: ('collapse' unless mirror.ssh_mirror_url?) }
@@ -23,7 +23,7 @@
         #{time_ago_in_words(verified_at)} ago
 
   .js-ssh-hosts-advanced.inline
-    %button.btn.btn-default.btn-show-advanced.show-advanced{ type: 'button' }
+    %button.btn.gl-button.btn-default.btn-show-advanced.show-advanced{ type: 'button' }
       %span.label-show
         = _('Input host keys manually')
       %span.label-hide

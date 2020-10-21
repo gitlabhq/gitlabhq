@@ -3,6 +3,8 @@
 class Projects::VariablesController < Projects::ApplicationController
   before_action :authorize_admin_build!
 
+  feature_category :continuous_integration
+
   def show
     respond_to do |format|
       format.json do

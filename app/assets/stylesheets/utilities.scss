@@ -44,13 +44,10 @@
 }
 
 .border-width-1px { border-width: 1px; }
-.border-bottom-width-1px { border-bottom-width: 1px; }
 .border-style-dashed { border-style: dashed; }
 .border-style-solid { border-style: solid; }
-.border-bottom-style-solid { border-bottom-style: solid; }
 .border-color-blue-300 { border-color: $blue-300; }
 .border-color-default { border-color: $border-color; }
-.border-bottom-color-default { border-bottom-color: $border-color; }
 .border-radius-default { border-radius: $border-radius-default; }
 .border-radius-small { border-radius: $border-radius-small; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
@@ -95,11 +92,6 @@
   padding-bottom: $gl-spacing-scale-8;
 }
 
-// move this to GitLab UI once onboarding experiment is considered a success
-.gl-pl-7 {
-  padding-left: $gl-spacing-scale-7;
-}
-
 .gl-transition-property-stroke-opacity {
   transition-property: stroke-opacity;
 }
@@ -116,43 +108,17 @@
   box-shadow: inset 0 0 3px $gl-border-size-1 $blue-500;
 }
 
-
-.gl-sm-align-items-flex-end {
-  @media (min-width: $breakpoint-sm) {
-    align-items: flex-end;
-  }
+// This utility is used to force the z-index to match that of dropdown menu's
+.gl-z-dropdown-menu\! {
+  z-index: 300 !important;
 }
 
-.gl-sm-text-body {
-  @media (min-width: $breakpoint-sm) {
-    color: $body-color;
-  }
+.gl-flex-basis-quarter {
+  flex-basis: 25%;
 }
 
-.gl-sm-font-weight-bold {
-  @media (min-width: $breakpoint-sm) {
-    font-weight: $gl-font-weight-bold;
-  }
-}
-
-.gl-min-h-6 {
-  min-height: $gl-spacing-scale-6;
-}
-
-.gl-md-justify-content-end {
+.gl-md-ml-3 {
   @media (min-width: $breakpoint-md) {
-    width: auto !important;
-  }
-}
-
-.gl-display-md-flex {
-  @media (min-width: $breakpoint-md) {
-    display: flex;
-  }
-}
-
-.gl-display-md-none {
-  @media (min-width: $breakpoint-md) {
-    display: none;
+    margin-left: $gl-spacing-scale-3;
   }
 }

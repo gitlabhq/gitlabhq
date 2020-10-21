@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :docker, :runner do
+  RSpec.describe 'Verify', :runner do
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let!(:runner) do

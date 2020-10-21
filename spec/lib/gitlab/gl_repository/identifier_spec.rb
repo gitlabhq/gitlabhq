@@ -35,14 +35,14 @@ RSpec.describe Gitlab::GlRepository::Identifier do
     it_behaves_like 'parsing gl_repository identifier' do
       let(:record_id) { project.id }
       let(:identifier) { "wiki-#{record_id}" }
-      let(:expected_container) { project }
+      let(:expected_container) { project.wiki }
       let(:expected_type) { Gitlab::GlRepository::WIKI }
     end
 
     it_behaves_like 'parsing gl_repository identifier' do
       let(:record_id) { project.id }
       let(:identifier) { "project-#{record_id}-wiki" }
-      let(:expected_container) { project }
+      let(:expected_container) { project.wiki }
       let(:expected_type) { Gitlab::GlRepository::WIKI }
     end
   end
@@ -87,7 +87,8 @@ RSpec.describe Gitlab::GlRepository::Identifier do
         'project-wibble-wiki',
         'wiki-1-project',
         'snippet',
-        'project-1-wiki-bar'
+        'project-1-wiki-bar',
+        'project-1-project'
       ]
     end
 
@@ -95,11 +96,6 @@ RSpec.describe Gitlab::GlRepository::Identifier do
       it 'raises InvalidIdentifier' do
         expect { described_class.parse(identifier) }.to raise_error(described_class::InvalidIdentifier)
       end
-    end
-
-    it 'raises InvalidIdentifier on project-1-project' do
-      pending 'https://gitlab.com/gitlab-org/gitlab/-/issues/219192'
-      expect { described_class.parse('project-1-project') }.to raise_error(described_class::InvalidIdentifier)
     end
   end
 end

@@ -4,6 +4,8 @@ module Groups
   class UpdateService < Groups::BaseService
     include UpdateVisibilityLevel
 
+    SETTINGS_PARAMS = [:allow_mfa_for_subgroups].freeze
+
     def execute
       reject_parent_id!
       remove_unallowed_params
@@ -19,7 +21,13 @@ module Groups
 
       return false unless valid_path_change_with_npm_packages?
 
+      return false unless update_shared_runners
+
+      handle_changes
+
       before_assignment_hook(group, params)
+
+      handle_namespace_settings
 
       group.assign_attributes(params)
 
@@ -37,6 +45,18 @@ module Groups
     end
 
     private
+
+    def handle_namespace_settings
+      settings_params = params.slice(*::NamespaceSetting::NAMESPACE_SETTINGS_PARAMS)
+
+      return if settings_params.empty?
+
+      ::NamespaceSetting::NAMESPACE_SETTINGS_PARAMS.each do |nsp|
+        params.delete(nsp)
+      end
+
+      ::NamespaceSettings::UpdateService.new(current_user, group, settings_params).execute
+    end
 
     def valid_path_change_with_npm_packages?
       return true unless group.packages_feature_enabled?
@@ -73,6 +93,18 @@ module Groups
         # don't enqueue immediately to prevent todos removal in case of a mistake
         TodosDestroyer::GroupPrivateWorker.perform_in(Todo::WAIT_FOR_DELETE, group.id)
       end
+
+      update_two_factor_requirement_for_subgroups
+    end
+
+    def update_two_factor_requirement_for_subgroups
+      settings = group.namespace_settings
+      return if settings.allow_mfa_for_subgroups
+
+      if settings.previous_changes.include?(:allow_mfa_for_subgroups)
+        # enque in batches members update
+        DisallowTwoFactorForSubgroupsWorker.perform_async(group.id)
+      end
     end
 
     def reject_parent_id!
@@ -83,6 +115,21 @@ module Groups
     def remove_unallowed_params
       params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, group)
       params.delete(:default_branch_protection) unless can?(current_user, :update_default_branch_protection, group)
+    end
+
+    def handle_changes
+      handle_settings_update
+    end
+
+    def handle_settings_update
+      settings_params = params.slice(*allowed_settings_params)
+      allowed_settings_params.each { |param| params.delete(param) }
+
+      ::NamespaceSettings::UpdateService.new(current_user, group, settings_params).execute
+    end
+
+    def allowed_settings_params
+      SETTINGS_PARAMS
     end
 
     def valid_share_with_group_lock_change?
@@ -97,6 +144,17 @@ module Groups
       return false if params[:share_with_group_lock].nil?
 
       params[:share_with_group_lock] != group.share_with_group_lock
+    end
+
+    def update_shared_runners
+      return true if params[:shared_runners_setting].nil?
+
+      result = Groups::UpdateSharedRunnersService.new(group, current_user, shared_runners_setting: params.delete(:shared_runners_setting)).execute
+
+      return true if result[:status] == :success
+
+      group.errors.add(:update_shared_runners, result[:message])
+      false
     end
   end
 end

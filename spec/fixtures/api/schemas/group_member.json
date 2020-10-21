@@ -7,9 +7,9 @@
     "access_level",
     "requested_at",
     "source",
+    "valid_roles",
     "can_update",
-    "can_remove",
-    "can_override"
+    "can_remove"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -18,7 +18,6 @@
     "requested_at": { "type": ["date-time", "null"] },
     "can_update": { "type": "boolean" },
     "can_remove": { "type": "boolean" },
-    "can_override": { "type": "boolean" },
     "access_level": {
       "type": "object",
       "required": ["integer_value", "string_value"],
@@ -36,6 +35,7 @@
         "web_url": { "type": "string" }
       }
     },
+    "valid_roles": { "type": "object" },
     "created_by": {
       "type": "object",
       "required": ["name", "web_url"],
@@ -62,7 +62,18 @@
         "avatar_url": { "type": ["string", "null"] },
         "web_url": { "type": "string" },
         "blocked": { "type": "boolean" },
-        "two_factor_enabled": { "type": "boolean" }
+        "two_factor_enabled": { "type": "boolean" },
+        "status": {
+          "type": "object",
+          "required": [
+            "emoji",
+            "message_html"
+          ],
+          "properties": {
+            "emoji": { "type": "string" },
+            "message_html": { "type": "string" }
+          }
+        }
       }
     },
     "invite": {

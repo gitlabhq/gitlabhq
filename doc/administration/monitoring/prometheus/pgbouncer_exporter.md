@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -12,7 +12,7 @@ The [PgBouncer exporter](https://github.com/prometheus-community/pgbouncer_expor
 you to measure various [PgBouncer](https://www.pgbouncer.org/) metrics.
 
 NOTE: **Note:**
-For installations from source you'll have to install and configure it yourself.
+For installations from source you must install and configure it yourself.
 
 To enable the PgBouncer exporter:
 

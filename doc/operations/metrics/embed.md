@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -17,8 +17,7 @@ metrics to others, and you want to have relevant information directly available.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29691) in GitLab 12.2.
 
-NOTE: **Note:**
-Requires [Kubernetes](../../user/project/integrations/prometheus_library/kubernetes.md) metrics.
+This feature requires [Kubernetes](../../user/project/integrations/prometheus_library/kubernetes.md) metrics.
 
 Note: **Note:**
 In GitLab versions 13.3 and earlier, metrics dashboard links were in the form

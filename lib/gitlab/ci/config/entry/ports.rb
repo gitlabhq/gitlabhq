@@ -7,7 +7,7 @@ module Gitlab
         ##
         # Entry that represents a configuration of the ports of a Docker service.
         #
-        class Ports < ::Gitlab::Config::Entry::Node
+        class Ports < ::Gitlab::Config::Entry::ComposableArray
           include ::Gitlab::Config::Entry::Validatable
 
           validations do
@@ -16,28 +16,8 @@ module Gitlab
             validates :config, port_unique: true
           end
 
-          def compose!(deps = nil)
-            super do
-              @entries = []
-              @config.each do |config|
-                @entries << ::Gitlab::Config::Entry::Factory.new(Entry::Port)
-                  .value(config || {})
-                  .with(key: "port", parent: self, description: "port definition.") # rubocop:disable CodeReuse/ActiveRecord
-                  .create!
-              end
-
-              @entries.each do |entry|
-                entry.compose!(deps)
-              end
-            end
-          end
-
-          def value
-            @entries.map(&:value)
-          end
-
-          def descendants
-            @entries
+          def composable_class
+            Entry::Port
           end
         end
       end

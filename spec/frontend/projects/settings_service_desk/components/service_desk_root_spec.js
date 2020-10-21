@@ -218,9 +218,7 @@ describe('ServiceDeskRoot', () => {
       .$nextTick()
       .then(waitForPromises)
       .then(() => {
-        expect(wrapper.html()).toContain(
-          'An error occurred while saving the template. Please check if the template exists.',
-        );
+        expect(wrapper.html()).toContain('An error occured while making the changes:');
       });
   });
 });

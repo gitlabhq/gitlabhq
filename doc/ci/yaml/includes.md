@@ -73,10 +73,11 @@ automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
 Content of `https://gitlab.com/awesome-project/raw/master/.before-script-template.yml`:
 
 ```yaml
-before_script:
-  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-  - gem install bundler --no-document
-  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+default:
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+    - gem install bundler --no-document
+    - bundle install --jobs $(nproc)  "${FLAGS[@]}"
 ```
 
 Content of `.gitlab-ci.yml`:

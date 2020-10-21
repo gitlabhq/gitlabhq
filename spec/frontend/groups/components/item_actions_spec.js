@@ -1,84 +1,87 @@
-import Vue from 'vue';
-
-import mountComponent from 'helpers/vue_mount_component_helper';
-import itemActionsComponent from '~/groups/components/item_actions.vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import ItemActions from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
 
-const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren[0]) => {
-  const Component = Vue.extend(itemActionsComponent);
+describe('ItemActions', () => {
+  let wrapper;
+  const parentGroup = mockChildren[0];
 
-  return mountComponent(Component, {
-    group,
+  const defaultProps = {
+    group: mockParentGroupItem,
     parentGroup,
-  });
-};
+  };
 
-describe('ItemActionsComponent', () => {
-  let vm;
-
-  beforeEach(() => {
-    vm = createComponent();
-  });
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(ItemActions, {
+      propsData: { ...defaultProps, ...props },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
-  describe('methods', () => {
-    describe('onLeaveGroup', () => {
-      it('emits `showLeaveGroupModal` event with `group` and `parentGroup` props', () => {
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-        vm.onLeaveGroup();
-
-        expect(eventHub.$emit).toHaveBeenCalledWith(
-          'showLeaveGroupModal',
-          vm.group,
-          vm.parentGroup,
-        );
-      });
-    });
-  });
+  const findEditGroupBtn = () => wrapper.find('[data-testid="edit-group-btn"]');
+  const findEditGroupIcon = () => findEditGroupBtn().find(GlIcon);
+  const findLeaveGroupBtn = () => wrapper.find('[data-testid="leave-group-btn"]');
+  const findLeaveGroupIcon = () => findLeaveGroupBtn().find(GlIcon);
 
   describe('template', () => {
-    it('should render component template correctly', () => {
-      expect(vm.$el.classList.contains('controls')).toBeTruthy();
+    it('renders component template correctly', () => {
+      createComponent();
+
+      expect(wrapper.classes()).toContain('controls');
     });
 
-    it('should render Edit Group button with correct attribute values', () => {
-      const group = { ...mockParentGroupItem };
-      group.canEdit = true;
-      const newVm = createComponent(group);
+    it('renders "Edit group" button with correct attribute values', () => {
+      const group = {
+        ...mockParentGroupItem,
+        canEdit: true,
+      };
 
-      const editBtn = newVm.$el.querySelector('a.edit-group');
+      createComponent({ group });
 
-      expect(editBtn).toBeDefined();
-      expect(editBtn.classList.contains('no-expand')).toBeTruthy();
-      expect(editBtn.getAttribute('href')).toBe(group.editPath);
-      expect(editBtn.getAttribute('aria-label')).toBe('Edit group');
-      expect(editBtn.dataset.originalTitle).toBe('Edit group');
-      expect(editBtn.querySelectorAll('svg').length).not.toBe(0);
-      expect(editBtn.querySelector('svg').getAttribute('data-testid')).toBe('settings-icon');
-
-      newVm.$destroy();
+      expect(findEditGroupBtn().exists()).toBe(true);
+      expect(findEditGroupBtn().classes()).toContain('no-expand');
+      expect(findEditGroupBtn().attributes('href')).toBe(group.editPath);
+      expect(findEditGroupBtn().attributes('aria-label')).toBe('Edit group');
+      expect(findEditGroupBtn().attributes('data-original-title')).toBe('Edit group');
+      expect(findEditGroupIcon().exists()).toBe(true);
+      expect(findEditGroupIcon().props('name')).toBe('settings');
     });
 
-    it('should render Leave Group button with correct attribute values', () => {
-      const group = { ...mockParentGroupItem };
-      group.canLeave = true;
-      const newVm = createComponent(group);
+    describe('`canLeave` is true', () => {
+      const group = {
+        ...mockParentGroupItem,
+        canLeave: true,
+      };
 
-      const leaveBtn = newVm.$el.querySelector('a.leave-group');
+      beforeEach(() => {
+        createComponent({ group });
+      });
 
-      expect(leaveBtn).toBeDefined();
-      expect(leaveBtn.classList.contains('no-expand')).toBeTruthy();
-      expect(leaveBtn.getAttribute('href')).toBe(group.leavePath);
-      expect(leaveBtn.getAttribute('aria-label')).toBe('Leave this group');
-      expect(leaveBtn.dataset.originalTitle).toBe('Leave this group');
-      expect(leaveBtn.querySelectorAll('svg').length).not.toBe(0);
-      expect(leaveBtn.querySelector('svg').getAttribute('data-testid')).toBe('leave-icon');
+      it('renders "Leave this group" button with correct attribute values', () => {
+        expect(findLeaveGroupBtn().exists()).toBe(true);
+        expect(findLeaveGroupBtn().classes()).toContain('no-expand');
+        expect(findLeaveGroupBtn().attributes('href')).toBe(group.leavePath);
+        expect(findLeaveGroupBtn().attributes('aria-label')).toBe('Leave this group');
+        expect(findLeaveGroupBtn().attributes('data-original-title')).toBe('Leave this group');
+        expect(findLeaveGroupIcon().exists()).toBe(true);
+        expect(findLeaveGroupIcon().props('name')).toBe('leave');
+      });
 
-      newVm.$destroy();
+      it('emits event on "Leave this group" button click', () => {
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+
+        findLeaveGroupBtn().trigger('click');
+
+        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', group, parentGroup);
+      });
     });
   });
 });

@@ -5,6 +5,8 @@ class Projects::AvatarsController < Projects::ApplicationController
 
   before_action :authorize_admin_project!, only: [:destroy]
 
+  feature_category :projects
+
   def show
     @blob = @repository.blob_at_branch(@repository.root_ref, @project.avatar_in_git)
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Experimentation do
+RSpec.describe Gitlab::Experimentation, :snowplow do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
       test_experiment: {
@@ -69,12 +69,26 @@ RSpec.describe Gitlab::Experimentation do
       end
     end
 
+    describe '#push_frontend_experiment' do
+      it 'pushes an experiment to the frontend' do
+        gon = instance_double('gon')
+        experiments = { experiments: { 'myExperiment' => true } }
+
+        stub_experiment_for_user(my_experiment: true)
+        allow(controller).to receive(:gon).and_return(gon)
+
+        expect(gon).to receive(:push).with(experiments, true)
+
+        controller.push_frontend_experiment(:my_experiment)
+      end
+    end
+
     describe '#experiment_enabled?' do
       subject { controller.experiment_enabled?(:test_experiment) }
 
       context 'cookie is not present' do
-        it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of nil' do
-          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, nil)
+        it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of nil' do
+          expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, nil)
           controller.experiment_enabled?(:test_experiment)
         end
       end
@@ -85,22 +99,22 @@ RSpec.describe Gitlab::Experimentation do
           get :index
         end
 
-        it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of the modulo 100 of the hex value of the uuid' do
+        it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of the modulo 100 of the hex value of the uuid' do
           # 'abcd1234'.hex % 100 = 76
-          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, 76)
+          expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, 76)
           controller.experiment_enabled?(:test_experiment)
         end
       end
 
       it 'returns true when DNT: 0 is set in the request' do
-        allow(Gitlab::Experimentation).to receive(:enabled_for_user?) { true }
+        allow(Gitlab::Experimentation).to receive(:enabled_for_value?) { true }
         controller.request.headers['DNT'] = '0'
 
         is_expected.to be_truthy
       end
 
       it 'returns false when DNT: 1 is set in the request' do
-        allow(Gitlab::Experimentation).to receive(:enabled_for_user?) { true }
+        allow(Gitlab::Experimentation).to receive(:enabled_for_value?) { true }
         controller.request.headers['DNT'] = '1'
 
         is_expected.to be_falsy
@@ -127,13 +141,14 @@ RSpec.describe Gitlab::Experimentation do
           end
 
           it 'tracks the event with the right parameters' do
-            expect(Gitlab::Tracking).to receive(:event).with(
-              'Team',
-              'start',
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_snowplow_event(
+              category: 'Team',
+              action: 'start',
               property: 'experimental_group',
-              value: 'team_id'
+              value: 1
             )
-            controller.track_experiment_event(:test_experiment, 'start', 'team_id')
           end
         end
 
@@ -143,13 +158,43 @@ RSpec.describe Gitlab::Experimentation do
           end
 
           it 'tracks the event with the right parameters' do
-            expect(Gitlab::Tracking).to receive(:event).with(
-              'Team',
-              'start',
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_snowplow_event(
+              category: 'Team',
+              action: 'start',
               property: 'control_group',
-              value: 'team_id'
+              value: 1
             )
-            controller.track_experiment_event(:test_experiment, 'start', 'team_id')
+          end
+        end
+
+        context 'do not track is disabled' do
+          before do
+            request.headers['DNT'] = '0'
+          end
+
+          it 'does track the event' do
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_snowplow_event(
+              category: 'Team',
+              action: 'start',
+              property: 'control_group',
+              value: 1
+            )
+          end
+        end
+
+        context 'do not track enabled' do
+          before do
+            request.headers['DNT'] = '1'
+          end
+
+          it 'does not track the event' do
+            controller.track_experiment_event(:test_experiment, 'start', 1)
+
+            expect_no_snowplow_event
           end
         end
       end
@@ -160,8 +205,9 @@ RSpec.describe Gitlab::Experimentation do
         end
 
         it 'does not track the event' do
-          expect(Gitlab::Tracking).not_to receive(:event)
           controller.track_experiment_event(:test_experiment, 'start')
+
+          expect_no_snowplow_event
         end
       end
     end
@@ -218,6 +264,36 @@ RSpec.describe Gitlab::Experimentation do
                 property: 'control_group'
               }
             )
+          end
+        end
+
+        context 'do not track disabled' do
+          before do
+            request.headers['DNT'] = '0'
+          end
+
+          it 'pushes the right parameters to gon' do
+            controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
+
+            expect(Gon.tracking_data).to eq(
+              {
+                category: 'Team',
+                action: 'start',
+                property: 'control_group'
+              }
+            )
+          end
+        end
+
+        context 'do not track enabled' do
+          before do
+            request.headers['DNT'] = '1'
+          end
+
+          it 'does not push data to gon' do
+            controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
+
+            expect(Gon.method_defined?(:tracking_data)).to be_falsey
           end
         end
       end
@@ -294,6 +370,39 @@ RSpec.describe Gitlab::Experimentation do
           controller.record_experiment_user(:test_experiment)
         end
       end
+
+      context 'do not track' do
+        before do
+          allow(controller).to receive(:current_user).and_return(user)
+          allow_next_instance_of(described_class) do |instance|
+            allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
+          end
+        end
+
+        context 'is disabled' do
+          before do
+            request.headers['DNT'] = '0'
+          end
+
+          it 'calls add_user on the Experiment model' do
+            expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user)
+
+            controller.record_experiment_user(:test_experiment)
+          end
+        end
+
+        context 'is enabled' do
+          before do
+            request.headers['DNT'] = '1'
+          end
+
+          it 'does not call add_user on the Experiment model' do
+            expect(::Experiment).not_to receive(:add_user)
+
+            controller.record_experiment_user(:test_experiment)
+          end
+        end
+      end
     end
 
     describe '#experiment_tracking_category_and_group' do
@@ -336,8 +445,8 @@ RSpec.describe Gitlab::Experimentation do
     end
   end
 
-  describe '.enabled_for_user?' do
-    subject { described_class.enabled_for_user?(:test_experiment, experimentation_subject_index) }
+  describe '.enabled_for_value?' do
+    subject { described_class.enabled_for_value?(:test_experiment, experimentation_subject_index) }
 
     let(:experimentation_subject_index) { 9 }
 
@@ -374,6 +483,34 @@ RSpec.describe Gitlab::Experimentation do
 
           it { is_expected.to be_falsey }
         end
+      end
+    end
+  end
+
+  describe '.enabled_for_attribute?' do
+    subject { described_class.enabled_for_attribute?(:test_experiment, attribute) }
+
+    let(:attribute) { 'abcd' } # Digest::SHA1.hexdigest('abcd').hex % 100 = 7
+
+    context 'experiment is disabled' do
+      before do
+        allow(described_class).to receive(:enabled?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'experiment is enabled' do
+      before do
+        allow(described_class).to receive(:enabled?).and_return(true)
+      end
+
+      it { is_expected.to be true }
+
+      context 'outside enabled ratio' do
+        let(:attribute) { 'abc' } # Digest::SHA1.hexdigest('abc').hex % 100 = 17
+
+        it { is_expected.to be false }
       end
     end
   end

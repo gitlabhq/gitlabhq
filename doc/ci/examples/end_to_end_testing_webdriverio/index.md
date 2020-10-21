@@ -9,7 +9,7 @@ type: tutorial
 
 [Review Apps](../../review_apps/index.md) are great: for every merge request
 (or branch, for that matter), the new code can be copied and deployed to a fresh production-like live
-environment, making it incredibly low-effort to assess the impact of the changes. Thus, when we use a dependency manager like
+environment, reducing the effort to assess the impact of changes. Thus, when we use a dependency manager like
 [Dependencies.io](https://www.dependencies.io/), it can submit a merge request with an updated dependency,
 and it will immediately be clear that the application can still be properly built and deployed. After all, you can _see_ it
 running!
@@ -95,9 +95,10 @@ dependency upgrade did not break anything without even having to look at your we
 
 ## Running locally
 
-We'll get to running the above test in CI/CD in a moment. When writing tests, however, it helps if
-you do not have to wait for your pipelines to succeed in order to check whether they do what you
-expect them to do. In other words, let's get it to run locally.
+We'll get to running the above test in CI/CD in a moment. When writing tests,
+however, it helps if you don't have to wait for your pipelines to succeed to
+determine whether they do what you expect them to do. In other words, let's get
+it to run locally.
 
 Make sure that your app is running locally. If you use Webpack,
 you can use [the Webpack Dev Server WebdriverIO plugin](https://www.npmjs.com/package/wdio-webpack-dev-server-service)

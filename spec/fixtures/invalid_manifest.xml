@@ -1,0 +1,4 @@
+<manifest>
+  <remote review="invalid-url" />
+  <project name="platform/build"/>
+</manifest>

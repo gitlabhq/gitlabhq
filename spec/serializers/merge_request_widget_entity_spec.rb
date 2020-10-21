@@ -88,25 +88,53 @@ RSpec.describe MergeRequestWidgetEntity do
   end
 
   describe 'codequality report artifacts', :request_store do
+    let(:merge_base_pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
+
     before do
       project.add_developer(user)
 
       allow(resource).to receive_messages(
+        merge_base_pipeline: merge_base_pipeline,
         base_pipeline: pipeline,
         head_pipeline: pipeline
       )
     end
 
-    context "with report artifacts" do
+    context 'with report artifacts' do
       let(:pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
+      let(:generic_job_id) { pipeline.builds.first.id }
+      let(:merge_base_job_id) { merge_base_pipeline.builds.first.id }
 
-      it "has data entry" do
-        expect(subject).to include(:codeclimate)
+      it 'has head_path and base_path entries' do
+        expect(subject[:codeclimate][:head_path]).to be_present
+        expect(subject[:codeclimate][:base_path]).to be_present
+      end
+
+      context 'on pipelines for merged results' do
+        let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :with_codequality_report, project: project) }
+
+        context 'with merge_base_pipelines enabled' do
+          it 'returns URLs from the head_pipeline and merge_base_pipeline' do
+            expect(subject[:codeclimate][:head_path]).to include("/jobs/#{generic_job_id}/artifacts/download?file_type=codequality")
+            expect(subject[:codeclimate][:base_path]).to include("/jobs/#{merge_base_job_id}/artifacts/download?file_type=codequality")
+          end
+        end
+
+        context 'with merge_base_pipelines disabled' do
+          before do
+            stub_feature_flags(merge_base_pipelines: false)
+          end
+
+          it 'returns URLs from the head_pipeline and base_pipeline' do
+            expect(subject[:codeclimate][:head_path]).to include("/jobs/#{generic_job_id}/artifacts/download?file_type=codequality")
+            expect(subject[:codeclimate][:base_path]).to include("/jobs/#{generic_job_id}/artifacts/download?file_type=codequality")
+          end
+        end
       end
     end
 
-    context "without artifacts" do
-      it "does not have data entry" do
+    context 'without artifacts' do
+      it 'does not have data entry' do
         expect(subject).not_to include(:codeclimate)
       end
     end
@@ -271,9 +299,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
   describe 'user callouts' do
     context 'when suggest pipeline feature is enabled' do
-      before do
-        stub_feature_flags(suggest_pipeline: true)
-      end
+      subject { described_class.new(resource, request: request, experiment_enabled: :suggest_pipeline).as_json }
 
       it 'provides a valid path value for user callout path' do
         expect(subject[:user_callouts_path]).to eq '/-/user_callouts'
@@ -307,10 +333,6 @@ RSpec.describe MergeRequestWidgetEntity do
     end
 
     context 'when suggest pipeline feature is not enabled' do
-      before do
-        stub_feature_flags(suggest_pipeline: false)
-      end
-
       it 'provides no valid value for user callout path' do
         expect(subject[:user_callouts_path]).to be_nil
       end
@@ -353,5 +375,9 @@ RSpec.describe MergeRequestWidgetEntity do
 
       expect(entity[:rebase_path]).to be_nil
     end
+  end
+
+  it 'has security_reports_docs_path' do
+    expect(subject[:security_reports_docs_path]).not_to be_nil
   end
 end

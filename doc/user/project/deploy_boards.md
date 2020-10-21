@@ -85,7 +85,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes.html) executor.
 1. Configure the [Kubernetes integration](clusters/index.md) in your project for the
    cluster. The Kubernetes namespace is of particular note as you will need it
-   for your deployment scripts (exposed by the `KUBE_NAMESPACE` env variable).
+   for your deployment scripts (exposed by the `KUBE_NAMESPACE` environment variable).
 1. Ensure Kubernetes annotations of `app.gitlab.com/env: $CI_ENVIRONMENT_SLUG`
    and `app.gitlab.com/app: $CI_PROJECT_PATH_SLUG` are applied to the
    deployments, replica sets, and pods, where `$CI_ENVIRONMENT_SLUG` and
@@ -106,7 +106,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    be done automatically and no action is necessary.
 
    If you are using GCP to manage clusters, you can see the deployment details in GCP itself by going to **Workloads > deployment name > Details**:
-   
+
    ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 
 Once all of the above are set up and the pipeline has run at least once,

@@ -1,4 +1,5 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
+import waitForPromises from 'helpers/wait_for_promises';
 import Editor from '~/editor/editor_lite';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX } from '~/editor/constants';
@@ -253,55 +254,125 @@ describe('Base editor', () => {
     const MyExt3 = {
       foo: foo2,
     };
-    beforeEach(() => {
-      instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
+
+    describe('basic functionality', () => {
+      beforeEach(() => {
+        instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
+      });
+
+      it('is extensible with the extensions', () => {
+        expect(instance.foo).toBeUndefined();
+
+        instance.use(MyExt1);
+        expect(instance.foo).toEqual(foo1);
+      });
+
+      it('does not fail if no extensions supplied', () => {
+        const spy = jest.spyOn(global.console, 'error');
+        instance.use();
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('is extensible with multiple extensions', () => {
+        expect(instance.foo).toBeUndefined();
+        expect(instance.bar).toBeUndefined();
+
+        instance.use([MyExt1, MyExt2]);
+
+        expect(instance.foo).toEqual(foo1);
+        expect(instance.bar).toEqual(bar);
+      });
+
+      it('uses the last definition of a method in case of an overlap', () => {
+        instance.use([MyExt1, MyExt2, MyExt3]);
+        expect(instance).toEqual(
+          expect.objectContaining({
+            foo: foo2,
+            bar,
+          }),
+        );
+      });
+
+      it('correctly resolves references withing extensions', () => {
+        const FunctionExt = {
+          inst() {
+            return this;
+          },
+          mod() {
+            return this.getModel();
+          },
+        };
+        instance.use(FunctionExt);
+        expect(instance.inst()).toEqual(editor.instances[0]);
+      });
     });
 
-    it('is extensible with the extensions', () => {
-      expect(instance.foo).toBeUndefined();
-
-      editor.use(MyExt1);
-      expect(instance.foo).toEqual(foo1);
-    });
-
-    it('does not fail if no extensions supplied', () => {
-      const spy = jest.spyOn(global.console, 'error');
-      editor.use();
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('is extensible with multiple extensions', () => {
-      expect(instance.foo).toBeUndefined();
-      expect(instance.bar).toBeUndefined();
-
-      editor.use([MyExt1, MyExt2]);
-
-      expect(instance.foo).toEqual(foo1);
-      expect(instance.bar).toEqual(bar);
-    });
-
-    it('uses the last definition of a method in case of an overlap', () => {
-      editor.use([MyExt1, MyExt2, MyExt3]);
-      expect(instance).toEqual(
-        expect.objectContaining({
-          foo: foo2,
-          bar,
-        }),
-      );
-    });
-
-    it('correctly resolves references withing extensions', () => {
-      const FunctionExt = {
-        inst() {
-          return this;
-        },
-        mod() {
-          return this.getModel();
-        },
+    describe('extensions as an instance parameter', () => {
+      let editorExtensionSpy;
+      const instanceConstructor = (extensions = []) => {
+        return editor.createInstance({
+          el: editorEl,
+          blobPath,
+          blobContent,
+          blobGlobalId,
+          extensions,
+        });
       };
-      editor.use(FunctionExt);
-      expect(instance.inst()).toEqual(editor.instances[0]);
+
+      beforeEach(() => {
+        editorExtensionSpy = jest.spyOn(Editor, 'pushToImportsArray').mockImplementation(arr => {
+          arr.push(
+            Promise.resolve({
+              default: {},
+            }),
+          );
+        });
+      });
+
+      it.each([undefined, [], [''], ''])(
+        'does not fail and makes no fetch if extensions is %s',
+        () => {
+          instance = instanceConstructor(null);
+          expect(editorExtensionSpy).not.toHaveBeenCalled();
+        },
+      );
+
+      it.each`
+        type                  | value             | callsCount
+        ${'simple string'}    | ${'foo'}          | ${1}
+        ${'combined string'}  | ${'foo, bar'}     | ${2}
+        ${'array of strings'} | ${['foo', 'bar']} | ${2}
+      `('accepts $type as an extension parameter', ({ value, callsCount }) => {
+        instance = instanceConstructor(value);
+        expect(editorExtensionSpy).toHaveBeenCalled();
+        expect(editorExtensionSpy.mock.calls).toHaveLength(callsCount);
+      });
+
+      it.each`
+        desc                                     | path                      | expectation
+        ${'~/editor'}                            | ${'foo'}                  | ${'~/editor/foo'}
+        ${'~/CUSTOM_PATH with leading slash'}    | ${'/my_custom_path/bar'}  | ${'~/my_custom_path/bar'}
+        ${'~/CUSTOM_PATH without leading slash'} | ${'my_custom_path/delta'} | ${'~/my_custom_path/delta'}
+      `('fetches extensions from $desc path', ({ path, expectation }) => {
+        instance = instanceConstructor(path);
+        expect(editorExtensionSpy).toHaveBeenCalledWith(expect.any(Array), expectation);
+      });
+
+      it('emits editor-ready event after all extensions were applied', async () => {
+        const calls = [];
+        const eventSpy = jest.fn().mockImplementation(() => {
+          calls.push('event');
+        });
+        const useSpy = jest.spyOn(editor, 'use').mockImplementation(() => {
+          calls.push('use');
+        });
+        editorEl.addEventListener('editor-ready', eventSpy);
+        instance = instanceConstructor('foo, bar');
+        await waitForPromises();
+        expect(useSpy.mock.calls).toHaveLength(2);
+        expect(calls).toEqual(['use', 'use', 'event']);
+      });
     });
 
     describe('multiple instances', () => {

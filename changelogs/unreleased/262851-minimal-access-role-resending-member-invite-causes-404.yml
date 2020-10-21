@@ -1,0 +1,5 @@
+---
+title: Allow re-sending invite to minimal access user
+merge_request: 44936
+author:
+type: fixed

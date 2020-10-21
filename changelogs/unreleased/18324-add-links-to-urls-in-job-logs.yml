@@ -1,0 +1,5 @@
+---
+title: Make URL links in job logs clickable
+merge_request: 40175
+author: Łukasz Groszkowski @falxcerebri
+type: added

@@ -3,23 +3,27 @@ import { mount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 import PipelineStore from '~/pipelines/stores/pipeline_store';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
-import stageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import linkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import graphJSON from './mock_data';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
 import PipelinesMediator from '~/pipelines/pipeline_details_mediator';
 
 describe('graph component', () => {
-  const store = new PipelineStore();
-  store.storePipeline(linkedPipelineJSON);
-  const mediator = new PipelinesMediator({ endpoint: '' });
-
+  let store;
+  let mediator;
   let wrapper;
 
   const findExpandPipelineBtn = () => wrapper.find('[data-testid="expandPipelineButton"]');
   const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expandPipelineButton"]');
+  const findStageColumns = () => wrapper.findAll(StageColumnComponent);
+  const findStageColumnAt = i => findStageColumns().at(i);
 
   beforeEach(() => {
+    mediator = new PipelinesMediator({ endpoint: '' });
+    store = new PipelineStore();
+    store.storePipeline(linkedPipelineJSON);
+
     setHTMLFixture('<div class="layout-page"></div>');
   });
 
@@ -43,7 +47,7 @@ describe('graph component', () => {
   });
 
   describe('with data', () => {
-    it('should render the graph', () => {
+    beforeEach(() => {
       wrapper = mount(graphComponent, {
         propsData: {
           isLoading: false,
@@ -51,25 +55,16 @@ describe('graph component', () => {
           mediator,
         },
       });
+    });
 
+    it('renders the graph', () => {
       expect(wrapper.find('.js-pipeline-graph').exists()).toBe(true);
-
-      expect(wrapper.find(stageColumnComponent).classes()).toContain('no-margin');
-
-      expect(
-        wrapper
-          .findAll(stageColumnComponent)
-          .at(1)
-          .classes(),
-      ).toContain('left-margin');
-
-      expect(wrapper.find('.stage-column:nth-child(2) .build:nth-child(1)').classes()).toContain(
-        'left-connector',
-      );
-
       expect(wrapper.find('.loading-icon').exists()).toBe(false);
-
       expect(wrapper.find('.stage-column-list').exists()).toBe(true);
+    });
+
+    it('renders columns in the graph', () => {
+      expect(findStageColumns()).toHaveLength(graphJSON.details.stages.length);
     });
   });
 
@@ -93,26 +88,26 @@ describe('graph component', () => {
         expect(wrapper.find('.fa-spinner').exists()).toBe(false);
       });
 
-      it('should include the stage column list', () => {
-        expect(wrapper.find(stageColumnComponent).exists()).toBe(true);
+      it('should include the stage column', () => {
+        expect(findStageColumnAt(0).exists()).toBe(true);
       });
 
-      it('should include the no-margin class on the first child if there is only one job', () => {
-        const firstStageColumnElement = wrapper.find(stageColumnComponent);
-
-        expect(firstStageColumnElement.classes()).toContain('no-margin');
-      });
-
-      it('should include the has-only-one-job class on the first child', () => {
-        const firstStageColumnElement = wrapper.find('.stage-column-list .stage-column');
-
-        expect(firstStageColumnElement.classes()).toContain('has-only-one-job');
+      it('stage column should have no-margin, gl-mr-26, has-only-one-job classes if there is only one job', () => {
+        expect(findStageColumnAt(0).classes()).toEqual(
+          expect.arrayContaining(['no-margin', 'gl-mr-26', 'has-only-one-job']),
+        );
       });
 
       it('should include the left-margin class on the second child', () => {
-        const firstStageColumnElement = wrapper.find('.stage-column-list .stage-column:last-child');
+        expect(findStageColumnAt(1).classes('left-margin')).toBe(true);
+      });
 
-        expect(firstStageColumnElement.classes()).toContain('left-margin');
+      it('should include the left-connector class in the build of the second child', () => {
+        expect(
+          findStageColumnAt(1)
+            .find('.build:nth-child(1)')
+            .classes('left-connector'),
+        ).toBe(true);
       });
 
       it('should include the js-has-linked-pipelines flag', () => {
@@ -134,12 +129,7 @@ describe('graph component', () => {
 
       describe('stageConnectorClass', () => {
         it('it returns left-margin when there is a triggerer', () => {
-          expect(
-            wrapper
-              .findAll(stageColumnComponent)
-              .at(1)
-              .classes(),
-          ).toContain('left-margin');
+          expect(findStageColumnAt(1).classes('left-margin')).toBe(true);
         });
       });
     });
@@ -248,6 +238,16 @@ describe('graph component', () => {
               .catch(done.fail);
           });
         });
+
+        describe('when column requests a refresh', () => {
+          beforeEach(() => {
+            findStageColumnAt(0).vm.$emit('refreshPipelineGraph');
+          });
+
+          it('refreshPipelineGraph is emitted', () => {
+            expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
+          });
+        });
       });
     });
   });
@@ -268,7 +268,7 @@ describe('graph component', () => {
       it('should include the first column with a no margin', () => {
         const firstColumn = wrapper.find('.stage-column');
 
-        expect(firstColumn.classes()).toContain('no-margin');
+        expect(firstColumn.classes('no-margin')).toBe(true);
       });
 
       it('should not render a linked pipelines column', () => {
@@ -278,16 +278,11 @@ describe('graph component', () => {
 
     describe('stageConnectorClass', () => {
       it('it returns no-margin when no triggerer and there is one job', () => {
-        expect(wrapper.find(stageColumnComponent).classes()).toContain('no-margin');
+        expect(findStageColumnAt(0).classes('no-margin')).toBe(true);
       });
 
       it('it returns left-margin when no triggerer and not the first stage', () => {
-        expect(
-          wrapper
-            .findAll(stageColumnComponent)
-            .at(1)
-            .classes(),
-        ).toContain('left-margin');
+        expect(findStageColumnAt(1).classes('left-margin')).toBe(true);
       });
     });
   });
@@ -302,12 +297,9 @@ describe('graph component', () => {
         },
       });
 
-      expect(
-        wrapper
-          .find('.stage-column:nth-child(2) .stage-name')
-          .text()
-          .trim(),
-      ).toEqual('Deploy &lt;img src=x onerror=alert(document.domain)&gt;');
+      expect(findStageColumnAt(1).props('title')).toEqual(
+        'Deploy &lt;img src=x onerror=alert(document.domain)&gt;',
+      );
     });
   });
 });

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: concepts, howto
 ---
@@ -18,14 +18,11 @@ POST /environments/:id/metrics_dashboard/annotations/
 POST /clusters/:id/metrics_dashboard/annotations/
 ```
 
-NOTE: **Note:**
-The value of `dashboard_path` will be treated as a CGI-escaped path, and automatically un-escaped.
-
 Parameters:
 
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
-| `dashboard_path` | string        | yes      | ID of the dashboard which needs to be annotated.   |
+| `dashboard_path` | string        | yes      | ID of the dashboard which needs to be annotated. Treated as a CGI-escaped path, and automatically un-escaped.  |
 | `starting_at` | string        | yes      | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Timestamp marking start point of annotation.   |
 | `ending_at` | string        | no      | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Timestamp marking end point of annotation. When not supplied annotation will be displayed as single event at start point.  |
 | `description` | string        | yes      | Description of the annotation.  |

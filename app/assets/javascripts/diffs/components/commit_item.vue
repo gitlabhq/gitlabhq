@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { mapActions } from 'vuex';
-import { GlButtonGroup, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -122,74 +122,27 @@ export default {
 </script>
 
 <template>
-  <li :class="{ 'js-toggle-container': collapsible }" class="commit flex-row">
-    <div class="d-flex align-items-center align-self-start">
-      <input
-        v-if="isSelectable"
-        class="mr-2"
-        type="checkbox"
-        :checked="checked"
-        @change="$emit('handleCheckboxChange', $event.target.checked)"
-      />
-      <user-avatar-link
-        :link-href="authorUrl"
-        :img-src="authorAvatar"
-        :img-alt="authorName"
-        :img-size="40"
-        class="avatar-cell d-none d-sm-block"
-      />
-    </div>
-    <div class="commit-detail flex-list">
-      <div class="commit-content qa-commit-content">
-        <a
-          :href="commit.commit_url"
-          class="commit-row-message item-title"
-          v-html="commit.title_html"
-        ></a>
-
-        <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
-
-        <gl-button
-          v-if="commit.description_html && collapsible"
-          class="js-toggle-button"
-          size="small"
-          icon="ellipsis_h"
-          :aria-label="__('Toggle commit description')"
-        />
-
-        <div class="committer">
-          <a
-            :href="authorUrl"
-            :class="authorClass"
-            :data-user-id="authorId"
-            v-text="authorName"
-          ></a>
-          {{ s__('CommitWidget|authored') }}
-          <time-ago-tooltip :time="commit.authored_date" />
-        </div>
-
-        <pre
-          v-if="commit.description_html"
-          :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
-          class="commit-row-description gl-mb-3 text-dark"
-          v-html="commitDescription"
-        ></pre>
-      </div>
-      <div class="commit-actions flex-row d-none d-sm-flex">
+  <li :class="{ 'js-toggle-container': collapsible }" class="commit">
+    <div
+      class="d-block d-sm-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
+    >
+      <div
+        class="commit-actions flex-row d-none d-sm-flex align-items-start flex-wrap justify-content-end"
+      >
         <div v-if="commit.signature_html" v-html="commit.signature_html"></div>
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
-          class="d-inline-flex"
+          class="d-inline-flex mb-2"
         />
-        <div class="commit-sha-group">
-          <div class="label label-monospace monospace" v-text="commit.short_id"></div>
+        <gl-button-group class="gl-ml-4 gl-mb-4" data-testid="commit-sha-group">
+          <gl-button label class="gl-font-monospace" v-text="commit.short_id" />
           <clipboard-button
             :text="commit.id"
             :title="__('Copy commit SHA')"
-            class="btn btn-default"
+            class="input-group-text"
           />
-        </div>
+        </gl-button-group>
         <div
           v-if="hasNeighborCommits && glFeatures.mrCommitNeighborNav"
           class="commit-nav-buttons ml-3"
@@ -226,6 +179,62 @@ export default {
           </gl-button-group>
         </div>
       </div>
+      <div>
+        <div class="d-flex float-left align-items-center align-self-start">
+          <input
+            v-if="isSelectable"
+            class="mr-2"
+            type="checkbox"
+            :checked="checked"
+            @change="$emit('handleCheckboxChange', $event.target.checked)"
+          />
+          <user-avatar-link
+            :link-href="authorUrl"
+            :img-src="authorAvatar"
+            :img-alt="authorName"
+            :img-size="40"
+            class="avatar-cell d-none d-sm-block"
+          />
+        </div>
+        <div class="commit-detail flex-list">
+          <div class="commit-content qa-commit-content">
+            <a
+              :href="commit.commit_url"
+              class="commit-row-message item-title"
+              v-html="commit.title_html"
+            ></a>
+
+            <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
+
+            <gl-button
+              v-if="commit.description_html && collapsible"
+              class="js-toggle-button"
+              size="small"
+              icon="ellipsis_h"
+              :aria-label="__('Toggle commit description')"
+            />
+
+            <div class="committer">
+              <a
+                :href="authorUrl"
+                :class="authorClass"
+                :data-user-id="authorId"
+                v-text="authorName"
+              ></a>
+              {{ s__('CommitWidget|authored') }}
+              <time-ago-tooltip :time="commit.authored_date" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <pre
+        v-if="commit.description_html"
+        :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
+        class="commit-row-description gl-mb-3 text-dark"
+        v-html="commitDescription"
+      ></pre>
     </div>
   </li>
 </template>

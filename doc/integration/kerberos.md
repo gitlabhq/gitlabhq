@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, how-to
+---
+
 # Kerberos integration **(STARTER ONLY)**
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
@@ -114,6 +121,40 @@ Taken together, these rules mean that linking will only work if your users'
 Kerberos usernames are of the form `foo@AD.EXAMPLE.COM` and their
 LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
 
+### Custom allowed realms
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9962) in GitLab 13.5.
+
+You can configure custom allowed realms when
+the user's Kerberos realm doesn't match the domain from the user's LDAP DN. The
+configuration value must specify all domains that users may be expected to
+have. Any other domains will be ignored and an LDAP identity will not be linked.
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['kerberos_simple_ldap_linking_allowed_realms'] = ['example.com','kerberos.example.com']
+   ```
+
+1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+   GitLab for the changes to take effect.
+
+---
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+   ```yaml
+   kerberos:
+     simple_ldap_linking_allowed_realms: ['example.com','kerberos.example.com']
+   ```
+
+1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+   GitLab for the changes to take effect.
+
 ## HTTP Git access
 
 A linked Kerberos account enables you to `git pull` and `git push` using your
@@ -122,6 +163,13 @@ Kerberos account, as well as your standard GitLab credentials.
 GitLab users with a linked Kerberos account can also `git pull` and `git push`
 using Kerberos tokens, i.e., without having to send their password with each
 operation.
+
+DANGER: **Danger:**
+There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
+older than version 7.64.1 wherein it won't reuse connections when negotiating.
+This leads to authorization issues when push is larger than `http.postBuffer`
+config. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
+know the `libcurl` version installed, run `curl-config --version`.
 
 ### HTTP Git access with Kerberos token (passwordless authentication)
 
@@ -207,9 +255,10 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
 
    ```yaml
    omniauth:
+     # Rest of configuration omitted
      # ...
      providers:
-       - { name: 'kerberos' } # <-- remove this line
+       - { name: 'kerberos' }  # <-- remove this line
    ```
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.

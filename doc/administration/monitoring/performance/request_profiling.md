@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -25,7 +25,6 @@ To profile a request:
      curl --header 'X-Profile-Token: <token>' --header 'X-Profile-Mode: <mode>' "https://gitlab.example.com/group/project"
      ```
 
-     NOTE: **Note:**
      Profiled requests can take longer than usual.
 
 After the request completes, you can view the profiling output from the

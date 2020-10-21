@@ -126,6 +126,10 @@ RSpec.describe Types::BaseField do
         let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false) }
         let(:context) { {} }
 
+        before do
+          skip_feature_flags_yaml_validation
+        end
+
         it 'returns false if the feature is not enabled' do
           stub_feature_flags(flag => false)
 

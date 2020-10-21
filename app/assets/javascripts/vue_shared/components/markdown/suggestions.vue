@@ -38,6 +38,11 @@ export default {
       type: String,
       required: true,
     },
+    suggestionsCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -77,12 +82,12 @@ export default {
       this.isRendered = true;
     },
     generateDiff(suggestionIndex) {
-      const { suggestions, disabled, batchSuggestionsInfo, helpPagePath } = this;
+      const { suggestions, disabled, batchSuggestionsInfo, helpPagePath, suggestionsCount } = this;
       const suggestion =
         suggestions && suggestions[suggestionIndex] ? suggestions[suggestionIndex] : {};
       const SuggestionDiffComponent = Vue.extend(SuggestionDiff);
       const suggestionDiff = new SuggestionDiffComponent({
-        propsData: { disabled, suggestion, batchSuggestionsInfo, helpPagePath },
+        propsData: { disabled, suggestion, batchSuggestionsInfo, helpPagePath, suggestionsCount },
       });
 
       suggestionDiff.$on('apply', ({ suggestionId, callback }) => {

@@ -856,6 +856,55 @@ RSpec.describe API::MergeRequests do
       expect(json_response.first['id']).to eq merge_request_closed.id
     end
 
+    context 'when filtering by deployments' do
+      let_it_be(:mr) do
+        create(:merge_request, :merged, source_project: project, target_project: project)
+      end
+
+      before do
+        env = create(:environment, project: project, name: 'staging')
+        deploy = create(:deployment, :success, environment: env, deployable: nil)
+
+        deploy.link_merge_requests(MergeRequest.where(id: mr.id))
+      end
+
+      it 'supports getting merge requests deployed to an environment' do
+        get api(endpoint_path, user), params: { environment: 'staging' }
+
+        expect(json_response.first['id']).to eq mr.id
+      end
+
+      it 'does not return merge requests for an environment without deployments' do
+        get api(endpoint_path, user), params: { environment: 'bla' }
+
+        expect_empty_array_response
+      end
+
+      it 'supports getting merge requests deployed after a date' do
+        get api(endpoint_path, user), params: { deployed_after: '1990-01-01' }
+
+        expect(json_response.first['id']).to eq mr.id
+      end
+
+      it 'does not return merge requests not deployed after a given date' do
+        get api(endpoint_path, user), params: { deployed_after: '2100-01-01' }
+
+        expect_empty_array_response
+      end
+
+      it 'supports getting merge requests deployed before a date' do
+        get api(endpoint_path, user), params: { deployed_before: '2100-01-01' }
+
+        expect(json_response.first['id']).to eq mr.id
+      end
+
+      it 'does not return merge requests not deployed before a given date' do
+        get api(endpoint_path, user), params: { deployed_before: '1990-01-01' }
+
+        expect_empty_array_response
+      end
+    end
+
     context 'a project which enforces all discussions to be resolved' do
       let_it_be(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
 
@@ -1140,7 +1189,7 @@ RSpec.describe API::MergeRequests do
 
     context 'when a merge request has more than the changes limit' do
       it "returns a string indicating that more changes were made" do
-        stub_const('Commit::DIFF_HARD_LIMIT_FILES', 5)
+        allow(Commit).to receive(:diff_hard_limit_files).and_return(5)
 
         merge_request_overflow = create(:merge_request, :simple,
                                         author: user,

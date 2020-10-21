@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -100,9 +100,9 @@ The ActionCable connection or channel class is used as the `controller`.
 
 ```json
 {
-  "method":{},
-  "path":{},
-  "format":{},
+  "method":null,
+  "path":null,
+  "format":null,
   "controller":"IssuesChannel",
   "action":"subscribe",
   "status":200,
@@ -363,8 +363,7 @@ This file lives in `/var/log/gitlab/gitlab-rails/git_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/git_json.log` for
 installations from source.
 
-NOTE: **Note:**
-After 12.2, this file was renamed from `githost.log` to
+After GitLab version 12.2, this file was renamed from `githost.log` to
 `git_json.log` and stored in JSON format.
 
 GitLab has to interact with Git repositories, but in some rare cases
@@ -599,7 +598,6 @@ installations from source.
 
 ## Unicorn Logs
 
-NOTE: **Note:**
 Starting with GitLab 13.0, Puma is the default web server used in GitLab
 all-in-one package based installations as well as GitLab Helm chart deployments.
 
@@ -674,10 +672,8 @@ This log records:
 - Information whenever [Rack Attack](../security/rack_attack.md) registers an abusive request.
 - Requests over the [Rate Limit](../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
 - [Protected paths](../user/admin_area/settings/protected_paths.md) abusive requests.
-
-NOTE: **Note:**
-In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and greater, user ID and username are also
-recorded on this log, if available.
+- In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and greater,
+  user ID and username, if available.
 
 ## `graphql_json.log`
 
@@ -967,6 +963,18 @@ When [troubleshooting](troubleshooting/index.md) issues that aren't localized to
 previously listed components, it's helpful to simultaneously gather multiple logs and statistics
 from a GitLab instance.
 
+### Briefly tail the main logs
+
+If the bug or error is readily reproducible, save the main GitLab logs
+[to a file](troubleshooting/linux_cheat_sheet.md#files--dirs) while reproducing the
+problem once or more times:
+
+```shell
+sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
+```
+
+Conclude the log gathering with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
+
 ### GitLabSOS
 
 If performance degradations or cascading errors occur that can't readily be attributed to one
@@ -976,18 +984,6 @@ to run it, see [the GitLabSOS documentation](https://gitlab.com/gitlab-com/suppo
 
 NOTE: **Note:**
 GitLab Support likes to use this custom-made tool.
-
-### Briefly tail the main logs
-
-If the bug or error is readily reproducible bug or error, save the main GitLab logs
-[to a file](troubleshooting/linux_cheat_sheet.md#files--dirs) while reproducing the
-problem once or more times:
-
-```shell
-sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
-```
-
-Conclude the log gathering with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
 
 ### Fast-stats
 

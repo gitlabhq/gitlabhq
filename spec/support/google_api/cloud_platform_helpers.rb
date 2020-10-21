@@ -22,7 +22,7 @@ module GoogleApi
         .to_return(cloud_platform_response(cloud_platform_projects_billing_info_body(project_id, billing_enabled)))
     end
 
-    def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, **options)
+    def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, options = {})
       WebMock.stub_request(:get, cloud_platform_get_zone_cluster_url(project_id, zone, cluster_id))
         .to_return(cloud_platform_response(cloud_platform_cluster_body(options)))
     end
@@ -32,7 +32,7 @@ module GoogleApi
         .to_return(status: [500, "Internal Server Error"])
     end
 
-    def stub_cloud_platform_create_cluster(project_id, zone, **options)
+    def stub_cloud_platform_create_cluster(project_id, zone, options = {})
       WebMock.stub_request(:post, cloud_platform_create_cluster_url(project_id, zone))
         .to_return(cloud_platform_response(cloud_platform_operation_body(options)))
     end
@@ -42,7 +42,7 @@ module GoogleApi
         .to_return(status: [500, "Internal Server Error"])
     end
 
-    def stub_cloud_platform_get_zone_operation(project_id, zone, operation_id, **options)
+    def stub_cloud_platform_get_zone_operation(project_id, zone, operation_id, options = {})
       WebMock.stub_request(:get, cloud_platform_get_zone_operation_url(project_id, zone, operation_id))
         .to_return(cloud_platform_response(cloud_platform_operation_body(options)))
     end
@@ -86,7 +86,7 @@ module GoogleApi
     # https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1/projects.zones.clusters/create
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/PerceivedComplexity
-    def cloud_platform_cluster_body(**options)
+    def cloud_platform_cluster_body(options)
       {
         "name": options[:name] || 'string',
         "description": options[:description] || 'string',
@@ -121,7 +121,7 @@ module GoogleApi
       }
     end
 
-    def cloud_platform_operation_body(**options)
+    def cloud_platform_operation_body(options)
       {
         "name": options[:name] || 'operation-1234567891234-1234567',
         "zone": options[:zone] || 'us-central1-a',
@@ -136,7 +136,7 @@ module GoogleApi
       }
     end
 
-    def cloud_platform_projects_body(**options)
+    def cloud_platform_projects_body(options)
       {
         "projects": [
           {

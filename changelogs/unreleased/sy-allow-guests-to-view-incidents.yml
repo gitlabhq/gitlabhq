@@ -1,0 +1,5 @@
+---
+title: Show incident list for users who can read issues
+merge_request: 43060
+author:
+type: fixed

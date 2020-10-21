@@ -1,0 +1,5 @@
+---
+title: Remove duplicated BS display properties from Commit's HAML
+merge_request: 44847
+author: Takuya Noguchi
+type: other

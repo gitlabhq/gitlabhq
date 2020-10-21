@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Display package version data acording to PyPi
+# Display package version data acording to PyPI
 # Simple API: https://warehouse.pypa.io/api-reference/legacy/#simple-project-api
 module Packages
   module Pypi
@@ -12,7 +12,7 @@ module Packages
         @project = project
       end
 
-      # Returns the HTML body for PyPi simple API.
+      # Returns the HTML body for PyPI simple API.
       # Basically a list of package download links for a specific
       # package
       def body

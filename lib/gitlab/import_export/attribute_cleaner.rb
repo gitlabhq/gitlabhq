@@ -20,8 +20,8 @@ module Gitlab
         /\Aremote_\w+_(url|urls|request_header)\Z/ # carrierwave automatically creates these attribute methods for uploads
       ).freeze
 
-      def self.clean(*args)
-        new(*args).clean
+      def self.clean(*args, **kwargs)
+        new(*args, **kwargs).clean
       end
 
       def initialize(relation_hash:, relation_class:, excluded_keys: [])

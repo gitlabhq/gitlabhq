@@ -1,4 +1,3 @@
 - blob = viewer.blob
-- context = blob.respond_to?(:rendered_markup) ? { rendered: blob.rendered_markup } : {}
 .file-content.md
-  = markup(blob.name, blob.data, context)
+  = markup(blob.name, blob.data, viewer.banzai_render_context)

@@ -9,7 +9,7 @@ module UserCalloutsHelper
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
   WEBHOOKS_MOVED = 'webhooks_moved'
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
-  WEB_IDE_ALERT_DISMISSED = 'web_ide_alert_dismissed'
+  FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
 
   def show_admin_integrations_moved?
     !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
@@ -51,8 +51,8 @@ module UserCalloutsHelper
     customize_homepage && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
   end
 
-  def show_web_ide_alert?
-    !user_dismissed?(WEB_IDE_ALERT_DISMISSED)
+  def show_feature_flags_new_version?
+    !user_dismissed?(FEATURE_FLAGS_NEW_VERSION)
   end
 
   private

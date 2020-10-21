@@ -44,6 +44,7 @@ exceptions:
   - IBM
   - IDE
   - IID
+  - IMAP
   - IRC
   - ISO
   - JSON
@@ -65,6 +66,7 @@ exceptions:
   - POST
   - PUT
   - RAM
+  - REST
   - RPC
   - RSA
   - RSS

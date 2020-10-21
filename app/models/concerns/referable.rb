@@ -85,7 +85,7 @@ module Referable
           \/#{route.is_a?(Regexp) ? route : Regexp.escape(route)}
           \/#{pattern}
           (?<path>
-            (\/[a-z0-9_=-]+)*
+            (\/[a-z0-9_=-]+)*\/*
           )?
           (?<query>
             \?[a-z0-9_=-]+

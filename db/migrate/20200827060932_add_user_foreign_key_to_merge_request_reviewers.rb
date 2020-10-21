@@ -10,7 +10,7 @@ class AddUserForeignKeyToMergeRequestReviewers < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :merge_request_reviewers, :users, column: :user_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :merge_request_reviewers, :users, column: :user_id, on_delete: :cascade
     end
   end
 

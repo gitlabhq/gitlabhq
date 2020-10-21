@@ -143,7 +143,7 @@ export default function simulateDrag(options) {
   const dragInterval = setInterval(() => {
     const progress = (new Date().getTime() - startTime) / duration;
     const x = fromRect.cx + (toRect.cx - fromRect.cx) * progress;
-    const y = fromRect.cy + (toRect.cy - fromRect.cy) * progress;
+    const y = fromRect.cy + (toRect.cy - fromRect.cy + options.extraHeight) * progress;
     const overEl = fromEl.ownerDocument.elementFromPoint(x, y);
 
     simulateEvent(overEl, 'pointermove', {

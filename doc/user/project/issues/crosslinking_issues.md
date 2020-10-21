@@ -33,7 +33,7 @@ Of course, you can replace `gitlab.com` with the URL of your own GitLab instance
 
 NOTE: **Note:**
 Linking your first commit to your issue is going to be relevant
-for tracking your process with [GitLab Cycle Analytics](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
+for tracking your process with [GitLab Value Stream Analytics](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
 It will measure the time taken for planning the implementation of that issue,
 which is the time between creating an issue and making the first commit.
 

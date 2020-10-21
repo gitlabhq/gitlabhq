@@ -11,11 +11,11 @@ Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
 failover with minimal effort, in a disaster situation.
 
-See [Geo current limitations](../index.md#current-limitations) for more information.
+See [Geo limitations](../index.md#limitations) for more information.
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
-For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590). 
+For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
 will cause downtime.
 
@@ -84,8 +84,8 @@ must disable the **primary** node.
    single recommendation. You may need to:
 
    - Reconfigure the load balancers.
-   - Change DNS records (for example, point the primary DNS record to the **secondary**
-     node in order to stop usage of the **primary** node).
+   - Change DNS records (for example, point the primary DNS record to the
+     **secondary** node to stop usage of the **primary** node).
    - Stop the virtual servers.
    - Block traffic through a firewall.
    - Revoke object storage permissions from the **primary** node.
@@ -98,16 +98,16 @@ must disable the **primary** node.
 
 Note the following when promoting a secondary:
 
-- If replication was paused on the secondary node, for example as a part of upgrading,
-  while you were running a version of GitLab lower than 13.4, you _must_
-  [enable the node via the database](../replication/troubleshooting.md#while-promoting-the-secondary-i-got-an-error-activerecordrecordinvalid)
+- If replication was paused on the secondary node (for example as a part of
+  upgrading, while you were running a version of GitLab earlier than 13.4), you
+  _must_ [enable the node by using the database](../replication/troubleshooting.md#message-activerecordrecordinvalid-validation-failed-enabled-geo-primary-node-cannot-be-disabled)
   before proceeding.
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
-  error during this process, please read
-  [the troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
+  error message during this process, for more information, see this
+  [troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
 
 #### Promoting a **secondary** node running on a single machine
 
@@ -120,6 +120,10 @@ Note the following when promoting a secondary:
 1. Edit `/etc/gitlab/gitlab.rb` to reflect its new status as **primary** by
    removing any lines that enabled the `geo_secondary_role`:
 
+   Users of GitLab 13.5 or later can skip this step, due to the appropriate
+   roles being enabled or disabled during the promotion in the following
+   step.
+
    ```ruby
    ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
    geo_secondary_role['enable'] = true
@@ -129,7 +133,10 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
-   
+
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
+
    To promote the secondary node to primary along with preflight checks:
 
    ```shell
@@ -139,7 +146,7 @@ Note the following when promoting a secondary:
    If you have already run the [preflight checks](planned_failover.md#preflight-checks) separately or don't want to run them, you can skip preflight checks with:
 
    ```shell
-   gitlab-ctl promote-to-primary-node --skip-preflight-check
+   gitlab-ctl promote-to-primary-node --skip-preflight-checks
    ```
 
    You can also promote the secondary node to primary **without any further confirmation**, even when preflight checks fail:
@@ -158,6 +165,9 @@ The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
 conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
+
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
 
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
@@ -200,6 +210,9 @@ The `gitlab-ctl promote-to-primary-node` command cannot be used in conjunction w
 an external PostgreSQL database, as it can only perform changes on a **secondary**
 node with GitLab and the database on the same machine. As a result, a manual process is
 required:
+
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
 
 1. Promote the replica database associated with the **secondary** site. This will
    set the database to read-write:

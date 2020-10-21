@@ -2,7 +2,7 @@
 
 module API
   module Ci
-    class Runners < Grape::API::Instance
+    class Runners < ::API::Base
       include PaginationParams
 
       before { authenticate! }

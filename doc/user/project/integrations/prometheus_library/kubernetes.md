@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -12,7 +12,7 @@ GitLab has support for automatically detecting and monitoring Kubernetes metrics
 
 ## Requirements
 
-The [Prometheus](../prometheus.md) and [Kubernetes](../kubernetes.md)
+The [Prometheus](../prometheus.md) and [Kubernetes](../../clusters/index.md)
 integration services must be enabled.
 
 ## Metrics supported

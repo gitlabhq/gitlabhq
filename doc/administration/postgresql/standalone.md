@@ -1,15 +1,21 @@
+---
+stage: Enablement
+group: Database
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Standalone PostgreSQL using Omnibus GitLab **(CORE ONLY)**
 
 If you wish to have your database service hosted separately from your GitLab
-application server(s), you can do this using the PostgreSQL binaries packaged
+application servers, you can do this using the PostgreSQL binaries packaged
 together with Omnibus GitLab. This is recommended as part of our
 [reference architecture for up to 2,000 users](../reference_architectures/2k_users.md).
 
 ## Setting it up
 
-1. SSH into the PostgreSQL server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
+1. SSH in to the PostgreSQL server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package you want using *steps 1 and 2* from the GitLab downloads page.
    - Do not complete any other steps on the download page.
 1. Generate a password hash for PostgreSQL. This assumes you will use the default
    username of `gitlab` (recommended). The command will request a password

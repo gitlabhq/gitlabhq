@@ -1,23 +1,18 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import PipelineSchedulesCallout from '~/pages/projects/pipeline_schedules/shared/components/pipeline_schedules_callout.vue';
-import '~/pages/projects/pipeline_schedules/shared/icons/intro_illustration.svg';
-
-jest.mock(
-  '~/pages/projects/pipeline_schedules/shared/icons/intro_illustration.svg',
-  () => '<svg></svg>',
-);
 
 const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 const cookieKey = 'pipeline_schedules_callout_dismissed';
 const docsUrl = 'help/ci/scheduled_pipelines';
+const imageUrl = 'pages/projects/pipeline_schedules/shared/icons/intro_illustration.svg';
 
 describe('Pipeline Schedule Callout', () => {
   let calloutComponent;
 
   beforeEach(() => {
     setFixtures(`
-      <div id='pipeline-schedules-callout' data-docs-url=${docsUrl}></div>
+      <div id='pipeline-schedules-callout' data-docs-url=${docsUrl} data-image-url=${imageUrl}></div>
     `);
   });
 
@@ -30,12 +25,12 @@ describe('Pipeline Schedule Callout', () => {
       expect(calloutComponent).toBeDefined();
     });
 
-    it('correctly sets illustrationSvg', () => {
-      expect(calloutComponent.illustrationSvg).toContain('<svg');
-    });
-
     it('correctly sets docsUrl', () => {
       expect(calloutComponent.docsUrl).toContain(docsUrl);
+    });
+
+    it('correctly sets imageUrl', () => {
+      expect(calloutComponent.imageUrl).toContain(imageUrl);
     });
   });
 
@@ -68,8 +63,8 @@ describe('Pipeline Schedule Callout', () => {
       expect(calloutComponent.$el.querySelector('.bordered-box')).not.toBeNull();
     });
 
-    it('renders the callout svg', () => {
-      expect(calloutComponent.$el.outerHTML).toContain('<svg');
+    it('renders the callout img', () => {
+      expect(calloutComponent.$el.outerHTML).toContain('<img');
     });
 
     it('renders the callout title', () => {

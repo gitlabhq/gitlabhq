@@ -9,6 +9,7 @@ FactoryBot.define do
     group { :business }
     project
     legend { 'legend' }
+    dashboard_path { '.gitlab/dashboards/dashboard_path.yml'}
 
     trait :common do
       common { true }

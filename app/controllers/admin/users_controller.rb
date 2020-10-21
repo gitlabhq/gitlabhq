@@ -6,10 +6,14 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :check_admin_approval_feature_available!, only: [:approve]
+
+  feature_category :users
 
   def index
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
+    @users = @users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
   end
@@ -59,6 +63,16 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def approve
+    result = Users::ApproveService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully approved"))
+    else
+      redirect_back_or_admin_user(alert: result[:message])
+    end
+  end
+
   def activate
     return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user must be unblocked to be activated")) if user.blocked?
 
@@ -69,6 +83,7 @@ class Admin::UsersController < Admin::ApplicationController
   def deactivate
     return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user cannot be deactivated")) if user.blocked?
     return redirect_back_or_admin_user(notice: _("Successfully deactivated")) if user.deactivated?
+    return redirect_back_or_admin_user(notice: _("Internal users cannot be deactivated")) if user.internal?
     return redirect_back_or_admin_user(notice: _("The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated") % { minimum_inactive_days: ::User::MINIMUM_INACTIVE_DAYS }) unless user.can_be_deactivated?
 
     user.deactivate
@@ -78,7 +93,7 @@ class Admin::UsersController < Admin::ApplicationController
   def block
     result = Users::BlockService.new(current_user).execute(user)
 
-    if result[:status] = :success
+    if result[:status] == :success
       redirect_back_or_admin_user(notice: _("Successfully blocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not blocked"))
@@ -168,7 +183,7 @@ class Admin::UsersController < Admin::ApplicationController
         # restore username to keep form action url.
         user.username = params[:id]
         format.html { render "edit" }
-        format.json { render json: [result[:message]], status: result[:status] }
+        format.json { render json: [result[:message]], status: :internal_server_error }
       end
     end
   end
@@ -282,6 +297,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def log_impersonation_event
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
+  end
+
+  def check_admin_approval_feature_available!
+    access_denied! unless Feature.enabled?(:admin_approval_for_new_user_signups, default_enabled: true)
   end
 end
 

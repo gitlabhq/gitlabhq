@@ -244,26 +244,6 @@ RSpec.describe LabelsHelper do
     end
   end
 
-  describe 'label_from_hash' do
-    it 'builds a group label with whitelisted attributes' do
-      label = label_from_hash({ title: 'foo', color: 'bar', id: 1, group_id: 1 })
-
-      expect(label).to be_a(GroupLabel)
-      expect(label.id).to be_nil
-      expect(label.title).to eq('foo')
-      expect(label.color).to eq('bar')
-    end
-
-    it 'builds a project label with whitelisted attributes' do
-      label = label_from_hash({ title: 'foo', color: 'bar', id: 1, project_id: 1 })
-
-      expect(label).to be_a(ProjectLabel)
-      expect(label.id).to be_nil
-      expect(label.title).to eq('foo')
-      expect(label.color).to eq('bar')
-    end
-  end
-
   describe '#label_status_tooltip' do
     let(:status) { 'unsubscribed'.inquiry }
 
@@ -289,6 +269,36 @@ RSpec.describe LabelsHelper do
     it 'removes HTML' do
       tooltip = label_tooltip_title(label_with_html_content)
       expect(tooltip).to eq('This is an image')
+    end
+  end
+
+  describe '#show_labels_full_path?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    context 'within a project' do
+      it 'returns truthy' do
+        expect(show_labels_full_path?(project, nil)).to be_truthy
+      end
+    end
+
+    context 'within a subgroup' do
+      it 'returns truthy' do
+        expect(show_labels_full_path?(nil, subgroup)).to be_truthy
+      end
+    end
+
+    context 'within a group' do
+      it 'returns falsey' do
+        expect(show_labels_full_path?(nil, group)).to be_falsey
+      end
+    end
+
+    context 'within the admin area' do
+      it 'returns falsey' do
+        expect(show_labels_full_path?(nil, nil)).to be_falsey
+      end
     end
   end
 end

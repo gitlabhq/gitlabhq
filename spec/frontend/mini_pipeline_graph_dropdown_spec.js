@@ -69,7 +69,7 @@ describe('Mini Pipeline Graph Dropdown', () => {
         html: `<li>
           <a class="mini-pipeline-graph-dropdown-item" href="#">
             <span class="ci-status-icon ci-status-icon-failed"></span>
-            <span class="ci-build-text">build</span>
+            <span>build</span>
           </a>
           <a class="ci-action-icon-wrapper js-ci-action-icon" href="#"></a>
         </li>`,

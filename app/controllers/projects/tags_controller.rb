@@ -10,6 +10,9 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
 
+  feature_category :source_code_management, [:index, :show, :new, :destroy]
+  feature_category :release_evidence, [:create]
+
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     params[:sort] = params[:sort].presence || sort_value_recently_updated
@@ -76,25 +79,10 @@ class Projects::TagsController < Projects::ApplicationController
   def destroy
     result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
 
-    respond_to do |format|
-      if result[:status] == :success
-        format.html do
-          redirect_to project_tags_path(@project), status: :see_other
-        end
-
-        format.js
-      else
-        @error = result[:message]
-
-        format.html do
-          redirect_to project_tags_path(@project),
-            alert: @error, status: :see_other
-        end
-
-        format.js do
-          render status: :ok
-        end
-      end
+    if result[:status] == :success
+      render json: result
+    else
+      render json: { message: result[:message] }, status: result[:return_code]
     end
   end
 

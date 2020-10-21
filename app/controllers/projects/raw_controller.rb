@@ -15,6 +15,8 @@ class Projects::RawController < Projects::ApplicationController
   before_action :no_cache_headers, only: [:show]
   before_action :redirect_to_external_storage, only: :show, if: :static_objects_external_storage_enabled?
 
+  feature_category :source_code_management
+
   def show
     @blob = @repository.blob_at(@commit.id, @path)
 

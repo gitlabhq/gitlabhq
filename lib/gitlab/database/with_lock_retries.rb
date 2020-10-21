@@ -95,7 +95,7 @@ module Gitlab
           run_block_with_transaction
         rescue ActiveRecord::LockWaitTimeout
           if retry_with_lock_timeout?
-            disable_idle_in_transaction_timeout
+            disable_idle_in_transaction_timeout if ActiveRecord::Base.connection.transaction_open?
             wait_until_next_retry
             reset_db_settings
 
@@ -149,7 +149,7 @@ module Gitlab
         log(message: "Couldn't acquire lock to perform the migration", current_iteration: current_iteration)
         log(message: "Executing the migration without lock timeout", current_iteration: current_iteration)
 
-        execute("SET LOCAL lock_timeout TO '0'")
+        disable_lock_timeout if ActiveRecord::Base.connection.transaction_open?
 
         run_block
 
@@ -182,6 +182,10 @@ module Gitlab
 
       def disable_idle_in_transaction_timeout
         execute("SET LOCAL idle_in_transaction_session_timeout TO '0'")
+      end
+
+      def disable_lock_timeout
+        execute("SET LOCAL lock_timeout TO '0'")
       end
 
       def reset_db_settings

@@ -20,10 +20,10 @@ RSpec.describe BuildFinishedWorker do
         expect_any_instance_of(BuildTraceSectionsWorker).to receive(:perform)
         expect_any_instance_of(BuildCoverageWorker).to receive(:perform)
         expect(BuildHooksWorker).to receive(:perform_async)
-        expect(ArchiveTraceWorker).to receive(:perform_async)
         expect(ExpirePipelineCacheWorker).to receive(:perform_async)
         expect(ChatNotificationWorker).not_to receive(:perform_async)
         expect(Ci::BuildReportResultWorker).not_to receive(:perform)
+        expect(ArchiveTraceWorker).to receive(:perform_in)
 
         subject
       end

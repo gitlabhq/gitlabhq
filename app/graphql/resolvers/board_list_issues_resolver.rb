@@ -14,7 +14,7 @@ module Resolvers
 
     def resolve(**args)
       filter_params = issue_filters(args[:filters]).merge(board_id: list.board.id, id: list.id)
-      service = Boards::Issues::ListService.new(list.board.resource_parent, context[:current_user], filter_params)
+      service = ::Boards::Issues::ListService.new(list.board.resource_parent, context[:current_user], filter_params)
 
       Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(service.execute)
     end

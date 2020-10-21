@@ -297,9 +297,16 @@ module Gitlab
           end
 
         file_name = "#{name}.#{extension}"
-        File.join(storage_path, self.gl_repository, sha, file_name)
+        File.join(storage_path, self.gl_repository, sha, archive_version_path, file_name)
       end
       private :archive_file_path
+
+      def archive_version_path
+        return '' unless Feature.enabled?(:include_lfs_blobs_in_archive)
+
+        '@v2'
+      end
+      private :archive_version_path
 
       # Return repo size in megabytes
       def size
@@ -580,9 +587,9 @@ module Gitlab
         tags.find { |tag| tag.name == name }
       end
 
-      def merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref)
+      def merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref, allow_conflicts)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref)
+          gitaly_operation_client.user_merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref, allow_conflicts)
         end
       end
 
@@ -610,7 +617,7 @@ module Gitlab
         }
 
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_revert(args)
+          gitaly_operation_client.user_revert(**args)
         end
       end
 
@@ -626,7 +633,7 @@ module Gitlab
         }
 
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_cherry_pick(args)
+          gitaly_operation_client.user_cherry_pick(**args)
         end
       end
 
@@ -640,7 +647,7 @@ module Gitlab
         }
 
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_update_submodule(args)
+          gitaly_operation_client.user_update_submodule(**args)
         end
       end
 

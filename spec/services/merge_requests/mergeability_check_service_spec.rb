@@ -41,16 +41,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       subject
     end
 
-    context 'when merge_ref_head_comments is disabled' do
-      it 'does not update diff discussion positions' do
-        stub_feature_flags(merge_ref_head_comments: false)
-
-        expect(Discussions::CaptureDiffNotePositionsService).not_to receive(:new)
-
-        subject
-      end
-    end
-
     it 'updates the merge ref' do
       expect { subject }.to change(merge_request, :merge_ref_head).from(nil)
     end
@@ -221,11 +211,18 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
                target_branch: 'conflict-start')
       end
 
-      it_behaves_like 'unmergeable merge request'
+      it 'does not change the merge ref HEAD' do
+        expect(merge_request.merge_ref_head).to be_nil
 
-      it 'returns ServiceResponse.error' do
+        subject
+
+        expect(merge_request.reload.merge_ref_head).not_to be_nil
+      end
+
+      it 'returns ServiceResponse.error and keeps merge status as cannot_be_merged' do
         result = subject
 
+        expect(merge_request.merge_status).to eq('cannot_be_merged')
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
         expect(result.message).to eq('Merge request is not mergeable')
@@ -378,6 +375,28 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
         it 'does not recreate the merge-ref' do
           expect(MergeRequests::MergeToRefService).not_to receive(:new)
+
+          subject
+        end
+      end
+    end
+
+    context 'merge with conflicts' do
+      it 'calls MergeToRefService with true allow_conflicts param' do
+        expect(MergeRequests::MergeToRefService).to receive(:new)
+          .with(project, merge_request.author, { allow_conflicts: true }).and_call_original
+
+        subject
+      end
+
+      context 'when display_merge_conflicts_in_diff is disabled' do
+        before do
+          stub_feature_flags(display_merge_conflicts_in_diff: false)
+        end
+
+        it 'calls MergeToRefService with false allow_conflicts param' do
+          expect(MergeRequests::MergeToRefService).to receive(:new)
+            .with(project, merge_request.author, { allow_conflicts: false }).and_call_original
 
           subject
         end

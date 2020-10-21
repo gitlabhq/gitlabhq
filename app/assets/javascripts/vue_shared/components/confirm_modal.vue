@@ -12,6 +12,11 @@ export default {
       type: String,
       required: true,
     },
+    handleSubmit: {
+      type: Function,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -41,7 +46,11 @@ export default {
       this.$refs.modal.hide();
     },
     submitModal() {
-      this.$refs.form.submit();
+      if (this.handleSubmit) {
+        this.handleSubmit(this.path);
+      } else {
+        this.$refs.form.submit();
+      }
     },
   },
   csrf,

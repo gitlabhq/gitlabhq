@@ -3,11 +3,14 @@
 - add_to_breadcrumbs _("Merge Requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge Requests")
-- page_description @merge_request.description
+- page_description @merge_request.description_html
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
 - number_of_pipelines = @pipelines.size
 - mr_action = j(params[:tab].presence || 'show')
+- add_page_specific_style 'page_bundles/merge_requests'
+- add_page_specific_style 'page_bundles/pipelines'
+- add_page_specific_style 'page_bundles/reports'
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"
@@ -43,7 +46,6 @@
 
     .tab-content#diff-notes-app
       #js-diff-file-finder
-      - if native_code_navigation_enabled?(@project)
         #js-code-navigation
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         .row
@@ -92,7 +94,7 @@
       .loading.hide
         .spinner.spinner-md
 
-= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, source_branch: @merge_request.source_branch
+= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
 - if @merge_request.can_be_reverted?(current_user)
   = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title

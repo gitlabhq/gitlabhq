@@ -21,7 +21,7 @@ module RuboCop
     TABLE_METHODS = %i(create_table create_table_if_not_exists change_table).freeze
 
     def high_traffic_tables
-      @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'DeniedTables')
+      @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')
     end
 
     # Returns true if the given node originated from the db/migrate directory.

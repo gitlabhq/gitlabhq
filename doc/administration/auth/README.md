@@ -18,7 +18,7 @@ providers:
 - [Azure](../../integration/azure.md)
 - [Bitbucket Cloud](../../integration/bitbucket.md)
 - [CAS](../../integration/cas.md)
-- [Crowd](../../integration/crowd.md)
+- [Crowd](crowd.md)
 - [Facebook](../../integration/facebook.md)
 - [GitHub](../../integration/github.md)
 - [GitLab.com](../../integration/gitlab.md)

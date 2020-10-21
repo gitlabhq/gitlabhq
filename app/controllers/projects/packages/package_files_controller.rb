@@ -6,6 +6,8 @@ module Projects
       include PackagesAccess
       include SendFileUpload
 
+      feature_category :package_registry
+
       def download
         package_file = project.package_files.find(params[:id])
 

@@ -8,7 +8,6 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
  * @sentrify
  */
 export default () => {
-  const $sidebarGutterToggle = $('.js-sidebar-toggle');
   let bootstrapBreakpoint = bp.getBreakpointSize();
 
   $(window).on('resize.app', () => {
@@ -19,8 +18,13 @@ export default () => {
       const breakpointSizes = ['md', 'sm', 'xs'];
 
       if (breakpointSizes.includes(bootstrapBreakpoint)) {
-        const $gutterIcon = $sidebarGutterToggle.find('i');
-        if ($gutterIcon.hasClass('fa-angle-double-right')) {
+        const $toggleContainer = $('.js-sidebar-toggle-container');
+        const isExpanded = $toggleContainer.data('is-expanded');
+        const $expandIcon = $('.js-sidebar-expand');
+
+        if (isExpanded) {
+          const $sidebarGutterToggle = $expandIcon.closest('.js-sidebar-toggle');
+
           $sidebarGutterToggle.trigger('click');
         }
 
@@ -28,11 +32,12 @@ export default () => {
 
         // Sidebar has an icon which corresponds to collapsing the sidebar
         // only then trigger the click.
-        if (sidebarGutterVueToggleEl) {
-          const collapseIcon = sidebarGutterVueToggleEl.querySelector('i.fa-angle-double-right');
-
-          if (collapseIcon) {
-            collapseIcon.click();
+        if (
+          sidebarGutterVueToggleEl &&
+          !sidebarGutterVueToggleEl.classList.contains('js-sidebar-collapsed')
+        ) {
+          if (sidebarGutterVueToggleEl) {
+            sidebarGutterVueToggleEl.click();
           }
         }
       }

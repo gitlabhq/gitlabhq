@@ -1,0 +1,5 @@
+---
+title: Change transfer, update and create services for groups and projects to take in consideration shared runners settings
+merge_request: 36080
+author: Arthur de Lapertosa Lisboa
+type: added

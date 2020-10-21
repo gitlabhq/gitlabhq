@@ -46,21 +46,21 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
         visit project_path(project)
       end
 
-      it '"New file" button linked to new file page' do
+      it '"New file" button linked to IDE new file page' do
         page.within('.project-buttons') do
-          expect(page).to have_link('New file', href: project_new_blob_path(project, project.default_branch || 'master'))
+          expect(page).to have_link('New file', href: presenter.ide_edit_path(project, project.default_branch || 'master'))
         end
       end
 
-      it '"Add README" button linked to new file populated for a README' do
+      it '"Add README" button linked to IDE new file populated for a README' do
         page.within('.project-buttons') do
-          expect(page).to have_link('Add README', href: presenter.add_readme_path)
+          expect(page).to have_link('Add README', href: presenter.add_readme_ide_path)
         end
       end
 
-      it '"Add license" button linked to new file populated for a license' do
+      it '"Add license" button linked to IDE new file populated for a license' do
         page.within('.project-buttons') do
-          expect(page).to have_link('Add LICENSE', href: presenter.add_license_path)
+          expect(page).to have_link('Add LICENSE', href: presenter.add_license_ide_path)
         end
       end
 
@@ -74,9 +74,9 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
           visit project_path(project)
         end
 
-        it '"New file" button linked to new file page' do
+        it '"New file" button linked to IDE new file page' do
           page.within('.project-buttons') do
-            expect(page).to have_link('New file', href: project_new_blob_path(project, 'example_branch'))
+            expect(page).to have_link('New file', href: presenter.ide_edit_path(project, 'example_branch'))
           end
         end
       end
@@ -144,7 +144,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
             expect(project.repository.readme).not_to be_nil
 
             page.within('.project-buttons') do
-              expect(page).not_to have_link('Add README', href: presenter.add_readme_path)
+              expect(page).not_to have_link('Add README', href: presenter.add_readme_ide_path)
               expect(page).to have_link('README', href: presenter.readme_path)
             end
           end
@@ -164,7 +164,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
         end
 
         context 'when the project does not have a README' do
-          it 'shows the "Add README" button' do
+          it 'shows the single file editor "Add README" button' do
             allow(project.repository).to receive(:readme).and_return(nil)
 
             visit project_path(project)
@@ -226,7 +226,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
             expect(project.repository.gitlab_ci_yml).to be_nil
 
             page.within('.project-buttons') do
-              expect(page).to have_link('Set up CI/CD', href: presenter.add_ci_yml_ide_path)
+              expect(page).to have_link('Set up CI/CD', href: presenter.add_ci_yml_path)
             end
           end
 

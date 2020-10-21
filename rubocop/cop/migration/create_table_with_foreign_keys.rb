@@ -9,7 +9,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = 'Creating a table with more than one foreign key at once violates our migration style guide. ' \
-          'For more details check the https://docs.gitlab.com/ce/development/migration_style_guide.html#examples'
+          'For more details check the https://docs.gitlab.com/ee/development/migration_style_guide.html#examples'
 
         def_node_matcher :create_table_with_block?, <<~PATTERN
           (block

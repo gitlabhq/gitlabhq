@@ -3,7 +3,6 @@
     .description.qa-description{ class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : '' }
       .md
         = markdown_field(@merge_request, :description)
-      %textarea.hidden.js-task-list-field
-        = @merge_request.description
+      %textarea.hidden.js-task-list-field{ data: { value: @merge_request.description } }
 
   = edited_time_ago_with_tooltip(@merge_request, placement: 'bottom')

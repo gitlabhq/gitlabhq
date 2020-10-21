@@ -13,6 +13,32 @@ workflows to tie into GitLab's authentication and authorization. These features 
 lowering the barrier to entry for teams to adopt Terraform, collaborate effectively within
 GitLab, and support Terraform best practices.
 
+## Quick Start
+
+Use the following `.gitlab-ci.yml` to set up a simple Terraform project integration
+for GitLab versions 13.5 and greater:
+
+```yaml
+include:
+  - template: Terraform.latest.gitlab-ci.yml
+
+variables:
+  # If not using GitLab's HTTP backend, remove this line and specify TF_HTTP_* variables
+  TF_STATE_NAME: default
+  TF_CACHE_KEY: default
+```
+
+This template uses `.latest.`, instead of stable, and may include breaking changes.
+This template also includes some opinionated decisions, which you can override:
+
+- Including the latest [GitLab Terraform Image](https://gitlab.com/gitlab-org/terraform-images).
+- Using the [GitLab managed Terraform State](#gitlab-managed-terraform-state) as
+  the Terraform state storage backend.
+- Creating [four pipeline stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml):
+  `init`, `validate`, `build`, and `deploy`. These stages
+  [run the Terraform commands](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml)
+  `init`, `validate`, `plan`, `plan-json`, and `apply`. The `apply` command only runs on `master`.
+
 ## GitLab managed Terraform State
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
@@ -67,8 +93,9 @@ local machine, this is a simple way to get started:
 1. On your local machine, run `terraform init`, passing in the following options,
    replacing `<YOUR-STATE-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
    `<YOUR-ACCESS-TOKEN>` with the relevant values. This command initializes your
-   Terraform state, and stores that state within your GitLab project. This example
-   uses `gitlab.com`:
+   Terraform state, and stores that state within your GitLab project. The name of
+   your state can contain only uppercase and lowercase letters, decimal digits,
+   hyphens, and underscores. This example uses `gitlab.com`:
 
    ```shell
    terraform init \
@@ -198,7 +225,7 @@ recommends encrypting plan output or modifying the project visibility settings.
 
 ## Example project
 
-See [this reference project](https://gitlab.com/nicholasklick/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 within a custom VPC.
+See [this reference project](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 within a custom VPC.
 
 ## Copy Terraform state between backends
 
@@ -294,15 +321,15 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
-If you type `yes`, it will copy your state from the old location to the new
+If you type `yes`, it copies your state from the old location to the new
 location. You can then go back to running it from within GitLab CI.
 
 ## Output Terraform Plan information into a merge request
 
 Using the [GitLab Terraform Report artifact](../../ci/pipelines/job_artifacts.md#artifactsreportsterraform),
 you can expose details from `terraform plan` runs directly into a merge request widget,
-enabling you to see statistics about the resources that Terraform will create,
-modify, or destroy.
+enabling you to see statistics about the resources that Terraform creates,
+modifies, or destroys.
 
 Let's explore how to configure a GitLab Terraform Report artifact. You can
 either use a pre-built image which includes a `gitlab-terraform` helper as
@@ -434,7 +461,8 @@ apply:
 
 ### Multiple Terraform Plan reports
 
-Starting with 13.2, you can display multiple reports on the Merge Request page. The reports will also display the `artifacts: name:`. See example below for a suggested setup.
+Starting with GitLab version 13.2, you can display multiple reports on the Merge Request
+page. The reports also display the `artifacts: name:`. See example below for a suggested setup.
 
 ```yaml
 default:

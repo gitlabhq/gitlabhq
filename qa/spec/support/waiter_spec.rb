@@ -2,7 +2,7 @@
 
 require 'logger'
 
-describe QA::Support::Waiter do
+RSpec.describe QA::Support::Waiter do
   before do
     logger = ::Logger.new $stdout
     logger.level = ::Logger::DEBUG

@@ -11,7 +11,7 @@ class GitlabDanger
     karma
     database
     commit_messages
-    telemetry
+    product_analytics
     utility_css
     pajamas
   ].freeze
@@ -24,6 +24,7 @@ class GitlabDanger
     ce_ee_vue_templates
     sidekiq_queues
     specialization_labels
+    ci_templates
   ].freeze
 
   MESSAGE_PREFIX = '==>'.freeze

@@ -1,16 +1,15 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlModal } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-import { n__, s__, sprintf } from '~/locale';
+import { __, n__, s__, sprintf } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 
 export default {
   components: {
-    DeprecatedModal,
+    GlModal,
   },
   directives: {
     SafeHtml,
@@ -115,20 +114,24 @@ Once deleted, it cannot be undone or recovered.`),
         });
     },
   },
+  primaryProps: {
+    text: s__('Milestones|Delete milestone'),
+    attributes: [{ variant: 'danger' }, { category: 'primary' }],
+  },
+  cancelProps: {
+    text: __('Cancel'),
+  },
 };
 </script>
 
 <template>
-  <deprecated-modal
-    id="delete-milestone-modal"
+  <gl-modal
+    modal-id="delete-milestone-modal"
     :title="title"
-    :text="text"
-    :primary-button-label="s__('Milestones|Delete milestone')"
-    kind="danger"
-    @submit="onSubmit"
+    :action-primary="$options.primaryProps"
+    :action-cancel="$options.cancelProps"
+    @primary="onSubmit"
   >
-    <template #body="props">
-      <p v-safe-html="props.text"></p>
-    </template>
-  </deprecated-modal>
+    <p v-safe-html="text"></p>
+  </gl-modal>
 </template>

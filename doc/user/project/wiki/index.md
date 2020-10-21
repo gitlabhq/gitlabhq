@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Wiki
+# Wiki **(CORE)**
 
 A separate system for documentation called Wiki, is built right into each
 GitLab project. It is enabled by default on all new projects and you can find
@@ -18,6 +18,9 @@ resides.
 You can create Wiki pages in the web interface or
 [locally using Git](#adding-and-editing-wiki-pages-locally) since every Wiki is
 a separate Git repository.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5,
+**group wikis** became available. Their usage is similar to project wikis, with a few [limitations](../../group/index.md#group-wikis).
 
 ## First time creating the Home page
 
@@ -127,10 +130,12 @@ be preceded by the slash (`/`) character.
 
 ## Viewing a list of all created wiki pages
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17673/) in GitLab 13.5, wiki pages are displayed as a nested tree in the sidebar and pages overview.
+
 Every wiki has a sidebar from which a short list of the created pages can be
 found. The list is ordered alphabetically.
 
-![Wiki sidebar](img/wiki_sidebar.png)
+![Wiki sidebar](img/wiki_sidebar_v13_5.png)
 
 If you have many pages, not all will be listed in the sidebar. Click on
 **View All Pages** to see all of them.
@@ -163,47 +168,12 @@ Similar to versioned diff file views, you can see the changes made in a given Wi
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in **GitLab 12.10.**
 > - Git events were [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
-> - It's enabled on GitLab.com.
-> - Git access activity creation is managed by a feature flag.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-wiki-events-in-git). **(CORE ONLY)**
+> - [Feature flag for Git events was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258665) in **GitLab 13.5**
 
 Wiki events (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),
 [group](../../group/index.md#view-group-activity),
 and [project](../index.md#project-activity) activity pages.
-
-### Enable or disable Wiki events in Git **(CORE ONLY)**
-
-Tracking wiki events through Git is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:wiki_events_on_git_push)
-```
-
-To enable for just a particular project:
-
-```ruby
-project = Project.find_by_full_path('your-group/your-project')
-Feature.enable(:wiki_events_on_git_push, project)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:wiki_events_on_git_push)
-```
-
-To disable for just a particular project:
-
-```ruby
-project = Project.find_by_full_path('your-group/your-project')
-Feature.disable(:wiki_events_on_git_push, project)
-```
 
 ## Adding and editing wiki pages locally
 

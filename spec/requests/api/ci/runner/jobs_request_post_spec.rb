@@ -194,7 +194,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             [{ 'key' => 'cache_key',
                'untracked' => false,
                'paths' => ['vendor/*'],
-               'policy' => 'pull-push' }]
+               'policy' => 'pull-push',
+               'when' => 'on_success' }]
           end
 
           let(:expected_features) { { 'trace_sections' => true } }

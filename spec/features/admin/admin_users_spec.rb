@@ -31,6 +31,7 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_content(current_user.last_activity_on.strftime("%e %b, %Y"))
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_content('Projects')
       expect(page).to have_button('Block')
       expect(page).to have_button('Deactivate')
       expect(page).to have_button('Delete user')
@@ -45,6 +46,56 @@ RSpec.describe "Admin::Users" do
         first_user_link.hover
 
         expect(page).to have_selector('#__BV_popover_1__')
+      end
+    end
+
+    context 'user project count' do
+      before do
+        project = create(:project)
+        project.add_maintainer(current_user)
+      end
+
+      it 'displays count of users projects' do
+        visit admin_users_path
+
+        expect(page.find("[data-testid='user-project-count-#{current_user.id}']").text).to eq("1")
+      end
+    end
+
+    describe 'tabs' do
+      it 'has multiple tabs to filter users' do
+        expect(page).to have_link('Active', href: admin_users_path)
+        expect(page).to have_link('Admins', href: admin_users_path(filter: 'admins'))
+        expect(page).to have_link('2FA Enabled', href: admin_users_path(filter: 'two_factor_enabled'))
+        expect(page).to have_link('2FA Disabled', href: admin_users_path(filter: 'two_factor_disabled'))
+        expect(page).to have_link('External', href: admin_users_path(filter: 'external'))
+        expect(page).to have_link('Blocked', href: admin_users_path(filter: 'blocked'))
+        expect(page).to have_link('Deactivated', href: admin_users_path(filter: 'deactivated'))
+        expect(page).to have_link('Without projects', href: admin_users_path(filter: 'wop'))
+      end
+
+      context '`Pending approval` tab' do
+        context 'feature is enabled' do
+          before do
+            stub_feature_flags(admin_approval_for_new_user_signups: true)
+            visit admin_users_path
+          end
+
+          it 'shows the `Pending approval` tab' do
+            expect(page).to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
+          end
+        end
+
+        context 'feature is disabled' do
+          before do
+            stub_feature_flags(admin_approval_for_new_user_signups: false)
+            visit admin_users_path
+          end
+
+          it 'does not show the `Pending approval` tab' do
+            expect(page).not_to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
+          end
+        end
       end
     end
 
@@ -142,6 +193,27 @@ RSpec.describe "Admin::Users" do
       it 'filters by users who have not enabled 2FA' do
         visit admin_users_path
         click_link '2FA Disabled'
+
+        expect(page).to have_content(user.email)
+      end
+    end
+
+    describe 'Pending approval filter' do
+      it 'counts users who are pending approval' do
+        create_list(:user, 2, :blocked_pending_approval)
+
+        visit admin_users_path
+
+        page.within('.filter-blocked-pending-approval small') do
+          expect(page).to have_content('2')
+        end
+      end
+
+      it 'filters by users who are pending approval' do
+        user = create(:user, :blocked_pending_approval)
+
+        visit admin_users_path
+        click_link 'Pending approval'
 
         expect(page).to have_content(user.email)
       end
@@ -285,6 +357,23 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_button('Block user')
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')
+    end
+
+    context 'user pending approval' do
+      it 'shows user info' do
+        user = create(:user, :blocked_pending_approval)
+
+        visit admin_users_path
+        click_link 'Pending approval'
+        click_link user.name
+
+        expect(page).to have_content(user.name)
+        expect(page).to have_content('Pending approval')
+        expect(page).to have_link('Approve user')
+        expect(page).to have_button('Block user')
+        expect(page).to have_button('Delete user')
+        expect(page).to have_button('Delete user and contributions')
+      end
     end
 
     describe 'Impersonation' do
@@ -606,7 +695,7 @@ RSpec.describe "Admin::Users" do
     end
   end
 
-  describe 'show user keys' do
+  describe 'show user keys', :js do
     let!(:key1) do
       create(:key, user: user, title: "ssh-rsa Key1", key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4FIEBXGi4bPU8kzxMefudPIJ08/gNprdNTaO9BR/ndy3+58s2HCTw2xCHcsuBmq+TsAqgEidVq4skpqoTMB+Uot5Uzp9z4764rc48dZiI661izoREoKnuRQSsRqUTHg5wrLzwxlQbl1MVfRWQpqiz/5KjBC7yLEb9AbusjnWBk8wvC1bQPQ1uLAauEA7d836tgaIsym9BrLsMVnR4P1boWD3Xp1B1T/ImJwAGHvRmP/ycIqmKdSpMdJXwxcb40efWVj0Ibbe7ii9eeoLdHACqevUZi6fwfbymdow+FeqlkPoHyGg3Cu4vD/D8+8cRc7mE/zGCWcQ15Var83Tczour Key1")
     end
@@ -629,7 +718,11 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_content(key2.title)
       expect(page).to have_content(key2.key)
 
-      click_link 'Remove'
+      click_button 'Delete'
+
+      page.within('.modal') do
+        page.click_button('Delete')
+      end
 
       expect(page).not_to have_content(key2.title)
     end

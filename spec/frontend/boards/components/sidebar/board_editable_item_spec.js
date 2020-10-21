@@ -96,12 +96,34 @@ describe('boards sidebar remove issue', () => {
       expect(findExpanded().isVisible()).toBe(false);
     });
 
-    it('emits changed event', async () => {
+    it('emits close event', async () => {
       document.body.click();
 
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.emitted().changed[1][0]).toBe(false);
+      expect(wrapper.emitted().close.length).toBe(1);
     });
+  });
+
+  it('emits open when edit button is clicked and edit is initailized to false', async () => {
+    createComponent({ canUpdate: true });
+
+    findEditButton().vm.$emit('click');
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted().open.length).toBe(1);
+  });
+
+  it('does not emits events when collapsing with false `emitEvent`', async () => {
+    createComponent({ canUpdate: true });
+
+    findEditButton().vm.$emit('click');
+
+    await wrapper.vm.$nextTick();
+
+    wrapper.vm.collapse({ emitEvent: false });
+
+    expect(wrapper.emitted().close).toBeUndefined();
   });
 });

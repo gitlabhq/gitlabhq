@@ -22,7 +22,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
   end
 
   shared_examples 'successful creation' do
-    it 'creates bridge jobs correctly' do
+    it 'creates bridge jobs correctly', :aggregate_failures do
       pipeline = create_pipeline!
 
       test = pipeline.statuses.find_by(name: 'test')
@@ -217,6 +217,65 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
         it_behaves_like 'creation failure' do
           let(:expected_error) do
             /include config must specify the job where to fetch the artifact from/
+          end
+        end
+      end
+    end
+
+    context 'when including configs from a project' do
+      context 'when specifying all attributes' do
+        let(:config) do
+          <<~YAML
+          test:
+            script: rspec
+          deploy:
+            variables:
+              CROSS: downstream
+            stage: deploy
+            trigger:
+              include:
+                - project: my-namespace/my-project
+                  file: 'path/to/child.yml'
+                  ref: 'master'
+          YAML
+        end
+
+        it_behaves_like 'successful creation' do
+          let(:expected_bridge_options) do
+            {
+              'trigger' => {
+                'include' => [
+                  {
+                    'file' => 'path/to/child.yml',
+                    'project' => 'my-namespace/my-project',
+                    'ref' => 'master'
+                  }
+                ]
+              }
+            }
+          end
+        end
+      end
+
+      context 'without specifying file' do
+        let(:config) do
+          <<~YAML
+          test:
+            script: rspec
+          deploy:
+            variables:
+              CROSS: downstream
+            stage: deploy
+            trigger:
+              include:
+                - project: my-namespace/my-project
+                  ref: 'master'
+          YAML
+        end
+
+        it_behaves_like 'creation failure' do
+          let(:expected_error) do
+            /include config must specify the file where to fetch the config from/
           end
         end
       end

@@ -1,0 +1,7 @@
+---
+name: forti_authenticator
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45055
+rollout_issue_url:
+type: development
+group: group::access
+default_enabled: false

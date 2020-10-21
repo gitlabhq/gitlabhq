@@ -1,7 +1,7 @@
 ---
 name: graphql_board_lists
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url:
+rollout_issue_url:
+group: group::project management
 type: development
 default_enabled: false

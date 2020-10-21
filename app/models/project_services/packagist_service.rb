@@ -16,7 +16,7 @@ class PackagistService < Service
   end
 
   def description
-    'Update your project on Packagist, the main Composer repository'
+    s_('Integrations|Update your projects on Packagist, the main Composer repository')
   end
 
   def self.to_param

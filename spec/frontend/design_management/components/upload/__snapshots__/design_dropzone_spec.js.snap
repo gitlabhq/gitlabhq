@@ -2,10 +2,10 @@
 
 exports[`Design management dropzone component when dragging renders correct template when drag event contains files 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
@@ -39,11 +39,11 @@ exports[`Design management dropzone component when dragging renders correct temp
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style=""
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3
@@ -58,7 +58,7 @@ exports[`Design management dropzone component when dragging renders correct temp
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style=""
       >
         <h3
@@ -78,10 +78,10 @@ exports[`Design management dropzone component when dragging renders correct temp
 
 exports[`Design management dropzone component when dragging renders correct template when drag event contains files and text 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
@@ -115,11 +115,11 @@ exports[`Design management dropzone component when dragging renders correct temp
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style=""
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3
@@ -134,7 +134,7 @@ exports[`Design management dropzone component when dragging renders correct temp
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style=""
       >
         <h3
@@ -154,10 +154,10 @@ exports[`Design management dropzone component when dragging renders correct temp
 
 exports[`Design management dropzone component when dragging renders correct template when drag event contains text 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
@@ -191,11 +191,11 @@ exports[`Design management dropzone component when dragging renders correct temp
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style=""
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
       >
         <h3
           class=""
@@ -209,7 +209,7 @@ exports[`Design management dropzone component when dragging renders correct temp
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3
@@ -229,10 +229,10 @@ exports[`Design management dropzone component when dragging renders correct temp
 
 exports[`Design management dropzone component when dragging renders correct template when drag event is empty 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
@@ -266,11 +266,11 @@ exports[`Design management dropzone component when dragging renders correct temp
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style=""
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
       >
         <h3
           class=""
@@ -284,7 +284,7 @@ exports[`Design management dropzone component when dragging renders correct temp
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3
@@ -304,10 +304,10 @@ exports[`Design management dropzone component when dragging renders correct temp
 
 exports[`Design management dropzone component when dragging renders correct template when dragging stops 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
@@ -341,11 +341,11 @@ exports[`Design management dropzone component when dragging renders correct temp
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style="display: none;"
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
       >
         <h3
           class=""
@@ -359,7 +359,7 @@ exports[`Design management dropzone component when dragging renders correct temp
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3
@@ -379,10 +379,10 @@ exports[`Design management dropzone component when dragging renders correct temp
 
 exports[`Design management dropzone component when no slot provided renders default dropzone card 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
       class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
@@ -416,11 +416,11 @@ exports[`Design management dropzone component when no slot provided renders defa
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style="display: none;"
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
       >
         <h3
           class=""
@@ -434,7 +434,7 @@ exports[`Design management dropzone component when no slot provided renders defa
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3
@@ -454,7 +454,7 @@ exports[`Design management dropzone component when no slot provided renders defa
 
 exports[`Design management dropzone component when slot provided renders dropzone with slot content 1`] = `
 <div
-  class="w-100 position-relative"
+  class="gl-w-full gl-relative"
 >
   <div>
     dropzone slot
@@ -464,11 +464,11 @@ exports[`Design management dropzone component when slot provided renders dropzon
     name="design-dropzone-fade"
   >
     <div
-      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       style="display: none;"
     >
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
       >
         <h3
           class=""
@@ -482,7 +482,7 @@ exports[`Design management dropzone component when slot provided renders dropzon
       </div>
        
       <div
-        class="mw-50 text-center"
+        class="mw-50 gl-text-center"
         style="display: none;"
       >
         <h3

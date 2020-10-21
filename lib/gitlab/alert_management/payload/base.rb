@@ -88,19 +88,19 @@ module Gitlab
         # AlertManagement::Alert directly for read operations.
         def alert_params
           {
-            description: description,
+            description: description&.truncate(::AlertManagement::Alert::DESCRIPTION_MAX_LENGTH),
             ended_at: ends_at,
             environment: environment,
             fingerprint: gitlab_fingerprint,
-            hosts: Array(hosts),
-            monitoring_tool: monitoring_tool,
+            hosts: truncate_hosts(Array(hosts).flatten),
+            monitoring_tool: monitoring_tool&.truncate(::AlertManagement::Alert::TOOL_MAX_LENGTH),
             payload: payload,
             project_id: project.id,
             prometheus_alert: gitlab_alert,
-            service: service,
+            service: service&.truncate(::AlertManagement::Alert::SERVICE_MAX_LENGTH),
             severity: severity,
             started_at: starts_at,
-            title: title
+            title: title&.truncate(::AlertManagement::Alert::TITLE_MAX_LENGTH)
           }.transform_values(&:presence).compact
         end
 
@@ -134,6 +134,18 @@ module Gitlab
         private
 
         def plain_gitlab_fingerprint; end
+
+        def truncate_hosts(hosts)
+          return hosts if hosts.join.length <= ::AlertManagement::Alert::HOSTS_MAX_LENGTH
+
+          hosts.inject([]) do |new_hosts, host|
+            remaining_length = ::AlertManagement::Alert::HOSTS_MAX_LENGTH - new_hosts.join.length
+
+            break new_hosts unless remaining_length > 0
+
+            new_hosts << host.to_s.truncate(remaining_length, omission: '')
+          end
+        end
 
         def value_for_paths(paths)
           target_path = paths.find { |path| payload&.dig(*path) }

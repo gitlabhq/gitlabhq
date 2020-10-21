@@ -1,0 +1,15 @@
+[
+    {
+      "iid": "1527542",
+      "title": "SyntaxError: Invalid or unexpected token",
+      "createdAt": "2020-04-17T23:18:14.996Z",
+      "assignees": { "nodes": [] }
+    },
+    {
+      "iid": "1527543",
+      "title": "SyntaxError: Invalid or unexpected token by root",
+      "createdAt": "2020-04-17T23:19:14.996Z",
+      "assignees": { "nodes": [] }
+    }
+  ]
+  

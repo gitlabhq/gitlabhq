@@ -7,7 +7,7 @@ RSpec.shared_examples 'boards create service' do
     end
 
     it 'creates the default lists' do
-      board = service.execute
+      board = service.execute.payload
 
       expect(board.lists.size).to eq 2
       expect(board.lists.first).to be_backlog

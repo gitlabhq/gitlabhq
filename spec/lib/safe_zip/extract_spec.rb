@@ -15,11 +15,7 @@ RSpec.describe SafeZip::Extract do
   describe '#extract' do
     subject { object.extract(directories: directories, to: target_path) }
 
-    shared_examples 'extracts archive' do |param|
-      before do
-        stub_feature_flags(safezip_use_rubyzip: param)
-      end
-
+    shared_examples 'extracts archive' do
       it 'does extract archive' do
         subject
 
@@ -28,11 +24,7 @@ RSpec.describe SafeZip::Extract do
       end
     end
 
-    shared_examples 'fails to extract archive' do |param|
-      before do
-        stub_feature_flags(safezip_use_rubyzip: param)
-      end
-
+    shared_examples 'fails to extract archive' do
       it 'does not extract archive' do
         expect { subject }.to raise_error(SafeZip::Extract::Error)
       end
@@ -42,13 +34,7 @@ RSpec.describe SafeZip::Extract do
       context "when using #{name} archive" do
         let(:archive_name) { name }
 
-        context 'for RubyZip' do
-          it_behaves_like 'extracts archive', true
-        end
-
-        context 'for UnZip' do
-          it_behaves_like 'extracts archive', false
-        end
+        it_behaves_like 'extracts archive'
       end
     end
 
@@ -56,13 +42,7 @@ RSpec.describe SafeZip::Extract do
       context "when using #{name} archive" do
         let(:archive_name) { name }
 
-        context 'for RubyZip' do
-          it_behaves_like 'fails to extract archive', true
-        end
-
-        context 'for UnZip (UNSAFE)' do
-          it_behaves_like 'extracts archive', false
-        end
+        it_behaves_like 'fails to extract archive'
       end
     end
 
@@ -70,13 +50,7 @@ RSpec.describe SafeZip::Extract do
       let(:archive_name) { 'valid-simple.zip' }
       let(:directories) { %w(non/existing) }
 
-      context 'for RubyZip' do
-        it_behaves_like 'fails to extract archive', true
-      end
-
-      context 'for UnZip' do
-        it_behaves_like 'fails to extract archive', false
-      end
+      it_behaves_like 'fails to extract archive'
     end
   end
 end

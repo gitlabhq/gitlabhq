@@ -50,6 +50,10 @@ Capybara.register_driver :chrome do |app|
   )
 
   options = Selenium::WebDriver::Chrome::Options.new
+
+  # Force the browser's scale factor to prevent inconsistencies on high-res devices
+  options.add_argument('--force-device-scale-factor=1')
+
   options.add_argument("window-size=#{CAPYBARA_WINDOW_SIZE.join(',')}")
 
   # Chrome won't work properly in a Docker container in sandbox mode
@@ -122,6 +126,10 @@ RSpec.configure do |config|
       host: session.server.host,
       port: session.server.port,
       protocol: 'http')
+
+    # CSRF protection is disabled by default. We only enable this for JS specs because some forms
+    # require Javascript to set the CSRF token.
+    allow_any_instance_of(ActionController::Base).to receive(:protect_against_forgery?).and_return(true)
 
     # reset window size between tests
     unless session.current_window.size == CAPYBARA_WINDOW_SIZE

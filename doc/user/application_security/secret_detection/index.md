@@ -9,8 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
 
-## Overview
-
 A recurring problem when developing applications is that developers may unintentionally commit
 secrets and credentials to their remote repositories. If other people have access to the source,
 or if the project is public, the sensitive information is then exposed and can be leveraged by
@@ -40,7 +38,7 @@ To run Secret Detection jobs, by default, you need GitLab Runner with the
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
 CAUTION: **Caution:**
-Our Secret Detection jobs currently expect a Linux container type. Windows containers are not yet supported.
+Our Secret Detection jobs expect a Linux container type. Windows containers are not supported.
 
 CAUTION: **Caution:**
 If you use your own runners, make sure the Docker version installed
@@ -67,26 +65,27 @@ as shown in the following table:
 
 ## Configuration
 
-NOTE: **Note:**
-With GitLab 13.1 Secret Detection was split into its own CI/CD template.
+> GitLab 13.1 splits Secret Detection from the [SAST configuration](../sast#configuration) into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then Secret Detection is already enabled.
 
 Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml)
-during the `secret-detection` job. It runs regardless of the programming
-language of your app.
+during the `secret-detection` job. It runs regardless of your app's programming language.
 
-The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and
+[TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+
+Note that the Secret Detection analyzer ignores Password-in-URL vulnerabilities if the password
+begins with a dollar sign (`$`), as this likely indicates the password is an environment variable.
+For example, `https://username:$password@example.com/path/to/repo` isn't detected, while
+`https://username:password@example.com/path/to/repo` is.
 
 NOTE: **Note:**
-The Secret Detection analyzer will ignore "Password in URL" vulnerabilities if the password begins
-with a dollar sign (`$`) as this likely indicates the password being used is an environment
-variable. For example, `https://username:$password@example.com/path/to/repo` won't be
-detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
-
-NOTE: **Note:**
-You don't have to configure Secret Detection manually as shown in this section if you're using [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
+You don't have to configure Secret Detection manually as shown in this section if you're using
+[Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-To enable Secret Detection for GitLab 13.1 and later, you must include the `Secret-Detection.gitlab-ci.yml` template that’s provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
+To enable Secret Detection for GitLab 13.1 and later, you must include the
+`Secret-Detection.gitlab-ci.yml` template that's provided as a part of your GitLab installation. For
+GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
 
 Add the following to your `.gitlab-ci.yml` file:
 
@@ -102,30 +101,6 @@ The results are saved as a
 [Secret Detection report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
-
-### Using the SAST Template
-
-Prior to GitLab 13.1, Secret Detection was part of [SAST configuration](../sast#configuration).
-If you already have SAST enabled for your app configured before GitLab 13.1,
-you don't need to manually configure it.
-
-CAUTION: **Planned Deprecation:**
-In a future GitLab release, configuring Secret Detection with the SAST template will be deprecated. Please begin using `Secret-Detection.gitlab-ci.yml`
-to prevent future issues. We have made a
-[video to guide you through the process of transitioning](https://www.youtube.com/watch?v=W2tjcQreDwQ)
-to this new template.
-
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=W2tjcQreDwQ">Walkthrough of historical secret scan</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/W2tjcQreDwQ" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-
-When using the SAST template, Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml#L180)
-during the `sast` job. It runs regardless of the programming
-language of your app, and you don't need to change your
-CI/CD configuration file to enable it. Results are available in the SAST report.
 
 ### Customizing settings
 
@@ -164,8 +139,51 @@ Secret Detection can be customized by defining available variables:
 |-------------------------|---------------|-------------|
 | `SECRET_DETECTION_COMMIT_FROM` | -     | The commit a Gitleaks scan starts at. |
 | `SECRET_DETECTION_COMMIT_TO` | -       | The commit a Gitleaks scan ends at. |
-| `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories will also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
+| `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
+
+### Custom rulesets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+
+You can customize the default secret detection rules provided with GitLab.
+Customization allows you to exclude rules and add new rules.
+
+To create a custom ruleset:
+
+1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
+1. Create a custom ruleset file named `secret-detection-ruleset.toml` in the `.gitlab` directory.
+1. In the `secret-detection-ruleset.toml` file, do one of the following:
+
+   - Define a custom ruleset:
+
+     ```toml
+     [secrets]
+       description = 'secrets custom rules configuration'
+
+       [[secrets.passthrough]]
+         type  = "raw"
+         target = "gitleaks.toml"
+         value = """\
+     title = "gitleaks config"
+     # add regexes to the regex table
+     [[rules]]
+     description = "Test for Raw Custom Rulesets"
+     regex = '''Custom Raw Ruleset T[est]{3}'''
+     """
+     ```
+
+   - Provide the name of the file containing a custom ruleset:
+
+     ```toml
+     [secrets]
+       description = 'secrets custom rules configuration'
+
+       [[secrets.passthrough]]
+         type  = "file"
+         target = "gitleaks.toml"
+         value = "config/gitleaks.toml"
+     ```
 
 ### Logging level
 
@@ -197,3 +215,35 @@ We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showca
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
+
+### Make GitLab Secret Detection analyzer image available inside your Docker registry
+
+Import the following default Secret Detection analyzer images from `registry.gitlab.com` into your
+[local Docker container registry](../../packages/container_registry/index.md):
+
+```plaintext
+registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
+```
+
+The process for importing Docker images into a local offline Docker registry depends on
+**your network security policy**. Please consult your IT staff to find an accepted and approved
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
+with new definitions, so consider if you're able to make periodic updates yourself.
+
+For details on saving and transporting Docker images as a file, see Docker's documentation on
+[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
+[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+
+#### If support for Custom Certificate Authorities are needed
+
+Support for custom certificate authorities was introduced in the following versions.
+
+| Analyzer | Version |
+| -------- | ------- |
+| secrets | [v3.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/releases/v3.0.0) |
+
+## Troubleshooting
+
+### Getting warning message `gl-secret-detection-report.json: no matching files`
+
+For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).

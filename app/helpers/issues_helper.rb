@@ -137,6 +137,21 @@ module IssuesHelper
 
     issue.moved_from.project.service_desk_enabled? && !issue.project.service_desk_enabled?
   end
+
+  def use_startup_call?
+    request.query_parameters.empty? && @sort == 'created_date'
+  end
+
+  def startup_call_params
+    {
+      state: 'opened',
+      with_labels_details: 'true',
+      page: 1,
+      per_page: 20,
+      order_by: 'created_at',
+      sort: 'desc'
+    }
+  end
 end
 
 IssuesHelper.prepend_if_ee('EE::IssuesHelper')

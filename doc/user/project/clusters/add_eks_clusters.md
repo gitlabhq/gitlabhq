@@ -43,7 +43,7 @@ For example, the following policy document allows assuming a role whose name sta
 
 Generate an access key for the IAM user, and configure GitLab with the credentials:
 
-1. Navigate to **Admin Area > Settings > Integrations** and expand the **Amazon EKS** section.
+1. Navigate to **Admin Area > Settings > General** and expand the **Amazon EKS** section.
 1. Check **Enable Amazon EKS integration**.
 1. Enter the account ID and access key credentials into the respective
    `Account ID`, `Access key ID` and `Secret access key` fields.
@@ -61,22 +61,13 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Admin Area > Kubernetes**, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Amazon EKS**. You will be provided with an
-   `Account ID` and `External ID` to use in the next step.
-1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an EKS management IAM role.
-   To do so, follow the [Amazon EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) instructions
-   to create a IAM role suitable for managing the AWS EKS cluster's resources on your behalf.
-   In addition to the policies that guide suggests, you must also include the `AmazonEKSClusterPolicy`
-   policy for this role in order for GitLab to manage the EKS cluster correctly.
-1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM role:
-   1. From the left panel, select **Roles**.
-   1. Click **Create role**.
-   1. Under `Select type of trusted entity`, select **Another AWS account**.
-   1. Enter the Account ID from GitLab into the `Account ID` field.
-   1. Check **Require external ID**.
-   1. Enter the External ID from GitLab into the `External ID` field.
-   1. Click **Next: Permissions**.
-   1. Click **Create Policy**, which will open a new window.
-   1. Select the **JSON** tab, and paste in the following snippet in place of the existing content:
+   `Account ID` and `External ID` needed for later steps.
+1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM policy:
+   1. From the left panel, select **Policies**.
+   1. Click **Create Policy**, which opens a new window.
+   1. Select the **JSON** tab, and paste the following snippet in place of the
+      existing content. These permissions give GitLab the ability to create
+      resources, but not delete them:
 
       ```json
       {
@@ -123,15 +114,26 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
       }
       ```
 
-      NOTE: **Note:**
-      These permissions give GitLab the ability to create resources, but not delete them.
-      This means that if an error is encountered during the creation process, changes will
+      If an error is encountered during the creation process, changes will
       not be rolled back and you must remove resources manually. You can do this by deleting
       the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html)
 
    1. Click **Review policy**.
    1. Enter a suitable name for this policy, and click **Create Policy**. You can now close this window.
-   1. Switch back to the "Create role" window, and select the policy you just created.
+
+1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an EKS management IAM role.
+   To do so, follow the [Amazon EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) instructions
+   to create a IAM role suitable for managing the AWS EKS cluster's resources on your behalf.
+   In addition to the policies that guide suggests, you must also include the `AmazonEKSClusterPolicy`
+   policy for this role in order for GitLab to manage the EKS cluster correctly.
+1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM role:
+   1. From the left panel, select **Roles**.
+   1. Click **Create role**.
+   1. Under `Select type of trusted entity`, select **Another AWS account**.
+   1. Enter the Account ID from GitLab into the `Account ID` field.
+   1. Check **Require external ID**.
+   1. Enter the External ID from GitLab into the `External ID` field.
+   1. Click **Next: Permissions**, and select the policy you just created.
    1. Click **Next: Tags**, and optionally enter any tags you wish to associate with this role.
    1. Click **Next: Review**.
    1. Enter a role name and optional description into the fields provided.

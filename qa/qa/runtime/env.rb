@@ -24,7 +24,7 @@ module QA
         SUPPORTED_FEATURES
       end
 
-      def address_matches?(*options)
+      def context_matches?(*options)
         return false unless Runtime::Scenario.attributes[:gitlab_address]
 
         opts = {}
@@ -33,29 +33,38 @@ module QA
 
         uri = URI(Runtime::Scenario.gitlab_address)
 
-        if options.any?
-          options.each do |option|
-            opts[:domain] = 'gitlab' if option == :production
+        options.each do |option|
+          opts[:domain] = 'gitlab' if option == :production
 
-            if option.is_a?(Hash) && !option[:subdomain].nil?
-              opts.merge!(option)
+          if option.is_a?(Hash) && !option[:pipeline].nil? && !ci_project_name.nil?
+            return pipeline_matches?(option[:pipeline])
 
-              opts[:subdomain] = case option[:subdomain]
-                                 when Array
-                                   "(#{option[:subdomain].join("|")})."
-                                 when Regexp
-                                   option[:subdomain]
-                                 else
-                                   "(#{option[:subdomain]})."
-                                 end
-            end
+          elsif option.is_a?(Hash) && !option[:subdomain].nil?
+            opts.merge!(option)
+
+            opts[:subdomain] = case option[:subdomain]
+                               when Array
+                                 "(#{option[:subdomain].join("|")})."
+                               when Regexp
+                                 option[:subdomain]
+                               else
+                                 "(#{option[:subdomain]})."
+                               end
           end
         end
 
         uri.host.match?(/^#{opts[:subdomain]}#{opts[:domain]}#{opts[:tld]}$/)
       end
 
-      alias_method :dot_com?, :address_matches?
+      alias_method :dot_com?, :context_matches?
+
+      def pipeline_matches?(pipeline_to_run_in)
+        Array(pipeline_to_run_in).any? { |pipeline| pipeline.to_s.casecmp?(pipeline_from_project_name) }
+      end
+
+      def pipeline_from_project_name
+        ci_project_name.to_s.start_with?('gitlab-qa') ? 'master' : ci_project_name
+      end
 
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
@@ -79,6 +88,10 @@ module QA
 
       def admin_personal_access_token
         ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
+      end
+
+      def ci_job_url
+        ENV['CI_JOB_URL']
       end
 
       def ci_project_name

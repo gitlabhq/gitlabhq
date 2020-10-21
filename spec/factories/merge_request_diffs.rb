@@ -2,13 +2,7 @@
 
 FactoryBot.define do
   factory :merge_request_diff do
-    merge_request do
-      build(:merge_request) do |merge_request|
-        # MergeRequest should not create a MergeRequestDiff in the callback
-        allow(merge_request).to receive(:ensure_merge_request_diff)
-      end
-    end
-
+    association :merge_request, factory: :merge_request_without_merge_request_diff
     state { :collected }
     commits_count { 1 }
 

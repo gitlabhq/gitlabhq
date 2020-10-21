@@ -1,7 +1,6 @@
 <script>
 import $ from 'jquery';
 import { difference, union } from 'lodash';
-import { mapState, mapActions } from 'vuex';
 import flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -26,47 +25,49 @@ export default {
     'projectIssuesPath',
     'projectPath',
   ],
-  data: () => ({
-    labelsSelectInProgress: false,
-  }),
-  computed: {
-    ...mapState(['selectedLabels']),
-  },
-  mounted() {
-    this.setInitialState({
+  data() {
+    return {
+      isLabelsSelectInProgress: false,
       selectedLabels: this.initiallySelectedLabels,
-    });
+    };
   },
   methods: {
-    ...mapActions(['setInitialState', 'replaceSelectedLabels']),
     handleDropdownClose() {
       $(this.$el).trigger('hidden.gl.dropdown');
     },
-    handleUpdateSelectedLabels(labels) {
+    handleUpdateSelectedLabels(dropdownLabels) {
       const currentLabelIds = this.selectedLabels.map(label => label.id);
-      const userAddedLabelIds = labels.filter(label => label.set).map(label => label.id);
-      const userRemovedLabelIds = labels.filter(label => !label.set).map(label => label.id);
+      const userAddedLabelIds = dropdownLabels.filter(label => label.set).map(label => label.id);
+      const userRemovedLabelIds = dropdownLabels.filter(label => !label.set).map(label => label.id);
 
-      const issuableLabels = difference(
-        union(currentLabelIds, userAddedLabelIds),
-        userRemovedLabelIds,
-      );
+      const labelIds = difference(union(currentLabelIds, userAddedLabelIds), userRemovedLabelIds);
 
-      this.labelsSelectInProgress = true;
+      this.updateSelectedLabels(labelIds);
+    },
+    handleLabelRemove(labelId) {
+      const currentLabelIds = this.selectedLabels.map(label => label.id);
+      const labelIds = difference(currentLabelIds, [labelId]);
+
+      this.updateSelectedLabels(labelIds);
+    },
+    updateSelectedLabels(labelIds) {
+      this.isLabelsSelectInProgress = true;
 
       axios({
         data: {
           [this.issuableType]: {
-            label_ids: issuableLabels,
+            label_ids: labelIds,
           },
         },
         method: 'put',
         url: this.labelsUpdatePath,
       })
-        .then(({ data }) => this.replaceSelectedLabels(data.labels))
+        .then(({ data }) => {
+          this.selectedLabels = data.labels;
+        })
         .catch(() => flash(__('An error occurred while updating labels.')))
         .finally(() => {
-          this.labelsSelectInProgress = false;
+          this.isLabelsSelectInProgress = false;
         });
     },
   },
@@ -76,6 +77,7 @@ export default {
 <template>
   <labels-select
     class="block labels js-labels-block"
+    :allow-label-remove="allowLabelEdit"
     :allow-label-create="allowLabelCreate"
     :allow-label-edit="allowLabelEdit"
     :allow-multiselect="true"
@@ -86,10 +88,12 @@ export default {
     :labels-fetch-path="labelsFetchPath"
     :labels-filter-base-path="projectIssuesPath"
     :labels-manage-path="labelsManagePath"
-    :labels-select-in-progress="labelsSelectInProgress"
+    :labels-select-in-progress="isLabelsSelectInProgress"
     :selected-labels="selectedLabels"
     :variant="$options.sidebar"
+    data-qa-selector="labels_block"
     @onDropdownClose="handleDropdownClose"
+    @onLabelRemove="handleLabelRemove"
     @updateSelectedLabels="handleUpdateSelectedLabels"
   >
     {{ __('None') }}

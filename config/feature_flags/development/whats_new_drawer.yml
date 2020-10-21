@@ -1,7 +1,7 @@
 ---
 name: whats_new_drawer
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38975
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/254186
+group: group::retention
 type: development
 default_enabled: false

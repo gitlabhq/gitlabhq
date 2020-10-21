@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Task Lists' do
+RSpec.describe 'Task Lists', :js do
   include Warden::Test::Helpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
@@ -38,41 +38,7 @@ RSpec.describe 'Task Lists' do
     MARKDOWN
   end
 
-  let(:nested_tasks_markdown) do
-    <<-EOT.strip_heredoc
-    - [ ] Task a
-      - [x] Task a.1
-      - [ ] Task a.2
-    - [ ] Task b
-
-    1. [ ] Task 1
-       1. [ ] Task 1.1
-       1. [x] Task 1.2
-    EOT
-  end
-
-  let(:commented_tasks_markdown) do
-    <<-EOT.strip_heredoc
-    <!--
-    - [ ] a
-    -->
-
-    - [ ] b
-    EOT
-  end
-
-  let(:summary_no_blank_line_markdown) do
-    <<-EOT.strip_heredoc
-    <details>
-    <summary>No blank line after summary element breaks task list</summary>
-    1. [ ] People Ops: do such and such
-    </details>
-
-    * [ ] Task 1
-    EOT
-  end
-
-  before(:all) do
+  before_all do
     project.add_maintainer(user)
     project.add_guest(user2)
   end
@@ -86,7 +52,7 @@ RSpec.describe 'Task Lists' do
   end
 
   describe 'for Issues' do
-    describe 'multiple tasks', :js do
+    describe 'multiple tasks' do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
@@ -127,7 +93,7 @@ RSpec.describe 'Task Lists' do
       end
     end
 
-    describe 'single incomplete task', :js do
+    describe 'single incomplete task' do
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -146,7 +112,7 @@ RSpec.describe 'Task Lists' do
       end
     end
 
-    describe 'single complete task', :js do
+    describe 'single complete task' do
       let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -175,7 +141,7 @@ RSpec.describe 'Task Lists' do
                       project: project, author: user)
       end
 
-      it 'renders for note body', :js do
+      it 'renders for note body' do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -183,14 +149,14 @@ RSpec.describe 'Task Lists' do
         expect(page).to have_selector('.note ul input[checked]', count: 2)
       end
 
-      it 'contains the required selectors', :js do
+      it 'contains the required selectors' do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note .js-task-list-container')
         expect(page).to have_selector('.note .js-task-list-container .task-list .task-list-item .task-list-item-checkbox')
       end
 
-      it 'is only editable by author', :js do
+      it 'is only editable by author' do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.js-task-list-container')
@@ -209,7 +175,7 @@ RSpec.describe 'Task Lists' do
                       project: project, author: user)
       end
 
-      it 'renders for note body', :js do
+      it 'renders for note body' do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -224,7 +190,7 @@ RSpec.describe 'Task Lists' do
                       project: project, author: user)
       end
 
-      it 'renders for note body', :js do
+      it 'renders for note body' do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -240,7 +206,7 @@ RSpec.describe 'Task Lists' do
     end
 
     shared_examples 'multiple tasks' do
-      it 'renders for description', :js do
+      it 'renders for description' do
         visit_merge_request(project, merge)
         wait_for_requests
 
@@ -249,7 +215,7 @@ RSpec.describe 'Task Lists' do
         expect(page).to have_selector('ul input[checked]', count: 2)
       end
 
-      it 'contains the required selectors', :js do
+      it 'contains the required selectors' do
         visit_merge_request(project, merge)
         wait_for_requests
 
@@ -261,7 +227,7 @@ RSpec.describe 'Task Lists' do
         expect(page).to have_selector('form.js-issuable-update')
       end
 
-      it 'is only editable by author', :js do
+      it 'is only editable by author' do
         visit_merge_request(project, merge)
         wait_for_requests
 
@@ -300,7 +266,7 @@ RSpec.describe 'Task Lists' do
     describe 'single incomplete task' do
       let!(:merge) { create(:merge_request, :simple, description: singleIncompleteMarkdown, author: user, source_project: project) }
 
-      it 'renders for description', :js do
+      it 'renders for description' do
         visit_merge_request(project, merge)
         wait_for_requests
 
@@ -319,7 +285,7 @@ RSpec.describe 'Task Lists' do
     describe 'single complete task' do
       let!(:merge) { create(:merge_request, :simple, description: singleCompleteMarkdown, author: user, source_project: project) }
 
-      it 'renders for description', :js do
+      it 'renders for description' do
         visit_merge_request(project, merge)
         wait_for_requests
 
@@ -337,7 +303,17 @@ RSpec.describe 'Task Lists' do
   end
 
   describe 'markdown task edge cases' do
-    describe 'commented tasks', :js do
+    describe 'commented tasks' do
+      let(:commented_tasks_markdown) do
+        <<-EOT.strip_heredoc
+        <!--
+        - [ ] a
+        -->
+
+        - [ ] b
+        EOT
+      end
+
       let!(:issue) { create(:issue, description: commented_tasks_markdown, author: user, project: project) }
 
       it 'renders' do
@@ -360,7 +336,18 @@ RSpec.describe 'Task Lists' do
       end
     end
 
-    describe 'summary with no blank line', :js do
+    describe 'summary with no blank line' do
+      let(:summary_no_blank_line_markdown) do
+        <<-EOT.strip_heredoc
+        <details>
+        <summary>No blank line after summary element breaks task list</summary>
+        1. [ ] People Ops: do such and such
+        </details>
+
+        * [ ] Task 1
+        EOT
+      end
+
       let!(:issue) { create(:issue, description: summary_no_blank_line_markdown, author: user, project: project) }
 
       it 'renders' do
@@ -379,6 +366,32 @@ RSpec.describe 'Task Lists' do
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
+        expect(page).to have_selector('ul input[checked]', count: 1)
+      end
+    end
+
+    describe 'markdown starting with new line character' do
+      let(:markdown_starting_with_new_line) do
+        <<-EOT.strip_heredoc
+
+        - [ ] Task 1
+        EOT
+      end
+
+      let(:merge_request) { create(:merge_request, description: markdown_starting_with_new_line, author: user, source_project: project) }
+
+      it 'allows the task to be checked' do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+
+        expect(page).to have_selector('ul input[checked]', count: 0)
+
+        find('.task-list-item-checkbox').click
+        wait_for_requests
+
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+
         expect(page).to have_selector('ul input[checked]', count: 1)
       end
     end

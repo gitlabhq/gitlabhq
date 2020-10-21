@@ -1,25 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';
 import AlertManagementEmptyState from '~/alert_management/components/alert_management_empty_state.vue';
+import defaultProvideValues from '../mocks/alerts_provide_config.json';
 
 describe('AlertManagementEmptyState', () => {
   let wrapper;
 
-  function mountComponent({
-    props = {
-      alertManagementEnabled: false,
-      userCanEnableAlertManagement: false,
-    },
-    stubs = {},
-  } = {}) {
+  function mountComponent({ provide = {} } = {}) {
     wrapper = shallowMount(AlertManagementEmptyState, {
-      propsData: {
-        enableAlertManagementPath: '/link',
-        alertsHelpUrl: '/link',
-        emptyAlertSvgPath: 'illustration/path',
-        ...props,
+      provide: {
+        ...defaultProvideValues,
+        ...provide,
       },
-      stubs,
     });
   }
 
@@ -42,7 +34,7 @@ describe('AlertManagementEmptyState', () => {
 
     it('show OpsGenie integration state when OpsGenie mcv is true', () => {
       mountComponent({
-        props: {
+        provide: {
           alertManagementEnabled: false,
           userCanEnableAlertManagement: false,
           opsgenieMvcEnabled: true,

@@ -7,7 +7,7 @@ class AddProjectsFkToJiraImportsTable < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :jira_imports, :projects, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :jira_imports, :projects, on_delete: :cascade
     end
   end
 

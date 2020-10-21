@@ -8,6 +8,8 @@ module Projects
       before_action :verify_registry_enabled!
       before_action :authorize_read_container_image!
 
+      feature_category :container_registry
+
       private
 
       def verify_registry_enabled!

@@ -82,7 +82,7 @@ As an administrator, you may also confirm a user in the [Admin Area](admin_area/
 ## What do I do if I am an administrator and I am locked out?
 
 If you are an administrator and cannot otherwise verify your email address, sign in to your GitLab
-instance with a [Rails console session](../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session).
+instance with a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
 Once connected, run the following commands to confirm your administrator account:
 
 ```ruby
@@ -94,7 +94,7 @@ admin.save!
 ## How do I force-confirm all users on my self-managed instance?
 
 If you are an administrator and would like to force-confirm all users on your system, sign in to your GitLab
-instance with a [Rails console session](../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session).
+instance with a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
 Once connected, run the following commands to confirm all user accounts:
 
 ```ruby

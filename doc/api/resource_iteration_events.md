@@ -6,14 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Resource iteration events API **(STARTER)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40850) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4
-> - It's [deployed behind a feature flag](../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-iterations-events-tracking).
-
-NOTE: **Note:**
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229463) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229463) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
 
 Resource iteration events keep track of what happens to GitLab [issues](../user/project/issues/).
 
@@ -153,23 +147,4 @@ Example response:
   },
   "action": "remove"
 }
-```
-
-### Enable or disable iterations events tracking **(STARTER)**
-
-Iterations events tracking is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:track_iteration_change_events)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:track_iteration_change_events)
 ```

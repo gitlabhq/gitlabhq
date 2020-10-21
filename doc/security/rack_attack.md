@@ -4,8 +4,6 @@ type: reference, howto
 
 # Rack Attack initializer
 
-## Overview
-
 [Rack Attack](https://github.com/kickstarter/rack-attack), also known as Rack::Attack, is a Ruby gem
 that is meant to protect GitLab with the ability to customize throttling and
 to block user IP addresses.

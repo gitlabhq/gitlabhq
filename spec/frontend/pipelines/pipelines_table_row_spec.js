@@ -181,7 +181,9 @@ describe('Pipelines Table Row', () => {
 
     it('should render the provided actions', () => {
       expect(wrapper.find('.js-pipelines-retry-button').exists()).toBe(true);
+      expect(wrapper.find('.js-pipelines-retry-button').attributes('title')).toMatch('Retry');
       expect(wrapper.find('.js-pipelines-cancel-button').exists()).toBe(true);
+      expect(wrapper.find('.js-pipelines-cancel-button').attributes('title')).toMatch('Cancel');
       const dropdownMenu = wrapper.find('.dropdown-menu');
 
       expect(dropdownMenu.text()).toContain(scheduledJobAction.name);

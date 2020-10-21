@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["environment_scope"],
+  "properties": {
+    "id": { "type": "integer" },
+    "environment_scope": { "type": "string" }
+  },
+  "additionalProperties": false
+}

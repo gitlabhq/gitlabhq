@@ -28,7 +28,8 @@
       = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
 - if hidden > 0
-  %li.alert.alert-warning
+  %li.gl-alert.gl-alert-warning
+    = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
     = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
 - if project.context_commits_enabled? && can_update_merge_request && context_commits&.empty?

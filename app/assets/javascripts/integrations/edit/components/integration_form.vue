@@ -1,8 +1,9 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlModalDirective } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
+import { integrationLevels } from '../constants';
 
 import OverrideDropdown from './override_dropdown.vue';
 import ActiveCheckbox from './active_checkbox.vue';
@@ -10,6 +11,7 @@ import JiraTriggerFields from './jira_trigger_fields.vue';
 import JiraIssuesFields from './jira_issues_fields.vue';
 import TriggerFields from './trigger_fields.vue';
 import DynamicField from './dynamic_field.vue';
+import ConfirmationModal from './confirmation_modal.vue';
 
 export default {
   name: 'IntegrationForm',
@@ -20,7 +22,11 @@ export default {
     JiraIssuesFields,
     TriggerFields,
     DynamicField,
+    ConfirmationModal,
     GlButton,
+  },
+  directives: {
+    'gl-modal': GlModalDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
@@ -31,6 +37,9 @@ export default {
     },
     isJira() {
       return this.propsSource.type === 'jira';
+    },
+    isInstanceLevel() {
+      return this.propsSource.integrationLevel === integrationLevels.INSTANCE;
     },
     showJiraIssuesFields() {
       return this.isJira && this.glFeatures.jiraIssuesIntegration;
@@ -82,7 +91,21 @@ export default {
       v-bind="propsSource.jiraIssuesProps"
     />
     <div v-if="isEditable" class="footer-block row-content-block">
+      <template v-if="isInstanceLevel">
+        <gl-button
+          v-gl-modal.confirmSaveIntegration
+          category="primary"
+          variant="success"
+          :loading="isSaving"
+          :disabled="isSavingOrTesting"
+          data-qa-selector="save_changes_button"
+        >
+          {{ __('Save changes') }}
+        </gl-button>
+        <confirmation-modal @submit="onSaveClick" />
+      </template>
       <gl-button
+        v-else
         category="primary"
         variant="success"
         type="submit"
@@ -93,6 +116,7 @@ export default {
       >
         {{ __('Save changes') }}
       </gl-button>
+
       <gl-button
         v-if="propsSource.canTest"
         :loading="isTesting"

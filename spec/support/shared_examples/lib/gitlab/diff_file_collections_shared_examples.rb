@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'diff statistics' do |test_include_stats_flag: true|
-  subject { described_class.new(diffable, collection_default_args) }
+  subject { described_class.new(diffable, **collection_default_args) }
 
   def stub_stats_find_by_path(path, stats_mock)
     expect_next_instance_of(Gitlab::Git::DiffStatsCollection) do |collection|

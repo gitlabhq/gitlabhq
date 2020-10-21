@@ -53,5 +53,18 @@ FactoryBot.define do
     trait :fog_without_data do
       data_store { :fog }
     end
+
+    trait :persisted do
+      data_store { :database}
+
+      transient do
+        initial_data { 'test data' }
+      end
+
+      after(:build) do |chunk, evaluator|
+        Ci::BuildTraceChunks::Database.new.set_data(chunk, evaluator.initial_data)
+        chunk.checksum = chunk.class.crc32(evaluator.initial_data)
+      end
+    end
   end
 end

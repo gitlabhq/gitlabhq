@@ -24,7 +24,8 @@ Parameters:
 - `path` (optional) - The path inside repository. Used to get content of subdirectories
 - `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
-- `per_page` (optional) - Number of results to show per page. If not specified, defaults to `20`
+- `per_page` (optional) - Number of results to show per page. If not specified, defaults to `20`.
+  Read more on [pagination](README.md#pagination).
 
 ```json
 [

@@ -3,6 +3,8 @@
 class Admin::LabelsController < Admin::ApplicationController
   before_action :set_label, only: [:show, :edit, :update, :destroy]
 
+  feature_category :issue_tracking
+
   def index
     @labels = Label.templates.page(params[:page])
   end

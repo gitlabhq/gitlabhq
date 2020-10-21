@@ -726,6 +726,12 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
     end
 
+    it 'does not find user in blocked_pending_approval state' do
+      user.block_pending_approval
+
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
     context 'with increment_failed_attempts' do
       wrong_password = 'incorrect_password'
 

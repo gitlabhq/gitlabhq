@@ -1,6 +1,9 @@
+import initConfirmModal from '~/confirm_modal';
 import AddSshKeyValidation from '~/profile/add_ssh_key_validation';
 
 document.addEventListener('DOMContentLoaded', () => {
+  initConfirmModal();
+
   const input = document.querySelector('.js-add-ssh-key-validation-input');
   if (!input) return;
 

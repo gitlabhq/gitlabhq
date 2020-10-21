@@ -145,10 +145,17 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
     context 'destination_storage_name is missing' do
       let(:destination_storage_name) { nil }
 
-      it 'returns a validation error' do
+      it 'schedules a project repository storage move' do
         create_project_repository_storage_move
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        storage_move = project.repository_storage_moves.last
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('public_api/v4/project_repository_storage_move')
+        expect(json_response['id']).to eq(storage_move.id)
+        expect(json_response['state']).to eq('scheduled')
+        expect(json_response['source_storage_name']).to eq('default')
+        expect(json_response['destination_storage_name']).to be_present
       end
     end
   end

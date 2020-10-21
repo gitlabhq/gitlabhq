@@ -353,4 +353,29 @@ RSpec.describe DeployToken do
       end
     end
   end
+
+  describe '#accessible_projects' do
+    subject { deploy_token.accessible_projects }
+
+    context 'when a deploy token is associated to a project' do
+      let_it_be(:deploy_token) { create(:deploy_token, :project) }
+
+      it 'returns only projects directly associated with the token' do
+        expect(deploy_token).to receive(:projects)
+
+        subject
+      end
+    end
+
+    context 'when a deploy token is associated to a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+      it 'returns all projects from the group' do
+        expect(group).to receive(:all_projects)
+
+        subject
+      end
+    end
+  end
 end

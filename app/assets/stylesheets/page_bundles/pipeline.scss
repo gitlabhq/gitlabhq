@@ -1,0 +1,484 @@
+@import 'mixins_and_variables_and_functions';
+@import './pipeline_mixins';
+
+/**
+ * Pipeline Page Bundle
+ *
+ * Styles used to render a single pipeline page.
+ *
+ * Includes its tabs:
+ *
+ * - [data-page='projects:pipelines:show']
+ * - [data-page='projects:pipelines:dag']
+ * - [data-page='projects:pipelines:builds']
+ * - [data-page='projects:pipelines:failures']
+ * - [data-page='projects:pipelines:tests']
+ * - ...
+ */
+
+.tab-pane {
+  .ci-table {
+    thead th {
+      border-top: 0;
+    }
+  }
+}
+
+.build-failures {
+  .build-state {
+    padding: 20px 2px;
+
+    .build-name {
+      font-weight: $gl-font-weight-normal;
+    }
+
+    .stage {
+      color: $gl-text-color-secondary;
+      font-weight: $gl-font-weight-normal;
+      vertical-align: middle;
+    }
+  }
+
+  .build-log {
+    border: 0;
+    line-height: initial;
+  }
+
+  .build-trace-row td {
+    border-top: 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-top: 0;
+  }
+
+  .build-trace {
+    width: 100%;
+    text-align: left;
+    margin-top: $gl-padding;
+  }
+
+  .build-name {
+    width: 196px;
+
+    a {
+      font-weight: $gl-font-weight-bold;
+      color: $gl-text-color;
+      text-decoration: none;
+
+      &:focus,
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .build-actions {
+    width: 70px;
+    text-align: right;
+  }
+
+  .build-stage {
+    width: 140px;
+  }
+
+  .ci-status-icon-failed {
+    padding: 10px 0 10px 12px;
+    width: 12px + 24px; // padding-left + svg width
+  }
+
+  .build-icon svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+  }
+
+  .build-state,
+  .build-trace-row {
+    > td:last-child {
+      padding-right: 0;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    td:empty {
+      display: none;
+    }
+
+    .ci-table {
+      margin-top: 2 * $gl-padding;
+    }
+
+    .build-trace-container {
+      padding-top: $gl-padding;
+      padding-bottom: $gl-padding;
+    }
+
+    .build-trace {
+      margin-bottom: 0;
+      margin-top: 0;
+    }
+  }
+}
+
+.pipeline-tab-content {
+  display: flex;
+  width: 100%;
+  min-height: $dropdown-max-height-lg;
+  background-color: $gray-light;
+  padding: $gl-padding 0;
+  overflow: auto;
+}
+
+// Pipeline graph, used at
+// app/assets/javascripts/pipelines/components/graph/graph_component.vue
+.pipeline-graph {
+  white-space: nowrap;
+  transition: max-height 0.3s, padding 0.3s;
+
+  .stage-column-list,
+  .builds-container > ul {
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: $gl-text-color;
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+
+  .stage-column {
+    display: inline-block;
+    vertical-align: top;
+
+    &.left-margin {
+      &:not(:first-child) {
+        margin-left: 44px;
+
+        .left-connector {
+          @include flat-connector-before;
+        }
+      }
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    // when downstream pipelines are present, the last stage isn't the last column
+    &:last-child:not(.has-downstream) {
+      .build {
+        // Remove right connecting horizontal line from first build in last stage
+        &:first-child::after {
+          border: 0;
+        }
+        // Remove right curved connectors from all builds in last stage
+        &:not(:first-child)::after {
+          border: 0;
+        }
+        // Remove opposite curve
+        .curve::before {
+          display: none;
+        }
+      }
+    }
+
+    // when upstream pipelines are present, the first stage isn't the first column
+    &:first-child:not(.has-upstream) {
+      .build {
+        // Remove left curved connectors from all builds in first stage
+        &:not(:first-child)::before {
+          border: 0;
+        }
+        // Remove opposite curve
+        .curve::after {
+          display: none;
+        }
+      }
+    }
+
+    // Curve first child connecting lines in opposite direction
+    .curve {
+      display: none;
+
+      &::before,
+      &::after {
+        content: '';
+        width: 21px;
+        height: 25px;
+        position: absolute;
+        top: -31px;
+        border-top: 2px solid $border-color;
+      }
+
+      &::after {
+        left: -44px;
+        border-right: 2px solid $border-color;
+        border-radius: 0 20px;
+      }
+
+      &::before {
+        right: -44px;
+        border-left: 2px solid $border-color;
+        border-radius: 20px 0 0;
+      }
+    }
+  }
+
+  .stage-name {
+    margin: 0 0 15px 10px;
+    font-weight: $gl-font-weight-bold;
+    width: 176px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 2.2em;
+  }
+
+  .build {
+    position: relative;
+    width: 186px;
+    margin-bottom: 10px;
+    white-space: normal;
+
+    .ci-job-dropdown-container {
+      // override dropdown.scss
+      .dropdown-menu li button {
+        padding: 0;
+        text-align: center;
+      }
+    }
+
+    // ensure .build-content has hover style when action-icon is hovered
+    .ci-job-dropdown-container:hover .build-content {
+      @extend .build-content:hover;
+    }
+
+    .ci-status-icon svg {
+      height: 24px;
+      width: 24px;
+    }
+
+    .dropdown-menu-toggle {
+      background-color: transparent;
+      border: 0;
+      padding: 0;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .build-content {
+      @include build-content();
+    }
+
+    a.build-content:hover,
+    button.build-content:hover {
+      background-color: $gray-darker;
+      border: 1px solid $dropdown-toggle-active-border-color;
+    }
+
+    // Connect first build in each stage with right horizontal line
+    &:first-child {
+      &::after {
+        content: '';
+        position: absolute;
+        top: 48%;
+        right: -48px;
+        border-top: 2px solid $border-color;
+        width: 48px;
+        height: 1px;
+      }
+    }
+
+    // Connect each build (except for first) with curved lines
+    &:not(:first-child) {
+      &::after,
+      &::before {
+        content: '';
+        top: -49px;
+        position: absolute;
+        border-bottom: 2px solid $border-color;
+        width: 25px;
+        height: 69px;
+      }
+
+      // Right connecting curves
+      &::after {
+        right: -25px;
+        border-right: 2px solid $border-color;
+        border-radius: 0 0 20px;
+      }
+
+      // Left connecting curves
+      &::before {
+        left: -25px;
+        border-left: 2px solid $border-color;
+        border-radius: 0 0 0 20px;
+      }
+    }
+
+    // Connect second build to first build with smaller curved line
+    &:nth-child(2) {
+      &::after,
+      &::before {
+        height: 29px;
+        top: -9px;
+      }
+
+      .curve {
+        display: block;
+      }
+    }
+  }
+
+  .ci-action-icon-container {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    // Action Icons in big pipeline-graph nodes
+    &.ci-action-icon-wrapper {
+      height: 30px;
+      width: 30px;
+      border-radius: 100%;
+      display: block;
+      padding: 0;
+      line-height: 0;
+
+      svg {
+        fill: $gl-text-color-secondary;
+      }
+
+      .spinner {
+        top: 2px;
+      }
+
+      &.play {
+        svg {
+          left: 1px;
+          top: 1px;
+        }
+      }
+    }
+  }
+
+  .stage-action svg {
+    left: 1px;
+    top: -2px;
+  }
+}
+
+// Triggers the dropdown in the big pipeline graph
+.dropdown-counter-badge {
+  font-weight: 100;
+  font-size: 15px;
+  position: absolute;
+  right: 13px;
+  top: 8px;
+}
+
+.split-report-section {
+  border-bottom: 1px solid var(--gray-50, $gray-50);
+
+  .report-block-container {
+    max-height: 500px;
+    overflow: auto;
+  }
+
+  .space-children,
+  .space-children > span {
+    display: flex;
+    align-self: center;
+  }
+
+  .media {
+    align-items: center;
+    padding: 10px;
+    line-height: 20px;
+
+    /*
+    This fixes the wrapping div of the icon in the report header.
+    Apparently the borderless status icons are half the size of the status icons with border.
+    This means we have to double the size of the wrapping div for borderless icons.
+    */
+    .space-children:first-child {
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+      margin-left: 1px;
+    }
+  }
+
+  .code-text {
+    width: 100%;
+    flex: 1;
+  }
+}
+
+.big-pipeline-graph-dropdown-menu {
+  @include pipeline-graph-dropdown-menu();
+  width: 195px;
+  min-width: 195px;
+  left: 100%;
+  top: -10px;
+  box-shadow: 0 1px 5px $black-transparent;
+
+  /**
+   * Top arrow in the dropdown in the big pipeline graph
+   */
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    top: 18px;
+  }
+
+  &::before {
+    left: -6px;
+    margin-top: 3px;
+    border-width: 7px 5px 7px 0;
+    border-right-color: $border-color;
+  }
+
+  &::after {
+    left: -5px;
+    border-width: 10px 7px 10px 0;
+    border-right-color: $white;
+  }
+}
+
+.codequality-report {
+  .media {
+    padding: $gl-padding;
+  }
+
+  .media-body {
+    flex-direction: row;
+  }
+
+  .report-block-container {
+    height: auto !important;
+  }
+}
+
+.test-reports-table {
+  .build-trace {
+    @include build-trace();
+  }
+}

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Resource::SSHKey do
+RSpec.describe QA::Resource::SSHKey do
   describe '#key' do
     it 'generates a default key' do
       expect(subject.key).to be_a(QA::Runtime::Key::RSA)

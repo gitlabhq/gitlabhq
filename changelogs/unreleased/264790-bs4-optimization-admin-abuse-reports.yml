@@ -1,0 +1,5 @@
+---
+title: Remove d-md-none/d-sm-none when d-sm-none/d-none exists
+merge_request: 44845
+author: Takuya Noguchi
+type: other

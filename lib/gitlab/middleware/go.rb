@@ -18,6 +18,15 @@ module Gitlab
         request = ActionDispatch::Request.new(env)
 
         render_go_doc(request) || @app.call(env)
+      rescue Gitlab::Auth::IpBlacklisted
+        Gitlab::AuthLogger.error(
+          message: 'Rack_Attack',
+          env: :blocklist,
+          remote_ip: request.ip,
+          request_method: request.request_method,
+          path: request.fullpath
+        )
+        Rack::Response.new('', 403).finish
       end
 
       private

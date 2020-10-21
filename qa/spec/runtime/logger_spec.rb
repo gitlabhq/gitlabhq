@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Logger do
+RSpec.describe QA::Runtime::Logger do
   before do
     logger = Logger.new $stdout
     logger.level = ::Logger::DEBUG

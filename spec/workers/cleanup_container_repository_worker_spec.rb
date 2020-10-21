@@ -40,14 +40,35 @@ RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_stat
     context 'container expiration policy' do
       let(:params) { { key: 'value', 'container_expiration_policy' => true } }
 
+      before do
+        allow(ContainerRepository)
+          .to receive(:find_by_id).with(repository.id).and_return(repository)
+      end
+
       it 'executes the destroy service' do
+        expect(repository).to receive(:start_expiration_policy!).and_call_original
+        expect(repository).to receive(:reset_expiration_policy_started_at!).and_call_original
         expect(Projects::ContainerRepository::CleanupTagsService).to receive(:new)
           .with(project, nil, params.merge('container_expiration_policy' => true))
           .and_return(service)
 
-        expect(service).to receive(:execute)
+        expect(service).to receive(:execute).and_return(status: :success)
 
         subject.perform(nil, repository.id, params)
+        expect(repository.reload.expiration_policy_started_at).to be_nil
+      end
+
+      it "doesn't reset the expiration policy started at if the destroy service returns an error" do
+        expect(repository).to receive(:start_expiration_policy!).and_call_original
+        expect(repository).not_to receive(:reset_expiration_policy_started_at!)
+        expect(Projects::ContainerRepository::CleanupTagsService).to receive(:new)
+          .with(project, nil, params.merge('container_expiration_policy' => true))
+          .and_return(service)
+
+        expect(service).to receive(:execute).and_return(status: :error, message: 'timeout while deleting tags')
+
+        subject.perform(nil, repository.id, params)
+        expect(repository.reload.expiration_policy_started_at).not_to be_nil
       end
     end
   end

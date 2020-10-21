@@ -8,80 +8,80 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 
-NOTE: **Note:**
-This is the user guide. In order to use the dependency proxy, an administrator
-must first [configure it](../../../administration/packages/dependency_proxy.md).
+The GitLab Dependency Proxy is a local proxy you can use for your frequently-accessed
+upstream images.
 
-For many organizations, it is desirable to have a local proxy for frequently used
-upstream images/packages. In the case of CI/CD, the proxy is responsible for
-receiving a request and returning the upstream image from a registry, acting
-as a pull-through cache.
+In the case of CI/CD, the Dependency Proxy receives a request and returns the
+upstream image from a registry, acting as a pull-through cache.
 
-The dependency proxy is available in the group level. To access it, navigate to
-a group's **Packages & Registries > Dependency Proxy**.
+## Prerequisites
 
-![Dependency Proxy group page](img/group_dependency_proxy.png)
+To use the Dependency Proxy:
 
-## Supported dependency proxies
+- Your group must be public. Authentication for private groups is [not supported yet](https://gitlab.com/gitlab-org/gitlab/-/issues/11582).
 
-NOTE: **Note:**
-For a list of the upcoming additions to the proxies, visit the
-[direction page](https://about.gitlab.com/direction/package/dependency_proxy/#top-vision-items).
+### Supported images and packages
 
-The following dependency proxies are supported.
+The following images and packages are supported.
 
-| Dependency proxy | GitLab version |
+| Image/Package    | GitLab version |
 | ---------------- | -------------- |
 | Docker           | 11.11+         |
 
-## Using the Docker dependency proxy
+For a list of planned additions, view the
+[direction page](https://about.gitlab.com/direction/package/dependency_proxy/#top-vision-items).
 
-With the Docker dependency proxy, you can use GitLab as a source for a Docker image.
-To get a Docker image into the dependency proxy:
+## View the Dependency Proxy
 
-1. Find the proxy URL on your group's page under **Packages & Registries > Dependency Proxy**,
-   for example `gitlab.com/groupname/dependency_proxy/containers`.
-1. Trigger GitLab to pull the Docker image you want (e.g., `alpine:latest` or
-   `linuxserver/nextcloud:latest`) and store it in the proxy storage by using
-   one of the following ways:
+To view the Dependency Proxy:
 
-   - Manually pulling the Docker image:
+- Go to your group's **Packages & Registries > Dependency Proxy**.
+
+The Dependency Proxy is not available for projects.
+
+## Use the Dependency Proxy for Docker images
+
+You can use GitLab as a source for your Docker images.
+
+Prerequisites:
+
+- Your images must be stored on [Docker Hub](https://hub.docker.com/).
+- Docker Hub must be available. Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241639)
+  for progress on accessing images when Docker Hub is down.
+
+To store a Docker image in Dependency Proxy storage:
+
+1. Go to your group's **Packages & Registries > Dependency Proxy**.
+1. Copy the **Dependency Proxy URL**.
+1. Use one of these commands. In these examples, the image is `alpine:latest`.
+
+   - Add the URL to your [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image) file:
 
      ```shell
-     docker pull gitlab.com/groupname/dependency_proxy/containers/alpine:latest
+     image: gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
-   - From a `Dockerfile`:
+   - Manually pull the Docker image:
 
      ```shell
-     FROM gitlab.com/groupname/dependency_proxy/containers/alpine:latest
+     docker pull gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
-   - In [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image):
+   - Add the URL to a `Dockerfile`:
 
      ```shell
-     image: gitlab.com/groupname/dependency_proxy/containers/alpine:latest
+     FROM gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
 GitLab pulls the Docker image from Docker Hub and caches the blobs
 on the GitLab server. The next time you pull the same image, GitLab gets the latest
-information about the image from Docker Hub but serves the existing blobs
+information about the image from Docker Hub, but serves the existing blobs
 from the GitLab server.
 
-The blobs are kept forever, and there is no hard limit on how much data can be
+## Clear the Dependency Proxy cache
+
+Blobs are kept forever on the GitLab server, and there is no hard limit on how much data can be
 stored.
 
-## Clearing the cache
-
-It is possible to use the GitLab API to purge the dependency proxy cache for a
-given group to gain back disk space that may be taken up by image blobs that
-are no longer needed. See the [dependency proxy API documentation](../../../api/dependency_proxy.md)
-for more details.
-
-## Limitations
-
-The following limitations apply:
-
-- Only [public groups are supported](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) (authentication is not supported yet).
-- Only Docker Hub is supported.
-- This feature requires Docker Hub being available.
+To reclaim disk space used by image blobs that are no longer needed, use
+the [Dependency Proxy API](../../../api/dependency_proxy.md).

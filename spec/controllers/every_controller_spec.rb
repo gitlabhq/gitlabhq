@@ -17,20 +17,20 @@ RSpec.describe "Every controller" do
         .compact
         .select { |route| route[:controller].present? && route[:action].present? }
         .map { |route| [constantize_controller(route[:controller]), route[:action]] }
-        .reject { |route| route.first.nil? || !route.first.include?(ControllerWithFeatureCategory) }
+        .select { |(controller, action)| controller&.include?(ControllerWithFeatureCategory) }
+        .reject { |(controller, action)| controller == ApplicationController || controller == Devise::UnlocksController }
     end
 
     let_it_be(:routes_without_category) do
       controller_actions.map do |controller, action|
-        "#{controller}##{action}" unless controller.feature_category_for_action(action)
+        next if controller.feature_category_for_action(action)
+
+        "#{controller}##{action}"
       end.compact
     end
 
     it "has feature categories" do
-      pending("We'll work on defining categories for all controllers: "\
-              "https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/463")
-
-      expect(routes_without_category).to be_empty, "#{routes_without_category.first(10)} did not have a category"
+      expect(routes_without_category).to be_empty, "#{routes_without_category} did not have a category"
     end
 
     it "completed controllers don't get new routes without categories" do
@@ -74,9 +74,9 @@ RSpec.describe "Every controller" do
   end
 
   def actions_defined_in_feature_category_config(controller)
-    feature_category_configs = controller.send(:class_attributes)[:feature_category_config]
-    feature_category_configs.map do |config|
-      Array(config.send(:only)) + Array(config.send(:except))
-    end.flatten.uniq.map(&:to_s)
+    controller.send(:class_attributes)[:feature_category_config]
+      .values
+      .flatten
+      .map(&:to_s)
   end
 end

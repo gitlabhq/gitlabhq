@@ -4,10 +4,11 @@ group: Progressive Delivery
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Feature Flags **(STARTER)**
+# Feature Flags **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.4
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.5.
 
 With Feature Flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -55,6 +56,20 @@ To create and enable a feature flag:
 You can change these settings by clicking the **{pencil}** (edit) button
 next to any feature flag in the list.
 
+## Maximum number of feature flags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254379) in GitLab 13.5.
+
+The maximum number of feature flags per project on self-managed GitLab instances
+is 200. On GitLab.com, the maximum number is determined by [GitLab.com tier](https://about.gitlab.com/pricing/):
+
+| Tier     | Number of feature flags per project |
+|----------|-------------------------------------|
+| Free     | 50                                  |
+| Bronze   | 100                                 |
+| Silver   | 150                                 |
+| Gold     | 200                                 |
+
 ## Feature flag strategies
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
@@ -86,11 +101,48 @@ and clicking **{pencil}** (edit).
 Enables the feature for all users. It uses the [`default`](https://unleash.github.io/docs/activation_strategy#default)
 Unleash activation strategy.
 
+### Percent Rollout
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43340) in GitLab 13.5.
+
+Enables the feature for a percentage of page views, with configurable consistency
+of behavior. This consistency is also known as stickiness. It uses the
+[`flexibleRollout`](https://unleash.github.io/docs/activation_strategy#flexiblerollout)
+Unleash activation strategy.
+
+You can configure the consistency to be based on:
+
+- **User IDs**: Each user ID has a consistent behavior, ignoring session IDs.
+- **Session IDs**: Each session ID has a consistent behavior, ignoring user IDs.
+- **Random**: Consistent behavior is not guaranteed. The feature is enabled for the
+  selected percentage of page views randomly. User IDs and session IDs are ignored.
+- **Available ID**: Consistent behavior is attempted based on the status of the user:
+  - If the user is logged in, make behavior consistent based on user ID.
+  - If the user is anonymous, make the behavior consistent based on the session ID.
+  - If there is no user ID or session ID, then the feature is enabled for the selected
+    percentage of page view randomly.
+
+For example, set a value of 15% based on **Available ID** to enable the feature for 15% of page views. For
+authenticated users this is based on their user ID. For anonymous users with a session ID it would be based on their
+session ID instead as they do not have a user ID. Then if no session ID is provided, it falls back to random.
+
+The rollout percentage can be from 0% to 100%.
+
+Selecting a consistency based on User IDs functions the same as the [percent of Users](#percent-of-users) rollout.
+
+CAUTION: **Caution:**
+Selecting **Random** provides inconsistent application behavior for individual users.
+
 ### Percent of Users
 
 Enables the feature for a percentage of authenticated users. It uses the
 [`gradualRolloutUserId`](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid)
 Unleash activation strategy.
+
+NOTE: **Note:**
+[Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
+behavior. It is recommended to use percent rollout instead of percent of users as
+it is more flexible.
 
 For example, set a value of 15% to enable the feature for 15% of authenticated users.
 
@@ -105,7 +157,8 @@ ID for the feature to be enabled. See the [Ruby example](#ruby-application-examp
 
 ### User IDs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2. [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
 
 Enables the feature for a list of target users. It is implemented
 using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
@@ -353,31 +406,9 @@ end
 ## Feature Flag Related Issues **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
-> - It's deployed behind a feature flag, enabled by default.
-> - It's enabled on GitLab.com.
-> - It can't be enabled or disabled per-project
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable it.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
 
-You can link related issues to a feature flag. In the **Linked issues** section, click the `+` button and input the issue reference number or the full URL of the issue.
+You can link related issues to a feature flag. In the **Linked issues** section,
+click the `+` button and input the issue reference number or the full URL of the issue.
 
 This feature is similar to the [related issues](../user/project/issues/related_issues.md) feature.
-
-### Enable or disable Feature Flag Related Issues **(CORE ONLY)**
-
-Feature Flag Related Issues is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:feature_flags_issue_links)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:feature_flags_issue_links)
-```

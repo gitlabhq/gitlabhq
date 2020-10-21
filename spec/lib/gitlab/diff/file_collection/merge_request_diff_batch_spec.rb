@@ -120,7 +120,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
       described_class.new(merge_request.merge_request_diff,
                           batch_page,
                           batch_size,
-                          collection_default_args)
+                          **collection_default_args)
     end
   end
 

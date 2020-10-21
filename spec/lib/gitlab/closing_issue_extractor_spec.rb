@@ -3,18 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ClosingIssueExtractor do
-  let(:project) { create(:project) }
-  let(:project2) { create(:project) }
-  let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }
-  let(:issue) { create(:issue, project: project) }
-  let(:issue2) { create(:issue, project: project2) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:project2) { create(:project) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:issue2) { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
   let(:cross_reference) { issue2.to_reference(project) }
-  let(:fork_cross_reference) { issue.to_reference(forked_project) }
 
   subject { described_class.new(project, project.creator) }
 
-  before do
+  before_all do
     project.add_developer(project.creator)
     project.add_developer(project2.creator)
     project2.add_maintainer(project.creator)
@@ -325,6 +323,9 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     end
 
     context "with a cross-project fork reference" do
+      let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }
+      let(:fork_cross_reference) { issue.to_reference(forked_project) }
+
       subject { described_class.new(forked_project, forked_project.creator) }
 
       it do
@@ -348,8 +349,8 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     end
 
     context 'with multiple references' do
-      let(:other_issue) { create(:issue, project: project) }
-      let(:third_issue) { create(:issue, project: project) }
+      let_it_be(:other_issue) { create(:issue, project: project) }
+      let_it_be(:third_issue) { create(:issue, project: project) }
       let(:reference2) { other_issue.to_reference }
       let(:reference3) { third_issue.to_reference }
 

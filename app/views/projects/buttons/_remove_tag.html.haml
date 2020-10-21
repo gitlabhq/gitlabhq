@@ -1,0 +1,6 @@
+- project = local_assigns.fetch(:project, nil)
+- tag = local_assigns.fetch(:tag, nil)
+- return unless project && tag
+
+%button{ type: "button", class: "js-remove-tag js-confirm-modal-button gl-button btn btn-danger remove-row has-tooltip gl-ml-3 #{protected_tag?(project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), data: { container: 'body', path: project_tag_path(@project, tag.name), modal_attributes: delete_tag_modal_attributes(tag.name) } }
+  = sprite_icon("remove")

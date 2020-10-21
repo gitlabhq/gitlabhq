@@ -5,7 +5,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Import project from repo by URL
+# Import project from repository by URL
 
 You can import your existing repositories by providing the Git URL:
 
@@ -16,4 +16,4 @@ You can import your existing repositories by providing the Git URL:
 1. Click **Create project** to begin the import process
 1. Once complete, you will be redirected to your newly created project
 
-![Import project by repo URL](img/import_projects_from_repo_url.png)
+![Import project by repository URL](img/import_projects_from_repo_url.png)

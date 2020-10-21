@@ -67,7 +67,7 @@ RSpec.describe SnippetInputAction do
     let(:options)          { { action: action, file_path: file_path, content: content, previous_path: previous_path } }
     let(:expected_options) { options.merge(action: action.to_sym) }
 
-    subject { described_class.new(options).to_commit_action }
+    subject { described_class.new(**options).to_commit_action }
 
     it 'transforms attributes to commit action' do
       expect(subject).to eq(expected_options)

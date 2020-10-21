@@ -50,26 +50,36 @@ RSpec.describe ResourceLabelEvent, type: :model do
     end
   end
 
-  describe '#expire_etag_cache' do
-    def expect_expiration(issue)
-      expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
-        expect(instance).to receive(:touch)
-          .with("/#{issue.project.namespace.to_param}/#{issue.project.to_param}/noteable/issue/#{issue.id}/notes")
+  context 'callbacks' do
+    describe '#usage_metrics' do
+      it 'tracks changed labels' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_label_changed_action)
+
+        subject.save!
       end
     end
 
-    it 'expires resource note etag cache on event save' do
-      expect_expiration(subject.issuable)
+    describe '#expire_etag_cache' do
+      def expect_expiration(issue)
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch)
+            .with("/#{issue.project.namespace.to_param}/#{issue.project.to_param}/noteable/issue/#{issue.id}/notes")
+        end
+      end
 
-      subject.save!
-    end
+      it 'expires resource note etag cache on event save' do
+        expect_expiration(subject.issuable)
 
-    it 'expires resource note etag cache on event destroy' do
-      subject.save!
+        subject.save!
+      end
 
-      expect_expiration(subject.issuable)
+      it 'expires resource note etag cache on event destroy' do
+        subject.save!
 
-      subject.destroy!
+        expect_expiration(subject.issuable)
+
+        subject.destroy!
+      end
     end
   end
 

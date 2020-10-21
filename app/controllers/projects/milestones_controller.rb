@@ -5,7 +5,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   include MilestoneActions
 
   before_action :check_issuables_available!
-  before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels, :promote]
+  before_action :milestone, only: [:edit, :update, :destroy, :show, :issues, :merge_requests, :participants, :labels, :promote]
   before_action do
     push_frontend_feature_flag(:burnup_charts, @project)
   end
@@ -14,12 +14,14 @@ class Projects::MilestonesController < Projects::ApplicationController
   before_action :authorize_read_milestone!
 
   # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels]
+  before_action :authorize_admin_milestone!, except: [:index, :show, :issues, :merge_requests, :participants, :labels]
 
   # Allow to promote milestone
   before_action :authorize_promote_milestone!, only: :promote
 
   respond_to :html
+
+  feature_category :issue_tracking
 
   def index
     @sort = params[:sort] || 'due_date_asc'

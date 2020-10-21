@@ -142,7 +142,7 @@ describe('Commit pipeline status component', () => {
       });
 
       it('renders CI icon', () => {
-        expect(findCiIcon().attributes('data-original-title')).toEqual('Pipeline: pending');
+        expect(findCiIcon().attributes('title')).toEqual('Pipeline: pending');
         expect(findCiIcon().props('status')).toEqual(mockCiStatus);
       });
     });
@@ -161,7 +161,7 @@ describe('Commit pipeline status component', () => {
       });
 
       it('renders not found CI icon', () => {
-        expect(findCiIcon().attributes('data-original-title')).toEqual('Pipeline: not found');
+        expect(findCiIcon().attributes('title')).toEqual('Pipeline: not found');
         expect(findCiIcon().props('status')).toEqual({
           text: 'not found',
           icon: 'status_notfound',

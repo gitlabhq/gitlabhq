@@ -34,6 +34,17 @@ module Emails
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    def changed_reviewer_of_merge_request_email(recipient_id, merge_request_id, previous_reviewer_ids, updated_by_user_id, reason = nil)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+
+      @previous_reviewers = []
+      @previous_reviewers = User.where(id: previous_reviewer_ids) if previous_reviewer_ids.any?
+
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def relabeled_merge_request_email(recipient_id, merge_request_id, label_names, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
@@ -97,6 +108,20 @@ module Emails
 
       @mwps_set_by = ::User.find(mwps_set_by_user_id)
       mail_answer_thread(@merge_request, merge_request_thread_options(mwps_set_by_user_id, recipient_id, reason))
+    end
+
+    def merge_requests_csv_email(user, project, csv_data, export_status)
+      @project = project
+      @count = export_status.fetch(:rows_expected)
+      @written_count = export_status.fetch(:rows_written)
+      @truncated = export_status.fetch(:truncated)
+
+      filename = "#{project.full_path.parameterize}_merge_requests_#{Date.current.iso8601}.csv"
+      attachments[filename] = { content: csv_data, mime_type: 'text/csv' }
+      mail(to: user.notification_email_for(@project.group), subject: subject("Exported merge requests")) do |format|
+        format.html { render layout: 'mailer' }
+        format.text { render layout: 'mailer' }
+      end
     end
 
     private

@@ -1,6 +1,5 @@
-gs
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -15,12 +14,13 @@ const SORT_OPTIONS = [
 export default {
   SORT_OPTIONS,
   components: {
-    GlIcon,
+    GlDropdown,
+    GlDropdownItem,
     LocalStorageSync,
   },
   mixins: [Tracking.mixin()],
   computed: {
-    ...mapGetters(['sortDirection', 'noteableType']),
+    ...mapGetters(['sortDirection', 'persistSortOrder', 'noteableType']),
     selectedOption() {
       return SORT_OPTIONS.find(({ key }) => this.sortDirection === key);
     },
@@ -38,7 +38,7 @@ export default {
         return;
       }
 
-      this.setDiscussionSortDirection(direction);
+      this.setDiscussionSortDirection({ direction });
       this.track('change_discussion_sort_direction', { property: direction });
     },
     isDropdownItemActive(sortDir) {
@@ -49,33 +49,28 @@ export default {
 </script>
 
 <template>
-  <div
-    data-testid="sort-discussion-filter"
-    class="gl-mr-2 gl-display-inline-block gl-vertical-align-bottom full-width-mobile"
-  >
+  <div class="gl-mr-3 gl-display-inline-block gl-vertical-align-bottom full-width-mobile">
     <local-storage-sync
       :value="sortDirection"
       :storage-key="storageKey"
-      @input="setDiscussionSortDirection"
+      :persist="persistSortOrder"
+      @input="setDiscussionSortDirection({ direction: $event })"
     />
-    <button class="btn btn-sm js-dropdown-text" data-toggle="dropdown" aria-expanded="false">
-      {{ dropdownText }}
-      <gl-icon name="chevron-down" />
-    </button>
-    <div ref="dropdownMenu" class="dropdown-menu dropdown-menu-selectable dropdown-menu-right">
-      <div class="dropdown-content">
-        <ul>
-          <li v-for="{ text, key, cls } in $options.SORT_OPTIONS" :key="key">
-            <button
-              :class="[cls, { 'is-active': isDropdownItemActive(key) }]"
-              type="button"
-              @click="fetchSortedDiscussions(key)"
-            >
-              {{ text }}
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <gl-dropdown
+      :text="dropdownText"
+      data-testid="sort-discussion-filter"
+      class="js-dropdown-text full-width-mobile"
+    >
+      <gl-dropdown-item
+        v-for="{ text, key, cls } in $options.SORT_OPTIONS"
+        :key="key"
+        :class="cls"
+        :is-check-item="true"
+        :is-checked="isDropdownItemActive(key)"
+        @click="fetchSortedDiscussions(key)"
+      >
+        {{ text }}
+      </gl-dropdown-item>
+    </gl-dropdown>
   </div>
 </template>

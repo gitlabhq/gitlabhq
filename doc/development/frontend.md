@@ -1,4 +1,5 @@
+---
+redirect_to: 'fe_guide/index.md'
+---
 
-# Frontend Development Guidelines
-
-This page has moved [here](fe_guide/index.md).
+This document was moved to [another location](fe_guide/index.md).

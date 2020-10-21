@@ -40,6 +40,14 @@ module PageLayoutHelper
     end
   end
 
+  def page_canonical_link(link = nil)
+    if link
+      @page_canonical_link = link
+    else
+      @page_canonical_link
+    end
+  end
+
   def favicon
     Gitlab::Favicon.main
   end

@@ -47,11 +47,11 @@ representation. It rarely happens that a serialization entity exists without
 a corresponding domain model class. As an example, we have an `Issue` class and
 a corresponding `IssueSerializer`.
 
-Serialization entites are designed to reuse other serialization entities, which
+Serialization entities are designed to reuse other serialization entities, which
 is a convenient way to create a multi-level JSON representation of a piece of
 a domain model you want to serialize.
 
-See [documentation for Grape Entites][grape-entity-readme] for more details.
+See [documentation for Grape Entities][grape-entity-readme] for more details.
 
 ## How to implement a serializer?
 

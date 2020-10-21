@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from './flash';
+import { fixTitle } from '~/tooltips';
 
 const tooltipTitles = {
   group: {
@@ -66,6 +67,7 @@ export default class ProjectLabelSubscription {
     const type = /group/.test(originalTitle) ? 'group' : 'project';
     const newTitle = tooltipTitles[type][newStatus];
 
-    $button.attr('title', newTitle).tooltip('_fixTitle');
+    $button.attr('title', newTitle);
+    fixTitle($button);
   }
 }

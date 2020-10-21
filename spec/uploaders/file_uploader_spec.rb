@@ -285,7 +285,7 @@ RSpec.describe FileUploader do
     end
 
     let!(:fog_file) do
-      fog_connection.directories.new(key: 'uploads').files.create(
+      fog_connection.directories.new(key: 'uploads').files.create( # rubocop:disable Rails/SaveBang
         key: 'tmp/uploads/test/123123',
         body: 'content'
       )

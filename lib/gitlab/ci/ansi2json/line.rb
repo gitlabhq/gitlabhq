@@ -32,7 +32,7 @@ module Gitlab
         end
 
         attr_reader :offset, :sections, :segments, :current_segment,
-                    :section_header, :section_duration
+                    :section_header, :section_duration, :section_options
 
         def initialize(offset:, style:, sections: [])
           @offset = offset
@@ -68,6 +68,10 @@ module Gitlab
           @sections << section
         end
 
+        def set_section_options(options)
+          @section_options = options
+        end
+
         def set_as_section_header
           @section_header = true
         end
@@ -90,6 +94,7 @@ module Gitlab
             result[:section] = sections.last if sections.any?
             result[:section_header] = true if @section_header
             result[:section_duration] = @section_duration if @section_duration
+            result[:section_options] = @section_options if @section_options
           end
         end
       end

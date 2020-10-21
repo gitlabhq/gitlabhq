@@ -93,6 +93,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :reset_cache
             put :reset_registration_token
             post :create_deploy_token, path: 'deploy_token/create', to: 'repository#create_deploy_token'
+            get :runner_setup_scripts, format: :json
           end
 
           resource :operations, only: [:show, :update] do
@@ -161,8 +162,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :milestones, constraints: { id: /\d+/ } do
           member do
             post :promote
-            put :sort_issues
-            put :sort_merge_requests
+            get :issues
             get :merge_requests
             get :participants
             get :labels
@@ -307,9 +307,13 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'details', on: :member
         end
 
+        resource :tracing, only: [:show]
+
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
         resources :incidents, only: [:index]
+
+        get 'issues/incident/:id' => 'incidents#show', as: :issues_incident
 
         namespace :error_tracking do
           resources :projects, only: :index
@@ -364,16 +368,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :jira, only: [:show], controller: :jira
         end
 
-        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
+        resources :snippets, except: [:create, :update, :destroy], concerns: :awardable, constraints: { id: /\d+/ } do
           member do
             get :raw
             post :mark_as_spam
           end
         end
 
-        resources :feature_flags, param: :iid do
-          resources :feature_flag_issues, only: [:index, :create, :destroy], as: 'issues', path: 'issues'
-        end
+        resources :feature_flags, param: :iid
         resource :feature_flags_client, only: [] do
           post :reset_token
         end
@@ -551,6 +553,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       Gitlab::Routing.redirect_legacy_paths(self, :mirror, :tags,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
+                                            :tracing,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
                                             :vulnerability_feedback, :security, :dependencies, :issues)
     end
@@ -575,6 +578,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :activity
         get :refs
         put :new_issuable_address
+        get :unfoldered_environment_names
       end
     end
     # rubocop: enable Cop/PutProjectRoutesUnderScope

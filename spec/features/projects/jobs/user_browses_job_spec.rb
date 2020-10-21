@@ -43,7 +43,7 @@ RSpec.describe 'User browses a job', :js do
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(
-          ".build-job > a[data-original-title='test - failed - (unknown failure)']")
+          ".build-job > a[title='test - failed - (unknown failure)']")
       end
     end
   end
@@ -55,7 +55,7 @@ RSpec.describe 'User browses a job', :js do
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(
-          ".build-job > a[data-original-title='test - failed - (unknown failure) (retried)']")
+          ".build-job > a[title='test - failed - (unknown failure) (retried)']")
       end
     end
   end

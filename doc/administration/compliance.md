@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Compliance features
 
 You can configure the following GitLab features to help ensure that your GitLab instance meets common compliance standards. Click a feature name for further documentation.

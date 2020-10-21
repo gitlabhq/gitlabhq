@@ -1,11 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlDeprecatedButton,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
-  GlFormCheckbox,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlDropdown, GlDropdownItem, GlFormCheckbox } from '@gitlab/ui';
 import { mapValues } from 'lodash';
 import { __ } from '~/locale';
 import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
@@ -16,9 +10,9 @@ const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_S
 export default {
   components: {
     GlAlert,
-    GlDeprecatedButton,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlButton,
+    GlDropdown,
+    GlDropdownItem,
     GlFormCheckbox,
   },
   props: {
@@ -203,15 +197,15 @@ export default {
         <label for="fluentd-protocol">
           <strong>{{ s__('ClusterIntegration|SIEM Protocol') }}</strong>
         </label>
-        <gl-deprecated-dropdown :text="protocolName" class="w-100">
-          <gl-deprecated-dropdown-item
+        <gl-dropdown :text="protocolName" class="w-100">
+          <gl-dropdown-item
             v-for="(value, index) in protocols"
             :key="index"
             @click="selectProtocol(value.toLowerCase())"
           >
             {{ value }}
-          </gl-deprecated-dropdown-item>
-        </gl-deprecated-dropdown>
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
       <div class="form-group flex flex-wrap">
         <gl-form-checkbox :checked="wafLogEnabled" @input="wafLogChanged">
@@ -221,20 +215,21 @@ export default {
           <strong>{{ s__('ClusterIntegration|Send Container Network Policies Logs') }}</strong>
         </gl-form-checkbox>
       </div>
-      <div v-if="showButtons" class="mt-3">
-        <gl-deprecated-button
+      <div v-if="showButtons" class="gl-mt-5 gl-display-flex">
+        <gl-button
           ref="saveBtn"
-          class="mr-1"
+          class="gl-mr-3"
           variant="success"
+          category="primary"
           :loading="isSaving"
           :disabled="saveButtonDisabled"
           @click="updateApplication"
         >
           {{ saveButtonLabel }}
-        </gl-deprecated-button>
-        <gl-deprecated-button ref="cancelBtn" :disabled="saveButtonDisabled" @click="resetStatus">
+        </gl-button>
+        <gl-button ref="cancelBtn" :disabled="saveButtonDisabled" @click="resetStatus">
           {{ __('Cancel') }}
-        </gl-deprecated-button>
+        </gl-button>
       </div>
     </div>
   </div>

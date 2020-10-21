@@ -1,7 +1,7 @@
 ---
 name: design_management_allow_dangerous_images
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16160
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/34279
+group: group::knowledge
 type: development
 default_enabled: false

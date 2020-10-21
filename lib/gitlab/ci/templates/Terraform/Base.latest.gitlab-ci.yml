@@ -1,0 +1,53 @@
+# Terraform/Base.latest
+#
+# The purpose of this template is to provide flexibility to the user so
+# they are able to only include the jobs that they find interesting.
+#
+# Therefore, this template is not supposed to run any jobs. The idea is to only
+# create hidden jobs. See: https://docs.gitlab.com/ee/ci/yaml/#hide-jobs
+#
+# There is a more opinionated template which we suggest the users to abide,
+# which is the lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
+
+image:
+  name: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+
+before_script:
+  - cd ${TF_ROOT}
+
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}
+
+cache:
+  key: "${TF_ROOT}"
+  paths:
+    - ${TF_ROOT}/.terraform/
+
+.init: &init
+  stage: init
+  script:
+    - gitlab-terraform init
+
+.validate: &validate
+  stage: validate
+  script:
+    - gitlab-terraform validate
+
+.build: &build
+  stage: build
+  script:
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
+  artifacts:
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
+
+.deploy: &deploy
+  stage: deploy
+  script:
+    - gitlab-terraform apply
+  when: manual
+  only:
+    - master

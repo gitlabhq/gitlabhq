@@ -1,4 +1,5 @@
 - page_title _('Milestones')
+- add_page_specific_style 'page_bundles/milestone'
 
 .top-area
   = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
@@ -11,7 +12,7 @@
         = _('New milestone')
 
 .milestones
-  #delete-milestone-modal
+  #js-delete-milestone-modal
   #promote-milestone-modal
 
   %ul.content-list

@@ -4,12 +4,18 @@ require 'spec_helper'
 
 RSpec.describe JiraConnect::EventsController do
   describe '#installed' do
-    subject do
-      post :installed, params: {
-        clientKey: '1234',
-        sharedSecret: 'secret',
+    let(:client_key) { '1234' }
+    let(:shared_secret) { 'secret' }
+    let(:params) do
+      {
+        clientKey: client_key,
+        sharedSecret: shared_secret,
         baseUrl: 'https://test.atlassian.net'
       }
+    end
+
+    subject do
+      post :installed, params: params
     end
 
     it 'saves the jira installation data' do
@@ -19,19 +25,36 @@ RSpec.describe JiraConnect::EventsController do
     it 'saves the correct values' do
       subject
 
-      installation = JiraConnectInstallation.find_by_client_key('1234')
+      installation = JiraConnectInstallation.find_by_client_key(client_key)
 
-      expect(installation.shared_secret).to eq('secret')
+      expect(installation.shared_secret).to eq(shared_secret)
       expect(installation.base_url).to eq('https://test.atlassian.net')
     end
 
     context 'client key already exists' do
       it 'returns 422' do
-        create(:jira_connect_installation, client_key: '1234')
+        create(:jira_connect_installation, client_key: client_key)
 
         subject
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when it is a version update and shared_secret is not sent' do
+      let(:params) do
+        {
+          clientKey: client_key,
+          baseUrl: 'https://test.atlassian.net'
+        }
+      end
+
+      it 'validates the JWT token in authorization header and returns 200 without creating a new installation' do
+        create(:jira_connect_installation, client_key: client_key, shared_secret: shared_secret)
+        request.headers["Authorization"] = "Bearer #{Atlassian::Jwt.encode({ iss: client_key }, shared_secret)}"
+
+        expect { subject }.not_to change { JiraConnectInstallation.count }
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

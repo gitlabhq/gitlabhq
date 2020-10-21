@@ -12,6 +12,8 @@ class Projects::HooksController < Projects::ApplicationController
 
   layout "project_settings"
 
+  feature_category :integrations
+
   def index
     @hooks = @project.hooks
     @hook = ProjectHook.new
@@ -50,7 +52,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def destroy
-    hook.destroy
+    destroy_hook(hook)
 
     redirect_to action: :index, status: :found
   end

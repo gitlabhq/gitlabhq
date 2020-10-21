@@ -1,0 +1,7 @@
+---
+name: increased_diff_limits
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40357
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241185
+group: group::source code
+type: development
+default_enabled: false

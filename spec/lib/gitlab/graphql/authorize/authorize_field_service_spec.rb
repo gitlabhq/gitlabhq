@@ -19,24 +19,29 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
       options.reverse_merge!(null: true)
       field :test_field, field_type,
             authorize: field_authorizations,
-            resolve: -> (_, _, _) { resolved_value },
             **options
+
+      define_method :test_field do
+        resolved_value
+      end
     end
   end
-
-  let(:current_user) { double(:current_user) }
 
   subject(:service) { described_class.new(field) }
 
   describe '#authorized_resolve' do
-    let(:presented_object) { double('presented object') }
-    let(:presented_type) { double('parent type', object: presented_object) }
-    let(:query_type) { GraphQL::ObjectType.new }
-    let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
-    let(:query_context) { OpenStruct.new(schema: schema) }
-    let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema, context: query_context), values: { current_user: current_user }, object: nil) }
+    let_it_be(:current_user) { build(:user) }
+    let_it_be(:presented_object) { 'presented object' }
+    let_it_be(:query_type) { GraphQL::ObjectType.new }
+    let_it_be(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
+    let_it_be(:query) { GraphQL::Query.new(schema, document: nil, context: {}, variables: {}) }
+    let_it_be(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: current_user }, object: nil) }
 
-    subject(:resolved) { service.authorized_resolve.call(presented_type, {}, context) }
+    let(:type_class) { type_with_field(custom_type, :read_field, presented_object) }
+    let(:type_instance) { type_class.authorized_new(presented_object, context) }
+    let(:field) { type_class.fields['testField'].to_graphql }
+
+    subject(:resolved) { service.authorized_resolve.call(type_instance, {}, context) }
 
     context 'scalar types' do
       shared_examples 'checking permissions on the presented object' do
@@ -48,7 +53,7 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
           expect(resolved).to eq('Resolved value')
         end
 
-        it "returns nil if the value wasn't authorized" do
+        it 'returns nil if the value was not authorized' do
           allow(Ability).to receive(:allowed?).and_return false
 
           expect(resolved).to be_nil
@@ -56,28 +61,28 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
       end
 
       context 'when the field is a built-in scalar type' do
-        let(:field) { type_with_field(GraphQL::STRING_TYPE, :read_field).fields['testField'].to_graphql }
+        let(:type_class) { type_with_field(GraphQL::STRING_TYPE, :read_field) }
         let(:expected_permissions) { [:read_field] }
 
         it_behaves_like 'checking permissions on the presented object'
       end
 
       context 'when the field is a list of scalar types' do
-        let(:field) { type_with_field([GraphQL::STRING_TYPE], :read_field).fields['testField'].to_graphql }
+        let(:type_class) { type_with_field([GraphQL::STRING_TYPE], :read_field) }
         let(:expected_permissions) { [:read_field] }
 
         it_behaves_like 'checking permissions on the presented object'
       end
 
       context 'when the field is sub-classed scalar type' do
-        let(:field) { type_with_field(Types::TimeType, :read_field).fields['testField'].to_graphql }
+        let(:type_class) { type_with_field(Types::TimeType, :read_field) }
         let(:expected_permissions) { [:read_field] }
 
         it_behaves_like 'checking permissions on the presented object'
       end
 
       context 'when the field is a list of sub-classed scalar types' do
-        let(:field) { type_with_field([Types::TimeType], :read_field).fields['testField'].to_graphql }
+        let(:type_class) { type_with_field([Types::TimeType], :read_field) }
         let(:expected_permissions) { [:read_field] }
 
         it_behaves_like 'checking permissions on the presented object'
@@ -86,7 +91,7 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
 
     context 'when the field is a connection' do
       context 'when it resolves to nil' do
-        let(:field) { type_with_field(Types::QueryType.connection_type, :read_field, nil).fields['testField'].to_graphql }
+        let(:type_class) { type_with_field(Types::QueryType.connection_type, :read_field, nil) }
 
         it 'does not fail when authorizing' do
           expect(resolved).to be_nil
@@ -97,7 +102,11 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
     context 'when the field is a specific type' do
       let(:custom_type) { type(:read_type) }
       let(:object_in_field) { double('presented in field') }
-      let(:field) { type_with_field(custom_type, :read_field, object_in_field).fields['testField'].to_graphql }
+
+      let(:type_class) { type_with_field(custom_type, :read_field, object_in_field) }
+      let(:type_instance) { type_class.authorized_new(object_in_field, context) }
+
+      subject(:resolved) { service.authorized_resolve.call(type_instance, {}, context) }
 
       it 'checks both field & type permissions' do
         spy_ability_check_for(:read_field, object_in_field, passed: true)
@@ -114,7 +123,7 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
       end
 
       context 'when the field is not nullable' do
-        let(:field) { type_with_field(custom_type, [], object_in_field, null: false).fields['testField'].to_graphql }
+        let(:type_class) { type_with_field(custom_type, :read_field, object_in_field, null: false) }
 
         it 'returns nil when viewing is not allowed' do
           spy_ability_check_for(:read_type, object_in_field, passed: false)
@@ -127,7 +136,9 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
         let(:object_1) { double('presented in field 1') }
         let(:object_2) { double('presented in field 2') }
         let(:presented_types) { [double(object: object_1), double(object: object_2)] }
-        let(:field) { type_with_field([custom_type], :read_field, presented_types).fields['testField'].to_graphql }
+
+        let(:type_class) { type_with_field([custom_type], :read_field, presented_types) }
+        let(:type_instance) { type_class.authorized_new(presented_types, context) }
 
         it 'checks all permissions' do
           allow(Ability).to receive(:allowed?) { true }

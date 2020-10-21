@@ -3,27 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe 'Public Snippets', :js do
-  before do
-    stub_feature_flags(snippets_vue: false)
-  end
+  let(:public_snippet) { create(:personal_snippet, :public, :repository) }
+  let(:content) { public_snippet.blobs.first.data.strip! }
 
   it 'Unauthenticated user should see public snippets' do
-    public_snippet = create(:personal_snippet, :public)
+    url = Gitlab::UrlBuilder.build(public_snippet)
 
     visit snippet_path(public_snippet)
     wait_for_requests
 
-    expect(page).to have_content(public_snippet.content)
-    expect(page).to have_css('.js-embed-btn', visible: false)
-    expect(page).to have_css('.js-share-btn', visible: false)
-    expect(page.find('.js-snippet-url-area')).to be_readonly
+    expect(page).to have_content(content)
+    click_button('Embed')
+    expect(page).to have_field('Embed', readonly: true, with: "<script src=\"#{url}.js\"></script>")
+    expect(page).to have_field('Share', readonly: true, with: url)
   end
 
   it 'Unauthenticated user should see raw public snippets' do
-    public_snippet = create(:personal_snippet, :public)
-
     visit raw_snippet_path(public_snippet)
 
-    expect(page).to have_content(public_snippet.content)
+    expect(page).to have_content(content)
   end
 end

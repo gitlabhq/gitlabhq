@@ -10,6 +10,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   layout 'project_settings'
 
+  feature_category :continuous_delivery
+
   def index
     respond_to do |format|
       format.html { redirect_to_repository }

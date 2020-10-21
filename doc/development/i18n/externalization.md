@@ -205,7 +205,7 @@ For the static text strings we suggest two patterns for using these translations
 
   When possible, you should opt for this pattern, as this allows you to import these strings directly into your component specs for re-use during testing.
 
-- Internal component `$options` object `:
+- Internal component `$options` object:
 
   ```javascript
   <script>
@@ -432,7 +432,7 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
 - In JavaScript:
 
   ```javascript
-  import { sanitize } from 'dompurify';
+  import { sanitize } from '~/lib/dompurify';
 
   const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hour'), { ALLOWED_TAGS: [] }) };
 

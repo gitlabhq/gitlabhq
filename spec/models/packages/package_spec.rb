@@ -108,6 +108,20 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('.foobar').for(:name) }
         it { is_expected.not_to allow_value('%foo%bar').for(:name) }
       end
+
+      context 'generic package' do
+        subject { build_stubbed(:generic_package) }
+
+        it { is_expected.to allow_value('123').for(:name) }
+        it { is_expected.to allow_value('foo').for(:name) }
+        it { is_expected.to allow_value('foo.bar.baz-2.0-20190901.47283-1').for(:name) }
+        it { is_expected.not_to allow_value('../../foo').for(:name) }
+        it { is_expected.not_to allow_value('..\..\foo').for(:name) }
+        it { is_expected.not_to allow_value('%2f%2e%2e%2f%2essh%2fauthorized_keys').for(:name) }
+        it { is_expected.not_to allow_value('$foo/bar').for(:name) }
+        it { is_expected.not_to allow_value('my file name').for(:name) }
+        it { is_expected.not_to allow_value('!!().for(:name)().for(:name)').for(:name) }
+      end
     end
 
     describe '#version' do
@@ -257,7 +271,12 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
-      it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
+
+      context 'nuget package' do
+        it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
+
+        it { is_expected.to allow_value('1.2.3.4').for(:version) }
+      end
     end
 
     describe '#package_already_taken' do
@@ -496,6 +515,14 @@ RSpec.describe Packages::Package, type: :model do
       subject { described_class.search_by_name(query) }
 
       it { is_expected.to match_array([package1, package2]) }
+    end
+
+    describe '.with_normalized_pypi_name' do
+      let_it_be(:pypi_package) { create(:pypi_package, name: 'Foo.bAr---BAZ_buz') }
+
+      subject { described_class.with_normalized_pypi_name('foo-bar-baz-buz') }
+
+      it { is_expected.to match_array([pypi_package]) }
     end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Env do
+RSpec.describe QA::Runtime::Env do
   include Helpers::StubENV
 
   shared_examples 'boolean method' do |**kwargs|
@@ -341,7 +341,7 @@ describe QA::Runtime::Env do
     end
   end
 
-  describe '.address_matches?' do
+  describe '.context_matches?' do
     it 'returns true when url has .com' do
       QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
 
@@ -364,24 +364,24 @@ describe QA::Runtime::Env do
       it 'matches multiple subdomains' do
         QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
 
-        expect(described_class.address_matches?(subdomain: [:release, :staging])).to be_truthy
-        expect(described_class.address_matches?(:production, subdomain: [:release, :staging])).to be_truthy
+        expect(described_class.context_matches?(subdomain: [:release, :staging])).to be_truthy
+        expect(described_class.context_matches?(:production, subdomain: [:release, :staging])).to be_truthy
       end
 
       it 'matches :production' do
         QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.com/")
 
-        expect(described_class.address_matches?(:production)).to be_truthy
+        expect(described_class.context_matches?(:production)).to be_truthy
       end
 
       it 'doesnt match with mismatching switches' do
         QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.test')
 
         aggregate_failures do
-          expect(described_class.address_matches?(tld: '.net')).to be_falsey
-          expect(described_class.address_matches?(:production)).to be_falsey
-          expect(described_class.address_matches?(subdomain: [:staging])).to be_falsey
-          expect(described_class.address_matches?(domain: 'example')).to be_falsey
+          expect(described_class.context_matches?(tld: '.net')).to be_falsey
+          expect(described_class.context_matches?(:production)).to be_falsey
+          expect(described_class.context_matches?(subdomain: [:staging])).to be_falsey
+          expect(described_class.context_matches?(domain: 'example')).to be_falsey
         end
       end
     end
@@ -389,7 +389,7 @@ describe QA::Runtime::Env do
     it 'returns false for mismatching' do
       QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
 
-      expect(described_class.address_matches?(:production)).to be_falsey
+      expect(described_class.context_matches?(:production)).to be_falsey
     end
   end
 end

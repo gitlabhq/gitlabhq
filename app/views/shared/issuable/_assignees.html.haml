@@ -4,7 +4,8 @@
 - more_assignees_count = issuable.assignees.size - render_count
 
 - issuable.assignees.take(render_count).each do |assignee| # rubocop: disable CodeReuse/ActiveRecord
-  = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
+  = link_to_member(@project, assignee, name: false, title: _("Assigned to %{name}") % { name: assignee.name})
 
 - if more_assignees_count > 0
-  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{more_assignees_count} more assignees", qa_selector: 'avatar_counter_content' } } +#{more_assignees_count}
+  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', qa_selector: 'avatar_counter_content' }, title: _("+%{more_assignees_count} more assignees") % { more_assignees_count: more_assignees_count} }
+    = _("+%{more_assignees_count}") % { more_assignees_count: more_assignees_count}

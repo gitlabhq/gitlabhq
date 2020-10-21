@@ -1,91 +1,56 @@
-/* global ace */
-
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
-import getModeByFileExtension from '~/lib/utils/ace_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
-
-const monacoEnabledGlobally = window.gon.features?.monacoBlobs;
+import EditorLite from '~/editor/editor_lite';
+import FileTemplateExtension from '~/editor/editor_file_template_ext';
 
 export default class EditBlob {
   // The options object has:
   // assetsPath, filePath, currentAction, projectId, isMarkdown
   constructor(options) {
     this.options = options;
-    this.options.monacoEnabled = this.options.monacoEnabled ?? monacoEnabledGlobally;
-    const { isMarkdown, monacoEnabled } = this.options;
-    return Promise.resolve()
-      .then(() => {
-        return monacoEnabled ? this.configureMonacoEditor() : this.configureAceEditor();
-      })
-      .then(() => {
-        this.initModePanesAndLinks();
-        this.initFileSelectors();
-        this.initSoftWrap();
-        if (isMarkdown) {
+    this.configureMonacoEditor();
+
+    if (this.options.isMarkdown) {
+      import('~/editor/editor_markdown_ext')
+        .then(MarkdownExtension => {
+          this.editor.use(MarkdownExtension.default);
           addEditorMarkdownListeners(this.editor);
-        }
-        this.editor.focus();
-      })
-      .catch(() => createFlash(BLOB_EDITOR_ERROR));
+        })
+        .catch(() => createFlash(BLOB_EDITOR_ERROR));
+    }
+
+    this.initModePanesAndLinks();
+    this.initFileSelectors();
+    this.initSoftWrap();
+    this.editor.focus();
   }
 
   configureMonacoEditor() {
-    const EditorPromise = import(
-      /* webpackChunkName: 'monaco_editor_lite' */ '~/editor/editor_lite'
-    );
-    const MarkdownExtensionPromise = this.options.isMarkdown
-      ? import('~/editor/editor_markdown_ext')
-      : Promise.resolve(false);
-    const FileTemplateExtensionPromise = import('~/editor/editor_file_template_ext');
+    const editorEl = document.getElementById('editor');
+    const fileNameEl = document.getElementById('file_path') || document.getElementById('file_name');
+    const fileContentEl = document.getElementById('file-content');
+    const form = document.querySelector('.js-edit-blob-form');
 
-    return Promise.all([EditorPromise, MarkdownExtensionPromise, FileTemplateExtensionPromise])
-      .then(([EditorModule, MarkdownExtension, FileTemplateExtension]) => {
-        const EditorLite = EditorModule.default;
-        const editorEl = document.getElementById('editor');
-        const fileNameEl =
-          document.getElementById('file_path') || document.getElementById('file_name');
-        const fileContentEl = document.getElementById('file-content');
-        const form = document.querySelector('.js-edit-blob-form');
+    const rootEditor = new EditorLite();
 
-        const rootEditor = new EditorLite();
+    this.editor = rootEditor.createInstance({
+      el: editorEl,
+      blobPath: fileNameEl.value,
+      blobContent: editorEl.innerText,
+    });
+    this.editor.use(FileTemplateExtension);
 
-        this.editor = rootEditor.createInstance({
-          el: editorEl,
-          blobPath: fileNameEl.value,
-          blobContent: editorEl.innerText,
-        });
+    fileNameEl.addEventListener('change', () => {
+      this.editor.updateModelLanguage(fileNameEl.value);
+    });
 
-        rootEditor.use([MarkdownExtension.default, FileTemplateExtension.default], this.editor);
-
-        fileNameEl.addEventListener('change', () => {
-          this.editor.updateModelLanguage(fileNameEl.value);
-        });
-
-        form.addEventListener('submit', () => {
-          fileContentEl.value = this.editor.getValue();
-        });
-      })
-      .catch(() => createFlash(BLOB_EDITOR_ERROR));
-  }
-
-  configureAceEditor() {
-    const { filePath, assetsPath } = this.options;
-    ace.config.set('modePath', `${assetsPath}/ace`);
-    ace.config.loadModule('ace/ext/searchbox');
-    ace.config.loadModule('ace/ext/modelist');
-
-    this.editor = ace.edit('editor');
-
-    // This prevents warnings re: automatic scrolling being logged
-    this.editor.$blockScrolling = Infinity;
-
-    if (filePath) {
-      this.editor.getSession().setMode(getModeByFileExtension(filePath));
-    }
+    form.addEventListener('submit', () => {
+      fileContentEl.value = this.editor.getValue();
+    });
   }
 
   initFileSelectors() {
@@ -137,7 +102,7 @@ export default class EditBlob {
   }
 
   initSoftWrap() {
-    this.isSoftWrapped = Boolean(this.options.monacoEnabled);
+    this.isSoftWrapped = true;
     this.$toggleButton = $('.soft-wrap-toggle');
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
     this.$toggleButton.on('click', () => this.toggleSoftWrap());
@@ -146,10 +111,6 @@ export default class EditBlob {
   toggleSoftWrap() {
     this.isSoftWrapped = !this.isSoftWrapped;
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
-    if (this.options.monacoEnabled) {
-      this.editor.updateOptions({ wordWrap: this.isSoftWrapped ? 'on' : 'off' });
-    } else {
-      this.editor.getSession().setUseWrapMode(this.isSoftWrapped);
-    }
+    this.editor.updateOptions({ wordWrap: this.isSoftWrapped ? 'on' : 'off' });
   }
 }

@@ -1,0 +1,33 @@
+- setting = tracing_setting
+- has_jaeger_url = setting.external_url.present?
+
+%section.settings.border-0.no-animate
+  .settings-header{ :class => "border-top" }
+    %h3{ :class => "h4" }
+      = _("Jaeger tracing")
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
+      = _('Expand')
+    %p
+      - if has_jaeger_url
+        - tracing_link = link_to sanitize(setting.external_url, scrubber: Rails::Html::TextOnlyScrubber.new), target: "_blank", rel: 'noopener noreferrer' do
+          %span
+            = _('Tracing')
+            = sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')
+      - else
+        - tracing_link = link_to project_tracing_path(@project) do
+          %span
+            = _('Tracing')
+      = _("To open Jaeger and easily view tracing from GitLab, link the %{link} page to your server").html_safe % { link: tracing_link }
+  .settings-content
+    = form_for @project, url: project_settings_operations_path(@project), method: :patch do |f|
+      = form_errors(@project)
+      .form-group
+        = f.fields_for :tracing_setting_attributes, setting do |form|
+          = form.label :external_url, _('Jaeger URL'), class: 'label-bold'
+          = form.url_field :external_url, class: 'form-control', placeholder: 'e.g. https://jaeger.mycompany.com'
+          %p.form-text.text-muted
+            - jaeger_help_url = "https://www.jaegertracing.io/docs/1.7/getting-started/"
+            - link_start_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jaeger_help_url }
+            - link_end_tag = "#{sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')}</a>".html_safe
+            = _("For more information, please review %{link_start_tag}Jaeger's configuration doc%{link_end_tag}").html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
+      = f.submit _('Save changes'), class: 'btn btn-success'

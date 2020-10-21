@@ -112,6 +112,35 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value(nil).for(:repository_storages_weighted_default) }
     it { is_expected.not_to allow_value({ default: 100, shouldntexist: 50 }).for(:repository_storages_weighted) }
 
+    context 'help_page_documentation_base_url validations' do
+      it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
+      it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }
+      it { is_expected.to allow_value('http://127.0.0.1').for(:help_page_documentation_base_url) }
+      it { is_expected.not_to allow_value('docs.gitlab.com').for(:help_page_documentation_base_url) }
+
+      context 'when url length validation' do
+        let(:value) { 'http://'.ljust(length, 'A') }
+
+        context 'when value string length is 255 characters' do
+          let(:length) { 255 }
+
+          it 'allows the value' do
+            is_expected.to allow_value(value).for(:help_page_documentation_base_url)
+          end
+        end
+
+        context 'when value string length exceeds 255 characters' do
+          let(:length) { 256 }
+
+          it 'does not allow the value' do
+            is_expected.not_to allow_value(value)
+                                 .for(:help_page_documentation_base_url)
+                                 .with_message('is too long (maximum is 255 characters)')
+          end
+        end
+      end
+    end
+
     context 'grafana_url validations' do
       before do
         subject.instance_variable_set(:@parsed_grafana_url, nil)
@@ -320,7 +349,7 @@ RSpec.describe ApplicationSetting do
       end
     end
 
-    it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
+    it_behaves_like 'an object with email-formated attributes', :abuse_notification_email do
       subject { setting }
     end
 
@@ -775,6 +804,23 @@ RSpec.describe ApplicationSetting do
 
         expect(setting.sourcegraph_url_is_com?).to eq(is_com)
       end
+    end
+  end
+
+  describe '#instance_review_permitted?', :request_store do
+    subject { setting.instance_review_permitted? }
+
+    before do
+      RequestStore.store[:current_license] = nil
+      expect(Rails.cache).to receive(:fetch).and_return(
+        ::ApplicationSetting::INSTANCE_REVIEW_MIN_USERS + users_over_minimum
+      )
+    end
+
+    where(users_over_minimum: [-1, 0, 1])
+
+    with_them do
+      it { is_expected.to be(users_over_minimum >= 0) }
     end
   end
 

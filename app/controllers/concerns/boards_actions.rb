@@ -9,7 +9,7 @@ module BoardsActions
 
     before_action :boards, only: :index
     before_action :board, only: :show
-    before_action :push_wip_limits, only: [:index, :show]
+    before_action :push_licensed_features, only: [:index, :show]
     before_action do
       push_frontend_feature_flag(:not_issuable_queries, parent, default_enabled: true)
     end
@@ -29,7 +29,7 @@ module BoardsActions
   private
 
   # Noop on FOSS
-  def push_wip_limits
+  def push_licensed_features
   end
 
   def boards

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Jobs < Grape::API::Instance
+  class Jobs < ::API::Base
     include PaginationParams
 
     before { authenticate! }

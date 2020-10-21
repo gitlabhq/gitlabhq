@@ -43,6 +43,10 @@ RSpec.shared_examples 'groups routing' do
     expect(get("/groups/#{group_path}/-/milestones")).to route_to('groups/milestones#index', group_id: group_path)
   end
 
+  it "to #runner_setup_scripts" do
+    expect(get("/groups/#{group_path}/-/settings/ci_cd/runner_setup_scripts")).to route_to('groups/settings/ci_cd#runner_setup_scripts', group_id: group_path)
+  end
+
   it 'routes to the avatars controller' do
     expect(delete("/groups/#{group_path}/-/avatar"))
       .to route_to(group_id: group_path,

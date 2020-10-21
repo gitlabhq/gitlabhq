@@ -41,7 +41,7 @@ module QA
 
         retry_on_fail do
           expect { push_new_file('oversize_file_2.bin', wait_for_push: false) }
-            .to raise_error(QA::Git::Repository::RepositoryCommandError, /remote: fatal: pack exceeds maximum allowed size/)
+            .to raise_error(QA::Support::Run::CommandError, /remote: fatal: pack exceeds maximum allowed size/)
         end
       end
 

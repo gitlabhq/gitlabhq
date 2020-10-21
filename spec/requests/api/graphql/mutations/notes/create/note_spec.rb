@@ -60,6 +60,14 @@ RSpec.describe 'Adding a Note' do
 
           expect(mutation_response['note']['discussion']['id']).to eq(discussion.to_global_id.to_s)
         end
+
+        context 'when the discussion_id is not for a Discussion' do
+          let(:discussion) { create(:issue) }
+
+          it_behaves_like 'a mutation that returns top-level errors' do
+            let(:match_errors) { include(/ does not represent an instance of Discussion/) }
+          end
+        end
       end
     end
   end

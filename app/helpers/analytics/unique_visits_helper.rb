@@ -14,8 +14,7 @@ module Analytics
     end
 
     def track_visit(target_id)
-      return unless Feature.enabled?(:track_unique_visits)
-      return unless Gitlab::CurrentSettings.usage_ping_enabled?
+      return unless Feature.enabled?(:track_unique_visits, default_enabled: true)
       return unless visitor_id
 
       Gitlab::Analytics::UniqueVisits.new.track_visit(visitor_id, target_id)

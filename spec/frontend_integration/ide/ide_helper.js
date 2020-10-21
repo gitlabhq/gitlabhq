@@ -1,0 +1,102 @@
+import { findAllByText, fireEvent, getByLabelText, screen } from '@testing-library/dom';
+
+const isFileRowOpen = row => row.matches('.is-open');
+
+const getLeftSidebar = () => screen.getByTestId('left-sidebar');
+
+const clickOnLeftSidebarTab = name => {
+  const sidebar = getLeftSidebar();
+
+  const button = getByLabelText(sidebar, name);
+
+  button.click();
+};
+
+const findMonacoEditor = () =>
+  screen.findByLabelText(/Editor content;/).then(x => x.closest('.monaco-editor'));
+
+const findAndSetEditorValue = async value => {
+  const editor = await findMonacoEditor();
+  const uri = editor.getAttribute('data-uri');
+
+  window.monaco.editor.getModel(uri).setValue(value);
+};
+
+const findTreeBody = () => screen.findByTestId('ide-tree-body', {}, { timeout: 5000 });
+
+const findFileRowContainer = (row = null) =>
+  row ? Promise.resolve(row.parentElement) : findTreeBody();
+
+const findFileChild = async (row, name, index = 0) => {
+  const container = await findFileRowContainer(row);
+  const children = await findAllByText(container, name, { selector: '.file-row-name' });
+
+  return children.map(x => x.closest('.file-row')).find(x => x.dataset.level === index.toString());
+};
+
+const openFileRow = row => {
+  if (!row || isFileRowOpen(row)) {
+    return;
+  }
+
+  row.click();
+};
+
+const findAndTraverseToPath = async (path, index = 0, row = null) => {
+  if (!path) {
+    return row;
+  }
+
+  const [name, ...restOfPath] = path.split('/');
+
+  openFileRow(row);
+
+  const child = await findFileChild(row, name, index);
+
+  return findAndTraverseToPath(restOfPath.join('/'), index + 1, child);
+};
+
+const clickFileRowAction = (row, name) => {
+  fireEvent.mouseOver(row);
+
+  const dropdownButton = getByLabelText(row, 'Create new file or directory');
+  dropdownButton.click();
+
+  const dropdownAction = getByLabelText(dropdownButton.parentNode, name);
+  dropdownAction.click();
+};
+
+const findAndSetFileName = async value => {
+  const nameField = await screen.findByTestId('file-name-field');
+  fireEvent.input(nameField, { target: { value } });
+
+  const createButton = screen.getByText('Create file');
+  createButton.click();
+};
+
+export const createFile = async (path, content) => {
+  const parentPath = path
+    .split('/')
+    .slice(0, -1)
+    .join('/');
+
+  const parentRow = await findAndTraverseToPath(parentPath);
+  clickFileRowAction(parentRow, 'New file');
+
+  await findAndSetFileName(path);
+  await findAndSetEditorValue(content);
+};
+
+export const deleteFile = async path => {
+  const row = await findAndTraverseToPath(path);
+  clickFileRowAction(row, 'Delete');
+};
+
+export const commit = async () => {
+  clickOnLeftSidebarTab('Commit');
+  screen.getByTestId('begin-commit-button').click();
+
+  await screen.findByLabelText(/Commit to .+ branch/).then(x => x.click());
+
+  screen.getByText('Commit').click();
+};

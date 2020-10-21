@@ -1,6 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import Vuex from 'vuex';
 import {
   mockLabels,
   mockRegularLabel,
@@ -9,16 +8,10 @@ import axios from '~/lib/utils/axios_utils';
 import SidebarLabels from '~/sidebar/components/labels/sidebar_labels.vue';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
-import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe('sidebar labels', () => {
   let axiosMock;
   let wrapper;
-
-  const store = new Vuex.Store(labelsSelectModule());
 
   const defaultProps = {
     allowLabelCreate: true,
@@ -39,11 +32,9 @@ describe('sidebar labels', () => {
 
   const mountComponent = () => {
     wrapper = shallowMount(SidebarLabels, {
-      localVue,
       provide: {
         ...defaultProps,
       },
-      store,
     });
   };
 
@@ -81,7 +72,7 @@ describe('sidebar labels', () => {
     });
   });
 
-  describe('when labels are changed', () => {
+  describe('when labels are updated', () => {
     beforeEach(() => {
       mountComponent();
     });
@@ -114,7 +105,27 @@ describe('sidebar labels', () => {
 
       const expected = {
         [defaultProps.issuableType]: {
-          label_ids: [27, 28, 40],
+          label_ids: [27, 28, 29, 40],
+        },
+      };
+
+      expect(axiosMock.history.put[0].data).toEqual(JSON.stringify(expected));
+    });
+  });
+
+  describe('when label `x` is clicked', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('makes an API call to update labels', async () => {
+      findLabelsSelect().vm.$emit('onLabelRemove', 27);
+
+      await axios.waitForAll();
+
+      const expected = {
+        [defaultProps.issuableType]: {
+          label_ids: [26, 28, 29],
         },
       };
 

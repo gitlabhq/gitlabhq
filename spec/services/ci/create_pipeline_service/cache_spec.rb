@@ -36,7 +36,8 @@ RSpec.describe Ci::CreatePipelineService do
           'key'       => 'a-key',
           'paths'     => ['logs/', 'binaries/'],
           'policy'    => 'pull-push',
-          'untracked' => true
+          'untracked' => true,
+          'when'      => 'on_success'
         }
 
         expect(pipeline).to be_persisted
@@ -67,7 +68,8 @@ RSpec.describe Ci::CreatePipelineService do
           expected = {
             'key'       => /[a-f0-9]{40}/,
             'paths'     => ['logs/'],
-            'policy'    => 'pull-push'
+            'policy'    => 'pull-push',
+            'when'      => 'on_success'
           }
 
           expect(pipeline).to be_persisted
@@ -82,7 +84,8 @@ RSpec.describe Ci::CreatePipelineService do
           expected = {
             'key'       => /default/,
             'paths'     => ['logs/'],
-            'policy'    => 'pull-push'
+            'policy'    => 'pull-push',
+            'when'      => 'on_success'
           }
 
           expect(pipeline).to be_persisted
@@ -114,7 +117,8 @@ RSpec.describe Ci::CreatePipelineService do
           expected = {
             'key'       => /\$ENV_VAR-[a-f0-9]{40}/,
             'paths'     => ['logs/'],
-            'policy'    => 'pull-push'
+            'policy'    => 'pull-push',
+            'when'      => 'on_success'
           }
 
           expect(pipeline).to be_persisted
@@ -129,7 +133,8 @@ RSpec.describe Ci::CreatePipelineService do
           expected = {
             'key'       => /\$ENV_VAR-default/,
             'paths'     => ['logs/'],
-            'policy'    => 'pull-push'
+            'policy'    => 'pull-push',
+            'when'      => 'on_success'
           }
 
           expect(pipeline).to be_persisted

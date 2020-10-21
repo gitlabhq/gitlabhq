@@ -9,65 +9,54 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
      
     <!---->
      
-    <gl-deprecated-dropdown-stub
+    <gl-dropdown-stub
+      category="tertiary"
+      headertext=""
+      size="medium"
       text="rspec"
+      variant="default"
     >
-      <gl-deprecated-dropdown-item-stub
+      <gl-dropdown-item-stub
+        avatarurl=""
+        iconcolor=""
+        iconname=""
+        iconrightname=""
+        ischecked="true"
+        ischeckitem="true"
+        secondarytext=""
         value="rspec"
       >
-        <div
-          class="gl-display-flex"
-        >
-          <gl-icon-stub
-            class="gl-absolute"
-            name="mobile-issue-close"
-            size="16"
-          />
-           
-          <span
-            class="gl-display-flex align-items-center ml-4"
-          >
-            
-            rspec
-          
-          </span>
-        </div>
-      </gl-deprecated-dropdown-item-stub>
-      <gl-deprecated-dropdown-item-stub
+        
+        rspec
+      
+      </gl-dropdown-item-stub>
+      <gl-dropdown-item-stub
+        avatarurl=""
+        iconcolor=""
+        iconname=""
+        iconrightname=""
+        ischeckitem="true"
+        secondarytext=""
         value="cypress"
       >
-        <div
-          class="gl-display-flex"
-        >
-          <!---->
-           
-          <span
-            class="gl-display-flex align-items-center ml-4"
-          >
-            
-            cypress
-          
-          </span>
-        </div>
-      </gl-deprecated-dropdown-item-stub>
-      <gl-deprecated-dropdown-item-stub
+        
+        cypress
+      
+      </gl-dropdown-item-stub>
+      <gl-dropdown-item-stub
+        avatarurl=""
+        iconcolor=""
+        iconname=""
+        iconrightname=""
+        ischeckitem="true"
+        secondarytext=""
         value="karma"
       >
-        <div
-          class="gl-display-flex"
-        >
-          <!---->
-           
-          <span
-            class="gl-display-flex align-items-center ml-4"
-          >
-            
-            karma
-          
-          </span>
-        </div>
-      </gl-deprecated-dropdown-item-stub>
-    </gl-deprecated-dropdown-stub>
+        
+        karma
+      
+      </gl-dropdown-item-stub>
+    </gl-dropdown-stub>
   </div>
    
   <gl-area-chart-stub

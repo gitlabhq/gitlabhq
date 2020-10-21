@@ -2,8 +2,12 @@
 module Groups
   module Registry
     class RepositoriesController < Groups::ApplicationController
+      include PackagesHelper
+
       before_action :verify_container_registry_enabled!
       before_action :authorize_read_container_image!
+
+      feature_category :package_registry
 
       def index
         respond_to do |format|
@@ -13,7 +17,7 @@ module Groups
                                                  .execute
                                                  .with_api_entity_associations
 
-            track_event(:list_repositories)
+            track_package_event(:list_repositories, :container)
 
             serializer = ContainerRepositoriesSerializer
               .new(current_user: current_user)

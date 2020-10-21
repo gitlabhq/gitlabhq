@@ -10,8 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
 
-## Overview
-
 Service Desk is a module that allows your team to connect directly
 with any external party through email right inside of GitLab; no external tools required.
 An ongoing conversation right where your software is built ensures that user feedback ends
@@ -129,7 +127,7 @@ in the email, `%{ISSUE_PATH}` placeholder which will be replaced by
 You can customize the email display name. Emails sent from Service Desk will have
 this name in the `From` header. The default display name is `GitLab Support Bot`.
 
-### Using custom email address
+### Using custom email address **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
 

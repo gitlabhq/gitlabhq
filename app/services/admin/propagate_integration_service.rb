@@ -7,66 +7,45 @@ module Admin
     def propagate
       update_inherited_integrations
 
-      create_integration_for_groups_without_integration if Feature.enabled?(:group_level_integrations)
-      create_integration_for_projects_without_integration
+      if integration.instance?
+        create_integration_for_groups_without_integration if Feature.enabled?(:group_level_integrations)
+        create_integration_for_projects_without_integration
+      else
+        create_integration_for_groups_without_integration_belonging_to_group
+        create_integration_for_projects_without_integration_belonging_to_group
+      end
     end
 
     private
 
     # rubocop: disable Cop/InBatches
-    # rubocop: disable CodeReuse/ActiveRecord
     def update_inherited_integrations
-      Service.where(type: integration.type, inherit_from_id: integration.id).in_batches(of: BATCH_SIZE) do |batch|
-        bulk_update_from_integration(batch)
+      Service.by_type(integration.type).inherit_from_id(integration.id).in_batches(of: BATCH_SIZE) do |services|
+        min_id, max_id = services.pick("MIN(services.id), MAX(services.id)")
+        PropagateIntegrationInheritWorker.perform_async(integration.id, min_id, max_id)
       end
     end
     # rubocop: enable Cop/InBatches
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def bulk_update_from_integration(batch)
-      # Retrieving the IDs instantiates the ActiveRecord relation (batch)
-      # into concrete models, otherwise update_all will clear the relation.
-      # https://stackoverflow.com/q/34811646/462015
-      batch_ids = batch.pluck(:id)
-
-      Service.transaction do
-        batch.update_all(service_hash)
-
-        if data_fields_present?
-          integration.data_fields.class.where(service_id: batch_ids).update_all(data_fields_hash)
-        end
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_integration_for_groups_without_integration
-      loop do
-        batch = Group.uncached { group_ids_without_integration(integration, BATCH_SIZE) }
-
-        bulk_create_from_integration(batch, 'group') unless batch.empty?
-
-        break if batch.size < BATCH_SIZE
+      Group.without_integration(integration).each_batch(of: BATCH_SIZE) do |groups|
+        min_id, max_id = groups.pick("MIN(namespaces.id), MAX(namespaces.id)")
+        PropagateIntegrationGroupWorker.perform_async(integration.id, min_id, max_id)
       end
     end
 
-    def service_hash
-      @service_hash ||= integration.to_service_hash
-        .tap { |json| json['inherit_from_id'] = integration.id }
+    def create_integration_for_groups_without_integration_belonging_to_group
+      integration.group.descendants.without_integration(integration).each_batch(of: BATCH_SIZE) do |groups|
+        min_id, max_id = groups.pick("MIN(namespaces.id), MAX(namespaces.id)")
+        PropagateIntegrationGroupWorker.perform_async(integration.id, min_id, max_id)
+      end
     end
 
-    # rubocop:disable CodeReuse/ActiveRecord
-    def group_ids_without_integration(integration, limit)
-      services = Service
-        .select('1')
-        .where('services.group_id = namespaces.id')
-        .where(type: integration.type)
-
-      Group
-        .where('NOT EXISTS (?)', services)
-        .limit(limit)
-        .pluck(:id)
+    def create_integration_for_projects_without_integration_belonging_to_group
+      Project.without_integration(integration).in_namespace(integration.group.self_and_descendants).each_batch(of: BATCH_SIZE) do |projects|
+        min_id, max_id = projects.pick("MIN(projects.id), MAX(projects.id)")
+        PropagateIntegrationProjectWorker.perform_async(integration.id, min_id, max_id)
+      end
     end
-    # rubocop:enable CodeReuse/ActiveRecord
   end
 end

@@ -5,7 +5,7 @@ module QA
     context 'Design Management' do
       let(:issue) { Resource::Issue.fabricate_via_api! }
       let(:design_filename) { 'banana_sample.gif' }
-      let(:design) { File.absolute_path(File.join('spec', 'fixtures', design_filename)) }
+      let(:design) { File.absolute_path(File.join('qa', 'fixtures', 'designs', design_filename)) }
       let(:annotation) { "This design is great!" }
 
       before do

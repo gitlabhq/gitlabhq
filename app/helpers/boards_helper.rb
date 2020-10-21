@@ -14,10 +14,14 @@ module BoardsHelper
       root_path: root_path,
       full_path: full_path,
       bulk_update_path: @bulk_issues_path,
+      can_update: (!!can?(current_user, :admin_issue, board)).to_s,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
       recent_boards_endpoint: recent_boards_path,
       parent: current_board_parent.model_name.param_key,
-      group_id: @group&.id
+      group_id: @group&.id,
+      labels_filter_base_path: build_issue_link_base,
+      labels_fetch_path: labels_fetch_path,
+      labels_manage_path: labels_manage_path
     }
   end
 
@@ -34,6 +38,22 @@ module BoardsHelper
       "#{group_path(@board.group)}/:project_path/issues"
     else
       project_issues_path(@project)
+    end
+  end
+
+  def labels_fetch_path
+    if board.group_board?
+      group_labels_path(@group, format: :json, only_group_labels: true, include_ancestor_groups: true)
+    else
+      project_labels_path(@project, format: :json, include_ancestor_groups: true)
+    end
+  end
+
+  def labels_manage_path
+    if board.group_board?
+      group_labels_path(@group)
+    else
+      project_labels_path(@project)
     end
   end
 

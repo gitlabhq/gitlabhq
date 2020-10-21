@@ -7,22 +7,21 @@ export const i18n = {
   setupSection: s__(
     "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.",
   ),
-  errorMsg: s__('AlertSettings|There was an error updating the alert settings'),
+  errorMsg: s__('AlertSettings|There was an error updating the alert settings.'),
   errorKeyMsg: s__(
     'AlertSettings|There was an error while trying to reset the key. Please refresh the page to try again.',
   ),
   restKeyInfo: s__(
     'AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.',
   ),
-  endPointActivated: s__('AlertSettings|Alerts endpoint successfully activated.'),
-  changesSaved: s__('AlertSettings|Your changes were successfully updated.'),
+  changesSaved: s__('AlertSettings|Your integration was successfully updated.'),
   prometheusInfo: s__('AlertSettings|Add URL and auth key to your Prometheus config file'),
   integrationsInfo: s__(
-    'AlertSettings|Learn more about our %{linkStart}upcoming integrations%{linkEnd}',
+    'AlertSettings|Learn more about our improvements for %{linkStart}integrations%{linkEnd}',
   ),
   resetKey: s__('AlertSettings|Reset key'),
   copyToClipboard: s__('AlertSettings|Copy'),
-  integrationsLabel: s__('AlertSettings|Integrations'),
+  integrationsLabel: s__('AlertSettings|Add new integrations'),
   apiBaseUrlLabel: s__('AlertSettings|API URL'),
   authKeyLabel: s__('AlertSettings|Authorization key'),
   urlLabel: s__('AlertSettings|Webhook URL'),
@@ -38,10 +37,11 @@ export const i18n = {
   authKeyRest: s__(
     'AlertSettings|Authorization key has been successfully reset. Please save your changes now.',
   ),
+  integration: s__('AlertSettings|Integration'),
 };
 
 export const serviceOptions = [
-  { value: 'generic', text: s__('AlertSettings|Generic') },
+  { value: 'generic', text: s__('AlertSettings|HTTP Endpoint') },
   { value: 'prometheus', text: s__('AlertSettings|External Prometheus') },
   { value: 'opsgenie', text: s__('AlertSettings|Opsgenie') },
 ];
@@ -50,3 +50,15 @@ export const JSON_VALIDATE_DELAY = 250;
 
 export const targetPrometheusUrlPlaceholder = 'http://prometheus.example.com/';
 export const targetOpsgenieUrlPlaceholder = 'https://app.opsgenie.com/alert/list/';
+
+export const sectionHash = 'js-alert-management-settings';
+
+/* eslint-disable @gitlab/require-i18n-strings */
+
+/**
+ * Tracks snowplow event when user views alerts intergration list
+ */
+export const trackAlertIntergrationsViewsOptions = {
+  category: 'Alert Intergrations',
+  action: 'view_alert_integrations_list',
+};

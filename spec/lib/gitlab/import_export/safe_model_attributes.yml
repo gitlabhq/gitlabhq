@@ -855,3 +855,6 @@ ProjectSecuritySetting:
   - auto_fix_sast
   - created_at
   - updated_at
+IssuableSla:
+  - issue_id
+  - due_at

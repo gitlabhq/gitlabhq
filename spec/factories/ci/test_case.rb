@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :test_case, class: 'Gitlab::Ci::Reports::TestCase' do
+    suite_name { "rspec" }
     name { "test-1" }
     classname { "trace" }
     file { "spec/trace_spec.rb" }
@@ -25,6 +26,7 @@ FactoryBot.define do
 
     initialize_with do
       new(
+        suite_name: suite_name,
         name: name,
         classname: classname,
         file: file,

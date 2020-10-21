@@ -1,0 +1,5 @@
+---
+title: Include builds from child pipelines in latest sucessful build for ref/sha
+merge_request: 29710
+author:
+type: fixed

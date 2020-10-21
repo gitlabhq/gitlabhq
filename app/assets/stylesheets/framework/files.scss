@@ -50,7 +50,7 @@
       right: 15px;
       margin-left: auto;
 
-      .btn {
+      .btn:not(.btn-icon) {
         padding: 0 10px;
         font-size: 13px;
         line-height: 28px;
@@ -372,7 +372,7 @@ span.idiff {
     color: $gl-text-color;
   }
 
-  .file-actions .btn {
+  .file-actions .btn:not(.btn-icon) {
     padding: 0 10px;
     font-size: 13px;
     line-height: 28px;

@@ -58,9 +58,9 @@ relevant language.
 
 | Language | Implementation |
 |---|---|
-| Go | [sourcegraph/lsif-go](https://github.com/sourcegraph/lsif-go) |
-| JavaScript | [sourcegraph/lsif-node](https://github.com/sourcegraph/lsif-node) |
-| TypeScript | [sourcegraph/lsif-node](https://github.com/sourcegraph/lsif-node) |
+| Go | [`sourcegraph/lsif-go`](https://github.com/sourcegraph/lsif-go) |
+| JavaScript | [`sourcegraph/lsif-node`](https://github.com/sourcegraph/lsif-node) |
+| TypeScript | [`sourcegraph/lsif-node`](https://github.com/sourcegraph/lsif-node) |
 
 View a complete list of [available LSIF indexers](https://lsif.dev/#implementations-server) on their website and
 refer to their documentation to see how to generate an LSIF file for your specific language.

@@ -1,0 +1,61 @@
+---
+- title: Use HashiCorp Vault secrets in CI jobs
+  body: In GitLab 12.10, GitLab introduced functionality for GitLab Runner to fetch and inject secrets into CI jobs. GitLab is now expanding the JWT Vault Authentication method by building a new secrets syntax in the .gitlab-ci.yml file. This makes it easier for you to configure and use HashiCorp Vault with GitLab.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/secrets
+  image_url: https://about.gitlab.com/images/13_4/vault_ci.png
+  published_at: 2020-09-22
+  release: 13.4
+- title: Introducing the GitLab Kubernetes Agent
+  body: "GitLab's Kubernetes integration has long enabled deployment to Kubernetes clusters without manual setup. Many users have enjoyed the ease-of-use, while others have run into some challenges. The current integration requires your cluster to be open to the Internet for GitLab to access it. For many organizations, this isn't possible, because they must lock down their cluster access for security, compliance, or regulatory purposes. To work around these restrictions, users needed to create custom tooling on top of GitLab, or they couldn't use the feature. Today, we're announcing the GitLab Kubernetes Agent: a new way to deploy to Kubernetes clusters. The Agent runs inside of your cluster, so you don't need to open it to the internet. The Agent orchestrates deployments by pulling new changes from GitLab, rather than GitLab pushing updates to the cluster. No matter what method of GitOps you use, GitLab has you covered."
+  stage: Configure
+  self-managed: true
+  gitlab-com: false
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/clusters/agent
+  image_url: https://about.gitlab.com/images/13_4/gitops-header.png
+  published_at: 2020-09-22
+  release: 13.4
+- title: Grant users deployment permissions without code access
+  body: If your team needs to maintain separation of duties between team members who own development, and team members who own deployments, the permissions paradigm in GitLab has made this challenging. In GitLab 13.4, you can give non-code contributors permission to approve merge requests for deployment, and actually deploy code, without also granting them maintainer access.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/environments/protected_environments.html#environment-access-by-group-membership
+  image_url: https://about.gitlab.com/images/13_4/deployer-role.png
+  published_at: 2020-09-22
+  release: 13.4
+- title: Security Center
+  body: We've made a foundational change to security visibility and management in GitLab. The Instance Security Dashboard has been transformed into a Security Center. The biggest change is introducing a new menu structure. Rather than a single page, you can now find a Security Dashboard, Vulnerability Report, and Settings area. While the functionality hasn't changed, breaking things apart enables future enhancements that would have been difficult otherwise. This also creates a top-level framework for including other security-related functionality in the future. The dedicated Vulnerability Report now has more room to display important details and inherits those currently found on the Project vulnerability list. Separating the vulnerability metrics widgets into their own area creates a true Security Dashboard.
+  stage: Secure
+  self-managed: true
+  gitlab-com: true
+  packages: [Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/security_dashboard/#instance-security-center
+  image_url: https://about.gitlab.com/images/13_4/instance_vulnerability_report.png
+  published_at: 2020-09-22
+  release: 13.4
+- title: Feature Flags made available in GitLab Starter
+  body: Earlier this year, GitLab committed to moving 18 features to our open source core product. With this release of GitLab we've finished moving Feature Flags to Starter, and we are continuing to migrate our Feature Flag service to Core in GitLab 13.5. We're excited about bringing these features to more users and seeing what use cases and workflows you use them for.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [starter, premium, ultimate]
+  url: https://www.youtube.com/embed/1FBRaBQTQZk
+  image_url: http://i3.ytimg.com/vi/1FBRaBQTQZk/maxresdefault.jpg
+  published_at: 2020-09-22
+  release: 13.4
+- title: Quick navigation using the Search bar
+  body: When navigating through GitLab, sometimes you just want to go to a specific project and not a search result page. Using the Global search bar, you can now quickly jump to recent issues, groups, projects, settings, and help topics. You can even use the `/` keyboard shortcut to move the cursor to the search bar, to navigate GitLab even more efficiently!
+  stage: Enablement
+  self-managed: true
+  gitlab-com: true
+  packages: [core, starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/user/search/#autocomplete-suggestions
+  image_url: https://about.gitlab.com/images/13_4/enablement_global_search.gif
+  published_at: 2020-09-22
+  release: 13.4

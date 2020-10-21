@@ -1,4 +1,4 @@
-export const USER_TOKEN_TYPES = ['author', 'assignee'];
+export const USER_TOKEN_TYPES = ['author', 'assignee', 'approved-by'];
 
 export const DROPDOWN_TYPE = {
   hint: 'hint',

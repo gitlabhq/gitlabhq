@@ -6,10 +6,9 @@
   - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
-.page-title-holder.d-sm-flex.align-items-sm-center
-  %h1.page-title<
-    = _('Search')
-  = render_if_exists 'search/form_elasticsearch', attrs: { class: 'ml-sm-auto' }
+.page-title-holder.d-flex.flex-wrap.justify-content-between
+  %h1.page-title.mr-3= _('Search')
+  = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
 .gl-mt-3
   = render 'search/form'

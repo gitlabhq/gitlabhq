@@ -3,8 +3,8 @@
 module API
   module Helpers
     module Pagination
-      def paginate(relation)
-        Gitlab::Pagination::OffsetPagination.new(self).paginate(relation)
+      def paginate(*args)
+        Gitlab::Pagination::OffsetPagination.new(self).paginate(*args)
       end
     end
   end

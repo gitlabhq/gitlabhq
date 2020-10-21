@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module SearchHelpers
+  def fill_in_search(text)
+    page.within('.search-input-wrap') do
+      fill_in('search', with: text)
+    end
+
+    wait_for_all_requests
+  end
+
   def submit_search(query, scope: nil)
     page.within('.search-form, .search-page-form') do
       field = find_field('search')
@@ -11,6 +19,8 @@ module SearchHelpers
       else
         click_button('Search')
       end
+
+      wait_for_all_requests
     end
   end
 

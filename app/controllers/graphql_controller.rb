@@ -26,6 +26,8 @@ class GraphqlController < ApplicationController
   # callback execution order here
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
 
+  feature_category :not_owned
+
   def execute
     result = multiplex? ? execute_multiplex : execute_query
 
@@ -43,6 +45,10 @@ class GraphqlController < ApplicationController
   end
 
   rescue_from Gitlab::Graphql::Errors::ArgumentError do |exception|
+    render_error(exception.message, status: :unprocessable_entity)
+  end
+
+  rescue_from ::GraphQL::CoercionError do |exception|
     render_error(exception.message, status: :unprocessable_entity)
   end
 
@@ -81,7 +87,7 @@ class GraphqlController < ApplicationController
   end
 
   def context
-    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user? }
+    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user?, request: request }
   end
 
   def build_variables(variable_info)
@@ -113,6 +119,12 @@ class GraphqlController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
-    payload[:metadata].merge!(graphql: { operation_name: params[:operationName] })
+    payload[:metadata].merge!(graphql: logs)
+  end
+
+  def logs
+    RequestStore.store[:graphql_logs].to_h
+                .except(:duration_s, :query_string)
+                .merge(operation_name: params[:operationName])
   end
 end

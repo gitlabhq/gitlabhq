@@ -8,6 +8,9 @@ class UserPreference < ApplicationRecord
 
   belongs_to :user
 
+  scope :with_user, -> { joins(:user) }
+  scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
+
   validates :issue_notes_filter, :merge_request_notes_filter, inclusion: { in: NOTES_FILTERS.values }, presence: true
   validates :tab_width, numericality: {
     only_integer: true,

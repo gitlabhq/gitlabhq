@@ -74,7 +74,7 @@ You can skip this step if you already have your GitLab repositories searchable i
 
 ### Configure your GitLab instance with Sourcegraph
 
-1. In GitLab, go to **Admin Area > Settings > Integrations**.
+1. In GitLab, go to **Admin Area > Settings > General**.
 1. Expand the **Sourcegraph** configuration section.
 1. Check **Enable Sourcegraph**.
 1. Set the Sourcegraph URL to your Sourcegraph instance, e.g., `https://sourcegraph.example.com`.

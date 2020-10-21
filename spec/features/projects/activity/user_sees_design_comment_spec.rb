@@ -12,7 +12,7 @@ RSpec.describe 'Projects > Activity > User sees design comment', :js do
   let_it_be(:design) { create(:design, issue: issue) }
 
   let(:design_activity) do
-    "#{commenter.name} #{commenter.to_reference} commented on design"
+    "#{commenter.name} #{commenter.to_reference} commented on design #{design.to_reference}"
   end
 
   let(:issue_activity) do

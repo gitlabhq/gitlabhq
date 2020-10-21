@@ -29,9 +29,14 @@ module RuboCop
         ].sort.freeze
 
         MSG = "The method is not allowed to be called within the `with_lock_retries` block, the only allowed methods are: #{ALLOWED_MIGRATION_METHODS.join(', ')}"
+        MSG_ONLY_ONE_FK_ALLOWED = "Avoid adding more than one foreign key within the `with_lock_retries`. See https://docs.gitlab.com/ee/development/migration_style_guide.html#examples"
 
         def_node_matcher :send_node?, <<~PATTERN
-        send
+          send
+        PATTERN
+
+        def_node_matcher :add_foreign_key?, <<~PATTERN
+          (send nil? :add_foreign_key ...)
         PATTERN
 
         def on_block(node)
@@ -53,6 +58,17 @@ module RuboCop
 
           name = node.children[1]
           add_offense(node, location: :expression) unless ALLOWED_MIGRATION_METHODS.include?(name)
+          add_offense(node, location: :selector, message: MSG_ONLY_ONE_FK_ALLOWED) if multiple_fks?(node)
+        end
+
+        def multiple_fks?(node)
+          return unless add_foreign_key?(node)
+
+          count = node.parent.each_descendant(:send).count do |node|
+            add_foreign_key?(node)
+          end
+
+          count > 1
         end
       end
     end

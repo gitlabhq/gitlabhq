@@ -30,34 +30,103 @@ RSpec.describe Emails::Projects do
   let_it_be(:user) { create(:user) }
 
   describe '#prometheus_alert_fired_email' do
+    let(:default_title) { Gitlab::AlertManagement::Payload::Generic::DEFAULT_TITLE }
+    let(:payload) { { 'startsAt' => Time.now.rfc3339 } }
+    let(:alert_attributes) { build(:alert_management_alert, :from_payload, payload: payload, project: project).attributes }
+
     subject do
-      Notify.prometheus_alert_fired_email(project.id, user.id, alert_params)
+      Notify.prometheus_alert_fired_email(project.id, user.id, alert_attributes)
     end
 
-    let(:alert_params) do
-      { 'startsAt' => Time.now.rfc3339 }
+    context 'missing required attributes' do
+      let(:alert_attributes) { build(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project).attributes }
+
+      it_behaves_like 'no email'
     end
 
-    context 'with a gitlab alert' do
-      before do
-        alert_params['labels'] = { 'gitlab_alert_id' => alert.prometheus_metric_id.to_s }
-      end
-
-      let(:title) do
-        "#{alert.title} #{alert.computed_operator} #{alert.threshold}"
-      end
-
-      let(:metrics_url) do
-        metrics_project_environment_url(project, environment)
-      end
-
-      let(:environment) { alert.environment }
-
-      let!(:alert) { create(:prometheus_alert, project: project) }
+    context 'with minimum required attributes' do
+      let(:payload) { {} }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'has expected subject' do
+        is_expected.to have_subject("#{project.name} | Alert: #{default_title}")
+      end
+
+      it 'has expected content' do
+        is_expected.to have_body_text('An alert has been triggered')
+        is_expected.to have_body_text(project.full_path)
+        is_expected.not_to have_body_text('Description:')
+        is_expected.not_to have_body_text('Environment:')
+        is_expected.not_to have_body_text('Metric:')
+      end
+    end
+
+    context 'with description' do
+      let(:payload) { { 'description' => 'alert description' } }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'has expected subject' do
+        is_expected.to have_subject("#{project.name} | Alert: #{default_title}")
+      end
+
+      it 'has expected content' do
+        is_expected.to have_body_text('An alert has been triggered')
+        is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text('Description:')
+        is_expected.to have_body_text('alert description')
+        is_expected.not_to have_body_text('Environment:')
+        is_expected.not_to have_body_text('Metric:')
+      end
+    end
+
+    context 'with environment' do
+      let_it_be(:environment) { create(:environment, project: project) }
+      let(:payload) { { 'gitlab_environment_name' => environment.name } }
+      let(:metrics_url) { metrics_project_environment_url(project, environment) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'has expected subject' do
+        is_expected.to have_subject("#{project.name} | Alert: #{environment.name}: #{default_title}")
+      end
+
+      it 'has expected content' do
+        is_expected.to have_body_text('An alert has been triggered')
+        is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text('Environment:')
+        is_expected.to have_body_text(environment.name)
+        is_expected.not_to have_body_text('Description:')
+        is_expected.not_to have_body_text('Metric:')
+      end
+    end
+
+    context 'with gitlab alerting rule' do
+      let_it_be(:prometheus_alert) { create(:prometheus_alert, project: project) }
+      let_it_be(:environment) { prometheus_alert.environment }
+
+      let(:alert_attributes) { build(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project).attributes }
+      let(:title) { "#{prometheus_alert.title} #{prometheus_alert.computed_operator} #{prometheus_alert.threshold}" }
+      let(:metrics_url) { metrics_project_environment_url(project, environment) }
+
+      before do
+        payload['labels'] = {
+          'gitlab_alert_id' => prometheus_alert.prometheus_metric_id,
+          'alertname' => prometheus_alert.title
+        }
+      end
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+      it_behaves_like 'shows the incident issues url'
 
       it 'has expected subject' do
         is_expected.to have_subject("#{project.name} | Alert: #{environment.name}: #{title} for 5 minutes")
@@ -69,68 +138,10 @@ RSpec.describe Emails::Projects do
         is_expected.to have_body_text('Environment:')
         is_expected.to have_body_text(environment.name)
         is_expected.to have_body_text('Metric:')
-        is_expected.to have_body_text(alert.full_query)
+        is_expected.to have_body_text(prometheus_alert.full_query)
         is_expected.to have_body_text(metrics_url)
-      end
-
-      it_behaves_like 'shows the incident issues url'
-    end
-
-    context 'with no payload' do
-      let(:alert_params) { {} }
-
-      it_behaves_like 'no email'
-    end
-
-    context 'with an unknown alert' do
-      before do
-        alert_params['labels'] = { 'gitlab_alert_id' => 'unknown' }
-      end
-
-      it_behaves_like 'no email'
-    end
-
-    context 'with an external alert' do
-      let(:title) { 'alert title' }
-
-      let(:metrics_url) do
-        metrics_project_environments_url(project)
-      end
-
-      before do
-        alert_params['annotations'] = { 'title' => title }
-        alert_params['generatorURL'] = 'http://localhost:9090/graph?g0.expr=vector%281%29&g0.tab=1'
-      end
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like 'a user cannot unsubscribe through footer link'
-
-      it 'has expected subject' do
-        is_expected.to have_subject("#{project.name} | Alert: #{title}")
-      end
-
-      it 'has expected content' do
-        is_expected.to have_body_text('An alert has been triggered')
-        is_expected.to have_body_text(project.full_path)
         is_expected.not_to have_body_text('Description:')
-        is_expected.not_to have_body_text('Environment:')
       end
-
-      context 'with annotated description' do
-        let(:description) { 'description' }
-
-        before do
-          alert_params['annotations']['description'] = description
-        end
-
-        it 'shows the description' do
-          is_expected.to have_body_text('Description:')
-          is_expected.to have_body_text(description)
-        end
-      end
-
-      it_behaves_like 'shows the incident issues url'
     end
   end
 end

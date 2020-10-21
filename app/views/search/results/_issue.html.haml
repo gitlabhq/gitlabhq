@@ -9,6 +9,5 @@
       %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issue.title
   .gl-text-gray-500.gl-my-3
     = sprintf(s_(' %{project_name}#%{issue_iid} &middot; opened %{issue_created} by %{author}'), { project_name: issue.project.full_name, issue_iid: issue.iid, issue_created: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), author: link_to_member(@project, issue.author, avatar: false) }).html_safe
-  - if issue.description.present?
-    .description.term.col-sm-10.gl-px-0
-      = truncate(issue.description, length: 200)
+  .description.term.col-sm-10.gl-px-0
+    = highlight_and_truncate_issue(issue, @search_term, @search_highlight)

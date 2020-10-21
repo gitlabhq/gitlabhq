@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Developer deletes tag' do
+RSpec.describe 'Developer deletes tag', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }
@@ -13,11 +13,12 @@ RSpec.describe 'Developer deletes tag' do
     visit project_tags_path(project)
   end
 
-  context 'from the tags list page', :js do
+  context 'from the tags list page' do
     it 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
-      delete_tag 'v1.1.0'
+      container = page.find('.content .flex-row', text: 'v1.1.0')
+      delete_tag container
 
       expect(page).not_to have_content 'v1.1.0'
     end
@@ -29,15 +30,15 @@ RSpec.describe 'Developer deletes tag' do
       expect(current_path).to eq(
         project_tag_path(project, 'v1.0.0'))
 
-      click_on 'Delete tag'
+      container = page.find('.nav-controls')
+      delete_tag container
 
-      expect(current_path).to eq(
-        project_tags_path(project))
+      expect(current_path).to eq("#{project_tags_path(project)}/")
       expect(page).not_to have_content 'v1.0.0'
     end
   end
 
-  context 'when pre-receive hook fails', :js do
+  context 'when pre-receive hook fails' do
     before do
       allow_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
         allow(instance).to receive(:rm_tag)
@@ -46,15 +47,17 @@ RSpec.describe 'Developer deletes tag' do
     end
 
     it 'shows the error message' do
-      delete_tag 'v1.1.0'
+      container = page.find('.content .flex-row', text: 'v1.1.0')
+      delete_tag container
 
       expect(page).to have_content('Do not delete tags')
     end
   end
 
-  def delete_tag(tag)
-    page.within('.content') do
-      accept_confirm { find("li > .row-fixed-content.controls a.btn-remove[href='/#{project.full_path}/-/tags/#{tag}']").click }
-    end
+  def delete_tag(container)
+    container.find('.js-remove-tag').click
+
+    page.within('.modal') { click_button('Delete tag') }
+    wait_for_requests
   end
 end

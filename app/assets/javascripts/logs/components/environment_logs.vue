@@ -3,12 +3,11 @@ import { throttle } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlSprintf,
-  GlIcon,
   GlAlert,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownHeader,
-  GlDeprecatedDropdownItem,
-  GlDeprecatedDropdownDivider,
+  GlDropdown,
+  GlDropdownSectionHeader,
+  GlDropdownItem,
+  GlDropdownDivider,
   GlInfiniteScroll,
 } from '@gitlab/ui';
 
@@ -23,12 +22,11 @@ import { formatDate } from '../utils';
 export default {
   components: {
     GlSprintf,
-    GlIcon,
     GlAlert,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownHeader,
-    GlDeprecatedDropdownItem,
-    GlDeprecatedDropdownDivider,
+    GlDropdown,
+    GlDropdownSectionHeader,
+    GlDropdownItem,
+    GlDropdownDivider,
     GlInfiniteScroll,
     LogSimpleFilters,
     LogAdvancedFilters,
@@ -174,46 +172,38 @@ export default {
 
     <div class="top-bar d-md-flex border bg-secondary-50 pt-2 pr-1 pb-0 pl-2">
       <div class="flex-grow-0">
-        <gl-deprecated-dropdown
+        <gl-dropdown
           id="environments-dropdown"
           :text="environments.current || managedApps.current"
           :disabled="environments.isLoading"
-          class="mb-2 gl-h-32 pr-2 d-flex d-md-block js-environments-dropdown"
+          class="gl-mr-3 gl-mb-3 gl-display-flex gl-display-md-block js-environments-dropdown"
         >
-          <gl-deprecated-dropdown-header class="gl-text-center">
+          <gl-dropdown-section-header>
             {{ s__('Environments|Environments') }}
-          </gl-deprecated-dropdown-header>
-          <gl-deprecated-dropdown-item
+          </gl-dropdown-section-header>
+          <gl-dropdown-item
             v-for="env in environments.options"
             :key="env.id"
+            :is-check-item="true"
+            :is-checked="isCurrentEnvironment(env.name)"
             @click="showEnvironment(env.name)"
           >
-            <div class="d-flex">
-              <gl-icon
-                :class="{ invisible: !isCurrentEnvironment(env.name) }"
-                name="status_success_borderless"
-              />
-              <div class="gl-flex-grow-1">{{ env.name }}</div>
-            </div>
-          </gl-deprecated-dropdown-item>
-          <gl-deprecated-dropdown-divider />
-          <gl-deprecated-dropdown-header class="gl-text-center">
+            {{ env.name }}
+          </gl-dropdown-item>
+          <gl-dropdown-divider />
+          <gl-dropdown-section-header>
             {{ s__('Environments|Managed apps') }}
-          </gl-deprecated-dropdown-header>
-          <gl-deprecated-dropdown-item
+          </gl-dropdown-section-header>
+          <gl-dropdown-item
             v-for="app in managedApps.options"
             :key="app.id"
+            :is-check-item="true"
+            :is-checked="isCurrentManagedApp(app.name)"
             @click="showManagedApp(app.name)"
           >
-            <div class="gl-display-flex">
-              <gl-icon
-                :class="{ invisible: !isCurrentManagedApp(app.name) }"
-                name="status_success_borderless"
-              />
-              <div class="gl-flex-grow-1">{{ app.name }}</div>
-            </div>
-          </gl-deprecated-dropdown-item>
-        </gl-deprecated-dropdown>
+            {{ app.name }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
 
       <log-advanced-filters

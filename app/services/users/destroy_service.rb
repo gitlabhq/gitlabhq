@@ -26,7 +26,7 @@ module Users
     def execute(user, options = {})
       delete_solo_owned_groups = options.fetch(:delete_solo_owned_groups, options[:hard_delete])
 
-      unless Ability.allowed?(current_user, :destroy_user, user)
+      unless Ability.allowed?(current_user, :destroy_user, user) || options[:skip_authorization]
         raise Gitlab::Access::AccessDeniedError, "#{current_user} tried to destroy user #{user}!"
       end
 

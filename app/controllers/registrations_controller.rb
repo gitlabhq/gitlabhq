@@ -6,19 +6,19 @@ class RegistrationsController < Devise::RegistrationsController
   include RecaptchaExperimentHelper
   include InvisibleCaptchaOnSignup
 
+  BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'.freeze
+
   layout :choose_layout
 
   skip_before_action :required_signup_info, :check_two_factor_requirement, only: [:welcome, :update_registration]
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, :ensure_destroy_prerequisites_met, only: [:destroy]
-  before_action :ensure_terms_accepted,
-    if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
   before_action :load_recaptcha, only: :new
+
+  feature_category :authentication_and_authorization
 
   def new
     if experiment_enabled?(:signup_flow)
-      track_experiment_event(:terms_opt_in, 'start')
-
       @resource = build_resource
     else
       redirect_to new_user_session_path(anchor: 'register-pane')
@@ -26,18 +26,18 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
+    set_user_state
     accept_pending_invitations
 
     super do |new_user|
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
-      track_terms_experiment(new_user)
       yield new_user if block_given?
     end
 
-    # Devise sets a flash message on `create` for a successful signup,
-    # which we don't want to show.
-    flash[:notice] = nil
+    # Devise sets a flash message on both successful & failed signups,
+    # but we only want to show a message if the resource is blocked by a pending approval.
+    flash[:notice] = nil unless resource.blocked_pending_approval?
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
   end
@@ -58,6 +58,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def update_registration
+    return redirect_to new_user_registration_path unless current_user
+
     user_params = params.require(:user).permit(:role, :setup_for_company)
     result = ::Users::SignupService.new(current_user, user_params).execute
 
@@ -81,10 +83,8 @@ class RegistrationsController < Devise::RegistrationsController
     return unless new_user.persisted?
     return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 
-    if terms_accepted?
-      terms = ApplicationSetting::Term.latest
-      Users::RespondToTermsService.new(new_user, terms).execute(accepted: true)
-    end
+    terms = ApplicationSetting::Term.latest
+    Users::RespondToTermsService.new(new_user, terms).execute(accepted: true)
   end
 
   def set_role_required(new_user)
@@ -119,6 +119,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
+    return new_user_session_path(anchor: 'login-pane') if resource.blocked_pending_approval?
+
     Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path
   end
 
@@ -178,18 +180,6 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42380')
   end
 
-  def ensure_terms_accepted
-    return if terms_accepted?
-
-    redirect_to new_user_session_path, alert: _('You must accept our Terms of Service and privacy policy in order to register an account')
-  end
-
-  def terms_accepted?
-    return true if experiment_enabled?(:terms_opt_in)
-
-    Gitlab::Utils.to_boolean(params[:terms_opt_in])
-  end
-
   def path_for_signed_in_user(user)
     if requires_confirmation?(user)
       users_almost_there_path
@@ -204,13 +194,6 @@ class RegistrationsController < Devise::RegistrationsController
     return false if experiment_enabled?(:signup_flow)
 
     true
-  end
-
-  def track_terms_experiment(new_user)
-    return unless new_user.persisted?
-
-    track_experiment_event(:terms_opt_in, 'end')
-    record_experiment_user(:terms_opt_in)
   end
 
   def load_recaptcha
@@ -232,6 +215,13 @@ class RegistrationsController < Devise::RegistrationsController
       !helpers.in_invitation_flow? &&
       !helpers.in_oauth_flow? &&
       !helpers.in_trial_flow?
+  end
+
+  def set_user_state
+    return unless Feature.enabled?(:admin_approval_for_new_user_signups, default_enabled: true)
+    return unless Gitlab::CurrentSettings.require_admin_approval_after_user_signup
+
+    resource.state = BLOCKED_PENDING_APPROVAL_STATE
   end
 end
 

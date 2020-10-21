@@ -61,7 +61,7 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
   context 'when the original project was deleted' do
     it 'does not fail when the original project is deleted' do
       source = forked_project.forked_from_project
-      source.destroy
+      source.destroy!
       forked_project.reload
 
       expect { subject.execute }.not_to raise_error

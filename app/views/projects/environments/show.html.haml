@@ -1,9 +1,8 @@
 - add_to_breadcrumbs _("Environments"), project_environments_path(@project)
 - breadcrumb_title @environment.name
 - page_title _("Environments")
-
-- content_for :page_specific_javascripts do
-  = stylesheet_link_tag 'page_bundles/xterm'
+- add_page_specific_style 'page_bundles/xterm'
+- add_page_specific_style 'page_bundles/environments'
 
 #environments-detail-view{ data: { name: @environment.name, id: @environment.id, delete_path: environment_delete_path(@environment)} }
   - if @environment.available? && can?(current_user, :stop_environment, @environment)
@@ -67,7 +66,7 @@
           %p.blank-state-text
             = html_escape(_("Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
           .text-center
-            = link_to _("Read more"), help_page_path("ci/environments"), class: "btn btn-success"
+            = link_to _("Read more"), help_page_path("ci/environments/index.md"), class: "btn btn-success"
     - else
       .table-holder.gl-overflow-visible
         .ci-table.environments{ role: 'grid' }

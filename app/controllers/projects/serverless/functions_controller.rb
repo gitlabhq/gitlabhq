@@ -5,6 +5,8 @@ module Projects
     class FunctionsController < Projects::ApplicationController
       before_action :authorize_read_cluster!
 
+      feature_category :serverless
+
       def index
         respond_to do |format|
           format.json do

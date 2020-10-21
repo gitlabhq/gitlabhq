@@ -10,7 +10,7 @@ exports[`Design management design scaler component minus and reset buttons are d
     disabled="disabled"
   >
     <span
-      class="d-flex-center gl-icon s16"
+      class="gl-display-flex gl-justify-content-center gl-align-items-center gl-icon s16"
     >
       
       –
@@ -48,7 +48,7 @@ exports[`Design management design scaler component minus and reset buttons are e
     class="btn"
   >
     <span
-      class="d-flex-center gl-icon s16"
+      class="gl-display-flex gl-justify-content-center gl-align-items-center gl-icon s16"
     >
       
       –
@@ -85,7 +85,7 @@ exports[`Design management design scaler component plus button is disabled when 
     class="btn"
   >
     <span
-      class="d-flex-center gl-icon s16"
+      class="gl-display-flex gl-justify-content-center gl-align-items-center gl-icon s16"
     >
       
       –

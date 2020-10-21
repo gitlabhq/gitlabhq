@@ -42,6 +42,12 @@ module Metrics
       def cache_key
         "project_#{project.id}_metrics_dashboard_#{dashboard_path}"
       end
+
+      def sequence
+        [
+          ::Gitlab::Metrics::Dashboard::Stages::CustomDashboardMetricsInserter
+        ] + super
+      end
     end
   end
 end

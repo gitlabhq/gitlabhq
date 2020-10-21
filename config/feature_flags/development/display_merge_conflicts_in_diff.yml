@@ -1,0 +1,7 @@
+---
+name: display_merge_conflicts_in_diff
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45008
+rollout_issue_url:
+type: development
+group: group::source code
+default_enabled: false

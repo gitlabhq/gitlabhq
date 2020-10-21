@@ -13,6 +13,8 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :redirect_for_legacy_index_sort_or_search, only: [:index]
   before_action :limit_diverging_commit_counts!, only: [:diverging_commit_counts]
 
+  feature_category :source_code_management
+
   def index
     respond_to do |format|
       format.html do

@@ -111,6 +111,48 @@ It is also possible to manage multiple assignees:
 - When creating a merge request.
 - Using [quick actions](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
 
+## Reviewer
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
+> - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-reviewers). **(CORE ONLY)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Requesting a code review is an important part of contributing code. However, deciding who should review
+your code and asking for a review are no easy tasks. Using the "assignee" field for both authors and
+reviewers makes it hard for others to determine who's doing what on a merge request.
+
+GitLab's Merge Request Reviewers easily allow authors to request a review as well as see the status of the
+review. By selecting one or more users from the **Reviewers** field in the merge request's right-hand
+sidebar, the assigned reviewers will receive a notification of the request to review the merge request.
+
+This makes it easy to determine the relevant roles for the users involved in the merge request, as well as formally requesting a review from a peer.
+
+To request it, open the **Reviewers** drop-down box to search for the user you wish to get a review from.
+
+### Enable or disable Merge Request Reviewers **(CORE ONLY)**
+
+Merge Request Reviewers is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:merge_request_reviewers)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:merge_request_reviewers)
+```
+
 ### Merge requests to close issues
 
 If the merge request is being created to resolve an issue, you can

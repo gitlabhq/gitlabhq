@@ -63,6 +63,11 @@ the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
+NOTE: **Note:**
+If a pipeline is [parent of other child pipelines](../ci/parent_child_pipelines.md), artifacts
+are searched in hierarchical order from parent to child. For example, if both parent and
+child pipelines have a job with the same name, the artifact from the parent pipeline will be returned.
+
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 ```
@@ -156,6 +161,11 @@ Possible response status codes:
 Download a single artifact file for a specific job of the latest successful
 pipeline for the given reference name from within the job's artifacts archive.
 The file is extracted from the archive and streamed to the client.
+
+In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
+for [parent and child pipelines](../ci/parent_child_pipelines.md) are searched in hierarchical
+order from parent to child. For example, if both parent and child pipelines have a
+job with the same name, the artifact from the parent pipeline is returned.
 
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name

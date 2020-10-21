@@ -15,12 +15,12 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     # depending on which day of the week test is run.
     # Monday 6th of June
     reference_time = Time.utc(2020, 6, 1)
-    Timecop.freeze(reference_time) { example.run }
+    travel_to(reference_time) { example.run }
   end
 
   describe '.categories' do
     it 'gets all unique category names' do
-      expect(described_class.categories).to contain_exactly('analytics', 'compliance', 'ide_edit', 'search', 'source_code', 'incident_management', 'issues_edit')
+      expect(described_class.categories).to contain_exactly('analytics', 'compliance', 'ide_edit', 'search', 'source_code', 'incident_management', 'issues_edit', 'testing')
     end
   end
 
@@ -238,16 +238,20 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
     it 'returns the number of unique events for all known events' do
       results = {
-       'category1' => {
-          'event1_slot' => 1,
-          'event2_slot' => 1,
-          'category1_total_unique_counts_weekly' => 2,
-          'category1_total_unique_counts_monthly' => 3
-       },
-       'category2' => {
-          'event3' => 1,
-          'event4' => 1
-       }
+        "category1" => {
+          "event1_slot_weekly" => 1,
+          "event1_slot_monthly" => 1,
+          "event2_slot_weekly" => 1,
+          "event2_slot_monthly" => 2,
+          "category1_total_unique_counts_weekly" => 2,
+          "category1_total_unique_counts_monthly" => 3
+        },
+        "category2" => {
+          "event3_weekly" => 1,
+          "event3_monthly" => 1,
+          "event4_weekly" => 1,
+          "event4_monthly" => 1
+        }
       }
 
       expect(subject.unique_events_data).to eq(results)

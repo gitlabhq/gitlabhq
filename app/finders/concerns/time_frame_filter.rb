@@ -11,4 +11,11 @@ module TimeFrameFilter
   rescue ArgumentError
     items
   end
+
+  def containing_date(items)
+    return items unless params[:containing_date]
+
+    date = params[:containing_date].to_date
+    items.within_timeframe(date, date)
+  end
 end

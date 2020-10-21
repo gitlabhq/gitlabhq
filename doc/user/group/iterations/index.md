@@ -64,6 +64,15 @@ To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit itera
 To learn how to add an issue to an iteration, see the steps in
 [Managing issues](../../project/issues/managing_issues.md#add-an-issue-to-an-iteration).
 
+## View an iteration report
+
+> Viewing iteration reports in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222763) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
+
+You can track the progress of an iteration by reviewing iteration reports.
+An iteration report displays a list of all the issues assigned to an iteration and their status.
+
+To view an iteration report, go to the iterations list page and click an iteration's title.
+
 ## Disable Iterations **(CORE ONLY)**
 
 GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.

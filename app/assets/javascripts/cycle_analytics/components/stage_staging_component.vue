@@ -1,8 +1,6 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
-import iconBranch from '../svg/icon_branch.svg';
 import limitWarning from './limit_warning_component.vue';
 import totalTime from './total_time_component.vue';
 
@@ -12,6 +10,9 @@ export default {
     totalTime,
     limitWarning,
     GlIcon,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     items: {
@@ -23,11 +24,6 @@ export default {
       type: Object,
       default: () => ({}),
       required: false,
-    },
-  },
-  computed: {
-    iconBranch() {
-      return iconBranch;
     },
   },
 };
@@ -47,7 +43,9 @@ export default {
             <a :href="build.url" class="pipeline-id"> #{{ build.id }} </a>
             <gl-icon :size="16" name="fork" />
             <a :href="build.branch.url" class="ref-name"> {{ build.branch.name }} </a>
-            <span class="icon-branch" v-html="iconBranch"> </span>
+            <span class="icon-branch gl-text-gray-400">
+              <gl-icon name="commit" :size="14" />
+            </span>
             <a :href="build.commitUrl" class="commit-sha"> {{ build.shortSha }} </a>
           </h5>
           <span>

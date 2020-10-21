@@ -19,9 +19,8 @@ describe('RelatedMergeRequests', () => {
     mockData = getJSONFixture(FIXTURE_PATH);
 
     // put the fixture in DOM as the component expects
-    document.body.innerHTML = `<div id="js-issuable-app-initial-data">${JSON.stringify(
-      mockData,
-    )}</div>`;
+    document.body.innerHTML = `<div id="js-issuable-app"></div>`;
+    document.getElementById('js-issuable-app').dataset.initial = JSON.stringify(mockData);
 
     mock = new MockAdapter(axios);
     mock.onGet(`${API_ENDPOINT}?per_page=100`).reply(200, mockData, { 'x-total': 2 });

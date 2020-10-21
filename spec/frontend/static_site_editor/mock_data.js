@@ -2,11 +2,17 @@ export const sourceContentHeaderYAML = `---
 layout: handbook-page-toc
 title: Handbook
 twitter_image: /images/tweets/handbook-gitlab.png
+suppress_header: true
+extra_css:
+  - sales-and-free-trial-common.css
+  - form-to-resource.css
 ---`;
 export const sourceContentHeaderObjYAML = {
   layout: 'handbook-page-toc',
   title: 'Handbook',
   twitter_image: '/images/tweets/handbook-gitlab.png',
+  suppress_header: true,
+  extra_css: ['sales-and-free-trial-common.css', 'form-to-resource.css'],
 };
 export const sourceContentSpacing = `\n`;
 export const sourceContentBody = `## On this page
@@ -23,7 +29,10 @@ export const username = 'gitlabuser';
 export const projectId = '123456';
 export const returnUrl = 'https://www.gitlab.com';
 export const sourcePath = 'foobar.md.html';
-
+export const mergeRequestMeta = {
+  title: `Update ${sourcePath} file`,
+  description: 'Copy update',
+};
 export const savedContentMeta = {
   branch: {
     label: 'foobar',

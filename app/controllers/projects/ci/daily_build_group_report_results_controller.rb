@@ -6,9 +6,10 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   MAX_ITEMS = 1000
   REPORT_WINDOW = 90.days
 
-  before_action :validate_feature_flag!
   before_action :authorize_read_build_report_results!
   before_action :validate_param_type!
+
+  feature_category :continuous_integration
 
   def index
     respond_to do |format|
@@ -18,10 +19,6 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   end
 
   private
-
-  def validate_feature_flag!
-    render_404 unless Feature.enabled?(:ci_download_daily_code_coverage, project, default_enabled: true)
-  end
 
   def validate_param_type!
     respond_422 unless allowed_param_types.include?(param_type)
@@ -43,7 +40,7 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   end
 
   def report_results
-    Ci::DailyBuildGroupReportResultsFinder.new(finder_params).execute
+    Ci::DailyBuildGroupReportResultsFinder.new(**finder_params).execute
   end
 
   def finder_params

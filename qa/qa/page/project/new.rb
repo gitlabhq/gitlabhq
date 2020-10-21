@@ -23,11 +23,7 @@ module QA
           element :visibility_radios, 'visibility_level:' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/_import_project_pane.html.haml' do
-          element :import_github, "icon('github', text: 'GitHub')" # rubocop:disable QA/ElementWithPattern
-        end
-
-        view 'app/views/projects/project_templates/_built_in_templates.html.haml' do
+        view 'app/views/projects/project_templates/_template.html.haml' do
           element :use_template_button
           element :template_option_row
         end

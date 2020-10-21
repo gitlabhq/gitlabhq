@@ -11,6 +11,8 @@ class Projects::RefsController < Projects::ApplicationController
   before_action :assign_ref_vars
   before_action :authorize_download_code!
 
+  feature_category :source_code_management
+
   def switch
     respond_to do |format|
       format.html do

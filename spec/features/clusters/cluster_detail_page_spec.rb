@@ -87,6 +87,7 @@ RSpec.describe 'Clusterable > Show page' do
       within('#advanced-settings-section') do
         expect(page).to have_content('Google Kubernetes Engine')
         expect(page).to have_content('Manage your Kubernetes cluster by visiting')
+        expect_common_advanced_options
       end
     end
   end
@@ -117,6 +118,7 @@ RSpec.describe 'Clusterable > Show page' do
       within('#advanced-settings-section') do
         expect(page).not_to have_content('Google Kubernetes Engine')
         expect(page).not_to have_content('Manage your Kubernetes cluster by visiting')
+        expect_common_advanced_options
       end
     end
   end
@@ -174,6 +176,16 @@ RSpec.describe 'Clusterable > Show page' do
 
     it_behaves_like 'editing a user-provided cluster' do
       let(:cluster) { create(:cluster, :provided_by_user, :instance) }
+    end
+  end
+
+  private
+
+  def expect_common_advanced_options
+    aggregate_failures do
+      expect(page).to have_content('Cluster management project')
+      expect(page).to have_content('Clear cluster cache')
+      expect(page).to have_content('Remove Kubernetes cluster integration')
     end
   end
 end

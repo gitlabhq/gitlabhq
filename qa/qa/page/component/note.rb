@@ -9,9 +9,18 @@ module QA
         def self.included(base)
           super
 
+          base.view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
+            element :toggle_comments_button
+          end
+
+          base.view 'app/assets/javascripts/notes/components/discussion_actions.vue' do
+            element :discussion_reply_tab
+            element :resolve_discussion_button
+          end
+
           base.view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :note_dropdown
-            element :discussion_option
+            element :discussion_menu_item
           end
 
           base.view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
@@ -23,39 +32,32 @@ module QA
           end
 
           base.view 'app/assets/javascripts/notes/components/note_form.vue' do
-            element :reply_input
+            element :reply_field
             element :reply_comment_button
           end
 
-          base.view 'app/assets/javascripts/notes/components/discussion_actions.vue' do
-            element :discussion_reply_tab
-            element :resolve_discussion_button
-          end
-
           base.view 'app/assets/javascripts/notes/components/toggle_replies_widget.vue' do
-            element :expand_replies
-            element :collapse_replies
+            element :expand_replies_button
+            element :collapse_replies_button
           end
 
-          base.view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
-            element :toggle_comments_button
+          base.view 'app/assets/javascripts/vue_shared/components/notes/skeleton_note.vue' do
+            element :skeleton_note_placeholder
           end
         end
 
-        def start_discussion(text)
-          fill_element :comment_input, text
-          click_element :note_dropdown
-          click_element :discussion_option
-          click_element :comment_button
+        def collapse_replies
+          click_element :collapse_replies_button
         end
 
-        def toggle_comments(position)
-          all_elements(:toggle_comments_button, minimum: position)[position - 1].click
+        def edit_comment(text)
+          click_element :note_edit_button
+          fill_element :reply_field, text
+          click_element :reply_comment_button
         end
 
-        def type_reply_to_discussion(position, reply_text)
-          all_elements(:discussion_reply_tab, minimum: position)[position - 1].click
-          fill_element :reply_input, reply_text
+        def expand_replies
+          click_element :expand_replies_button
         end
 
         def reply_to_discussion(position, reply_text)
@@ -69,18 +71,24 @@ module QA
           end
         end
 
-        def collapse_replies
-          click_element :collapse_replies
+        def start_discussion(text)
+          fill_element :comment_field, text
+          click_element :note_dropdown
+          click_element :discussion_menu_item
+          click_element :comment_button
         end
 
-        def expand_replies
-          click_element :expand_replies
+        def toggle_comments(position)
+          all_elements(:toggle_comments_button, minimum: position)[position - 1].click
         end
 
-        def edit_comment(text)
-          click_element :note_edit_button
-          fill_element :reply_input, text
-          click_element :reply_comment_button
+        def type_reply_to_discussion(position, reply_text)
+          all_elements(:discussion_reply_tab, minimum: position)[position - 1].click
+          fill_element :reply_field, reply_text
+        end
+
+        def wait_for_loading
+          has_no_element?(:skeleton_note_placeholer)
         end
       end
     end

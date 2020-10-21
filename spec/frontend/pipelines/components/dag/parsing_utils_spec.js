@@ -5,7 +5,7 @@ import {
   parseData,
   removeOrphanNodes,
   getMaxNodes,
-} from '~/pipelines/components/dag/parsing_utils';
+} from '~/pipelines/components/parsing_utils';
 
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import { mockParsedGraphQLNodes } from './mock_data';

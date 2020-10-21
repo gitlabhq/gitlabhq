@@ -8,7 +8,7 @@ class InstanceClusterablePresenter < ClusterablePresenter
     attributes_with_presenter_class = attributes.merge(presenter_class: InstanceClusterablePresenter)
 
     Gitlab::View::Presenter::Factory
-      .new(clusterable, attributes_with_presenter_class)
+      .new(clusterable, **attributes_with_presenter_class)
       .fabricate!
   end
 

@@ -12,7 +12,7 @@ WAI-ARIA (the Accessible Rich Internet Applications specification) defines a way
 
 The `role` attribute describes the role the element plays in the context of the document.
 
-Check the list of WAI-ARIA roles [here](https://www.w3.org/TR/wai-aria-1.1/#landmark_roles)
+Review the list of [WAI-ARIA roles](https://www.w3.org/TR/wai-aria-1.1/#landmark_roles).
 
 ## Icons
 

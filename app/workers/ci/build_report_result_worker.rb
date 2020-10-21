@@ -5,6 +5,8 @@ module Ci
     include ApplicationWorker
     include PipelineBackgroundQueue
 
+    tags :requires_disk_io
+
     idempotent!
 
     def perform(build_id)

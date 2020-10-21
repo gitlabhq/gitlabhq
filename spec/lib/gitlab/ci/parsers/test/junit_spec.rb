@@ -4,11 +4,12 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
-    subject { described_class.new.parse!(junit, test_suite, args) }
+    subject { described_class.new.parse!(junit, test_suite, job: job) }
 
     let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
     let(:test_cases) { flattened_test_cases(test_suite) }
-    let(:args) { { job: { id: 1, project: "project" } } }
+    let(:job) { double(max_test_cases_per_report: max_test_cases) }
+    let(:max_test_cases) { 0 }
 
     context 'when data is JUnit style XML' do
       context 'when there are no <testcases> in <testsuite>' do
@@ -43,7 +44,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         let(:junit) do
           <<-EOF.strip_heredoc
             <testsuites>
-              <testsuite>
+              <testsuite name='Math'>
                 <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
               </testsuite>
             </testsuites>
@@ -53,6 +54,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         it 'parses XML and adds a test case to a suite' do
           expect { subject }.not_to raise_error
 
+          expect(test_cases[0].suite_name).to eq('Math')
           expect(test_cases[0].classname).to eq('Calculator')
           expect(test_cases[0].name).to eq('sumTest1')
           expect(test_cases[0].execution_time).to eq(0.01)
@@ -62,7 +64,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
       context 'when there is <testcase>' do
         let(:junit) do
           <<-EOF.strip_heredoc
-              <testsuite>
+              <testsuite name='Math'>
                 <testcase classname='Calculator' name='sumTest1' time='0.01'>
                   #{testcase_content}
                 </testcase>
@@ -79,6 +81,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         shared_examples_for '<testcase> XML parser' do |status, output|
           it 'parses XML and adds a test case to the suite' do
             aggregate_failures do
+              expect(test_case.suite_name).to eq('Math')
               expect(test_case.classname).to eq('Calculator')
               expect(test_case.name).to eq('sumTest1')
               expect(test_case.execution_time).to eq(0.01)
@@ -152,13 +155,15 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
           expect { subject }.not_to raise_error
 
           expect(test_cases.count).to eq(1)
+          expect(test_cases.first.suite_name).to eq("XXX\\FrontEnd\\WebBundle\\Tests\\Controller\\LogControllerTest")
+          expect(test_cases.first.name).to eq("testIndexAction")
         end
       end
 
       context 'when there are two test cases' do
         let(:junit) do
           <<-EOF.strip_heredoc
-            <testsuite>
+            <testsuite name='Math'>
               <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
               <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
             </testsuite>
@@ -168,9 +173,11 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         it 'parses XML and adds test cases to a suite' do
           expect { subject }.not_to raise_error
 
+          expect(test_cases[0].suite_name).to eq('Math')
           expect(test_cases[0].classname).to eq('Calculator')
           expect(test_cases[0].name).to eq('sumTest1')
           expect(test_cases[0].execution_time).to eq(0.01)
+          expect(test_cases[1].suite_name).to eq('Math')
           expect(test_cases[1].classname).to eq('Calculator')
           expect(test_cases[1].name).to eq('sumTest2')
           expect(test_cases[1].execution_time).to eq(0.02)
@@ -181,7 +188,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         let(:junit) do
           <<-EOF.strip_heredoc
             <testsuites>
-              <testsuite>
+              <testsuite name='Math'>
                 <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
                 <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
               </testsuite>
@@ -196,18 +203,81 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         it 'parses XML and adds test cases to a suite' do
           expect { subject }.not_to raise_error
 
-          expect(test_cases[0].classname).to eq('Calculator')
-          expect(test_cases[0].name).to eq('sumTest1')
-          expect(test_cases[0].execution_time).to eq(0.01)
-          expect(test_cases[1].classname).to eq('Calculator')
-          expect(test_cases[1].name).to eq('sumTest2')
-          expect(test_cases[1].execution_time).to eq(0.02)
-          expect(test_cases[2].classname).to eq('Statemachine')
-          expect(test_cases[2].name).to eq('happy path')
-          expect(test_cases[2].execution_time).to eq(100)
-          expect(test_cases[3].classname).to eq('Statemachine')
-          expect(test_cases[3].name).to eq('unhappy path')
-          expect(test_cases[3].execution_time).to eq(200)
+          expect(test_cases).to contain_exactly(
+            have_attributes(
+              suite_name: 'Math',
+              classname: 'Calculator',
+              name: 'sumTest1',
+              execution_time: 0.01
+            ),
+            have_attributes(
+              suite_name: 'Math',
+              classname: 'Calculator',
+              name: 'sumTest2',
+              execution_time: 0.02
+            ),
+            have_attributes(
+              suite_name: test_suite.name, # Defaults to test suite instance's name
+              classname: 'Statemachine',
+              name: 'happy path',
+              execution_time: 100
+            ),
+            have_attributes(
+              suite_name: test_suite.name, # Defaults to test suite instance's name
+              classname: 'Statemachine',
+              name: 'unhappy path',
+              execution_time: 200
+            )
+          )
+        end
+      end
+
+      context 'when number of test cases exceeds the max_test_cases limit' do
+        let(:max_test_cases) { 1 }
+
+        shared_examples_for 'rejecting too many test cases' do
+          it 'attaches an error to the TestSuite object' do
+            expect { subject }.not_to raise_error
+            expect(test_suite.suite_error).to eq("JUnit data parsing failed: number of test cases exceeded the limit of #{max_test_cases}")
+          end
+        end
+
+        context 'and test cases are unique' do
+          let(:junit) do
+            <<-EOF.strip_heredoc
+            <testsuites>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+                <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
+              </testsuite>
+              <testsuite>
+                <testcase classname='Statemachine' name='happy path' time='100'></testcase>
+                <testcase classname='Statemachine' name='unhappy path' time='200'></testcase>
+              </testsuite>
+            </testsuites>
+            EOF
+          end
+
+          it_behaves_like 'rejecting too many test cases'
+        end
+
+        context 'and test cases are duplicates' do
+          let(:junit) do
+            <<-EOF.strip_heredoc
+            <testsuites>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+                <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
+              </testsuite>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+                <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase>
+              </testsuite>
+            </testsuites>
+            EOF
+          end
+
+          it_behaves_like 'rejecting too many test cases'
         end
       end
     end
@@ -296,9 +366,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         expect(test_cases[0].has_attachment?).to be_truthy
         expect(test_cases[0].attachment).to eq("some/path.png")
 
-        expect(test_cases[0].job).to be_present
-        expect(test_cases[0].job[:id]).to eq(1)
-        expect(test_cases[0].job[:project]).to eq("project")
+        expect(test_cases[0].job).to eq(job)
       end
     end
 

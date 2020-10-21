@@ -18,85 +18,85 @@
     :why: Bundler is MIT licensed but will sometimes fail in CI.
     :versions: []
     :when: 2016-05-02 06:42:08.045090000 Z
-- - :whitelist
+- - :permit
   - MIT
   - :who: Connor Shea
     :why: http://choosealicense.com/licenses/mit/
     :versions: []
     :when: 2016-04-17 21:12:24.558441000 Z
-- - :whitelist
+- - :permit
   - Apache 2.0
   - :who: Connor Shea
     :why: http://choosealicense.com/licenses/apache-2.0/
     :versions: []
     :when: 2016-05-02 05:27:43.762702000 Z
-- - :whitelist
+- - :permit
   - ruby
   - :who: Connor Shea
     :why: https://github.com/ruby/ruby/blob/ruby_2_1/COPYING
     :versions: []
     :when: 2016-05-02 05:31:54.498490000 Z
-- - :whitelist
+- - :permit
   - LGPL
   - :who: Connor Shea
     :why: http://www.gnu.org/licenses/license-list.html#LGPLv2.1
     :versions: []
     :when: 2016-05-02 05:32:48.645841000 Z
-- - :whitelist
+- - :permit
   - ISC
   - :who: Connor Shea
     :why: http://www.gnu.org/licenses/license-list.html#ISC
     :versions: []
     :when: 2016-05-02 05:42:01.894452000 Z
-- - :whitelist
+- - :permit
   - New BSD
   - :who: Connor Shea
     :why: https://opensource.org/licenses/BSD-3-Clause
     :versions: []
     :when: 2016-05-02 05:44:38.246021000 Z
-- - :whitelist
+- - :permit
   - LGPL-2.1+
   - :who: Connor Shea
     :why: Equivalent to LGPL.
     :versions: []
     :when: 2016-05-02 05:52:56.303239000 Z
-- - :whitelist
+- - :permit
   - BSD
   - :who: Connor Shea
     :why: https://opensource.org/licenses/BSD-2-Clause
     :versions: []
     :when: 2016-05-02 05:55:09.796363000 Z
-- - :whitelist
+- - :permit
   - LGPLv2+
   - :who: Stan Hu
     :why: Equivalent to LGPLv2
     :versions: []
     :when: 2016-06-07 17:14:10.907682000 Z
-- - :whitelist
+- - :permit
   - Artistic 2.0
   - :who: Josh Frye
     :why: Disk/mount information display on Admin pages
     :versions: []
     :when: 2016-06-29 16:32:45.432113000 Z
-- - :whitelist
+- - :permit
   - Simplified BSD
   - :who: Douwe Maan
     :why: https://opensource.org/licenses/BSD-2-Clause
     :versions: []
     :when: 2016-07-26 21:24:07.248480000 Z
-- - :blacklist
+- - :restrict
   - GPLv2
   - :who: Connor Shea
     :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
     :versions: []
     :when: 2016-05-02 05:29:27.637336000 Z
-- - :blacklist
+- - :restrict
   - GPLv3
   - :who: Connor Shea
     :why: GPL-licensed libraries cannot be linked to from non-GPL projects.
     :versions: []
     :when: 2016-05-02 05:29:43.904715000 Z
-- - :blacklist
+- - :restrict
   - OSL-3.0
   - :who: Sean McGivern
     :why: The OSL license is a copyleft license
@@ -188,13 +188,13 @@
     :why: https://github.com/nodeca/pako/blob/master/LICENSE
     :versions: []
     :when: 2017-04-05 10:43:45.897720000 Z
-- - :whitelist
+- - :permit
   - Unlicense
   - :who: Nick Thomas <nick@gitlab.com>
     :why: https://gitlab.com/gitlab-com/organization/issues/116
     :versions: []
     :when: 2017-09-01 17:17:51.996511844 Z
-- - :blacklist
+- - :restrict
   - Facebook BSD+PATENTS
   - :who: Nick Thomas <nick@gitlab.com>
     :why: https://gitlab.com/gitlab-com/organization/issues/117
@@ -281,19 +281,19 @@
     :why: https://github.com/hexorx/countries/blob/master/LICENSE
     :versions: []
     :when: 2019-09-11 13:08:28.431132000 Z
-- - :whitelist
+- - :permit
   - "(MIT OR CC0-1.0)"
   - :who: 
     :why: 
     :versions: []
     :when: 2019-11-08 10:03:31.787226000 Z
-- - :whitelist
+- - :permit
   - CC0-1.0
   - :who: Thomas Randolph
     :why: This license is public domain
     :versions: []
     :when: 2020-06-03 05:04:44.632875345 Z
-- - :whitelist
+- - :permit
   - 0BSD
   - :who: Natalia Tepluhina
     :why: This license is public domain
@@ -313,9 +313,15 @@
     :why: "https://github.com/cure53/DOMPurify/blob/main/LICENSE and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31928#note_346604841"
     :versions: []
     :when: 2020-08-13 13:42:46.508082000 Z
-- - :whitelist
+- - :permit
   - Apache-2.0 WITH LLVM-exception
   - :who: Nathan Friend
     :why: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40670#note_403946372
     :versions: []
     :when: 2020-08-28 15:01:59.329048917 Z
+- - :approve
+  - docutils
+  - :who: Mo Khan
+    :why: Used to generate documentation. https://pypi.org/project/docutils/0.13.1/
+    :versions: []
+    :when: 2020-10-05 20:22:55.955189491 Z

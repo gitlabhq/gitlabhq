@@ -1,10 +1,12 @@
 import { mount } from '@vue/test-utils';
 import { GlLink, GlIcon } from '@gitlab/ui';
+import { getJSONFixture } from 'helpers/fixtures';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { release as originalRelease } from '../mock_data';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Evidence Block', () => {
   let wrapper;
@@ -35,7 +37,7 @@ describe('Evidence Block', () => {
   });
 
   it('renders the title for the dowload link', () => {
-    expect(wrapper.find(GlLink).text()).toBe('v1.1.2-evidences-1.json');
+    expect(wrapper.find(GlLink).text()).toBe(`v1.1-evidences-1.json`);
   });
 
   it('renders the correct hover text for the download', () => {
@@ -43,7 +45,7 @@ describe('Evidence Block', () => {
   });
 
   it('renders the correct file link for download', () => {
-    expect(wrapper.find(GlLink).attributes().download).toBe('v1.1.2-evidences-1.json');
+    expect(wrapper.find(GlLink).attributes().download).toBe(`v1.1-evidences-1.json`);
   });
 
   describe('sha text', () => {

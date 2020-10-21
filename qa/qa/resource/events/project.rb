@@ -6,6 +6,13 @@ module QA
       module Project
         include Events::Base
 
+        def wait_for_merge(title)
+          QA::Runtime::Logger.debug(%Q[#{self.class.name} - wait_for_merge with title "#{title}"])
+          wait_for_event do
+            events(action: 'accepted', target_type: 'merge_request').any? { |event| event[:target_title] == title }
+          end
+        end
+
         def wait_for_push(commit_message)
           QA::Runtime::Logger.debug(%Q[#{self.class.name} - wait_for_push with commit message "#{commit_message}"])
           wait_for_event do

@@ -14,6 +14,8 @@ class ApplicationSetting
     end
 
     def accepted_by_user?(user)
+      return true if user.project_bot?
+
       user.accepted_term_id == id ||
         term_agreements.accepted.where(user: user).exists?
     end

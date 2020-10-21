@@ -13,7 +13,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ## Architecture overview
 
-![Geo multi-node diagram](../../high_availability/img/geo-ha-diagram.png)
+![Geo multi-node diagram](img/geo-ha-diagram.png)
 
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 
@@ -133,7 +133,7 @@ Configure the following services, again using the non-Geo multi-node
 documentation:
 
 - [Configuring Redis for GitLab](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application) for multiple nodes.
-- [Gitaly](../../high_availability/gitaly.md), which will store data that is
+- [Gitaly](../../gitaly/index.md), which will store data that is
   synchronized from the **primary** node.
 
 NOTE: **Note:**
@@ -422,7 +422,6 @@ application servers above, with some changes to run only the `sidekiq` service:
    ##
    alertmanager['enable'] = false
    consul['enable'] = false
-   geo_logcursor['enable'] = false
    gitaly['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_workhorse['enable'] = false

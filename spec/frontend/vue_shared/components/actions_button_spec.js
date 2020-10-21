@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlLink } from '@gitlab/ui';
+import { GlDropdown, GlButton } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 
@@ -9,7 +9,12 @@ const TEST_ACTION = {
   secondaryText: 'Lorem ipsum.',
   tooltip: '',
   href: '/sample',
-  attrs: { 'data-test': '123' },
+  attrs: {
+    'data-test': '123',
+    category: 'secondary',
+    href: '/sample',
+    variant: 'default',
+  },
 };
 const TEST_ACTION_2 = {
   key: 'action2',
@@ -40,8 +45,8 @@ describe('Actions button component', () => {
 
     return directiveBinding.value;
   };
-  const findLink = () => wrapper.find(GlLink);
-  const findLinkTooltip = () => getTooltip(findLink());
+  const findButton = () => wrapper.find(GlButton);
+  const findButtonTooltip = () => getTooltip(findButton());
   const findDropdown = () => wrapper.find(GlDropdown);
   const findDropdownTooltip = () => getTooltip(findDropdown());
   const parseDropdownItems = () =>
@@ -63,7 +68,7 @@ describe('Actions button component', () => {
         };
       });
   const clickOn = (child, evt = new Event('click')) => child.vm.$emit('click', evt);
-  const clickLink = (...args) => clickOn(findLink(), ...args);
+  const clickLink = (...args) => clickOn(findButton(), ...args);
   const clickDropdown = (...args) => clickOn(findDropdown(), ...args);
 
   describe('with 1 action', () => {
@@ -76,22 +81,19 @@ describe('Actions button component', () => {
     });
 
     it('should render single button', () => {
-      const link = findLink();
-
-      expect(link.attributes()).toEqual({
-        class: expect.any(String),
+      expect(findButton().attributes()).toMatchObject({
         href: TEST_ACTION.href,
         ...TEST_ACTION.attrs,
       });
-      expect(link.text()).toBe(TEST_ACTION.text);
+      expect(findButton().text()).toBe(TEST_ACTION.text);
     });
 
     it('should have tooltip', () => {
-      expect(findLinkTooltip()).toBe(TEST_ACTION.tooltip);
+      expect(findButtonTooltip()).toBe(TEST_ACTION.tooltip);
     });
 
     it('should have attrs', () => {
-      expect(findLink().attributes()).toMatchObject(TEST_ACTION.attrs);
+      expect(findButton().attributes()).toMatchObject(TEST_ACTION.attrs);
     });
 
     it('can click', () => {
@@ -103,7 +105,7 @@ describe('Actions button component', () => {
     it('should have tooltip', () => {
       createComponent({ actions: [{ ...TEST_ACTION, tooltip: TEST_TOOLTIP }] });
 
-      expect(findLinkTooltip()).toBe(TEST_TOOLTIP);
+      expect(findButtonTooltip()).toBe(TEST_TOOLTIP);
     });
   });
 

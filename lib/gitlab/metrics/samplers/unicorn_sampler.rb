@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def unicorn_workers_count
-          http_servers.sum(&:worker_processes) # rubocop: disable CodeReuse/ActiveRecord
+          http_servers.sum(&:worker_processes)
         end
 
         # Traversal of ObjectSpace is expensive, on fully loaded application

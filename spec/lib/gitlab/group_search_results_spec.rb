@@ -17,10 +17,17 @@ RSpec.describe Gitlab::GroupSearchResults do
   describe 'issues search' do
     let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo opened') }
     let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
+    let_it_be(:confidential_result) { create(:issue, :confidential, project: project, title: 'foo confidential') }
+
     let(:query) { 'foo' }
     let(:scope) { 'issues' }
 
+    before do
+      project.add_developer(user)
+    end
+
     include_examples 'search results filtered by state'
+    include_examples 'search results filtered by confidential'
   end
 
   describe 'merge_requests search' do

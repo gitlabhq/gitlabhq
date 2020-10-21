@@ -233,4 +233,25 @@ RSpec.describe IssuesHelper do
       expect(helper.show_moved_service_desk_issue_warning?(new_issue)).to be(false)
     end
   end
+
+  describe '#use_startup_call' do
+    it "returns false when a query param is present" do
+      allow(controller.request).to receive(:query_parameters).and_return({ foo: 'bar' })
+
+      expect(helper.use_startup_call?).to eq(false)
+    end
+
+    it "returns false when user has stored sort preference" do
+      controller.instance_variable_set(:@sort, 'updated_asc')
+
+      expect(helper.use_startup_call?).to eq(false)
+    end
+
+    it 'returns true when request.query_parameters is empty with default sorting preference' do
+      controller.instance_variable_set(:@sort, 'created_date')
+      allow(controller.request).to receive(:query_parameters).and_return({})
+
+      expect(helper.use_startup_call?).to eq(true)
+    end
+  end
 end

@@ -64,7 +64,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       render: ->(partial, locals) { view_to_html_string(partial, locals) }
     }
 
-    options = additional_attributes.merge(diff_view: Feature.enabled?(:unified_diff_lines, @merge_request.project) ? "inline" : diff_view)
+    options = additional_attributes.merge(diff_view: Feature.enabled?(:unified_diff_lines, @merge_request.project, default_enabled: true) ? "inline" : diff_view)
 
     if @merge_request.project.context_commits_enabled?
       options[:context_commits] = @merge_request.recent_context_commits
@@ -173,7 +173,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def update_diff_discussion_positions!
-    return unless Feature.enabled?(:merge_ref_head_comments, @merge_request.target_project, default_enabled: true)
     return unless Feature.enabled?(:merge_red_head_comments_position_on_demand, @merge_request.target_project, default_enabled: true)
     return if @merge_request.has_any_diff_note_positions?
 

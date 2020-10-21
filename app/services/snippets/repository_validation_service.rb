@@ -52,7 +52,7 @@ module Snippets
 
     def check_file_count!
       file_count = repository.ls_files(snippet.default_branch).size
-      limit = Snippet.max_file_limit(current_user)
+      limit = Snippet.max_file_limit
 
       if file_count > limit
         raise RepositoryValidationError, _('Repository files count over the limit')

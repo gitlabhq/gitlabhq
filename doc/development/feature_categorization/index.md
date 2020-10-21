@@ -23,9 +23,9 @@ product categories. When this occurs, you can automatically update
 and generate a new version of the file, which needs to be committed to
 the repository.
 
-The [Scalabilitity
+The [Scalability
 team](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
-currently maintains the `stages.yml` file. They will automatically be
+currently maintains the `feature_categories.yml` file. They will automatically be
 notified on Slack when the file becomes outdated.
 
 ## Sidekiq workers
@@ -75,38 +75,23 @@ A feature category can be specified on an entire controller
 using:
 
 ```ruby
-class Projects::MergeRequestsController < ApplicationController
-  feature_category :source_code_management
+class Boards::ListsController < ApplicationController
+  feature_category :kanban_boards
 end
 ```
 
 The feature category can be limited to a list of actions using the
-`only` argument, actions can be excluded using the `except` argument.
+second argument:
 
 ```ruby
-class Projects::MergeRequestsController < ApplicationController
-  feature_category :code_testing, only: [:metrics_reports]
-  feature_category :source_code_management, except: [:test_reports, :coverage_reports]
+class DashboardController < ApplicationController
+  feature_category :issue_tracking, [:issues, :issues_calendar]
+  feature_category :code_review, [:merge_requests]
 end
 ```
 
-`except` and `only` arguments can not be combined.
-
-When specifying `except` all other actions will get the specified
-category assigned.
-
-The assignment can also be scoped using `if` and `unless` procs:
-
-```ruby
-class Projects::MergeRequestsController < ApplicationController
-  feature_category :source_code_management,
-                   unless: -> (action) { action.include?("reports") }
-                   if: -> (action) { action.include?("widget") }
-end
-```
-
-In this case, both procs need to be satisfied for the action to get
-the category assigned.
+These forms cannot be mixed: if a controller has more than one category,
+every single action must be listed.
 
 ### Excluding controller actions from feature categorization
 
@@ -125,6 +110,5 @@ The `spec/controllers/every_controller_spec.rb` will iterate over all
 defined routes, and check the controller to see if a category is
 assigned to all actions.
 
-The spec also validates if the used feature categories are known. And
-if the actions used in `only` and `except` configuration still exist
-as routes.
+The spec also validates if the used feature categories are known. And if
+the actions used in configuration still exist as routes.

@@ -104,7 +104,7 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
 
           # Needs to be at least LfsToken::DEFAULT_EXPIRE_TIME + 60 seconds
           # in order to check whether it is valid 1 minute after it has expired
-          Timecop.freeze(Time.now + described_class::DEFAULT_EXPIRE_TIME + 60) do
+          travel_to(Time.now + described_class::DEFAULT_EXPIRE_TIME + 60) do
             expect(lfs_token.token_valid?(expired_token)).to be false
           end
         end

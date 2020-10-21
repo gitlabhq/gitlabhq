@@ -1,5 +1,5 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab/ui';
 import MrWidgetAuthor from './mr_widget_author.vue';
 
 export default {
@@ -8,7 +8,7 @@ export default {
     MrWidgetAuthor,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     actionText: {
@@ -34,6 +34,7 @@ export default {
   <h4 class="js-mr-widget-author">
     {{ actionText }}
     <mr-widget-author :author="author" />
-    <time v-tooltip :title="dateTitle" data-container="body"> {{ dateReadable }} </time>
+    <span class="sr-only">{{ dateReadable }} ({{ dateTitle }})</span>
+    <time v-gl-tooltip.hover aria-hidden :title="dateTitle"> {{ dateReadable }} </time>
   </h4>
 </template>

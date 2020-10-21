@@ -1,0 +1,613 @@
+@import 'mixins_and_variables_and_functions';
+
+.user-can-drag {
+  cursor: grab;
+}
+
+.is-ghost {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.dropdown-projects {
+  .dropdown-content {
+    max-height: 200px;
+  }
+}
+
+.dropdown-menu-issues-board-new {
+  width: 320px;
+
+  .dropdown-content {
+    max-height: 140px;
+  }
+}
+
+.issue-board-dropdown-content {
+  margin: 0;
+  padding: $gl-padding-4 $gl-padding $gl-padding;
+  border-bottom: 0;
+  color: var(--gray-500, $gray-500);
+}
+
+.issue-boards-page {
+  .content-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+.boards-app {
+  @include media-breakpoint-up(sm) {
+    transition: width $sidebar-transition-duration;
+    width: 100%;
+
+    &.is-compact {
+      width: calc(100% - #{$gutter-width});
+    }
+  }
+}
+
+.boards-list,
+.board-swimlanes {
+  height: calc(100vh - #{$issue-board-list-difference-xs});
+  overflow-x: scroll;
+  min-height: 200px;
+
+  @include media-breakpoint-only(sm) {
+    height: calc(100vh - #{$issue-board-list-difference-sm});
+  }
+
+  @include media-breakpoint-up(md) {
+    height: calc(100vh - #{$issue-board-list-difference-md});
+  }
+
+  @include media-breakpoint-up(lg) {
+    height: calc(100vh - #{$issue-board-list-difference-lg});
+  }
+
+  .with-performance-bar & {
+    height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
+
+    @include media-breakpoint-only(sm) {
+      height: calc(100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height});
+    }
+
+    @include media-breakpoint-up(md) {
+      height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
+    }
+
+    @include media-breakpoint-up(lg) {
+      height: calc(100vh - #{$issue-board-list-difference-lg} - #{$performance-bar-height});
+    }
+  }
+}
+
+.board {
+  // the next line cannot be replaced with .d-inline-block because it breaks display: none of SortableJS
+  // see https://gitlab.com/gitlab-org/gitlab-foss/issues/64828
+  display: inline-block;
+  width: calc(85vw - 15px);
+
+  @include media-breakpoint-up(sm) {
+    width: 400px;
+  }
+
+  .board-title-caret {
+    border-radius: $border-radius-default;
+    line-height: $gl-spacing-scale-5;
+    height: $gl-spacing-scale-5;
+
+    &.btn svg {
+      top: 0;
+    }
+
+    &:hover {
+      background-color: var(--gray-50, $gray-50);
+      transition: background-color 0.1s linear;
+    }
+  }
+
+  &:not(.is-collapsed) {
+    .board-title-caret {
+      margin-right: $gl-padding-4;
+    }
+  }
+
+  &.is-collapsed {
+    width: 50px;
+
+    .board-title {
+      flex-direction: column;
+    }
+
+    .board-title-caret {
+      margin-top: 1px;
+    }
+
+    .user-avatar-link,
+    .milestone-icon {
+      margin-top: $gl-padding-8;
+      transform: rotate(90deg);
+    }
+
+    .board-title-text {
+      flex-grow: 0;
+      margin: $gl-padding-8 0;
+
+      .board-title-main-text {
+        display: block;
+      }
+
+      .board-title-sub-text {
+        display: none;
+      }
+    }
+
+    .issue-count-badge {
+      border: 0;
+      white-space: nowrap;
+      padding: 0;
+    }
+
+    .board-title-text > span,
+    .issue-count-badge > span {
+      height: 16px;
+
+      // Force the height to be equal to the parent's width while centering the contents.
+      // The contents *should* be about 16 px.
+      // We do this because the flow of elements isn't affected by the rotate transform, so we must ensure that a
+      // rotated element has square dimensions so it won't overlap with its siblings.
+      margin: calc(50% - 8px) 0;
+
+      transform: rotate(90deg);
+      transform-origin: center;
+    }
+  }
+}
+
+.board-inner {
+  font-size: $issue-boards-font-size;
+  background: var(--gray-10, $gray-10);
+  border: 1px solid var(--gray-100, $gray-100);
+}
+
+.board-header {
+  &.has-border::before {
+    border-top: 3px solid;
+    border-color: inherit;
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+    content: '';
+    position: absolute;
+    width: calc(100% + 2px);
+    top: 0;
+    left: 0;
+    margin-top: -1px;
+    margin-right: -1px;
+    margin-left: -1px;
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-left: 1px;
+
+    .board-title {
+      padding-top: ($gl-padding - 3px);
+      padding-bottom: $gl-padding;
+    }
+  }
+}
+
+.board-title {
+  align-items: center;
+  font-size: 1em;
+  border-bottom: 1px solid var(--gray-100, $gray-100);
+  padding: 0 $gl-spacing-scale-3;
+  height: 3rem;
+
+  .js-max-issue-size::before {
+    content: '/';
+  }
+}
+
+.board-title-text {
+  flex-grow: 1;
+}
+
+.board-delete.gl-button {
+  background-color: transparent;
+  outline: 0;
+
+  &:hover {
+    color: var(--blue-600, $blue-600);
+    box-shadow: none;
+  }
+}
+
+.board-blank-state,
+.board-promotion-state {
+  background-color: var(--white, $white);
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.board-blank-state-list {
+  > li:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  .label-color {
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    margin-right: 3px;
+  }
+}
+
+.board-list-component {
+  min-height: 0; // firefox fix
+}
+
+.board-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.board-list-loading {
+  margin-top: 10px;
+  font-size: (26px / $issue-boards-font-size) * 1em;
+}
+
+.board-card {
+  background: var(--white, $white);
+  border: 1px solid var(--gray-100, $gray-100);
+  box-shadow: 0 1px 2px rgba(var(--black, $black), 0.1);
+  line-height: $gl-padding;
+  list-style: none;
+  position: relative;
+
+  &:not(:last-child) {
+    margin-bottom: $gl-padding-8;
+  }
+
+  &.is-active,
+  &.is-active .board-card-assignee:hover a {
+    background-color: var(--blue-50, $blue-50);
+  }
+
+  &.multi-select {
+    border-color: var(--blue-200, $blue-200);
+    background-color: var(--blue-50, $blue-50);
+  }
+
+  .gl-label {
+    margin-top: 4px;
+    margin-right: 4px;
+  }
+
+  .confidential-icon {
+    color: var(--orange-500, $orange-500);
+    cursor: help;
+  }
+
+  .issue-blocked-icon {
+    color: var(--red-500, $red-500);
+  }
+
+  @include media-breakpoint-down(md) {
+    padding: $gl-padding-8;
+  }
+}
+
+.board-card-title {
+  @include overflow-break-word();
+  font-size: 1em;
+
+  a {
+    color: var(--gray-900, $gray-900);
+  }
+
+  @include media-breakpoint-down(md) {
+    font-size: $label-font-size;
+  }
+}
+
+.board-card-header {
+  text-align: initial;
+}
+
+.board-card-assignee {
+  margin-top: -$gl-padding-4;
+  margin-bottom: -$gl-padding-4;
+
+  .avatar-counter {
+    vertical-align: middle;
+    line-height: $gl-padding-24;
+    min-width: $gl-padding-24;
+    height: $gl-padding-24;
+    border-radius: $gl-padding-24;
+    background-color: var(--gray-400, $gray-400);
+    font-size: $gl-font-size-xs;
+    cursor: help;
+    font-weight: $gl-font-weight-bold;
+    margin-left: -$gl-padding-4;
+    border: 0;
+    padding: 0 $gl-padding-4;
+
+    @include media-breakpoint-down(md) {
+      min-width: auto;
+      height: $gl-padding;
+      border-radius: $gl-padding;
+      line-height: $gl-padding;
+    }
+  }
+
+  img {
+    vertical-align: top;
+  }
+
+  .user-avatar-link:not(:only-child) {
+    margin-left: -$gl-padding-4;
+
+    &:nth-of-type(1) {
+      z-index: 2;
+    }
+
+    &:nth-of-type(2) {
+      z-index: 1;
+    }
+  }
+
+  .avatar {
+    @include media-breakpoint-down(md) {
+      width: $gl-padding;
+      height: $gl-padding;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.board-card-number {
+  font-size: $gl-font-size-xs;
+  color: var(--gray-500, $gray-500);
+
+  @include media-breakpoint-up(md) {
+    font-size: $label-font-size;
+  }
+}
+
+.board-list-count {
+  padding: 10px 0;
+  color: var(--gray-500, $gray-500);
+  font-size: 13px;
+}
+
+.board-new-issue-form {
+  z-index: 4;
+  margin: 5px;
+}
+
+.right-sidebar.issue-boards-sidebar {
+  .gutter-toggle {
+    bottom: 15px;
+    width: 22px;
+    padding-left: $gl-padding-32;
+
+    svg {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      margin-top: (-11px / 2);
+      height: $gl-font-size-12;
+      width: $gl-font-size-12;
+    }
+  }
+
+  .issuable-header-text {
+    @include overflow-break-word();
+    padding-right: 35px;
+  }
+}
+
+.right-sidebar.right-sidebar-expanded {
+  &.boards-sidebar-slide-enter-active,
+  &.boards-sidebar-slide-leave-active {
+    transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
+  }
+
+  &.boards-sidebar-slide-enter,
+  &.boards-sidebar-slide-leave-active {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.add-issues-modal {
+  background-color: rgba($black, 0.3);
+  z-index: 9999;
+}
+
+.add-issues-container {
+  width: 90vw;
+  height: 85vh;
+  max-width: 1100px;
+  min-height: 500px;
+  padding: 25px 15px 0;
+  background-color: var(--white, $white);
+  box-shadow: 0 2px 12px rgba(var(--black, $black), 0.5);
+
+  .empty-state {
+    &.add-issues-empty-state-filter {
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .svg-content {
+      margin-top: -40px;
+    }
+  }
+}
+
+.add-issues-header {
+  margin: -25px -15px -5px;
+  border-bottom: 1px solid $border-color;
+  border-top-right-radius: $border-radius-default;
+  border-top-left-radius: $border-radius-default;
+
+  > h2 {
+    font-size: 18px;
+  }
+}
+
+.add-issues-list-column {
+  width: 100%;
+
+  @include media-breakpoint-up(sm) {
+    width: 50%;
+  }
+
+  @include media-breakpoint-up(md) {
+    width: (100% / 3);
+  }
+}
+
+.add-issues-list {
+  padding-top: 3px;
+  margin-left: -$gl-vert-padding;
+  margin-right: -$gl-vert-padding;
+  overflow-y: scroll;
+
+  .board-card-parent {
+    padding: 0 5px 5px;
+  }
+
+  .board-card {
+    border: 1px solid var(--gray-900, $gray-900);
+    box-shadow: 0 1px 2px rgba(var(--black, $black), 0.4);
+    cursor: pointer;
+  }
+}
+
+.add-issues-footer {
+  margin: auto -15px 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-bottom-right-radius: $border-radius-default;
+  border-bottom-left-radius: $border-radius-default;
+}
+
+.add-issues-footer-to-list {
+  padding-left: $gl-vert-padding;
+  padding-right: $gl-vert-padding;
+  line-height: $input-height;
+}
+
+.issue-card-selected {
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 17px;
+  background-color: var(--blue-500, $blue-500);
+  color: $white;
+  border: 1px solid var(--blue-600, $blue-600);
+  font-size: 9px;
+  line-height: 15px;
+  border-radius: 50%;
+}
+
+.board-card-info {
+  color: var(--gray-500, $gray-500);
+  white-space: nowrap;
+  margin-right: $gl-padding-8;
+
+  &:not(.board-card-weight) {
+    cursor: help;
+  }
+
+  &.board-card-weight {
+    color: var(--gray-500, $gray-500);
+    cursor: pointer;
+
+    &:hover {
+      color: initial;
+      text-decoration: underline;
+    }
+  }
+
+  .board-card-info-icon {
+    color: var(--gray-500, $gray-500);
+    margin-right: $gl-padding-4;
+    vertical-align: text-top;
+  }
+
+  @include media-breakpoint-down(md) {
+    font-size: $label-font-size;
+  }
+}
+
+.board-issue-path.js-show-tooltip {
+  cursor: help;
+}
+
+.board-labels-toggle-wrapper,
+.board-swimlanes-toggle-wrapper {
+  /**
+   * Make the wrapper the same height as a button so it aligns properly when the
+   * filtered-search-box input element increases in size on Linux smaller breakpoints
+   */
+  height: $input-height;
+}
+
+.issue-boards-content.is-focused {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: var(--white, $white);
+  z-index: 9000;
+
+  @include media-breakpoint-down(sm) {
+    padding-top: 10px;
+  }
+
+  .boards-list {
+    height: calc(100vh - #{$issue-boards-filter-height});
+    overflow-x: scroll;
+  }
+
+  .issue-boards-sidebar {
+    height: 100%;
+    top: 0;
+  }
+}
+
+.board-swimlanes {
+  overflow-x: auto;
+}
+
+.board-header-collapsed-info-icon:hover {
+  color: var(--gray-900, $gray-900);
+}
+
+$epic-icons-spacing: 40px;
+
+.board-epic-lane {
+  max-width: calc(100vw - #{$contextual-sidebar-width} - #{$epic-icons-spacing});
+
+  .page-with-icon-sidebar & {
+    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$epic-icons-spacing});
+  }
+
+  .page-with-icon-sidebar .is-compact & {
+    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$gutter-width} - #{$epic-icons-spacing});
+  }
+
+  .is-compact & {
+    max-width: calc(100vw - #{$contextual-sidebar-width} - #{$gutter-width} - #{$epic-icons-spacing});
+  }
+}

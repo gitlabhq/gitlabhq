@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
   let(:api_url) { 'https://kubernetes.example.com/prefix' }
   let(:kubeclient_options) { { auth_options: { bearer_token: 'xyz' } } }
 
-  let(:client) { described_class.new(api_url, kubeclient_options) }
+  let(:client) { described_class.new(api_url, **kubeclient_options) }
 
   before do
     stub_kubeclient_discover(api_url)
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     end
 
     it 'falls back to default options, but allows overriding' do
-      client = Gitlab::Kubernetes::KubeClient.new(api_url, {})
+      client = described_class.new(api_url)
       defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS
       expect(client.kubeclient_options[:timeouts]).to eq(defaults[:timeouts])
 
@@ -343,6 +343,34 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
         expect(apps_client).to receive(:get_deployments)
 
         client.get_deployments
+      end
+    end
+  end
+
+  describe '#get_ingresses' do
+    let(:extensions_client) { client.extensions_client }
+    let(:networking_client) { client.networking_client }
+
+    include_examples 'redirection not allowed', 'get_ingresses'
+    include_examples 'dns rebinding not allowed', 'get_ingresses'
+
+    it 'delegates to the extensions client' do
+      expect(extensions_client).to receive(:get_ingresses)
+
+      client.get_ingresses
+    end
+
+    context 'extensions does not have deployments for Kubernetes 1.22+ clusters' do
+      before do
+        WebMock
+          .stub_request(:get, api_url + '/apis/extensions/v1beta1')
+          .to_return(kube_response(kube_1_22_extensions_v1beta1_discovery_body))
+      end
+
+      it 'delegates to the apps client' do
+        expect(networking_client).to receive(:get_ingresses)
+
+        client.get_ingresses
       end
     end
   end

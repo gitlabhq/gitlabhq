@@ -25,6 +25,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
+  feature_category :continuous_delivery
+
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)

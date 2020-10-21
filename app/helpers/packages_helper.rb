@@ -34,26 +34,22 @@ module PackagesHelper
     expose_url(api_v4_group___packages_composer_packages_path(id: group_id, format: '.json'))
   end
 
-  def packages_coming_soon_enabled?(resource)
-    ::Feature.enabled?(:packages_coming_soon, resource) && ::Gitlab.dev_env_or_com?
-  end
-
-  def packages_coming_soon_data(resource)
-    return unless packages_coming_soon_enabled?(resource)
-
-    {
-      project_path: ::Gitlab.com? ? 'gitlab-org/gitlab' : 'gitlab-org/gitlab-test',
-      suggested_contributions: help_page_path('user/packages/index', anchor: 'suggested-contributions')
-    }
+  def composer_config_repository_name(group_id)
+    "#{Gitlab.config.gitlab.host}/#{group_id}"
   end
 
   def packages_list_data(type, resource)
     {
       resource_id: resource.id,
       page_type: type,
-      empty_list_help_url: help_page_path('administration/packages/index'),
+      empty_list_help_url: help_page_path('user/packages/package_registry/index'),
       empty_list_illustration: image_path('illustrations/no-packages.svg'),
-      coming_soon_json: packages_coming_soon_data(resource).to_json
+      package_help_url: help_page_path('user/packages/index')
     }
+  end
+
+  def track_package_event(event_name, scope, **args)
+    ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
+    track_event(event_name, **args)
   end
 end

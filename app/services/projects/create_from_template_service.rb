@@ -14,10 +14,16 @@ module Projects
     def execute
       return project unless validate_template!
 
-      file = built_in_template&.file
+      file = built_in_template&.file || sample_data_template&.file
 
       override_params = params.dup
-      params[:file] = file
+
+      if built_in_template
+        params[:file] = built_in_template.file
+      elsif sample_data_template
+        params[:file] = sample_data_template.file
+        params[:sample_data] = true
+      end
 
       GitlabProjectsImportService.new(current_user, params, override_params).execute
     ensure
@@ -27,7 +33,7 @@ module Projects
     private
 
     def validate_template!
-      return true if built_in_template
+      return true if built_in_template || sample_data_template
 
       project.errors.add(:template_name, _("'%{template_name}' is unknown or invalid" % { template_name: template_name }))
       false
@@ -36,6 +42,12 @@ module Projects
     def built_in_template
       strong_memoize(:built_in_template) do
         Gitlab::ProjectTemplate.find(template_name)
+      end
+    end
+
+    def sample_data_template
+      strong_memoize(:sample_data_template) do
+        Gitlab::SampleDataTemplate.find(template_name)
       end
     end
 

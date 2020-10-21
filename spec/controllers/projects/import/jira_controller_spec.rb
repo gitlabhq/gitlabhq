@@ -12,7 +12,6 @@ RSpec.describe Projects::Import::JiraController do
   def ensure_correct_config
     sign_in(user)
     project.add_maintainer(user)
-    stub_feature_flags(jira_issue_import: true)
     stub_jira_service_test
   end
 
@@ -77,7 +76,6 @@ RSpec.describe Projects::Import::JiraController do
       before do
         sign_in(user)
         project.add_maintainer(user)
-        stub_feature_flags(jira_issue_import: true)
       end
 
       context 'when Jira service is not enabled for the project' do

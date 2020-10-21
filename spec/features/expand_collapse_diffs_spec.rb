@@ -7,6 +7,7 @@ RSpec.describe 'Expand and collapse diffs', :js do
   let(:project) { create(:project, :repository) }
 
   before do
+    stub_feature_flags(increased_diff_limits: false)
     sign_in(create(:admin))
 
     # Ensure that undiffable.md is in .gitattributes

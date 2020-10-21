@@ -24,18 +24,18 @@ costly-to-operate environment by using the
 
 | Service                                    | Nodes       | Configuration         | GCP            | AWS         | Azure   |
 |--------------------------------------------|-------------|-----------------------|----------------|-------------|---------|
-| External load balancing node               | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Redis                                      | 3           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
-| Consul + Sentinel                          | 3           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| PostgreSQL                                 | 3           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Gitaly                                     | 2 (minimum) | 4 vCPU, 15GB memory   | n1-standard-4  | m5.xlarge   | D4s v3  |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
-| GitLab Rails                               | 3           | 8 vCPU, 7.2GB memory  | n1-highcpu-8   | c5.2xlarge  | F8s v2  |
-| Monitoring node                            | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Object Storage                             | n/a         | n/a                   | n/a            | n/a         | n/a     |
-| NFS Server (optional, not recommended)     | 1           | 4 vCPU, 3.6GB memory  | n1-highcpu-4   | c5.xlarge   | F4s v2  |
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Redis                                      | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
+| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Gitaly                                     | 2 (minimum) | 4 vCPU, 15 GB memory  | n1-standard-4  | m5.xlarge   | D4s v3  |
+| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
+| GitLab Rails                               | 3           | 8 vCPU, 7.2 GB memory | n1-highcpu-8   | c5.2xlarge  | F8s v2  |
+| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Object storage                             | n/a         | n/a                   | n/a            | n/a         | n/a     |
+| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory | n1-highcpu-4   | c5.xlarge   | F4s v2  |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -44,41 +44,43 @@ or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-For data objects (such as LFS, Uploads, or Artifacts), an
-[object storage service](#configure-the-object-storage) is recommended instead
-of NFS where possible, due to better performance and availability. Since this
-doesn't require a node to be set up, *Object Storage* is noted as not
-applicable (n/a) in the previous table.
+Due to better performance and availability, for data objects (such as LFS,
+uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
+is recommended instead of using NFS. Using an object storage service also
+doesn't require you to provision and maintain a node.
 
 ## Setup components
 
 To set up GitLab and its components to accommodate up to 3,000 users:
 
 1. [Configure the external load balancing node](#configure-the-external-load-balancer)
-   that will handle the load balancing of the two GitLab application services nodes.
+   to handle the load balancing of the GitLab application services nodes.
 1. [Configure Redis](#configure-redis).
 1. [Configure Consul and Sentinel](#configure-consul-and-sentinel).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure the internal load balancing node](#configure-the-internal-load-balancer)
+1. [Configure the internal load balancing node](#configure-the-internal-load-balancer).
 1. [Configure Gitaly](#configure-gitaly),
    which provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq).
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend requests (UI, API, Git
-   over HTTP/SSH).
-1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab environment.
-1. [Configure the Object Storage](#configure-the-object-storage)
+   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   requests (which include UI, API, and Git over HTTP/SSH).
+1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
+   environment.
+1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
-1. [Configure NFS (Optional)](#configure-nfs-optional)
-   to have shared disk storage service as an alternative to Gitaly and/or Object Storage (although
-   not recommended). NFS is required for GitLab Pages, you can skip this step if you're not using
-   that feature.
+1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
+   more advanced code search across your entire GitLab instance.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage. You can skip this step if you're not using GitLab Pages (which
+   requires NFS).
 
-We start with all servers on the same 10.6.0.0/16 private network range, they
-can connect to each other freely on those addresses.
+The servers start on the same 10.6.0.0/24 private network range, and can
+connect to each other freely on these addresses.
 
-Here is a list and description of each machine and the assigned IP:
+The following list includes descriptions of each server and its assigned IP:
 
 - `10.6.0.10`: External Load Balancer
 - `10.6.0.61`: Redis Primary
@@ -107,18 +109,17 @@ Here is a list and description of each machine and the assigned IP:
 
 ## Configure the external load balancer
 
-NOTE: **Note:**
+In an active/active GitLab configuration, you'll need a load balancer to route
+traffic to the application servers. The specifics on which load balancer to use
+or its exact configuration is beyond the scope of GitLab documentation. We hope
+that if you're managing multi-node systems like GitLab, you already have a load
+balancer of choice. Some load balancer examples include HAProxy (open-source),
+F5 Big-IP LTM, and Citrix Net Scaler. This documentation outline the ports and
+protocols needed for use with GitLab.
+
 This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/)
 as the load balancer. Although other load balancers with similar feature sets
 could also be used, those load balancers have not been validated.
-
-In an active/active GitLab configuration, you will need a load balancer to route
-traffic to the application servers. The specifics on which load balancer to use
-or the exact configuration is beyond the scope of GitLab documentation. We hope
-that if you're managing multi-node systems like GitLab you have a load balancer of
-choice already. Some examples including HAProxy (open-source), F5 Big-IP LTM,
-and Citrix Net Scaler. This documentation will outline what ports and protocols
-you need to use with GitLab.
 
 The next question is how you will handle SSL in your environment.
 There are several different options:
@@ -277,20 +278,17 @@ The requirements for a Redis setup are the following:
    ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png)),
    using a firewall.
 
-NOTE: **Note:**
-Redis nodes (both primary and replica) will need the same password defined in
-`redis['password']`. At any time during a failover the Sentinels can
-reconfigure a node and change its status from primary to replica and vice versa.
+Both the primary and replica Redis nodes need the same password defined in
+`redis['password']`. At any time during a failover, the Sentinels can reconfigure
+a node and change its status from primary to replica (and vice versa).
 
 #### Configuring the primary Redis instance
 
-1. SSH into the **Primary** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the **Primary** Redis server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -334,18 +332,17 @@ reconfigure a node and change its status from primary to replica and vice versa.
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-NOTE: **Note:**
-You can specify multiple roles like sentinel and Redis as:
-`roles ['redis_sentinel_role', 'redis_master_role']`.
-Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
+You can specify multiple roles, like sentinel and Redis, as:
+`roles ['redis_sentinel_role', 'redis_master_role']`. Read more about
+[roles](https://docs.gitlab.com/omnibus/roles/).
 
-You can list the current Redis Primary, Replica status via:
+You can list the current Redis Primary, Replica status by using:
 
 ```shell
 /opt/gitlab/embedded/bin/redis-cli -h <host> -a 'redis-password-goes-here' info replication
 ```
 
-Show running GitLab services via:
+Show running GitLab services by using:
 
 ```shell
 gitlab-ctl status
@@ -363,13 +360,11 @@ run: redis-exporter: (pid 30075) 76861s; run: log: (pid 29674) 76896s
 
 #### Configuring the replica Redis instances
 
-1. SSH into the **replica** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     and type (Community, Enterprise editions) of your current install.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the **replica** Redis server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -422,10 +417,9 @@ run: redis-exporter: (pid 30075) 76861s; run: log: (pid 29674) 76896s
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
-NOTE: **Note:**
-You can specify multiple roles like sentinel and Redis as:
-`roles ['redis_sentinel_role', 'redis_master_role']`.
-Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
+You can specify multiple roles, like sentinel and Redis, as:
+`roles ['redis_sentinel_role', 'redis_master_role']`. Read more about
+[roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
 a failover, as the nodes will be managed by the [Sentinels](#configure-consul-and-sentinel), and even after a
@@ -443,13 +437,6 @@ are supported and can be added if needed.
 
 ## Configure Consul and Sentinel
 
-NOTE: **Note:**
-If you are using an external Redis Sentinel instance, be sure
-to exclude the `requirepass` parameter from the Sentinel
-configuration. This parameter will cause clients to report `NOAUTH
-Authentication required.`. [Redis Sentinel 3.2.x does not support
-password authentication](https://github.com/antirez/redis/issues/3279).
-
 Now that the Redis servers are all set up, let's configure the Sentinel
 servers. The following IPs will be used as an example:
 
@@ -457,16 +444,19 @@ servers. The following IPs will be used as an example:
 - `10.6.0.12`: Consul/Sentinel 2
 - `10.6.0.13`: Consul/Sentinel 3
 
+NOTE: **Note:**
+If you're using an external Redis Sentinel instance, be sure to exclude the
+`requirepass` parameter from the Sentinel configuration. This parameter causes
+clients to report `NOAUTH Authentication required.`.
+[Redis Sentinel 3.2.x doesn't support password authentication](https://github.com/antirez/redis/issues/3279).
+
 To configure the Sentinel:
 
-1. SSH into the server that will host Consul/Sentinel.
-1. [Download/install](https://about.gitlab.com/install/) the
-   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
-   GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
-     the GitLab application is running.
-   - Do not complete any other steps on the download page.
-
+1. SSH in to the server that will host Consul/Sentinel.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Omnibus GitLab package, with the same version
+   and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -556,10 +546,9 @@ To configure the Sentinel:
 1. Go through the steps again for all the other Consul/Sentinel nodes, and
    make sure you set up the correct IPs.
 
-NOTE: **Note:**
-A Consul leader will be elected when the provisioning of the third Consul server is completed.
-Viewing the Consul logs `sudo gitlab-ctl tail consul` will display
-`...[INFO] consul: New leader elected: ...`
+A Consul leader is _elected_ when the provisioning of the third Consul server is
+complete. Viewing the Consul logs `sudo gitlab-ctl tail consul` displays
+`...[INFO] consul: New leader elected: ...`.
 
 You can list the current Consul members (server, client):
 
@@ -627,7 +616,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
 #### PostgreSQL primary node
 
-1. SSH into the PostgreSQL primary node.
+1. SSH in to the PostgreSQL primary node.
 1. Generate a password hash for the PostgreSQL username/password pair. This assumes you will use the default
    username of `gitlab` (recommended). The command will request a password
    and confirmation. Use the value that is output by this command in the next
@@ -812,7 +801,7 @@ are supported and can be added if needed.
 
 #### PostgreSQL post-configuration
 
-SSH into the **primary node**:
+SSH in to the **primary node**:
 
 1. Open a database prompt:
 
@@ -848,7 +837,7 @@ SSH into the **primary node**:
    is not an IP address, it will need to be a resolvable name (via DNS or
    `/etc/hosts`)
 
-SSH into the **secondary node**:
+SSH in to the **secondary node**:
 
 1. Set up the repmgr standby:
 
@@ -1069,51 +1058,48 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 ## Configure Gitaly
 
-Deploying Gitaly in its own server can benefit GitLab installations that are
-larger than a single machine.
+[Gitaly](../gitaly/index.md) server node requirements are dependent on data,
+specifically the number of projects and those projects' sizes. It's recommended
+that a Gitaly server node stores no more than 5 TB of data. Although this
+reference architecture includes a recommendation for the number of Gitaly server
+nodes to use, depending on your storage requirements, you may require additional
+Gitaly server nodes.
 
-The Gitaly node requirements are dependent on customer data, specifically the number of
-projects and their repository sizes. Two nodes are recommended as an absolute minimum.
-Each Gitaly node should store no more than 5TB of data and have the number of
-[`gitaly-ruby` workers](../gitaly/index.md#gitaly-ruby) set to 20% of available CPUs.
-Additional nodes should be considered in conjunction with a review of expected
-data size and spread based on the recommendations above.
+Due to Gitaly having notable input and output requirements, we strongly
+recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs should
+have a throughput of at least 8,000 input/output operations per second (IOPS)
+for read operations and 2,000 IOPS for write operations. These IOPS values are
+initial recommendations, and may be adjusted to greater or lesser values
+depending on the scale of your environment's workload. If you're running the
+environment on a Cloud provider, refer to their documentation about how to
+configure IOPS correctly.
 
-It is also strongly recommended that all Gitaly nodes be set up with SSD disks with
-a throughput of at least 8,000 IOPS for read operations and 2,000 IOPS for write,
-as Gitaly has heavy I/O. These IOPS values are recommended only as a starter as with
-time they may be adjusted higher or lower depending on the scale of your environment's workload.
-If you're running the environment on a Cloud provider, you may need to refer to
-their documentation on how to configure IOPS correctly.
+Be sure to note the following items:
 
-Some things to note:
-
-- The GitLab Rails application shards repositories into [repository storages](../repository_storage_paths.md).
-- A Gitaly server can host one or more storages.
-- A GitLab server can use one or more Gitaly servers.
-- Gitaly addresses must be specified in such a way that they resolve
-  correctly for ALL Gitaly clients.
+- The GitLab Rails application shards repositories into
+  [repository storage paths](../repository_storage_paths.md).
+- A Gitaly server can host one or more storage paths.
+- A GitLab server can use one or more Gitaly server nodes.
+- Gitaly addresses must be specified to be correctly resolvable for _all_
+  Gitaly clients.
 - Gitaly servers must not be exposed to the public internet, as Gitaly's network
   traffic is unencrypted by default. The use of a firewall is highly recommended
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-TIP: **Tip:**
-For more information about Gitaly's history and network architecture see the
-[standalone Gitaly documentation](../gitaly/index.md).
+NOTE: **Note:**
+The token referred to throughout the Gitaly documentation is an arbitrary
+password selected by the administrator. This token is unrelated to tokens
+created for the GitLab API or other similar web API tokens.
 
-Note: **Note:** The token referred to throughout the Gitaly documentation is
-just an arbitrary password selected by the administrator. It is unrelated to
-tokens created for the GitLab API or other similar web API tokens.
-
-Below we describe how to configure two Gitaly servers, with IPs and
-domain names:
+This section describes how to configure two Gitaly servers, with the following
+IPs and domain names:
 
 - `10.6.0.51`: Gitaly 1 (`gitaly1.internal`)
 - `10.6.0.52`: Gitaly 2 (`gitaly2.internal`)
 
-The secret token is assumed to be `gitalysecret` and that
-your GitLab installation has three repository storages:
+Assumptions about your servers include having the secret token be `gitalysecret`,
+and that your GitLab installation has three repository storages:
 
 - `default` on Gitaly 1
 - `storage1` on Gitaly 1
@@ -1121,11 +1107,11 @@ your GitLab installation has three repository storages:
 
 On each node:
 
-1. [Download/Install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page but
-   **without** providing the `EXTERNAL_URL` value.
-1. Edit `/etc/gitlab/gitlab.rb` to configure storage paths, enable
-   the network listener and configure the token:
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page, and _do not_ provide the `EXTERNAL_URL` value.
+1. Edit `/etc/gitlab/gitlab.rb` to configure the storage paths, enable
+   the network listener, and configure the token:
 
    <!--
    updates to following example must also be made at
@@ -1189,39 +1175,39 @@ On each node:
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
-   1. On `gitaly1.internal`:
+   - On `gitaly1.internal`:
 
-      ```ruby
-      git_data_dirs({
-        'default' => {
-          'path' => '/var/opt/gitlab/git-data'
-        },
-        'storage1' => {
-          'path' => '/mnt/gitlab/git-data'
-        },
-      })
-      ```
+     ```ruby
+     git_data_dirs({
+       'default' => {
+         'path' => '/var/opt/gitlab/git-data'
+       },
+       'storage1' => {
+         'path' => '/mnt/gitlab/git-data'
+       },
+     })
+     ```
 
-   1. On `gitaly2.internal`:
+   - On `gitaly2.internal`:
 
-      ```ruby
-      git_data_dirs({
-        'storage2' => {
-          'path' => '/mnt/gitlab/git-data'
-        },
-      })
-      ```
+     ```ruby
+     git_data_dirs({
+       'storage2' => {
+         'path' => '/mnt/gitlab/git-data'
+       },
+     })
+     ```
 
    <!--
    updates to following example must also be made at
    https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
    -->
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Confirm that Gitaly can perform callbacks to the internal API:
 
    ```shell
-   sudo /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
+   sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
    ```
 
 1. Verify the GitLab services are running:
@@ -1259,11 +1245,10 @@ Name. If you are addressing the Gitaly server by its IP address, you must add it
 as a Subject Alternative Name to the certificate.
 [gRPC does not support using an IP address as Common Name in a certificate](https://github.com/grpc/grpc/issues/2691).
 
-NOTE: **Note:**
-It is possible to configure Gitaly servers with both an
-unencrypted listening address `listen_addr` and an encrypted listening
-address `tls_listen_addr` at the same time. This allows you to do a
-gradual transition from unencrypted to encrypted traffic, if necessary.
+It's possible to configure Gitaly servers with both an unencrypted listening
+address (`listen_addr`) and an encrypted listening address (`tls_listen_addr`)
+at the same time. This allows you to do a gradual transition from unencrypted to
+encrypted traffic, if necessary.
 
 To configure Gitaly with TLS:
 
@@ -1317,10 +1302,10 @@ The following IPs will be used as an example:
 
 To configure the Sidekiq nodes, one each one:
 
-1. SSH into the Sidekiq server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab package
-you want using steps 1 and 2 from the GitLab downloads page.
-**Do not complete any other steps on the download page.**
+1. SSH in to the Sidekiq server.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Open `/etc/gitlab/gitlab.rb` with your editor:
 
    ```ruby
@@ -1431,14 +1416,14 @@ You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_proces
 
 ## Configure GitLab Rails
 
-NOTE: **Note:**
-In our architectures we run each GitLab Rails node using the Puma webserver
-and have its number of workers set to 90% of available CPUs along with four threads. For
-nodes that are running Rails with other components the worker value should be reduced
-accordingly where we've found 50% achieves a good balance but this is dependent
-on workload.
-
 This section describes how to configure the GitLab application (Rails) component.
+
+In our architecture, we run each GitLab Rails node using the Puma webserver, and
+have its number of workers set to 90% of available CPUs, with four threads. For
+nodes running Rails with other components, the worker value should be reduced
+accordingly. We've determined that a worker value of 50% achieves a good balance,
+but this is dependent on workload.
+
 On each node perform the following:
 
 1. If you're [using NFS](#configure-nfs-optional):
@@ -1466,10 +1451,10 @@ On each node perform the following:
       mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
       ```
 
-1. Download/install Omnibus GitLab using **steps 1 and 2** from
-   [GitLab downloads](https://about.gitlab.com/install/). Do not complete other
-   steps on the download page.
-1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
+1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
    to access GitLab. This would be the URL of the [external load balancer](#configure-the-external-load-balancer)
@@ -1582,6 +1567,11 @@ On each node perform the following:
    sudo gitlab-ctl tail gitaly
    ```
 
+1. Save the `/etc/gitlab/gitlab-secrets.json` file from one of the two
+   application nodes and install it on the other application node, the
+   [Gitaly node](#configure-gitaly) and the [Sidekiq node](#configure-sidekiq) and
+   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 1. Verify the GitLab services are running:
 
    ```shell
@@ -1600,12 +1590,10 @@ On each node perform the following:
    run: puma: (pid 4936) 8645s; run: log: (pid 29656) 79161s
    ```
 
-NOTE: **Note:**
-When you specify `https` in the `external_url`, as in the example
-above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
-certificates are not present, NGINX will fail to start. See the
-[NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-for more information.
+When you specify `https` in the `external_url`, as in the previous example,
+GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
+certificates aren't present, NGINX will fail to start. For more information, see
+the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
 
 ### GitLab Rails post-configuration
 
@@ -1615,12 +1603,11 @@ for more information.
    gitlab-rake gitlab:db:configure
    ```
 
-    NOTE: **Note:**
-    If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to
-    PostgreSQL it may be that your PgBouncer node's IP address is missing from
-    PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-    [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
-    in the Troubleshooting section before proceeding.
+   If you encounter a `rake aborted!` error message stating that PgBouncer is
+   failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
+   address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
+   on your database nodes. Before proceeding, see
+   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
@@ -1636,10 +1623,10 @@ The Omnibus GitLab package can be used to configure a standalone Monitoring node
 running [Prometheus](../monitoring/prometheus/index.md) and
 [Grafana](../monitoring/performance/grafana_configuration.md):
 
-1. SSH into the Monitoring node.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page.
-   Do not complete any other steps on the download page.
+1. SSH in to the Monitoring node.
+1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -1714,28 +1701,44 @@ It's recommended over [NFS](#configure-nfs-optional) and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
 and scalable.
 
-Object storage options that GitLab has tested, or is aware of customers using include:
+GitLab has been tested on a number of object storage providers:
 
-- SaaS/Cloud solutions such as [Amazon S3](https://aws.amazon.com/s3/), [Google cloud storage](https://cloud.google.com/storage).
+- [Amazon S3](https://aws.amazon.com/s3/)
+- [Google Cloud Storage](https://cloud.google.com/storage)
+- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
+- [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
+- [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
-- MinIO. There is [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
+- MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
-For configuring GitLab to use Object Storage refer to the following guides
-based on what features you intend to use:
+There are two ways of specifying object storage configuration in GitLab:
 
-1. Configure [object storage for backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
-1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
-   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
-1. Configure [object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. Configure [object storage for uploads](../uploads.md#using-object-storage).
-1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
-1. Configure [object storage for Container Registry](../packages/container_registry.md#use-object-storage) (optional feature).
-1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
-1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. Configure [object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. Configure [object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. Configure [object storage for autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional - for improved performance).
-1. Configure [object storage for Terraform state files](../terraform_state.md#using-object-storage).
+- [Consolidated form](../object_storage.md#consolidated-object-storage-configuration): A single credential is
+  shared by all supported object types.
+- [Storage-specific form](../object_storage.md#storage-specific-configuration): Every object defines its
+  own object storage [connection and configuration](../object_storage.md#connection-settings).
+
+Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
+
+For configuring object storage in GitLab 13.1 and earlier, or for storage types not
+supported by consolidated configuration form, refer to the following guides based
+on what features you intend to use:
+
+|Object storage type|Supported by consolidated configuration?|
+|-------------------|----------------------------------------|
+| [Backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage)|No|
+| [Job artifacts](../job_artifacts.md#using-object-storage) including archived job logs | Yes |
+| [LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
+| [Uploads](../uploads.md#using-object-storage) | Yes |
+| [Container Registry](../packages/container_registry.md#use-object-storage) (optional feature) | No |
+| [Merge request diffs](../merge_request_diffs.md#using-object-storage) | Yes |
+| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
+| [Packages](../packages/index.md#using-object-storage) (optional feature) | Yes |
+| [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
+| [Pseudonymizer](../pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
+| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
+| [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 
@@ -1752,6 +1755,22 @@ One risk of using a single bucket would be if your organization decided to
 migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
 backups might not be realized until the organization had a critical requirement for the backups to
 work.
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
+## Configure Advanced Search **(STARTER ONLY)**
+
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+for faster, more advanced code search across your entire GitLab instance.
+
+Elasticsearch cluster design and requirements are dependent on your specific
+data. For recommended best practices about how to set up your Elasticsearch
+cluster alongside your instance, read how to
+[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

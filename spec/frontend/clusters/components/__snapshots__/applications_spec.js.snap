@@ -94,7 +94,7 @@ exports[`Applications Prometheus application shows the correct description 1`] =
   Prometheus is an open-source monitoring system with 
   <a
     class="gl-link"
-    href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+    href="https://docs.gitlab.com/ee/user/project/integrations/prometheus.html"
     rel="noopener noreferrer"
     target="_blank"
   >

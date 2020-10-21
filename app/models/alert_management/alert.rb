@@ -20,18 +20,7 @@ module AlertManagement
       resolved: 2,
       ignored: 3
     }.freeze
-
-    STATUS_EVENTS = {
-      triggered: :trigger,
-      acknowledged: :acknowledge,
-      resolved: :resolve,
-      ignored: :ignore
-    }.freeze
-
-    OPEN_STATUSES = [
-      :triggered,
-      :acknowledged
-    ].freeze
+    private_constant :STATUSES
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -49,12 +38,16 @@ module AlertManagement
 
     sha_attribute :fingerprint
 
+    TITLE_MAX_LENGTH = 200
+    DESCRIPTION_MAX_LENGTH = 1_000
+    SERVICE_MAX_LENGTH = 100
+    TOOL_MAX_LENGTH = 100
     HOSTS_MAX_LENGTH = 255
 
-    validates :title,           length: { maximum: 200 }, presence: true
-    validates :description,     length: { maximum: 1_000 }
-    validates :service,         length: { maximum: 100 }
-    validates :monitoring_tool, length: { maximum: 100 }
+    validates :title,           length: { maximum: TITLE_MAX_LENGTH }, presence: true
+    validates :description,     length: { maximum: DESCRIPTION_MAX_LENGTH }
+    validates :service,         length: { maximum: SERVICE_MAX_LENGTH }
+    validates :monitoring_tool, length: { maximum: TOOL_MAX_LENGTH }
     validates :project,         presence: true
     validates :events,          presence: true
     validates :severity,        presence: true
@@ -65,7 +58,7 @@ module AlertManagement
       conditions: -> { not_resolved },
       message: -> (object, data) { _('Cannot have multiple unresolved alerts') }
     }, unless: :resolved?
-    validate :hosts_length
+    validate :hosts_format
 
     enum severity: {
       critical: 0,
@@ -121,12 +114,13 @@ module AlertManagement
     delegate :details_url, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
-    scope :for_status, -> (status) { where(status: status) }
+    scope :for_status, -> (status) { with_status(status) }
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
     scope :for_environment, -> (environment) { where(environment: environment) }
+    scope :for_assignee_username, -> (assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
-    scope :open, -> { with_status(OPEN_STATUSES) }
-    scope :not_resolved, -> { where.not(status: STATUSES[:resolved]) }
+    scope :open, -> { with_status(open_statuses) }
+    scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
@@ -142,12 +136,32 @@ module AlertManagement
     # Ascending sort order sorts statuses: Ignored > Resolved > Acknowledged > Triggered
     # Descending sort order sorts statuses: Triggered > Acknowledged > Resolved > Ignored
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
-    scope :order_status,        -> (sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
+    scope :order_status, -> (sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
 
-    scope :counts_by_status, -> { group(:status).count }
     scope :counts_by_project_id, -> { group(:project_id).count }
 
     alias_method :state, :status_name
+
+    def self.state_machine_statuses
+      @state_machine_statuses ||= state_machines[:status].states.to_h { |s| [s.name, s.value] }
+    end
+    private_class_method :state_machine_statuses
+
+    def self.status_value(name)
+      state_machine_statuses[name]
+    end
+
+    def self.status_name(raw_status)
+      state_machine_statuses.key(raw_status)
+    end
+
+    def self.counts_by_status
+      group(:status).count.transform_keys { |k| status_name(k) }
+    end
+
+    def self.status_names
+      @status_names ||= state_machine_statuses.keys
+    end
 
     def self.sort_by_attribute(method)
       case method.to_s
@@ -190,8 +204,25 @@ module AlertManagement
       reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
     end
 
+    def self.open_statuses
+      [:triggered, :acknowledged]
+    end
+
+    def self.open_status?(status)
+      open_statuses.include?(status)
+    end
+
+    def status_event_for(status)
+      self.class.state_machines[:status].events.transitions_for(self, to: status.to_s.to_sym).first&.event
+    end
+
+    def change_status_to(new_status)
+      event = status_event_for(new_status)
+      event && fire_status_event(event)
+    end
+
     def prometheus?
-      monitoring_tool == Gitlab::AlertManagement::AlertParams::MONITORING_TOOLS[:prometheus]
+      monitoring_tool == Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
     end
 
     def register_new_event!
@@ -224,10 +255,11 @@ module AlertManagement
       Gitlab::DataBuilder::Alert.build(self)
     end
 
-    def hosts_length
+    def hosts_format
       return unless hosts
 
       errors.add(:hosts, "hosts array is over #{HOSTS_MAX_LENGTH} chars") if hosts.join.length > HOSTS_MAX_LENGTH
+      errors.add(:hosts, "hosts array cannot be nested") if hosts.flatten != hosts
     end
   end
 end

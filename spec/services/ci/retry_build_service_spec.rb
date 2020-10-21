@@ -3,23 +3,30 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RetryBuildService do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline) do
     create(:ci_pipeline, project: project,
            sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
   end
 
-  let(:stage) do
+  let_it_be(:stage) do
     create(:ci_stage_entity, project: project,
                              pipeline: pipeline,
                              name: 'test')
   end
 
-  let(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
+  let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
+  let(:user) { developer }
 
   let(:service) do
     described_class.new(project, user)
+  end
+
+  before_all do
+    project.add_developer(developer)
+    project.add_reporter(reporter)
   end
 
   clone_accessors = described_class.clone_accessors
@@ -39,7 +46,8 @@ RSpec.describe Ci::RetryBuildService do
        job_variables waiting_for_resource_at job_artifacts_metrics_referee
        job_artifacts_network_referee job_artifacts_dotenv
        job_artifacts_cobertura needs job_artifacts_accessibility
-       job_artifacts_requirements job_artifacts_coverage_fuzzing].freeze
+       job_artifacts_requirements job_artifacts_coverage_fuzzing
+       job_artifacts_api_fuzzing].freeze
 
   ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections
@@ -53,9 +61,9 @@ RSpec.describe Ci::RetryBuildService do
        pipeline_id report_results pending_state pages_deployments].freeze
 
   shared_examples 'build duplication' do
-    let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
-    let(:build) do
+    let_it_be(:build) do
       create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
              :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
              description: 'my-job', stage: 'test', stage_id: stage.id,
@@ -63,7 +71,7 @@ RSpec.describe Ci::RetryBuildService do
              scheduled_at: 10.seconds.since)
     end
 
-    before do
+    before_all do
       # Test correctly behaviour of deprecated artifact because it can be still in use
       stub_feature_flags(drop_license_management_artifact: false)
 
@@ -81,8 +89,6 @@ RSpec.describe Ci::RetryBuildService do
 
       create(:ci_job_variable, job: build)
       create(:ci_build_need, build: build)
-
-      build.reload
     end
 
     describe 'clone accessors' do
@@ -154,7 +160,7 @@ RSpec.describe Ci::RetryBuildService do
 
   describe '#execute' do
     let(:new_build) do
-      Timecop.freeze(1.second.from_now) do
+      travel_to(1.second.from_now) do
         service.execute(build)
       end
     end
@@ -162,8 +168,6 @@ RSpec.describe Ci::RetryBuildService do
     context 'when user has ability to execute build' do
       before do
         stub_not_protect_default_branch
-
-        project.add_developer(user)
       end
 
       it_behaves_like 'build duplication'
@@ -235,7 +239,6 @@ RSpec.describe Ci::RetryBuildService do
 
       context 'when the pipeline is a child pipeline and the bridge is depended' do
         let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
-        let!(:pipeline) { create(:ci_pipeline, project: project) }
         let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: parent_pipeline, status: 'success') }
         let!(:source_pipeline) { create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge) }
 
@@ -248,6 +251,8 @@ RSpec.describe Ci::RetryBuildService do
     end
 
     context 'when user does not have ability to execute build' do
+      let(:user) { reporter }
+
       it 'raises an error' do
         expect { service.execute(build) }
           .to raise_error Gitlab::Access::AccessDeniedError
@@ -257,7 +262,7 @@ RSpec.describe Ci::RetryBuildService do
 
   describe '#reprocess' do
     let(:new_build) do
-      Timecop.freeze(1.second.from_now) do
+      travel_to(1.second.from_now) do
         service.reprocess!(build)
       end
     end
@@ -265,8 +270,6 @@ RSpec.describe Ci::RetryBuildService do
     context 'when user has ability to execute build' do
       before do
         stub_not_protect_default_branch
-
-        project.add_developer(user)
       end
 
       it_behaves_like 'build duplication'
@@ -316,6 +319,8 @@ RSpec.describe Ci::RetryBuildService do
     end
 
     context 'when user does not have ability to execute build' do
+      let(:user) { reporter }
+
       it 'raises an error' do
         expect { service.reprocess!(build) }
           .to raise_error Gitlab::Access::AccessDeniedError

@@ -108,11 +108,17 @@ const assignees = [
   },
 ];
 
-const labels = [
+export const labels = [
   {
     id: 'gid://gitlab/GroupLabel/5',
     title: 'Cosync',
     color: '#34ebec',
+    description: null,
+  },
+  {
+    id: 'gid://gitlab/GroupLabel/6',
+    title: 'Brock',
+    color: '#e082b6',
     description: null,
   },
 ];

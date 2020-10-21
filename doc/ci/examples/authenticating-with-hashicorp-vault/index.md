@@ -41,15 +41,14 @@ The JWT's payload looks like this:
   "nbf": 1585798372,                             # Not valid before
   "exp": 1585713886,                             # Expire at
   "sub": "job_1212",                             # Subject (job id)
-  "namespace_id": "1",
-  "namespace_path": "mygroup",
-  "project_id": "22",
-  "project_path": "mygroup/myproject",
-  "user_id": "42",
-  "user_login": "myuser",
-  "user_email": "myuser@example.com",
-  "pipeline_id": "1212",
-  "job_id": "1212",
+  "namespace_id": "1",                           # Use this to scope to group or user level namespace by id
+  "namespace_path": "mygroup",                   # Use this to scope to group or user level namespace by path
+  "project_id": "22",                            #
+  "project_path": "mygroup/myproject",           #
+  "user_id": "42",                               # Id of the user executing the job
+  "user_email": "myuser@example.com",            # Email of the user executing the job
+  "pipeline_id": "1212",                         #
+  "job_id": "1212",                              #
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job
   "ref_type": "branch",                          # Git ref type, branch or tag
   "ref_protected": "true"                        # true if this git ref is protected, false otherwise

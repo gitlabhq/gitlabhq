@@ -12,7 +12,7 @@ module ResolvesMergeRequests
 
   def resolve_with_lookahead(**args)
     mr_finder = MergeRequestsFinder.new(current_user, args.compact)
-    finder = Gitlab::Graphql::Loaders::IssuableLoader.new(project, mr_finder)
+    finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)
 
     select_result(finder.batching_find_all { |query| apply_lookahead(query) })
   end
@@ -29,6 +29,10 @@ module ResolvesMergeRequests
 
   private
 
+  def mr_parent
+    project
+  end
+
   def unconditional_includes
     [:target_project]
   end
@@ -40,7 +44,8 @@ module ResolvesMergeRequests
       author: [:author],
       merged_at: [:metrics],
       commit_count: [:metrics],
-      approved_by: [:approver_users],
+      diff_stats_summary: [:metrics],
+      approved_by: [:approved_by_users],
       milestone: [:milestone],
       head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }]
     }

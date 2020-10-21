@@ -73,7 +73,7 @@ RSpec.describe Gitlab::BackgroundMigration::MergeRequestAssigneesMigrationProgre
 
       described_class.new.perform
 
-      expect(Feature.enabled?(:multiple_merge_request_assignees)).to eq(true)
+      expect(Feature.enabled?(:multiple_merge_request_assignees, type: :licensed)).to eq(true)
     end
   end
 

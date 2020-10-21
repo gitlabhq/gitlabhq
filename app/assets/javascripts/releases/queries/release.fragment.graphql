@@ -1,0 +1,62 @@
+fragment Release on Release {
+  name
+  tagName
+  tagPath
+  descriptionHtml
+  releasedAt
+  upcomingRelease
+  assets {
+    count
+    sources {
+      nodes {
+        format
+        url
+      }
+    }
+    links {
+      nodes {
+        id
+        name
+        url
+        directAssetUrl
+        linkType
+        external
+      }
+    }
+  }
+  evidences {
+    nodes {
+      filepath
+      collectedAt
+      sha
+    }
+  }
+  links {
+    editUrl
+    issuesUrl
+    mergeRequestsUrl
+    selfUrl
+  }
+  commit {
+    sha
+    webUrl
+    title
+  }
+  author {
+    webUrl
+    avatarUrl
+    username
+  }
+  milestones {
+    nodes {
+      id
+      title
+      description
+      webPath
+      stats {
+        totalIssuesCount
+        closedIssuesCount
+      }
+    }
+  }
+}

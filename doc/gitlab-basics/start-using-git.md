@@ -323,18 +323,24 @@ to work on a different **branch**.
 
 When you create a branch in a Git repository, you make a copy of its files at the time of branching. You're free
 to do whatever you want with the code in your branch without impacting the main branch or other branches. And when
-you're ready to bring your changes to the main codebase, you can merge your branch into the main one
+you're ready to bring your changes to the main codebase, you can merge your branch into the default branch
 used in your project (such as `master`).
+
+A new branch is often called **feature branch** to differentiate from the
+**default branch**.
 
 ### Create a branch
 
-To create a new branch, to work from without affecting the `master` branch, type
-the following (spaces won't be recognized in the branch name, so you will need to
-use a hyphen or underscore):
+To create a new feature branch and work from without affecting the `master`
+branch:
 
 ```shell
 git checkout -b <name-of-branch>
 ```
+
+Note that Git does **not** accept empty spaces and special characters in branch
+names, so use only lowercase letters, numbers, hyphens (`-`), and underscores
+(`_`). Do not use capital letters, as it may cause duplications.
 
 ### Switch to the master branch
 
@@ -411,6 +417,9 @@ For example, to push your local commits to the _`master`_ branch of the _`origin
 git push origin master
 ```
 
+On certain occasions, Git won't allow you to push to your repository, and then
+you'll need to [force an update](../topics/git/git_rebase.md#force-push).
+
 NOTE: **Note:**
 To create a merge request from a fork to an upstream repository, see the
 [forking workflow](../user/project/repository/forking_workflow.md).
@@ -458,6 +467,10 @@ the master branch, you `merge` the two together:
 git checkout <name-of-branch>
 git merge master
 ```
+
+## Advanced use of Git through the command line
+
+For an introduction of more advanced Git techniques, see [Git rebase, force-push, and merge conflicts](../topics/git/git_rebase.md).
 
 ## Synchronize changes in a forked repository with the upstream
 

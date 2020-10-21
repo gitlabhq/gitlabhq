@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::Search::RecentIssues do
-  def create_item(content:, project:)
-    create(:issue, title: content, project: project)
+  let(:parent_type) { :project }
+
+  def create_item(content:, parent:)
+    create(:issue, title: content, project: parent)
   end
 
   it_behaves_like 'search recent items'

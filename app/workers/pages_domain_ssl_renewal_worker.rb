@@ -4,6 +4,7 @@ class PagesDomainSslRenewalWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :pages
+  tags :requires_disk_io
 
   def perform(domain_id)
     domain = PagesDomain.find_by_id(domain_id)

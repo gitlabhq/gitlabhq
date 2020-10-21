@@ -12,7 +12,7 @@
       .timeline-entry-inner
         .flash-container.timeline-content
 
-        .timeline-icon.d-none.d-sm-none.d-md-block
+        .timeline-icon.d-none.d-md-block
           %a.author-link{ href: user_path(current_user) }
             = image_tag avatar_icon_for_user(current_user), alt: current_user.to_reference, class: 'avatar s40'
         .timeline-content.timeline-content-form

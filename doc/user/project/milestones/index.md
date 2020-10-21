@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Milestones
 
-## Overview
-
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
 
 Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.
@@ -152,7 +150,7 @@ There are also tabs below these that show the following:
 
 For project milestones in [GitLab Starter](https://about.gitlab.com/pricing/), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
-![burndown chart](img/burndown_chart.png)
+![burndown chart](img/burndown_chart_v13_5.png)
 
 ### Group Burndown Charts **(STARTER)**
 

@@ -52,22 +52,13 @@ module Ci
     attr_reader :job, :project
 
     def validate_requirements(artifact_type:, filesize:)
-      return forbidden_type_error(artifact_type) if forbidden_type?(artifact_type)
       return too_large_error if too_large?(artifact_type, filesize)
 
       success
     end
 
-    def forbidden_type?(type)
-      lsif?(type) && !code_navigation_enabled?
-    end
-
     def too_large?(type, size)
       size > max_size(type) if size
-    end
-
-    def code_navigation_enabled?
-      Feature.enabled?(:code_navigation, project, default_enabled: true)
     end
 
     def lsif?(type)

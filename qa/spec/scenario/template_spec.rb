@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Scenario::Template do
+RSpec.describe QA::Scenario::Template do
   let(:feature) { spy('Runtime::Feature') }
   let(:release) { spy('Runtime::Release') }
 

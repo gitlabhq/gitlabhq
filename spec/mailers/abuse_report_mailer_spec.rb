@@ -7,7 +7,7 @@ RSpec.describe AbuseReportMailer do
 
   describe '.notify' do
     before do
-      stub_application_setting(admin_notification_email: 'admin@example.com')
+      stub_application_setting(abuse_notification_email: 'admin@example.com')
     end
 
     let(:report) { create(:abuse_report) }
@@ -17,8 +17,8 @@ RSpec.describe AbuseReportMailer do
     it_behaves_like 'appearance header and footer enabled'
     it_behaves_like 'appearance header and footer not enabled'
 
-    context 'with admin_notification_email set' do
-      it 'sends to the admin_notification_email' do
+    context 'with abuse_notification_email set' do
+      it 'sends to the abuse_notification_email' do
         is_expected.to deliver_to 'admin@example.com'
       end
 
@@ -27,9 +27,9 @@ RSpec.describe AbuseReportMailer do
       end
     end
 
-    context 'with no admin_notification_email set' do
+    context 'with no abuse_notification_email set' do
       it 'returns early' do
-        stub_application_setting(admin_notification_email: nil)
+        stub_application_setting(abuse_notification_email: nil)
 
         expect { described_class.notify(spy).deliver_now }
           .not_to change { ActionMailer::Base.deliveries.count }

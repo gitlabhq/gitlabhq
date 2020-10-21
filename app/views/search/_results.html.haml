@@ -1,7 +1,7 @@
 - if @search_objects.to_a.empty?
+  = render partial: "search/results/filters"
   = render partial: "search/results/empty"
   = render_if_exists 'shared/promotions/promote_advanced_search'
-  = render_if_exists 'search/form_revert_to_basic'
 - else
   .row-content-block.d-md-flex.text-left.align-items-center
     - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
@@ -10,10 +10,9 @@
       - if @project
         - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1')
         - if @scope == 'blobs'
-          - repository_ref = params[:repository_ref].to_s.presence || @project.default_branch
           = s_("SearchCodeResults|in")
           .mx-md-1
-            = render partial: "shared/ref_switcher", locals: { ref: repository_ref, form_path: request.fullpath, field_name: 'repository_ref' }
+            = render partial: "shared/ref_switcher", locals: { ref: repository_ref(@project), form_path: request.fullpath, field_name: 'repository_ref' }
           = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
         - else
           = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
@@ -21,8 +20,7 @@
         - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
         = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
   = render_if_exists 'shared/promotions/promote_advanced_search'
-
-  #js-search-filter-by-state{ 'v-cloak': true, data: { scope: @scope, state: params[:state] } }
+  = render partial: "search/results/filters"
 
   .results.gl-mt-3
     - if @scope == 'commits'
@@ -34,7 +32,7 @@
           .term
             = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
         - else
-          = render partial: "search/results/#{@scope.singularize}", collection: @search_objects
+          = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
     - if @scope != 'projects'
       = paginate_collection(@search_objects)

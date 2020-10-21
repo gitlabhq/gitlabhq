@@ -4,6 +4,7 @@ export const designListQueryResponse = {
       id: '1',
       issue: {
         designCollection: {
+          copyState: 'READY',
           designs: {
             nodes: [
               {
@@ -46,6 +47,34 @@ export const designListQueryResponse = {
           },
         },
       },
+    },
+  },
+};
+
+export const designUploadMutationCreatedResponse = {
+  data: {
+    designManagementUpload: {
+      designs: [
+        {
+          id: '1',
+          event: 'CREATION',
+          filename: 'fox_1.jpg',
+        },
+      ],
+    },
+  },
+};
+
+export const designUploadMutationUpdatedResponse = {
+  data: {
+    designManagementUpload: {
+      designs: [
+        {
+          id: '1',
+          event: 'MODIFICATION',
+          filename: 'fox_1.jpg',
+        },
+      ],
     },
   },
 };

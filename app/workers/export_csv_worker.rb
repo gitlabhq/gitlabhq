@@ -15,8 +15,6 @@ class ExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
     params[:project_id] = project_id
     params.delete(:sort)
 
-    issues = IssuesFinder.new(@current_user, params).execute
-
-    Issues::ExportCsvService.new(issues, @project).email(@current_user)
+    IssuableExportCsvWorker.perform_async(:issue, @current_user.id, @project.id, params)
   end
 end

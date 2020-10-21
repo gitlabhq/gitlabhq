@@ -2,7 +2,7 @@
   %td
     - if trigger.has_token_exposed?
       %span= trigger.token
-      = clipboard_button(text: trigger.token, title: _("Copy trigger token"))
+      = clipboard_button(text: trigger.token, title: _("Copy trigger token"), testid: 'clipboard-btn')
     - else
       %span= trigger.short_token
 
@@ -33,5 +33,5 @@
       = link_to edit_project_trigger_path(@project, trigger), method: :get, title: "Edit", class: "btn btn-default btn-sm" do
         = sprite_icon('pencil')
     - if can?(current_user, :manage_trigger, trigger)
-      = link_to project_trigger_path(@project, trigger), data: { confirm: revoke_trigger_confirmation }, method: :delete, title: "Revoke", class: "btn btn-default btn-warning btn-sm btn-trigger-revoke" do
+      = link_to project_trigger_path(@project, trigger), data: { confirm: revoke_trigger_confirmation, testid: 'trigger_revoke_button' }, method: :delete, title: "Revoke", class: "btn btn-default btn-warning btn-sm btn-trigger-revoke" do
         = sprite_icon('remove')

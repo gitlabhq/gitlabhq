@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
+import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
 import {
   EDITOR_TYPES,
   EDITOR_HEIGHT,
@@ -12,6 +13,7 @@ import {
   addCustomEventListener,
   removeCustomEventListener,
   addImage,
+  insertVideo,
   registerHTMLToMarkdownRenderer,
   getEditorOptions,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
@@ -21,6 +23,7 @@ jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service',
   addCustomEventListener: jest.fn(),
   removeCustomEventListener: jest.fn(),
   addImage: jest.fn(),
+  insertVideo: jest.fn(),
   registerHTMLToMarkdownRenderer: jest.fn(),
   getEditorOptions: jest.fn(),
 }));
@@ -32,6 +35,7 @@ describe('Rich Content Editor', () => {
   const imageRoot = 'path/to/root/';
   const findEditor = () => wrapper.find({ ref: 'editor' });
   const findAddImageModal = () => wrapper.find(AddImageModal);
+  const findInsertVideoModal = () => wrapper.find(InsertVideoModal);
 
   const buildWrapper = () => {
     wrapper = shallowMount(RichContentEditor, {
@@ -122,6 +126,14 @@ describe('Rich Content Editor', () => {
       );
     });
 
+    it('adds the CUSTOM_EVENTS.openInsertVideoModal custom event listener', () => {
+      expect(addCustomEventListener).toHaveBeenCalledWith(
+        wrapper.vm.editorApi,
+        CUSTOM_EVENTS.openInsertVideoModal,
+        wrapper.vm.onOpenInsertVideoModal,
+      );
+    });
+
     it('registers HTML to markdown renderer', () => {
       expect(registerHTMLToMarkdownRenderer).toHaveBeenCalledWith(wrapper.vm.editorApi);
     });
@@ -139,6 +151,16 @@ describe('Rich Content Editor', () => {
         wrapper.vm.editorApi,
         CUSTOM_EVENTS.openAddImageModal,
         wrapper.vm.onOpenAddImageModal,
+      );
+    });
+
+    it('removes the CUSTOM_EVENTS.openInsertVideoModal custom event listener', () => {
+      wrapper.vm.$destroy();
+
+      expect(removeCustomEventListener).toHaveBeenCalledWith(
+        wrapper.vm.editorApi,
+        CUSTOM_EVENTS.openInsertVideoModal,
+        wrapper.vm.onOpenInsertVideoModal,
       );
     });
   });
@@ -159,6 +181,25 @@ describe('Rich Content Editor', () => {
 
       findAddImageModal().vm.$emit('addImage', mockImage);
       expect(addImage).toHaveBeenCalledWith(mockInstance, mockImage);
+    });
+  });
+
+  describe('insert video modal', () => {
+    beforeEach(() => {
+      buildWrapper();
+    });
+
+    it('renders an insertVideoModal component', () => {
+      expect(findInsertVideoModal().exists()).toBe(true);
+    });
+
+    it('calls the onInsertVideo method when the insertVideo event is emitted', () => {
+      const mockUrl = 'https://www.youtube.com/embed/someId';
+      const mockInstance = { exec: jest.fn() };
+      wrapper.vm.$refs.editor = mockInstance;
+
+      findInsertVideoModal().vm.$emit('insertVideo', mockUrl);
+      expect(insertVideo).toHaveBeenCalledWith(mockInstance, mockUrl);
     });
   });
 });

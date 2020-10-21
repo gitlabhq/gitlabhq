@@ -7,7 +7,7 @@ class AddForeignKeyToProjectIdOnBuildReportResults < ActiveRecord::Migration[6.0
 
   def up
     with_lock_retries do
-      add_foreign_key :ci_build_report_results, :projects, column: :project_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :ci_build_report_results, :projects, column: :project_id, on_delete: :cascade
     end
   end
 

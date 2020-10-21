@@ -1,5 +1,3 @@
-.monaco-editor.gl-editor-lite {
-  .line-numbers {
-    @include gl-pt-0;
-  }
+[id^='editor-lite-'] {
+  height: 500px;
 }

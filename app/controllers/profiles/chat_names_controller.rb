@@ -4,6 +4,8 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   before_action :chat_name_token, only: [:new]
   before_action :chat_name_params, only: [:new, :create, :deny]
 
+  feature_category :users
+
   def index
     @chat_names = current_user.chat_names
   end

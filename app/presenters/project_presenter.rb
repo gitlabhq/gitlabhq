@@ -65,14 +65,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     if can?(current_user, :download_code, project)
       user_view
-    elsif user_view == "activity"
-      "activity"
-    elsif can?(current_user, :read_wiki, project)
-      "wiki"
-    elsif feature_available?(:issues, current_user)
-      "projects/issues/issues"
+    elsif user_view == 'activity'
+      'activity'
+    elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
+      'wiki'
+    elsif can?(current_user, :read_issue, project)
+      'projects/issues/issues'
     else
-      "customize_workflow"
+      'activity'
     end
   end
 
@@ -106,24 +106,36 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     add_special_file_path(file_name: 'LICENSE')
   end
 
+  def add_license_ide_path
+    ide_edit_path(project, default_branch_or_master, 'LICENSE')
+  end
+
   def add_changelog_path
     add_special_file_path(file_name: 'CHANGELOG')
+  end
+
+  def add_changelog_ide_path
+    ide_edit_path(project, default_branch_or_master, 'CHANGELOG')
   end
 
   def add_contribution_guide_path
     add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add CONTRIBUTING')
   end
 
+  def add_contribution_guide_ide_path
+    ide_edit_path(project, default_branch_or_master, 'CONTRIBUTING.md')
+  end
+
   def add_ci_yml_path
     add_special_file_path(file_name: ci_config_path_or_default)
   end
 
-  def add_ci_yml_ide_path
-    ide_edit_path(project, default_branch_or_master, ci_config_path_or_default)
-  end
-
   def add_readme_path
     add_special_file_path(file_name: 'README.md')
+  end
+
+  def add_readme_ide_path
+    ide_edit_path(project, default_branch_or_master, 'README.md')
   end
 
   def license_short_name
@@ -222,9 +234,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def new_file_anchor_data
     if current_user && can_current_user_push_to_default_branch?
+      new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_master) : project_new_blob_path(project, default_branch_or_master)
+
       AnchorData.new(false,
                      statistic_icon + _('New file'),
-                     project_new_blob_path(project, default_branch_or_master),
+                     new_file_path,
                      'missing')
     end
   end
@@ -233,7 +247,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
       AnchorData.new(false,
                      statistic_icon + _('Add README'),
-                     add_readme_path)
+                     empty_repo? ? add_readme_ide_path : add_readme_path)
     elsif repository.readme
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('README'),
@@ -247,7 +261,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
       AnchorData.new(false,
                      statistic_icon + _('Add CHANGELOG'),
-                     add_changelog_path)
+                     empty_repo? ? add_changelog_ide_path : add_changelog_path)
     elsif repository.changelog.present?
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CHANGELOG'),
@@ -268,7 +282,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       if current_user && can_current_user_push_to_default_branch?
         AnchorData.new(false,
                        content_tag(:span, statistic_icon + _('Add LICENSE'), class: 'add-license-link d-flex'),
-                       add_license_path)
+                       empty_repo? ? add_license_ide_path : add_license_path)
       else
         AnchorData.new(false,
                        icon + content_tag(:span, _('No license. All rights reserved'), class: 'project-stat-value'),
@@ -281,7 +295,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
       AnchorData.new(false,
                      statistic_icon + _('Add CONTRIBUTING'),
-                     add_contribution_guide_path)
+                     empty_repo? ? add_contribution_guide_ide_path : add_contribution_guide_path)
     elsif repository.contribution_guide.present?
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CONTRIBUTING'),
@@ -330,7 +344,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if cicd_missing?
       AnchorData.new(false,
                      statistic_icon + _('Set up CI/CD'),
-                     add_ci_yml_ide_path)
+                     add_ci_yml_path)
     elsif repository.gitlab_ci_yml.present?
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CI/CD configuration'),
@@ -393,6 +407,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def anonymous_project_view
     if !project.empty_repo? && can?(current_user, :download_code, project)
       'files'
+    elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
+      'wiki'
+    elsif can?(current_user, :read_issue, project)
+      'projects/issues/issues'
     else
       'activity'
     end

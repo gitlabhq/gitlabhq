@@ -3,6 +3,8 @@
 module Packages
   module Composer
     class ComposerJsonService
+      InvalidJson = Class.new(StandardError)
+
       def initialize(project, target)
         @project, @target = project, target
       end
@@ -20,11 +22,11 @@ module Packages
 
         Gitlab::Json.parse(composer_file.data)
       rescue JSON::ParserError
-        raise 'Could not parse composer.json file. Invalid JSON.'
+        raise InvalidJson, 'Could not parse composer.json file. Invalid JSON.'
       end
 
       def composer_file_not_found!
-        raise 'The file composer.json was not found.'
+        raise InvalidJson, 'The file composer.json was not found.'
       end
     end
   end

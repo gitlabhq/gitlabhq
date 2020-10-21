@@ -37,6 +37,8 @@ RSpec.describe 'Updating a Snippet' do
     graphql_mutation_response(:update_snippet)
   end
 
+  subject { post_graphql_mutation(mutation, current_user: current_user) }
+
   shared_examples 'graphql update actions' do
     context 'when the user does not have permission' do
       let(:current_user) { create(:user) }
@@ -46,14 +48,14 @@ RSpec.describe 'Updating a Snippet' do
 
       it 'does not update the Snippet' do
         expect do
-          post_graphql_mutation(mutation, current_user: current_user)
+          subject
         end.not_to change { snippet.reload }
       end
     end
 
     context 'when the user has permission' do
       it 'updates the snippet record' do
-        post_graphql_mutation(mutation, current_user: current_user)
+        subject
 
         expect(snippet.reload.title).to eq(updated_title)
       end
@@ -65,7 +67,7 @@ RSpec.describe 'Updating a Snippet' do
         expect(blob_to_update.data).not_to eq updated_content
         expect(blob_to_delete).to be_present
 
-        post_graphql_mutation(mutation, current_user: current_user)
+        subject
 
         blob_to_update = blob_at(updated_file)
         blob_to_delete = blob_at(deleted_file)
@@ -73,12 +75,17 @@ RSpec.describe 'Updating a Snippet' do
         aggregate_failures do
           expect(blob_to_update.data).to eq updated_content
           expect(blob_to_delete).to be_nil
-          expect(blob_in_mutation_response(updated_file)['plainData']).to match(updated_content)
           expect(mutation_response['snippet']['title']).to eq(updated_title)
           expect(mutation_response['snippet']['description']).to eq(updated_description)
           expect(mutation_response['snippet']['visibilityLevel']).to eq('public')
         end
       end
+
+      it_behaves_like 'can raise spam flag' do
+        let(:service) { Snippets::UpdateService }
+      end
+
+      it_behaves_like 'spam flag is present'
 
       context 'when there are ActiveRecord validation errors' do
         let(:updated_title) { '' }
@@ -86,7 +93,7 @@ RSpec.describe 'Updating a Snippet' do
         it_behaves_like 'a mutation that returns errors in the response', errors: ["Title can't be blank"]
 
         it 'does not update the Snippet' do
-          post_graphql_mutation(mutation, current_user: current_user)
+          subject
 
           expect(snippet.reload.title).to eq(original_title)
         end
@@ -95,21 +102,21 @@ RSpec.describe 'Updating a Snippet' do
           blob_to_update = blob_at(updated_file)
           blob_to_delete = blob_at(deleted_file)
 
-          post_graphql_mutation(mutation, current_user: current_user)
+          subject
 
           aggregate_failures do
             expect(blob_at(updated_file).data).to eq blob_to_update.data
             expect(blob_at(deleted_file).data).to eq blob_to_delete.data
-            expect(blob_in_mutation_response(deleted_file)['plainData']).not_to be_nil
             expect(mutation_response['snippet']['title']).to eq(original_title)
             expect(mutation_response['snippet']['description']).to eq(original_description)
             expect(mutation_response['snippet']['visibilityLevel']).to eq('private')
           end
         end
-      end
 
-      def blob_in_mutation_response(filename)
-        mutation_response['snippet']['blobs'].select { |blob| blob['name'] == filename }[0]
+        it_behaves_like 'spam flag is present'
+        it_behaves_like 'can raise spam flag' do
+          let(:service) { Snippets::UpdateService }
+        end
       end
 
       def blob_at(filename)
@@ -150,7 +157,7 @@ RSpec.describe 'Updating a Snippet' do
 
     context 'when the author is not a member of the project' do
       it 'returns an an error' do
-        post_graphql_mutation(mutation, current_user: current_user)
+        subject
         errors = json_response['errors']
 
         expect(errors.first['message']).to eq(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
@@ -168,7 +175,7 @@ RSpec.describe 'Updating a Snippet' do
         it 'returns an an error' do
           project.project_feature.update_attribute(:snippets_access_level, ProjectFeature::DISABLED)
 
-          post_graphql_mutation(mutation, current_user: current_user)
+          subject
           errors = json_response['errors']
 
           expect(errors.first['message']).to eq(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)

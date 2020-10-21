@@ -85,7 +85,7 @@ Host Security (Falco) are deployed with this model.
 
 To deploy GitLab Managed Apps to your cluster, you must first
 [add your cluster](add_remove_clusters.md)
-to GitLab. Then [install](../../clusters/applications.md#installing-applications)
+to GitLab. Then [install](../../clusters/applications.md#install-with-one-click)
 the Web Application Firewall from the project or group Kubernetes page.
 
 Note that your project doesn't have to be hosted or deployed through GitLab. You can manage a

@@ -5,8 +5,10 @@ module Gitlab
     class DiffStitcher
       include Enumerable
 
-      def initialize(rpc_response)
-        @rpc_response = rpc_response
+      delegate :size, to: :rpc_response
+
+      def initialize(rpc_response_param)
+        @rpc_response = rpc_response_param
       end
 
       def each
@@ -31,6 +33,10 @@ module Gitlab
           end
         end
       end
+
+      private
+
+      attr_reader :rpc_response
     end
   end
 end

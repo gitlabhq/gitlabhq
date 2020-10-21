@@ -212,9 +212,13 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#track_usage_event' do
     let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
-    let(:event_name) { 'my_event' }
+    let(:event_name) { 'incident_management_alert_status_changed' }
     let(:unknown_event) { 'unknown' }
     let(:feature) { "usage_data_#{event_name}" }
+
+    before do
+      skip_feature_flags_yaml_validation
+    end
 
     context 'with feature enabled' do
       before do
@@ -222,23 +226,12 @@ RSpec.describe Gitlab::Utils::UsageData do
       end
 
       it 'tracks redis hll event' do
-        stub_application_setting(usage_ping_enabled: true)
-
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(value, event_name)
 
         described_class.track_usage_event(event_name, value)
       end
 
-      it 'does not track event when usage ping is not enabled' do
-        stub_application_setting(usage_ping_enabled: false)
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-        described_class.track_usage_event(event_name, value)
-      end
-
       it 'raise an error for unknown event' do
-        stub_application_setting(usage_ping_enabled: true)
-
         expect { described_class.track_usage_event(unknown_event, value) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
       end
     end

@@ -372,7 +372,7 @@ RSpec.describe 'Environments page', :js do
       let(:role) { :developer }
 
       it 'developer creates a new environment with a valid name' do
-        within(".top-area") { click_link 'New environment' }
+        within(".environments-section") { click_link 'New environment' }
         fill_in('Name', with: 'production')
         click_on 'Save'
 
@@ -380,7 +380,7 @@ RSpec.describe 'Environments page', :js do
       end
 
       it 'developer creates a new environmetn with invalid name' do
-        within(".top-area") { click_link 'New environment' }
+        within(".environments-section") { click_link 'New environment' }
         fill_in('Name', with: 'name,with,commas')
         click_on 'Save'
 

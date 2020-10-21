@@ -5,7 +5,7 @@ module Gitlab
   module Marginalia
     module ActiveRecordInstrumentation
       def annotate_sql(sql)
-        Gitlab::Marginalia.cached_feature_enabled? ? super(sql) : sql
+        Gitlab::Marginalia.enabled ? super(sql) : sql
       end
     end
   end

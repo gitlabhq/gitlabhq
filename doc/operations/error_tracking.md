@@ -20,10 +20,8 @@ You can sign up to the cloud hosted <https://sentry.io>, deploy your own [on-pre
 
 ### Enabling Sentry
 
-NOTE: **Note:**
-You will need at least Maintainer [permissions](../user/permissions.md) to enable the Sentry integration.
-
-GitLab provides an easy way to connect Sentry to your project:
+GitLab provides an easy way to connect Sentry to your project. You will need at
+least Maintainer [permissions](../user/permissions.md) to enable the Sentry integration.
 
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
 1. [Create](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
@@ -46,10 +44,8 @@ You may also want to enable Sentry's GitLab integration by following the steps i
 
 ## Error Tracking List
 
-NOTE: **Note:**
-You will need at least Reporter [permissions](../user/permissions.md) to view the Error Tracking list.
-
-You can find the Error Tracking list at **Operations > Error Tracking** in your project's sidebar.
+Users with at least Reporter [permissions](../user/permissions.md)
+can find the Error Tracking list at **Operations > Error Tracking** in your project's sidebar.
 Here, you can filter errors by title or by status (one of Ignored , Resolved, or Unresolved) and sort in descending order by Frequency, First Seen, or Last Seen. By default, the error list is ordered by Last Seen and filtered to Unresolved errors.
 
 ![Error Tracking list](img/error_tracking_list_v12_6.png)

@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Prometheus::Queries::DeploymentQuery do
 
   around do |example|
     time_without_subsecond_values = Time.local(2008, 9, 1, 12, 0, 0)
-    Timecop.freeze(time_without_subsecond_values) { example.run }
+    travel_to(time_without_subsecond_values) { example.run }
   end
 
   it 'sends appropriate queries to prometheus' do

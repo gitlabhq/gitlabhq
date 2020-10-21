@@ -2436,7 +2436,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#retry_failed' do
-    let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+    let(:latest_status) { pipeline.latest_statuses.pluck(:status) }
 
     before do
       stub_not_protect_default_branch
@@ -2984,6 +2984,57 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         expect { subject }.not_to change { Ci::Ref.count }
 
         expect(pipeline.ci_ref).to be_present
+      end
+    end
+  end
+
+  describe '#builds_in_self_and_descendants' do
+    subject(:builds) { pipeline.builds_in_self_and_descendants }
+
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:build) { create(:ci_build, pipeline: pipeline) }
+
+    context 'when pipeline is standalone' do
+      it 'returns the list of builds' do
+        expect(builds).to contain_exactly(build)
+      end
+    end
+
+    context 'when pipeline is parent of another pipeline' do
+      let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:child_build) { create(:ci_build, pipeline: child_pipeline) }
+
+      it 'returns the list of builds' do
+        expect(builds).to contain_exactly(build, child_build)
+      end
+    end
+
+    context 'when pipeline is parent of another parent pipeline' do
+      let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let!(:child_build) { create(:ci_build, pipeline: child_pipeline) }
+      let(:child_of_child_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
+      let!(:child_of_child_build) { create(:ci_build, pipeline: child_of_child_pipeline) }
+
+      it 'returns the list of builds' do
+        expect(builds).to contain_exactly(build, child_build, child_of_child_build)
+      end
+    end
+  end
+
+  describe '#build_with_artifacts_in_self_and_descendants' do
+    let!(:build) { create(:ci_build, name: 'test', pipeline: pipeline) }
+    let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+    let!(:child_build) { create(:ci_build, :artifacts, name: 'test', pipeline: child_pipeline) }
+
+    it 'returns the build with a given name, having artifacts' do
+      expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(child_build)
+    end
+
+    context 'when same job name is present in both parent and child pipeline' do
+      let!(:build) { create(:ci_build, :artifacts, name: 'test', pipeline: pipeline) }
+
+      it 'returns the job in the parent pipeline' do
+        expect(pipeline.build_with_artifacts_in_self_and_descendants('test')).to eq(build)
       end
     end
   end
@@ -3627,6 +3678,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       expect(builds).to include(rspec, jest)
       expect(builds).not_to include(karma)
+    end
+
+    it 'returns only latest builds' do
+      obsolete = create(:ci_build, name: "jest", coverage: 10.12, pipeline: pipeline, retried: true)
+      retried  = create(:ci_build, name: "jest", coverage: 20.11, pipeline: pipeline)
+
+      builds = pipeline.builds_with_coverage
+
+      expect(builds).to include(retried)
+      expect(builds).not_to include(obsolete)
     end
   end
 

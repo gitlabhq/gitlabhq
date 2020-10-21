@@ -2,7 +2,7 @@
 
 module API
   module Ci
-    class PipelineSchedules < Grape::API::Instance
+    class PipelineSchedules < ::API::Base
       include PaginationParams
 
       before { authenticate! }

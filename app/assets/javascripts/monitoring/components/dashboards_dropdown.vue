@@ -80,11 +80,7 @@ export default {
   >
     <div class="d-flex flex-column overflow-hidden">
       <gl-dropdown-section-header>{{ __('Dashboard') }}</gl-dropdown-section-header>
-      <gl-search-box-by-type
-        ref="monitorDashboardsDropdownSearch"
-        v-model="searchTerm"
-        class="gl-m-3"
-      />
+      <gl-search-box-by-type ref="monitorDashboardsDropdownSearch" v-model="searchTerm" />
 
       <div class="flex-fill overflow-auto">
         <gl-dropdown-item

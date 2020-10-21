@@ -1,0 +1,5 @@
+---
+title: Update pypi install command to work with external dependencies
+merge_request: 42916
+author:
+type: changed

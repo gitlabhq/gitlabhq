@@ -4,6 +4,8 @@ class Admin::IdentitiesController < Admin::ApplicationController
   before_action :user
   before_action :identity, except: [:index, :new, :create]
 
+  feature_category :authentication_and_authorization
+
   def new
     @identity = Identity.new
   end

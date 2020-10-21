@@ -1,0 +1,22 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required" : [
+      "name",
+      "id",
+      "environment_scope",
+      "active"
+    ],
+    "properties" : {
+      "name": { "type": "string" },
+      "id": { "type": "integer" },
+      "environment_scope": { "type": "string" },
+      "active": { "type": "boolean" },
+      "created_at": { "type": "date" },
+      "updated_at": { "type": "date" },
+      "strategies": { "type": "array", "items": { "$ref": "feature_flag_strategy.json" } }
+    },
+    "additionalProperties": false
+  }
+}

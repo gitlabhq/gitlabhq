@@ -24,4 +24,9 @@ module ContainerExpirationPoliciesHelper
       end
     end
   end
+
+  def container_expiration_policies_historic_entry_enabled?(project)
+    Gitlab::CurrentSettings.container_expiration_policies_enable_historic_entries ||
+      Feature.enabled?(:container_expiration_policies_historic_entry, project)
+  end
 end

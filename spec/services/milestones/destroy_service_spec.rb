@@ -45,7 +45,7 @@ RSpec.describe Milestones::DestroyService do
       let(:group_milestone) { create(:milestone, group: group) }
 
       before do
-        project.update(namespace: group)
+        project.update!(namespace: group)
         group.add_developer(user)
       end
 

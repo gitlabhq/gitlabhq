@@ -14,13 +14,14 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 | Software repository | Description | Available in GitLab version |
 | ------------------- | ----------- | --------------------------- |
-| [PyPi Repository](../../user/packages/pypi_repository/index.md) | The GitLab PyPi Repository enables every project in GitLab to have its own space to store [PyPi](https://pypi.org/) packages. | 12.10+ |
+| [PyPI Repository](../../user/packages/pypi_repository/index.md) | The GitLab PyPI Repository enables every project in GitLab to have its own space to store [PyPI](https://pypi.org/) packages. | 12.10+ |
 | [Composer Repository](../../user/packages/composer_repository/index.md) | The GitLab Composer Repository enables every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.1+ |
 | [NuGet Repository](../../user/packages/nuget_repository/index.md) | The GitLab NuGet Repository enables every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
 | [Conan Repository](../../user/packages/conan_repository/index.md) | The GitLab Conan Repository enables every project in GitLab to have its own space to store [Conan](https://conan.io/) packages. | 12.4+ |
 | [Maven Repository](../../user/packages/maven_repository/index.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. | 11.3+ |
 | [NPM Registry](../../user/packages/npm_registry/index.md)   | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. | 11.7+ |
 | [Go Proxy](../../user/packages/go_proxy/index.md) | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
+| [Generic packages](../../user/packages/generic_packages/index.md) | Store arbitrary files, like release binaries. | 13.5+ |
 
 Don't you see your package management system supported yet?
 Please consider contributing
@@ -142,33 +143,33 @@ We recommend using the [consolidated object storage settings](../object_storage.
 1. Edit the `packages` section in `config/gitlab.yml` (uncomment where necessary):
 
    ```yaml
-     packages:
-       enabled: true
+   packages:
+     enabled: true
+     ##
+     ## The location where build packages are stored (default: shared/packages).
+     ##
+     # storage_path: shared/packages
+     object_store:
+       enabled: false
+       remote_directory: packages  # The bucket name.
+       # direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
+       # background_upload: true   # Temporary option to limit automatic upload (Default: true).
+       # proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
+       connection:
        ##
-       ## The location where build packages are stored (default: shared/packages).
+       ## If the provider is AWS S3, use the following:
        ##
-       #storage_path: shared/packages
-       object_store:
-         enabled: false
-         remote_directory: packages # The bucket name.
-         #direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
-         #background_upload: true   # Temporary option to limit automatic upload (Default: true).
-         #proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
-         connection:
-           ##
-           ## If the provider is AWS S3, uncomment the following
-           ##
-           #provider: AWS
-           #region: us-east-1
-           #aws_access_key_id: AWS_ACCESS_KEY_ID
-           #aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-           ##
-           ## If the provider is other than AWS (an S3-compatible one), uncomment the following
-           ##
-           #host: 's3.amazonaws.com'             # default: s3.amazonaws.com.
-           #aws_signature_version: 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
-           #endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
-           #path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
+         provider: AWS
+         region: us-east-1
+         aws_access_key_id: AWS_ACCESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         ##
+         ## If the provider is other than AWS (an S3-compatible one), comment out the previous 4 lines and use the following instead:
+         ##
+         #  host: 's3.amazonaws.com'             # default: s3.amazonaws.com.
+         #  aws_signature_version: 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
+         #  endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
+         #  path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.

@@ -1,4 +1,4 @@
 %li{ data: { qa_selector: 'wiki_directory_content' } }
-  = wiki_directory.slug
+  = wiki_directory.title
   %ul
-    = render wiki_directory.pages, context: context
+    = render wiki_directory.entries, context: context

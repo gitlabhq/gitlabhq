@@ -1,8 +1,12 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { n__ } from '../../locale';
 import { MAX_CHILDREN_COUNT } from '../constants';
 
 export default {
+  components: {
+    GlIcon,
+  },
   props: {
     parentGroup: {
       type: Object,
@@ -45,7 +49,7 @@ export default {
     />
     <li v-if="hasMoreChildren" class="group-row">
       <a :href="parentGroup.relativePath" class="group-row-contents has-more-items py-2">
-        <i class="fa fa-external-link" aria-hidden="true"> </i> {{ moreChildrenStats }}
+        <gl-icon name="external-link" aria-hidden="true" /> {{ moreChildrenStats }}
       </a>
     </li>
   </ul>

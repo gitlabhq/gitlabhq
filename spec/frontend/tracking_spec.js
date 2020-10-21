@@ -28,7 +28,7 @@ describe('Tracking', () => {
         respectDoNotTrack: true,
         forceSecureTracker: true,
         eventMethod: 'post',
-        contexts: { webPage: true },
+        contexts: { webPage: true, performanceTiming: true },
         formTracking: false,
         linkClickTracking: false,
       });

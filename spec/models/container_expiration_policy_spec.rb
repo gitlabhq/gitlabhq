@@ -104,6 +104,18 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     end
   end
 
+  describe '.executable' do
+    subject { described_class.executable }
+
+    let_it_be(:policy1) { create(:container_expiration_policy, :runnable) }
+    let_it_be(:container_repository1) { create(:container_repository, project: policy1.project) }
+    let_it_be(:policy2) { create(:container_expiration_policy, :runnable) }
+    let_it_be(:container_repository2) { create(:container_repository, project: policy2.project) }
+    let_it_be(:policy3) { create(:container_expiration_policy, :runnable) }
+
+    it { is_expected.to contain_exactly(policy1, policy2) }
+  end
+
   describe '#disable!' do
     let_it_be(:container_expiration_policy) { create(:container_expiration_policy) }
 

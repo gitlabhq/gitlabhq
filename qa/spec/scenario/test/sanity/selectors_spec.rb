@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Scenario::Test::Sanity::Selectors do
+RSpec.describe QA::Scenario::Test::Sanity::Selectors do
   let(:validator) { spy('validator') }
 
   before do

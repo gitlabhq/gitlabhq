@@ -1,0 +1,11 @@
+- link = link_to _('MaxBuilds'), 'https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section', target: '_blank'
+
+%h3
+  = _('Shared runners')
+
+.bs-callout.shared-runners-description
+  - if Gitlab::CurrentSettings.shared_runners_text.present?
+    = markdown_field(Gitlab::CurrentSettings.current_application_settings, :shared_runners_text)
+  - else
+    = _('The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com).').html_safe % { link: link }
+  = yield

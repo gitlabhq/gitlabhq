@@ -12,6 +12,6 @@ Learn how to implement an accessible frontend.
 
 Learn how to keep our frontend performant.
 
-## [Testing](testing.md)
+## [Testing](../../testing_guide/frontend_testing.md)
 
 Learn how to keep our frontend tested.

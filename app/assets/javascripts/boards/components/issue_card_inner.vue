@@ -41,14 +41,7 @@ export default {
       default: false,
     },
   },
-  inject: {
-    groupId: {
-      type: Number,
-    },
-    rootPath: {
-      type: String,
-    },
-  },
+  inject: ['groupId', 'rootPath'],
   data() {
     return {
       limitBeforeCounter: 2,

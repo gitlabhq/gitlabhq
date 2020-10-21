@@ -56,7 +56,7 @@ RSpec.describe GitGarbageCollectWorker do
 
       it "flushes ref caches when the task if 'gc'" do
         expect(subject).to receive(:renew_lease).with(lease_key, lease_uuid).and_call_original
-        expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).to receive(:expire_branches_cache).and_call_original
         expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
         expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
@@ -77,7 +77,7 @@ RSpec.describe GitGarbageCollectWorker do
       end
 
       it 'returns silently' do
-        expect_any_instance_of(Repository).not_to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).not_to receive(:expire_branches_cache).and_call_original
         expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
         expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 
@@ -102,7 +102,7 @@ RSpec.describe GitGarbageCollectWorker do
 
         it "flushes ref caches when the task if 'gc'" do
           expect(subject).to receive(:get_lease_uuid).with("git_gc:#{task}:#{project.id}").and_return(false)
-          expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
+          expect_any_instance_of(Repository).to receive(:expire_branches_cache).and_call_original
           expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
@@ -129,46 +129,36 @@ RSpec.describe GitGarbageCollectWorker do
           let_it_be(:lfs_reference) { create(:lfs_objects_project, project: project) }
           let(:lfs_object) { lfs_reference.lfs_object }
 
-          context 'with cleanup_lfs_during_gc feature flag enabled' do
-            before do
-              stub_feature_flags(cleanup_lfs_during_gc: true)
+          it 'cleans up unreferenced LFS objects' do
+            expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
+              expect(svc.project).to eq(project)
+              expect(svc.dry_run).to be_falsy
+              expect(svc).to receive(:run!).and_call_original
             end
 
-            it 'cleans up unreferenced LFS objects' do
-              expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
-                expect(svc.project).to eq(project)
-                expect(svc.dry_run).to be_falsy
-                expect(svc).to receive(:run!).and_call_original
-              end
+            subject.perform(*params)
 
-              subject.perform(*params)
-
-              expect(project.lfs_objects.reload).not_to include(lfs_object)
-            end
-
-            it 'does nothing if the database is read-only' do
-              allow(Gitlab::Database).to receive(:read_only?) { true }
-
-              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
-
-              subject.perform(*params)
-
-              expect(project.lfs_objects.reload).to include(lfs_object)
-            end
+            expect(project.lfs_objects.reload).not_to include(lfs_object)
           end
 
-          context 'with cleanup_lfs_during_gc feature flag disabled' do
-            before do
-              stub_feature_flags(cleanup_lfs_during_gc: false)
-            end
+          it 'catches and logs exceptions' do
+            expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences)
+              .to receive(:run!)
+              .and_raise(/Failed/)
 
-            it 'does not clean up unreferenced LFS objects' do
-              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+            expect(Gitlab::GitLogger).to receive(:warn)
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-              subject.perform(*params)
+            subject.perform(*params)
+          end
 
-              expect(project.lfs_objects.reload).to include(lfs_object)
-            end
+          it 'does nothing if the database is read-only' do
+            allow(Gitlab::Database).to receive(:read_only?) { true }
+            expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+
+            subject.perform(*params)
+
+            expect(project.lfs_objects.reload).to include(lfs_object)
           end
         end
       end
@@ -180,7 +170,7 @@ RSpec.describe GitGarbageCollectWorker do
 
         it 'returns silently' do
           expect(subject).not_to receive(:command)
-          expect_any_instance_of(Repository).not_to receive(:after_create_branch).and_call_original
+          expect_any_instance_of(Repository).not_to receive(:expire_branches_cache).and_call_original
           expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 

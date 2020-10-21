@@ -13,6 +13,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   let_it_be(:merge_request_b) { create(:merge_request, :closed, :unique_branches, source_project: project) }
   let_it_be(:merge_request_c) { create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label]) }
   let_it_be(:merge_request_d) { create(:merge_request, :locked, :unique_branches, source_project: project) }
+  let_it_be(:merge_request_e) { create(:merge_request, :unique_branches, source_project: project) }
 
   let(:results) { graphql_data.dig('project', 'mergeRequests', 'nodes') }
 
@@ -118,7 +119,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
   context 'there are no search params' do
     let(:search_params) { nil }
-    let(:mrs) { [merge_request_a, merge_request_b, merge_request_c, merge_request_d] }
+    let(:mrs) { [merge_request_a, merge_request_b, merge_request_c, merge_request_d, merge_request_e] }
 
     it_behaves_like 'searching with parameters'
   end
@@ -172,6 +173,28 @@ RSpec.describe 'getting merge request listings nested in a project' do
     it_behaves_like 'searching with parameters'
   end
 
+  context 'when requesting `approved_by`' do
+    let(:search_params) { { iids: [merge_request_a.iid.to_s, merge_request_b.iid.to_s] } }
+    let(:extra_iid_for_second_query) { merge_request_c.iid.to_s }
+    let(:requested_fields) { query_graphql_field(:approved_by, nil, query_graphql_field(:nodes, nil, [:username])) }
+
+    def execute_query
+      query = query_merge_requests(requested_fields)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'exposes approver username' do
+      merge_request_a.approved_by_users << current_user
+
+      execute_query
+
+      user_data = { 'username' => current_user.username }
+      expect(results).to include(a_hash_including('approvedBy' => { 'nodes' => array_including(user_data) }))
+    end
+
+    include_examples 'N+1 query check'
+  end
+
   describe 'fields' do
     let(:requested_fields) { nil }
     let(:extra_iid_for_second_query) { merge_request_c.iid.to_s }
@@ -209,7 +232,19 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
       include_examples 'N+1 query check'
     end
+
+    context 'when requesting `user_notes_count`' do
+      let(:requested_fields) { [:user_notes_count] }
+
+      before do
+        create_list(:note_on_merge_request, 2, noteable: merge_request_a, project: project)
+        create(:note_on_merge_request, noteable: merge_request_c, project: project)
+      end
+
+      include_examples 'N+1 query check'
+    end
   end
+
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :mergeRequests] }
 
@@ -241,15 +276,49 @@ RSpec.describe 'getting merge request listings nested in a project' do
         let(:expected_results) do
           [
             merge_request_b,
-            merge_request_c,
             merge_request_d,
+            merge_request_c,
+            merge_request_e,
             merge_request_a
           ].map(&:to_gid).map(&:to_s)
         end
 
         before do
-          merge_request_c.metrics.update!(merged_at: 5.days.ago)
+          five_days_ago = 5.days.ago
+
+          merge_request_d.metrics.update!(merged_at: five_days_ago)
+
+          # same merged_at, the second order column will decide (merge_request.id)
+          merge_request_c.metrics.update!(merged_at: five_days_ago)
+
           merge_request_b.metrics.update!(merged_at: 1.day.ago)
+        end
+
+        context 'when paginating backwards' do
+          let(:params) { 'first: 2, sort: MERGED_AT_DESC' }
+          let(:page_info) { 'pageInfo { startCursor endCursor }' }
+
+          before do
+            post_graphql(pagination_query(params, page_info), current_user: current_user)
+          end
+
+          it 'paginates backwards correctly' do
+            # first page
+            first_page_response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
+            end_cursor = graphql_dig_at(Gitlab::Json.parse(response.body), :data, :project, :mergeRequests, :pageInfo, :endCursor)
+
+            # second page
+            params = "first: 2, after: \"#{end_cursor}\", sort: MERGED_AT_DESC"
+            post_graphql(pagination_query(params, page_info), current_user: current_user)
+            start_cursor = graphql_dig_at(Gitlab::Json.parse(response.body), :data, :project, :mergeRequests, :pageInfo, :start_cursor)
+
+            # going back to the first page
+
+            params = "last: 2, before: \"#{start_cursor}\", sort: MERGED_AT_DESC"
+            post_graphql(pagination_query(params, page_info), current_user: current_user)
+            backward_paginated_response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
+            expect(first_page_response_data).to eq(backward_paginated_response_data)
+          end
         end
       end
     end

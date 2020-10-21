@@ -7,7 +7,7 @@ The Auto DevOps pipeline failed for pipeline <%= @pipeline.iid %> (<%= pipeline_
 <% else -%>
   Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
 <% end -%>
-<% failed = @pipeline.statuses.latest.failed -%>
+<% failed = @pipeline.latest_statuses.failed -%>
 had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
 
 <% failed.each do |build| -%>

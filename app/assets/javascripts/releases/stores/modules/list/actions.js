@@ -8,55 +8,90 @@ import {
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
-import { gqClient, convertGraphQLResponse } from '../../../util';
+import { gqClient, convertAllReleasesGraphQLResponse } from '../../../util';
+import { PAGE_SIZE } from '../../../constants';
 
 /**
- * Commits a mutation to update the state while the main endpoint is being requested.
- */
-export const requestReleases = ({ commit }) => commit(types.REQUEST_RELEASES);
-
-/**
- * Fetches the main endpoint.
- * Will dispatch requestNamespace action before starting the request.
- * Will dispatch receiveNamespaceSuccess if the request is successful
- * Will dispatch receiveNamesapceError if the request returns an error
+ * Gets a paginated list of releases from the server
  *
- * @param {String} projectId
+ * @param {Object} vuexParams
+ * @param {Object} actionParams
+ * @param {Number} [actionParams.page] The page number of results to fetch
+ * (this parameter is only used when fetching results from the REST API)
+ * @param {String} [actionParams.before] A GraphQL cursor. If provided,
+ * the items returned will proceed the provided cursor (this parameter is only
+ * used when fetching results from the GraphQL API).
+ * @param {String} [actionParams.after] A GraphQL cursor. If provided,
+ * the items returned will follow the provided cursor (this parameter is only
+ * used when fetching results from the GraphQL API).
  */
-export const fetchReleases = ({ dispatch, rootState, state }, { page = '1' }) => {
-  dispatch('requestReleases');
-
-  if (
-    rootState.featureFlags.graphqlReleaseData &&
-    rootState.featureFlags.graphqlReleasesPage &&
-    rootState.featureFlags.graphqlMilestoneStats
-  ) {
-    gqClient
-      .query({
-        query: allReleasesQuery,
-        variables: {
-          fullPath: state.projectPath,
-        },
-      })
-      .then(response => {
-        dispatch('receiveReleasesSuccess', convertGraphQLResponse(response));
-      })
-      .catch(() => dispatch('receiveReleasesError'));
+export const fetchReleases = ({ dispatch, rootGetters }, { page = 1, before, after }) => {
+  if (rootGetters.useGraphQLEndpoint) {
+    dispatch('fetchReleasesGraphQl', { before, after });
   } else {
-    api
-      .releases(state.projectId, { page })
-      .then(response => dispatch('receiveReleasesSuccess', response))
-      .catch(() => dispatch('receiveReleasesError'));
+    dispatch('fetchReleasesRest', { page });
   }
 };
 
-export const receiveReleasesSuccess = ({ commit }, { data, headers }) => {
-  const pageInfo = parseIntPagination(normalizeHeaders(headers));
-  const camelCasedReleases = convertObjectPropsToCamelCase(data, { deep: true });
-  commit(types.RECEIVE_RELEASES_SUCCESS, {
-    data: camelCasedReleases,
-    pageInfo,
-  });
+/**
+ * Gets a paginated list of releases from the GraphQL endpoint
+ */
+export const fetchReleasesGraphQl = (
+  { dispatch, commit, state },
+  { before = null, after = null },
+) => {
+  commit(types.REQUEST_RELEASES);
+
+  let paginationParams;
+  if (!before && !after) {
+    paginationParams = { first: PAGE_SIZE };
+  } else if (before && !after) {
+    paginationParams = { last: PAGE_SIZE, before };
+  } else if (!before && after) {
+    paginationParams = { first: PAGE_SIZE, after };
+  } else {
+    throw new Error(
+      'Both a `before` and an `after` parameter were provided to fetchReleasesGraphQl. These parameters cannot be used together.',
+    );
+  }
+
+  gqClient
+    .query({
+      query: allReleasesQuery,
+      variables: {
+        fullPath: state.projectPath,
+        ...paginationParams,
+      },
+    })
+    .then(response => {
+      const { data, paginationInfo: graphQlPageInfo } = convertAllReleasesGraphQLResponse(response);
+
+      commit(types.RECEIVE_RELEASES_SUCCESS, {
+        data,
+        graphQlPageInfo,
+      });
+    })
+    .catch(() => dispatch('receiveReleasesError'));
+};
+
+/**
+ * Gets a paginated list of releases from the REST endpoint
+ */
+export const fetchReleasesRest = ({ dispatch, commit, state }, { page }) => {
+  commit(types.REQUEST_RELEASES);
+
+  api
+    .releases(state.projectId, { page })
+    .then(({ data, headers }) => {
+      const restPageInfo = parseIntPagination(normalizeHeaders(headers));
+      const camelCasedReleases = convertObjectPropsToCamelCase(data, { deep: true });
+
+      commit(types.RECEIVE_RELEASES_SUCCESS, {
+        data: camelCasedReleases,
+        restPageInfo,
+      });
+    })
+    .catch(() => dispatch('receiveReleasesError'));
 };
 
 export const receiveReleasesError = ({ commit }) => {

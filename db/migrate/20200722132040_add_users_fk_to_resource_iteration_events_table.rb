@@ -7,7 +7,7 @@ class AddUsersFkToResourceIterationEventsTable < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :resource_iteration_events, :users, column: :user_id, on_delete: :nullify # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :resource_iteration_events, :users, column: :user_id, on_delete: :nullify
     end
   end
 

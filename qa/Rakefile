@@ -2,6 +2,7 @@ require_relative 'qa/tools/revoke_all_personal_access_tokens'
 require_relative 'qa/tools/delete_subgroups'
 require_relative 'qa/tools/generate_perf_testdata'
 require_relative 'qa/tools/delete_test_ssh_keys'
+require_relative 'qa/tools/initialize_gitlab_auth'
 
 desc "Revokes all personal access tokens"
 task :revoke_personal_access_tokens do
@@ -11,6 +12,11 @@ end
 desc "Deletes subgroups within a provided group"
 task :delete_subgroups do
   QA::Tools::DeleteSubgroups.new.run
+end
+
+desc "Initialize GitLab with an access token"
+task :initialize_gitlab_auth, [:address] do |t, args|
+  QA::Tools::InitializeGitLabAuth.new(args).run
 end
 
 desc "Generate Performance Testdata"

@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys, type: :ruboc
       context 'with more than one foreign keys' do
         let(:offense) do
           'Creating a table with more than one foreign key at once violates our migration style guide. ' \
-          'For more details check the https://docs.gitlab.com/ce/development/migration_style_guide.html#examples'
+          'For more details check the https://docs.gitlab.com/ee/development/migration_style_guide.html#examples'
         end
 
         shared_examples 'target to high traffic table' do |dsl_method, table_name|

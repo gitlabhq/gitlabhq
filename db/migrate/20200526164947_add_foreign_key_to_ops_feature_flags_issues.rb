@@ -7,7 +7,7 @@ class AddForeignKeyToOpsFeatureFlagsIssues < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :operations_feature_flags_issues, :issues, column: :issue_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :operations_feature_flags_issues, :issues, column: :issue_id, on_delete: :cascade
     end
   end
 

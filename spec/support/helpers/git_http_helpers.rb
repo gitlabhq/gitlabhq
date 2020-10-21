@@ -5,45 +5,45 @@ require_relative 'workhorse_helpers'
 module GitHttpHelpers
   include WorkhorseHelpers
 
-  def clone_get(project, options = {})
+  def clone_get(project, **options)
     get "/#{project}/info/refs", params: { service: 'git-upload-pack' }, headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def clone_post(project, options = {})
+  def clone_post(project, **options)
     post "/#{project}/git-upload-pack", headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_get(project, options = {})
+  def push_get(project, **options)
     get "/#{project}/info/refs", params: { service: 'git-receive-pack' }, headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_post(project, options = {})
+  def push_post(project, **options)
     post "/#{project}/git-receive-pack", headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def download(project, user: nil, password: nil, spnego_request_token: nil)
-    args = [project, { user: user, password: password, spnego_request_token: spnego_request_token }]
+    args = { user: user, password: password, spnego_request_token: spnego_request_token }
 
-    clone_get(*args)
+    clone_get(project, **args)
     yield response
 
-    clone_post(*args)
+    clone_post(project, **args)
     yield response
   end
 
   def upload(project, user: nil, password: nil, spnego_request_token: nil)
-    args = [project, { user: user, password: password, spnego_request_token: spnego_request_token }]
+    args = { user: user, password: password, spnego_request_token: spnego_request_token }
 
-    push_get(*args)
+    push_get(project, **args)
     yield response
 
-    push_post(*args)
+    push_post(project, **args)
     yield response
   end
 
-  def download_or_upload(*args, &block)
-    download(*args, &block)
-    upload(*args, &block)
+  def download_or_upload(project, **args, &block)
+    download(project, **args, &block)
+    upload(project, **args, &block)
   end
 
   def auth_env(user, password, spnego_request_token)

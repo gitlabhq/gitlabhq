@@ -42,7 +42,7 @@ export default {
     class="diff-stats"
     :class="{
       'is-compare-versions-header d-none d-lg-inline-flex': isCompareVersionsHeader,
-      'd-inline-flex': !isCompareVersionsHeader,
+      'd-none d-sm-inline-flex': !isCompareVersionsHeader,
     }"
   >
     <div v-if="hasDiffFiles" class="diff-stats-group">

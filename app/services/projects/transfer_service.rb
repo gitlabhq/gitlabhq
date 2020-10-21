@@ -88,6 +88,10 @@ module Projects
         # Move uploads
         move_project_uploads(project)
 
+        # If a project is being transferred to another group it means it can already
+        # have shared runners enabled but we need to check whether the new group allows that.
+        project.shared_runners_enabled = false if project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
+
         project.old_path_with_namespace = @old_path
 
         update_repository_configuration(@new_path)

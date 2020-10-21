@@ -45,14 +45,6 @@ module Gitlab
       end
 
       def read_zip_file!(file_path)
-        if ::Gitlab::Ci::Features.new_artifact_file_reader_enabled?(job.project)
-          read_with_new_artifact_file_reader(file_path)
-        else
-          read_with_legacy_artifact_file_reader(file_path)
-        end
-      end
-
-      def read_with_new_artifact_file_reader(file_path)
         job.artifacts_file.use_open_file do |file|
           zip_file = Zip::File.new(file, false, true)
           entry = zip_file.find_entry(file_path)
@@ -66,25 +58,6 @@ module Gitlab
           end
 
           zip_file.read(entry)
-        end
-      end
-
-      def read_with_legacy_artifact_file_reader(file_path)
-        job.artifacts_file.use_file do |archive_path|
-          Zip::File.open(archive_path) do |zip_file|
-            entry = zip_file.find_entry(file_path)
-            unless entry
-              raise Error, "Path `#{file_path}` does not exist inside the `#{job.name}` artifacts archive!"
-            end
-
-            if entry.name_is_directory?
-              raise Error, "Path `#{file_path}` was expected to be a file but it was a directory!"
-            end
-
-            zip_file.get_input_stream(entry) do |is|
-              is.read
-            end
-          end
         end
       end
 

@@ -1,5 +1,4 @@
 import { mount } from '@vue/test-utils';
-import { trimText } from 'helpers/text_helper';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 
 describe('pipeline graph job item', () => {
@@ -65,7 +64,7 @@ describe('pipeline graph job item', () => {
 
         expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
 
-        expect(trimText(wrapper.find('.ci-status-text').text())).toBe(mockJob.name);
+        expect(wrapper.text()).toBe(mockJob.name);
 
         done();
       });
@@ -85,7 +84,7 @@ describe('pipeline graph job item', () => {
       expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
       expect(wrapper.find('a').exists()).toBe(false);
 
-      expect(trimText(wrapper.find('.ci-status-text').text())).toBe(mockJobWithoutDetails.name);
+      expect(wrapper.text()).toBe(mockJobWithoutDetails.name);
     });
 
     it('should apply hover class and provided class name', () => {

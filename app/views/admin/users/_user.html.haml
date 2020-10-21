@@ -4,7 +4,12 @@
       = _('Name')
     .table-mobile-content
       = render 'user_detail', user: user
-  .table-section.section-25
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' }
+      = _('Projects')
+    .table-mobile-content.gl-str-truncated{ data: { testid: "user-project-count-#{user.id}" } }
+      = user.authorized_projects.length
+  .table-section.section-15
     .table-mobile-header{ role: 'rowheader' }
       = _('Created on')
     .table-mobile-content
@@ -30,15 +35,22 @@
                   %span.small
                     = s_('AdminUsers|Cannot unblock LDAP blocked users')
                 - elsif user.blocked?
-                  = link_to _('Unblock'), unblock_admin_user_path(user), method: :put
+                  - if user.blocked_pending_approval?
+                    = link_to s_('AdminUsers|Approve'), approve_admin_user_path(user), method: :put
+                    %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'block',
+                      url: block_admin_user_path(user),
+                      username: sanitize_name(user.name) } }
+                      = s_('AdminUsers|Block')
+                  - else
+                    = link_to _('Unblock'), unblock_admin_user_path(user), method: :put
                 - else
-                  %button.btn.gl-button.btn-default-tertiary{ data: { 'gl-modal-action': 'block',
+                  %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'block',
                     url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }
                     = s_('AdminUsers|Block')
               - if user.can_be_deactivated?
                 %li
-                  %button.btn.gl-button.btn-default-tertiary{ data: { 'gl-modal-action': 'deactivate',
+                  %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'deactivate',
                     url: deactivate_admin_user_path(user),
                     username: sanitize_name(user.name) } }
                     = s_('AdminUsers|Deactivate')
@@ -52,13 +64,13 @@
               %li.divider
               - if user.can_be_removed?
                 %li
-                  %button.delete-user-button.btn.gl-button.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete',
+                  %button.delete-user-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete',
                     delete_user_url: admin_user_path(user),
                     block_user_url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }
                     = s_('AdminUsers|Delete user')
                 %li
-                  %button.delete-user-button.btn.gl-button.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
+                  %button.delete-user-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
                     delete_user_url: admin_user_path(user, hard_delete: true),
                     block_user_url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }

@@ -7,7 +7,12 @@ import { createStore } from '~/ide/stores';
 import consts from '~/ide/stores/modules/commit/constants';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { leftSidebarViews } from '~/ide/constants';
-import { createCodeownersCommitError, createUnexpectedCommitError } from '~/ide/lib/errors';
+import {
+  createCodeownersCommitError,
+  createUnexpectedCommitError,
+  createBranchChangedCommitError,
+  branchAlreadyExistsCommitError,
+} from '~/ide/lib/errors';
 
 describe('IDE commit form', () => {
   const Component = Vue.extend(CommitForm);
@@ -290,20 +295,30 @@ describe('IDE commit form', () => {
         jest.spyOn(vm.$store, 'dispatch').mockReturnValue(Promise.resolve());
       });
 
-      it('updates commit action and commits', async () => {
-        store.state.commit.commitError = createCodeownersCommitError('test message');
+      const commitActions = [
+        ['commit/updateCommitAction', consts.COMMIT_TO_NEW_BRANCH],
+        ['commit/commitChanges'],
+      ];
 
-        await vm.$nextTick();
+      it.each`
+        commitError                       | expectedActions
+        ${createCodeownersCommitError}    | ${commitActions}
+        ${createBranchChangedCommitError} | ${commitActions}
+        ${branchAlreadyExistsCommitError} | ${[['commit/addSuffixToBranchName'], ...commitActions]}
+      `(
+        'updates commit action and commits for error: $commitError',
+        async ({ commitError, expectedActions }) => {
+          store.state.commit.commitError = commitError('test message');
 
-        getByText(document.body, 'Create new branch').click();
+          await vm.$nextTick();
 
-        await waitForPromises();
+          getByText(document.body, 'Create new branch').click();
 
-        expect(vm.$store.dispatch.mock.calls).toEqual([
-          ['commit/updateCommitAction', consts.COMMIT_TO_NEW_BRANCH],
-          ['commit/commitChanges', undefined],
-        ]);
-      });
+          await waitForPromises();
+
+          expect(vm.$store.dispatch.mock.calls).toEqual(expectedActions);
+        },
+      );
     });
   });
 

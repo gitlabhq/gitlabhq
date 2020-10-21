@@ -3,6 +3,8 @@
 class Projects::WebIdeSchemasController < Projects::ApplicationController
   before_action :authenticate_user!
 
+  feature_category :web_ide
+
   def show
     return respond_422 unless branch_sha
 

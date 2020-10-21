@@ -3,6 +3,7 @@ import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 import AddImageModal from './modals/add_image/add_image_modal.vue';
+import InsertVideoModal from './modals/insert_video_modal.vue';
 import { EDITOR_TYPES, EDITOR_HEIGHT, EDITOR_PREVIEW_STYLE, CUSTOM_EVENTS } from './constants';
 
 import {
@@ -12,6 +13,7 @@ import {
   removeCustomEventListener,
   addImage,
   getMarkdown,
+  insertVideo,
 } from './services/editor_service';
 
 export default {
@@ -21,6 +23,7 @@ export default {
         toast => toast.Editor,
       ),
     AddImageModal,
+    InsertVideoModal,
   },
   props: {
     content: {
@@ -63,6 +66,12 @@ export default {
     editorInstance() {
       return this.$refs.editor;
     },
+    customEventListeners() {
+      return [
+        { event: CUSTOM_EVENTS.openAddImageModal, listener: this.onOpenAddImageModal },
+        { event: CUSTOM_EVENTS.openInsertVideoModal, listener: this.onOpenInsertVideoModal },
+      ];
+    },
   },
   created() {
     this.editorOptions = getEditorOptions(this.options);
@@ -72,16 +81,16 @@ export default {
   },
   methods: {
     addListeners(editorApi) {
-      addCustomEventListener(editorApi, CUSTOM_EVENTS.openAddImageModal, this.onOpenAddImageModal);
+      this.customEventListeners.forEach(({ event, listener }) => {
+        addCustomEventListener(editorApi, event, listener);
+      });
 
       editorApi.eventManager.listen('changeMode', this.onChangeMode);
     },
     removeListeners() {
-      removeCustomEventListener(
-        this.editorApi,
-        CUSTOM_EVENTS.openAddImageModal,
-        this.onOpenAddImageModal,
-      );
+      this.customEventListeners.forEach(({ event, listener }) => {
+        removeCustomEventListener(this.editorApi, event, listener);
+      });
 
       this.editorApi.eventManager.removeEventHandler('changeMode', this.onChangeMode);
     },
@@ -111,6 +120,12 @@ export default {
 
       addImage(this.editorInstance, image);
     },
+    onOpenInsertVideoModal() {
+      this.$refs.insertVideoModal.show();
+    },
+    onInsertVideo(url) {
+      insertVideo(this.editorInstance, url);
+    },
     onChangeMode(newMode) {
       this.$emit('modeChange', newMode);
     },
@@ -130,5 +145,6 @@ export default {
       @load="onLoad"
     />
     <add-image-modal ref="addImageModal" :image-root="imageRoot" @addImage="onAddImage" />
+    <insert-video-modal ref="insertVideoModal" @insertVideo="onInsertVideo" />
   </div>
 </template>

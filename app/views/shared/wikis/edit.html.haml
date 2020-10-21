@@ -1,4 +1,5 @@
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
+- add_page_specific_style 'page_bundles/wiki'
 
 = wiki_page_errors(@error)
 
@@ -17,8 +18,6 @@
 
   .nav-controls.pb-md-3.pb-lg-0
     - if @page.persisted?
-      = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn" do
-        = s_("Wiki|Page history")
       - if can?(current_user, :admin_wiki, @wiki.container)
         #delete-wiki-modal-wrapper{ data: { delete_wiki_url: wiki_page_path(@wiki, @page), page_title: @page.human_title } }
 

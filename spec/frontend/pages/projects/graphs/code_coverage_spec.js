@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import { GlAlert, GlIcon, GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlAlert, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 
 import waitForPromises from 'helpers/wait_for_promises';
@@ -17,7 +17,7 @@ describe('Code Coverage', () => {
 
   const findAlert = () => wrapper.find(GlAlert);
   const findAreaChart = () => wrapper.find(GlAreaChart);
-  const findAllDropdownItems = () => wrapper.findAll(GlDeprecatedDropdownItem);
+  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
   const findFirstDropdownItem = () => findAllDropdownItems().at(0);
   const findSecondDropdownItem = () => findAllDropdownItems().at(1);
 
@@ -124,7 +124,7 @@ describe('Code Coverage', () => {
     });
 
     it('renders the dropdown with all custom names as options', () => {
-      expect(wrapper.find(GlDeprecatedDropdown).exists()).toBeDefined();
+      expect(wrapper.find(GlDropdown).exists()).toBeDefined();
       expect(findAllDropdownItems()).toHaveLength(codeCoverageMockData.length);
       expect(findFirstDropdownItem().text()).toBe(codeCoverageMockData[0].group_name);
     });
@@ -145,16 +145,8 @@ describe('Code Coverage', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(
-        findFirstDropdownItem()
-          .find(GlIcon)
-          .exists(),
-      ).toBe(false);
-      expect(
-        findSecondDropdownItem()
-          .find(GlIcon)
-          .exists(),
-      ).toBe(true);
+      expect(findFirstDropdownItem().attributes('ischecked')).toBeFalsy();
+      expect(findSecondDropdownItem().attributes('ischecked')).toBeTruthy();
     });
 
     it('updates the graph data when selecting a different option in dropdown', async () => {

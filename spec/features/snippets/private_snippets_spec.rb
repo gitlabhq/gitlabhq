@@ -4,19 +4,18 @@ require 'spec_helper'
 
 RSpec.describe 'Private Snippets', :js do
   let(:user) { create(:user) }
+  let(:private_snippet) { create(:personal_snippet, :repository, :private, author: user) }
+  let(:content) { private_snippet.blobs.first.data.strip! }
 
   before do
-    stub_feature_flags(snippets_vue: false)
     sign_in(user)
   end
 
   it 'Private Snippet renders for creator' do
-    private_snippet = create(:personal_snippet, :private, author: user)
-
     visit snippet_path(private_snippet)
     wait_for_requests
 
-    expect(page).to have_content(private_snippet.content)
+    expect(page).to have_content(content)
     expect(page).not_to have_css('.js-embed-btn')
     expect(page).not_to have_css('.js-share-btn')
   end

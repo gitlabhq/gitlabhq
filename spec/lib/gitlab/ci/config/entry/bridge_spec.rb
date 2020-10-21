@@ -228,4 +228,66 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
       end
     end
   end
+
+  describe '#manual_action?' do
+    context 'when job is a manual action' do
+      let(:config) { { script: 'deploy', when: 'manual' } }
+
+      it { is_expected.to be_manual_action }
+    end
+
+    context 'when job is not a manual action' do
+      let(:config) { { script: 'deploy' } }
+
+      it { is_expected.not_to be_manual_action }
+    end
+  end
+
+  describe '#ignored?' do
+    context 'when job is a manual action' do
+      context 'when it is not specified if job is allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual' }
+        end
+
+        it { is_expected.to be_ignored }
+      end
+
+      context 'when job is allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual', allow_failure: true }
+        end
+
+        it { is_expected.to be_ignored }
+      end
+
+      context 'when job is not allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual', allow_failure: false }
+        end
+
+        it { is_expected.not_to be_ignored }
+      end
+    end
+
+    context 'when job is not a manual action' do
+      context 'when it is not specified if job is allowed to fail' do
+        let(:config) { { script: 'deploy' } }
+
+        it { is_expected.not_to be_ignored }
+      end
+
+      context 'when job is allowed to fail' do
+        let(:config) { { script: 'deploy', allow_failure: true } }
+
+        it { is_expected.to be_ignored }
+      end
+
+      context 'when job is not allowed to fail' do
+        let(:config) { { script: 'deploy', allow_failure: false } }
+
+        it { is_expected.not_to be_ignored }
+      end
+    end
+  end
 end

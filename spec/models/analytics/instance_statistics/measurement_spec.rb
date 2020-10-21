@@ -20,7 +20,11 @@ RSpec.describe Analytics::InstanceStatistics::Measurement, type: :model do
         issues: 3,
         merge_requests: 4,
         groups: 5,
-        pipelines: 6
+        pipelines: 6,
+        pipelines_succeeded: 7,
+        pipelines_failed: 8,
+        pipelines_canceled: 9,
+        pipelines_skipped: 10
       }.with_indifferent_access)
     end
   end
@@ -40,6 +44,30 @@ RSpec.describe Analytics::InstanceStatistics::Measurement, type: :model do
       subject { described_class.with_identifier(:projects) }
 
       it { is_expected.to match_array([measurement_1, measurement_2]) }
+    end
+  end
+
+  describe '#measurement_identifier_values' do
+    subject { described_class.measurement_identifier_values.count }
+
+    context 'when the `store_ci_pipeline_counts_by_status` feature flag is off' do
+      let(:expected_count) { Analytics::InstanceStatistics::Measurement.identifiers.size - Analytics::InstanceStatistics::Measurement::EXPERIMENTAL_IDENTIFIERS.size }
+
+      before do
+        stub_feature_flags(store_ci_pipeline_counts_by_status: false)
+      end
+
+      it { is_expected.to eq(expected_count) }
+    end
+
+    context 'when the `store_ci_pipeline_counts_by_status` feature flag is on' do
+      let(:expected_count) { Analytics::InstanceStatistics::Measurement.identifiers.size }
+
+      before do
+        stub_feature_flags(store_ci_pipeline_counts_by_status: true)
+      end
+
+      it { is_expected.to eq(expected_count) }
     end
   end
 end

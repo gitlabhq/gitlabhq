@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-10 d-none d-sm-none d-md-block pipeline-tags">
+  <div class="table-section section-10 d-none d-md-block pipeline-tags">
     <gl-link
       :href="pipeline.path"
       class="js-pipeline-url-link js-onboarding-pipeline-item"
@@ -98,7 +98,7 @@ export default {
         placement="top"
       >
         <template #title>
-          <div class="autodevops-title">
+          <div class="gl-font-weight-normal gl-line-height-normal">
             <gl-sprintf
               :message="
                 __(
@@ -112,12 +112,7 @@ export default {
             </gl-sprintf>
           </div>
         </template>
-        <gl-link
-          class="autodevops-link"
-          :href="autoDevopsHelpPath"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-        >
+        <gl-link :href="autoDevopsHelpPath" target="_blank" rel="noopener noreferrer nofollow">
           {{ __('Learn more about Auto DevOps') }}
         </gl-link>
       </gl-popover>

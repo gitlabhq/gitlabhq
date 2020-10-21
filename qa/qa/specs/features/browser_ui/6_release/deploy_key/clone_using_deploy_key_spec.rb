@@ -3,7 +3,7 @@
 require 'digest/sha1'
 
 module QA
-  RSpec.describe 'Release', :docker, :runner do
+  RSpec.describe 'Release', :runner do
     describe 'Git clone using a deploy key' do
       before do
         Flow::Login.sign_in

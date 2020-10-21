@@ -11,6 +11,8 @@ class Projects::NetworkController < Projects::ApplicationController
   before_action :assign_options
   before_action :assign_commit
 
+  feature_category :source_code_management
+
   def show
     @url = project_network_path(@project, @ref, @options.merge(format: :json))
     @commit_url = project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")

@@ -1,0 +1,6 @@
+---
+title: Optionally use merge request metrics association for merge request diff stats
+  in GraphQL
+merge_request: 44613
+author:
+type: performance

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class MergeRequestBasicEntity < Grape::Entity
+  expose :title
   expose :public_merge_status, as: :merge_status
   expose :merge_error
   expose :state

@@ -45,21 +45,7 @@ RSpec.describe Ci::UpdateBuildQueueService do
         runner.update!(contacted_at: Ci::Runner.recent_queue_deadline)
       end
 
-      context 'when ci_update_queues_for_online_runners is enabled' do
-        before do
-          stub_feature_flags(ci_update_queues_for_online_runners: true)
-        end
-
-        it_behaves_like 'does not refresh runner'
-      end
-
-      context 'when ci_update_queues_for_online_runners is disabled' do
-        before do
-          stub_feature_flags(ci_update_queues_for_online_runners: false)
-        end
-
-        it_behaves_like 'refreshes runner'
-      end
+      it_behaves_like 'does not refresh runner'
     end
   end
 

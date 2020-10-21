@@ -83,7 +83,11 @@ There are several ways to authenticate with the GitLab API:
 
 1. [OAuth2 tokens](#oauth2-tokens)
 1. [Personal access tokens](../user/profile/personal_access_tokens.md)
-1. [Project access tokens](../user/project/settings/project_access_tokens.md) **(CORE ONLY)**
+1. [Project access tokens](../user/project/settings/project_access_tokens.md)
+
+NOTE: **Note:**
+Project access tokens are supported for self-managed instances on Core and above. They are also supported on GitLab.com Bronze and above.
+
 1. [Session cookie](#session-cookie)
 1. [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
@@ -158,9 +162,22 @@ for example, without needing to explicitly pass an access token.
 With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/new_ci_build_permissions_model.md#job-token)
 to authenticate with the API:
 
+- Packages:
+  - [Composer Repository](../user/packages/composer_repository/index.md)
+  - [Conan Repository](../user/packages/conan_repository/index.md)
+  - [Container Registry](../user/packages/container_registry/index.md) (`$CI_REGISTRY_PASSWORD` is actually `$CI_JOB_TOKEN`, but this may change in the future)
+  - [Go Proxy](../user/packages/go_proxy/index.md)
+  - [Maven Repository](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token)
+  - [NPM Repository](../user/packages/npm_registry/index.md#authenticating-with-a-ci-job-token)
+  - [Nuget Repository](../user/packages/nuget_repository/index.md)
+  - [PyPI Repository](../user/packages/pypi_repository/index.md#using-gitlab-ci-with-pypi-packages)
+  - [Generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
-- [Pipeline triggers](pipeline_triggers.md)
+- [Pipeline triggers](pipeline_triggers.md) (via `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)
+- [Terraform plan](../user/infrastructure/index.md)
+
+The token is valid as long as the job is running.
 
 ### Impersonation tokens
 
@@ -297,21 +314,22 @@ The following table gives an overview of how the API functions generally behave.
 
 The following table shows the possible return codes for API requests.
 
-| Return values | Description |
-| ------------- | ----------- |
-| `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
-| `204 No Content` | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
-| `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
-| `304 Not Modified` | Indicates that the resource has not been modified since the last request. |
-| `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
-| `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
-| `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |
-| `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
+| Return values            | Description |
+| ------------------------ | ----------- |
+| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
+| `204 No Content`         | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
+| `201 Created`            | The `POST` request was successful and the resource is returned as JSON. |
+| `304 Not Modified`       | Indicates that the resource has not been modified since the last request. |
+| `400 Bad Request`        | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
+| `401 Unauthorized`       | The user is not authenticated, a valid [user token](#authentication) is necessary. |
+| `403 Forbidden`          | The request is not allowed, e.g., the user is not allowed to delete a project. |
+| `404 Not Found`          | A resource could not be accessed, e.g., an ID for a resource could not be found. |
 | `405 Method Not Allowed` | The request is not supported. |
-| `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
-| `412` | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
-| `422 Unprocessable` | The entity could not be processed. |
-| `500 Server Error` | While handling the request something went wrong server-side. |
+| `409 Conflict`           | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
+| `412`                    | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
+| `422 Unprocessable`      | The entity could not be processed. |
+| `429 Too Many Requests`  | The user exceeded the [application rate limits](../administration/instance_limits.md#rate-limits). |
+| `500 Server Error`       | While handling the request, something went wrong server-side. |
 
 ## Pagination
 
@@ -360,22 +378,22 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.exampl
 The response will then be:
 
 ```http
-HTTP/1.1 200 OK
-Cache-Control: no-cache
-Content-Length: 1103
-Content-Type: application/json
-Date: Mon, 18 Jan 2016 09:43:18 GMT
-Link: <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
-Status: 200 OK
-Vary: Origin
-X-Next-Page: 3
-X-Page: 2
-X-Per-Page: 3
-X-Prev-Page: 1
-X-Request-Id: 732ad4ee-9870-4866-a199-a9db0cde3c86
-X-Runtime: 0.108688
-X-Total: 8
-X-Total-Pages: 3
+HTTP/2 200 OK
+cache-control: no-cache
+content-length: 1103
+content-type: application/json
+date: Mon, 18 Jan 2016 09:43:18 GMT
+link: <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
+status: 200 OK
+vary: Origin
+x-next-page: 3
+x-page: 2
+x-per-page: 3
+x-prev-page: 1
+x-request-id: 732ad4ee-9870-4866-a199-a9db0cde3c86
+x-runtime: 0.108688
+x-total: 8
+x-total-pages: 3
 ```
 
 #### Other pagination headers
@@ -384,12 +402,12 @@ GitLab also returns the following additional pagination headers:
 
 | Header          | Description                                   |
 | --------------- | --------------------------------------------- |
-| `X-Total`       | The total number of items                     |
-| `X-Total-Pages` | The total number of pages                     |
-| `X-Per-Page`    | The number of items per page                  |
-| `X-Page`        | The index of the current page (starting at 1) |
-| `X-Next-Page`   | The index of the next page                    |
-| `X-Prev-Page`   | The index of the previous page                |
+| `x-total`       | The total number of items                     |
+| `x-total-pages` | The total number of pages                     |
+| `x-per-page`    | The number of items per page                  |
+| `x-page`        | The index of the current page (starting at 1) |
+| `x-next-page`   | The index of the next page                    |
+| `X-prev-page`   | The index of the previous page                |
 
 NOTE: **Note:**
 For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
@@ -588,7 +606,7 @@ Such errors appear in two cases:
 
 - A required attribute of the API request is missing, e.g., the title of an
   issue is not given
-- An attribute did not pass the validation, e.g., user bio is too long
+- An attribute did not pass the validation, e.g., the user bio is too long
 
 When an attribute is missing, you will get something like:
 

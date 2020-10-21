@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+
+class String
+  def red
+    "\e[31m#{self}\e[0m"
+  end
+
+  def yellow
+    "\e[33m#{self}\e[0m"
+  end
+
+  def green
+    "\e[32m#{self}\e[0m"
+  end
+
+  def bold
+    "\e[1m#{self}\e[0m"
+  end
+end
+
+flags_paths = [
+  'config/feature_flags/**/*.yml'
+]
+
+# For EE additionally process `ee/` feature flags
+if File.exist?('ee/app/models/license.rb') && !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
+  flags_paths << 'ee/config/feature_flags/**/*.yml'
+end
+
+all_flags = {}
+additional_flags = Set.new
+
+# Iterate all defined feature flags
+# to discover which were used
+flags_paths.each do |flags_path|
+  puts flags_path
+  Dir.glob(flags_path).each do |path|
+    feature_flag_name = File.basename(path, '.yml')
+
+    all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', feature_flag_name + '.used'))
+  end
+end
+
+# Iterate all used feature flags
+# to discover which flags are undefined
+Dir.glob('tmp/feature_flags/*.used').each do |path|
+  feature_flag_name = File.basename(path, '.used')
+
+  additional_flags.add(feature_flag_name) unless all_flags[feature_flag_name]
+end
+
+used_flags = all_flags.select { |name, used| used }
+unused_flags = all_flags.reject { |name, used| used }
+
+puts "=========================================".green.bold
+puts "Feature Flags usage summary:".green.bold
+puts
+
+puts "- #{all_flags.count + additional_flags.count} was found"
+puts "- #{unused_flags.count} appear(s) to be UNUSED".yellow
+puts "- #{additional_flags.count} appear(s) to be unknown".yellow
+puts "- #{used_flags.count} appear(s) to be used".green
+puts
+
+if additional_flags.count > 0
+  puts "==================================================".green.bold
+  puts "There are feature flags that appears to be unknown".yellow
+  puts
+  puts "They appear to be used by CI, but we do lack their YAML definition".yellow
+  puts "This is likely expected, so feel free to ignore that list:".yellow
+  puts
+  additional_flags.sort.each do |name|
+    puts "- #{name}".yellow
+  end
+  puts
+end
+
+if unused_flags.count > 0
+  puts "========================================".green.bold
+  puts "These feature flags appears to be UNUSED".red.bold
+  puts
+  puts "If they are really no longer needed REMOVE their .yml definition".red
+  puts "If they are needed you need to ENSURE that their usage is covered with specs to continue.".red
+  puts
+  unused_flags.keys.sort.each do |name|
+    puts "- #{name}".yellow
+  end
+  puts
+  puts "Feature flag usage check failed.".red.bold
+  exit(1)
+end
+
+puts "Everything is fine here!".green
+puts

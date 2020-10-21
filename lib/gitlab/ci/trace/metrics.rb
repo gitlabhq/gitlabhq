@@ -6,8 +6,20 @@ module Gitlab
       class Metrics
         extend Gitlab::Utils::StrongMemoize
 
-        OPERATIONS = [:appended, :streamed, :chunked, :mutated, :overwrite,
-                      :accepted, :finalized, :discarded, :conflict].freeze
+        OPERATIONS = [
+          :appended,  # new trace data has been written to a chunk
+          :streamed,  # new trace data has been sent by a runner
+          :chunked,   # new trace chunk has been created
+          :mutated,   # trace has been mutated when removing secrets
+          :overwrite, # runner requested overwritting a build trace
+          :accepted,  # scheduled chunks for migration and responded with 202
+          :finalized, # all live build trace chunks have been persisted
+          :discarded, # failed to persist live chunks before timeout
+          :conflict,  # runner has sent unrecognized build state details
+          :locked,    # build trace has been locked by a different mechanism
+          :stalled,   # failed to migrate chunk due to a worker duplication
+          :invalid    # malformed build trace has been detected using CRC32
+        ].freeze
 
         def increment_trace_operation(operation: :unknown)
           unless OPERATIONS.include?(operation)
@@ -18,7 +30,11 @@ module Gitlab
         end
 
         def increment_trace_bytes(size)
-          self.class.trace_bytes.increment(by: size.to_i)
+          self.class.trace_bytes.increment({}, size.to_i)
+        end
+
+        def observe_migration_duration(seconds)
+          self.class.finalize_histogram.observe({}, seconds.to_f)
         end
 
         def self.trace_operations
@@ -36,6 +52,17 @@ module Gitlab
             comment = 'Total amount of build trace bytes transferred'
 
             Gitlab::Metrics.counter(name, comment)
+          end
+        end
+
+        def self.finalize_histogram
+          strong_memoize(:finalize_histogram) do
+            name = :gitlab_ci_trace_finalize_duration_seconds
+            comment = 'Duration of build trace chunks migration to object storage'
+            buckets = [0.1, 0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0, 20.0, 30.0, 60.0, 300.0]
+            labels = {}
+
+            ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
           end
         end
       end

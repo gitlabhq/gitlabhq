@@ -13,6 +13,20 @@ RSpec.describe Clusters::Agent do
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
 
   describe 'scopes' do
+    describe '.ordered_by_name' do
+      let(:names) { %w(agent-d agent-b agent-a agent-c) }
+
+      subject { described_class.ordered_by_name }
+
+      before do
+        names.each do |name|
+          create(:cluster_agent, name: name)
+        end
+      end
+
+      it { expect(subject.map(&:name)).to eq(names.sort) }
+    end
+
     describe '.with_name' do
       let!(:matching_name) { create(:cluster_agent, name: 'matching-name') }
       let!(:other_name) { create(:cluster_agent, name: 'other-name') }

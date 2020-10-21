@@ -3,7 +3,7 @@
 module API
   # Internal access API
   module Internal
-    class Base < Grape::API::Instance
+    class Base < ::API::Base
       before { authenticate_by_gitlab_shell_token! }
 
       before do
@@ -99,6 +99,14 @@ module API
             @project = @container = access_checker.container
           end
         end
+
+        def validate_actor_key(actor, key_id)
+          return 'Could not find a user without a key' unless key_id
+
+          return 'Could not find the given key' unless actor.key
+
+          'Could not find a user for the given key' unless actor.user
+        end
       end
 
       namespace 'internal' do
@@ -163,27 +171,22 @@ module API
             redis: redis_ping
           }
         end
+
         post '/two_factor_recovery_codes' do
           status 200
 
           actor.update_last_used_at!
           user = actor.user
 
-          if params[:key_id]
-            unless actor.key
-              break { success: false, message: 'Could not find the given key' }
-            end
+          error_message = validate_actor_key(actor, params[:key_id])
 
-            if actor.key.is_a?(DeployKey)
-              break { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
-            end
-
-            unless user
-              break { success: false, message: 'Could not find a user for the given key' }
-            end
-          elsif params[:user_id] && user.nil?
+          if params[:user_id] && user.nil?
             break { success: false, message: 'Could not find the given user' }
+          elsif error_message
+            break { success: false, message: error_message }
           end
+
+          break { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' } if actor.key.is_a?(DeployKey)
 
           unless user.two_factor_enabled?
             break { success: false, message: 'Two-factor authentication is not enabled for this user' }
@@ -204,20 +207,14 @@ module API
           actor.update_last_used_at!
           user = actor.user
 
-          if params[:key_id]
-            unless actor.key
-              break { success: false, message: 'Could not find the given key' }
-            end
+          error_message = validate_actor_key(actor, params[:key_id])
 
-            if actor.key.is_a?(DeployKey)
-              break { success: false, message: 'Deploy keys cannot be used to create personal access tokens' }
-            end
+          break { success: false, message: 'Deploy keys cannot be used to create personal access tokens' } if actor.key.is_a?(DeployKey)
 
-            unless user
-              break { success: false, message: 'Could not find a user for the given key' }
-            end
-          elsif params[:user_id] && user.nil?
+          if params[:user_id] && user.nil?
             break { success: false, message: 'Could not find the given user' }
+          elsif error_message
+            break { success: false, message: error_message }
           end
 
           if params[:name].blank?
@@ -268,6 +265,53 @@ module API
           response = PostReceiveService.new(actor.user, repository, project, params).execute
 
           present response, with: Entities::InternalPostReceive::Response
+        end
+
+        post '/two_factor_config' do
+          status 200
+
+          break { success: false } unless Feature.enabled?(:two_factor_for_cli)
+
+          actor.update_last_used_at!
+          user = actor.user
+
+          error_message = validate_actor_key(actor, params[:key_id])
+
+          if error_message
+            { success: false, message: error_message }
+          elsif actor.key.is_a?(DeployKey)
+            { success: true, two_factor_required: false }
+          else
+            {
+              success: true,
+              two_factor_required: user.two_factor_enabled?
+            }
+          end
+        end
+
+        post '/two_factor_otp_check' do
+          status 200
+
+          break { success: false } unless Feature.enabled?(:two_factor_for_cli)
+
+          actor.update_last_used_at!
+          user = actor.user
+
+          error_message = validate_actor_key(actor, params[:key_id])
+
+          break { success: false, message: error_message } if error_message
+
+          break { success: false, message: 'Deploy keys cannot be used for Two Factor' } if actor.key.is_a?(DeployKey)
+
+          break { success: false, message: 'Two-factor authentication is not enabled for this user' } unless user.two_factor_enabled?
+
+          otp_validation_result = ::Users::ValidateOtpService.new(user).execute(params.fetch(:otp_attempt))
+
+          if otp_validation_result[:status] == :success
+            { success: true }
+          else
+            { success: false, message: 'Invalid OTP' }
+          end
         end
       end
     end

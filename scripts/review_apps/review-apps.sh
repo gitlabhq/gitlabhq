@@ -48,7 +48,13 @@ function delete_release() {
     return
   fi
 
-  helm_delete_release "${namespace}" "${release}"
+  # Check if helm release exists before attempting to delete
+  # There may be situation where k8s resources exist, but helm release does not,
+  # for example, following a failed helm install.
+  # In such cases, we still want to continue to clean up k8s resources.
+  if deploy_exists "${namespace}" "${release}"; then
+    helm_delete_release "${namespace}" "${release}"
+  fi
   kubectl_cleanup_release "${namespace}" "${release}"
 }
 
@@ -131,7 +137,7 @@ function run_task() {
   local ruby_cmd="${1}"
   local task_runner_pod=$(get_pod "task-runner")
 
-  kubectl exec -it --namespace "${namespace}" "${task_runner_pod}" -- gitlab-rails runner "${ruby_cmd}"
+  kubectl exec --namespace "${namespace}" "${task_runner_pod}" -- gitlab-rails runner "${ruby_cmd}"
 }
 
 function disable_sign_ups() {
@@ -144,7 +150,7 @@ function disable_sign_ups() {
 
   # Create the root token
   local ruby_cmd="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end"
-  run_task "${ruby_cmd}"
+  retry "run_task \"${ruby_cmd}\""
 
   # Disable sign-ups
   local signup_enabled=$(retry 'curl --silent --show-error --request PUT --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings?signup_enabled=false" | jq ".signup_enabled"')

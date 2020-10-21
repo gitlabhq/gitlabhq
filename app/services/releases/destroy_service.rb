@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Releases
-  class DestroyService < BaseService
-    include Releases::Concerns
-
+  class DestroyService < Releases::BaseService
     def execute
       return error('Release does not exist', 404) unless release
       return error('Access Denied', 403) unless allowed?

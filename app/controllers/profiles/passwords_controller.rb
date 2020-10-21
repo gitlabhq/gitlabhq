@@ -9,6 +9,8 @@ class Profiles::PasswordsController < Profiles::ApplicationController
 
   layout :determine_layout
 
+  feature_category :authentication_and_authorization
+
   def new
   end
 

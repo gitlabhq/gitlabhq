@@ -9,9 +9,6 @@
       = link_to "the file", project_blob_path(@project, tree_join(@branch_name, @file_path)), target: "_blank", rel: 'noopener noreferrer', class: 'gl-link'
       and make sure your changes will not unintentionally remove theirs.
 
-- if editing_ci_config? && show_web_ide_alert?
-  #js-suggest-web-ide-ci{ data: { dismiss_endpoint: user_callouts_path, feature_id: UserCalloutsHelper::WEB_IDE_ALERT_DISMISSED, edit_path: ide_edit_path } }
-
 .editor-title-row
   %h3.page-title.blob-edit-page-title
     Edit file

@@ -23,10 +23,10 @@ We also assume that an Artifactory instance is available and reachable from the 
 
 ## Create the simple Maven dependency
 
-First of all, you need an application to work with: in this specific case we will
-use a simple one, but it could be any Maven application. This will be the
-dependency you want to package and deploy to Artifactory, in order to be
-available to other projects.
+First, you need an application to work with: in this specific case we'll use a
+simple one, but it could be any Maven application. This will be the dependency
+you want to package and deploy to Artifactory, to be available to other
+projects.
 
 ### Prepare the dependency application
 
@@ -58,7 +58,7 @@ The application is ready to use, but you need some additional steps to deploy it
 1. Log in to Artifactory with your user's credentials.
 1. From the main screen, click on the `libs-release-local` item in the **Set Me Up** panel.
 1. Copy to clipboard the configuration snippet under the **Deploy** paragraph.
-1. Change the `url` value in order to have it configurable via variables.
+1. Change the `url` value to have it configurable by using variables.
 1. Copy the snippet in the `pom.xml` file for your project, just after the
    `dependencies` section. The snippet should look like this:
 
@@ -146,8 +146,9 @@ deploy:
     - master
 ```
 
-The runner will use the latest [Maven Docker image](https://hub.docker.com/_/maven/), which already contains all the tools and the dependencies you need to manage the project,
-in order to run the jobs.
+The runner uses the latest [Maven Docker image](https://hub.docker.com/_/maven/),
+which contains all of the tools and dependencies needed to manage the project
+and to run the jobs.
 
 Environment variables are set to instruct Maven to use the `homedir` of the repository instead of the user's home when searching for configuration and dependencies.
 

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -16,7 +16,10 @@ Queries that continue to use the old format will show no data.
 
 ## Predefined variables
 
-GitLab supports a limited set of [CI variables](../../../ci/variables/README.md) in the Prometheus query. This is particularly useful for identifying a specific environment, for example with `ci_environment_slug`. The supported variables are:
+GitLab supports a limited set of [CI variables](../../../ci/variables/README.md)
+in the Prometheus query. This is particularly useful for identifying a specific
+environment, for example with `ci_environment_slug`. Variables for Prometheus queries
+must be lowercase. The supported variables are:
 
 - `environment_filter`
 - `ci_environment_slug`
@@ -26,9 +29,6 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.md)
 - `ci_project_path`
 - `ci_environment_name`
 - `__range`
-
-NOTE: **Note:**
-Variables for Prometheus queries must be lowercase.
 
 ### environment_filter
 

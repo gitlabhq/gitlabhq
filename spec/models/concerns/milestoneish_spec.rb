@@ -102,7 +102,7 @@ RSpec.describe Milestone, 'Milestoneish' do
 
       with_them do
         before do
-          project.update(visibility_level: project_visibility_levels[visibility])
+          project.update!(visibility_level: project_visibility_levels[visibility])
         end
 
         it 'returns the proper participants' do
@@ -139,7 +139,7 @@ RSpec.describe Milestone, 'Milestoneish' do
 
       with_them do
         before do
-          project.update(visibility_level: project_visibility_levels[visibility])
+          project.update!(visibility_level: project_visibility_levels[visibility])
         end
 
         it 'returns the proper participants' do
@@ -171,7 +171,7 @@ RSpec.describe Milestone, 'Milestoneish' do
 
     context 'when project is private' do
       before do
-        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 
       it 'does not return any merge request for a non member' do
@@ -195,7 +195,7 @@ RSpec.describe Milestone, 'Milestoneish' do
 
       context 'when merge requests are available to project members' do
         before do
-          project.project_feature.update(merge_requests_access_level: ProjectFeature::PRIVATE)
+          project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
         end
 
         it 'does not return any merge request for a non member' do

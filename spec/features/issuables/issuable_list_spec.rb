@@ -48,6 +48,14 @@ RSpec.describe 'issuable list', :js do
     end
   end
 
+  it 'displays a warning if counting the number of issues times out' do
+    allow_any_instance_of(IssuesFinder).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
+
+    visit_issuable_list(:issue)
+
+    expect(page).to have_text('Open ? Closed ? All ?')
+  end
+
   it "counts merge requests closing issues icons for each issue" do
     visit_issuable_list(:issue)
 

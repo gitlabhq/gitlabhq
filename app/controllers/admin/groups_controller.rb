@@ -5,6 +5,8 @@ class Admin::GroupsController < Admin::ApplicationController
 
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
+  feature_category :subgroups
+
   def index
     @groups = groups.sort_by_attribute(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?

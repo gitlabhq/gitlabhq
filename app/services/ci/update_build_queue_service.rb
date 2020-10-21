@@ -9,9 +9,7 @@ module Ci
     private
 
     def tick_for(build, runners)
-      if Feature.enabled?(:ci_update_queues_for_online_runners, build.project, default_enabled: true)
-        runners = runners.with_recent_runner_queue
-      end
+      runners = runners.with_recent_runner_queue
 
       runners.each do |runner|
         runner.pick_build!(build)

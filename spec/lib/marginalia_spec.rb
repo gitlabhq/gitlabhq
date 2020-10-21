@@ -24,18 +24,6 @@ RSpec.describe 'Marginalia spec' do
     end
   end
 
-  def stub_feature(value)
-    allow(Gitlab::Marginalia).to receive(:cached_feature_enabled?).and_return(value)
-  end
-
-  def make_request(correlation_id)
-    request_env = Rack::MockRequest.env_for('/')
-
-    ::Labkit::Correlation::CorrelationId.use_id(correlation_id) do
-      MarginaliaTestController.action(:first_user).call(request_env)
-    end
-  end
-
   describe 'For rails web requests' do
     let(:correlation_id) { SecureRandom.uuid }
     let(:recorded) { ActiveRecord::QueryRecorder.new { make_request(correlation_id) } }
@@ -147,6 +135,19 @@ RSpec.describe 'Marginalia spec' do
         expect(recorded.log.last).not_to include("/*")
         expect(recorded.log.last).not_to include("*/")
       end
+    end
+  end
+
+  def stub_feature(value)
+    stub_feature_flags(marginalia: value)
+    Gitlab::Marginalia.set_enabled_from_feature_flag
+  end
+
+  def make_request(correlation_id)
+    request_env = Rack::MockRequest.env_for('/')
+
+    ::Labkit::Correlation::CorrelationId.use_id(correlation_id) do
+      MarginaliaTestController.action(:first_user).call(request_env)
     end
   end
 end

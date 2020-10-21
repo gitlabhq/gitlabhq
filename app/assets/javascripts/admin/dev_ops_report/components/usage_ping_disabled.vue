@@ -10,16 +10,16 @@ export default {
   },
   inject: {
     isAdmin: {
-      type: Boolean,
+      default: false,
     },
     svgPath: {
-      type: String,
+      default: '',
     },
     docsLink: {
-      type: String,
+      default: '',
     },
     primaryButtonPath: {
-      type: String,
+      default: '',
     },
   },
 };

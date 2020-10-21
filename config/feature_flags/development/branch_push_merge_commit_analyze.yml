@@ -1,7 +1,0 @@
----
-name: branch_push_merge_commit_analyze
-introduced_by_url: 
-rollout_issue_url: 
-group: 
-type: development
-default_enabled: true

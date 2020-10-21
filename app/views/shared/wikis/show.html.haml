@@ -1,10 +1,10 @@
 - wiki_page_title @page
+- add_page_specific_style 'page_bundles/wiki'
 
 .wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row
   = wiki_sidebar_toggle_button
 
   .nav-text.flex-fill
-    %h2.wiki-page-title{ data: { qa_selector: 'wiki_page_title' } }= @page.human_title
     %span.wiki-last-edit-by
       - if @page.last_version
         = (_("Last edited by %{name}") % { name: "<strong>#{@page.last_version.author_name}</strong>" }).html_safe
@@ -20,8 +20,13 @@
     - history_link = link_to s_("WikiHistoricalPage|history"), wiki_page_path(@wiki, @page, action: :history)
     = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
-.gl-mt-3.gl-mb-3
-  .js-wiki-page-content.md{ data: { qa_selector: 'wiki_page_content', tracking_context: wiki_page_tracking_context(@page).to_json } }
+.gl-mt-5.gl-mb-3
+  .gl-display-flex.gl-justify-content-space-between
+    %h2.gl-mt-0.gl-mb-5{ data: { qa_selector: 'wiki_page_title', testid: 'wiki_page_title' } }= @page.human_title
+    %div
+      - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
+        = link_to sprite_icon('pencil', css_class: 'gl-icon'), wiki_page_path(@wiki, @page, action: :edit), title: 'Edit', role: "button", class: 'btn gl-button btn-icon btn-default js-wiki-edit', data: { qa_selector: 'edit_page_button', testid: 'wiki_edit_button' }
+  .js-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki_page_content', tracking_context: wiki_page_tracking_context(@page).to_json } }
     = render_wiki_content(@page)
 
 = render 'shared/wikis/sidebar'

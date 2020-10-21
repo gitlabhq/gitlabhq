@@ -26,4 +26,8 @@ RSpec.describe Gitlab::Ci::Status::Created do
   describe '#group' do
     it { expect(subject.group).to eq 'created' }
   end
+
+  describe '#details_path' do
+    it { expect(subject.details_path).to be_nil }
+  end
 end

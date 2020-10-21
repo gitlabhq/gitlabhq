@@ -15,7 +15,7 @@ RSpec.describe 'Manually create a todo item from issue', :js do
 
   it 'creates todo when clicking button' do
     page.within '.issuable-sidebar' do
-      click_button 'Add a To Do'
+      click_button 'Add a to do'
       expect(page).to have_content 'Mark as done'
     end
 
@@ -32,7 +32,7 @@ RSpec.describe 'Manually create a todo item from issue', :js do
 
   it 'marks a todo as done' do
     page.within '.issuable-sidebar' do
-      click_button 'Add a To Do'
+      click_button 'Add a to do'
       click_button 'Mark as done'
     end
 

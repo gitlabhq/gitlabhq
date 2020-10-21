@@ -5,8 +5,10 @@ import HighlightBar from './highlight_bar.vue';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import Tracking from '~/tracking';
 
 import getAlert from './graphql/queries/get_alert.graphql';
+import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 
 export default {
   components: {
@@ -45,12 +47,14 @@ export default {
     loading() {
       return this.$apollo.queries.alert.loading;
     },
-    alertTableFields() {
-      if (this.alert) {
-        const { detailsUrl, __typename, ...restDetails } = this.alert;
-        return restDetails;
-      }
-      return null;
+  },
+  mounted() {
+    this.trackPageViews();
+  },
+  methods: {
+    trackPageViews() {
+      const { category, action } = trackIncidentDetailsViewsOptions;
+      Tracking.event(category, action);
     },
   },
 };
@@ -60,11 +64,11 @@ export default {
   <div>
     <gl-tabs content-class="gl-reset-line-height" class="gl-mt-n3" data-testid="incident-tabs">
       <gl-tab :title="s__('Incident|Summary')">
-        <highlight-bar v-if="alert" :alert="alert" />
+        <highlight-bar :alert="alert" />
         <description-component v-bind="$attrs" />
       </gl-tab>
       <gl-tab v-if="alert" class="alert-management-details" :title="s__('Incident|Alert details')">
-        <alert-details-table :alert="alertTableFields" :loading="loading" />
+        <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
     </gl-tabs>
   </div>

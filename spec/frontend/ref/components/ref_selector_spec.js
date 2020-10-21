@@ -313,7 +313,7 @@ describe('Ref selector component', () => {
             findBranchesSection()
               .find('[data-testid="section-header"]')
               .text(),
-          ).toBe('Branches 123');
+          ).toMatchInterpolatedText('Branches 123');
         });
 
         it("does not render an error message in the branches section's body", () => {
@@ -392,7 +392,7 @@ describe('Ref selector component', () => {
             findTagsSection()
               .find('[data-testid="section-header"]')
               .text(),
-          ).toBe('Tags 456');
+          ).toMatchInterpolatedText('Tags 456');
         });
 
         it("does not render an error message in the tags section's body", () => {
@@ -460,7 +460,7 @@ describe('Ref selector component', () => {
             findCommitsSection()
               .find('[data-testid="section-header"]')
               .text(),
-          ).toBe('Commits 1');
+          ).toMatchInterpolatedText('Commits 1');
         });
 
         it("does not render an error message in the comits section's body", () => {

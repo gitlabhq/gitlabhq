@@ -21,6 +21,8 @@ class Projects::CommitController < Projects::ApplicationController
 
   BRANCH_SEARCH_LIMIT = 1000
 
+  feature_category :source_code_management
+
   def show
     apply_diff_view_cookie!
 

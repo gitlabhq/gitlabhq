@@ -10,9 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
 > - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
-Epics let you manage your portfolio of projects more efficiently and with less
-effort by tracking groups of issues that share a theme, across projects and
-milestones.
+Epics let you manage your portfolio of projects more efficiently by tracking groups of issues that
+share a theme across projects and milestones.
 
 An epic's page contains the following tabs:
 
@@ -22,7 +21,7 @@ An epic's page contains the following tabs:
   - Hover over the total counts to see a breakdown of open and closed items.
 
   NOTE: **Note:**
-  The number provided here includes all epics associated with this project. The number includes epics for which users may not currently have permission.
+  The number provided here includes all epics associated with this project. The number includes epics for which users may not yet have permission.
 
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
 
@@ -65,16 +64,19 @@ graph TD
 ```
 
 See [Manage issues assigned to an epic](manage_epics.md#manage-issues-assigned-to-an-epic) for steps
-to add an issue to an epic, reorder issues, move issues between epics, or promote an issue to an epic.
+to:
+
+- Add an issue to an epic
+- Reorder issues
+- Move an issue between epics
+- Promote an issue to an epic
 
 ## Issue health status in Epic tree **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199184) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - The health status of a closed issue [will be hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
+> - The health status of a closed issue [is hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
 
-You can report on and quickly respond to the health of individual issues and epics by setting a
-red, amber, or green [health status on an issue](../../project/issues/index.md#health-status),
-which will appear on your Epic tree.
+Report or respond to the health of issues and epics by setting a red, amber, or green [health status](../../project/issues/index.md#health-status), which then appears on your Epic tree.
 
 ### Disable Issue health status in Epic tree
 
@@ -100,7 +102,7 @@ steps to create, move, reorder, or delete child epics.
 To set a **Start date** and **Due date** for an epic, select one of the following:
 
 - **Fixed**: Enter a fixed value.
-- **From milestones**: Inherit a dynamic value from the milestones currently assigned to the epic's issues.
+- **From milestones**: Inherit a dynamic value from the milestones that are assigned to the epic's issues.
   Note that GitLab 12.5 replaced this option with **Inherited**.
 - **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**).
 
@@ -108,10 +110,10 @@ To set a **Start date** and **Due date** for an epic, select one of the followin
 
 > [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 by **Inherited**.
 
-If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
-start date across all milestones that are currently assigned to the issues that are added to the epic.
-Similarly, if you select **From milestones** for the due date, GitLab will set it to be the latest due date across
-all milestones that are currently assigned to those issues.
+If you select **From milestones** for the start date, GitLab automatically sets the date to be earliest
+start date across all milestones that are assigned to the issues that belong to the epic.
+If you select **From milestones** for the due date, GitLab sets the date to be the latest due date across
+all milestones that are assigned to those issues.
 
 These are dynamic dates which are recalculated if any of the following occur:
 
@@ -138,8 +140,8 @@ These are dynamic dates and recalculated if any of the following occur:
 - Issues are added to, or removed from, the epic.
 
 Because the epic's dates can inherit dates from its children, the start date and due date propagate from the bottom to the top.
-If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic,
-then the parent epic's start date will reflect the change and this will propagate upwards to the top epic.
+If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic.
+The parent epic's start date then reflects this change and propagates upwards to the top epic.
 
 ## Roadmap in epics
 
@@ -153,11 +155,11 @@ have a [start or due date](#start-date-and-due-date), a
 
 ## Permissions
 
-If you have access to view an epic and have access to view an issue already
-added to that epic, then you can view the issue in the epic issue list.
+If you have access to view an epic and an issue added to that epic, you can view the issue in the
+epic's issue list.
 
-If you have access to edit an epic and have access to edit an issue, then you
-can add the issue to or remove it from the epic.
+If you have access to edit an epic and an issue added to that epic, you can add the issue to or
+remove it from the epic.
 
 Note that for a given group, the visibility of all projects must be the same as
 the group, or less restrictive. That means if you have access to a group's epic,
@@ -175,8 +177,8 @@ You can also consult the [group permissions table](../../permissions.md#group-me
 
 Once you write your comment, you can either:
 
-- Click **Comment**, and your comment will be published.
-- Click **Start thread**, and you will start a thread within that epic's discussion.
+- Click **Comment** to publish your comment.
+- Click **Start thread** to start a thread within that epic's discussion.
 
 ### Activity sort order
 

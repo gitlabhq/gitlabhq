@@ -5,7 +5,7 @@
     = s_('GitLabPages|Pages')
 
     - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
-      = link_to new_project_pages_domain_path(@project), class: 'btn btn-success float-right', title: s_('GitLabPages|New Domain') do
+      = link_to new_project_pages_domain_path(@project), class: 'btn gl-button btn-success float-right', title: s_('GitLabPages|New Domain') do
         = s_('GitLabPages|New Domain')
 
   %p.light

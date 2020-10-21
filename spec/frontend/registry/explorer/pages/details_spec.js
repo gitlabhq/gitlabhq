@@ -3,6 +3,7 @@ import { GlPagination } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/details.vue';
 import DeleteAlert from '~/registry/explorer/components/details_page/delete_alert.vue';
+import PartialCleanupAlert from '~/registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import DetailsHeader from '~/registry/explorer/components/details_page/details_header.vue';
 import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.vue';
 import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
@@ -30,8 +31,10 @@ describe('Details Page', () => {
   const findDeleteAlert = () => wrapper.find(DeleteAlert);
   const findDetailsHeader = () => wrapper.find(DetailsHeader);
   const findEmptyTagsState = () => wrapper.find(EmptyTagsState);
+  const findPartialCleanupAlert = () => wrapper.find(PartialCleanupAlert);
 
-  const routeId = window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar' }));
+  const routeIdGenerator = override =>
+    window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar', ...override }));
 
   const tagsArrayToSelectedTags = tags =>
     tags.reduce((acc, c) => {
@@ -39,7 +42,7 @@ describe('Details Page', () => {
       return acc;
     }, {});
 
-  const mountComponent = options => {
+  const mountComponent = ({ options, routeParams } = {}) => {
     wrapper = shallowMount(component, {
       store,
       stubs: {
@@ -48,7 +51,7 @@ describe('Details Page', () => {
       mocks: {
         $route: {
           params: {
-            id: routeId,
+            id: routeIdGenerator(routeParams),
           },
         },
       },
@@ -224,7 +227,7 @@ describe('Details Page', () => {
           findDeleteModal().vm.$emit('confirmDelete');
           expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTag', {
             tag: store.state.tags[0],
-            params: routeId,
+            params: routeIdGenerator(),
           });
         });
       });
@@ -239,7 +242,7 @@ describe('Details Page', () => {
           findDeleteModal().vm.$emit('confirmDelete');
           expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTags', {
             ids: store.state.tags.map(t => t.name),
-            params: routeId,
+            params: routeIdGenerator(),
           });
         });
       });
@@ -273,11 +276,57 @@ describe('Details Page', () => {
     it('has the correct props', () => {
       store.commit(SET_INITIAL_STATE, { ...config });
       mountComponent({
-        data: () => ({
-          deleteAlertType,
-        }),
+        options: {
+          data: () => ({
+            deleteAlertType,
+          }),
+        },
       });
       expect(findDeleteAlert().props()).toEqual({ ...config, deleteAlertType });
+    });
+  });
+
+  describe('Partial Cleanup Alert', () => {
+    const config = {
+      runCleanupPoliciesHelpPagePath: 'foo',
+      cleanupPoliciesHelpPagePath: 'bar',
+    };
+
+    describe('when expiration_policy_started is not null', () => {
+      const routeParams = { cleanup_policy_started_at: Date.now().toString() };
+
+      it('exists', () => {
+        mountComponent({ routeParams });
+
+        expect(findPartialCleanupAlert().exists()).toBe(true);
+      });
+
+      it('has the correct props', () => {
+        store.commit(SET_INITIAL_STATE, { ...config });
+
+        mountComponent({ routeParams });
+
+        expect(findPartialCleanupAlert().props()).toEqual({ ...config });
+      });
+
+      it('dismiss hides the component', async () => {
+        mountComponent({ routeParams });
+
+        expect(findPartialCleanupAlert().exists()).toBe(true);
+        findPartialCleanupAlert().vm.$emit('dismiss');
+
+        await wrapper.vm.$nextTick();
+
+        expect(findPartialCleanupAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('when expiration_policy_started is null', () => {
+      it('the component is hidden', () => {
+        mountComponent();
+
+        expect(findPartialCleanupAlert().exists()).toBe(false);
+      });
     });
   });
 });

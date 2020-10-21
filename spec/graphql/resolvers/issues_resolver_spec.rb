@@ -46,6 +46,13 @@ RSpec.describe Resolvers::IssuesResolver do
         expect(resolve_issues(assignee_username: assignee.username)).to contain_exactly(issue2)
       end
 
+      it 'filters by two assignees' do
+        assignee2 = create(:user)
+        issue2.update!(assignees: [assignee, assignee2])
+
+        expect(resolve_issues(assignee_id: [assignee.id, assignee2.id])).to contain_exactly(issue2)
+      end
+
       it 'filters by assignee_id' do
         expect(resolve_issues(assignee_id: assignee.id)).to contain_exactly(issue2)
       end
@@ -56,6 +63,10 @@ RSpec.describe Resolvers::IssuesResolver do
 
       it 'filters by no assignee' do
         expect(resolve_issues(assignee_id: IssuableFinder::Params::FILTER_NONE)).to contain_exactly(issue1)
+      end
+
+      it 'filters by author' do
+        expect(resolve_issues(author_username: issue1.author.username)).to contain_exactly(issue1, issue2)
       end
 
       it 'filters by labels' do
@@ -219,6 +230,21 @@ RSpec.describe Resolvers::IssuesResolver do
             expect(resolve_issues(sort: :milestone_due_desc).items).to eq([milestone_issue3, milestone_issue2, milestone_issue1])
           end
         end
+
+        context 'when sorting by severity' do
+          let_it_be(:project) { create(:project) }
+          let_it_be(:issue_high_severity) { create_issue_with_severity(project, severity: :high) }
+          let_it_be(:issue_low_severity) { create_issue_with_severity(project, severity: :low) }
+          let_it_be(:issue_no_severity) { create(:incident, project: project) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :severity_asc)).to eq([issue_no_severity, issue_low_severity, issue_high_severity])
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :severity_desc)).to eq([issue_high_severity, issue_low_severity, issue_no_severity])
+          end
+        end
       end
 
       it 'returns issues user can see' do
@@ -302,6 +328,13 @@ RSpec.describe Resolvers::IssuesResolver do
 
     expect(field.to_graphql.complexity.call({}, {}, 1)).to eq 4
     expect(field.to_graphql.complexity.call({}, { labelName: 'foo' }, 1)).to eq 8
+  end
+
+  def create_issue_with_severity(project, severity:)
+    issue = create(:incident, project: project)
+    create(:issuable_severity, issue: issue, severity: severity)
+
+    issue
   end
 
   def resolve_issues(args = {}, context = { current_user: current_user })

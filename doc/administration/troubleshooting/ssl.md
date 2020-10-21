@@ -23,7 +23,7 @@ After configuring a GitLab instance with an internal CA certificate, you might n
   More details here: https://curl.haxx.se/docs/sslcerts.html
   ```
 
-- Testing via the [rails console](debug.md#starting-a-rails-console-session) also fails:
+- Testing via the [rails console](../operations/rails_console.md#starting-a-rails-console-session) also fails:
 
   ```ruby
   uri = URI.parse("https://gitlab.domain.tld")
@@ -205,6 +205,6 @@ Some of these errors come from the Excon Ruby gem, and could be generated in cir
 where GitLab is configured to initiate an HTTPS session to a remote server
 that is serving just HTTP.
 
-One scenario is that you're using [object storage](../high_availability/object_storage.md)
+One scenario is that you're using [object storage](../object_storage.md)
 which is not served under HTTPS. GitLab is misconfigured and attempts a TLS handshake,
 but the object storage will respond with plain HTTP.

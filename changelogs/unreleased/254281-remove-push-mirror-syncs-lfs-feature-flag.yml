@@ -1,0 +1,5 @@
+---
+title: Sync LFS objects when push mirroring over HTTPS
+merge_request: 44457
+author:
+type: added

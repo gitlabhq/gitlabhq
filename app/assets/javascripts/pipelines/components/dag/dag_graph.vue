@@ -1,14 +1,7 @@
 <script>
 import * as d3 from 'd3';
 import { uniqueId } from 'lodash';
-import {
-  LINK_SELECTOR,
-  NODE_SELECTOR,
-  PARSE_FAILURE,
-  ADD_NOTE,
-  REMOVE_NOTE,
-  REPLACE_NOTES,
-} from './constants';
+import { LINK_SELECTOR, NODE_SELECTOR, ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from './constants';
 import {
   currentIsLive,
   getLiveLinksAsDict,
@@ -17,8 +10,9 @@ import {
   toggleLinkHighlight,
   togglePathHighlights,
 } from './interactions';
-import { getMaxNodes, removeOrphanNodes } from './parsing_utils';
+import { getMaxNodes, removeOrphanNodes } from '../parsing_utils';
 import { calculateClip, createLinkPath, createSankey, labelPosition } from './drawing_utils';
+import { PARSE_FAILURE } from '../../constants';
 
 export default {
   viewOptions: {

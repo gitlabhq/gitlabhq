@@ -64,7 +64,7 @@ RSpec.describe "Projects > Settings > Pipelines settings" do
     it 'updates forward_deployment_enabled' do
       visit project_settings_ci_cd_path(project)
 
-      checkbox = find_field('project_forward_deployment_enabled')
+      checkbox = find_field('project_ci_cd_settings_attributes_forward_deployment_enabled')
       expect(checkbox).to be_checked
 
       checkbox.set(false)
@@ -79,7 +79,7 @@ RSpec.describe "Projects > Settings > Pipelines settings" do
         expect(page).to have_button('Save changes', disabled: false)
       end
 
-      checkbox = find_field('project_forward_deployment_enabled')
+      checkbox = find_field('project_ci_cd_settings_attributes_forward_deployment_enabled')
       expect(checkbox).not_to be_checked
     end
 

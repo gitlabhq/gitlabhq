@@ -39,6 +39,10 @@ module Types
             null: true,
             resolver: ::Resolvers::DesignManagement::DesignResolver,
             description: 'Find a specific design'
+
+      field :copy_state, ::Types::DesignManagement::DesignCollectionCopyStateEnum,
+            null: true,
+            description: 'Copy state of the design collection'
     end
   end
 end

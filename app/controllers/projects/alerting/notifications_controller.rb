@@ -10,6 +10,8 @@ module Projects
 
       prepend_before_action :repository, :project_without_auth
 
+      feature_category :alert_management
+
       def create
         token = extract_alert_manager_token(request)
         result = notify_service.execute(token)

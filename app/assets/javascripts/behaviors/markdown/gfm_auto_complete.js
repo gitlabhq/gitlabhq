@@ -14,7 +14,6 @@ export default function initGFMInput($els) {
       milestones: enableGFM,
       mergeRequests: enableGFM,
       labels: enableGFM,
-      vulnerabilities: enableGFM,
     });
   });
 }

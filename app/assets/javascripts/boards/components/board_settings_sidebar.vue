@@ -1,5 +1,5 @@
 <script>
-import { GlDrawer, GlLabel } from '@gitlab/ui';
+import { GlButton, GlDrawer, GlLabel } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import boardsStore from '~/boards/stores/boards_store';
@@ -17,6 +17,7 @@ export default {
   label: 'label',
   labelListText: __('Label'),
   components: {
+    GlButton,
     GlDrawer,
     GlLabel,
     BoardSettingsSidebarWipLimit: () =>
@@ -25,16 +26,23 @@ export default {
       import('ee_component/boards/components/board_settings_list_types.vue'),
   },
   mixins: [glFeatureFlagMixin()],
+  props: {
+    canAdminList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
-    ...mapGetters(['isSidebarOpen']),
+    ...mapGetters(['isSidebarOpen', 'shouldUseGraphQL']),
     ...mapState(['activeId', 'sidebarType', 'boardLists']),
     activeList() {
       /*
         Warning: Though a computed property it is not reactive because we are
         referencing a List Model class. Reactivity only applies to plain JS objects
       */
-      if (this.glFeatures.graphqlBoardLists) {
-        return this.boardLists.find(({ id }) => id === this.activeId);
+      if (this.shouldUseGraphQL) {
+        return this.boardLists[this.activeId];
       }
       return boardsStore.state.lists.find(({ id }) => id === this.activeId);
     },
@@ -61,6 +69,13 @@ export default {
     ...mapActions(['unsetActiveId']),
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+    },
+    deleteBoard() {
+      // eslint-disable-next-line no-alert
+      if (window.confirm(__('Are you sure you want to delete this list?'))) {
+        this.activeList.destroy();
+        this.unsetActiveId();
+      }
     },
   },
 };
@@ -91,6 +106,16 @@ export default {
         :board-list-type="boardListType"
       />
       <board-settings-sidebar-wip-limit :max-issue-count="activeList.maxIssueCount" />
+      <div v-if="canAdminList && !activeList.preset && activeList.id" class="gl-m-4">
+        <gl-button
+          variant="danger"
+          category="secondary"
+          icon="remove"
+          data-testid="remove-list"
+          @click.stop="deleteBoard"
+          >{{ __('Remove list') }}
+        </gl-button>
+      </div>
     </template>
   </gl-drawer>
 </template>

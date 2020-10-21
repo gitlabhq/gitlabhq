@@ -1,7 +1,7 @@
 ---
 name: deploy_tokens_api
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25219
+rollout_issue_url:
+group: group::package
 type: development
 default_enabled: true

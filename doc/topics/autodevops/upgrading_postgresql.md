@@ -178,8 +178,11 @@ You can also
    PostgreSQL.
 1. Set `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value. This flag is a
    safeguard to prevent accidental deletion of databases.
-1. Set `POSTGRES_VERSION` to `11.7`. This is the minimum PostgreSQL
-   version supported.
+   <!-- DO NOT REPLACE when upgrading GitLab's supported version. This is NOT related to GitLab's PostgreSQL version support, but the one deployed by Auto DevOps. -->
+1. If you have a `POSTGRES_VERSION` set, make sure it is set to `9.6.16` *or
+higher*. This is the
+   minimum PostgreSQL version supported by Auto DevOps. See also the list of
+   [tags available](https://hub.docker.com/r/bitnami/postgresql/tags).
 1. Set `PRODUCTION_REPLICAS` to `0`. For other environments, use
    `REPLICAS` with an [environment scope](../../ci/environments/index.md#scoping-environments-with-specs).
 1. If you have set the `DB_INITIALIZE` or `DB_MIGRATE` variables, either

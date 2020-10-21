@@ -24,33 +24,11 @@ RSpec.describe 'Issue Boards', :js do
   context 'no lists' do
     before do
       visit project_board_path(project, board)
-      wait_for_requests
-      expect(page).to have_selector('.board', count: 3)
-    end
-
-    it 'shows blank state' do
-      expect(page).to have_content('Welcome to your Issue Board!')
-    end
-
-    it 'shows tooltip on add issues button' do
-      button = page.find('.filter-dropdown-container button', text: 'Add issues')
-
-      expect(button[:"data-original-title"]).to eq("Please add a list to your board first")
-    end
-
-    it 'hides the blank state when clicking nevermind button' do
-      page.within(find('.board-blank-state')) do
-        click_button("Nevermind, I'll use my own")
-      end
-      expect(page).to have_selector('.board', count: 2)
     end
 
     it 'creates default lists' do
       lists = ['Open', 'To Do', 'Doing', 'Closed']
 
-      page.within(find('.board-blank-state')) do
-        click_button('Add default lists')
-      end
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 4)
@@ -181,9 +159,7 @@ RSpec.describe 'Issue Boards', :js do
     end
 
     it 'allows user to delete board' do
-      page.within(find('.board:nth-child(2)')) do
-        accept_confirm { find('.board-delete').click }
-      end
+      remove_list
 
       wait_for_requests
 
@@ -196,9 +172,7 @@ RSpec.describe 'Issue Boards', :js do
 
       find('.js-new-board-list').click
 
-      page.within(find('.board:nth-child(2)')) do
-        accept_confirm { find('.board-delete').click }
-      end
+      remove_list
 
       wait_for_requests
 
@@ -690,6 +664,16 @@ RSpec.describe 'Issue Boards', :js do
       expect(page).to have_button(link_text)
 
       click_button(link_text)
+    end
+  end
+
+  def remove_list
+    page.within(find('.board:nth-child(2)')) do
+      find('button[title="List settings"]').click
+    end
+
+    page.within(find('.js-board-settings-sidebar')) do
+      accept_confirm { find('[data-testid="remove-list"]').click }
     end
   end
 end

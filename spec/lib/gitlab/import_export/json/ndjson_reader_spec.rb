@@ -102,4 +102,14 @@ RSpec.describe Gitlab::ImportExport::JSON::NdjsonReader do
       end
     end
   end
+
+  describe '#clear_consumed_relations' do
+    let(:dir_path) { fixture }
+
+    subject { ndjson_reader.clear_consumed_relations }
+
+    it 'returns empty set' do
+      expect(subject).to be_empty
+    end
+  end
 end

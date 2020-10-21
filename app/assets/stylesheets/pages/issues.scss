@@ -1,38 +1,3 @@
-.issues-list {
-  &.manual-ordering {
-    background-color: $gray-light;
-    border-radius: $border-radius-default;
-    padding: $gl-padding-8;
-
-    .issue {
-      background-color: $white;
-      margin-bottom: $gl-padding-8;
-      border-radius: $border-radius-default;
-      border: 1px solid $gray-100;
-      box-shadow: 0 1px 2px $issue-boards-card-shadow;
-    }
-  }
-
-  .issue {
-    padding: 10px $gl-padding;
-    position: relative;
-
-    .title {
-      margin-bottom: 2px;
-    }
-
-    .issue-labels,
-    .author-link {
-      display: inline-block;
-    }
-
-    .icon-merge-request-unmerged {
-      height: 13px;
-      margin-bottom: 3px;
-    }
-  }
-}
-
 .issue-realtime-pre-pulse {
   opacity: 0;
 }
@@ -368,14 +333,4 @@ ul.related-merge-requests > li {
 .issuable-header-slide-enter,
 .issuable-header-slide-leave-to {
   transform: translateY(-100%);
-}
-
-.issuable-list-root {
-  .gl-label-link {
-    text-decoration: none;
-
-    &:hover {
-      color: inherit;
-    }
-  }
 }

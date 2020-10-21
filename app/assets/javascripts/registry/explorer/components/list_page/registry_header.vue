@@ -1,5 +1,4 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { n__, sprintf } from '~/locale';
@@ -15,8 +14,6 @@ import {
 
 export default {
   components: {
-    GlSprintf,
-    GlLink,
     TitleArea,
     MetadataItem,
   },
@@ -54,8 +51,6 @@ export default {
   },
   i18n: {
     CONTAINER_REGISTRY_TITLE,
-    LIST_INTRO_TEXT,
-    EXPIRATION_POLICY_DISABLED_MESSAGE,
   },
   computed: {
     imagesCountText() {
@@ -83,52 +78,40 @@ export default {
         !this.expirationPolicyEnabled && this.imagesCount > 0 && !this.hideExpirationPolicyData
       );
     },
+    infoMessages() {
+      const base = [{ text: LIST_INTRO_TEXT, link: this.helpPagePath }];
+      return this.showExpirationPolicyTip
+        ? [
+            ...base,
+            { text: EXPIRATION_POLICY_DISABLED_MESSAGE, link: this.expirationPolicyHelpPagePath },
+          ]
+        : base;
+    },
   },
 };
 </script>
 
 <template>
-  <div>
-    <title-area :title="$options.i18n.CONTAINER_REGISTRY_TITLE">
-      <template #right-actions>
-        <slot name="commands"></slot>
-      </template>
-      <template #metadata_count>
-        <metadata-item
-          v-if="imagesCount"
-          data-testid="images-count"
-          icon="container-image"
-          :text="imagesCountText"
-        />
-      </template>
-      <template #metadata_exp_policies>
-        <metadata-item
-          v-if="!hideExpirationPolicyData"
-          data-testid="expiration-policy"
-          icon="expire"
-          :text="expirationPolicyText"
-          size="xl"
-        />
-      </template>
-    </title-area>
-
-    <div data-testid="info-area">
-      <p>
-        <span data-testid="default-intro">
-          <gl-sprintf :message="$options.i18n.LIST_INTRO_TEXT">
-            <template #docLink="{content}">
-              <gl-link :href="helpPagePath" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </span>
-        <span v-if="showExpirationPolicyTip" data-testid="expiration-disabled-message">
-          <gl-sprintf :message="$options.i18n.EXPIRATION_POLICY_DISABLED_MESSAGE">
-            <template #docLink="{content}">
-              <gl-link :href="expirationPolicyHelpPagePath" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </span>
-      </p>
-    </div>
-  </div>
+  <title-area :title="$options.i18n.CONTAINER_REGISTRY_TITLE" :info-messages="infoMessages">
+    <template #right-actions>
+      <slot name="commands"></slot>
+    </template>
+    <template #metadata-count>
+      <metadata-item
+        v-if="imagesCount"
+        data-testid="images-count"
+        icon="container-image"
+        :text="imagesCountText"
+      />
+    </template>
+    <template #metadata-exp-policies>
+      <metadata-item
+        v-if="!hideExpirationPolicyData"
+        data-testid="expiration-policy"
+        icon="expire"
+        :text="expirationPolicyText"
+        size="xl"
+      />
+    </template>
+  </title-area>
 </template>

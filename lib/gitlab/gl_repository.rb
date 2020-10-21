@@ -4,6 +4,8 @@ module Gitlab
   class GlRepository
     include Singleton
 
+    # TODO: Refactor these constants into proper classes
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/259008
     PROJECT = RepoType.new(
       name: :project,
       access_checker_class: Gitlab::GitAccessProject,
@@ -12,8 +14,12 @@ module Gitlab
     WIKI = RepoType.new(
       name: :wiki,
       access_checker_class: Gitlab::GitAccessWiki,
-      repository_resolver: -> (container) { ::Repository.new(container.wiki.full_path, container, shard: container.wiki.repository_storage, disk_path: container.wiki.disk_path, repo_type: WIKI) },
-      project_resolver: -> (container) { container.is_a?(Project) ? container : nil },
+      repository_resolver: -> (container) do
+        wiki = container.is_a?(Wiki) ? container : container.wiki # Also allow passing a Project, Group, or Geo::DeletedProject
+        ::Repository.new(wiki.full_path, wiki, shard: wiki.repository_storage, disk_path: wiki.disk_path, repo_type: WIKI)
+      end,
+      container_class: ProjectWiki,
+      project_resolver: -> (wiki) { wiki.try(:project) },
       suffix: :wiki
     ).freeze
     SNIPPET = RepoType.new(

@@ -98,6 +98,29 @@ RSpec.describe 'gitlab:db namespace rake task' do
     end
   end
 
+  describe 'unattended' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:schema_migration_table_exists, :needs_migrations, :rake_output) do
+      false | false | "unattended_migrations_completed"
+      false | true | "unattended_migrations_completed"
+      true | false | "unattended_migrations_static"
+      true | true | "unattended_migrations_completed"
+    end
+
+    before do
+      allow(Rake::Task['gitlab:db:configure']).to receive(:invoke).and_return(true)
+    end
+
+    with_them do
+      it 'outputs changed message for automation after operations happen' do
+        allow(ActiveRecord::Base.connection.schema_migration).to receive(:table_exists?).and_return(schema_migration_table_exists)
+        allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migrations)
+        expect { run_rake_task('gitlab:db:unattended') }. to output(/^#{rake_output}$/).to_stdout
+      end
+    end
+  end
+
   describe 'clean_structure_sql' do
     let_it_be(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
     let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
@@ -164,25 +187,77 @@ RSpec.describe 'gitlab:db namespace rake task' do
     end
   end
 
+  describe 'drop_tables' do
+    subject { run_rake_task('gitlab:db:drop_tables') }
+
+    let(:tables) { %w(one two) }
+    let(:views) { %w(three four) }
+    let(:connection) { ActiveRecord::Base.connection }
+
+    before do
+      allow(connection).to receive(:execute).and_return(nil)
+
+      allow(connection).to receive(:tables).and_return(tables)
+      allow(connection).to receive(:views).and_return(views)
+    end
+
+    it 'drops all tables, except schema_migrations' do
+      expect(connection).to receive(:execute).with('DROP TABLE IF EXISTS "one" CASCADE')
+      expect(connection).to receive(:execute).with('DROP TABLE IF EXISTS "two" CASCADE')
+
+      subject
+    end
+
+    it 'drops all views' do
+      expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "three" CASCADE')
+      expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "four" CASCADE')
+
+      subject
+    end
+
+    it 'truncates schema_migrations table' do
+      expect(connection).to receive(:execute).with('TRUNCATE schema_migrations')
+
+      subject
+    end
+
+    it 'drops extra schemas' do
+      Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+        expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\"")
+      end
+
+      subject
+    end
+  end
+
   describe 'reindex' do
+    let(:reindex) { double('reindex') }
+    let(:indexes) { double('indexes') }
+
     context 'when no index_name is given' do
-      it 'raises an error' do
-        expect do
-          run_rake_task('gitlab:db:reindex', '')
-        end.to raise_error(ArgumentError, /must give the index name/)
+      it 'rebuilds a random number of large indexes' do
+        expect(Gitlab::Database::Reindexing).to receive_message_chain('candidate_indexes.random_few').and_return(indexes)
+        expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
+
+        run_rake_task('gitlab:db:reindex')
       end
     end
 
-    it 'calls the index rebuilder with the proper arguments' do
-      reindex = double('rebuilder')
+    context 'with index name given' do
+      let(:index) { double('index') }
 
-      expect(Gitlab::Database::ConcurrentReindex).to receive(:new)
-        .with('some_index_name', logger: instance_of(Logger))
-        .and_return(reindex)
+      it 'calls the index rebuilder with the proper arguments' do
+        expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.foo_idx').and_return(index)
+        expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
 
-      expect(reindex).to receive(:execute)
+        run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
+      end
 
-      run_rake_task('gitlab:db:reindex', '[some_index_name]')
+      it 'raises an error if the index does not exist' do
+        expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.absent_index').and_raise(ActiveRecord::RecordNotFound)
+
+        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 

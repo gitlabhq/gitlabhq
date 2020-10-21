@@ -167,6 +167,10 @@ module DesignManagement
       end
     end
 
+    def self.build_full_path(issue, design)
+      File.join(DesignManagement.designs_directory, "issue-#{issue.iid}", design.filename)
+    end
+
     def to_ability_name
       'design'
     end
@@ -180,7 +184,7 @@ module DesignManagement
     end
 
     def full_path
-      @full_path ||= File.join(DesignManagement.designs_directory, "issue-#{issue.iid}", filename)
+      @full_path ||= self.class.build_full_path(issue, self)
     end
 
     def diff_refs
@@ -222,6 +226,10 @@ module DesignManagement
       )
 
       !interloper.exists?
+    end
+
+    def notes_with_associations
+      notes.includes(:author)
     end
 
     private

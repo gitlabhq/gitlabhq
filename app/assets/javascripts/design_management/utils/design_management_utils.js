@@ -65,6 +65,10 @@ export const designUploadOptimisticResponse = files => {
     fullPath: '',
     notesCount: 0,
     event: 'NONE',
+    currentUserTodos: {
+      __typename: 'TodoConnection',
+      nodes: [],
+    },
     diffRefs: {
       __typename: 'DiffRefs',
       baseSha: '',

@@ -46,6 +46,10 @@ class Milestone < ApplicationRecord
     state :active
   end
 
+  def self.min_chars_for_partial_matching
+    2
+  end
+
   def self.reference_prefix
     '%'
   end

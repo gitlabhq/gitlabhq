@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BatchCount do
   let_it_be(:fallback) { ::Gitlab::Database::BatchCounter::FALLBACK }
-  let_it_be(:small_batch_size) { ::Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE - 1 }
+  let_it_be(:small_batch_size) { calculate_batch_size(::Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE) }
   let(:model) { Issue }
   let(:column) { :author_id }
 
@@ -20,6 +20,12 @@ RSpec.describe Gitlab::Database::BatchCount do
 
   before do
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(in_transaction)
+  end
+
+  def calculate_batch_size(batch_size)
+    zero_offset_modifier = -1
+
+    batch_size + zero_offset_modifier
   end
 
   shared_examples 'disallowed configurations' do |method|
@@ -42,6 +48,46 @@ RSpec.describe Gitlab::Database::BatchCount do
 
     it 'raises an error' do
       expect { subject }.to raise_error('BatchCount can not be run inside a transaction')
+    end
+  end
+
+  shared_examples 'when batch fetch query is canceled' do
+    let(:batch_size) { 22_000 }
+    let(:relation) { instance_double(ActiveRecord::Relation) }
+
+    it 'reduces batch size by half and retry fetch' do
+      too_big_batch_relation_mock = instance_double(ActiveRecord::Relation)
+      allow(model).to receive_message_chain(:select, public_send: relation)
+      allow(relation).to receive(:where).with("id" => 0..calculate_batch_size(batch_size)).and_return(too_big_batch_relation_mock)
+      allow(too_big_batch_relation_mock).to receive(:send).and_raise(ActiveRecord::QueryCanceled)
+
+      expect(relation).to receive(:where).with("id" => 0..calculate_batch_size(batch_size / 2)).and_return(double(send: 1))
+
+      subject.call(model, column, batch_size: batch_size, start: 0)
+    end
+
+    context 'when all retries fail' do
+      let(:batch_count_query) { 'SELECT COUNT(id) FROM relation WHERE id BETWEEN 0 and 1' }
+
+      before do
+        allow(model).to receive_message_chain(:select, :public_send, where: relation)
+        allow(relation).to receive(:send).and_raise(ActiveRecord::QueryCanceled.new('query timed out'))
+        allow(relation).to receive(:to_sql).and_return(batch_count_query)
+      end
+
+      it 'logs failing query' do
+        expect(Gitlab::AppJsonLogger).to receive(:error).with(
+          event: 'batch_count',
+          relation: model.table_name,
+          operation: operation,
+          operation_args: operation_args,
+          start: 0,
+          mode: mode,
+          query: batch_count_query,
+          message: 'Query has been canceled with message: query timed out'
+        )
+        expect(subject.call(model, column, batch_size: batch_size, start: 0)).to eq(-1)
+      end
     end
   end
 
@@ -86,16 +132,26 @@ RSpec.describe Gitlab::Database::BatchCount do
 
     it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE}" do
       min_id = model.minimum(:id)
+      relation = instance_double(ActiveRecord::Relation)
+      allow(model).to receive_message_chain(:select, public_send: relation)
+      batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE)
 
-      expect_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
-        expect(batch_counter).to receive(:batch_fetch).with(min_id, Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE + min_id, :itself).once.and_call_original
-      end
+      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
 
       described_class.batch_count(model)
     end
 
     it_behaves_like 'when a transaction is open' do
       subject { described_class.batch_count(model) }
+    end
+
+    it_behaves_like 'when batch fetch query is canceled' do
+      let(:mode) { :itself }
+      let(:operation) { :count }
+      let(:operation_args) { nil }
+      let(:column) { nil }
+
+      subject { described_class.method(:batch_count) }
     end
 
     context 'disallowed_configurations' do
@@ -106,6 +162,24 @@ RSpec.describe Gitlab::Database::BatchCount do
 
       it 'raises an error if distinct count is requested' do
         expect { described_class.batch_count(model.distinct(column)) }.to raise_error 'Use distinct count for optimized distinct counting'
+      end
+    end
+
+    context 'when a relation is grouped' do
+      let!(:one_more_issue) { create(:issue, author: user, project: model.first.project) }
+
+      before do
+        stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 1)
+      end
+
+      context 'count by default column' do
+        let(:count) do
+          described_class.batch_count(model.group(column), batch_size: 2)
+        end
+
+        it 'counts grouped records' do
+          expect(count).to eq({ user.id => 4, another_user.id => 2 })
+        end
       end
     end
   end
@@ -151,10 +225,11 @@ RSpec.describe Gitlab::Database::BatchCount do
 
     it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE}" do
       min_id = model.minimum(:id)
+      relation = instance_double(ActiveRecord::Relation)
+      allow(model).to receive_message_chain(:select, public_send: relation)
+      batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE)
 
-      expect_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
-        expect(batch_counter).to receive(:batch_fetch).with(min_id, Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE + min_id, :distinct).once.and_call_original
-      end
+      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
 
       described_class.batch_distinct_count(model)
     end
@@ -174,6 +249,33 @@ RSpec.describe Gitlab::Database::BatchCount do
           described_class.batch_count(described_class.batch_distinct_count(model, :id))
         end.to raise_error 'Use distinct count only with non id fields'
       end
+    end
+
+    context 'when a relation is grouped' do
+      let!(:one_more_issue) { create(:issue, author: user, project: model.first.project) }
+
+      before do
+        stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 1)
+      end
+
+      context 'distinct count by non-unique column' do
+        let(:count) do
+          described_class.batch_distinct_count(model.group(column), :project_id, batch_size: 2)
+        end
+
+        it 'counts grouped records' do
+          expect(count).to eq({ user.id => 3, another_user.id => 2 })
+        end
+      end
+    end
+
+    it_behaves_like 'when batch fetch query is canceled' do
+      let(:mode) { :distinct }
+      let(:operation) { :count }
+      let(:operation_args) { nil }
+      let(:column) { nil }
+
+      subject { described_class.method(:batch_distinct_count) }
     end
   end
 
@@ -209,10 +311,11 @@ RSpec.describe Gitlab::Database::BatchCount do
 
     it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE}" do
       min_id = model.minimum(:id)
+      relation = instance_double(ActiveRecord::Relation)
+      allow(model).to receive_message_chain(:select, public_send: relation)
+      batch_end_id = min_id + calculate_batch_size(Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE)
 
-      expect_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
-        expect(batch_counter).to receive(:batch_fetch).with(min_id, Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE + min_id, :itself).once.and_call_original
-      end
+      expect(relation).to receive(:where).with("id" => min_id..batch_end_id).and_return(double(send: 1))
 
       described_class.batch_sum(model, column)
     end
@@ -225,6 +328,14 @@ RSpec.describe Gitlab::Database::BatchCount do
       let(:args) { [model, column] }
       let(:default_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE }
       let(:small_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE - 1 }
+    end
+
+    it_behaves_like 'when batch fetch query is canceled' do
+      let(:mode) { :itself }
+      let(:operation) { :sum }
+      let(:operation_args) { [column] }
+
+      subject { described_class.method(:batch_sum) }
     end
   end
 end

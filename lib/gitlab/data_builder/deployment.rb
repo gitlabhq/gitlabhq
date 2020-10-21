@@ -20,8 +20,8 @@ module Gitlab
           environment: deployment.environment.name,
           project: deployment.project.hook_attrs,
           short_sha: deployment.short_sha,
-          user: deployment.user.hook_attrs,
-          user_url: Gitlab::UrlBuilder.build(deployment.user),
+          user: deployment.deployed_by.hook_attrs,
+          user_url: Gitlab::UrlBuilder.build(deployment.deployed_by),
           commit_url: Gitlab::UrlBuilder.build(deployment.commit),
           commit_title: deployment.commit.title
         }

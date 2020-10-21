@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/wrapper';
 import SentryConfig from '~/sentry/sentry_config';
 
 describe('SentryConfig', () => {

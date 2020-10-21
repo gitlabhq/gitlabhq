@@ -1,0 +1,5 @@
+---
+title: Show expanded CI config in CI lint API endpoint.
+merge_request: 42380
+author:
+type: added

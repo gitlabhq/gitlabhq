@@ -2,7 +2,7 @@
 /* global List */
 /* global ListIssue */
 import $ from 'jquery';
-import { sortBy } from 'lodash';
+import { sortBy, pick } from 'lodash';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
@@ -12,7 +12,7 @@ import {
   parseBoolean,
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import createDefaultClient from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -23,7 +23,11 @@ import ListLabel from '../models/label';
 import ListAssignee from '../models/assignee';
 import ListMilestone from '../models/milestone';
 
+import createBoardMutation from '../queries/board.mutation.graphql';
+
 const PER_PAGE = 20;
+export const gqlClient = createDefaultClient();
+
 const boardsStore = {
   disabled: false,
   timeTracking: {
@@ -114,7 +118,6 @@ const boardsStore = {
       .catch(() => {
         // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
       });
-    this.removeBlankState();
   },
   updateNewListDropdown(listId) {
     $(`.js-board-list-${listId}`).removeClass('is-active');
@@ -124,22 +127,14 @@ const boardsStore = {
     return !this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0];
   },
   addBlankState() {
-    if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
+    if (!this.shouldAddBlankState() || this.welcomeIsHidden()) return;
 
-    this.addList({
-      id: 'blank',
-      list_type: 'blank',
-      title: __('Welcome to your Issue Board!'),
-      position: 0,
-    });
-  },
-  removeBlankState() {
-    this.removeList('blank');
-
-    Cookies.set('issue_board_welcome_hidden', 'true', {
-      expires: 365 * 10,
-      path: '',
-    });
+    this.generateDefaultLists()
+      .then(res => res.data)
+      .then(data => Promise.all(data.map(list => this.addList(list))))
+      .catch(() => {
+        this.removeList(undefined, 'label');
+      });
   },
 
   findIssueLabel(issue, findLabel) {
@@ -542,6 +537,10 @@ const boardsStore = {
     this.timeTracking.limitToHours = parseBoolean(limitToHours);
   },
 
+  generateBoardGid(boardId) {
+    return `gid://gitlab/Board/${boardId}`;
+  },
+
   generateBoardsPath(id) {
     return `${this.state.endpoints.boardsEndpoint}${id ? `/${id}` : ''}.json`;
   },
@@ -800,9 +799,33 @@ const boardsStore = {
     }
 
     if (boardPayload.id) {
-      return axios.put(this.generateBoardsPath(boardPayload.id), { board: boardPayload });
+      const input = {
+        ...pick(boardPayload, ['hideClosedList', 'hideBacklogList']),
+        id: this.generateBoardGid(boardPayload.id),
+      };
+
+      return Promise.all([
+        axios.put(this.generateBoardsPath(boardPayload.id), { board: boardPayload }),
+        gqlClient.mutate({
+          mutation: createBoardMutation,
+          variables: input,
+        }),
+      ]);
     }
-    return axios.post(this.generateBoardsPath(), { board: boardPayload });
+
+    return axios
+      .post(this.generateBoardsPath(), { board: boardPayload })
+      .then(resp => resp.data)
+      .then(data => {
+        gqlClient.mutate({
+          mutation: createBoardMutation,
+          variables: {
+            ...pick(boardPayload, ['hideClosedList', 'hideBacklogList']),
+            id: this.generateBoardGid(data.id),
+          },
+        });
+        return data;
+      });
   },
 
   deleteBoard({ id }) {

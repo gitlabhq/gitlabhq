@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'MergeRequestSetMilestone'
 
       argument :milestone_id,
-               GraphQL::ID_TYPE,
+               ::Types::GlobalIDType[::Milestone],
                required: false,
                loads: Types::MilestoneType,
                description: <<~DESC

@@ -1,3 +1,9 @@
+---
+stage: Enablement
+group: Database
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Adding foreign key constraint to an existing column
 
 Foreign keys help ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](../foreign_keys.md) when creating tables that reference records from other tables.
@@ -103,7 +109,7 @@ class RemoveRecordsWithoutUserFromEmailsTable < ActiveRecord::Migration[5.2]
   end
 
   def down
-    # Can be a no-op when data inconsistency is not affecting the pre and post deploymnet version of the application.
+    # Can be a no-op when data inconsistency is not affecting the pre and post deployment version of the application.
     # In this case we might have records in the `emails` table where the associated record in the `users` table is not there anymore.
   end
 end

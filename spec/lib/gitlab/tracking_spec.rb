@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Tracking do
     end
 
     around do |example|
-      Timecop.freeze(timestamp) { example.run }
+      travel_to(timestamp) { example.run }
     end
 
     before do

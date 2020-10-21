@@ -4,7 +4,7 @@
 .project-import
   .form-group.import-btn-container.clearfix
     %h5
-      Import project from
+      = _("Import project from")
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
@@ -15,19 +15,22 @@
       - if github_import_enabled?
         %div
           = link_to new_import_github_path, class: 'btn js-import-github', **tracking_attrs(track_label, 'click_button', 'github') do
-            = icon('github', text: 'GitHub')
+            = sprite_icon('github')
+            GitHub
 
       - if bitbucket_import_enabled?
         %div
           = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}",
           **tracking_attrs(track_label, 'click_button', 'bitbucket_cloud') do
-            = icon('bitbucket', text: 'Bitbucket Cloud')
+            = sprite_icon('bitbucket')
+            Bitbucket Cloud
           - unless bitbucket_import_configured?
             = render 'projects/bitbucket_import_modal'
       - if bitbucket_server_import_enabled?
         %div
           = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket", **tracking_attrs(track_label, 'click_button', 'bitbucket_server') do
-            = icon('bitbucket-square', text: 'Bitbucket Server')
+            = sprite_icon('bitbucket')
+            Bitbucket Server
         %div
       - if gitlab_import_enabled?
         %div
@@ -41,7 +44,8 @@
       - if google_code_import_enabled?
         %div
           = link_to new_import_google_code_path, class: 'btn import_google_code', **tracking_attrs(track_label, 'click_button', 'google_code') do
-            = icon('google', text: 'Google Code')
+            = sprite_icon('google')
+            Google Code
 
       - if fogbugz_import_enabled?
         %div
@@ -64,7 +68,8 @@
       - if manifest_import_enabled?
         %div
           = link_to new_import_manifest_path, class: 'btn import_manifest', **tracking_attrs(track_label, 'click_button', 'manifest_file') do
-            = icon('file-text-o', text: 'Manifest file')
+            = sprite_icon('doc-text')
+            Manifest file
 
       - if phabricator_import_enabled?
         %div

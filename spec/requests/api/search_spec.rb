@@ -58,6 +58,17 @@ RSpec.describe API::Search do
     end
   end
 
+  shared_examples 'filter by confidentiality' do |scope:, search:|
+    it 'respects confidentiality filtering' do
+      get api(endpoint, user), params: { scope: scope, search: search, confidential: confidential.to_s }
+
+      documents = Gitlab::Json.parse(response.body)
+
+      expect(documents.count).to eq(1)
+      expect(documents.first['confidential']).to eq(confidential)
+    end
+  end
+
   describe 'GET /search' do
     let(:endpoint) { '/search' }
 
@@ -135,6 +146,26 @@ RSpec.describe API::Search do
             let(:state) { 'closed' }
 
             include_examples 'filter by state', scope: :issues, search: 'awesome'
+          end
+        end
+
+        context 'filter by confidentiality' do
+          before do
+            stub_feature_flags(search_filter_by_confidential: true)
+            create(:issue, project: project, author: user, title: 'awesome non-confidential issue')
+            create(:issue, :confidential, project: project, author: user, title: 'awesome confidential issue')
+          end
+
+          context 'confidential: true' do
+            let(:confidential) { true }
+
+            include_examples 'filter by confidentiality', scope: :issues, search: 'awesome'
+          end
+
+          context 'confidential: false' do
+            let(:confidential) { false }
+
+            include_examples 'filter by confidentiality', scope: :issues, search: 'awesome'
           end
         end
       end
@@ -231,18 +262,6 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :users
 
         it_behaves_like 'ping counters', scope: :users
-
-        context 'when users search feature is disabled' do
-          before do
-            stub_feature_flags(users_search: false)
-
-            get api(endpoint, user), params: { scope: 'users', search: 'billy' }
-          end
-
-          it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
       end
 
       context 'for snippet_titles scope' do
@@ -416,18 +435,6 @@ RSpec.describe API::Search do
 
           include_examples 'pagination', scope: :users
         end
-
-        context 'when users search feature is disabled' do
-          before do
-            stub_feature_flags(users_search: false)
-
-            get api(endpoint, user), params: { scope: 'users', search: 'billy' }
-          end
-
-          it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
       end
 
       context 'for users scope with group path as id' do
@@ -588,18 +595,6 @@ RSpec.describe API::Search do
           end
 
           include_examples 'pagination', scope: :users
-        end
-
-        context 'when users search feature is disabled' do
-          before do
-            stub_feature_flags(users_search: false)
-
-            get api(endpoint, user), params: { scope: 'users', search: 'billy' }
-          end
-
-          it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
         end
       end
 

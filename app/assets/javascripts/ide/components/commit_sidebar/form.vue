@@ -7,7 +7,6 @@ import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
 import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
-import consts from '../../stores/modules/commit/constants';
 import { createUnexpectedCommitError } from '../../lib/errors';
 
 export default {
@@ -45,12 +44,11 @@ export default {
       return this.currentActivityView === leftSidebarViews.commit.name;
     },
     commitErrorPrimaryAction() {
-      if (!this.lastCommitError?.canCreateBranch) {
-        return undefined;
-      }
+      const { primaryAction } = this.lastCommitError || {};
 
       return {
-        text: __('Create new branch'),
+        button: primaryAction ? { text: primaryAction.text } : undefined,
+        callback: primaryAction?.callback?.bind(this, this.$store) || (() => {}),
       };
     },
   },
@@ -77,9 +75,6 @@ export default {
     ]),
     commit() {
       return this.commitChanges();
-    },
-    forceCreateNewBranch() {
-      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commit());
     },
     handleCompactState() {
       if (this.lastCommitMsg) {
@@ -188,9 +183,9 @@ export default {
           ref="commitErrorModal"
           modal-id="ide-commit-error-modal"
           :title="lastCommitError.title"
-          :action-primary="commitErrorPrimaryAction"
+          :action-primary="commitErrorPrimaryAction.button"
           :action-cancel="{ text: __('Cancel') }"
-          @ok="forceCreateNewBranch"
+          @ok="commitErrorPrimaryAction.callback"
         >
           <div v-safe-html="lastCommitError.messageHTML"></div>
         </gl-modal>

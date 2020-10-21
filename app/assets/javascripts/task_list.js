@@ -31,6 +31,15 @@ export default class TaskList {
   init() {
     this.disable(); // Prevent duplicate event bindings
 
+    const taskListFields = document.querySelectorAll(
+      `${this.taskListContainerSelector} .js-task-list-field[data-value]`,
+    );
+
+    taskListFields.forEach(taskListField => {
+      // eslint-disable-next-line no-param-reassign
+      taskListField.value = taskListField.dataset.value;
+    });
+
     $(this.taskListContainerSelector).taskList('enable');
     $(document).on('tasklist:changed', this.taskListContainerSelector, this.updateHandler);
   }

@@ -40,6 +40,10 @@ FactoryBot.define do
       end
     end
 
+    trait :created do
+      status { 'created' }
+    end
+
     trait :started do
       started_at { '2013-10-29 09:51:28 CET' }
     end
@@ -61,6 +65,15 @@ FactoryBot.define do
 
     trait :strategy_depend do
       options { { trigger: { strategy: 'depend' } } }
+    end
+
+    trait :manual do
+      status { 'manual' }
+      self.when { 'manual' }
+    end
+
+    trait :playable do
+      manual
     end
   end
 end

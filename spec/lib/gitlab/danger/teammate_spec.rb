@@ -4,6 +4,7 @@ require 'timecop'
 require 'rspec-parameterized'
 
 require 'gitlab/danger/teammate'
+require 'active_support/testing/time_helpers'
 
 RSpec.describe Gitlab::Danger::Teammate do
   using RSpec::Parameterized::TableSyntax
@@ -148,8 +149,10 @@ RSpec.describe Gitlab::Danger::Teammate do
   end
 
   describe '#local_hour' do
+    include ActiveSupport::Testing::TimeHelpers
+
     around do |example|
-      Timecop.freeze(Time.utc(2020, 6, 23, 10)) { example.run }
+      travel_to(Time.utc(2020, 6, 23, 10)) { example.run }
     end
 
     context 'when author is given' do

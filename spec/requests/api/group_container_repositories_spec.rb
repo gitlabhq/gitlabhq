@@ -25,7 +25,6 @@ RSpec.describe API::GroupContainerRepositories do
     group.add_reporter(reporter)
     group.add_guest(guest)
 
-    stub_feature_flags(container_registry_api: true)
     stub_container_registry_config(enabled: true)
 
     root_repository
@@ -44,7 +43,7 @@ RSpec.describe API::GroupContainerRepositories do
       let(:object) { group }
     end
 
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
+    it_behaves_like 'a package tracking event', described_class.name, 'list_repositories'
 
     context 'with invalid group id' do
       let(:url) { "/groups/#{non_existing_record_id}/registry/repositories" }

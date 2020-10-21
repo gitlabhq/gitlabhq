@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -15,7 +15,7 @@ your team when environment performance falls outside of the boundaries you set.
 
 ## Managed Prometheus instances
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/index.md).
 
 For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
@@ -70,14 +70,14 @@ receivers:
         bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
       send_resolved: true
       url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
-  ...
+      # Rest of configuration omitted
+      # ...
 ```
 
 For GitLab to associate your alerts with an [environment](../../ci/environments/index.md),
 you must configure a `gitlab_environment_name` label on the alerts you set up in
 Prometheus. The value of this should match the name of your environment in GitLab.
 
-NOTE: **Note:**
 In GitLab versions 13.1 and greater, you can configure your manually configured
 Prometheus server to use the
 [Generic alerts integration](../incident_management/generic_alerts.md).

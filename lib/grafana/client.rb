@@ -19,8 +19,8 @@ module Grafana
     # @param name [String] Unique identifier for a Grafana datasource
     def get_datasource(name:)
       # CGI#escape formats strings such that the Grafana endpoint
-      # will not recognize the dashboard name. Preferring URI#escape.
-      http_get("#{@api_url}/api/datasources/name/#{URI.escape(name)}") # rubocop:disable Lint/UriEscapeUnescape
+      # will not recognize the dashboard name. Prefer Addressable::URI#encode_component.
+      http_get("#{@api_url}/api/datasources/name/#{Addressable::URI.encode_component(name)}")
     end
 
     # @param datasource_id [String] Grafana ID for the datasource

@@ -20,3 +20,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Checks::MatchingMergeRequest.prepend_if_ee('EE::Gitlab::Checks::MatchingMergeRequest')

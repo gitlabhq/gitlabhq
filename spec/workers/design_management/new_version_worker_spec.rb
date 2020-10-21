@@ -36,6 +36,10 @@ RSpec.describe DesignManagement::NewVersionWorker do
         expect { worker.perform(version.id) }.to change { Note.system.count }.by(1)
       end
 
+      it 'does not create a system note if skip_system_notes is true' do
+        expect { worker.perform(version.id, true) }.not_to change { Note.system.count }
+      end
+
       it 'invokes GenerateImageVersionsService' do
         expect_next_instance_of(DesignManagement::GenerateImageVersionsService) do |service|
           expect(service).to receive(:execute)

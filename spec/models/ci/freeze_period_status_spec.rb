@@ -11,7 +11,7 @@ RSpec.describe Ci::FreezePeriodStatus do
 
   shared_examples 'within freeze period' do |time|
     it 'is frozen' do
-      Timecop.freeze(time) do
+      travel_to(time) do
         expect(subject).to be_truthy
       end
     end
@@ -19,7 +19,7 @@ RSpec.describe Ci::FreezePeriodStatus do
 
   shared_examples 'outside freeze period' do |time|
     it 'is not frozen' do
-      Timecop.freeze(time) do
+      travel_to(time) do
         expect(subject).to be_falsy
       end
     end

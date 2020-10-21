@@ -7,8 +7,8 @@
   packages: [Ultimate, Gold]
   url: https://docs.gitlab.com/ee/user/project/requirements/index.html
   image_url:
-    published_at: 2020-04-22
-    release: 12.10
+  published_at: 2020-04-22
+  release: 12.10
 - title: Retrieve CI/CD secrets from HashiCorp Vault
   body: In this release, GitLab adds support for lightweight JSON Web Token (JWT) authentication to integrate with your existing HashiCorp Vault. Now, you can seamlessly provide secrets to CI/CD jobs by taking advantage of HashiCorp's JWT authentication method  rather than manually having to provide secrets as a variable in GitLab.
   stage: Release

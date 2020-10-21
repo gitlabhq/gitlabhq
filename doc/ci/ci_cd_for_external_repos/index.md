@@ -74,7 +74,6 @@ If changes are pushed to the branch referenced by the Pull Request and the
 Pull Request is still open, a pipeline for the external pull request is
 created.
 
-NOTE: **Note:**
 GitLab CI/CD will create 2 pipelines in this case. One for the
 branch push and one for the external pull request.
 

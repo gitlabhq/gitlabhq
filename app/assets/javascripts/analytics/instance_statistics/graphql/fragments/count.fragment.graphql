@@ -1,0 +1,4 @@
+fragment Count on InstanceStatisticsMeasurement {
+  count
+  recordedAt
+}

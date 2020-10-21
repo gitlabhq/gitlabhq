@@ -11,15 +11,14 @@ describe('toggleSidebar', () => {
     });
   });
 
-  it('should render << when collapsed', () => {
-    expect(vm.$el.querySelector('.fa').classList.contains('fa-angle-double-left')).toEqual(true);
+  it('should render the "chevron-double-lg-left" icon when collapsed', () => {
+    expect(vm.$el.querySelector('[data-testid="chevron-double-lg-left-icon"]')).not.toBeNull();
   });
 
-  it('should render >> when collapsed', () => {
+  it('should render the "chevron-double-lg-right" icon when expanded', async () => {
     vm.collapsed = false;
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.fa').classList.contains('fa-angle-double-right')).toEqual(true);
-    });
+    await Vue.nextTick();
+    expect(vm.$el.querySelector('[data-testid="chevron-double-lg-right-icon"]')).not.toBeNull();
   });
 
   it('should emit toggle event when button clicked', () => {

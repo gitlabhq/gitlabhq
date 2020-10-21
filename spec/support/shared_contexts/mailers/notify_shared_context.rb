@@ -11,7 +11,7 @@ RSpec.shared_context 'gitlab email notification' do
   let(:new_user_address) { 'newguy@example.com' }
 
   before do
-    email = recipient.emails.create(email: "notifications@example.com")
+    email = recipient.emails.create!(email: "notifications@example.com")
     recipient.update_attribute(:notification_email, email.email)
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@#{Gitlab.config.gitlab.host}")
   end

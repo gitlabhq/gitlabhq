@@ -26,7 +26,7 @@ GET /projects/:id/packages
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, or `nuget`. (_Introduced in GitLab 12.9_)
+| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
 
 ```shell
@@ -50,6 +50,19 @@ Example response:
     "version": "1.0.3",
     "package_type": "npm",
     "created_at": "2019-11-27T03:37:38.711Z"
+  },
+  {
+    "id": 3,
+    "name": "Hello/0.1@mycompany/stable",
+    "conan_package_name": "Hello",
+    "version": "0.1",
+    "package_type": "conan",
+    "_links": {
+      "web_path": "/foo/bar/-/packages/3",
+      "delete_api_path": "https://gitlab.example.com/api/v4/projects/1/packages/3"
+    },
+    "created_at": "2029-12-16T20:33:34.316Z",
+    "tags": []
   }
 ]
 ```
@@ -73,7 +86,7 @@ GET /groups/:id/packages
 | `exclude_subgroups` | boolean | false | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, or `nuget`. (_Introduced in GitLab 12.9_) |
+| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, or `golang`. (_Introduced in GitLab 12.9_) |
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
 
 ```shell

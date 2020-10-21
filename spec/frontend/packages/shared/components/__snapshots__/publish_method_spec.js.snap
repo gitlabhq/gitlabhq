@@ -32,7 +32,8 @@ exports[`publish_method renders 1`] = `
   </gl-link-stub>
    
   <clipboard-button-stub
-    cssclass="gl-border-0 gl-py-0 gl-px-2"
+    category="tertiary"
+    size="small"
     text="sha-baz"
     title="Copy commit SHA"
     tooltipplacement="top"

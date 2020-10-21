@@ -7,12 +7,12 @@ FactoryBot.define do
     initialize_with do
       projects = create_list(:project, 3)
       projects << create(:project, :repository)
+      group = create(:group)
       create(:board, project: projects[0])
       create(:jira_service, project: projects[0])
       create(:jira_service, :without_properties_callback, project: projects[1])
       create(:jira_service, :jira_cloud_service, project: projects[2])
-      create(:jira_service, :without_properties_callback, project: projects[3],
-             properties: { url: 'https://mysite.atlassian.net' })
+      create(:jira_service, :without_properties_callback, project: projects[3], properties: { url: 'https://mysite.atlassian.net' })
       jira_label = create(:label, project: projects[0])
       create(:jira_import_state, :finished, project: projects[0], label: jira_label, failed_to_import_count: 2, imported_issues_count: 7, total_issue_count: 9)
       create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3, total_issue_count: 3)
@@ -23,9 +23,11 @@ FactoryBot.define do
       create(:service, project: projects[1], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'MattermostService', active: false)
+      create(:service, group: group, project: nil, type: 'MattermostService', active: true)
       create(:service, :template, type: 'MattermostService', active: true)
       matermost_instance = create(:service, :instance, type: 'MattermostService', active: true)
       create(:service, project: projects[1], type: 'MattermostService', active: true, inherit_from_id: matermost_instance.id)
+      create(:service, group: group, project: nil, type: 'SlackService', active: true, inherit_from_id: matermost_instance.id)
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)
@@ -50,12 +52,14 @@ FactoryBot.define do
       create(:protected_branch, project: projects[0])
       create(:protected_branch, name: 'main', project: projects[0])
 
+      # Tracing
+      create(:project_tracing_setting, project: projects[0])
+
       # Incident Labeled Issues
       incident_label = create(:label, :incident, project: projects[0])
       create(:labeled_issue, project: projects[0], labels: [incident_label])
-      incident_group = create(:group)
       incident_label_scoped_to_project = create(:label, :incident, project: projects[1])
-      incident_label_scoped_to_group = create(:group_label, :incident, group: incident_group)
+      incident_label_scoped_to_group = create(:group_label, :incident, group: group)
       create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_project])
       create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_group])
 
@@ -97,16 +101,19 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
-      create(:package, project: projects[0])
-      create(:package, project: projects[0])
-      create(:package, project: projects[1])
+      create(:package, project: projects[0], created_at: 3.days.ago)
+      create(:package, project: projects[0], created_at: 3.days.ago)
+      create(:package, project: projects[1], created_at: 3.days.ago)
       create(:package, created_at: 2.months.ago, project: projects[1])
+
+      # User Preferences
+      create(:user_preference, gitpod_enabled: true)
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 
       # Create fresh & a month (28-days SMAU) old  data
       env = create(:environment, project: projects[3])
-      [2, 29].each do |n|
+      [3, 31].each do |n|
         deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
         create(:deployment, :failed, deployment_options)
         create(:deployment, :success, deployment_options)

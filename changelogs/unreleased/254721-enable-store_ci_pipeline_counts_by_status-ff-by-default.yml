@@ -1,0 +1,5 @@
+---
+title: Store pipeline counts by status for instance statistics
+merge_request: 43857
+author:
+type: added

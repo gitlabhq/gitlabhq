@@ -83,7 +83,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 
    ```yaml
    - { name: 'facebook', app_id: 'YOUR_APP_ID',
-     app_secret: 'YOUR_APP_SECRET' }
+       app_secret: 'YOUR_APP_SECRET' }
    ```
 
 1. Change 'YOUR_APP_ID' to the API key from Facebook page in step 10.

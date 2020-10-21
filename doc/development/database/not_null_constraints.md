@@ -1,3 +1,9 @@
+---
+stage: Enablement
+group: Database
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # `NOT NULL` constraints
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
@@ -33,7 +39,7 @@ end
 
 ## Add a `NOT NULL` column to an existing table
 
-With PostgreSQL 11 being the minimum version since GitLab 13.0, adding columns with `NULL` and/or
+With PostgreSQL 11 being the minimum version in GitLab 13.0 and later, adding columns with `NULL` and/or
 default values has become much easier and the standard `add_column` helper should be used in all cases.
 
 For example, consider a migration that adds a new `NOT NULL` column `active` to table `db_guides`,

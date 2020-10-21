@@ -40,7 +40,7 @@ module QA
         return_response_or_raise(e)
       end
 
-      def put(url, payload)
+      def put(url, payload = nil)
         RestClient::Request.execute(
           method: :put,
           url: url,

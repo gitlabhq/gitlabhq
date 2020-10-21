@@ -8,6 +8,11 @@ RSpec.describe ProjectRepository do
     it { is_expected.to belong_to(:project) }
   end
 
+  it_behaves_like 'shardable scopes' do
+    let_it_be(:record_1) { create(:project_repository) }
+    let_it_be(:record_2, reload: true) { create(:project_repository) }
+  end
+
   describe '.find_project' do
     it 'finds project by disk path' do
       project = create(:project)

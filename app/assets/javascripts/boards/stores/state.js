@@ -8,10 +8,11 @@ export default () => ({
   isShowingLabels: true,
   activeId: inactiveId,
   sidebarType: '',
-  boardLists: [],
+  boardLists: {},
+  listsFlags: {},
   issuesByListId: {},
+  pageInfoByListId: {},
   issues: {},
-  isLoadingIssues: false,
   filterParams: {},
   error: undefined,
   // TODO: remove after ce/ee split of board_content.vue

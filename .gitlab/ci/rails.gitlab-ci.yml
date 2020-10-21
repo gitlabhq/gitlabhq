@@ -6,14 +6,23 @@
     - .default-before_script
     - .rails-cache
 
+.base-script: &base-script
+  # Only install knapsack after bundle install! Otherwise oddly some native
+  # gems could not be found under some circumstance. No idea why, hours wasted.
+  - run_timed_command "gem install knapsack --no-document"
+  - run_timed_command "scripts/gitaly-test-build"
+  - run_timed_command "scripts/gitaly-test-spawn"
+  - source ./scripts/rspec_helpers.sh
+
 .rspec-base:
   extends: .rails-job-base
   stage: test
+  variables:
+    RUBY_GC_MALLOC_LIMIT: 67108864
+    RUBY_GC_MALLOC_LIMIT_MAX: 134217728
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
   artifacts:
     expire_in: 31d
@@ -25,6 +34,7 @@
       - rspec_profiling/
       - tmp/capybara/
       - tmp/memory_test/
+      - tmp/feature_flags/
       - log/*.log
     reports:
       junit: junit_rspec.xml
@@ -32,9 +42,7 @@
 .rspec-base-migration:
   extends: .rails:rules:ee-and-foss-migration
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
 
 .rspec-base-pg11:
@@ -67,9 +75,7 @@
 .rspec-ee-base-geo:
   extends: .rspec-base
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag geo"
 
 .rspec-ee-base-geo-pg11:
@@ -160,6 +166,25 @@ update-rails-cache:
   cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
+.coverage-base:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .coverage-cache
+  variables:
+    SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+
+update-coverage-cache:
+  extends:
+    - .coverage-base
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
 .static-analysis-base:
   extends:
     - .default-retry
@@ -178,7 +203,7 @@ update-static-analysis-cache:
   script:
     - rm -rf ./node_modules  # We remove node_modules because there's no mechanism to remove stall entries.
     - run_timed_command "retry yarn install --frozen-lockfile"
-    - bundle exec rubocop --parallel  # For the moment we only cache `vendor/ruby/`, `node_modules/`, and `tmp/rubocop_cache` so we don't need to run all the tasks,
+    - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `vendor/ruby/`, `node_modules/`, and `tmp/rubocop_cache` so we don't need to run all the tasks,
   cache:
     # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
     # for keeping only the N latest cache files, so we take advantage of it with `pull-push` and removing `node_modules` at the start of the job.
@@ -287,8 +312,7 @@ gitlab:setup:
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
+    - *base-script
     - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
   artifacts:
     when: on_failure
@@ -313,7 +337,7 @@ db:backup_and_restore:
 
 rspec:coverage:
   extends:
-    - .rails-job-base
+    - .coverage-base
     - .rails:rules:rspec-coverage
   stage: post-test
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
@@ -333,11 +357,10 @@ rspec:coverage:
     - rspec-ee system pg11 geo
     - memory-static
     - memory-on-boot
-  variables:
-    SETUP_DB: "false"
   script:
-    - bundle exec scripts/merge-simplecov
-    - bundle exec scripts/gather-test-memory-data
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+    - run_timed_command "bundle exec scripts/merge-simplecov"
+    - run_timed_command "bundle exec scripts/gather-test-memory-data"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
@@ -348,6 +371,32 @@ rspec:coverage:
       - tmp/memory_test/
     reports:
       cobertura: coverage/coverage.xml
+
+rspec:feature-flags:
+  extends:
+    - .coverage-base
+    - .rails:rules:rspec-feature-flags
+  stage: post-test
+  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
+  # so we use `dependencies` here.
+  dependencies:
+    - setup-test-env
+    - rspec migration pg11
+    - rspec unit pg11
+    - rspec integration pg11
+    - rspec system pg11
+    - rspec-ee migration pg11
+    - rspec-ee unit pg11
+    - rspec-ee integration pg11
+    - rspec-ee system pg11
+    - rspec-ee unit pg11 geo
+    - rspec-ee integration pg11 geo
+    - rspec-ee system pg11 geo
+    - memory-static
+    - memory-on-boot
+  script:
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+    - run_timed_command "bundle exec scripts/used-feature-flags"
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
 #######################################################
 
@@ -512,9 +561,7 @@ rspec fail-fast:
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_fail_fast tmp/matching_tests.txt "--tag ~quarantine"
   artifacts:
     expire_in: 7d
@@ -527,9 +574,7 @@ rspec foss-impact:
     - .rails:rules:rspec-foss-impact
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests as-if-foss"]
   script:
-    - run_timed_command "scripts/gitaly-test-build"
-    - run_timed_command "scripts/gitaly-test-spawn"
-    - source scripts/rspec_helpers.sh
+    - *base-script
     - rspec_matched_foss_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
   artifacts:
     expire_in: 7d

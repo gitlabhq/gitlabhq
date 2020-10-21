@@ -1,6 +1,8 @@
 ---
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
-date: 2016-06-28
 ---
 
 # How to install GitLab on OpenShift Origin 3
@@ -372,7 +374,7 @@ running scaled to 2.
 
 Upping the GitLab pods is actually like adding new application servers to your
 cluster. You can see how that would work if you didn't use GitLab with
-OpenShift by following the [HA documentation](../../administration/high_availability/gitlab.md) for the application servers.
+OpenShift by following the [HA documentation](../../administration/reference_architectures/index.md) for the application servers.
 
 Bare in mind that you may need more resources (CPU, RAM, disk space) when you
 scale up. If a pod is in pending state for too long, you can navigate to

@@ -439,10 +439,6 @@
       content: '\f0c6';
     }
 
-    &:hover::before {
-      text-decoration: none;
-    }
-
     &.no-attachment-icon {
       &::before {
         display: none;

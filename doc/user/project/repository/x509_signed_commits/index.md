@@ -26,7 +26,7 @@ For a commit or tag to be *verified* by GitLab:
   [Omnibus install custom public certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 - The signing time has to be within the time range of the [certificate validity](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.1.2.5)
   which is usually up to three years.
-- The signing time is equal or later then commit time.
+- The signing time is equal or later than commit time.
 
 NOTE: **Note:**
 Certificate revocation lists are checked on a daily basis via background worker.

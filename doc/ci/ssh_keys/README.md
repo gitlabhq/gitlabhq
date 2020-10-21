@@ -36,7 +36,6 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
    `~/.ssh/authorized_keys`) or add it as a [deploy key](../../ssh/README.md#deploy-keys)
    if you are accessing a private GitLab repository.
 
-NOTE: **Note:**
 The private key will not be displayed in the job log, unless you enable
 [debug logging](../variables/README.md#debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#visibility-of-pipelines).
@@ -94,7 +93,6 @@ to access it. This is where an SSH key pair comes in handy.
      # - git config --global user.name "User name"
    ```
 
-   NOTE: **Note:**
    The [`before_script`](../yaml/README.md#before_script-and-after_script) can be set globally
    or per-job.
 
@@ -134,7 +132,8 @@ on, and use that key for all projects that are run on this machine.
    If you are accessing a private GitLab repository you need to add it as a
    [deploy key](../../ssh/README.md#deploy-keys).
 
-Once done, try to log in to the remote server in order to accept the fingerprint:
+After generating the key, try to sign in to the remote server to accept the
+fingerprint:
 
 ```shell
 ssh example.com
@@ -163,7 +162,6 @@ ssh-keyscan 1.2.3.4
 Create a new [variable](../variables/README.md#gitlab-cicd-environment-variables) with
 `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
-NOTE: **Note:**
 If you need to connect to multiple servers, all the server host keys
 need to be collected in the **Value** of the variable, one key per line.
 

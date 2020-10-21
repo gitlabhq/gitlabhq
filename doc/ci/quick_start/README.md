@@ -68,11 +68,6 @@ blog about it](https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitla
 
 ### Creating a simple `.gitlab-ci.yml` file
 
-NOTE: **Note:**
-A GitLab team member has made an [unofficial visual pipeline editor](https://unofficial.gitlab.tools/visual-pipelines/).
-There is a [plan to make it an official part of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/4069)
-in the future, but it's available for anyone who wants to try it at the above link.
-
 You need to create a file named `.gitlab-ci.yml` in the root directory of your
 repository. This is a [YAML](https://en.wikipedia.org/wiki/YAML) file
 so you have to pay extra attention to indentation. Always use spaces, not tabs.
@@ -117,8 +112,16 @@ What is important is that each job is run independently from each other.
 If you want to check whether the `.gitlab-ci.yml` of your project is valid, there is a
 [CI Lint tool](../lint.md) available in every project.
 
+You can use the [CI/CD configuration visualization](../yaml/visualization.md) to
+see a graphical representation of your `.gitlab-ci.yml`.
+
 For more information and a complete `.gitlab-ci.yml` syntax, please read
 [the reference documentation on `.gitlab-ci.yml`](../yaml/README.md).
+
+TIP: **Tip:**
+A GitLab team member has made an [unofficial visual pipeline editor](https://unofficial.gitlab.tools/visual-pipelines/).
+There is a [plan to make it an official part of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/4069)
+in the future, but it's available for anyone who wants to try it at the above link.
 
 ### Push `.gitlab-ci.yml` to GitLab
 

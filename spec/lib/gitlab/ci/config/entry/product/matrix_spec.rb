@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require_dependency 'active_model'
 
 RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Matrix do
@@ -46,33 +46,140 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Product::Matrix do
       end
     end
 
-    context 'when entry config has only one variable' do
-      let(:config) do
-        [
-          {
-            'VAR_1' => %w[test]
-          }
-        ]
+    context 'with one_dimensional_matrix feature flag enabled' do
+      before do
+        stub_feature_flags(one_dimensional_matrix: true)
+        matrix.compose!
       end
 
-      describe '#valid?' do
-        it { is_expected.not_to be_valid }
-      end
-
-      describe '#errors' do
-        it 'returns error about too many jobs' do
-          expect(matrix.errors)
-            .to include('variables config requires at least 2 items')
-        end
-      end
-
-      describe '#value' do
-        before do
-          matrix.compose!
+      context 'when entry config has only one variable with multiple values' do
+        let(:config) do
+          [
+            {
+              'VAR_1' => %w[build test]
+            }
+          ]
         end
 
-        it 'returns the value without raising an error' do
-          expect(matrix.value).to eq([{ 'VAR_1' => ['test'] }])
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+
+        describe '#errors' do
+          it 'returns no errors' do
+            expect(matrix.errors)
+              .to be_empty
+          end
+        end
+
+        describe '#value' do
+          before do
+            matrix.compose!
+          end
+
+          it 'returns the value without raising an error' do
+            expect(matrix.value).to eq([{ 'VAR_1' => %w[build test] }])
+          end
+        end
+
+        context 'when entry config has only one variable with one value' do
+          let(:config) do
+            [
+              {
+                'VAR_1' => %w[test]
+              }
+            ]
+          end
+
+          describe '#valid?' do
+            it { is_expected.to be_valid }
+          end
+
+          describe '#errors' do
+            it 'returns no errors' do
+              expect(matrix.errors)
+                .to be_empty
+            end
+          end
+
+          describe '#value' do
+            before do
+              matrix.compose!
+            end
+
+            it 'returns the value without raising an error' do
+              expect(matrix.value).to eq([{ 'VAR_1' => %w[test] }])
+            end
+          end
+        end
+      end
+    end
+
+    context 'with one_dimensional_matrix feature flag disabled' do
+      before do
+        stub_feature_flags(one_dimensional_matrix: false)
+        matrix.compose!
+      end
+
+      context 'when entry config has only one variable with multiple values' do
+        let(:config) do
+          [
+            {
+              'VAR_1' => %w[build test]
+            }
+          ]
+        end
+
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          it 'returns error about too many jobs' do
+            expect(matrix.errors)
+              .to include('variables config requires at least 2 items')
+          end
+        end
+
+        describe '#value' do
+          before do
+            matrix.compose!
+          end
+
+          it 'returns the value without raising an error' do
+            expect(matrix.value).to eq([{ 'VAR_1' => %w[build test] }])
+          end
+        end
+
+        context 'when entry config has only one variable with one value' do
+          let(:config) do
+            [
+              {
+                'VAR_1' => %w[test]
+              }
+            ]
+          end
+
+          describe '#valid?' do
+            it { is_expected.not_to be_valid }
+          end
+
+          describe '#errors' do
+            it 'returns no errors' do
+              expect(matrix.errors)
+                .to include('variables config requires at least 2 items')
+            end
+          end
+
+          describe '#value' do
+            before do
+              matrix.compose!
+            end
+
+            it 'returns the value without raising an error' do
+              expect(matrix.value).to eq([{ 'VAR_1' => %w[test] }])
+            end
+          end
         end
       end
     end

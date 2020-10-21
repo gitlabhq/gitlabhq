@@ -123,20 +123,13 @@
 }
 
 .build-header {
-  .ci-header-container,
-  .header-action-buttons {
-    display: flex;
-  }
-
-  .ci-header-container {
-    min-height: 54px;
-  }
-
   .page-content-header {
     padding: 10px 0 9px;
   }
 
   .header-action-buttons {
+    display: flex;
+
     @include media-breakpoint-down(xs) {
       .sidebar-toggle-btn {
         margin-top: 0;

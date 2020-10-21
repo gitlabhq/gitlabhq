@@ -7,6 +7,7 @@ export default () => ({
   state: {
     discussions: [],
     discussionSortOrder: ASC,
+    persistSortOrder: true,
     convertedDisscussionIds: [],
     targetNoteHash: null,
     lastFetchedAt: null,
@@ -45,6 +46,7 @@ export default () => ({
     resolvableDiscussionsCount: 0,
     unresolvedDiscussionsCount: 0,
     descriptionVersions: {},
+    isTimelineEnabled: false,
   },
   actions,
   getters,

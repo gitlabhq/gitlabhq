@@ -1,7 +1,7 @@
-import grayMatter from 'gray-matter';
+import { frontMatterify, stringify } from './front_matterify';
 
 const parseSourceFile = raw => {
-  const remake = source => grayMatter(source, {});
+  const remake = source => frontMatterify(source);
 
   let editable = remake(raw);
 
@@ -13,20 +13,17 @@ const parseSourceFile = raw => {
     }
   };
 
-  const trimmedEditable = () => grayMatter.stringify(editable).trim();
+  const content = (isBody = false) => (isBody ? editable.content : stringify(editable));
 
-  const content = (isBody = false) => (isBody ? editable.content.trim() : trimmedEditable()); // gray-matter internally adds an eof newline so we trim to bypass, open issue: https://github.com/jonschlinkert/gray-matter/issues/96
-
-  const matter = () => editable.data;
+  const matter = () => editable.matter;
 
   const syncMatter = settings => {
-    const source = grayMatter.stringify(editable.content, settings);
-    syncContent(source);
+    editable.matter = settings;
   };
 
-  const isModified = () => trimmedEditable() !== raw;
+  const isModified = () => stringify(editable) !== raw;
 
-  const hasMatter = () => editable.matter.length > 0;
+  const hasMatter = () => Boolean(editable.matter);
 
   return {
     matter,

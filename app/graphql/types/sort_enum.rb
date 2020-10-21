@@ -5,9 +5,16 @@ module Types
     graphql_name 'Sort'
     description 'Common sort values'
 
-    value 'updated_desc', 'Updated at descending order'
-    value 'updated_asc', 'Updated at ascending order'
-    value 'created_desc', 'Created at descending order'
-    value 'created_asc', 'Created at ascending order'
+    # Deprecated, as we prefer uppercase enums
+    # https://gitlab.com/groups/gitlab-org/-/epics/1838
+    value 'updated_desc', 'Updated at descending order', deprecated: { reason: 'Use UPDATED_DESC', milestone: '13.5' }
+    value 'updated_asc', 'Updated at ascending order', deprecated: { reason: 'Use UPDATED_ASC', milestone: '13.5' }
+    value 'created_desc', 'Created at descending order', deprecated: { reason: 'Use CREATED_DESC', milestone: '13.5' }
+    value 'created_asc', 'Created at ascending order', deprecated: { reason: 'Use CREATED_ASC', milestone: '13.5' }
+
+    value 'UPDATED_DESC', 'Updated at descending order', value: :updated_desc
+    value 'UPDATED_ASC', 'Updated at ascending order', value: :updated_asc
+    value 'CREATED_DESC', 'Created at descending order', value: :created_desc
+    value 'CREATED_ASC', 'Created at ascending order', value: :created_asc
   end
 end

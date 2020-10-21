@@ -1,0 +1,5 @@
+---
+title: Migrate u2f registrations to webauthn registrations
+merge_request: 42159
+author: Jan Beckmann
+type: added

@@ -4,6 +4,7 @@ class PrometheusAlert < ApplicationRecord
   include Sortable
   include UsageStatistics
   include Presentable
+  include EachBatch
 
   OPERATORS_MAP = {
     lt: "<",
@@ -35,6 +36,7 @@ class PrometheusAlert < ApplicationRecord
   scope :for_metric, -> (metric) { where(prometheus_metric: metric) }
   scope :for_project, -> (project) { where(project_id: project) }
   scope :for_environment, -> (environment) { where(environment_id: environment) }
+  scope :get_environment_id, -> { select(:environment_id).pluck(:environment_id) }
 
   def self.distinct_projects
     sub_query = self.group(:project_id).select(1)

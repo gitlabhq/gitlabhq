@@ -7,7 +7,7 @@ class AddIssueIdForeignKeyToResourceStateEvents < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :resource_state_events, :issues, column: :issue_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :resource_state_events, :issues, column: :issue_id, on_delete: :cascade
     end
   end
 

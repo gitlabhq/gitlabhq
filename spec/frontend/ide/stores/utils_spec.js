@@ -46,7 +46,7 @@ describe('Multi-file store utils', () => {
             path: 'added',
             tempFile: true,
             content: 'new file content',
-            rawPath: 'data:image/png;base64,abc',
+            rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
             lastCommitSha: '123456789',
           },
           { ...file('deletedFile'), path: 'deletedFile', deleted: true },
@@ -77,7 +77,8 @@ describe('Multi-file store utils', () => {
           {
             action: commitActionTypes.create,
             file_path: 'added',
-            content: 'new file content',
+            // atob("new file content")
+            content: 'bmV3IGZpbGUgY29udGVudA==',
             encoding: 'base64',
             last_commit_id: '123456789',
             previous_path: undefined,
@@ -117,7 +118,7 @@ describe('Multi-file store utils', () => {
             path: 'added',
             tempFile: true,
             content: 'new file content',
-            rawPath: 'data:image/png;base64,abc',
+            rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
             lastCommitSha: '123456789',
           },
         ],
@@ -148,7 +149,8 @@ describe('Multi-file store utils', () => {
           {
             action: commitActionTypes.create,
             file_path: 'added',
-            content: 'new file content',
+            // atob("new file content")
+            content: 'bmV3IGZpbGUgY29udGVudA==',
             encoding: 'base64',
             last_commit_id: '123456789',
             previous_path: undefined,

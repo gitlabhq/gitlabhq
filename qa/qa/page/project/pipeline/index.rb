@@ -14,6 +14,10 @@ module QA
             element :pipeline_retry_button
           end
 
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/nav_controls.vue' do
+            element :run_pipeline_button
+          end
+
           def click_on_latest_pipeline
             all_elements(:pipeline_url_link, minimum: 1, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME).first.click
           end
@@ -40,8 +44,18 @@ module QA
               wait_for_latest_pipeline_success
             end
           end
+
+          def has_pipeline?
+            has_element? :pipeline_url_link
+          end
+
+          def click_run_pipeline_button
+            click_element :run_pipeline_button, Page::Project::Pipeline::New
+          end
         end
       end
     end
   end
 end
+
+QA::Page::Project::Pipeline::Index.prepend_if_ee('QA::EE::Page::Project::Pipeline::Index')

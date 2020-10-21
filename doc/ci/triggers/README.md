@@ -95,9 +95,9 @@ Read more about the [jobs API](../../api/job_artifacts.md#download-the-artifacts
 
 ## Adding a new trigger
 
-You can add a new trigger by going to your project's
-**Settings ➔ CI/CD** under **Triggers**. The **Add trigger** button will
-create a new token which you can then use to trigger a rerun of this
+Go to your
+**Settings ➔ CI/CD** under **Triggers** to add a new trigger. The **Add trigger** button creates
+a new token which you can then use to trigger a rerun of this
 particular project's pipeline.
 
 Every new trigger you create, gets assigned a different token which you can
@@ -121,7 +121,7 @@ POST /projects/:id/trigger/pipeline
 ```
 
 The required parameters are the [trigger's `token`](#authentication-tokens)
-and the Git `ref` on which the trigger will be performed. Valid refs are
+and the Git `ref` on which the trigger is performed. Valid refs are
 branches or tags. The `:id` of a project can be found by
 [querying the API](../../api/projects.md) or by visiting the **CI/CD**
 settings page which provides self-explanatory examples.
@@ -146,7 +146,7 @@ curl --request POST \
      https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
 
-In this case, the project with ID `9` will get rebuilt on `master` branch.
+In this case, the project with ID `9` gets rebuilt on `master` branch.
 
 Alternatively, you can pass the `token` and `ref` arguments in the query string:
 
@@ -169,9 +169,9 @@ build_docs:
     - tags
 ```
 
-This means that whenever a new tag is pushed on project A, the job will run and the
-`build_docs` job will be executed, triggering a rebuild of project B. The
-`stage: deploy` ensures that this job will run only after all jobs with
+This means that whenever a new tag is pushed on project A, the job runs and the
+`build_docs` job is executed, triggering a rebuild of project B. The
+`stage: deploy` ensures that this job runs only after all jobs with
 `stage: test` complete successfully.
 
 ## Triggering a pipeline from a webhook
@@ -183,14 +183,14 @@ webhook URL for Push and Tag events (change the project ID, ref and token):
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
 ```
 
-`ref` should be passed as part of the URL in order to take precedence over
-`ref` from the webhook body that designates the branch ref that fired the
-trigger in the source repository. `ref` should be URL-encoded if it contains slashes.
+You should pass `ref` as part of the URL, to take precedence over `ref` from
+the webhook body that designates the branch ref that fired the trigger in the
+source repository. Be sure to URL-encode `ref` if it contains slashes.
 
 ## Making use of trigger variables
 
 You can pass any number of arbitrary variables in the trigger API call and they
-will be available in GitLab CI/CD so that they can be used in your `.gitlab-ci.yml`
+are available in GitLab CI/CD so that they can be used in your `.gitlab-ci.yml`
 file. The parameter is of the form:
 
 ```plaintext
@@ -237,7 +237,7 @@ upload_package:
 ```
 
 You can then trigger a rebuild while you pass the `UPLOAD_TO_S3` variable
-and the script of the `upload_package` job will run:
+and the script of the `upload_package` job is run:
 
 ```shell
 curl --request POST \
@@ -252,10 +252,6 @@ of all types of variables.
 
 ## Using cron to trigger nightly pipelines
 
-NOTE: **Note:**
-The following behavior can also be achieved through GitLab's UI with
-[pipeline schedules](../pipelines/schedules.md).
-
 Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `master`
 branch of project with ID `9` every night at `00:30`:
@@ -264,9 +260,12 @@ branch of project with ID `9` every night at `00:30`:
 30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
 
+This behavior can also be achieved through GitLab's UI with
+[pipeline schedules](../pipelines/schedules.md).
+
 ## Legacy triggers
 
-Old triggers, created before GitLab 9.0 will be marked as legacy.
+Old triggers, created before GitLab 9.0 are marked as legacy.
 
 Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be

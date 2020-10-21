@@ -1,0 +1,5 @@
+---
+title: Raise Puma Worker Killer RAM limits
+merge_request: 45116
+author:
+type: changed

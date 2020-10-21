@@ -301,7 +301,6 @@ module ProjectsHelper
     !disabled && !compact_mode
   end
 
-  # overridden in EE
   def settings_operations_available?
     can?(current_user, :read_environment, @project)
   end
@@ -468,16 +467,25 @@ module ProjectsHelper
       serverless:         :read_cluster,
       error_tracking:     :read_sentry_issue,
       alert_management:   :read_alert_management_alert,
-      incidents:          :read_incidents,
+      incidents:          :read_issue,
       labels:             :read_label,
       issues:             :read_issue,
       project_members:    :read_project_member,
-      wiki:               :read_wiki
+      wiki:               :read_wiki,
+      feature_flags:      :read_feature_flag
     }
   end
 
   def can_view_operations_tab?(current_user, project)
-    [:read_environment, :read_cluster, :metrics_dashboard].any? do |ability|
+    [
+      :metrics_dashboard,
+      :read_alert_management_alert,
+      :read_environment,
+      :read_issue,
+      :read_sentry_issue,
+      :read_cluster,
+      :read_feature_flag
+    ].any? do |ability|
       can?(current_user, ability, project)
     end
   end
@@ -555,7 +563,11 @@ module ProjectsHelper
   end
 
   def sidebar_operations_link_path(project = @project)
-    metrics_project_environments_path(project) if can?(current_user, :read_environment, project)
+    if can?(current_user, :read_environment, project)
+      metrics_project_environments_path(project)
+    else
+      project_feature_flags_path(project)
+    end
   end
 
   def project_last_activity(project)
@@ -748,6 +760,8 @@ module ProjectsHelper
       logs
       product_analytics
       metrics_dashboard
+      feature_flags
+      tracings
     ]
   end
 
@@ -756,10 +770,6 @@ module ProjectsHelper
       project.has_auto_devops_implicitly_enabled? &&
       project.builds_enabled? &&
       !project.repository.gitlab_ci_yml
-  end
-
-  def native_code_navigation_enabled?(project)
-    Feature.enabled?(:code_navigation, project, default_enabled: true)
   end
 
   def show_visibility_confirm_modal?(project)
@@ -772,9 +782,7 @@ module ProjectsHelper
   end
 
   def project_access_token_available?(project)
-    return false if ::Gitlab.com?
-
-    ::Feature.enabled?(:resource_access_token, project, default_enabled: true)
+    can?(current_user, :admin_resource_access_tokens, project)
   end
 end
 

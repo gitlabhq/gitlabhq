@@ -1615,6 +1615,7 @@ RSpec.describe API::Projects do
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
+        expect(json_response['ci_forward_deployment_enabled']).to eq(project.ci_forward_deployment_enabled)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
         expect(json_response).to have_key 'packages_enabled'
@@ -2607,6 +2608,7 @@ RSpec.describe API::Projects do
                           merge_requests_enabled: true,
                           merge_method: 'ff',
                           ci_default_git_depth: 20,
+                          ci_forward_deployment_enabled: false,
                           description: 'new description' }
 
         put api("/projects/#{project3.id}", user4), params: project_param

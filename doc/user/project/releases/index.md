@@ -47,14 +47,13 @@ To view a list of releases:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab 12.9. Releases can be created directly in the GitLab UI.
 
-NOTE: **Note:**
-Only users with Developer permissions or higher can create releases.
-Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
-
 You can create a release in the user interface, or by using the
 [Releases API](../../../api/releases/index.md#create-a-release).
 We recommend using the API to create releases as one of the last steps in your
 CI/CD pipeline.
+
+Only users with Developer permissions or higher can create releases.
+Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
 
 To create a new release through the GitLab UI:
 
@@ -62,7 +61,6 @@ To create a new release through the GitLab UI:
    button.
 1. In the [**Tag name**](#tag-name) box, enter a name.
 
-   NOTE: **Note:**
    Creating a release based on an existing tag using the user
    interface is not yet supported. However, this is possible using the
    [Releases API](../../../api/releases/index.md#create-a-release).
@@ -88,7 +86,6 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
-NOTE: **Note:**
 Only users with Developer permissions or higher can edit releases.
 Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
 
@@ -225,7 +222,6 @@ The release title can be customized using the **Release title** field when
 creating or editing a release. If no title is provided, the release's tag name
 is used instead.
 
-NOTE: **Note:**
 Guest users of private projects are allowed to view the **Releases** page
 but are _not_ allowed to view details about the Git repository (in particular,
 tag names). Because of this, release titles are replaced with a generic
@@ -254,7 +250,6 @@ Every release has a description. You can add any text you like, but we recommend
 including a changelog to describe the content of your release. This helps users
 quickly scan the differences between each release you publish.
 
-NOTE: **Note:**
 [Git's tagging messages](https://git-scm.com/book/en/v2/Git-Basics-Tagging) and
 Release note descriptions are unrelated. Description supports [Markdown](../../markdown.md).
 
@@ -334,8 +329,7 @@ generate release evidence for an existing release. Because of this, each release
 can have multiple release evidence snapshots. You can view the release evidence and
 its details on the Releases page.
 
-NOTE: **Note:**
-When the issue tracker is disabled, release evidence [cannot be downloaded](https://gitlab.com/gitlab-org/gitlab/-/issues/208397).
+When the issue tracker is disabled, release evidence [can't be downloaded](https://gitlab.com/gitlab-org/gitlab/-/issues/208397).
 
 Here is an example of a release evidence object:
 
@@ -431,10 +425,13 @@ ruby:
       junit: rspec.xml
 ```
 
-If the pipeline ran successfully, when you create your release, the `rspec.xml` file is saved as release evidence.
+If the pipeline ran successfully, when you create your release, the `rspec.xml` file is saved as
+release evidence.
 
-NOTE: **Note:**
-If you [schedule release evidence collection](#schedule-release-evidence-collection), some artifacts may already be expired by the time of evidence collection. To avoid this you can use the [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
+If you [schedule release evidence collection](#schedule-release-evidence-collection),
+some artifacts may already be expired by the time of evidence collection. To avoid this you can use
+the [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
+keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ### Schedule release evidence collection
 
@@ -448,21 +445,6 @@ In the API:
 - If you use a past `released_at` date, no evidence is collected.
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.
-
-### Disable release evidence display **(CORE ONLY)**
-
-The `:release_evidence_collection` feature flag is enabled by default in GitLab
-self-managed instances. To turn it off, ask a GitLab administrator with Rails console
-access to run the following command:
-
-```ruby
-Feature.disable(:release_evidence_collection)
-```
-
-NOTE: **Note:**
-Release evidence is collected regardless of this feature flag,
-which only enables or disables the display of the data on the
-Releases page.
 
 ## GitLab Releaser
 

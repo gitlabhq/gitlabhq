@@ -1,3 +1,9 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Geo (development) **(PREMIUM ONLY)**
 
 Geo connects GitLab instances together. One GitLab instance is
@@ -420,7 +426,7 @@ We switch and filter from each event by the `event_name` field.
 
 ### Geo Log Cursor (GitLab 10.0 and up)
 
-Since GitLab 10.0, [System Webhooks](#system-hooks-gitlab-87-to-95) are no longer
+In GitLab 10.0 and later, [System Webhooks](#system-hooks-gitlab-87-to-95) are no longer
 used and Geo Log Cursor is used instead. The Log Cursor traverses the
 `Geo::EventLog` rows to see if there are changes since the last time
 the log was checked and will handle repository updates, deletes,

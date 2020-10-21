@@ -537,7 +537,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
 
       it 'overrides default config' do
         expect(entry[:image].value).to eq(name: 'some_image')
-        expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push')
+        expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push', when: 'on_success')
       end
     end
 
@@ -552,7 +552,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
 
       it 'uses config from default entry' do
         expect(entry[:image].value).to eq 'specified'
-        expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push')
+        expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push', when: 'on_success')
       end
     end
 

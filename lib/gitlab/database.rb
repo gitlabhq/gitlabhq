@@ -92,10 +92,6 @@ module Gitlab
       @version ||= database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
 
-    def self.postgresql_9_or_less?
-      version.to_f < 10
-    end
-
     def self.postgresql_minimum_supported_version?
       version.to_f >= MINIMUM_POSTGRES_VERSION
     end
@@ -125,28 +121,6 @@ module Gitlab
       EOS
     rescue ActiveRecord::ActiveRecordError, PG::Error
       # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
-    end
-
-    # map some of the function names that changed between PostgreSQL 9 and 10
-    # https://wiki.postgresql.org/wiki/New_in_postgres_10
-    def self.pg_wal_lsn_diff
-      Gitlab::Database.postgresql_9_or_less? ? 'pg_xlog_location_diff' : 'pg_wal_lsn_diff'
-    end
-
-    def self.pg_current_wal_insert_lsn
-      Gitlab::Database.postgresql_9_or_less? ? 'pg_current_xlog_insert_location' : 'pg_current_wal_insert_lsn'
-    end
-
-    def self.pg_last_wal_receive_lsn
-      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_receive_location' : 'pg_last_wal_receive_lsn'
-    end
-
-    def self.pg_last_wal_replay_lsn
-      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_replay_location' : 'pg_last_wal_replay_lsn'
-    end
-
-    def self.pg_last_xact_replay_timestamp
-      'pg_last_xact_replay_timestamp'
     end
 
     def self.nulls_last_order(field, direction = 'ASC')
@@ -274,6 +248,20 @@ module Gitlab
       true
     rescue
       false
+    end
+
+    def self.system_id
+      row = connection.execute('SELECT system_identifier FROM pg_control_system()').first
+
+      row['system_identifier']
+    end
+
+    def self.get_write_location(ar_connection)
+      row = ar_connection
+        .select_all("SELECT pg_current_wal_insert_lsn()::text AS location")
+        .first
+
+      row['location'] if row
     end
 
     private_class_method :database_version

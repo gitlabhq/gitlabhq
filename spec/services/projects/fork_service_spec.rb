@@ -179,7 +179,7 @@ RSpec.describe Projects::ForkService do
 
         context "when origin has git depth specified" do
           before do
-            @from_project.update(ci_default_git_depth: 42)
+            @from_project.update!(ci_default_git_depth: 42)
           end
 
           it "inherits default_git_depth from the origin project" do
@@ -201,7 +201,7 @@ RSpec.describe Projects::ForkService do
       context "when project has restricted visibility level" do
         context "and only one visibility level is restricted" do
           before do
-            @from_project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            @from_project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
           end
 

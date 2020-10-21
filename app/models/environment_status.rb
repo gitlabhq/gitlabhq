@@ -72,14 +72,6 @@ class EnvironmentStatus
       .merge_request_diff_files.where(deleted_file: false)
   end
 
-  def changed_paths
-    changes.map { |change| change[:path] }
-  end
-
-  def changed_urls
-    changes.map { |change| change[:external_url] }
-  end
-
   def has_route_map?
     project.route_map_for(sha).present?
   end

@@ -27,11 +27,14 @@ module QA
 
         Page::Project::Show.perform(&:create_first_new_file!)
 
-        Page::File::Form.perform do |form|
-          form.add_name(@name)
-          form.add_content(@content)
-          form.add_commit_message(@commit_message)
-          form.commit_changes
+        Page::Project::WebIDE::Edit.perform do |ide|
+          ide.add_file(@name, @content)
+          ide.commit_changes(@commit_message)
+          ide.go_to_project
+        end
+
+        Page::Project::Show.perform do |project|
+          project.click_file(@name)
         end
       end
 

@@ -3,9 +3,27 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 
+const TEST_EDIT_URL = '/gitlab-test/test/-/edit/master/';
 const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/master/-/';
 const TEST_GITPOD_URL = 'https://gitpod.test/';
 
+const ACTION_EDIT = {
+  href: TEST_EDIT_URL,
+  key: 'edit',
+  text: 'Edit',
+  secondaryText: 'Edit this file only.',
+  tooltip: '',
+  attrs: {
+    'data-qa-selector': 'edit_button',
+    'data-track-event': 'click_edit',
+    'data-track-label': 'Edit',
+  },
+};
+const ACTION_EDIT_CONFIRM_FORK = {
+  ...ACTION_EDIT,
+  href: '#modal-confirm-fork-edit',
+  handle: expect.any(Function),
+};
 const ACTION_WEB_IDE = {
   href: TEST_WEB_IDE_URL,
   key: 'webide',
@@ -14,13 +32,16 @@ const ACTION_WEB_IDE = {
   text: 'Web IDE',
   attrs: {
     'data-qa-selector': 'web_ide_button',
+    'data-track-event': 'click_edit_ide',
+    'data-track-label': 'Web IDE',
   },
 };
-const ACTION_WEB_IDE_FORK = {
+const ACTION_WEB_IDE_CONFIRM_FORK = {
   ...ACTION_WEB_IDE,
-  href: '#modal-confirm-fork',
+  href: '#modal-confirm-fork-webide',
   handle: expect.any(Function),
 };
+const ACTION_WEB_IDE_EDIT_FORK = { ...ACTION_WEB_IDE, text: 'Edit fork in Web IDE' };
 const ACTION_GITPOD = {
   href: TEST_GITPOD_URL,
   key: 'gitpod',
@@ -43,6 +64,7 @@ describe('Web IDE link component', () => {
   function createComponent(props) {
     wrapper = shallowMount(WebIdeLink, {
       propsData: {
+        editUrl: TEST_EDIT_URL,
         webIdeUrl: TEST_WEB_IDE_URL,
         gitpodUrl: TEST_GITPOD_URL,
         ...props,
@@ -57,14 +79,36 @@ describe('Web IDE link component', () => {
   const findActionsButton = () => wrapper.find(ActionsButton);
   const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
 
-  it.each`
-    props                                                                        | expectedActions
-    ${{}}                                                                        | ${[ACTION_WEB_IDE]}
-    ${{ needsToFork: true }}                                                     | ${[ACTION_WEB_IDE_FORK]}
-    ${{ showWebIdeButton: false, showGitpodButton: true, gitpodEnabled: true }}  | ${[ACTION_GITPOD]}
-    ${{ showWebIdeButton: false, showGitpodButton: true, gitpodEnabled: false }} | ${[ACTION_GITPOD_ENABLE]}
-    ${{ showGitpodButton: true, gitpodEnabled: false }}                          | ${[ACTION_WEB_IDE, ACTION_GITPOD_ENABLE]}
-  `('renders actions with props=$props', ({ props, expectedActions }) => {
+  it.each([
+    {
+      props: {},
+      expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
+    },
+    {
+      props: { isFork: true },
+      expectedActions: [ACTION_WEB_IDE_EDIT_FORK, ACTION_EDIT],
+    },
+    {
+      props: { needsToFork: true },
+      expectedActions: [ACTION_WEB_IDE_CONFIRM_FORK, ACTION_EDIT_CONFIRM_FORK],
+    },
+    {
+      props: { showWebIdeButton: false, showGitpodButton: true, gitpodEnabled: true },
+      expectedActions: [ACTION_EDIT, ACTION_GITPOD],
+    },
+    {
+      props: { showWebIdeButton: false, showGitpodButton: true, gitpodEnabled: false },
+      expectedActions: [ACTION_EDIT, ACTION_GITPOD_ENABLE],
+    },
+    {
+      props: { showGitpodButton: true, gitpodEnabled: false },
+      expectedActions: [ACTION_WEB_IDE, ACTION_EDIT, ACTION_GITPOD_ENABLE],
+    },
+    {
+      props: { showEditButton: false },
+      expectedActions: [ACTION_WEB_IDE],
+    },
+  ])('renders actions with appropriately for given props', ({ props, expectedActions }) => {
     createComponent(props);
 
     expect(findActionsButton().props('actions')).toEqual(expectedActions);
@@ -72,7 +116,12 @@ describe('Web IDE link component', () => {
 
   describe('with multiple actions', () => {
     beforeEach(() => {
-      createComponent({ showWebIdeButton: true, showGitpodButton: true, gitpodEnabled: true });
+      createComponent({
+        showEditButton: false,
+        showWebIdeButton: true,
+        showGitpodButton: true,
+        gitpodEnabled: true,
+      });
     });
 
     it('selected Web IDE by default', () => {

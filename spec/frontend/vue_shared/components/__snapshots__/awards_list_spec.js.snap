@@ -228,9 +228,11 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
         />
       </span>
        
-      <i
-        aria-hidden="true"
-        class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"
+      <gl-loading-icon-stub
+        class="award-control-icon-loading"
+        color="dark"
+        label="Loading"
+        size="md"
       />
     </button>
   </div>

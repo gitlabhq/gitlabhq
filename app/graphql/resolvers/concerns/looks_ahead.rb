@@ -3,8 +3,6 @@
 module LooksAhead
   extend ActiveSupport::Concern
 
-  FEATURE_FLAG = :graphql_lookahead_support
-
   included do
     attr_accessor :lookahead
   end
@@ -16,8 +14,6 @@ module LooksAhead
   end
 
   def apply_lookahead(query)
-    return query unless Feature.enabled?(FEATURE_FLAG)
-
     selection = node_selection
 
     includes = preloads.each.flat_map do |name, requirements|

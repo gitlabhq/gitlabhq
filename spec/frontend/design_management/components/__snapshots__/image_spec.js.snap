@@ -2,7 +2,7 @@
 
 exports[`Design management large image component renders image 1`] = `
 <div
-  class="m-auto js-design-image"
+  class="gl-mx-auto gl-my-auto js-design-image"
 >
   <!---->
    
@@ -16,7 +16,7 @@ exports[`Design management large image component renders image 1`] = `
 
 exports[`Design management large image component renders loading state 1`] = `
 <div
-  class="m-auto js-design-image"
+  class="gl-mx-auto gl-my-auto js-design-image"
   isloading="true"
 >
   <!---->
@@ -31,7 +31,7 @@ exports[`Design management large image component renders loading state 1`] = `
 
 exports[`Design management large image component renders media broken icon on error 1`] = `
 <gl-icon-stub
-  class="text-secondary-100"
+  class="gl-text-gray-200"
   name="media-broken"
   size="48"
 />
@@ -39,7 +39,7 @@ exports[`Design management large image component renders media broken icon on er
 
 exports[`Design management large image component sets correct classes and styles if imageStyle is set 1`] = `
 <div
-  class="m-auto js-design-image"
+  class="gl-mx-auto gl-my-auto js-design-image"
 >
   <!---->
    
@@ -54,7 +54,7 @@ exports[`Design management large image component sets correct classes and styles
 
 exports[`Design management large image component zoom sets image style when zoomed 1`] = `
 <div
-  class="m-auto js-design-image"
+  class="gl-mx-auto gl-my-auto js-design-image"
 >
   <!---->
    

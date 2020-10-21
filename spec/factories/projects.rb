@@ -15,7 +15,7 @@ FactoryBot.define do
 
     # Associations
     namespace
-    creator { group ? create(:user) : namespace&.owner }
+    creator { group ? association(:user) : namespace&.owner }
 
     transient do
       # Nest Project Feature attributes
@@ -283,6 +283,12 @@ FactoryBot.define do
           bare_repo: TestEnv.factory_repo_path_bare,
           refs: TestEnv::BRANCH_SHA)
       end
+    end
+
+    trait :with_import_url do
+      import_finished
+
+      import_url { generate(:url) }
     end
 
     trait(:wiki_enabled)            { wiki_access_level { ProjectFeature::ENABLED } }

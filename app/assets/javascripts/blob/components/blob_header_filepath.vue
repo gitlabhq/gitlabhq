@@ -43,6 +43,7 @@ export default {
       :text="blob.path"
       :gfm="gfmCopyText"
       :title="__('Copy file path')"
+      category="tertiary"
       css-class="btn-clipboard btn-transparent lh-100 position-static"
     />
   </div>

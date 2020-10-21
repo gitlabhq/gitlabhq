@@ -3,6 +3,8 @@
 class ConfirmationsController < Devise::ConfirmationsController
   include AcceptsPendingInvitations
 
+  feature_category :users
+
   def almost_there
     flash[:notice] = nil
     render layout: "devise_empty"

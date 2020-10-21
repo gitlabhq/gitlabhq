@@ -10,15 +10,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
-  include ImportExport::CommonUtil
-
-  let(:user) { create(:user) }
-  let(:shared) { Gitlab::ImportExport::Shared.new(importable) }
-  let(:attributes) { relation_reader.consume_attributes(importable_name) }
-
-  let(:members_mapper) do
-    Gitlab::ImportExport::MembersMapper.new(exported_members: {}, user: user, importable: importable)
-  end
+  include_context 'relation tree restorer shared context'
 
   let(:relation_tree_restorer) do
     described_class.new(

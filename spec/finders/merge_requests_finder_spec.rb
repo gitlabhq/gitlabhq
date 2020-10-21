@@ -486,6 +486,83 @@ RSpec.describe MergeRequestsFinder do
           expect(merge_requests).to contain_exactly(old_merge_request, new_merge_request)
         end
       end
+
+      context 'filtering by the merge request deployments' do
+        let(:gstg) { create(:environment, project: project4, name: 'gstg') }
+        let(:gprd) { create(:environment, project: project4, name: 'gprd') }
+
+        let(:mr1) do
+          create(
+            :merge_request,
+            :simple,
+            :merged,
+            author: user,
+            source_project: project4,
+            target_project: project4
+          )
+        end
+
+        let(:mr2) do
+          create(
+            :merge_request,
+            :simple,
+            :merged,
+            author: user,
+            source_project: project4,
+            target_project: project4
+          )
+        end
+
+        let(:deploy1) do
+          create(
+            :deployment,
+            :success,
+            deployable: nil,
+            environment: gstg,
+            project: project4,
+            sha: mr1.diff_head_sha,
+            finished_at: Time.utc(2020, 10, 1, 12, 0)
+          )
+        end
+
+        let(:deploy2) do
+          create(
+            :deployment,
+            :success,
+            deployable: nil,
+            environment: gprd,
+            project: project4,
+            sha: mr2.diff_head_sha,
+            finished_at: Time.utc(2020, 10, 2, 15, 0)
+          )
+        end
+
+        before do
+          deploy1.link_merge_requests(MergeRequest.where(id: mr1.id))
+          deploy2.link_merge_requests(MergeRequest.where(id: mr2.id))
+        end
+
+        it 'filters merge requests deployed to a given environment' do
+          mrs = described_class.new(user, environment: 'gstg').execute
+
+          expect(mrs).to eq([mr1])
+        end
+
+        it 'filters merge requests deployed before a given date' do
+          mrs =
+            described_class.new(user, deployed_before: '2020-10-02').execute
+
+          expect(mrs).to eq([mr1])
+        end
+
+        it 'filters merge requests deployed after a given date' do
+          mrs = described_class
+            .new(user, deployed_after: '2020-10-01 12:00')
+            .execute
+
+          expect(mrs).to eq([mr2])
+        end
+      end
     end
 
     describe '#row_count', :request_store do
@@ -499,6 +576,16 @@ RSpec.describe MergeRequestsFinder do
         finder = described_class.new(user, state: 'closed')
 
         expect(finder.row_count).to eq(1)
+      end
+
+      it 'returns -1 if the query times out' do
+        finder = described_class.new(user)
+
+        expect_next_instance_of(described_class) do |subfinder|
+          expect(subfinder).to receive(:execute).and_raise(ActiveRecord::QueryCanceled)
+        end
+
+        expect(finder.row_count).to eq(-1)
       end
     end
 

@@ -220,3 +220,53 @@ Example response:
   "closed_at": null
 }
 ```
+
+## Revert vulnerability to detected state
+
+Reverts a given vulnerability to detected state. Returns status code `304` if the vulnerability is already in detected state.
+
+If an authenticated user does not have permission to
+[revert vulnerability to detected state](../user/permissions.md#project-members-permissions),
+this request will result in a `403` status code.
+
+```plaintext
+POST /vulnerabilities/:id/revert
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer or string | yes | The ID of a vulnerability to revert to detected state |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/dismiss"
+```
+
+Example response:
+
+```json
+{
+  "id": 2,
+  "title": "Predictable pseudorandom number generator",
+  "description": null,
+  "state": "detected",
+  "severity": "medium",
+  "confidence": "medium",
+  "report_type": "sast",
+  "project": {
+    "id": 32,
+    "name": "security-reports",
+    "full_path": "/gitlab-examples/security/security-reports",
+    "full_name": "gitlab-examples / security / security-reports"
+  },
+  "author_id": 1,
+  "updated_by_id": null,
+  "last_edited_by_id": null,
+  "closed_by_id": null,
+  "start_date": null,
+  "due_date": null,
+  "created_at": "2019-10-13T15:08:40.219Z",
+  "updated_at": "2019-10-13T15:09:40.382Z",
+  "last_edited_at": null,
+  "closed_at": null
+}
+```

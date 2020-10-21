@@ -3,6 +3,8 @@
 class Groups::ImportsController < Groups::ApplicationController
   include ContinueParams
 
+  feature_category :importers
+
   def show
     if @group.import_state.nil? || @group.import_state.finished?
       if continue_params[:to]

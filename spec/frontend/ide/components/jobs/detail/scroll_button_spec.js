@@ -31,7 +31,7 @@ describe('IDE job log scroll button', () => {
     });
 
     it('returns proper title', () => {
-      expect(wrapper.attributes('data-original-title')).toBe(title);
+      expect(wrapper.attributes('title')).toBe(title);
     });
   });
 

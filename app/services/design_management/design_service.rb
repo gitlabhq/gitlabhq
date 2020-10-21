@@ -19,6 +19,7 @@ module DesignManagement
     def collection
       issue.design_collection
     end
+    alias_method :design_collection, :collection
 
     def repository
       collection.repository

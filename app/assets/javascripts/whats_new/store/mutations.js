@@ -7,4 +7,7 @@ export default {
   [types.OPEN_DRAWER](state) {
     state.open = true;
   },
+  [types.SET_FEATURES](state, data) {
+    state.features = data;
+  },
 };

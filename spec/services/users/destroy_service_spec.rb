@@ -234,6 +234,14 @@ RSpec.describe Users::DestroyService do
 
         expect(User.exists?(user.id)).to be(false)
       end
+
+      it 'allows user to be deleted if skip_authorization: true' do
+        other_user = create(:user)
+
+        described_class.new(user).execute(other_user, skip_authorization: true)
+
+        expect(User.exists?(other_user.id)).to be(false)
+      end
     end
 
     context "migrating associated records" do

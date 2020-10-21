@@ -79,7 +79,7 @@ module Gitlab
         end
 
         def fabricate(entry_class, value = nil)
-          entry_class.new(value, @metadata) do |node|
+          entry_class.new(value, **@metadata) do |node|
             node.key = @attributes[:key]
             node.parent = @attributes[:parent]
             node.default = @attributes[:default]

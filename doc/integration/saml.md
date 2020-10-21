@@ -113,16 +113,16 @@ in your SAML IdP:
    omniauth:
      providers:
        - {
-           name: 'saml',
-           args: {
-                  assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
-                  idp_sso_target_url: 'https://login.example.com/idp',
-                  issuer: 'https://gitlab.example.com',
-                  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-                },
-           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
-         }
+         name: 'saml',
+         args: {
+           assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+           idp_sso_target_url: 'https://login.example.com/idp',
+           issuer: 'https://gitlab.example.com',
+           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+         },
+         label: 'Company Login'  # optional label for SAML login button, defaults to "Saml"
+       }
    ```
 
 1. Change the value for `assertion_consumer_service_url` to match the HTTPS endpoint
@@ -210,7 +210,7 @@ Example:
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-        } }
+  } }
 ```
 
 ### External Groups **(STARTER ONLY)**
@@ -228,7 +228,7 @@ SAML login supports automatic identification on whether a user should be conside
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-        } }
+  } }
 ```
 
 ### Admin Groups **(STARTER ONLY)**
@@ -248,7 +248,7 @@ considered admin users.
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-        } }
+  } }
 ```
 
 ### Auditor Groups **(STARTER ONLY)**
@@ -270,7 +270,7 @@ considered auditor users.
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-        } }
+  } }
 ```
 
 ## Bypass two factor authentication
@@ -328,22 +328,22 @@ In addition to the changes in GitLab, make sure that your IdP is returning the
    omniauth:
      providers:
        - {
-           name: 'saml',
-           args: {
-                   assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                   idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
-                   idp_sso_target_url: 'https://login.example.com/idp',
-                   issuer: 'https://gitlab.example.com',
-                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-                   upstream_two_factor_authn_contexts:
-                     [
-                       'urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport',
-                       'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS',
-                       'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN'
-                     ]
-                 },
-           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
-         }
+         name: 'saml',
+         args: {
+           assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+           idp_sso_target_url: 'https://login.example.com/idp',
+           issuer: 'https://gitlab.example.com',
+           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+           upstream_two_factor_authn_contexts:
+             [
+               'urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport',
+               'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS',
+               'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN'
+             ]
+         },
+         label: 'Company Login'  # optional label for SAML login button, defaults to "Saml"
+       }
    ```
 
 1. Save the file and [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect
@@ -436,7 +436,7 @@ args: {
         issuer: 'https://gitlab.example.com',
         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] },
-        allowed_clock_drift: 1 # for one second clock drift
+        allowed_clock_drift: 1  # for one second clock drift
 }
 ```
 
@@ -561,10 +561,10 @@ args: {
     <redacted>
     -----END PRIVATE KEY-----',
   security: {
-    authn_requests_signed: true, # enable signature on AuthNRequest
-    want_assertions_signed: true, # enable the requirement of signed assertion
-    embed_sign: true, # embedded signature or HTTP GET parameter signature
-    metadata_signed: false, # enable signature on Metadata
+    authn_requests_signed: true,  # enable signature on AuthNRequest
+    want_assertions_signed: true,  # enable the requirement of signed assertion
+    embed_sign: true,  # embedded signature or HTTP GET parameter signature
+    metadata_signed: false,  # enable signature on Metadata
     signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
   }
@@ -587,6 +587,52 @@ Refer to the documentation for your SAML Identity Provider for information on ho
 ## Passwords for users created via SAML
 
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
+
+## Configuring Group SAML on a self-managed GitLab instance **(PREMIUM ONLY)**
+
+For information on the GitLab.com implementation, please see the [SAML SSO for GitLab.com groups page](../user/group/saml_sso).
+
+Group SAML SSO helps if you need to allow access via multiple SAML identity providers, but as a multi-tenant solution is less suited to cases where you administer your own GitLab instance.
+
+To proceed with configuring Group SAML SSO instead, you'll need to enable the `group_saml` OmniAuth provider. This can be done from:
+
+- `gitlab.rb` for [Omnibus GitLab installations](#omnibus-installations).
+- `gitlab/config/gitlab.yml` for [source installations](#source-installations).
+
+### Limitations
+
+Group SAML on a self-managed instance is limited when compared to the recommended
+[instance-wide SAML](../user/group/saml_sso/index.md). The recommended solution allows you to take advantage of:
+
+- [LDAP compatibility](../administration/auth/ldap/index.md).
+- [LDAP Group Sync](../user/group/index.md#manage-group-memberships-via-ldap).
+- [Required groups](#required-groups).
+- [Admin groups](#admin-groups).
+- [Auditor groups](#auditor-groups).
+
+### Omnibus installations
+
+1. Make sure GitLab is
+   [configured with HTTPS](../install/installation.md#using-https).
+1. Enable OmniAuth and the `group_saml` provider in `gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_enabled'] = true
+   gitlab_rails['omniauth_providers'] = [{ name: 'group_saml' }]
+   ```
+
+### Source installations
+
+1. Make sure GitLab is
+   [configured with HTTPS](../install/installation.md#using-https).
+1. Enable OmniAuth and the `group_saml` provider in `gitlab/config/gitlab.yml`:
+
+    ```yaml
+    omniauth:
+      enabled: true
+      providers:
+        - { name: 'group_saml' }
+    ```
 
 ## Troubleshooting
 

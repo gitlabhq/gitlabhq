@@ -20,7 +20,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js do
   let(:sidebar_assignee_dropdown_item) { sidebar_assignee_block.find(".dropdown-menu li[data-user-id=\"#{assignee.id}\"]") }
   let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item.find('a')['data-title'] || '' }
 
-  context 'when invite_members_version_a experiment is not enabled' do
+  context 'when user is an owner' do
     before do
       stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
 
@@ -52,12 +52,6 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js do
         it "shows assignee tooltip '#{expected_tooltip}" do
           expect(sidebar_assignee_dropdown_tooltip).to eql(expected_tooltip)
         end
-
-        it 'does not show invite link' do
-          page.within '.dropdown-menu-user' do
-            expect(page).not_to have_link('Invite Members')
-          end
-        end
       end
     end
 
@@ -74,48 +68,15 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js do
     end
   end
 
-  context 'when invite_members_version_a experiment is enabled' do
+  context 'with invite members experiment considerations' do
     let_it_be(:user) { create(:user) }
 
     before do
-      stub_experiment_for_user(invite_members_version_a: true)
       sign_in(user)
     end
 
-    context 'when user can not see invite members' do
-      before do
-        project.add_developer(user)
-        visit project_merge_request_path(project, merge_request)
-
-        find('.block.assignee .edit-link').click
-
-        wait_for_requests
-      end
-
-      it 'does not see link to invite members' do
-        page.within '.dropdown-menu-user' do
-          expect(page).not_to have_link('Invite Members')
-        end
-      end
-    end
-
-    context 'when user can see invite members' do
-      before do
-        project.add_maintainer(user)
-        visit project_merge_request_path(project, merge_request)
-
-        find('.block.assignee .edit-link').click
-
-        wait_for_requests
-      end
-
-      it 'sees link to invite members' do
-        page.within '.dropdown-menu-user' do
-          expect(page).to have_link('Invite Members', href: project_project_members_path(project))
-          expect(page).to have_selector('[data-track-event="click_invite_members"]')
-          expect(page).to have_selector("[data-track-label='edit_assignee']")
-        end
-      end
+    include_examples 'issuable invite members experiments' do
+      let(:issuable_path) { project_merge_request_path(project, merge_request) }
     end
   end
 end

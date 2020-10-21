@@ -1,14 +1,15 @@
 import $ from 'jquery';
 import { mount } from '@vue/test-utils';
-import { GlIcon } from '@gitlab/ui';
+import { getJSONFixture } from 'helpers/fixtures';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release block', () => {
   let wrapper;
@@ -21,7 +22,6 @@ describe('Release block', () => {
       },
       provide: {
         glFeatures: {
-          releaseIssueSummary: true,
           ...featureFlags,
         },
       },
@@ -46,7 +46,7 @@ describe('Release block', () => {
     beforeEach(() => factory(release));
 
     it("renders the block with an id equal to the release's tag name", () => {
-      expect(wrapper.attributes().id).toBe('v0.3');
+      expect(wrapper.attributes().id).toBe(release.tagName);
     });
 
     it(`renders an edit button that links to the "Edit release" page with a "${BACK_URL_PARAM}" parameter`, () => {
@@ -69,48 +69,8 @@ describe('Release block', () => {
       expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.releasedAt));
     });
 
-    it('renders number of assets provided', () => {
-      expect(wrapper.find('.js-assets-count').text()).toContain(release.assets.count);
-    });
-
-    it('renders dropdown with the sources', () => {
-      expect(wrapper.findAll('.js-sources-dropdown li').length).toEqual(
-        release.assets.sources.length,
-      );
-
-      expect(wrapper.find('.js-sources-dropdown li a').attributes().href).toEqual(
-        release.assets.sources[0].url,
-      );
-
-      expect(wrapper.find('.js-sources-dropdown li a').text()).toContain(
-        release.assets.sources[0].format,
-      );
-    });
-
-    it('renders list with the links provided', () => {
-      expect(wrapper.findAll('.js-assets-list li').length).toEqual(release.assets.links.length);
-
-      expect(wrapper.find('.js-assets-list li a').attributes().href).toEqual(
-        release.assets.links[0].directAssetUrl,
-      );
-
-      expect(wrapper.find('.js-assets-list li a').text()).toContain(release.assets.links[0].name);
-    });
-
     it('renders author avatar', () => {
       expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
-    });
-
-    describe('external label', () => {
-      it('renders external label when link is external', () => {
-        expect(wrapper.find('.js-assets-list li a').text()).toContain('external source');
-      });
-
-      it('does not render external label when link is not external', () => {
-        expect(wrapper.find('.js-assets-list li:nth-child(2) a').text()).not.toContain(
-          'external source',
-        );
-      });
     });
 
     it('renders the footer', () => {
@@ -171,18 +131,14 @@ describe('Release block', () => {
   });
 
   describe('evidence block', () => {
-    it('renders the evidence block when the evidence is available and the feature flag is true', () =>
-      factory(release, { releaseEvidenceCollection: true }).then(() =>
-        expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
-      ));
-
-    it('does not render the evidence block when the evidence is available but the feature flag is false', () =>
-      factory(release, { releaseEvidenceCollection: true }).then(() =>
-        expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
-      ));
+    it('renders the evidence block when the evidence is available', () => {
+      return factory(release).then(() => {
+        expect(wrapper.find(EvidenceBlock).exists()).toBe(true);
+      });
+    });
 
     it('does not render the evidence block when there is no evidence', () => {
-      release.evidenceSha = null;
+      release.evidences = [];
 
       return factory(release).then(() => {
         expect(wrapper.find(EvidenceBlock).exists()).toBe(false);
@@ -236,53 +192,6 @@ describe('Release block', () => {
 
       return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(false);
-      });
-    });
-  });
-
-  describe('when the releaseIssueSummary feature flag is disabled', () => {
-    describe('with default props', () => {
-      beforeEach(() => factory(release, { releaseIssueSummary: false }));
-
-      it('renders the milestone icon', () => {
-        expect(
-          milestoneListLabel()
-            .find(GlIcon)
-            .exists(),
-        ).toBe(true);
-      });
-
-      it('renders the label as "Milestones" if more than one milestone is passed in', () => {
-        expect(
-          milestoneListLabel()
-            .find('.js-label-text')
-            .text(),
-        ).toEqual('Milestones');
-      });
-
-      it('renders a link to the milestone with a tooltip', () => {
-        const milestone = release.milestones[0];
-        const milestoneLink = wrapper.find('.js-milestone-link');
-
-        expect(milestoneLink.exists()).toBe(true);
-
-        expect(milestoneLink.text()).toBe(milestone.title);
-
-        expect(milestoneLink.attributes('href')).toBe(milestone.webUrl);
-
-        expect(milestoneLink.attributes('title')).toBe(milestone.description);
-      });
-    });
-
-    it('renders the label as "Milestone" if only a single milestone is passed in', () => {
-      release.milestones = release.milestones.slice(0, 1);
-
-      return factory(release, { releaseIssueSummary: false }).then(() => {
-        expect(
-          milestoneListLabel()
-            .find('.js-label-text')
-            .text(),
-        ).toEqual('Milestone');
       });
     });
   });

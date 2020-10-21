@@ -13,10 +13,79 @@ $atlaskit-border-color: #dfe1e6;
       padding-top: $gl-padding-4;
 
       .ak-button {
+        align-items: center;
         height: auto;
         margin-left: $btn-margin-5;
       }
     }
+  }
+}
+
+$header-height: 40px;
+
+.jira-connect-header {
+  border-bottom: 1px solid $gray-100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: $header-height;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.jira-connect-user {
+  float: right;
+  position: relative;
+  top: -30px;
+}
+
+.jira-connect-app {
+  margin-top: $header-height;
+  max-width: 600px;
+  padding-top: 48px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.gl-mt-5 {
+  margin-top: 16px;
+}
+
+.heading-with-border {
+  border-bottom: 1px solid $gray-100;
+  display: inline-block;
+  padding-bottom: 16px;
+}
+
+svg {
+  fill: currentColor;
+
+  &.s16 {
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.ak-field-group label {
+  text-align: left;
+}
+
+.ak-button__appearance-primary {
+  &:hover {
+    color: $white;
+    text-decoration: none;
+  }
+
+  svg {
+    align-self: center;
+    margin-left: 4px;
   }
 }
 
@@ -30,4 +99,12 @@ $atlaskit-border-color: #dfe1e6;
       padding: $gl-padding-8;
     }
   }
+}
+
+.empty-subscriptions {
+  color: $gray-900;
+}
+
+.browser-limitations-notice {
+  margin-top: 32px;
 }

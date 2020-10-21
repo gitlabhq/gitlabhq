@@ -6,6 +6,8 @@ class Admin::DashboardController < Admin::ApplicationController
 
   COUNTED_ITEMS = [Project, User, Group].freeze
 
+  feature_category :not_owned
+
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     @counts = Gitlab::Database::Count.approximate_counts(COUNTED_ITEMS)

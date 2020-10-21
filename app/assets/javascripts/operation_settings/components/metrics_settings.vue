@@ -44,11 +44,9 @@ export default {
       <form>
         <dashboard-timezone />
         <external-dashboard />
-        <div class="gl-display-flex gl-justify-content-end">
-          <gl-button variant="success" category="primary" @click="saveChanges">
-            {{ __('Save Changes') }}
-          </gl-button>
-        </div>
+        <gl-button variant="success" category="primary" @click="saveChanges">
+          {{ __('Save Changes') }}
+        </gl-button>
       </form>
     </div>
   </section>

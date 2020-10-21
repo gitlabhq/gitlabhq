@@ -3,7 +3,7 @@
 require_dependency 'declarative_policy'
 
 module API
-  class Projects < Grape::API::Instance
+  class Projects < ::API::Base
     include PaginationParams
     include Helpers::CustomAttributes
 
@@ -353,7 +353,7 @@ module API
         optional :path, type: String, desc: 'The path of the repository'
 
         use :optional_project_params
-        use :optional_update_params_ee
+        use :optional_update_params
 
         at_least_one_of(*Helpers::ProjectsHelpers.update_params_at_least_one_of)
       end

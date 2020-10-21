@@ -19,6 +19,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
                                   :approve_access_request, :leave, :resend_invite,
                                   :override
 
+  feature_category :authentication_and_authorization
+
   def index
     @sort = params[:sort].presence || sort_value_name
 
@@ -68,6 +70,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def filter_params
     params.permit(:two_factor, :search).merge(sort: @sort)
+  end
+
+  def membershipable_members
+    group.members
   end
 end
 

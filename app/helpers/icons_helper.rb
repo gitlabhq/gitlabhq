@@ -124,7 +124,7 @@ module IconsHelper
 
   def file_type_icon_class(type, mode, name)
     if type == 'folder'
-      icon_class = 'folder'
+      icon_class = 'folder-o'
     elsif type == 'archive'
       icon_class = 'archive'
     elsif mode == '120000'
@@ -135,36 +135,36 @@ module IconsHelper
 
       case File.extname(name).downcase
       when '.pdf'
-        icon_class = 'file-pdf-o'
+        icon_class = 'document'
       when '.jpg', '.jpeg', '.jif', '.jfif',
           '.jp2', '.jpx', '.j2k', '.j2c',
           '.apng', '.png', '.gif', '.tif', '.tiff',
           '.svg', '.ico', '.bmp', '.webp'
-        icon_class = 'file-image-o'
+        icon_class = 'doc-image'
       when '.zip', '.zipx', '.tar', '.gz', '.gzip', '.tgz', '.bz', '.bzip',
           '.bz2', '.bzip2', '.car', '.tbz', '.xz', 'txz', '.rar', '.7z',
           '.lz', '.lzma', '.tlz'
-        icon_class = 'file-archive-o'
+        icon_class = 'doc-compressed'
       when '.mp3', '.wma', '.ogg', '.oga', '.wav', '.flac', '.aac', '.3ga',
           '.ac3', '.midi', '.m4a', '.ape', '.mpa'
-        icon_class = 'file-audio-o'
+        icon_class = 'volume-up'
       when '.mp4', '.m4p', '.m4v',
           '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
           '.mpg', '.mpeg', '.m2v', '.m2ts',
           '.avi', '.mkv', '.flv', '.ogv', '.mov',
           '.3gp', '.3g2'
-        icon_class = 'file-video-o'
+        icon_class = 'live-preview'
       when '.doc', '.dot', '.docx', '.docm', '.dotx', '.dotm', '.docb',
           '.odt', '.ott', '.uot', '.rtf'
-        icon_class = 'file-word-o'
+        icon_class = 'doc-text'
       when '.xls', '.xlt', '.xlm', '.xlsx', '.xlsm', '.xltx', '.xltm',
           '.xlsb', '.xla', '.xlam', '.xll', '.xlw', '.ots', '.ods', '.uos'
-        icon_class = 'file-excel-o'
+        icon_class = 'document'
       when '.ppt', '.pot', '.pps', '.pptx', '.pptm', '.potx', '.potm',
           '.ppam', '.ppsx', '.ppsm', '.sldx', '.sldm', '.odp', '.otp', '.uop'
-        icon_class = 'file-powerpoint-o'
+        icon_class = 'doc-chart'
       else
-        icon_class = 'file-text-o'
+        icon_class = 'doc-text'
       end
     end
 

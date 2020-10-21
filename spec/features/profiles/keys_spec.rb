@@ -71,21 +71,35 @@ RSpec.describe 'Profile > SSH Keys' do
     expect(page).to have_content(key.title)
   end
 
-  it 'User removes a key via the key index' do
-    create(:key, user: user)
-    visit profile_keys_path
+  describe 'User removes a key', :js do
+    shared_examples 'removes key' do
+      it 'removes key' do
+        visit path
+        click_button('Delete')
 
-    click_link('Remove')
+        page.within('.modal') do
+          page.click_button('Delete')
+        end
 
-    expect(page).to have_content('Your SSH keys (0)')
-  end
+        expect(page).to have_content('Your SSH keys (0)')
+      end
+    end
 
-  it 'User removes a key via its details page' do
-    key = create(:key, user: user)
-    visit profile_key_path(key)
+    context 'via the key index' do
+      before do
+        create(:key, user: user)
+      end
 
-    click_link('Remove')
+      let(:path) { profile_keys_path }
 
-    expect(page).to have_content('Your SSH keys (0)')
+      it_behaves_like 'removes key'
+    end
+
+    context 'via its details page' do
+      let(:key) { create(:key, user: user) }
+      let(:path) { profile_keys_path(key) }
+
+      it_behaves_like 'removes key'
+    end
   end
 end

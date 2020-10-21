@@ -1,12 +1,14 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { metricStates } from '../constants';
 
 export default {
   components: {
     GlEmptyState,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     documentationPath: {
@@ -100,7 +102,7 @@ export default {
     :compact="true"
   >
     <template v-if="currentState.slottedDescription" #description>
-      <div v-html="currentState.slottedDescription"></div>
+      <div v-safe-html="currentState.slottedDescription"></div>
     </template>
   </gl-empty-state>
 </template>

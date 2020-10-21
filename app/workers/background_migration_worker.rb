@@ -23,7 +23,9 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   #
   # class_name - The class name of the background migration to run.
   # arguments - The arguments to pass to the migration class.
-  def perform(class_name, arguments = [])
+  # lease_attempts - The number of times we will try to obtain an exclusive
+  #   lease on the class before running anyway.  Pass 0 to always run.
+  def perform(class_name, arguments = [], lease_attempts = 5)
     with_context(caller_id: class_name.to_s) do
       should_perform, ttl = perform_and_ttl(class_name)
 

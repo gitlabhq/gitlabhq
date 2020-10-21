@@ -394,6 +394,14 @@ production: &base
     # File that contains the shared secret key for verifying access for gitlab-pages.
     # Default is '.gitlab_pages_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_pages_secret
+    object_store:
+      enabled: false
+      remote_directory: pages # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -427,6 +435,9 @@ production: &base
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
+    # Remove files from object storage
+    ci_schedule_delete_objects_worker:
+      cron: "*/16 * * * *"
     # Stop expired environments
     environments_auto_stop_cron_worker:
       cron: "24 * * * *"
@@ -846,6 +857,12 @@ production: &base
     # (default: accept any service name in keytab file)
     # service_principal_name: HTTP/gitlab.example.com@EXAMPLE.COM
 
+    # Kerberos realms/domains that are allowed to automatically link LDAP identities.
+    # By default, GitLab accepts a realm that matches the domain derived from the
+    # LDAP `base` DN. For example, `ou=users,dc=example,dc=com` would allow users
+    # with a realm matching `example.com`.
+    # simple_ldap_linking_allowed_realms: ['example.com','kerberos.example.com']
+
     # Dedicated port: Git before 2.4 does not fall back to Basic authentication if Negotiate fails.
     # To support both Basic and Negotiate methods with older versions of Git, configure
     # nginx to proxy GitLab on an extra port (e.g. 8443) and uncomment the following lines
@@ -1004,6 +1021,21 @@ production: &base
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:
     #   session_duration: 28800
+
+  # FortiAuthenticator settings
+  forti_authenticator:
+    # Allow using FortiAuthenticator as OTP provider
+    enabled: false
+
+    # Host and port of FortiAuthenticator instance
+    # host: forti_authenticator.example.com
+    # port: 443
+
+    # Username for accessing FortiAuthenticator API
+    # username: john
+
+    # Access token for FortiAuthenticator API
+    # access_token: 123s3cr3t456
 
   # Shared file storage settings
   shared:
@@ -1318,6 +1350,14 @@ test:
     # user: YOUR_USERNAME
   pages:
     path: tmp/tests/pages
+    object_store:
+      enabled: false
+      remote_directory: pages # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   repositories:
     storages:
       default:

@@ -1,0 +1,5 @@
+---
+title: Performance fix for issue placement
+merge_request: 43315
+author:
+type: performance

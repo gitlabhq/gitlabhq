@@ -6,6 +6,7 @@ RSpec.describe ProjectWiki do
   it_behaves_like 'wiki model' do
     let(:wiki_container) { create(:project, :wiki_repo, namespace: user.namespace) }
     let(:wiki_container_without_repo) { create(:project, namespace: user.namespace) }
+    let(:wiki_lfs_enabled) { true }
 
     it { is_expected.to delegate_method(:storage).to(:container) }
     it { is_expected.to delegate_method(:repository_storage).to(:container) }

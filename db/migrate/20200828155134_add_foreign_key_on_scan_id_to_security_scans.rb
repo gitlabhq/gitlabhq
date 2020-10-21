@@ -7,7 +7,7 @@ class AddForeignKeyOnScanIdToSecurityScans < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_foreign_key :security_findings, :security_scans, column: :scan_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :security_findings, :security_scans, column: :scan_id, on_delete: :cascade
     end
   end
 

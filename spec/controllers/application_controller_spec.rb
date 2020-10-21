@@ -416,13 +416,13 @@ RSpec.describe ApplicationController do
         end
 
         it 'returns false if the grace period has expired' do
-          Timecop.freeze(3.hours.from_now) do
+          travel_to(3.hours.from_now) do
             expect(subject).to be_falsey
           end
         end
 
         it 'returns true if the grace period is still active' do
-          Timecop.freeze(1.hour.from_now) do
+          travel_to(1.hour.from_now) do
             expect(subject).to be_truthy
           end
         end
@@ -844,6 +844,8 @@ RSpec.describe ApplicationController do
 
   describe '#set_current_context' do
     controller(described_class) do
+      feature_category :issue_tracking
+
       def index
         Labkit::Context.with_context do |context|
           render json: context.to_h
@@ -891,6 +893,12 @@ RSpec.describe ApplicationController do
       get :index, format: :json
 
       expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
+    end
+
+    it 'sets the feature_category as defined in the controller' do
+      get :index, format: :json
+
+      expect(json_response['meta.feature_category']).to eq('issue_tracking')
     end
 
     it 'assigns the context to a variable for logging' do

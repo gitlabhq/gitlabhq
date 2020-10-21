@@ -35,7 +35,7 @@
           - if issue.due_date
             %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
               &nbsp;
-              = icon('calendar')
+              = sprite_icon('calendar')
               = issue.due_date.to_s(:medium)
           - if issue.labels.any?
             &nbsp;
@@ -54,7 +54,7 @@
             %li.issuable-status
               = _('CLOSED')
           - if issue.assignees.any?
-            %li
+            %li.gl-display-flex
               = render 'shared/issuable/assignees', project: @project, issuable: issue
 
           = render 'shared/issuable_meta_data', issuable: issue

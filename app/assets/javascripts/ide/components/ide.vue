@@ -2,7 +2,18 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import {
+  WEBIDE_MARK_APP_START,
+  WEBIDE_MARK_FILE_FINISH,
+  WEBIDE_MARK_FILE_CLICKED,
+  WEBIDE_MARK_TREE_FINISH,
+  WEBIDE_MEASURE_TREE_FROM_REQUEST,
+  WEBIDE_MEASURE_FILE_FROM_REQUEST,
+  WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+} from '~/performance_constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
 import { modalTypes } from '../constants';
+import eventHub from '../eventhub';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';
 import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
@@ -13,6 +24,22 @@ import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
 import CommitEditorHeader from './commit_sidebar/editor_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+import { measurePerformance } from '../utils';
+
+eventHub.$on(WEBIDE_MEASURE_TREE_FROM_REQUEST, () =>
+  measurePerformance(WEBIDE_MARK_TREE_FINISH, WEBIDE_MEASURE_TREE_FROM_REQUEST),
+);
+eventHub.$on(WEBIDE_MEASURE_FILE_FROM_REQUEST, () =>
+  measurePerformance(WEBIDE_MARK_FILE_FINISH, WEBIDE_MEASURE_FILE_FROM_REQUEST),
+);
+eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, () =>
+  measurePerformance(
+    WEBIDE_MARK_FILE_FINISH,
+    WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+    WEBIDE_MARK_FILE_CLICKED,
+  ),
+);
 
 export default {
   components: {
@@ -58,6 +85,9 @@ export default {
 
     if (this.themeName)
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
+  },
+  beforeCreate() {
+    performanceMarkAndMeasure({ mark: WEBIDE_MARK_APP_START });
   },
   methods: {
     ...mapActions(['toggleFileFinder']),

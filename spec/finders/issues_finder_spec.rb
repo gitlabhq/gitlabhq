@@ -843,6 +843,16 @@ RSpec.describe IssuesFinder do
 
       expect(finder.row_count).to be_zero
     end
+
+    it 'returns -1 if the query times out' do
+      finder = described_class.new(admin)
+
+      expect_next_instance_of(described_class) do |subfinder|
+        expect(subfinder).to receive(:execute).and_raise(ActiveRecord::QueryCanceled)
+      end
+
+      expect(finder.row_count).to eq(-1)
+    end
   end
 
   describe '#with_confidentiality_access_check' do

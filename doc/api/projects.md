@@ -156,6 +156,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -248,6 +249,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -410,6 +412,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -502,6 +505,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
+    "ci_forward_deployment_enabled": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -856,6 +860,7 @@ GET /projects/:id
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -1218,6 +1223,7 @@ PUT /projects/:id
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI configuration file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#git-shallow-clone) |
+| `ci_forward_deployment_enabled` | boolean | no | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
@@ -1701,6 +1707,7 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -1811,6 +1818,7 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2240,6 +2248,113 @@ PUT /projects/:id/transfer
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `namespace` | integer/string | yes | The ID or path of the namespace to transfer to project to |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/transfer?namespace=14"
+```
+
+Example response:
+
+```json
+  {
+  "id": 7,
+  "description": "",
+  "name": "hello-world",
+  "name_with_namespace": "cute-cats / hello-world",
+  "path": "hello-world",
+  "path_with_namespace": "cute-cats/hello-world",
+  "created_at": "2020-10-15T16:25:22.415Z",
+  "default_branch": "master",
+  "tag_list": [],
+  "ssh_url_to_repo": "git@gitlab.example.com:cute-cats/hello-world.git",
+  "http_url_to_repo": "https://gitlab.example.com/cute-cats/hello-world.git",
+  "web_url": "https://gitlab.example.com/cute-cats/hello-world",
+  "readme_url": "https://gitlab.example.com/cute-cats/hello-world/-/blob/master/README.md",
+  "avatar_url": null,
+  "forks_count": 0,
+  "star_count": 0,
+  "last_activity_at": "2020-10-15T16:25:22.415Z",
+  "namespace": {
+    "id": 18,
+    "name": "cute-cats",
+    "path": "cute-cats",
+    "kind": "group",
+    "full_path": "cute-cats",
+    "parent_id": null,
+    "avatar_url": null,
+    "web_url": "https://gitlab.example.com/groups/cute-cats"
+  },
+  "_links": {
+    "self": "https://gitlab.example.com/api/v4/projects/7",
+    "issues": "https://gitlab.example.com/api/v4/projects/7/issues",
+    "merge_requests": "https://gitlab.example.com/api/v4/projects/7/merge_requests",
+    "repo_branches": "https://gitlab.example.com/api/v4/projects/7/repository/branches",
+    "labels": "https://gitlab.example.com/api/v4/projects/7/labels",
+    "events": "https://gitlab.example.com/api/v4/projects/7/events",
+    "members": "https://gitlab.example.com/api/v4/projects/7/members"
+  },
+  "packages_enabled": true,
+  "empty_repo": false,
+  "archived": false,
+  "visibility": "private",
+  "resolve_outdated_diff_discussions": false,
+  "container_registry_enabled": true,
+  "container_expiration_policy": {
+    "cadence": "7d",
+    "enabled": false,
+    "keep_n": null,
+    "older_than": null,
+    "name_regex": null,
+    "name_regex_keep": null,
+    "next_run_at": "2020-10-22T16:25:22.746Z"
+  },
+  "issues_enabled": true,
+  "merge_requests_enabled": true,
+  "wiki_enabled": true,
+  "jobs_enabled": true,
+  "snippets_enabled": true,
+  "service_desk_enabled": false,
+  "service_desk_address": null,
+  "can_create_merge_request_in": true,
+  "issues_access_level": "enabled",
+  "repository_access_level": "enabled",
+  "merge_requests_access_level": "enabled",
+  "forking_access_level": "enabled",
+  "wiki_access_level": "enabled",
+  "builds_access_level": "enabled",
+  "snippets_access_level": "enabled",
+  "pages_access_level": "enabled",
+  "emails_disabled": null,
+  "shared_runners_enabled": true,
+  "lfs_enabled": true,
+  "creator_id": 2,
+  "import_status": "none",
+  "open_issues_count": 0,
+  "ci_default_git_depth": 50,
+  "public_jobs": true,
+  "build_timeout": 3600,
+  "auto_cancel_pending_pipelines": "enabled",
+  "build_coverage_regex": null,
+  "ci_config_path": null,
+  "shared_with_groups": [],
+  "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": null,
+  "request_access_enabled": true,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": true,
+  "printing_merge_request_link_enabled": true,
+  "merge_method": "merge",
+  "suggestion_commit_message": null,
+  "auto_devops_enabled": true,
+  "auto_devops_deploy_strategy": "continuous",
+  "autoclose_referenced_issues": true,
+  "approvals_before_merge": 0,
+  "mirror": false,
+  "compliance_frameworks": []
+}
+```
 
 ## Branches
 

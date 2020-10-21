@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
-import { GlButton, GlFormCombobox } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { AWS_ACCESS_KEY_ID } from '~/ci_variable_list/constants';
 import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
 import createStore from '~/ci_variable_list/store';
@@ -18,7 +18,6 @@ describe('Ci variable modal', () => {
     store = createStore();
     wrapper = method(CiVariableModal, {
       attachToDocument: true,
-      provide: { glFeatures: { ciKeyAutocomplete: true } },
       stubs: {
         GlModal: ModalStub,
       },
@@ -40,27 +39,6 @@ describe('Ci variable modal', () => {
 
   afterEach(() => {
     wrapper.destroy();
-  });
-
-  describe('Feature flag', () => {
-    describe('when off', () => {
-      beforeEach(() => {
-        createComponent(shallowMount, { provide: { glFeatures: { ciKeyAutocomplete: false } } });
-      });
-
-      it('does not render the autocomplete dropdown', () => {
-        expect(wrapper.find(GlFormCombobox).exists()).toBe(false);
-      });
-    });
-
-    describe('when on', () => {
-      beforeEach(() => {
-        createComponent(shallowMount);
-      });
-      it('renders the autocomplete dropdown', () => {
-        expect(wrapper.find(GlFormCombobox).exists()).toBe(true);
-      });
-    });
   });
 
   describe('Basic interactions', () => {

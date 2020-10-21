@@ -110,6 +110,7 @@ export default class FilteredSearchManager {
         labelsEndpoint = '',
         milestonesEndpoint = '',
         releasesEndpoint = '',
+        environmentsEndpoint = '',
         epicsEndpoint = '',
       } = this.filteredSearchInput.dataset;
 
@@ -118,6 +119,7 @@ export default class FilteredSearchManager {
         labelsEndpoint,
         milestonesEndpoint,
         releasesEndpoint,
+        environmentsEndpoint,
         epicsEndpoint,
         tokenizer: this.tokenizer,
         page: this.page,

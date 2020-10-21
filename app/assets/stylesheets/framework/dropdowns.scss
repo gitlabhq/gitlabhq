@@ -33,8 +33,7 @@
 }
 
 .show.dropdown {
-  .dropdown-menu,
-  .dropdown-menu-nav {
+  .dropdown-menu {
     @include set-visible;
     min-height: $dropdown-min-height;
     max-height: $dropdown-max-height;
@@ -190,15 +189,6 @@
   background-color: $gray-darker;
   color: $gl-text-color;
   outline: 0;
-
-  // make sure the text color is not overridden
-  &.text-danger {
-    color: $brand-danger;
-  }
-
-  .avatar {
-    border-color: $white;
-  }
 }
 
 @mixin dropdown-link {
@@ -217,11 +207,6 @@
   text-align: left;
   width: 100%;
 
-  // make sure the text color is not overridden
-  &.text-danger {
-    color: $brand-danger;
-  }
-
   &.disable-hover {
     text-decoration: none;
   }
@@ -233,10 +218,6 @@
     @include dropdown-item-hover;
 
     text-decoration: none;
-
-    .badge.badge-pill {
-      background-color: darken($blue-50, 5%);
-    }
   }
 
   &.dropdown-menu-user-link {
@@ -258,8 +239,7 @@
   }
 }
 
-.dropdown-menu,
-.dropdown-menu-nav {
+.dropdown-menu {
   display: none;
   position: absolute;
   width: auto;
@@ -393,49 +373,56 @@
     pointer-events: none;
   }
 
-  .dropdown-menu li {
-    cursor: pointer;
+  .dropdown-menu {
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 
-    &.droplab-item-active button {
-      @include dropdown-item-hover;
-    }
+    li {
+      cursor: pointer;
 
-    > a,
-    > button {
-      display: flex;
-      margin: 0;
-      text-overflow: inherit;
-      text-align: left;
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
 
-      &.btn .fa:not(:last-child) {
+      > a,
+      > button {
+        display: flex;
+        margin: 0;
+        text-overflow: inherit;
+        text-align: left;
+
+        &.btn .fa:not(:last-child) {
+          margin-left: 5px;
+        }
+      }
+
+      > button.dropdown-epic-button {
+        flex-direction: column;
+
+        .reference {
+          color: $gray-300;
+          margin-top: $gl-padding-4;
+        }
+      }
+
+      &.droplab-item-selected i {
+        visibility: visible;
+      }
+
+      .icon {
+        visibility: hidden;
+      }
+
+      .description {
+        display: inline-block;
+        white-space: normal;
         margin-left: 5px;
-      }
-    }
 
-    > button.dropdown-epic-button {
-      flex-direction: column;
-
-      .reference {
-        color: $gray-300;
-        margin-top: $gl-padding-4;
-      }
-    }
-
-    &.droplab-item-selected i {
-      visibility: visible;
-    }
-
-    .icon {
-      visibility: hidden;
-    }
-
-    .description {
-      display: inline-block;
-      white-space: normal;
-      margin-left: 5px;
-
-      p {
-        margin-bottom: 0;
+        p {
+          margin-bottom: 0;
+        }
       }
     }
   }
@@ -447,21 +434,12 @@
   }
 }
 
-.droplab-dropdown .dropdown-menu,
-.droplab-dropdown .dropdown-menu-nav {
-  display: none;
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
 .comment-type-dropdown.show .dropdown-menu {
   display: block;
 }
 
 .filtered-search-box-input-container {
-  .dropdown-menu,
-  .dropdown-menu-nav {
+  .dropdown-menu {
     max-width: 280px;
   }
 }
@@ -850,8 +828,7 @@
   }
 
   header.navbar-gitlab .dropdown {
-    .dropdown-menu,
-    .dropdown-menu-nav {
+    .dropdown-menu {
       width: 100%;
       min-width: 100%;
     }

@@ -2,7 +2,7 @@
 - if note.noteable_author?(@noteable)
   %span{ class: 'note-role user-access-role has-tooltip d-none d-md-inline-block', title: _("This user is the author of this %{noteable}.") % { noteable: @noteable.human_class_name } }= _("Author")
 - if access
-  %span{ class: 'note-role user-access-role has-tooltip', title: _("This user is a %{access} of the %{name} project.") % { access: access.downcase, name: note.project_name } }= access
+  %span{ class: 'note-role user-access-role has-tooltip', title: _("This user has the %{access} role in the %{name} project.") % { access: access.downcase, name: note.project_name } }= access
 - elsif note.contributor?
   %span{ class: 'note-role user-access-role has-tooltip', title: _("This user has previously committed to the %{name} project.") % { name: note.project_name } }= _("Contributor")
 

@@ -136,8 +136,8 @@ This example code does the following:
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be defined in your GitLab settings under **Settings > CI/CD > Variables**.
 For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
 
-NOTE: **Note:**
-   The AWS credentials you provide must include IAM policies that provision correct access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
+ The AWS credentials you provide must include IAM policies that provision correct
+ access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 
 #### Deploying your function
 
@@ -154,9 +154,7 @@ endpoints:
 #### Manually testing your function
 
 Running the following `curl` command should trigger your function.
-
-NOTE: **Note:**
-Your URL should be the one retrieved from the GitLab deploy stage log.
+Your URL should be the one retrieved from the GitLab deploy stage log:
 
 ```shell
 curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello
@@ -222,7 +220,8 @@ the environment of the deployed function:
 
 ```yaml
 provider:
-  ...
+  # Other configuration omitted
+  # ...
   environment:
     A_VARIABLE: ${env:A_VARIABLE}
 ```
@@ -245,10 +244,10 @@ functions:
   hello:
     handler: src/handler.hello
     events:
-      - http: # Rewrite this part to enable CORS
+      - http:  # Rewrite this part to enable CORS
           path: hello
           method: get
-          cors: true # <-- CORS here
+          cors: true  # <-- CORS here
 ```
 
 You also need to return CORS specific headers in your function response:
@@ -378,7 +377,6 @@ To set these:
    `AWS_SECRET_ACCESS_KEY`.
 1. Mask the credentials so they do not show in logs using the **Masked** toggle.
 
-NOTE: **Note:**
 The AWS credentials you provide must include IAM policies that provision correct access
 control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 

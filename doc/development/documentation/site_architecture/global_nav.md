@@ -324,7 +324,6 @@ There are three main considerations on the logic built for the nav:
   - `https://docs.gitlab.com/ee/`
   - `https://docs.gitlab.com/omnibus/`
   - `https://docs.gitlab.com/runner/`
-  - `https://docs.gitlab.com/debug/`
   - `https://docs.gitlab.com/*`
 - [EE-only](#ee-only-docs): documentation only available in `/ee/`, not on `/ce/`, e.g.:
   - `https://docs.gitlab.com/ee/user/group/epics/`
@@ -342,8 +341,8 @@ all the nav links to other pages:
 <% dir = @item.identifier.to_s[%r{(?<=/)[^/]+}] %>
 ```
 
-For instance, for `https://docs.gitlab.com/ce/user/index.html`,
-`dir` == `ce`, and for `https://docs.gitlab.com/omnibus/README.html`,
+For instance, for `https://docs.gitlab.com/ee/user/index.html`,
+`dir` == `ee`, and for `https://docs.gitlab.com/omnibus/README.html`,
 `dir` == `omnibus`.
 
 #### Default URL

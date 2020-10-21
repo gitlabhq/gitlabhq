@@ -59,7 +59,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('sets default tooltip title', () => {
     expect(
       document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').getAttribute('title'),
-    ).toBe('Add a To Do');
+    ).toBe('Add a to do');
   });
 
   it('toggle todo state', done => {
@@ -125,7 +125,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
 
         expect(
           document.querySelector('.issuable-sidebar-header .js-issuable-todo').textContent.trim(),
-        ).toBe('Add a To Do');
+        ).toBe('Add a to do');
       })
       .then(done)
       .catch(done.fail);
@@ -164,7 +164,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
           document
             .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
             .getAttribute('aria-label'),
-        ).toBe('Add a To Do');
+        ).toBe('Add a to do');
       })
       .then(done)
       .catch(done.fail);

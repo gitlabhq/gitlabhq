@@ -25,7 +25,7 @@ describe('diffs/components/commit_item', () => {
   const getTitleElement = () => wrapper.find('.commit-row-message.item-title');
   const getDescElement = () => wrapper.find('pre.commit-row-description');
   const getDescExpandElement = () => wrapper.find('.commit-content .js-toggle-button');
-  const getShaElement = () => wrapper.find('.commit-sha-group');
+  const getShaElement = () => wrapper.find('[data-testid="commit-sha-group"]');
   const getAvatarElement = () => wrapper.find('.user-avatar-link');
   const getCommitterElement = () => wrapper.find('.committer');
   const getCommitActionsElement = () => wrapper.find('.commit-actions');
@@ -84,8 +84,8 @@ describe('diffs/components/commit_item', () => {
 
     it('renders commit sha', () => {
       const shaElement = getShaElement();
-      const labelElement = shaElement.find('.label');
-      const buttonElement = shaElement.find('button');
+      const labelElement = shaElement.find('[data-testid="commit-sha-group"] button');
+      const buttonElement = shaElement.find('button.input-group-text');
 
       expect(labelElement.text()).toEqual(commit.short_id);
       expect(buttonElement.props('text')).toBe(commit.id);

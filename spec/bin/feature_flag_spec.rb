@@ -240,5 +240,18 @@ RSpec.describe 'bin/feature-flag' do
         end
       end
     end
+
+    describe '.read_ee_only' do
+      where(:type, :is_ee_only) do
+        :development | false
+        :licensed    | true
+      end
+
+      with_them do
+        let(:options) { OpenStruct.new(name: 'foo', type: type) }
+
+        it { expect(described_class.read_ee_only(options)).to eq(is_ee_only) }
+      end
+    end
   end
 end

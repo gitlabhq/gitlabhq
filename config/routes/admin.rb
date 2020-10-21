@@ -17,6 +17,7 @@ namespace :admin do
       put :activate
       put :unlock
       put :confirm
+      put :approve
       post :impersonate
       patch :disable_two_factor
       delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
@@ -81,6 +82,8 @@ namespace :admin do
     post :preview, on: :collection
   end
 
+  get :instance_review, to: 'instance_review#index'
+
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 
@@ -91,8 +94,6 @@ namespace :admin do
 
   resources :instance_statistics, only: :index
   resource :dev_ops_report, controller: 'dev_ops_report', only: :show
-  # remove in 13.5
-  get '/dev_ops_score', to: redirect('admin/dev_ops_report')
   resources :cohorts, only: :index
 
   scope(path: 'projects/*namespace_id',
@@ -153,6 +154,7 @@ namespace :admin do
 
     collection do
       get :tag_list, format: :json
+      get :runner_setup_scripts, format: :json
     end
   end
 

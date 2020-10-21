@@ -6,14 +6,11 @@ RSpec.describe 'User edits Release', :js do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:release) { create(:release, project: project, name: 'The first release' ) }
   let_it_be(:user) { create(:user) }
-  let(:show_feature_flag) { true }
 
   before do
-    stub_feature_flags(release_show_page: show_feature_flag)
-
     project.add_developer(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit edit_project_release_path(project, release)
 
@@ -42,7 +39,7 @@ RSpec.describe 'User edits Release', :js do
   it 'renders the edit Release form' do
     expect(page).to have_content('Releases are based on Git tags. We recommend tags that use semantic versioning, for example v1.0, v2.0-pre.')
 
-    expect(find_field('Tag name', { disabled: true }).value).to eq(release.tag)
+    expect(find_field('Tag name', disabled: true).value).to eq(release.tag)
     expect(find_field('Release title').value).to eq(release.name)
     expect(find_field('Release notes').value).to eq(release.description)
 
@@ -71,42 +68,24 @@ RSpec.describe 'User edits Release', :js do
     expect(release.description).to eq('Updated Release notes')
   end
 
-  context 'when the release_show_page feature flag is disabled' do
-    let(:show_feature_flag) { false }
+  it 'redirects to the previous page when "Cancel" is clicked when the url includes a back_url query parameter' do
+    back_path = project_releases_path(project, params: { page: 2 })
+    visit edit_project_release_path(project, release, params: { back_url: back_path })
 
-    it 'redirects to the main Releases page when "Cancel" is clicked' do
-      fill_out_form_and_click 'Cancel'
+    fill_out_form_and_click 'Cancel'
 
-      expect(page).to have_current_path(project_releases_path(project))
-    end
-
-    it 'redirects to the main Releases page when "Save changes" is clicked' do
-      fill_out_form_and_click 'Save changes'
-
-      expect(page).to have_current_path(project_releases_path(project))
-    end
+    expect(page).to have_current_path(back_path)
   end
 
-  context 'when the release_show_page feature flag is enabled' do
-    it 'redirects to the previous page when "Cancel" is clicked when the url includes a back_url query parameter' do
-      back_path = project_releases_path(project, params: { page: 2 })
-      visit edit_project_release_path(project, release, params: { back_url: back_path })
+  it 'redirects to the main Releases page when "Cancel" is clicked when the url does not include a back_url query parameter' do
+    fill_out_form_and_click 'Cancel'
 
-      fill_out_form_and_click 'Cancel'
+    expect(page).to have_current_path(project_releases_path(project))
+  end
 
-      expect(page).to have_current_path(back_path)
-    end
+  it 'redirects to the dedicated Release page when "Save changes" is clicked' do
+    fill_out_form_and_click 'Save changes'
 
-    it 'redirects to the main Releases page when "Cancel" is clicked when the url does not include a back_url query parameter' do
-      fill_out_form_and_click 'Cancel'
-
-      expect(page).to have_current_path(project_releases_path(project))
-    end
-
-    it 'redirects to the dedicated Release page when "Save changes" is clicked' do
-      fill_out_form_and_click 'Save changes'
-
-      expect(page).to have_current_path(project_release_path(project, release))
-    end
+    expect(page).to have_current_path(project_release_path(project, release))
   end
 end

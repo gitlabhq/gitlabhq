@@ -116,23 +116,6 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
       expect(jobs_updated).to eq(1)
     end
 
-    context 'when the feature flag is disabled' do
-      let(:mock_connection) { double('connection') }
-
-      before do
-        allow(subject).to receive(:connection).and_return(mock_connection)
-        stub_feature_flags(backfill_partitioned_audit_events: false)
-      end
-
-      it 'exits without attempting to copy data' do
-        expect(mock_connection).not_to receive(:execute)
-
-        subject.perform(1, 100, source_table, destination_table, unique_key)
-
-        expect(destination_model.count).to eq(0)
-      end
-    end
-
     context 'when the job is run within an explicit transaction block' do
       let(:mock_connection) { double('connection') }
 

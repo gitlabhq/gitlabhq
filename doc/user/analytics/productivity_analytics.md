@@ -13,7 +13,7 @@ Track development velocity with Productivity Analytics.
 For many companies, the development cycle is a black box and getting an estimate of how
 long, on average, it takes to deliver features is an enormous endeavor.
 
-While [Value Stream Analytics](../project/cycle_analytics.md) focuses on the entire
+While [Value Stream Analytics](../analytics/value_stream_analytics.md) focuses on the entire
 Software Development Life Cycle (SDLC) process, Productivity Analytics provides a way for Engineering Management to drill down in a systematic way to uncover patterns and causes for success or failure at an individual, project, or group level.
 
 Productivity can slow down for many reasons ranging from degrading code base to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.
@@ -62,29 +62,3 @@ The **Productivity Analytics** dashboard can be accessed only:
 
 - On [Premium or Silver tier](https://about.gitlab.com/pricing/) and above.
 - By users with [Reporter access](../permissions.md) and above.
-
-## Enabling and disabling using feature flags
-
-Productivity Analytics is:
-
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18754) from GitLab 12.4,
-  but can be disabled using the following feature flags:
-  - `productivity_analytics`.
-  - `productivity_analytics_scatterplot_enabled`.
-- Disabled by default in GitLab 12.3, but can be enabled using the following feature flag:
-  - `productivity_analytics`.
-
-A GitLab administrator can:
-
-- Disable this feature from GitLab 12.4 by running the follow in a Rails console:
-
-  ```ruby
-  Feature.disable(:productivity_analytics)
-  Feature.disable(:productivity_analytics_scatterplot_enabled)
-  ```
-
-- Enable this feature in GitLab 12.3 by running the following in a Rails console:
-
-  ```ruby
-  Feature.enable(:productivity_analytics)
-  ```

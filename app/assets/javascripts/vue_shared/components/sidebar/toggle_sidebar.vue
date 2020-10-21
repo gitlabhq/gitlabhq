@@ -1,11 +1,14 @@
 <script>
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'ToggleSidebar',
+  components: {
+    GlButton,
+  },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     collapsed: {
@@ -22,6 +25,12 @@ export default {
     tooltipLabel() {
       return this.collapsed ? __('Expand sidebar') : __('Collapse sidebar');
     },
+    buttonIcon() {
+      return this.collapsed ? 'chevron-double-lg-left' : 'chevron-double-lg-right';
+    },
+    allCssClasses() {
+      return [this.cssClasses, { 'js-sidebar-collapsed': this.collapsed }];
+    },
   },
   methods: {
     toggle() {
@@ -32,25 +41,15 @@ export default {
 </script>
 
 <template>
-  <button
-    v-tooltip
+  <gl-button
+    v-gl-tooltip:body.viewport.left
     :title="tooltipLabel"
-    :class="cssClasses"
-    type="button"
-    class="btn btn-blank gutter-toggle btn-sidebar-action js-sidebar-vue-toggle"
-    data-container="body"
-    data-placement="left"
-    data-boundary="viewport"
+    :class="allCssClasses"
+    class="gutter-toggle btn-sidebar-action js-sidebar-vue-toggle"
+    :icon="buttonIcon"
+    category="tertiary"
+    size="small"
+    :aria-label="__('toggle collapse')"
     @click="toggle"
-  >
-    <i
-      :class="{
-        'fa-angle-double-right': !collapsed,
-        'fa-angle-double-left': collapsed,
-      }"
-      :aria-label="__('toggle collapse')"
-      class="fa"
-    >
-    </i>
-  </button>
+  />
 </template>

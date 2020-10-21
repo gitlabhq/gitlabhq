@@ -6,6 +6,7 @@ import Sortable from 'sortablejs';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
+import { hide, dispose } from '~/tooltips';
 
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
@@ -40,14 +41,14 @@ export default class LabelManager {
     const $label = $(`#${$btn.data('domId')}`);
     const action = $btn.parents('.js-prioritized-labels').length ? 'remove' : 'add';
     const $tooltip = $(`#${$btn.find('.has-tooltip:visible').attr('aria-describedby')}`);
-    $tooltip.tooltip('dispose');
+    dispose($tooltip);
     _this.toggleLabelPriority($label, action);
     _this.toggleEmptyState($label, $btn, action);
   }
 
   onButtonActionClick(e) {
     e.stopPropagation();
-    $(e.currentTarget).tooltip('hide');
+    hide(e.currentTarget);
   }
 
   toggleEmptyState() {

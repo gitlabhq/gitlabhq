@@ -66,18 +66,6 @@ RSpec.describe EnvironmentStatus do
     end
   end
 
-  describe '#changed_paths' do
-    subject { environment_status.changed_urls }
-
-    it { is_expected.to contain_exactly("#{environment.external_url}/ruby-style-guide.html", "#{environment.external_url}/html/page.html") }
-  end
-
-  describe '#changed_urls' do
-    subject { environment_status.changed_paths }
-
-    it { is_expected.to contain_exactly('ruby-style-guide.html', 'html/page.html') }
-  end
-
   describe '.for_merge_request' do
     let(:admin) { create(:admin) }
     let!(:pipeline) { create(:ci_pipeline, sha: sha, merge_requests_as_head_pipeline: [merge_request]) }

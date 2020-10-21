@@ -9,3 +9,10 @@ export const EXPIRATION_POLICY_DISABLED_TEXT = s__(
 export const EXPIRATION_POLICY_DISABLED_MESSAGE = s__(
   'ContainerRegistry|Expiration policies help manage the storage space used by the Container Registry, but the expiration policies for this registry are disabled. Contact your administrator to enable. %{docLinkStart}More information%{docLinkEnd}',
 );
+export const DELETE_ALERT_TITLE = s__('ContainerRegistry|Some tags were not deleted');
+export const DELETE_ALERT_LINK_TEXT = s__(
+  'ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}',
+);
+export const CLEANUP_TIMED_OUT_ERROR_MESSAGE = s__(
+  'ContainerRegistry|Cleanup timed out before it could delete all tags',
+);

@@ -6,6 +6,7 @@ query getDesignList($fullPath: ID!, $iid: String!, $atVersion: ID) {
     id
     issue(iid: $iid) {
       designCollection {
+        copyState
         designs(atVersion: $atVersion) {
           nodes {
             ...DesignListItem

@@ -403,9 +403,15 @@ ee:
       - issues:
         - epic_issue:
           - :epic
+        - :issuable_sla
       - protected_branches:
         - :unprotect_access_levels
       - protected_environments:
         - :deploy_access_levels
       - :service_desk_setting
       - :security_setting
+
+  included_attributes:
+    issuable_sla:
+      - :issue
+      - :due_at

@@ -46,6 +46,12 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def nuget_version_regex
+        @nuget_version_regex ||= /
+          \A#{_semver_major_minor_patch_regex}(\.\d*)?#{_semver_prerelease_build_regex}\z
+        /x.freeze
+      end
+
       def pypi_version_regex
         # See the official regex: https://github.com/pypa/packaging/blob/16.7/packaging/version.py#L159
 
@@ -61,6 +67,39 @@ module Gitlab
             )\z}xi.freeze
       end
 
+      def debian_package_name_regex
+        # See official parser
+        # https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/parsehelp.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n122
+        # @debian_package_name_regex ||= %r{\A[a-z0-9][-+\._a-z0-9]*\z}i.freeze
+        # But we prefer a more strict version from Lintian
+        # https://salsa.debian.org/lintian/lintian/-/blob/5080c0068ffc4a9ddee92022a91d0c2ff53e56d1/lib/Lintian/Util.pm#L116
+        @debian_package_name_regex ||= %r{\A[a-z0-9][-+\.a-z0-9]+\z}.freeze
+      end
+
+      def debian_version_regex
+        # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/parsehelp.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n205
+        @debian_version_regex ||= %r{
+          \A(?:
+            (?:([0-9]{1,9}):)?    (?# epoch)
+            ([0-9][0-9a-z\.+~-]*)  (?# version)
+            (?:(-[0-0a-z\.+~]+))?  (?# revision)
+            )\z}xi.freeze
+      end
+
+      def debian_architecture_regex
+        # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/arch.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n43
+        # But we limit to lower case
+        @debian_architecture_regex ||= %r{\A[a-z0-9][-a-z0-9]*\z}.freeze
+      end
+
+      def debian_distribution_regex
+        @debian_distribution_regex ||= %r{\A[a-z0-9][a-z0-9\.-]*\z}i.freeze
+      end
+
+      def debian_component_regex
+        @debian_component_regex ||= %r{#{debian_distribution_regex}}.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 
@@ -68,16 +107,34 @@ module Gitlab
         # reordered to be greedy. Without this change, the unbounded regex would
         # only partially match "v0.0.0-20201230123456-abcdefabcdef".
         @unbounded_semver_regex ||= /
-          (?<major>0|[1-9]\d*)
-          \.(?<minor>0|[1-9]\d*)
-          \.(?<patch>0|[1-9]\d*)
-          (?:-(?<prerelease>(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0)(?:\.(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0))*))?
-          (?:\+(?<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?
+          #{_semver_major_minor_patch_regex}#{_semver_prerelease_build_regex}
         /x.freeze
       end
 
       def semver_regex
         @semver_regex ||= Regexp.new("\\A#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
+      end
+
+      # These partial semver regexes are intended for use in composing other
+      # regexes rather than being used alone.
+      def _semver_major_minor_patch_regex
+        @_semver_major_minor_patch_regex ||= /
+          (?<major>0|[1-9]\d*)
+          \.(?<minor>0|[1-9]\d*)
+          \.(?<patch>0|[1-9]\d*)
+        /x.freeze
+      end
+
+      def _semver_prerelease_build_regex
+        @_semver_prerelease_build_regex ||= /
+          (?:-(?<prerelease>(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0)(?:\.(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0))*))?
+          (?:\+(?<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?
+        /x.freeze
+      end
+
+      def prefixed_semver_regex
+        # identical to semver_regex, except starting with 'v'
+        @prefixed_semver_regex ||= Regexp.new("\\Av#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
       end
 
       def go_package_regex
@@ -102,6 +159,14 @@ module Gitlab
 
       def generic_package_version_regex
         /\A\d+\.\d+\.\d+\z/
+      end
+
+      def generic_package_name_regex
+        maven_file_name_regex
+      end
+
+      def generic_package_file_name_regex
+        generic_package_name_regex
       end
     end
 
@@ -211,8 +276,27 @@ module Gitlab
       "Must start with a letter, and cannot end with '-'"
     end
 
+    # The section start, e.g. section_start:12345678:NAME
+    def logs_section_prefix_regex
+      /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)/
+    end
+
+    # The optional section options, e.g. [collapsed=true]
+    def logs_section_options_regex
+      /(\[(?:\w+=\w+)(?:, ?(?:\w+=\w+))*\])?/
+    end
+
+    # The region end, always: \r\e\[0K
+    def logs_section_suffix_regex
+      /\r\033\[0K/
+    end
+
     def build_trace_section_regex
-      @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)\r\033\[0K/.freeze
+      @build_trace_section_regexp ||= %r{
+        #{logs_section_prefix_regex}
+        #{logs_section_options_regex}
+        #{logs_section_suffix_regex}
+      }x.freeze
     end
 
     def markdown_code_or_html_blocks

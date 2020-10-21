@@ -284,7 +284,8 @@ RSpec.describe Gitlab::Danger::Helper do
       '.codeclimate.yml'                                      | [:engineering_productivity]
       '.gitlab/CODEOWNERS'                                    | [:engineering_productivity]
 
-      'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:backend]
+      'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:ci_template]
+      'lib/gitlab/ci/templates/dotNET-Core.yml'               | [:ci_template]
 
       'ee/FOO_VERSION' | [:unknown]
 
@@ -376,6 +377,7 @@ RSpec.describe Gitlab::Danger::Helper do
       :none      | ''
       :qa        | '~QA'
       :engineering_productivity | '~"Engineering Productivity" for CI, Danger'
+      :ci_template | '~"ci::templates"'
     end
 
     with_them do
@@ -432,6 +434,28 @@ RSpec.describe Gitlab::Danger::Helper do
         .and_return('web_url' => 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/1')
 
       expect(helper).to be_security_mr
+    end
+  end
+
+  describe '#draft_mr?' do
+    it 'returns false when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper).not_to be_draft_mr
+    end
+
+    it 'returns true for a draft MR' do
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('title' => 'Draft: My MR title')
+
+      expect(helper).to be_draft_mr
+    end
+
+    it 'returns false for non draft MR' do
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('title' => 'My MR title')
+
+      expect(helper).not_to be_draft_mr
     end
   end
 

@@ -8,7 +8,7 @@ module BlobViewer
     self.partial_name = 'pdf'
     self.extensions = %w(pdf)
     self.binary = true
-    self.switcher_icon = 'file-pdf-o'
+    self.switcher_icon = 'document'
     self.switcher_title = 'PDF'
   end
 end

@@ -57,16 +57,40 @@ describe('Sidebar store', () => {
     expect(testContext.store.isFetching.assignees).toBe(true);
   });
 
-  it('adds a new assignee', () => {
-    testContext.store.addAssignee(ASSIGNEE);
+  it('resets changing when resetChanging is called', () => {
+    testContext.store.changing = true;
 
-    expect(testContext.store.assignees.length).toEqual(1);
+    testContext.store.resetChanging();
+
+    expect(testContext.store.changing).toBe(false);
   });
 
-  it('removes an assignee', () => {
-    testContext.store.removeAssignee(ASSIGNEE);
+  describe('when it adds a new assignee', () => {
+    beforeEach(() => {
+      testContext.store.addAssignee(ASSIGNEE);
+    });
 
-    expect(testContext.store.assignees.length).toEqual(0);
+    it('adds a new assignee', () => {
+      expect(testContext.store.assignees).toHaveLength(1);
+    });
+
+    it('sets changing to true', () => {
+      expect(testContext.store.changing).toBe(true);
+    });
+  });
+
+  describe('when it removes an assignee', () => {
+    beforeEach(() => {
+      testContext.store.removeAssignee(ASSIGNEE);
+    });
+
+    it('removes an assignee', () => {
+      expect(testContext.store.assignees).toHaveLength(0);
+    });
+
+    it('sets changing to true', () => {
+      expect(testContext.store.changing).toBe(true);
+    });
   });
 
   it('finds an existent assignee', () => {
@@ -86,6 +110,7 @@ describe('Sidebar store', () => {
     testContext.store.removeAllAssignees();
 
     expect(testContext.store.assignees.length).toEqual(0);
+    expect(testContext.store.changing).toBe(true);
   });
 
   it('sets participants data', () => {

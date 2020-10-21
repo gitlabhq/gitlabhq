@@ -54,10 +54,42 @@ RSpec.describe Gitlab::Workhorse do
             commit_id: metadata['CommitId'],
             prefix: metadata['ArchivePrefix'],
             format: Gitaly::GetArchiveRequest::Format::ZIP,
-            path: path
+            path: path,
+            include_lfs_blobs: true
           ).to_proto
         )
       }.deep_stringify_keys)
+    end
+
+    context 'when include_lfs_blobs_in_archive is disabled' do
+      before do
+        stub_feature_flags(include_lfs_blobs_in_archive: false)
+      end
+
+      it 'sets include_lfs_blobs to false' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-archive')
+        expect(params).to eq({
+          'GitalyServer' => {
+            features: { 'gitaly-feature-foobar' => 'true' },
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          },
+          'ArchivePath' => metadata['ArchivePath'],
+          'GetArchiveRequest' => Base64.encode64(
+            Gitaly::GetArchiveRequest.new(
+              repository: repository.gitaly_repository,
+              commit_id: metadata['CommitId'],
+              prefix: metadata['ArchivePrefix'],
+              format: Gitaly::GetArchiveRequest::Format::ZIP,
+              path: path,
+              include_lfs_blobs: false
+            ).to_proto
+          )
+        }.deep_stringify_keys)
+      end
     end
 
     context 'when archive caching is disabled' do

@@ -46,7 +46,11 @@ module Clusters
       end
 
       def chart
-        'stable/nginx-ingress'
+        "#{name}/nginx-ingress"
+      end
+
+      def repository
+        'https://gitlab-org.gitlab.io/cluster-integration/helm-stable-archive'
       end
 
       def values
@@ -60,6 +64,7 @@ module Clusters
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
+          repository: repository,
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,

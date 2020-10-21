@@ -3,7 +3,7 @@
 require 'sidekiq/api'
 
 module API
-  class SidekiqMetrics < Grape::API::Instance
+  class SidekiqMetrics < ::API::Base
     before { authenticated_as_admin! }
 
     helpers do

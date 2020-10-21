@@ -267,6 +267,7 @@ POST /groups/:id/epics
 | `labels`            | string           | no         | The comma separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
+| `created_at`        | string           | no         | When the epic was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5) |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
@@ -349,6 +350,7 @@ PUT /groups/:id/epics/:epic_iid
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
 | `labels`            | string           | no         | The comma separated list of labels |
+| `updated_at`        | string           | no         | When the epic was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5) |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
@@ -422,10 +424,10 @@ DELETE /groups/:id/epics/:epic_iid
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
-## Create a to-do
+## Create a to do
 
-Manually creates a to-do for the current user on an epic. If
-there already exists a to-do for the user on that epic, status code `304` is
+Manually creates a to do for the current user on an epic. If
+there already exists a to do for the user on that epic, status code `304` is
 returned.
 
 ```plaintext

@@ -3,23 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe QuickActions::InterpretService do
-  let(:project) { create(:project, :public) }
-  let(:developer) { create(:user) }
-  let(:developer2) { create(:user) }
-  let(:issue) { create(:issue, project: project) }
+  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:repository_project) { create(:project, :repository) }
+  let_it_be(:project) { public_project }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer2) { create(:user) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
-  let(:inprogress) { create(:label, project: project, title: 'In Progress') }
-  let(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
-  let(:bug) { create(:label, project: project, title: 'Bug') }
-  let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
+  let_it_be(:inprogress) { create(:label, project: project, title: 'In Progress') }
+  let_it_be(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
+  let_it_be(:bug) { create(:label, project: project, title: 'Bug') }
   let(:service) { described_class.new(project, developer) }
+
+  before_all do
+    public_project.add_developer(developer)
+    repository_project.add_developer(developer)
+  end
 
   before do
     stub_licensed_features(multiple_issue_assignees: false,
                            multiple_merge_request_assignees: false)
-
-    project.add_developer(developer)
   end
 
   describe '#execute' do
@@ -146,7 +150,6 @@ RSpec.describe QuickActions::InterpretService do
 
     shared_examples 'multiword label name starting without ~' do
       it 'fetches label ids and populates add_label_ids if content contains /label' do
-        helmchart # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(add_label_ids: [helmchart.id])
@@ -155,7 +158,6 @@ RSpec.describe QuickActions::InterpretService do
 
     shared_examples 'label name is included in the middle of another label name' do
       it 'ignores the sublabel when the content contains the includer label name' do
-        helmchart # populate the label
         create(:label, project: project, title: 'Chart')
 
         _, updates = service.execute(content, issuable)
@@ -226,7 +228,7 @@ RSpec.describe QuickActions::InterpretService do
       it 'returns the todo message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Added a To Do.')
+        expect(message).to eq('Added a to do.')
       end
     end
 
@@ -242,7 +244,7 @@ RSpec.describe QuickActions::InterpretService do
         TodoService.new.mark_todo(issuable, developer)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Marked To Do as done.')
+        expect(message).to eq('Marked to do as done.')
       end
     end
 
@@ -493,7 +495,7 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'merge immediately command' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { repository_project }
 
       it 'runs merge command if content contains /merge' do
         _, updates, _ = service.execute(content, issuable)
@@ -509,7 +511,7 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'merge automatically command' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { repository_project }
 
       it 'runs merge command if content contains /merge and returns merge message' do
         _, updates, message = service.execute(content, issuable)
@@ -600,7 +602,7 @@ RSpec.describe QuickActions::InterpretService do
 
       context 'when issuable is already confidential' do
         before do
-          issuable.update(confidential: true)
+          issuable.update!(confidential: true)
         end
 
         it 'does not return the success message' do
@@ -722,7 +724,7 @@ RSpec.describe QuickActions::InterpretService do
       end
 
       context 'when sha is missing' do
-        let(:project) { create(:project, :repository) }
+        let(:project) { repository_project }
         let(:service) { described_class.new(project, developer, {}) }
 
         it 'precheck passes and returns merge command' do
@@ -844,7 +846,7 @@ RSpec.describe QuickActions::InterpretService do
         end
 
         it 'returns the unassign message for all the assignee if content contains /unassign' do
-          issue.update(assignee_ids: [developer.id, developer2.id])
+          issue.update!(assignee_ids: [developer.id, developer2.id])
           _, _, message = service.execute(content, issue)
 
           expect(message).to eq("Removed assignees #{developer.to_reference} and #{developer2.to_reference}.")
@@ -860,7 +862,7 @@ RSpec.describe QuickActions::InterpretService do
         end
 
         it 'returns the unassign message for all the assignee if content contains /unassign' do
-          merge_request.update(assignee_ids: [developer.id, developer2.id])
+          merge_request.update!(assignee_ids: [developer.id, developer2.id])
           _, _, message = service.execute(content, merge_request)
 
           expect(message).to eq("Removed assignees #{developer.to_reference} and #{developer2.to_reference}.")
@@ -879,10 +881,14 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     context 'only group milestones available' do
-      let(:ancestor_group) { create(:group) }
-      let(:group) { create(:group, parent: ancestor_group) }
-      let(:project) { create(:project, :public, namespace: group) }
-      let(:milestone) { create(:milestone, group: ancestor_group, title: '10.0') }
+      let_it_be(:ancestor_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: ancestor_group) }
+      let_it_be(:project) { create(:project, :public, namespace: group) }
+      let_it_be(:milestone) { create(:milestone, group: ancestor_group, title: '10.0') }
+
+      before_all do
+        project.add_developer(developer)
+      end
 
       it_behaves_like 'milestone command' do
         let(:content) { "/milestone %#{milestone.title}" }
@@ -1457,14 +1463,14 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     context '/board_move command' do
-      let(:todo) { create(:label, project: project, title: 'To Do') }
-      let(:inreview) { create(:label, project: project, title: 'In Review') }
+      let_it_be(:todo) { create(:label, project: project, title: 'To Do') }
+      let_it_be(:inreview) { create(:label, project: project, title: 'In Review') }
       let(:content) { %{/board_move ~"#{inreview.title}"} }
 
-      let!(:board) { create(:board, project: project) }
-      let!(:todo_list) { create(:list, board: board, label: todo) }
-      let!(:inreview_list) { create(:list, board: board, label: inreview) }
-      let!(:inprogress_list) { create(:list, board: board, label: inprogress) }
+      let_it_be(:board) { create(:board, project: project) }
+      let_it_be(:todo_list) { create(:list, board: board, label: todo) }
+      let_it_be(:inreview_list) { create(:list, board: board, label: inreview) }
+      let_it_be(:inprogress_list) { create(:list, board: board, label: inprogress) }
 
       it 'populates remove_label_ids for all current board columns' do
         issue.update!(label_ids: [todo.id, inprogress.id])
@@ -1598,6 +1604,10 @@ RSpec.describe QuickActions::InterpretService do
 
       context "when logged user cannot create_merge_requests in the project" do
         let(:project) { create(:project, :archived) }
+
+        before do
+          project.add_developer(developer)
+        end
 
         it_behaves_like 'empty command'
       end
@@ -1844,8 +1854,7 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     describe 'relabel command' do
-      let(:content) { '/relabel Bug' }
-      let!(:bug) { create(:label, project: project, title: 'Bug') }
+      let(:content) { "/relabel #{bug.title}" }
       let(:feature) { create(:label, project: project, title: 'Feature') }
 
       it 'includes label name' do
@@ -1938,8 +1947,7 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     describe 'board move command' do
-      let(:content) { '/board_move ~bug' }
-      let!(:bug) { create(:label, project: project, title: 'bug') }
+      let(:content) { "/board_move ~#{bug.title}" }
       let!(:board) { create(:board, project: project) }
 
       it 'includes the label name' do

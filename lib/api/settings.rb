@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Settings < Grape::API::Instance
+  class Settings < ::API::Base
     before { authenticated_as_admin! }
 
     helpers Helpers::SettingsHelpers
@@ -29,7 +29,8 @@ module API
       success Entities::ApplicationSetting
     end
     params do
-      optional :admin_notification_email, type: String, desc: 'Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
+      optional :admin_notification_email, type: String, desc: 'Deprecated: Use :abuse_notification_email instead. Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
+      optional :abuse_notification_email, type: String, desc: 'Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
       optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'
       optional :after_sign_out_path, type: String, desc: 'We will redirect users to this page after they sign out'
       optional :akismet_enabled, type: Boolean, desc: 'Helps prevent bots from creating issues'
@@ -73,6 +74,7 @@ module API
       optional :gravatar_enabled, type: Boolean, desc: 'Flag indicating if the Gravatar service is enabled'
       optional :help_page_hide_commercial_content, type: Boolean, desc: 'Hide marketing-related entries from help'
       optional :help_page_support_url, type: String, desc: 'Alternate support URL for help page and help dropdown'
+      optional :help_page_documentation_base_url, type: String, desc: 'Alternate documentation pages URL'
       optional :help_page_text, type: String, desc: 'Custom text displayed on the help page'
       optional :home_page_url, type: String, desc: 'We will redirect non-logged in users to this page'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
@@ -192,6 +194,11 @@ module API
       # support legacy names, can be removed in v5
       if attrs.has_key?(:allow_local_requests_from_hooks_and_services)
         attrs[:allow_local_requests_from_web_hooks_and_services] = attrs.delete(:allow_local_requests_from_hooks_and_services)
+      end
+
+      # support legacy names, can be removed in v5
+      if attrs.has_key?(:admin_notification_email)
+        attrs[:abuse_notification_email] = attrs.delete(:admin_notification_email)
       end
 
       # since 13.0 it's not possible to disable hashed storage - support can be removed in 14.0

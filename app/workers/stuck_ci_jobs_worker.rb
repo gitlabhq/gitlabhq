@@ -17,7 +17,7 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   def perform
     return unless try_obtain_lease
 
-    Gitlab::AppLogger.info "#{self.class}: Cleaning stuck builds" # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.info "#{self.class}: Cleaning stuck builds"
 
     drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
     drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure

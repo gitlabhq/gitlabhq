@@ -1,5 +1,6 @@
 export default ({
   projectId,
+  projectPath,
   markdownDocsPath,
   markdownPreviewPath,
   updateReleaseApiDocsPath,
@@ -12,6 +13,7 @@ export default ({
   defaultBranch = null,
 }) => ({
   projectId,
+  projectPath,
   markdownDocsPath,
   markdownPreviewPath,
   updateReleaseApiDocsPath,

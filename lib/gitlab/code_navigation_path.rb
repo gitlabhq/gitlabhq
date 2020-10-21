@@ -13,7 +13,6 @@ module Gitlab
     end
 
     def full_json_path_for(path)
-      return unless Feature.enabled?(:code_navigation, project, default_enabled: true)
       return unless build
 
       raw_project_job_artifacts_path(project, build, path: "lsif/#{path}.json", file_type: :lsif)

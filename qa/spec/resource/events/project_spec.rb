@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Resource::Events::Project do
+RSpec.describe QA::Resource::Events::Project do
   let(:resource) do
     Class.new(QA::Resource::Base) do
       def api_get_path

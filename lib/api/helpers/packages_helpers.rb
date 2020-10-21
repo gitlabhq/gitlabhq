@@ -40,7 +40,7 @@ module API
 
         params = { has_length: has_length }
         params[:maximum_size] = maximum_size unless has_length
-        ::Packages::PackageFileUploader.workhorse_authorize(params)
+        ::Packages::PackageFileUploader.workhorse_authorize(**params)
       end
 
       def authorize_upload!(subject = user_project)
@@ -48,7 +48,8 @@ module API
         require_gitlab_workhorse!
       end
 
-      def package_event(event_name, **args)
+      def track_package_event(event_name, scope, **args)
+        ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
         track_event(event_name, **args)
       end
     end

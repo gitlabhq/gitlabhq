@@ -16,6 +16,7 @@ module Gitlab
 
       ArchiveError = Class.new(StandardError)
       AlreadyArchivedError = Class.new(StandardError)
+      LockedError = Class.new(StandardError)
 
       attr_reader :job
 
@@ -79,11 +80,9 @@ module Gitlab
         job.trace_chunks.any? || current_path.present? || old_trace.present?
       end
 
-      def read(should_retry: true, &block)
+      def read(&block)
         read_stream(&block)
-      rescue Errno::ENOENT
-        raise unless should_retry
-
+      rescue Errno::ENOENT, ChunkedIO::FailedToGetChunkError
         job.reset
         read_stream(&block)
       end
@@ -128,6 +127,12 @@ module Gitlab
         Gitlab::Redis::SharedState.with do |redis|
           redis.exists(being_watched_cache_key)
         end
+      end
+
+      def lock(&block)
+        in_write_lock(&block)
+      rescue FailedToObtainLockError
+        raise LockedError, "build trace `#{job.id}` is locked"
       end
 
       private

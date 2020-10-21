@@ -1,0 +1,89 @@
+image: registry.gitlab.com/gitlab-org/gitlab-development-kit/gitpod-workspace:gitpod-workspace-image
+
+tasks:
+
+  - name: GDK
+    command: gp sync-await gdk-copied && cd /workspace/gitlab-development-kit && gdk help
+
+  - init: |
+      echo "$(date) – Copying GDK" | tee -a /workspace/startup.log
+      mv $HOME/.rvm-workspace /workspace/.rvm
+      cp -r $HOME/gitlab-development-kit /workspace/
+      (
+        set -e
+        cd /workspace/gitlab-development-kit
+        [[ ! -L /workspace/gitlab-development-kit/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
+        # make webpack static, prevents that GitLab tries to connect to localhost webpack from browser outside the workspace
+        echo "webpack:" >> gdk.yml
+        echo "  static: true" >> gdk.yml
+        # reconfigure GDK
+        echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
+        gdk reconfigure
+        # run DB migrations
+        echo "$(date) – Running DB migrations" | tee -a /workspace/startup.log
+        make gitlab-db-migrate
+        cd -
+        # stop GDK
+        echo "$(date) – Stopping GDK" | tee -a /workspace/startup.log
+        gdk stop
+        echo "$(date) – GDK stopped" | tee -a /workspace/startup.log
+      )
+    command: |
+      (
+        set -e
+        gp sync-done gdk-copied
+        SECONDS=0
+        cd /workspace/gitlab-development-kit
+        # update GDK
+        if [ "$GITLAB_UPDATE_GDK" == true ]; then
+          echo "$(date) – Updating GDK" | tee -a /workspace/startup.log
+          gdk update
+        fi
+        # start GDK
+        echo "$(date) – Starting GDK" | tee -a /workspace/startup.log
+        export RAILS_HOSTS=$(gp url 3000 | sed -e 's+^http[s]*://++')
+        gdk start
+        # Run DB migrations
+        if [ "$GITLAB_RUN_DB_MIGRATIONS" == true ]; then
+          make gitlab-db-migrate
+        fi
+        # Fix DB key
+        if [ "$GITLAB_FIX_DB_KEY" = true ]; then
+          echo "$(date) – Fixing DB key" | tee -a /workspace/startup.log
+          cd gitlab
+          # see https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56403#note_132515069
+          printf 'ApplicationSetting.last.update_column(:runners_registration_token_encrypted, nil)\nexit\n' | bundle exec rails c
+          cd -
+        fi
+        # Waiting for GitLab ...
+        gp await-port 3000
+        printf "Waiting for GitLab at $(gp url 3000) ..."
+        until $(curl -sNL $(gp url 3000) | grep -q "GitLab"); do printf '.'; sleep 5; done && echo ""
+        # Give Gitpod a few more seconds to set up everything ...
+        sleep 5
+        printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log
+        gp preview $(gp url 3000) || true
+      )
+
+ports:
+  - port: 3000  # rails-web
+    onOpen: ignore
+  - port: 3010  # gitlab-pages
+    onOpen: ignore
+  - port: 3808  # webpack
+    onOpen: ignore
+  - port: 5000  # auto_devops
+    onOpen: ignore
+  - port: 5778  # jaeger
+    onOpen: ignore
+  - port: 9000  # object_store / minio
+    onOpen: ignore
+
+vscode:
+  extensions:
+    - rebornix.ruby@0.27.0:QyGBeRyslOfdRgOPRGm6PQ==
+    - wingrunr21.vscode-ruby@0.27.0:beIqQUhLRuJ5Vao4B2Lyng==
+    - karunamurti.haml@1.1.0:twCwOYt3/Ttfb3+iwblPDA==
+    - octref.vetur@0.25.0:UofirBhedyhdx/jCnPeJDg==
+    - dbaeumer.vscode-eslint@2.1.3:1NRvj3UKNTNwmYjptmUmIw==
+    - GitLab.gitlab-workflow@3.3.0:50q1byIi4M01G9qrTCCAYQ==

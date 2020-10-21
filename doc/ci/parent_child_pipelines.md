@@ -68,11 +68,22 @@ microservice_a:
   trigger:
     include:
       - local: path/to/microservice_a.yml
-      - template: SAST.gitlab-ci.yml
+      - template: Security/SAST.gitlab-ci.yml
 ```
 
-NOTE: **Note:**
-The max number of entries that are accepted for `trigger:include:` is three.
+In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) and later,
+you can use [`include:file`](yaml/README.md#includefile) to trigger child pipelines
+with a configuration file in a different project:
+
+```yaml
+microservice_a:
+  trigger:
+    include:
+      - project: 'my-group/my-pipeline-library'
+        file: 'path/to/ci-config.yml'
+```
+
+The maximum number of entries that are accepted for `trigger:include:` is three.
 
 Similar to [multi-project pipelines](multi_project_pipelines.md#mirroring-status-from-triggered-pipeline),
 we can set the parent pipeline to depend on the status of the child pipeline upon completion:
@@ -82,7 +93,7 @@ microservice_a:
   trigger:
     include:
       - local: path/to/microservice_a.yml
-      - template: SAST.gitlab-ci.yml
+      - template: Security/SAST.gitlab-ci.yml
     strategy: depend
 ```
 
@@ -153,32 +164,13 @@ This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues
 ## Nested child pipelines
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-nested-child-pipelines). **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243747) in GitLab 13.5.
 
 Parent and child pipelines were introduced with a maximum depth of one level of child
 pipelines, which was later increased to two. A parent pipeline can trigger many child
 pipelines, and these child pipelines can trigger their own child pipelines. It's not
 possible to trigger another level of child pipelines.
 
-### Enable or disable nested child pipelines **(CORE ONLY)**
+## Pass variables to a child pipeline
 
-Nested child pipelines with a depth of two are under development but ready for
-production use. This feature is deployed behind a feature flag that is **enabled by default**.
-
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_child_of_child_pipeline)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_child_of_child_pipeline)
-```
+You can [pass variables to a downstream pipeline](multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline).

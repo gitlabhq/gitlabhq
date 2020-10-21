@@ -123,7 +123,8 @@ module Gitlab
         none: "",
         qa: "~QA",
         test: "~test ~Quality for `spec/features/*`",
-        engineering_productivity: '~"Engineering Productivity" for CI, Danger'
+        engineering_productivity: '~"Engineering Productivity" for CI, Danger',
+        ci_template: '~"ci::templates"'
       }.freeze
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
@@ -176,6 +177,8 @@ module Gitlab
         %r{(CODEOWNERS)} => :engineering_productivity,
         %r{(tests.yml)} => :engineering_productivity,
 
+        %r{\Alib/gitlab/ci/templates} => :ci_template,
+
         %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/support/shared_examples/features/} => :test,
         %r{\A(ee/)?spec/support/shared_contexts/features/} => :test,
@@ -212,6 +215,12 @@ module Gitlab
 
       def sanitize_mr_title(title)
         title.gsub(DRAFT_REGEX, '').gsub(/`/, '\\\`')
+      end
+
+      def draft_mr?
+        return false unless gitlab_helper
+
+        DRAFT_REGEX.match?(gitlab_helper.mr_json['title'])
       end
 
       def security_mr?

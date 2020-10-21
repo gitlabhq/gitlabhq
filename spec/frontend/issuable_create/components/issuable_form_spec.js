@@ -79,6 +79,7 @@ describe('IssuableForm', () => {
         markdownDocsPath: wrapper.vm.descriptionHelpPath,
         addSpacingClasses: false,
         showSuggestPopover: true,
+        textareaValue: '',
       });
       expect(descriptionFieldEl.find('textarea').exists()).toBe(true);
       expect(descriptionFieldEl.find('textarea').attributes('placeholder')).toBe(

@@ -18,7 +18,6 @@ export default {
       default: '',
     },
     projectId: {
-      type: String,
       default: '',
     },
   },

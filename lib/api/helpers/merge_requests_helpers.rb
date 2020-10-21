@@ -73,6 +73,13 @@ module API
         optional :not, type: Hash, desc: 'Parameters to negate' do
           use :merge_requests_negatable_params
         end
+
+        optional :deployed_before,
+          'Return merge requests deployed before the given date/time'
+        optional :deployed_after,
+          'Return merge requests deployed after the given date/time'
+        optional :environment,
+          'Returns merge requests deployed to the given environment'
       end
 
       params :optional_scope_param do

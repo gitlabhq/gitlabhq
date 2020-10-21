@@ -3,7 +3,7 @@
 module API
   # Kubernetes Internal API
   module Internal
-    class Kubernetes < Grape::API::Instance
+    class Kubernetes < ::API::Base
       before do
         check_feature_enabled
         authenticate_gitlab_kas_request!

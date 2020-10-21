@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import {
   GlButton,
   GlButtonGroup,
@@ -9,20 +9,18 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
 import { n__, s__ } from '~/locale';
 import AccessorUtilities from '../../lib/utils/accessor';
-import BoardDelete from './board_delete';
 import IssueCount from './issue_count.vue';
 import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
-import { ListType } from '../constants';
+import sidebarEventHub from '~/sidebar/event_hub';
+import { inactiveId, LIST, ListType } from '../constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
-    BoardDelete,
     GlButtonGroup,
     GlButton,
     GlLabel,
@@ -34,7 +32,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [isWipLimitsOn, glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin()],
   props: {
     list: {
       type: Object,
@@ -45,11 +43,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    canAdminList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isSwimlanesHeader: {
       type: Boolean,
       required: false,
@@ -58,7 +51,7 @@ export default {
   },
   inject: {
     boardId: {
-      type: String,
+      default: '',
     },
   },
   data() {
@@ -67,6 +60,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['activeId']),
     isLoggedIn() {
       return Boolean(gon.current_user_id);
     },
@@ -114,10 +108,7 @@ export default {
     },
     isSettingsShown() {
       return (
-        this.listType !== ListType.backlog &&
-        this.showListHeaderButton &&
-        this.list.isExpanded &&
-        this.isWipLimitsOn
+        this.listType !== ListType.backlog && this.showListHeaderButton && this.list.isExpanded
       );
     },
     showBoardListAndBoardInfo() {
@@ -135,7 +126,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateList']),
+    ...mapActions(['updateList', 'setActiveId']),
+    openSidebarSettings() {
+      if (this.activeId === inactiveId) {
+        sidebarEventHub.$emit('sidebar.closeAll');
+      }
+
+      this.setActiveId({ id: this.list.id, sidebarType: LIST });
+    },
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);
     },
@@ -176,7 +174,6 @@ export default {
   <header
     :class="{
       'has-border': list.label && list.label.color,
-      'gl-relative': list.isExpanded,
       'gl-h-full': !list.isExpanded,
       'board-inner gl-rounded-top-left-base gl-rounded-top-right-base': isSwimlanesHeader,
     }"
@@ -279,22 +276,6 @@ export default {
         </div>
       </gl-tooltip>
 
-      <board-delete
-        v-if="canAdminList && !list.preset && list.id"
-        :list="list"
-        inline-template="true"
-      >
-        <gl-button
-          v-gl-tooltip.hover.bottom
-          :class="{ 'gl-display-none': !list.isExpanded }"
-          :aria-label="__('Delete list')"
-          class="board-delete no-drag gl-pr-0 gl-shadow-none! gl-mr-3"
-          :title="__('Delete list')"
-          icon="remove"
-          size="small"
-          @click.stop="deleteBoard"
-        />
-      </board-delete>
       <div
         v-if="showBoardListAndBoardInfo"
         class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag text-secondary"

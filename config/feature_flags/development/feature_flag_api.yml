@@ -1,0 +1,7 @@
+---
+name: feature_flag_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18198
+rollout_issue_url: 
+group: group::progressive delivery
+type: development
+default_enabled: false

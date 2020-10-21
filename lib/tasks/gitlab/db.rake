@@ -35,6 +35,11 @@ namespace :gitlab do
       # Truncate schema_migrations to ensure migrations re-run
       connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations'
 
+      # Drop any views
+      connection.views.each do |view|
+        connection.execute("DROP VIEW IF EXISTS #{connection.quote_table_name(view)} CASCADE")
+      end
+
       # Drop tables with cascade to avoid dependent table errors
       # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
       # Add `IF EXISTS` because cascade could have already deleted a table.
@@ -57,6 +62,19 @@ namespace :gitlab do
         Gitlab::Database.add_post_migrate_path_to_rails(force: true)
         Rake::Task['db:structure:load'].invoke
         Rake::Task['db:seed_fu'].invoke
+      end
+    end
+
+    desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'
+    task unattended: :environment do
+      no_database = !ActiveRecord::Base.connection.schema_migration.table_exists?
+      needs_migrations = ActiveRecord::Base.connection.migration_context.needs_migration?
+
+      if no_database || needs_migrations
+        Rake::Task['gitlab:db:configure'].invoke
+        puts "unattended_migrations_completed"
+      else
+        puts "unattended_migrations_static"
       end
     end
 
@@ -169,9 +187,21 @@ namespace :gitlab do
 
     desc 'reindex a regular (non-unique) index without downtime to eliminate bloat'
     task :reindex, [:index_name] => :environment do |_, args|
-      raise ArgumentError, 'must give the index name to reindex' unless args[:index_name]
+      unless Feature.enabled?(:database_reindexing, type: :ops)
+        puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
+        exit
+      end
 
-      Gitlab::Database::ConcurrentReindex.new(args[:index_name], logger: Logger.new(STDOUT)).execute
+      indexes = if args[:index_name]
+                  [Gitlab::Database::PostgresIndex.by_identifier(args[:index_name])]
+                else
+                  Gitlab::Database::Reindexing.candidate_indexes.random_few(2)
+                end
+
+      Gitlab::Database::Reindexing.perform(indexes)
+    rescue => e
+      Gitlab::AppLogger.error(e)
+      raise
     end
   end
 end

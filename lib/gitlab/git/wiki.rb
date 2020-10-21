@@ -100,10 +100,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_find_page(title: title, version: version, dir: dir)
         end
-      rescue Gitlab::Git::CommandError
-        # Return nil for invalid versions.
-        # This can be removed with https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2323 in place.
-        nil
       end
 
       def file(name, version)
@@ -159,6 +155,8 @@ module Gitlab
         return unless wiki_page
 
         Gitlab::Git::WikiPage.new(wiki_page, version)
+      rescue GRPC::InvalidArgument
+        nil
       end
 
       def gitaly_find_file(name, version)
@@ -173,9 +171,9 @@ module Gitlab
 
         gitaly_pages =
           if load_content
-            gitaly_wiki_client.load_all_pages(params)
+            gitaly_wiki_client.load_all_pages(**params)
           else
-            gitaly_wiki_client.list_all_pages(params)
+            gitaly_wiki_client.list_all_pages(**params)
           end
 
         gitaly_pages.map do |wiki_page, version|

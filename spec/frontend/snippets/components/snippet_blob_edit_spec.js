@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
-import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
@@ -48,7 +48,7 @@ describe('Snippet Blob Edit component', () => {
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findHeader = () => wrapper.find(BlobHeaderEdit);
-  const findContent = () => wrapper.find(BlobContentEdit);
+  const findContent = () => wrapper.find(EditorLite);
   const getLastUpdatedArgs = () => {
     const event = wrapper.emitted()['blob-updated'];
 
@@ -156,7 +156,7 @@ describe('Snippet Blob Edit component', () => {
     });
 
     it('shows blob header', () => {
-      const { canDelete = true, showDelete = false } = props;
+      const { canDelete = true, showDelete = true } = props;
 
       expect(findHeader().props()).toMatchObject({
         canDelete,
@@ -172,11 +172,13 @@ describe('Snippet Blob Edit component', () => {
       expect(findContent().exists()).toBe(showContent);
 
       if (showContent) {
-        expect(findContent().props()).toEqual({
-          value: TEST_BLOB_LOADED.content,
-          fileGlobalId: TEST_BLOB_LOADED.id,
-          fileName: TEST_BLOB_LOADED.path,
-        });
+        expect(findContent().props()).toEqual(
+          expect.objectContaining({
+            value: TEST_BLOB_LOADED.content,
+            fileGlobalId: TEST_BLOB_LOADED.id,
+            fileName: TEST_BLOB_LOADED.path,
+          }),
+        );
       }
     });
   });

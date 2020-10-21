@@ -113,8 +113,8 @@ export default {
   },
   methods: {
     ...mapActions('diffs', ['showCommentForm']),
-    showNewDiscussionForm() {
-      this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.diffFileHash });
+    showNewDiscussionForm(lineCode) {
+      this.showCommentForm({ lineCode, fileHash: this.diffFileHash });
     },
   },
 };
@@ -134,7 +134,7 @@ export default {
         v-if="!hasDraftLeft"
         :has-form="showLeftSideCommentForm"
         :render-reply-placeholder="shouldRenderReplyPlaceholderOnLeft"
-        @showNewDiscussionForm="showNewDiscussionForm"
+        @showNewDiscussionForm="showNewDiscussionForm(line.left.line_code)"
       >
         <template #form>
           <diff-line-note-form
@@ -159,7 +159,7 @@ export default {
         v-if="!hasDraftRight"
         :has-form="showRightSideCommentForm"
         :render-reply-placeholder="shouldRenderReplyPlaceholderOnRight"
-        @showNewDiscussionForm="showNewDiscussionForm"
+        @showNewDiscussionForm="showNewDiscussionForm(line.right.line_code)"
       >
         <template #form>
           <diff-line-note-form

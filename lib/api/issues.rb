@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Issues < Grape::API::Instance
+  class Issues < ::API::Base
     include PaginationParams
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter
@@ -231,9 +231,6 @@ module API
 
         authorize! :create_issue, user_project
 
-        params.delete(:created_at) unless current_user.can?(:set_issue_created_at, user_project)
-        params.delete(:iid) unless current_user.can?(:set_issue_iid, user_project)
-
         issue_params = declared_params(include_missing: false)
         issue_params[:system_note_timestamp] = params[:created_at]
 
@@ -279,8 +276,6 @@ module API
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
-        # Setting updated_at is allowed only for admins and owners
-        params.delete(:updated_at) unless current_user.can?(:set_issue_updated_at, user_project)
         issue.system_note_timestamp = params[:updated_at]
 
         update_params = declared_params(include_missing: false).merge(request: request, api: true)

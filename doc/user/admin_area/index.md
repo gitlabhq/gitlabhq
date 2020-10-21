@@ -118,8 +118,15 @@ To list users matching a specific criteria, click on one of the following tabs o
 - **[Deactivated](activating_deactivating_users.md)**
 - **Without projects**
 
-For each user, their username, email address, are listed, also the date their account was
-created and the date of last activity. To edit a user, click the **Edit** button in that user's
+For each user, the following are listed:
+
+1. Username
+1. Email address
+1. Project membership count
+1. Date of account creation
+1. Date of last activity
+
+To edit a user, click the **Edit** button in that user's
 row. To delete the user, or delete the user and their contributions, click the cog dropdown in
 that user's row, and select the desired option.
 

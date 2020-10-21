@@ -7,7 +7,7 @@
 extends: existence
 message: 'Can this reference to "%s" be refactored?'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#importance-of-referencing-gitlab-versions-and-tiers
-level: warning
+level: suggestion
 nonword: true
 ignorecase: true
 tokens:

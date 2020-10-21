@@ -61,6 +61,7 @@ buildpacks
 bundler
 bundlers
 burndown
+burnup
 cacheable
 CAS
 CentOS
@@ -142,8 +143,10 @@ Facebook
 failover
 failovers
 failsafe
+Falco
 fastlane
 favicon
+Figma
 Filebeat
 Fio
 firewalled
@@ -166,6 +169,7 @@ Gitleaks
 Gitter
 globals
 Gmail
+Gollum
 Google
 Gosec
 Gradle
@@ -220,6 +224,7 @@ Kibana
 Kinesis
 Knative
 Kramdown
+Kubecost
 kubectl
 Kubernetes
 Kubesec
@@ -253,6 +258,7 @@ memoize
 memoized
 memoizing
 Memorystore
+mergeability
 mergeable
 Microsoft
 middleware
@@ -275,6 +281,7 @@ mockups
 ModSecurity
 monorepo
 monorepos
+multiline
 mutex
 nameserver
 nameservers
@@ -298,6 +305,7 @@ OmniAuth
 onboarding
 OpenID
 OpenShift
+Opsgenie
 Packagist
 parallelization
 parallelizations
@@ -305,6 +313,7 @@ passwordless
 Patroni
 performant
 PgBouncer
+Phabricator
 phaser
 phasers
 Pipfile
@@ -345,6 +354,7 @@ Python
 Qualys
 Rackspace
 Raspbian
+Rdoc
 reachability
 rebase
 rebased
@@ -365,6 +375,8 @@ reindex
 reindexed
 reindexes
 reindexing
+reinitialize
+reinitializing
 relicensing
 remediations
 repmgr
@@ -382,6 +394,7 @@ reusability
 reverified
 reverifies
 reverify
+RHEL
 rollout
 rollouts
 rsync
@@ -423,7 +436,10 @@ smartcard
 smartcards
 SMTP
 Sobelow
+Solarized
 Sourcegraph
+sparkline
+sparklines
 spidering
 Splunk
 SpotBugs
@@ -439,6 +455,8 @@ subfolder
 subfolders
 subgraph
 subgraphs
+subkey
+subkeys
 sublicense
 sublicensed
 sublicenses
@@ -455,8 +473,10 @@ substring
 substrings
 subtree
 subtrees
+sudo
 syslog
 tcpdump
+Thanos
 Tiller
 timecop
 todos
@@ -479,6 +499,7 @@ unarchived
 unarchives
 unarchiving
 unassign
+unassigning
 unassigns
 uncheck
 unchecked
@@ -510,6 +531,9 @@ unprioritized
 unprotect
 unprotected
 unprotects
+unprovision
+unprovisioned
+unprovisions
 unpublish
 unpublished
 unpublishes

@@ -232,29 +232,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
   end
 
-  context 'when geo is enabled', if: Gitlab.ee? do
-    let(:user) { snippet.author }
-    let!(:primary_node) { FactoryBot.create(:geo_node, :primary) }
-
-    before do
-      allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
-      allow(::Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
-    end
-
-    # Without override, push access would return Gitlab::GitAccessResult::CustomAction
-    it 'skips geo for snippet' do
-      expect { push_access_check }.to raise_forbidden(/You can't push code to a read-only GitLab instance/)
-    end
-
-    context 'when user is migration bot' do
-      let(:user) { migration_bot }
-
-      it 'skips geo for snippet' do
-        expect { push_access_check }.to raise_forbidden(/You can't push code to a read-only GitLab instance/)
-      end
-    end
-  end
-
   context 'when changes are specific' do
     let(:changes) { "2d1db523e11e777e49377cfb22d368deec3f0793 ddd0f15ae83993f5cb66a927a28673882e99100b master" }
     let(:user) { snippet.author }
@@ -283,7 +260,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
         service = double
 
         expect(service).to receive(:validate!).and_return(nil)
-        expect(Snippet).to receive(:max_file_limit).with(user).and_return(5)
+        expect(Snippet).to receive(:max_file_limit).and_return(5)
         expect(Gitlab::Checks::PushFileCountCheck).to receive(:new).with(anything, hash_including(limit: 5)).and_return(service)
 
         push_access_check

@@ -1,7 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
+import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
@@ -9,17 +10,16 @@ import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
-import pathLastCommitQuery from '../queries/path_last_commit.query.graphql';
 
 export default {
   components: {
-    GlIcon,
     UserAvatarLink,
     TimeagoTooltip,
     ClipboardButton,
     CiIcon,
+    GlButton,
+    GlButtonGroup,
     GlLink,
-    GlDeprecatedButton,
     GlLoadingIcon,
   },
   directives: {
@@ -123,15 +123,14 @@ export default {
             class="commit-row-message item-title"
             v-html="commit.titleHtml"
           />
-          <gl-deprecated-button
+          <gl-button
             v-if="commit.descriptionHtml"
             :class="{ open: showDescription }"
             :aria-label="__('Show commit description')"
-            class="text-expander"
+            class="text-expander gl-vertical-align-bottom!"
+            icon="ellipsis_h"
             @click="toggleShowDescription"
-          >
-            <gl-icon name="ellipsis_h" :size="10" />
-          </gl-deprecated-button>
+          />
           <div class="committer">
             <gl-link
               v-if="commit.author"
@@ -169,16 +168,19 @@ export default {
               />
             </gl-link>
           </div>
-          <div class="commit-sha-group d-flex">
-            <div class="label label-monospace monospace">
-              {{ showCommitId }}
-            </div>
+          <gl-button-group class="gl-ml-4 js-commit-sha-group">
+            <gl-button
+              label
+              class="gl-font-monospace"
+              data-testid="last-commit-id-label"
+              v-text="showCommitId"
+            />
             <clipboard-button
               :text="commit.sha"
               :title="__('Copy commit SHA')"
-              tooltip-placement="bottom"
+              class="input-group-text"
             />
-          </div>
+          </gl-button-group>
         </div>
       </div>
     </template>

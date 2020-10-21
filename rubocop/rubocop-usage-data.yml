@@ -25,6 +25,8 @@ UsageData/LargeTable:
     - :Time
     - :SECURE_PRODUCT_TYPES
     - :Settings
+    - :CE_MEMOIZED_VALUES
+    - :EE_MEMOIZED_VALUES
   CountMethods:
     - :count
     - :distinct_count

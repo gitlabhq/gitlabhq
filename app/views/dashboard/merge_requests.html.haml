@@ -14,7 +14,7 @@
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests, display_count: !@no_filters_set
 
-= render 'shared/issuable/search_bar', type: :merge_requests
+= render 'shared/issuable/search_bar', type: :merge_requests, disable_target_branch: true
 
 - if current_user && @no_filters_set
   = render 'shared/dashboard/no_filter_selected'

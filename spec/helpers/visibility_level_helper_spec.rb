@@ -47,13 +47,6 @@ RSpec.describe VisibilityLevelHelper do
             .to match /group/i
       end
     end
-
-    context 'called with a Snippet' do
-      it 'delegates snippets to #snippet_visibility_level_description' do
-        expect(visibility_level_description(Gitlab::VisibilityLevel::INTERNAL, project_snippet))
-            .to match /snippet/i
-      end
-    end
   end
 
   describe "#project_visibility_level_description" do
@@ -65,23 +58,6 @@ RSpec.describe VisibilityLevelHelper do
     it "describes public projects" do
       expect(project_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC))
             .to eq _('The project can be accessed without any authentication.')
-    end
-  end
-
-  describe "#snippet_visibility_level_description" do
-    it 'describes visibility only for me' do
-      expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, personal_snippet))
-            .to eq _('The snippet is visible only to me.')
-    end
-
-    it 'describes visibility for project members' do
-      expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project_snippet))
-            .to eq _('The snippet is visible only to project members.')
-    end
-
-    it 'defaults to personal snippet' do
-      expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE))
-            .to eq _('The snippet is visible only to me.')
     end
   end
 

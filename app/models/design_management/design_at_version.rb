@@ -21,10 +21,6 @@ module DesignManagement
       @design, @version = design, version
     end
 
-    def self.instantiate(attrs)
-      new(attrs).tap { |obj| obj.validate! }
-    end
-
     # The ID, needed by GraphQL types and as part of the Lazy-fetch
     # protocol, includes information about both the design and the version.
     #

@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlTooltipDirective, GlFriendlyWrap, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlFriendlyWrap, GlIcon, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
@@ -8,6 +8,7 @@ export default {
   components: {
     GlIcon,
     GlFriendlyWrap,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -45,6 +46,9 @@ export default {
         <div role="rowheader" class="table-section section-20">
           {{ __('Name') }}
         </div>
+        <div role="rowheader" class="table-section section-10">
+          {{ __('Filename') }}
+        </div>
         <div role="rowheader" class="table-section section-10 text-center">
           {{ __('Status') }}
         </div>
@@ -63,18 +67,30 @@ export default {
       >
         <div class="table-section section-20 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
-          <div class="table-mobile-content pr-md-1 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.classname" />
           </div>
         </div>
 
         <div class="table-section section-20 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-          <div class="table-mobile-content pr-md-1 gl-overflow-wrap-break">
-            <gl-friendly-wrap
-              data-testid="caseName"
-              :symbols="$options.wrapSymbols"
-              :text="testCase.name"
+          <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
+            <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.name" />
+          </div>
+        </div>
+
+        <div class="table-section section-10 section-wrap">
+          <div role="rowheader" class="table-mobile-header">{{ __('Filename') }}</div>
+          <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
+            <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
+            <gl-button
+              v-gl-tooltip
+              size="small"
+              category="tertiary"
+              icon="copy-to-clipboard"
+              :title="__('Copy to clipboard')"
+              :data-clipboard-text="testCase.file"
+              :aria-label="__('Copy to clipboard')"
             />
           </div>
         </div>

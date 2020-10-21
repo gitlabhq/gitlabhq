@@ -18,9 +18,21 @@ function fileSymlinkInformation(file, fileList) {
   );
 }
 
+function collapsed(file) {
+  const viewer = file.viewer || {};
+
+  return {
+    automaticallyCollapsed: viewer.automaticallyCollapsed || viewer.collapsed || false,
+  };
+}
+
 export function prepareRawDiffFile({ file, allFiles }) {
   Object.assign(file, {
     brokenSymlink: fileSymlinkInformation(file, allFiles),
+    viewer: {
+      ...file.viewer,
+      ...collapsed(file),
+    },
   });
 
   return file;

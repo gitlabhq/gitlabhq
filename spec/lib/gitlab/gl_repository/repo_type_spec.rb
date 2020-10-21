@@ -41,12 +41,14 @@ RSpec.describe Gitlab::GlRepository::RepoType do
   end
 
   describe Gitlab::GlRepository::WIKI do
+    let(:wiki) { project.wiki }
+
     it_behaves_like 'a repo type' do
-      let(:expected_id) { project.id }
+      let(:expected_id) { wiki.project.id }
       let(:expected_identifier) { "wiki-#{expected_id}" }
       let(:expected_suffix) { '.wiki' }
-      let(:expected_container) { project }
-      let(:expected_repository) { ::Repository.new(project.wiki.full_path, project, shard: project.wiki.repository_storage, disk_path: project.wiki.disk_path, repo_type: Gitlab::GlRepository::WIKI) }
+      let(:expected_container) { wiki }
+      let(:expected_repository) { ::Repository.new(wiki.full_path, wiki, shard: wiki.repository_storage, disk_path: wiki.disk_path, repo_type: Gitlab::GlRepository::WIKI) }
     end
 
     it 'knows its type' do

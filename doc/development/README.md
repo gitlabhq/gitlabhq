@@ -43,6 +43,7 @@ For information on how to install, configure, update, and upgrade your own GitLa
 
 **Must-reads:**
 
+- [Guide on adapting existing and introducing new components](architecture.md#adapting-existing-and-introducing-new-components)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
 - [Secure coding guidelines](secure_coding_guidelines.md)
@@ -115,6 +116,7 @@ Complementary reads:
 - [Code Intelligence](code_intelligence/index.md)
 - [Approval Rules](approval_rules.md)
 - [Feature categorization](feature_categorization/index.md)
+- [Wikis development guide](wikis.md)
 
 ## Performance guides
 
@@ -163,11 +165,11 @@ See [database guidelines](database/index.md).
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
 
-## Telemetry guides
+## Product Analytics guides
 
-- [Telemetry guide](telemetry/index.md)
-- [Usage Ping guide](telemetry/usage_ping.md)
-- [Snowplow guide](telemetry/snowplow.md)
+- [Product Analytics guide](product_analytics/index.md)
+- [Usage Ping guide](product_analytics/usage_ping.md)
+- [Snowplow guide](product_analytics/snowplow.md)
 
 ## Experiment guide
 

@@ -1,7 +1,0 @@
----
-name: container_registry_cleanup
-introduced_by_url: 
-rollout_issue_url: 
-group: 
-type: development
-default_enabled: true

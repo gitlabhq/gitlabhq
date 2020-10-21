@@ -295,13 +295,16 @@ end
 
 Adding foreign key to `projects`:
 
+We can use the `add_concurrenct_foreign_key` method in this case, as this helper method
+has the lock retries built into it.
+
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
+disable_ddl_transaction!
+
 def up
-  with_lock_retries do
-    add_foreign_key :imports, :projects, column: :project_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
-  end
+  add_concurrent_foreign_key :imports, :projects, column: :project_id, on_delete: :cascade
 end
 
 def down
@@ -316,10 +319,10 @@ Adding foreign key to `users`:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
+disable_ddl_transaction!
+
 def up
-  with_lock_retries do
-    add_foreign_key :imports, :users, column: :user_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
-  end
+  add_concurrent_foreign_key :imports, :users, column: :user_id, on_delete: :cascade
 end
 
 def down
@@ -331,7 +334,7 @@ end
 
 **Usage with `disable_ddl_transaction!`**
 
-Generally the `with_lock_retries` helper should work with `disabled_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
+Generally the `with_lock_retries` helper should work with `disable_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
 
 ```ruby
 disable_ddl_transaction!
@@ -348,7 +351,7 @@ end
 The RuboCop rule generally allows standard Rails migration methods, listed below. This example will cause a Rubocop offense:
 
 ```ruby
-disabled_ddl_transaction!
+disable_ddl_transaction!
 
 def up
   with_lock_retries do
@@ -364,17 +367,7 @@ standard Rails migration helper methods. Calling more than one migration
 helper is not a problem if they're executed on the same table.
 
 Using the `with_lock_retries` helper method is advised when a database
-migration involves one of the high-traffic tables:
-
-- `users`
-- `projects`
-- `namespaces`
-- `gitlab_subscriptions`
-- `issues`
-- `merge_requests`
-- `ci_pipelines`
-- `ci_builds`
-- `notes`
+migration involves one of the [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3).
 
 Example changes:
 
@@ -612,7 +605,7 @@ See the style guide on [`NOT NULL` constraints](database/not_null_constraints.md
 
 ## Adding Columns With Default Values
 
-With PostgreSQL 11 being the minimum version since GitLab 13.0, adding columns with default values has become much easier and
+With PostgreSQL 11 being the minimum version in GitLab 13.0 and later, adding columns with default values has become much easier and
 the standard `add_column` helper should be used in all cases.
 
 Before PostgreSQL 11, adding a column with a default was problematic as it would
@@ -647,7 +640,7 @@ tables: `namespaces`. This can be translated to:
 ```sql
 ALTER TABLE namespaces
 ALTER COLUMN request_access_enabled
-DEFAULT false
+SET DEFAULT false
 ```
 
 In this particular case, the default value exists and we're just changing the metadata for

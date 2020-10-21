@@ -8,7 +8,8 @@ class SearchController < ApplicationController
 
   SCOPE_PRELOAD_METHOD = {
     projects: :with_web_entity_associations,
-    issues: :with_web_entity_associations
+    issues: :with_web_entity_associations,
+    epics: :with_web_entity_associations
   }.freeze
 
   track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users, feature_default_enabled: true
@@ -24,6 +25,8 @@ class SearchController < ApplicationController
 
   layout 'search'
 
+  feature_category :global_search
+
   def show
     @project = search_service.project
     @group = search_service.group
@@ -38,6 +41,7 @@ class SearchController < ApplicationController
     @show_snippets = search_service.show_snippets?
     @search_results = search_service.search_results
     @search_objects = search_service.search_objects(preload_method)
+    @search_highlight = search_service.search_highlight
 
     render_commits if @scope == 'commits'
     eager_load_user_status if @scope == 'users'
@@ -96,8 +100,6 @@ class SearchController < ApplicationController
   end
 
   def eager_load_user_status
-    return if Feature.disabled?(:users_search, default_enabled: true)
-
     @search_objects = @search_objects.eager_load(:status) # rubocop:disable CodeReuse/ActiveRecord
   end
 

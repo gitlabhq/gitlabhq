@@ -22,8 +22,7 @@
           pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
           title: s_('GroupSettings|Please choose a group URL with no special characters.'),
           "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-    .gl-display-flex.gl-justify-content-end
-      = f.submit s_('GroupSettings|Change group URL'), class: 'btn btn-warning'
+    = f.submit s_('GroupSettings|Change group URL'), class: 'btn btn-warning'
 
 .sub-section
   %h4.warning-title= s_('GroupSettings|Transfer group')
@@ -33,14 +32,13 @@
       = hidden_field_tag 'new_parent_group_id'
 
     %ul
-      - side_effects_link_start = '<a href="https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths" target="_blank">'
+      - side_effects_link_start = '<a href="https://docs.gitlab.com/ee/user/project/index.html#redirects-when-changing-repository-paths" target="_blank">'
       - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended %{side_effects_link_start}side effects%{side_effects_link_end}.") % { side_effects_link_start: side_effects_link_start, side_effects_link_end:'</a>' }
       %li= warning_text.html_safe
       %li= s_('GroupSettings|You can only transfer the group to a group you manage.')
       %li= s_('GroupSettings|You will need to update your local repositories to point to the new location.')
       %li= s_("GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
-    .gl-display-flex.gl-justify-content-end
-      = f.submit s_('GroupSettings|Transfer group'), class: 'btn btn-warning'
+    = f.submit s_('GroupSettings|Transfer group'), class: 'btn btn-warning'
 
 = render 'groups/settings/remove', group: @group
 = render_if_exists 'groups/settings/restore', group: @group

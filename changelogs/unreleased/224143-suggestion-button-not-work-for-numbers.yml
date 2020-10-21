@@ -1,0 +1,5 @@
+---
+title: Ensure suggestion works for number text
+merge_request: 44332
+author:
+type: fixed

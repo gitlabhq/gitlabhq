@@ -8,8 +8,20 @@ export default {
   components: {
     GlLabel,
   },
+  props: {
+    disableLabels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
-    ...mapState(['selectedLabels', 'allowScopedLabels', 'labelsFilterBasePath']),
+    ...mapState([
+      'selectedLabels',
+      'allowLabelRemove',
+      'allowScopedLabels',
+      'labelsFilterBasePath',
+    ]),
   },
   methods: {
     labelFilterUrl(label) {
@@ -35,12 +47,17 @@ export default {
     <template v-for="label in selectedLabels" v-else>
       <gl-label
         :key="label.id"
+        data-qa-selector="selected_label_content"
+        :data-qa-label-name="label.title"
         :title="label.title"
         :description="label.description"
         :background-color="label.color"
         :target="labelFilterUrl(label)"
         :scoped="scopedLabel(label)"
+        :show-close-button="allowLabelRemove"
+        :disabled="disableLabels"
         tooltip-placement="top"
+        @close="$emit('onLabelRemove', label.id)"
       />
     </template>
   </div>

@@ -2,9 +2,9 @@
 - rich_viewer = blob.rich_viewer
 - rich_viewer_active = rich_viewer && params[:viewer] != 'simple'
 - blob_data = defined?(@blob) ? @blob.data : {}
-- filename = defined?(@blob) ? @blob.name : ''
+- is_ci_config_file = defined?(@blob) && defined?(@project) ? editing_ci_config?.to_s : 'false'
 
-#js-blob-toggle-graph-preview{ data: { blob_data: blob_data, filename: filename } }
+#js-blob-toggle-graph-preview{ data: { blob_data: blob_data, is_ci_config_file: is_ci_config_file } }
 
 = render 'projects/blob/viewer', viewer: simple_viewer, hidden: rich_viewer_active
 

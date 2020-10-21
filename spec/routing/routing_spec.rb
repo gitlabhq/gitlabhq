@@ -61,12 +61,9 @@ RSpec.describe "Mounted Apps", "routing" do
 end
 
 #     snippets GET    /snippets(.:format)          snippets#index
-#          POST   /snippets(.:format)          snippets#create
 #  new_snippet GET    /snippets/new(.:format)      snippets#new
 # edit_snippet GET    /snippets/:id/edit(.:format) snippets#edit
 #      snippet GET    /snippets/:id(.:format)      snippets#show
-#          PUT    /snippets/:id(.:format)      snippets#update
-#          DELETE /snippets/:id(.:format)      snippets#destroy
 RSpec.describe SnippetsController, "routing" do
   it "to #raw" do
     expect(get("/-/snippets/1/raw")).to route_to('snippets#raw', id: '1')
@@ -74,10 +71,6 @@ RSpec.describe SnippetsController, "routing" do
 
   it "to #index" do
     expect(get("/-/snippets")).to route_to('snippets#index')
-  end
-
-  it "to #create" do
-    expect(post("/-/snippets")).to route_to('snippets#create')
   end
 
   it "to #new" do
@@ -90,14 +83,6 @@ RSpec.describe SnippetsController, "routing" do
 
   it "to #show" do
     expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
-  end
-
-  it "to #update" do
-    expect(put("/-/snippets/1")).to route_to('snippets#update', id: '1')
-  end
-
-  it "to #destroy" do
-    expect(delete("/-/snippets/1")).to route_to('snippets#destroy', id: '1')
   end
 
   it 'to #show from unscoped routing' do
@@ -119,9 +104,9 @@ RSpec.describe HelpController, "routing" do
                                   path: 'user/markdown',
                                   format: 'md')
 
-    path = '/help/workflow/protected_branches/protected_branches1.png'
+    path = '/help/user/markdown/markdown_logo.png'
     expect(get(path)).to route_to('help#show',
-                                  path: 'workflow/protected_branches/protected_branches1',
+                                  path: 'user/markdown/markdown_logo',
                                   format: 'png')
   end
 end
@@ -147,6 +132,10 @@ RSpec.describe ProfilesController, "routing" do
 
   it "to #show" do
     expect(get("/profile")).to route_to('profiles#show')
+  end
+
+  it 'to #show from scope routing' do
+    expect(get("/-/profile")).to route_to('profiles#show')
   end
 end
 
@@ -372,5 +361,11 @@ RSpec.describe Snippets::BlobsController, "routing" do
   it "to #raw" do
     expect(get('/-/snippets/1/raw/master/lib/version.rb'))
       .to route_to('snippets/blobs#raw', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
+  end
+end
+
+RSpec.describe RunnerSetupController, 'routing' do
+  it 'to #platforms' do
+    expect(get("/-/runner_setup/platforms")).to route_to('runner_setup#platforms')
   end
 end

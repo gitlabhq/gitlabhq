@@ -1,8 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import marked from 'marked';
-import { sanitize } from 'dompurify';
 import katex from 'katex';
+import { sanitize } from '~/lib/dompurify';
 import Prompt from './prompt.vue';
 
 const renderer = new marked.Renderer();

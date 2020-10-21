@@ -58,7 +58,7 @@ module Ci
       build = project.builds.new(attributes)
       build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
       build.retried = false
-      BulkInsertableAssociations.with_bulk_insert(enabled: ::Gitlab::Ci::Features.bulk_insert_on_create?(project)) do
+      BulkInsertableAssociations.with_bulk_insert do
         build.save!
       end
       build

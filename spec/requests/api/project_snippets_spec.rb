@@ -6,21 +6,16 @@ RSpec.describe API::ProjectSnippets do
   include SnippetHelpers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:admin) { create(:admin) }
   let_it_be(:project_no_snippets) { create(:project, :snippets_disabled) }
-
-  before do
-    project_no_snippets.add_developer(admin)
-    project_no_snippets.add_developer(user)
-  end
+  let_it_be(:user) { create(:user, developer_projects: [project_no_snippets]) }
+  let_it_be(:admin) { create(:admin, developer_projects: [project_no_snippets]) }
+  let_it_be(:public_snippet, reload: true) { create(:project_snippet, :public, :repository, project: project) }
 
   describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do
-    let(:snippet) { create(:project_snippet, :public, project: project) }
-    let!(:user_agent_detail) { create(:user_agent_detail, subject: snippet) }
+    let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: public_snippet) }
 
     it 'exposes known attributes' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}/user_agent_detail", admin)
+      get api("/projects/#{project.id}/snippets/#{public_snippet.id}/user_agent_detail", admin)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
@@ -31,29 +26,27 @@ RSpec.describe API::ProjectSnippets do
     it 'respects project scoping' do
       other_project = create(:project)
 
-      get api("/projects/#{other_project.id}/snippets/#{snippet.id}/user_agent_detail", admin)
+      get api("/projects/#{other_project.id}/snippets/#{public_snippet.id}/user_agent_detail", admin)
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns unauthorized for non-admin users" do
-      get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/user_agent_detail", user)
+      get api("/projects/#{public_snippet.project.id}/snippets/#{public_snippet.id}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123/user_agent_detail", admin) }
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/user_agent_detail", admin) }
       end
     end
   end
 
   describe 'GET /projects/:project_id/snippets/' do
-    let(:user) { create(:user) }
-
     it 'returns all snippets available to team member' do
       project.add_developer(user)
-      public_snippet = create(:project_snippet, :public, project: project)
+
       internal_snippet = create(:project_snippet, :internal, project: project)
       private_snippet = create(:project_snippet, :private, project: project)
 
@@ -62,8 +55,7 @@ RSpec.describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(3)
-      expect(json_response.map { |snippet| snippet['id'] }).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
+      expect(json_response.map { |snippet| snippet['id'] }).to contain_exactly(public_snippet.id, internal_snippet.id, private_snippet.id)
       expect(json_response.last).to have_key('web_url')
     end
 
@@ -75,7 +67,7 @@ RSpec.describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(0)
+      expect(json_response.map { |snippet| snippet['id'] }).to contain_exactly(public_snippet.id)
     end
 
     context 'with snippets disabled' do
@@ -86,8 +78,7 @@ RSpec.describe API::ProjectSnippets do
   end
 
   describe 'GET /projects/:project_id/snippets/:id' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project) }
+    let(:snippet) { public_snippet }
 
     it 'returns snippet json' do
       get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
@@ -113,12 +104,12 @@ RSpec.describe API::ProjectSnippets do
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123", user) }
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", user) }
       end
     end
 
-    it_behaves_like 'snippet_multiple_files feature disabled' do
-      subject { get api("/projects/#{project.id}/snippets/#{snippet.id}", user) }
+    it_behaves_like 'project snippet access levels' do
+      let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}" }
     end
   end
 
@@ -133,37 +124,35 @@ RSpec.describe API::ProjectSnippets do
 
     let(:file_path) { 'file_1.rb' }
     let(:file_content) { 'puts "hello world"' }
-    let(:params) { base_params.merge(file_params) }
     let(:file_params) { { files: [{ file_path: file_path, content: file_content }] } }
+    let(:params) { base_params.merge(file_params) }
+
+    subject { post api("/projects/#{project.id}/snippets/", actor), params: params }
 
     shared_examples 'project snippet repository actions' do
       let(:snippet) { ProjectSnippet.find(json_response['id']) }
 
-      it 'creates repository' do
-        subject
-
-        expect(snippet.repository.exists?).to be_truthy
-      end
-
       it 'commit the files to the repository' do
         subject
 
-        blob = snippet.repository.blob_at('master', file_path)
+        aggregate_failures do
+          expect(snippet.repository.exists?).to be_truthy
 
-        expect(blob.data).to eq file_content
+          blob = snippet.repository.blob_at('master', file_path)
+
+          expect(blob.data).to eq file_content
+        end
       end
     end
 
     context 'with an external user' do
-      let(:user) { create(:user, :external) }
+      let(:actor) { create(:user, :external) }
 
       context 'that belongs to the project' do
-        before do
-          project.add_developer(user)
-        end
-
         it 'creates a new snippet' do
-          post api("/projects/#{project.id}/snippets/", user), params: params
+          project.add_developer(actor)
+
+          subject
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -171,7 +160,7 @@ RSpec.describe API::ProjectSnippets do
 
       context 'that does not belong to the project' do
         it 'does not create a new snippet' do
-          post api("/projects/#{project.id}/snippets/", user), params: params
+          subject
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -179,15 +168,16 @@ RSpec.describe API::ProjectSnippets do
     end
 
     context 'with a regular user' do
-      let(:user) { create(:user) }
+      let(:actor) { user }
+
+      before_all do
+        project.add_developer(user)
+      end
 
       before do
-        project.add_developer(user)
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE])
         params['visibility'] = 'internal'
       end
-
-      subject { post api("/projects/#{project.id}/snippets/", user), params: params }
 
       it 'creates a new snippet' do
         subject
@@ -205,7 +195,7 @@ RSpec.describe API::ProjectSnippets do
     end
 
     context 'with an admin' do
-      subject { post api("/projects/#{project.id}/snippets/", admin), params: params }
+      let(:actor) { admin }
 
       it 'creates a new snippet' do
         subject
@@ -244,6 +234,8 @@ RSpec.describe API::ProjectSnippets do
     end
 
     context 'when save fails because the repository could not be created' do
+      let(:actor) { admin }
+
       before do
         allow_next_instance_of(Snippets::CreateService) do |instance|
           allow(instance).to receive(:create_repository).and_raise(Snippets::CreateService::CreateRepositoryError)
@@ -251,43 +243,44 @@ RSpec.describe API::ProjectSnippets do
       end
 
       it 'returns 400' do
-        post api("/projects/#{project.id}/snippets", admin), params: params
+        subject
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
     context 'when the snippet is spam' do
-      def create_snippet(project, snippet_params = {})
-        project.add_developer(user)
-
-        post api("/projects/#{project.id}/snippets", user), params: params.merge(snippet_params)
-      end
+      let(:actor) { user }
 
       before do
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
+
+        project.add_developer(user)
       end
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(project, visibility: 'private') }
-            .to change { Snippet.count }.by(1)
+          params['visibility'] = 'private'
+
+          expect { subject }.to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
-        it 'rejects the snippet' do
-          expect { create_snippet(project, visibility: 'public') }
-            .not_to change { Snippet.count }
+        before do
+          params['visibility'] = 'public'
+        end
 
+        it 'rejects the snippet' do
+          expect { subject }.not_to change { Snippet.count }
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(project, visibility: 'public') }
+          expect { subject }
             .to log_spam(title: 'Test Title', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
       end
@@ -363,7 +356,7 @@ RSpec.describe API::ProjectSnippets do
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { put api("/projects/#{project_no_snippets.id}/snippets/123", admin), params: { description: 'foo' } }
+        let(:request) { put api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin), params: { description: 'foo' } }
       end
     end
 
@@ -373,7 +366,7 @@ RSpec.describe API::ProjectSnippets do
   end
 
   describe 'DELETE /projects/:project_id/snippets/:id/' do
-    let(:snippet) { create(:project_snippet, author: admin, project: project) }
+    let_it_be(:snippet, refind: true) { public_snippet }
 
     it 'deletes snippet' do
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
@@ -394,13 +387,13 @@ RSpec.describe API::ProjectSnippets do
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { delete api("/projects/#{project_no_snippets.id}/snippets/123", admin) }
+        let(:request) { delete api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin) }
       end
     end
   end
 
   describe 'GET /projects/:project_id/snippets/:id/raw' do
-    let_it_be(:snippet) { create(:project_snippet, :repository, author: admin, project: project) }
+    let_it_be(:snippet) { create(:project_snippet, :repository, :public, author: admin, project: project) }
 
     it 'returns raw text' do
       get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
@@ -416,9 +409,13 @@ RSpec.describe API::ProjectSnippets do
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
+    it_behaves_like 'project snippet access levels' do
+      let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw" }
+    end
+
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123/raw", admin) }
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/raw", admin) }
       end
     end
 
@@ -434,6 +431,10 @@ RSpec.describe API::ProjectSnippets do
 
     it_behaves_like 'raw snippet files' do
       let(:api_path) { "/projects/#{snippet.project.id}/snippets/#{snippet_id}/files/#{ref}/#{file_path}/raw" }
+    end
+
+    it_behaves_like 'project snippet access levels' do
+      let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}/files/master/%2Egitattributes/raw" }
     end
   end
 end

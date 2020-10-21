@@ -138,8 +138,8 @@ Most of the time we use `git cat-file --batch` processes for that. For
 better performance, Gitaly can re-use these `git cat-file` processes
 across RPC calls. Previously used processes are kept around in a
 ["Git cat-file cache"](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
-In order to control how much system resources this uses, we have a maximum number
-of cat-file processes that can go into the cache.
+To control how much system resources this uses, we have a maximum number of
+cat-file processes that can go into the cache.
 
 The default limit is 100 `cat-file`s, which constitute a pair of
 `git cat-file --batch` and `git cat-file --batch-check` processes. If

@@ -12,7 +12,7 @@ RSpec.describe ::Gitlab::GlRepository do
     end
 
     it 'parses a project wiki gl_repository' do
-      expect(described_class.parse("wiki-#{project.id}")).to eq([project, project, Gitlab::GlRepository::WIKI])
+      expect(described_class.parse("wiki-#{project.id}")).to eq([project.wiki, project, Gitlab::GlRepository::WIKI])
     end
 
     it 'parses a snippet gl_repository' do

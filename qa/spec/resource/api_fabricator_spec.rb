@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Resource::ApiFabricator do
+RSpec.describe QA::Resource::ApiFabricator do
   let(:resource_without_api_support) do
     Class.new do
       def self.name

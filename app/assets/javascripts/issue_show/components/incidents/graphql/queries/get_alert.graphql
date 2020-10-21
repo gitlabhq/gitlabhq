@@ -13,6 +13,7 @@ query getAlert($iid: String!, $fullPath: ID!) {
         service
         description
         endedAt
+        hosts
         details
       }
     }

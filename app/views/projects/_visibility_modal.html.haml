@@ -23,7 +23,7 @@
           = ("To confirm, type %{phrase_code}").html_safe % { phrase_code: '<code class="js-confirm-danger-match">%{phrase_name}</code>'.html_safe % { phrase_name: @project.full_path } }
         .form-group
           = text_field_tag 'confirm_path_input', '', class: 'form-control js-confirm-danger-input qa-confirm-input'
-        .form-actions.gl-display-flex.gl-justify-content-end
+        .form-actions
           %button.btn.btn-default.gl-mr-4{ type: "button", "data-dismiss": "modal" }
             = _('Cancel')
           = submit_tag _('Reduce project visibility'), class: "btn btn-danger js-confirm-danger-submit qa-confirm-button", disabled: true

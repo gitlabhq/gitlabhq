@@ -238,6 +238,33 @@ class NotificationService
     end
   end
 
+  # When we change reviewer in a merge_request we should send an email to:
+  #
+  #  * merge_request old reviewers if their notification level is not Disabled
+  #  * merge_request new reviewers if their notification level is not Disabled
+  #  * users with custom level checked with "change reviewer merge request"
+  #
+  def changed_reviewer_of_merge_request(merge_request, current_user, previous_reviewers = [])
+    recipients = NotificationRecipients::BuildService.build_recipients(
+      merge_request,
+      current_user,
+      action: "change_reviewer",
+      previous_assignees: previous_reviewers
+    )
+
+    previous_reviewer_ids = previous_reviewers.map(&:id)
+
+    recipients.each do |recipient|
+      mailer.changed_reviewer_of_merge_request_email(
+        recipient.user.id,
+        merge_request.id,
+        previous_reviewer_ids,
+        current_user.id,
+        recipient.reason
+      ).deliver_later
+    end
+  end
+
   # When we add labels to a merge request we should send an email to:
   #
   #  * watchers of the mr's labels
@@ -406,6 +433,10 @@ class NotificationService
   # Group invite
   def invite_group_member(group_member, token)
     mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
+  end
+
+  def invite_member_reminder(group_member, token, reminder_index)
+    mailer.member_invited_reminder_email(group_member.real_source_type, group_member.id, token, reminder_index).deliver_later
   end
 
   def accept_group_invite(group_member)

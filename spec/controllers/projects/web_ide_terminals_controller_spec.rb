@@ -9,17 +9,20 @@ RSpec.describe Projects::WebIdeTerminalsController do
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:project) { create(:project, :private, :repository, namespace: owner.namespace) }
+  let_it_be(:project) do
+    create(:project, :private, :repository, namespace: owner.namespace).tap do |project|
+      project.add_maintainer(maintainer)
+      project.add_developer(developer)
+      project.add_reporter(reporter)
+      project.add_guest(guest)
+    end
+  end
+
   let(:pipeline) { create(:ci_pipeline, project: project, source: :webide, config_source: :webide_source, user: user) }
   let(:job) { create(:ci_build, pipeline: pipeline, user: user, project: project) }
   let(:user) { maintainer }
 
   before do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-    project.add_guest(guest)
-
     sign_in(user)
   end
 
@@ -158,11 +161,11 @@ RSpec.describe Projects::WebIdeTerminalsController do
       end
 
       context 'access rights' do
-        before do
-          subject
+        it_behaves_like 'terminal access rights' do
+          before do
+            subject
+          end
         end
-
-        it_behaves_like 'terminal access rights'
       end
 
       it 'increases the web ide terminal counter' do

@@ -36,7 +36,7 @@
       .form-text.text-muted= s_("Profiles|The maximum file size allowed is 200KB.")
       - if @user.avatar?
         %hr
-        = link_to s_("Profiles|Remove avatar"), profile_avatar_path, data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") }, method: :delete, class: 'btn btn-danger btn-inverted'
+        = link_to s_("Profiles|Remove avatar"), profile_avatar_path, data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") }, method: :delete, class: 'gl-button btn btn-danger btn-inverted'
 
   %hr
   .row
@@ -46,7 +46,7 @@
     .col-lg-8
       = f.fields_for :status, @user.status do |status_form|
         - emoji_button = button_tag type: :button,
-          class: 'js-toggle-emoji-menu emoji-menu-toggle-button btn has-tooltip',
+          class: 'js-toggle-emoji-menu emoji-menu-toggle-button gl-button btn has-tooltip',
           title: s_("Profiles|Add status emoji") do
           - if @user.status
             = emoji_icon @user.status.emoji
@@ -56,7 +56,7 @@
             = sprite_icon('smile', css_class: 'award-control-icon-super-positive')
         - reset_message_button = button_tag type: :button,
           id: 'js-clear-user-status-button',
-          class: 'clear-user-status btn has-tooltip',
+          class: 'clear-user-status gl-button btn has-tooltip',
           title: s_("Profiles|Clear status") do
           = sprite_icon("close")
 
@@ -78,7 +78,7 @@
         -# TODO: might need an entry in user/profile.md to describe some of these settings
         -# https://gitlab.com/gitlab-org/gitlab-foss/issues/60070
         %h5= ("Time zone")
-        = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'btn js-timezone-dropdown input-lg', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
+        = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
         %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
 
   %hr
@@ -119,10 +119,10 @@
       .help-block
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
       .gl-mt-3.gl-mb-3
-        = f.submit s_("Profiles|Update profile settings"), class: 'btn btn-success'
-        = link_to _("Cancel"), user_path(current_user), class: 'btn btn-cancel'
+        = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-success'
+        = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-cancel'
 
-.modal.modal-profile-crop
+.modal.modal-profile-crop{ data: { cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css') } }
   .modal-dialog
     .modal-content
       .modal-header

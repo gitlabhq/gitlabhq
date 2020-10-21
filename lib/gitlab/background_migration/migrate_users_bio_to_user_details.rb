@@ -13,8 +13,6 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        return if Feature.disabled?(:migrate_bio_to_user_details, default_enabled: true)
-
         relation = User
           .select("id AS user_id", "substring(COALESCE(bio, '') from 1 for 255) AS bio")
           .where("(COALESCE(bio, '') IS DISTINCT FROM '')")

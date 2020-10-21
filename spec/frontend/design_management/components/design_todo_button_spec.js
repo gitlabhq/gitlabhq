@@ -111,7 +111,7 @@ describe('Design management design todo button', () => {
     });
 
     it('renders correct button text', () => {
-      expect(wrapper.text()).toBe('Add a To-Do');
+      expect(wrapper.text()).toBe('Add a To Do');
     });
 
     describe('when clicked', () => {

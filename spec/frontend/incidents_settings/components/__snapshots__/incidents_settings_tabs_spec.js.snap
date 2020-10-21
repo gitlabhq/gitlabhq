@@ -18,6 +18,7 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
     </h4>
      
     <gl-button-stub
+      buttontextclasses=""
       category="primary"
       class="js-settings-toggle"
       icon=""
@@ -56,6 +57,8 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
           data-testid="PagerDutySettingsForm-tab"
         />
       </gl-tab-stub>
+      <!---->
+       
       <!---->
     </gl-tabs-stub>
   </div>

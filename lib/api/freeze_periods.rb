@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class FreezePeriods < Grape::API::Instance
+  class FreezePeriods < ::API::Base
     include PaginationParams
 
     before { authenticate! }

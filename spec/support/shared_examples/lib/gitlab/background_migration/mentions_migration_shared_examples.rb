@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'resource mentions migration' do |migration_class, resource_class|
+RSpec.shared_examples 'resource mentions migration' do |migration_class, resource_class_name|
   it 'migrates resource mentions' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
+    resource_class = "#{Gitlab::BackgroundMigration::UserMentions::Models}::#{resource_class_name}".constantize
 
     expect do
-      subject.perform(resource_class.name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
+      subject.perform(resource_class_name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
     end.to change { user_mentions.count }.by(1)
 
     user_mention = user_mentions.last
@@ -16,23 +17,23 @@ RSpec.shared_examples 'resource mentions migration' do |migration_class, resourc
 
     # check that performing the same job twice does not fail and does not change counts
     expect do
-      subject.perform(resource_class.name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
+      subject.perform(resource_class_name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
     end.to change { user_mentions.count }.by(0)
   end
 end
 
-RSpec.shared_examples 'resource notes mentions migration' do |migration_class, resource_class|
+RSpec.shared_examples 'resource notes mentions migration' do |migration_class, resource_class_name|
   it 'migrates mentions from note' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
 
     # there are 5 notes for each noteable_type, but two do not have mentions and
     # another one's noteable_id points to an inexistent resource
-    expect(notes.where(noteable_type: resource_class.to_s).count).to eq 5
+    expect(notes.where(noteable_type: resource_class_name).count).to eq 5
     expect(user_mentions.count).to eq 0
 
     expect do
-      subject.perform(resource_class.name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
+      subject.perform(resource_class_name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
     end.to change { user_mentions.count }.by(2)
 
     # check that the user_mention for regular note is created
@@ -51,7 +52,7 @@ RSpec.shared_examples 'resource notes mentions migration' do |migration_class, r
 
     # check that performing the same job twice does not fail and does not change counts
     expect do
-      subject.perform(resource_class.name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
+      subject.perform(resource_class_name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
     end.to change { user_mentions.count }.by(0)
   end
 end
@@ -83,24 +84,25 @@ RSpec.shared_examples 'schedules resource mentions migration' do |resource_class
   end
 end
 
-RSpec.shared_examples 'resource migration not run' do |migration_class, resource_class|
+RSpec.shared_examples 'resource migration not run' do |migration_class, resource_class_name|
   it 'does not migrate mentions' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
+    resource_class = "#{Gitlab::BackgroundMigration::UserMentions::Models}::#{resource_class_name}".constantize
 
     expect do
-      subject.perform(resource_class.name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
+      subject.perform(resource_class_name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
     end.to change { user_mentions.count }.by(0)
   end
 end
 
-RSpec.shared_examples 'resource notes migration not run' do |migration_class, resource_class|
+RSpec.shared_examples 'resource notes migration not run' do |migration_class, resource_class_name|
   it 'does not migrate mentions' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
 
     expect do
-      subject.perform(resource_class.name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
+      subject.perform(resource_class_name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
     end.to change { user_mentions.count }.by(0)
   end
 end

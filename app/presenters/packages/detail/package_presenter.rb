@@ -8,10 +8,13 @@ module Packages
       end
 
       def detail_view
+        name = @package.name
+        name = @package.conan_recipe if @package.conan?
+
         package_detail = {
           id: @package.id,
           created_at: @package.created_at,
-          name: @package.name,
+          name: name,
           package_files: @package.package_files.map { |pf| build_package_file_view(pf) },
           package_type: @package.package_type,
           project_id: @package.project_id,
@@ -20,6 +23,7 @@ module Packages
           version: @package.version
         }
 
+        package_detail[:conan_package_name] = @package.name if @package.conan?
         package_detail[:maven_metadatum] = @package.maven_metadatum if @package.maven_metadatum
         package_detail[:nuget_metadatum] = @package.nuget_metadatum if @package.nuget_metadatum
         package_detail[:composer_metadatum] = @package.composer_metadatum if @package.composer_metadatum

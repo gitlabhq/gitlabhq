@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import { withGonExperiment } from 'helpers/experimentation_helper';
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -50,13 +52,13 @@ describe('mrWidgetOptions', () => {
     gon.features = {};
   });
 
-  const createComponent = () => {
+  const createComponent = (mrData = mockData) => {
     if (vm) {
       vm.$destroy();
     }
 
     vm = mountComponent(MrWidgetOptions, {
-      mrData: { ...mockData },
+      mrData: { ...mrData },
     });
 
     return axios.waitForAll();
@@ -64,6 +66,7 @@ describe('mrWidgetOptions', () => {
 
   const findSuggestPipeline = () => vm.$el.querySelector('[data-testid="mr-suggest-pipeline"]');
   const findSuggestPipelineButton = () => findSuggestPipeline().querySelector('button');
+  const findSecurityMrWidget = () => vm.$el.querySelector('[data-testid="security-mr-widget"]');
 
   describe('default', () => {
     beforeEach(() => {
@@ -533,7 +536,7 @@ describe('mrWidgetOptions', () => {
           const tooltip = vm.$el.querySelector('[data-testid="question-o-icon"]');
 
           expect(vm.$el.textContent).toContain('Deletes source branch');
-          expect(tooltip.getAttribute('data-original-title')).toBe(
+          expect(tooltip.getAttribute('title')).toBe(
             'A user with write access to the source branch selected this option',
           );
 
@@ -812,43 +815,96 @@ describe('mrWidgetOptions', () => {
     });
   });
 
-  describe('given suggestPipeline feature flag is enabled', () => {
+  describe('security widget', () => {
+    describe.each`
+      context                                  | hasPipeline | reportType | isFlagEnabled | shouldRender
+      ${'security report and flag enabled'}    | ${true}     | ${'sast'}  | ${true}       | ${true}
+      ${'security report and flag disabled'}   | ${true}     | ${'sast'}  | ${false}      | ${false}
+      ${'no security report and flag enabled'} | ${true}     | ${'foo'}   | ${true}       | ${false}
+      ${'no pipeline and flag enabled'}        | ${false}    | ${'sast'}  | ${true}       | ${false}
+    `('given $context', ({ hasPipeline, reportType, isFlagEnabled, shouldRender }) => {
+      beforeEach(() => {
+        gon.features.coreSecurityMrWidget = isFlagEnabled;
+
+        if (hasPipeline) {
+          jest.spyOn(Api, 'pipelineJobs').mockResolvedValue({
+            data: [{ artifacts: [{ file_type: reportType }] }],
+          });
+        }
+
+        return createComponent({
+          ...mockData,
+          ...(hasPipeline ? {} : { pipeline: undefined }),
+        });
+      });
+
+      if (shouldRender) {
+        it('renders', () => {
+          expect(findSecurityMrWidget()).toEqual(expect.any(HTMLElement));
+        });
+      } else {
+        it('does not render', () => {
+          expect(findSecurityMrWidget()).toBeNull();
+        });
+      }
+    });
+  });
+
+  describe('suggestPipeline Experiment', () => {
     beforeEach(() => {
       mock.onAny().reply(200);
 
       // This is needed because some grandchildren Bootstrap components throw warnings
       // https://gitlab.com/gitlab-org/gitlab/issues/208458
       jest.spyOn(console, 'warn').mockImplementation();
-
-      gon.features = { suggestPipeline: true };
-
-      createComponent();
-
-      vm.mr.hasCI = false;
     });
 
-    it('should suggest pipelines when none exist', () => {
-      expect(findSuggestPipeline()).toEqual(expect.any(Element));
+    describe('given experiment is enabled', () => {
+      withGonExperiment('suggestPipeline');
+
+      beforeEach(() => {
+        createComponent();
+
+        vm.mr.hasCI = false;
+      });
+
+      it('should suggest pipelines when none exist', () => {
+        expect(findSuggestPipeline()).toEqual(expect.any(Element));
+      });
+
+      it.each([
+        { isDismissedSuggestPipeline: true },
+        { mergeRequestAddCiConfigPath: null },
+        { hasCI: true },
+      ])('with %s, should not suggest pipeline', async obj => {
+        Object.assign(vm.mr, obj);
+
+        await vm.$nextTick();
+
+        expect(findSuggestPipeline()).toBeNull();
+      });
+
+      it('should allow dismiss of the suggest pipeline message', async () => {
+        findSuggestPipelineButton().click();
+
+        await vm.$nextTick();
+
+        expect(findSuggestPipeline()).toBeNull();
+      });
     });
 
-    it.each([
-      { isDismissedSuggestPipeline: true },
-      { mergeRequestAddCiConfigPath: null },
-      { hasCI: true },
-    ])('with %s, should not suggest pipeline', async obj => {
-      Object.assign(vm.mr, obj);
+    describe('given suggestPipeline experiment is not enabled', () => {
+      withGonExperiment('suggestPipeline', false);
 
-      await vm.$nextTick();
+      beforeEach(() => {
+        createComponent();
 
-      expect(findSuggestPipeline()).toBeNull();
-    });
+        vm.mr.hasCI = false;
+      });
 
-    it('should allow dismiss of the suggest pipeline message', async () => {
-      findSuggestPipelineButton().click();
-
-      await vm.$nextTick();
-
-      expect(findSuggestPipeline()).toBeNull();
+      it('should not suggest pipelines when none exist', () => {
+        expect(findSuggestPipeline()).toBeNull();
+      });
     });
   });
 });

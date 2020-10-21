@@ -8,7 +8,7 @@ module Mutations
       MAX_UPDATE_AMOUNT = 50
 
       argument :ids,
-               [GraphQL::ID_TYPE],
+               [::Types::GlobalIDType[::Todo]],
                required: true,
                description: 'The global ids of the todos to restore (a maximum of 50 is supported at once)'
 
@@ -37,22 +37,16 @@ module Mutations
       private
 
       def gids_of(ids)
-        ids.map { |id| ::URI::GID.build(app: GlobalID.app, model_name: Todo.name, model_id: id, params: nil).to_s }
+        ids.map { |id| Gitlab::GlobalId.as_global_id(id, model_name: Todo.name).to_s }
       end
 
       def model_ids_of(ids)
         ids.map do |gid|
-          parsed_gid = ::URI::GID.parse(gid)
-          parsed_gid.model_id.to_i if accessible_todo?(parsed_gid)
+          # TODO: remove this line when the compatibility layer is removed
+          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+          gid = ::Types::GlobalIDType[::Todo].coerce_isolated_input(gid)
+          gid.model_id.to_i
         end.compact
-      end
-
-      def accessible_todo?(gid)
-        gid.app == GlobalID.app && todo?(gid)
-      end
-
-      def todo?(gid)
-        GlobalID.parse(gid)&.model_class&.ancestors&.include?(Todo)
       end
 
       def raise_too_many_todos_requested_error

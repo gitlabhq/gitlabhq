@@ -1,25 +1,28 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge Requests")
+- badge_css_classes = "badge gl-text-white"
+- badge_info_css_classes = "#{badge_css_classes} badge-info"
+- badge_inverse_css_classes = "#{badge_css_classes} badge-inverse"
 
 .merge-request
   = render "projects/merge_requests/mr_title"
   = render "projects/merge_requests/mr_box"
 
-  .alert.alert-danger
+  .gl-alert.gl-alert-danger
+    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
     %p
       We cannot render this merge request properly because
       - if @merge_request.for_fork? && !@merge_request.source_project
         fork project was removed
       - elsif !@merge_request.source_branch_exists?
-        %span.badge.badge-inverse= @merge_request.source_branch
+        %span{ class: badge_inverse_css_classes }= @merge_request.source_branch
         does not exist in
-        %span.badge.badge-info= @merge_request.source_project_path
+        %span{ class: badge_info_css_classes }= @merge_request.source_project_path
       - elsif !@merge_request.target_branch_exists?
-        %span.badge.badge-inverse= @merge_request.target_branch
+        %span{ class: badge_inverse_css_classes }= @merge_request.target_branch
         does not exist in
-        %span.badge.badge-info= @merge_request.target_project_path
+        %span{ class: badge_info_css_classes }= @merge_request.target_project_path
       - else
         of internal error
 
     %strong
       Please close Merge Request or change branches with existing one
-

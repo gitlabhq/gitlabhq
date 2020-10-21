@@ -13,6 +13,9 @@ import './toggler_behavior';
 import './preview_markdown';
 import initCollapseSidebarOnWindowResize from './collapse_sidebar_on_window_resize';
 import initSelect2Dropdowns from './select2';
+import { loadStartupCSS } from './load_startup_css';
+
+loadStartupCSS();
 
 installGlEmojiElement();
 

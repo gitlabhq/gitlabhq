@@ -1,57 +1,88 @@
-import Vue from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import { createStore } from '~/ide/stores';
-import ideSidebar from '~/ide/components/ide_side_bar.vue';
+import IdeSidebar from '~/ide/components/ide_side_bar.vue';
+import IdeTree from '~/ide/components/ide_tree.vue';
+import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { leftSidebarViews } from '~/ide/constants';
 import { projectData } from '../mock_data';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('IdeSidebar', () => {
-  let vm;
+  let wrapper;
   let store;
 
-  beforeEach(() => {
+  function createComponent() {
     store = createStore();
-
-    const Component = Vue.extend(ideSidebar);
 
     store.state.currentProjectId = 'abcproject';
     store.state.projects.abcproject = projectData;
 
-    vm = createComponentWithStore(Component, store).$mount();
-  });
+    return mount(IdeSidebar, {
+      store,
+      localVue,
+    });
+  }
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders a sidebar', () => {
-    expect(vm.$el.querySelector('.multi-file-commit-panel-inner')).not.toBeNull();
+    wrapper = createComponent();
+
+    expect(wrapper.find('[data-testid="ide-side-bar-inner"]').exists()).toBe(true);
   });
 
-  it('renders loading icon component', done => {
-    vm.$store.state.loading = true;
+  it('renders loading components', async () => {
+    wrapper = createComponent();
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.multi-file-loading-container')).not.toBeNull();
-      expect(vm.$el.querySelectorAll('.multi-file-loading-container').length).toBe(3);
+    store.state.loading = true;
 
-      done();
-    });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.findAll(GlSkeletonLoading)).toHaveLength(3);
   });
 
   describe('activityBarComponent', () => {
     it('renders tree component', () => {
-      expect(vm.$el.querySelector('.ide-file-list')).not.toBeNull();
+      wrapper = createComponent();
+
+      expect(wrapper.find(IdeTree).exists()).toBe(true);
     });
 
-    it('renders commit component', done => {
-      vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
+    it('renders commit component', async () => {
+      wrapper = createComponent();
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.multi-file-commit-panel-section')).not.toBeNull();
+      store.state.currentActivityView = leftSidebarViews.commit.name;
 
-        done();
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(RepoCommitSection).exists()).toBe(true);
     });
+  });
+
+  it('keeps the current activity view components alive', async () => {
+    wrapper = createComponent();
+
+    const ideTreeComponent = wrapper.find(IdeTree).element;
+
+    store.state.currentActivityView = leftSidebarViews.commit.name;
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find(IdeTree).exists()).toBe(false);
+    expect(wrapper.find(RepoCommitSection).exists()).toBe(true);
+
+    store.state.currentActivityView = leftSidebarViews.edit.name;
+
+    await wrapper.vm.$nextTick();
+
+    // reference to the elements remains the same, meaning the components were kept alive
+    expect(wrapper.find(IdeTree).element).toEqual(ideTreeComponent);
   });
 });

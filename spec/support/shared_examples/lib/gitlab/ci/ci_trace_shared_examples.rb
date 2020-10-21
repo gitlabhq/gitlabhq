@@ -227,7 +227,7 @@ RSpec.shared_examples 'common trace features' do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update(runners_token: token)
+        build.project.update!(runners_token: token)
         trace.append(token, 0)
       end
 
@@ -240,7 +240,7 @@ RSpec.shared_examples 'common trace features' do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.update(token: token)
+        build.update!(token: token)
         trace.append(token, 0)
       end
 
@@ -531,7 +531,7 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
           context "when erase old trace with 'save'" do
             before do
               build.send(:write_attribute, :trace, nil)
-              build.save
+              build.save # rubocop:disable Rails/SaveBang
             end
 
             it 'old trace is not deleted' do

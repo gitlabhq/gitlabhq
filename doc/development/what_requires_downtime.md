@@ -176,7 +176,7 @@ class ChangeUsersUsernameStringToText < ActiveRecord::Migration[4.2]
   end
 
   def down
-    cleanup_concurrent_column_type_change :users, :username
+    undo_change_column_type_concurrently :users, :username
   end
 end
 ```
@@ -197,7 +197,7 @@ class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration[4.2]
   end
 
   def down
-    change_column_type_concurrently :users, :username, :string
+    undo_cleanup_concurrent_column_type_change :users, :username, :string
   end
 end
 ```

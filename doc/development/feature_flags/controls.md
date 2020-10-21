@@ -88,15 +88,13 @@ parts of the company. The developer responsible needs to determine
 whether this is necessary and the appropriate level of communication.
 This depends on the feature and what sort of impact it might have.
 
-As a guideline:
+Guidelines:
 
-- For simple features that are low-risk, and easily rolled back, then
-  just proceed to [enabling the feature in `#production`](#process).
-- For features that will impact user experience consider notifying
+1. If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
+1. For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
+1. For features that impact the user experience, consider notifying
+  `#support_gitlab-com` first.
   `#support_gitlab-com` beforehand.
-- For features with significant downstream effects (e.g.: turning on/off
-  Elasticsearch indexing) consider coordinating with `#production`
-  beforehand.
 
 #### Process
 
@@ -250,13 +248,26 @@ Changes to the issue format can be submitted in the
 
 ## Cleaning up
 
-Once the change is deemed stable, submit a new merge request to remove the
-feature flag. This ensures the change is available to all users and self-managed
-instances. Make sure to add the ~"feature flag" label to this merge request so
-release managers are aware the changes are hidden behind a feature flag. If the
-merge request has to be picked into a stable branch, make sure to also add the
-appropriate `~"Pick into X.Y"` label (e.g. `~"Pick into 13.0"`).
-See [the process document](process.md#including-a-feature-behind-feature-flag-in-the-final-release) for further details.
+A feature flag should be removed as soon as it is no longer needed. Each additional
+feature flag in the codebase increases the complexity of the application
+and reduces confidence in our testing suite covering all possible combinations.
+Additionally, a feature flag overwritten in some of the environments can result
+in undefined and untested system behavior.
+
+To remove a feature flag:
+
+1. Open a new merge request with the ~"feature flag" label so
+   release managers are aware the changes are hidden behind a feature flag.
+1. If the merge request has to be picked into a stable branch, add the
+   appropriate `~"Pick into X.Y"` label, for example `~"Pick into 13.0"`.
+   See [the feature flag process](process.md#including-a-feature-behind-feature-flag-in-the-final-release)
+   for further details.
+1. Remove all references to the feature flag from the codebase.
+1. Remove the YAML definition for the feature from the repository.
+1. Clean up the feature flag from all environments with `/chatops run feature delete some_feature`.
+1. Close the rollout issue for the feature flag after the feature flag is removed from the codebase.
+
+### Cleanup ChatOps
 
 When a feature gate has been removed from the code base, the feature
 record still exists in the database that the flag was deployed too.

@@ -2,7 +2,7 @@
 - @hide_breadcrumbs = true
 - @no_container = true
 - page_title       @user.blocked? ? s_('UserProfile|Blocked user') : @user.name
-- page_description @user.bio
+- page_description @user.bio_html
 - header_title     @user.name, user_path(@user)
 - link_classes = "flex-grow-1 mx-1 "
 
@@ -67,17 +67,19 @@
             - unless @user.skype.blank?
               .profile-link-holder.middle-dot-divider
                 = link_to "skype:#{@user.skype}", title: "Skype" do
-                  = icon('skype')
+                  = sprite_icon('skype')
             - unless @user.linkedin.blank?
               .profile-link-holder.middle-dot-divider
                 = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = icon('linkedin-square')
+                  = sprite_icon('linkedin')
             - unless @user.twitter.blank?
               .profile-link-holder.middle-dot-divider-sm
                 = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
-                  = icon('twitter-square')
+                  = sprite_icon('twitter')
             - unless @user.website_url.blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
+                - if Feature.enabled?(:security_auto_fix) && @user.bot?
+                  = sprite_icon('question', css_class: 'gl-text-blue-600')
                 = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
             - unless @user.public_email.blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
@@ -101,26 +103,27 @@
             %li.js-activity-tab
               = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
                 = s_('UserProfile|Activity')
-          - if profile_tab?(:groups)
-            %li.js-groups-tab
-              = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-                = s_('UserProfile|Groups')
-          - if profile_tab?(:contributed)
-            %li.js-contributed-tab
-              = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-                = s_('UserProfile|Contributed projects')
-          - if profile_tab?(:projects)
-            %li.js-projects-tab
-              = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-                = s_('UserProfile|Personal projects')
-          - if profile_tab?(:starred)
-            %li.js-starred-tab
-              = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
-                = s_('UserProfile|Starred projects')
-          - if profile_tab?(:snippets)
-            %li.js-snippets-tab
-              = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-                = s_('UserProfile|Snippets')
+          - unless Feature.enabled?(:security_auto_fix) && @user.bot?
+            - if profile_tab?(:groups)
+              %li.js-groups-tab
+                = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+                  = s_('UserProfile|Groups')
+            - if profile_tab?(:contributed)
+              %li.js-contributed-tab
+                = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+                  = s_('UserProfile|Contributed projects')
+            - if profile_tab?(:projects)
+              %li.js-projects-tab
+                = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+                  = s_('UserProfile|Personal projects')
+            - if profile_tab?(:starred)
+              %li.js-starred-tab
+                = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
+                  = s_('UserProfile|Starred projects')
+            - if profile_tab?(:snippets)
+              %li.js-snippets-tab
+                = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+                  = s_('UserProfile|Snippets')
 
   %div{ class: container_class }
     .tab-content
@@ -136,26 +139,26 @@
             .content_list{ data: { href: user_path } }
             .loading
               .spinner.spinner-md
+      - unless @user.bot?
+        - if profile_tab?(:groups)
+          #groups.tab-pane
+            -# This tab is always loaded via AJAX
 
-      - if profile_tab?(:groups)
-        #groups.tab-pane
-          -# This tab is always loaded via AJAX
+        - if profile_tab?(:contributed)
+          #contributed.tab-pane
+            -# This tab is always loaded via AJAX
 
-      - if profile_tab?(:contributed)
-        #contributed.tab-pane
-          -# This tab is always loaded via AJAX
+        - if profile_tab?(:projects)
+          #projects.tab-pane
+            -# This tab is always loaded via AJAX
 
-      - if profile_tab?(:projects)
-        #projects.tab-pane
-          -# This tab is always loaded via AJAX
+        - if profile_tab?(:starred)
+          #starred.tab-pane
+            -# This tab is always loaded via AJAX
 
-      - if profile_tab?(:starred)
-        #starred.tab-pane
-          -# This tab is always loaded via AJAX
-
-      - if profile_tab?(:snippets)
-        #snippets.tab-pane
-          -# This tab is always loaded via AJAX
+        - if profile_tab?(:snippets)
+          #snippets.tab-pane
+            -# This tab is always loaded via AJAX
 
     .loading.hide
       .spinner.spinner-md

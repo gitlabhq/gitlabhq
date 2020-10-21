@@ -8,8 +8,7 @@ docs_paths_to_review = helper.changes_by_category[:docs]
 
 return if docs_paths_to_review.empty?
 
-message 'This merge request adds or changes files that require a review ' \
-  'from the Technical Writing team.'
+message 'This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.'
 
 return unless gitlab_danger.ci?
 

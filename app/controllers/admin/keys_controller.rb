@@ -3,6 +3,8 @@
 class Admin::KeysController < Admin::ApplicationController
   before_action :user, only: [:show, :destroy]
 
+  feature_category :authentication_and_authorization
+
   def show
     @key = user.keys.find(params[:id])
 

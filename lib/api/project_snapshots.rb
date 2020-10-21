@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectSnapshots < Grape::API::Instance
+  class ProjectSnapshots < ::API::Base
     helpers ::API::Helpers::ProjectSnapshotsHelpers
 
     before { authorize_read_git_snapshot! }

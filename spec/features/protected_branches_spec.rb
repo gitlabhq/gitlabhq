@@ -9,6 +9,10 @@ RSpec.describe 'Protected Branches', :js do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :repository) }
 
+  before do
+    stub_feature_flags(deploy_keys_on_protected_branches: false)
+  end
+
   context 'logged in as developer' do
     before do
       project.add_developer(user)
@@ -27,7 +31,7 @@ RSpec.describe 'Protected Branches', :js do
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
 
-        expect(page).to have_css('.btn-remove.disabled')
+        expect(page).to have_css('.btn-danger.disabled')
       end
     end
   end
@@ -161,6 +165,16 @@ RSpec.describe 'Protected Branches', :js do
       end
 
       include_examples "protected branches > access control > CE"
+    end
+  end
+
+  context 'when the users for protected branches feature is off' do
+    before do
+      stub_licensed_features(protected_refs_for_users: false)
+    end
+
+    include_examples 'when the deploy_keys_on_protected_branches FF is turned on' do
+      let(:all_dropdown_sections) { %w(Roles Deploy\ Keys) }
     end
   end
 end

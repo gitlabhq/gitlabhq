@@ -19,7 +19,7 @@ RSpec.describe 'project commit pipelines', :js do
 
   context 'when no builds triggered yet' do
     it 'shows the ID of the first pipeline' do
-      page.within('.table-holder') do
+      page.within('.pipelines .ci-table') do
         expect(page).to have_content project.ci_pipelines[0].id # pipeline ids
       end
     end

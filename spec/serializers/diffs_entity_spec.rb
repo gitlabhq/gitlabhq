@@ -68,15 +68,5 @@ RSpec.describe DiffsEntity do
         end
       end
     end
-
-    context 'when code_navigation feature flag is disabled' do
-      it 'does not include code navigation properties' do
-        stub_feature_flags(code_navigation: false)
-
-        expect(Gitlab::CodeNavigationPath).not_to receive(:new)
-
-        expect(subject).not_to include(:definition_path_prefix)
-      end
-    end
   end
 end

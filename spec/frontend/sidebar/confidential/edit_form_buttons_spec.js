@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditFormButtons from '~/sidebar/components/confidential/edit_form_buttons.vue';
 import eventHub from '~/sidebar/event_hub';
@@ -56,11 +55,11 @@ describe('Edit Form Buttons', () => {
     });
 
     it('disables the toggle button', () => {
-      expect(findConfidentialToggle().attributes('disabled')).toBe('disabled');
+      expect(findConfidentialToggle().props('disabled')).toBe(true);
     });
 
-    it('finds the GlLoadingIcon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    it('sets loading on the toggle button', () => {
+      expect(findConfidentialToggle().props('loading')).toBe(true);
     });
   });
 
@@ -99,7 +98,7 @@ describe('Edit Form Buttons', () => {
   describe('when succeeds', () => {
     beforeEach(() => {
       createComponent({ data: { isLoading: false }, props: { confidential: true } });
-      findConfidentialToggle().trigger('click');
+      findConfidentialToggle().vm.$emit('click', new Event('click'));
     });
 
     it('dispatches the correct action', () => {
@@ -109,9 +108,9 @@ describe('Edit Form Buttons', () => {
       });
     });
 
-    it('resets loading', () => {
+    it('resets loading on the toggle button', () => {
       return waitForPromises().then(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(findConfidentialToggle().props('loading')).toBe(false);
       });
     });
 
@@ -135,7 +134,7 @@ describe('Edit Form Buttons', () => {
         props: { confidential: true },
         resolved: false,
       });
-      findConfidentialToggle().trigger('click');
+      findConfidentialToggle().vm.$emit('click', new Event('click'));
     });
 
     it('calls flash with the correct message', () => {

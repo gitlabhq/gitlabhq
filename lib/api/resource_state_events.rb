@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ResourceStateEvents < Grape::API::Instance
+  class ResourceStateEvents < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
 

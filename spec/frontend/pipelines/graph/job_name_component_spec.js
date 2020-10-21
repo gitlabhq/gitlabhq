@@ -21,12 +21,7 @@ describe('job name component', () => {
   });
 
   it('should render the provided name', () => {
-    expect(
-      wrapper
-        .find('.ci-status-text')
-        .text()
-        .trim(),
-    ).toBe(propsData.name);
+    expect(wrapper.text()).toBe(propsData.name);
   });
 
   it('should render an icon with the provided status', () => {

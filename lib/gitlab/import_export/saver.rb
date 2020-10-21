@@ -5,8 +5,8 @@ module Gitlab
     class Saver
       include Gitlab::ImportExport::CommandLineUtil
 
-      def self.save(*args)
-        new(*args).save
+      def self.save(*args, **kwargs)
+        new(*args, **kwargs).save
       end
 
       def initialize(exportable:, shared:)

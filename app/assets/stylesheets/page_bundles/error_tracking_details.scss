@@ -1,0 +1,51 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
+.error-details {
+  li {
+    @include gl-line-height-32;
+  }
+
+  .btn-outline-info {
+    color: var(--blue-500, $blue-500);
+    border-color: var(--blue-500, $blue-500);
+  }
+
+  .error-details-header {
+    border-bottom: 1px solid var(--border-color, $border-color);
+
+    @include media-breakpoint-down(xs) {
+      flex-flow: column;
+
+      .error-details-meta-culprit {
+        display: flex;
+      }
+
+      .error-details-options {
+        width: 100%;
+
+        .dropdown-toggle {
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+.stacktrace {
+  .file-title {
+    svg {
+      vertical-align: middle;
+      top: -1px;
+    }
+  }
+
+  .file-title-name {
+    &.limited-width {
+      max-width: 80%;
+    }
+  }
+
+  .line_content.old::before {
+    content: none !important;
+  }
+}

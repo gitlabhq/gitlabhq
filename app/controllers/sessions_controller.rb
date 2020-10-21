@@ -49,6 +49,8 @@ class SessionsController < Devise::SessionsController
   # token mismatch.
   protect_from_forgery with: :exception, prepend: true, except: :destroy
 
+  feature_category :authentication_and_authorization
+
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5
 
@@ -262,8 +264,11 @@ class SessionsController < Devise::SessionsController
   end
 
   def valid_otp_attempt?(user)
-    user.validate_and_consume_otp!(user_params[:otp_attempt]) ||
-      user.invalidate_otp_backup_code!(user_params[:otp_attempt])
+    otp_validation_result =
+      ::Users::ValidateOtpService.new(user).execute(user_params[:otp_attempt])
+    return true if otp_validation_result[:status] == :success
+
+    user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 
   def log_audit_event(user, resource, options = {})

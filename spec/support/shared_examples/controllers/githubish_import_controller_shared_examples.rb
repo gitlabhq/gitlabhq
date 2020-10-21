@@ -262,7 +262,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
       context "when the namespace is owned by the GitLab user" do
         before do
           user.username = other_username
-          user.save
+          user.save!
         end
 
         it "takes the existing namespace" do

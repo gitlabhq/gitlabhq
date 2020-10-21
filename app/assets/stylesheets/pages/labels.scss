@@ -134,11 +134,6 @@
   }
 }
 
-.label-description-wrapper {
-  margin-right: 8px;
-  margin-left: 8px;
-}
-
 .prioritized-labels {
   margin-bottom: 30px;
 
@@ -201,10 +196,6 @@
   }
 }
 
-.label-options-toggle {
-  width: 100%;
-}
-
 .label-subscription {
   vertical-align: middle;
 
@@ -239,20 +230,6 @@
   }
 }
 
-.label-link {
-  display: inline-flex;
-  vertical-align: text-bottom;
-
-  &:hover .color-label {
-    text-decoration: underline;
-  }
-
-  .label {
-    vertical-align: inherit;
-    font-size: $label-font-size;
-  }
-}
-
 .labels-container {
   background-color: $gray-light;
   border-radius: $border-radius-default;
@@ -270,39 +247,11 @@
 
 .label-badge {
   color: $gray-900;
+  display: inline-block;
   font-weight: $gl-font-weight-normal;
   padding: $gl-padding-4 $gl-padding-8;
   border-radius: $border-radius-default;
   font-size: $label-font-size;
-}
-
-.label-badge-blue {
-  background-color: $theme-blue-100;
-}
-
-.label-badge-gray {
-  background-color: $gray-50;
-}
-
-.label-links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-}
-
-.label-link-item {
-  padding: 0;
-}
-
-.label-description {
-  .description-text {
-    margin-bottom: 10px;
-
-    .admin-labels & {
-      margin-bottom: 0;
-    }
-  }
 }
 
 .label-list-item {
@@ -313,18 +262,9 @@
 
   .label-name {
     width: 200px;
-    flex-shrink: 0;
 
     .gl-label {
       line-height: $gl-line-height;
-    }
-  }
-
-  .label-description {
-    flex-grow: 1;
-
-    a {
-      color: $blue-600;
     }
   }
 
@@ -382,31 +322,8 @@
       text-align: left;
     }
 
-    .label-links {
-      white-space: normal;
-    }
-
     .label-description {
       order: 3;
-      width: 100%;
-
-      > .label-description-wrapper {
-        margin-left: 0;
-        margin-right: 0;
-      }
-    }
-  }
-}
-
-@media (max-width: 910px) {
-  .priority-badge {
-    display: block;
-    width: 100%;
-    margin-left: 0;
-    margin-top: $gl-padding;
-
-    .label-badge {
-      display: inline-block;
     }
   }
 }
@@ -425,4 +342,10 @@
   &.gl-label-sm {
     box-shadow: 0 0 0 1px inset;
   }
+}
+
+/* Fix scoped label padding in cases where old markdown uses the old label structure */
+.gl-label-text + .gl-label-text {
+  @include gl-pl-2;
+  @include gl-pr-3;
 }

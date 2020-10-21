@@ -83,7 +83,7 @@ export default {
 
 <template>
   <div
-    class="w-100 position-relative"
+    class="gl-w-full gl-relative"
     @dragstart.prevent.stop
     @dragend.prevent.stop
     @dragover.prevent.stop
@@ -93,7 +93,7 @@ export default {
   >
     <slot>
       <button
-        class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
+        class="card design-dropzone-card design-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
         @click="openFileUpload"
       >
         <div
@@ -127,9 +127,9 @@ export default {
     <transition name="design-dropzone-fade">
       <div
         v-show="dragging && !isDraggingDesign"
-        class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+        class="card design-dropzone-border design-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       >
-        <div v-show="!isDragDataValid" class="mw-50 text-center">
+        <div v-show="!isDragDataValid" class="mw-50 gl-text-center">
           <h3 :class="{ 'gl-font-base gl-display-inline': !hasDesigns }">{{ __('Oh no!') }}</h3>
           <span>{{
             __(
@@ -137,7 +137,7 @@ export default {
             )
           }}</span>
         </div>
-        <div v-show="isDragDataValid" class="mw-50 text-center">
+        <div v-show="isDragDataValid" class="mw-50 gl-text-center">
           <h3 :class="{ 'gl-font-base gl-display-inline': !hasDesigns }">{{ __('Incoming!') }}</h3>
           <span>{{ __('Drop your designs to start your upload.') }}</span>
         </div>

@@ -10,7 +10,7 @@ module Gitlab
         end
 
         def fabricate!
-          presenter_class.new(subject, attributes)
+          presenter_class.new(subject, **attributes)
         end
 
         private

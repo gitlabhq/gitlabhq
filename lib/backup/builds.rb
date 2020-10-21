@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'backup/files'
-
 module Backup
-  class Builds < Files
+  class Builds < Backup::Files
     attr_reader :progress
 
     def initialize(progress)

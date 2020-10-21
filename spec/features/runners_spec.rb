@@ -173,9 +173,9 @@ RSpec.describe 'Runners' do
     it 'user enables shared runners' do
       visit project_runners_path(project)
 
-      click_on 'Enable shared Runners'
+      click_on 'Enable shared runners'
 
-      expect(page.find('.shared-runners-description')).to have_content('Disable shared Runners')
+      expect(page.find('.shared-runners-description')).to have_content('Disable shared runners')
     end
   end
 

@@ -7,7 +7,7 @@ RSpec.describe Grafana::TimeWindow do
   let(:to) { '1552828200000' }
 
   around do |example|
-    Timecop.freeze(Time.utc(2019, 3, 17, 13, 10)) { example.run }
+    travel_to(Time.utc(2019, 3, 17, 13, 10)) { example.run }
   end
 
   describe '#formatted' do
@@ -37,7 +37,7 @@ RSpec.describe Grafana::RangeWithDefaults do
   let(:to) { Grafana::Timestamp.from_ms_since_epoch('1552828200000') }
 
   around do |example|
-    Timecop.freeze(Time.utc(2019, 3, 17, 13, 10)) { example.run }
+    travel_to(Time.utc(2019, 3, 17, 13, 10)) { example.run }
   end
 
   describe '#to_hash' do
@@ -82,7 +82,7 @@ RSpec.describe Grafana::Timestamp do
   let(:timestamp) { Time.at(1552799400) }
 
   around do |example|
-    Timecop.freeze(Time.utc(2019, 3, 17, 13, 10)) { example.run }
+    travel_to(Time.utc(2019, 3, 17, 13, 10)) { example.run }
   end
 
   describe '#formatted' do

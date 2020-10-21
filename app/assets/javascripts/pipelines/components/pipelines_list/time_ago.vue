@@ -1,12 +1,11 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import '~/lib/utils/datetime_utility';
-import tooltip from '~/vue_shared/directives/tooltip';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: { GlIcon },
   mixins: [timeagoMixin],
@@ -51,7 +50,7 @@ export default {
 };
 </script>
 <template>
-  <div class="table-section section-15 pipelines-time-ago">
+  <div class="table-section section-15">
     <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Duration') }}</div>
     <div class="table-mobile-content">
       <p v-if="hasDuration" class="duration">
@@ -59,11 +58,11 @@ export default {
         {{ durationFormatted }}
       </p>
 
-      <p v-if="hasFinishedTime" class="finished-at d-none d-sm-none d-md-block">
+      <p v-if="hasFinishedTime" class="finished-at d-none d-md-block">
         <gl-icon name="calendar" class="gl-vertical-align-baseline!" aria-hidden="true" />
 
         <time
-          v-tooltip
+          v-gl-tooltip
           :title="tooltipTitle(finishedTime)"
           data-placement="top"
           data-container="body"

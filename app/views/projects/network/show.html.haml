@@ -2,12 +2,12 @@
 - page_title _("Graph"), @ref
 = render "head"
 %div{ class: container_class }
-  .project-network
-    .controls
+  .project-network.gl-border-1.gl-border-solid.gl-border-gray-300
+    .controls.gl-bg-gray-50.gl-p-2.gl-font-base.gl-text-gray-400.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-300
       = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
         = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control input-mx-250 search-sha'
         = button_tag class: 'btn btn-success' do
-          = icon('search')
+          = sprite_icon('search')
         .inline.prepend-left-20
           .form-check.light
             = check_box_tag :filter_ref, 1, @options[:filter_ref], class: 'form-check-input'
@@ -15,6 +15,6 @@
               %span= _("Begin with the selected commit")
 
     - if @commit
-      .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
+      .network-graph.gl-bg-white.gl-overflow-scroll.gl-overflow-x-hidden{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
         .text-center.gl-mt-3
           .spinner.spinner-md

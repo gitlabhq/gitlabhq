@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ErrorTracking < Grape::API::Instance
+  class ErrorTracking < ::API::Base
     before { authenticate! }
 
     params do

@@ -77,6 +77,38 @@ module Emails
           Gitlab::Tracking.event(Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category], 'sent', property: 'control_group')
         end
       end
+
+      if member.invite_to_unknown_user? && Gitlab::Experimentation.enabled?(:invitation_reminders)
+        Gitlab::Tracking.event(
+          Gitlab::Experimentation.experiment(:invitation_reminders).tracking_category,
+          'sent',
+          property: Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, member.invite_email) ? 'experimental_group' : 'control_group',
+          label: Digest::MD5.hexdigest(member.to_global_id.to_s)
+        )
+      end
+    end
+
+    def member_invited_reminder_email(member_source_type, member_id, token, reminder_index)
+      @member_source_type = member_source_type
+      @member_id = member_id
+      @token = token
+      @reminder_index = reminder_index
+
+      return unless member_exists? && member.created_by && member.invite_to_unknown_user?
+
+      subjects = {
+        0 => s_("InviteReminderEmail|%{inviter}'s invitation to GitLab is pending"),
+        1 => s_('InviteReminderEmail|%{inviter} is waiting for you to join GitLab'),
+        2 => s_('InviteReminderEmail|%{inviter} is still waiting for you to join GitLab')
+      }
+
+      subject_line = subjects[reminder_index] % { inviter: member.created_by.name }
+
+      member_email_with_layout(
+        layout: 'experiment_mailer',
+        to: member.invite_email,
+        subject: subject(subject_line)
+      )
     end
 
     def member_invite_accepted_email(member_source_type, member_id)

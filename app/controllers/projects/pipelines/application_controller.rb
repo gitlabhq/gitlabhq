@@ -10,6 +10,8 @@ module Projects
       before_action :pipeline
       before_action :authorize_read_pipeline!
 
+      feature_category :continuous_integration
+
       private
 
       def pipeline

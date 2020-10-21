@@ -13,18 +13,23 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
     context 'when entry config value is correct' do
       let(:policy) { nil }
       let(:key) { 'some key' }
+      let(:when_config) { nil }
 
       let(:config) do
-        { key: key,
+        {
+          key: key,
           untracked: true,
-          paths: ['some/path/'],
-          policy: policy }
+          paths: ['some/path/']
+        }.tap do |config|
+          config[:policy] = policy if policy
+          config[:when] = when_config if when_config
+        end
       end
 
       describe '#value' do
         shared_examples 'hash key value' do
           it 'returns hash value' do
-            expect(entry.value).to eq(key: key, untracked: true, paths: ['some/path/'], policy: 'pull-push')
+            expect(entry.value).to eq(key: key, untracked: true, paths: ['some/path/'], policy: 'pull-push', when: 'on_success')
           end
         end
 
@@ -49,6 +54,48 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
             expect(entry.value).to match(a_hash_including(key: nil))
           end
         end
+
+        context 'with `policy`' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:policy, :result) do
+            'pull-push' | 'pull-push'
+            'push'      | 'push'
+            'pull'      | 'pull'
+            'unknown'   | 'unknown' # invalid
+          end
+
+          with_them do
+            it { expect(entry.value).to include(policy: result) }
+          end
+        end
+
+        context 'without `policy`' do
+          it 'assigns policy to default' do
+            expect(entry.value).to include(policy: 'pull-push')
+          end
+        end
+
+        context 'with `when`' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:when_config, :result) do
+            'on_success' | 'on_success'
+            'on_failure' | 'on_failure'
+            'always'     | 'always'
+            'unknown'    | 'unknown' # invalid
+          end
+
+          with_them do
+            it { expect(entry.value).to include(when: result) }
+          end
+        end
+
+        context 'without `when`' do
+          it 'assigns when to default' do
+            expect(entry.value).to include(when: 'on_success')
+          end
+        end
       end
 
       describe '#valid?' do
@@ -61,28 +108,41 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
         end
       end
 
-      context 'policy is pull-push' do
-        let(:policy) { 'pull-push' }
+      context 'with `policy`' do
+        using RSpec::Parameterized::TableSyntax
 
-        it { is_expected.to be_valid }
-        it { expect(entry.value).to include(policy: 'pull-push') }
+        where(:policy, :valid) do
+          'pull-push' | true
+          'push'      | true
+          'pull'      | true
+          'unknown'   | false
+        end
+
+        with_them do
+          it 'returns expected validity' do
+            expect(entry.valid?).to eq(valid)
+          end
+        end
       end
 
-      context 'policy is push' do
-        let(:policy) { 'push' }
+      context 'with `when`' do
+        using RSpec::Parameterized::TableSyntax
 
-        it { is_expected.to be_valid }
-        it { expect(entry.value).to include(policy: 'push') }
+        where(:when_config, :valid) do
+          'on_success' | true
+          'on_failure' | true
+          'always'     | true
+          'unknown'    | false
+        end
+
+        with_them do
+          it 'returns expected validity' do
+            expect(entry.valid?).to eq(valid)
+          end
+        end
       end
 
-      context 'policy is pull' do
-        let(:policy) { 'pull' }
-
-        it { is_expected.to be_valid }
-        it { expect(entry.value).to include(policy: 'pull') }
-      end
-
-      context 'when key is missing' do
+      context 'with key missing' do
         let(:config) do
           { untracked: true,
             paths: ['some/path/'] }
@@ -110,10 +170,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
         end
 
         context 'when policy is unknown' do
-          let(:config) { { policy: "unknown" } }
+          let(:config) { { policy: 'unknown' } }
 
           it 'reports error' do
             is_expected.to include('cache policy should be pull-push, push, or pull')
+          end
+        end
+
+        context 'when `when` is unknown' do
+          let(:config) { { when: 'unknown' } }
+
+          it 'reports error' do
+            is_expected.to include('cache when should be on_success, on_failure or always')
           end
         end
 

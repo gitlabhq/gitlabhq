@@ -20,7 +20,7 @@ class AddSourceMergeRequestIdToResourceStateEvents < ActiveRecord::Migration[6.0
 
     unless foreign_key_exists?(:resource_state_events, :merge_requests, column: :source_merge_request_id)
       with_lock_retries do
-        add_foreign_key :resource_state_events, :merge_requests, column: :source_merge_request_id, on_delete: :nullify # rubocop:disable Migration/AddConcurrentForeignKey
+        add_foreign_key :resource_state_events, :merge_requests, column: :source_merge_request_id, on_delete: :nullify
       end
     end
   end

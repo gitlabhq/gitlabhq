@@ -1,3 +1,4 @@
+import { initRails } from '~/lib/utils/rails_ujs';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __, sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/common_utils';
@@ -10,6 +11,8 @@ export default function leaveByUrl(namespaceType) {
 
   const param = getParameterByName(PARAMETER_NAME);
   if (!param) return;
+
+  initRails();
 
   const leaveLink = document.querySelector(LEAVE_LINK_SELECTOR);
   if (leaveLink) {

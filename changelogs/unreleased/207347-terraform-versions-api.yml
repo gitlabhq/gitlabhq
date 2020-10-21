@@ -1,0 +1,5 @@
+---
+title: Add API endpoints to manage individual Terraform state versions
+merge_request: 42415
+author:
+type: added

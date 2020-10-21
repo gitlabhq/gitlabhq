@@ -355,27 +355,44 @@
     background-color: $white;
   }
 
-  .boards-switcher {
-    margin: 0 0 10px;
+  .filtered-search-block .boards-switcher {
+    @include gl-mr-0;
+    margin-bottom: $gl-input-padding;
 
     .boards-selector-wrapper,
     .dropdown {
-      display: block;
+      @include gl-display-block;
     }
   }
 
   .filter-dropdown-container {
     > div {
-      margin: 0;
+      @include gl-m-0;
 
       > .btn {
-        margin: 0 0 10px;
-        width: 100%;
+        margin: 0 0 $gl-input-padding;
+        @include gl-w-full;
       }
     }
 
     .board-labels-toggle-wrapper {
       margin-bottom: $gl-input-padding;
+    }
+
+    .board-swimlanes-toggle-wrapper {
+      @include gl-h-auto;
+      margin-bottom: $gl-input-padding;
+
+      > span,
+      > .dropdown,
+      .gl-dropdown-toggle {
+        @include gl-w-full;
+        @include gl-m-0;
+      }
+
+      > .dropdown {
+        @include gl-mt-2;
+      }
     }
   }
 

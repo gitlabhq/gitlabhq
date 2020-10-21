@@ -2,10 +2,8 @@
 
 require 'cgi'
 require 'uri'
-require 'open3'
 require 'fileutils'
 require 'tmpdir'
-require 'tempfile'
 require 'securerandom'
 
 module QA
@@ -13,8 +11,7 @@ module QA
     class Repository
       include Scenario::Actable
       include Support::Repeater
-
-      RepositoryCommandError = Class.new(StandardError)
+      include Support::Run
 
       attr_writer :use_lfs, :gpg_key_id
       attr_accessor :env_vars
@@ -59,8 +56,12 @@ module QA
         self.username, self.password = default_credentials
       end
 
+      def use_default_identity
+        configure_identity('GitLab QA', 'root@gitlab.com')
+      end
+
       def clone(opts = '')
-        clone_result = run("git clone #{opts} #{uri} ./", max_attempts: 3)
+        clone_result = run_git("git clone #{opts} #{uri} ./", max_attempts: 3)
         return clone_result.response unless clone_result.success?
 
         enable_lfs_result = enable_lfs if use_lfs?
@@ -70,7 +71,7 @@ module QA
 
       def checkout(branch_name, new_branch: false)
         opts = new_branch ? '-b' : ''
-        run(%Q{git checkout #{opts} "#{branch_name}"}).to_s
+        run_git(%Q{git checkout #{opts} "#{branch_name}"}).to_s
       end
 
       def shallow_clone
@@ -78,8 +79,8 @@ module QA
       end
 
       def configure_identity(name, email)
-        run(%Q{git config user.name "#{name}"})
-        run(%Q{git config user.email #{email}})
+        run_git(%Q{git config user.name "#{name}"})
+        run_git(%Q{git config user.email #{email}})
       end
 
       def commit_file(name, contents, message)
@@ -93,83 +94,82 @@ module QA
         ::File.write(name, contents)
 
         if use_lfs?
-          git_lfs_track_result = run(%Q{git lfs track #{name} --lockable})
+          git_lfs_track_result = run_git(%Q{git lfs track #{name} --lockable})
           return git_lfs_track_result.response unless git_lfs_track_result.success?
         end
 
-        git_add_result = run(%Q{git add #{name}})
+        git_add_result = run_git(%Q{git add #{name}})
 
         git_lfs_track_result.to_s + git_add_result.to_s
       end
 
       def add_tag(tag_name)
-        run("git tag #{tag_name}").to_s
+        run_git("git tag #{tag_name}").to_s
       end
 
       def delete_tag(tag_name)
-        run(%Q{git push origin --delete #{tag_name}}, max_attempts: 3).to_s
+        run_git(%Q{git push origin --delete #{tag_name}}, max_attempts: 3).to_s
       end
 
       def commit(message)
-        run(%Q{git commit -m "#{message}"}, max_attempts: 3).to_s
+        run_git(%Q{git commit -m "#{message}"}, max_attempts: 3).to_s
       end
 
       def commit_with_gpg(message)
-        run(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(command -v gpg) && git commit -S -m "#{message}"}).to_s
+        run_git(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(command -v gpg) && git commit -S -m "#{message}"}).to_s
       end
 
       def current_branch
-        run("git rev-parse --abbrev-ref HEAD").to_s
+        run_git("git rev-parse --abbrev-ref HEAD").to_s
       end
 
-      def push_changes(branch = 'master')
-        run("git push #{uri} #{branch}", max_attempts: 3).to_s
+      def push_changes(branch = 'master', push_options: nil)
+        cmd = ['git push']
+        cmd << push_options_hash_to_string(push_options)
+        cmd << uri
+        cmd << branch
+        run_git(cmd.compact.join(' '), max_attempts: 3).to_s
       end
 
       def push_all_branches
-        run("git push --all").to_s
+        run_git("git push --all").to_s
       end
 
       def push_tags_and_branches(branches)
-        run("git push --tags origin #{branches.join(' ')}").to_s
+        run_git("git push --tags origin #{branches.join(' ')}").to_s
       end
 
       def merge(branch)
-        run("git merge #{branch}")
+        run_git("git merge #{branch}")
       end
 
       def init_repository
-        run("git init")
+        run_git("git init")
       end
 
       def pull(repository = nil, branch = nil)
-        run(['git', 'pull', repository, branch].compact.join(' '))
+        run_git(['git', 'pull', repository, branch].compact.join(' '))
       end
 
       def commits
-        run('git log --oneline').to_s.split("\n")
+        run_git('git log --oneline').to_s.split("\n")
       end
 
       def use_ssh_key(key)
-        @private_key_file = Tempfile.new("id_#{SecureRandom.hex(8)}")
-        File.binwrite(private_key_file, key.private_key)
-        File.chmod(0700, private_key_file)
+        @ssh = Support::SSH.perform do |ssh|
+          ssh.key = key
+          ssh.uri = uri
+          ssh.setup(env: self.env_vars)
+          ssh
+        end
 
-        @known_hosts_file = Tempfile.new("known_hosts_#{SecureRandom.hex(8)}")
-        keyscan_params = ['-H']
-        keyscan_params << "-p #{uri.port}" if uri.port
-        keyscan_params << uri.host
-        res = run("ssh-keyscan #{keyscan_params.join(' ')} >> #{known_hosts_file.path}")
-        return res.response unless res.success?
-
-        self.env_vars << %Q{GIT_SSH_COMMAND="ssh -i #{private_key_file.path} -o UserKnownHostsFile=#{known_hosts_file.path}"}
+        self.env_vars << %Q{GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path}"}
       end
 
       def delete_ssh_key
         return unless ssh_key_set?
 
-        private_key_file.close(true)
-        known_hosts_file.close(true)
+        ssh.delete
       end
 
       def push_with_git_protocol(version, file_name, file_content, commit_message = 'Initial commit')
@@ -184,13 +184,13 @@ module QA
       def git_protocol=(value)
         raise ArgumentError, "Please specify the protocol you would like to use: 0, 1, or 2" unless %w[0 1 2].include?(value.to_s)
 
-        run("git config protocol.version #{value}")
+        run_git("git config protocol.version #{value}")
       end
 
       def fetch_supported_git_protocol
         # ls-remote is one command known to respond to Git protocol v2 so we use
         # it to get output including the version reported via Git tracing
-        result = run("git ls-remote #{uri}", env: "GIT_TRACE_PACKET=1", max_attempts: 3)
+        result = run_git("git ls-remote #{uri}", max_attempts: 3, env: [*self.env_vars, "GIT_TRACE_PACKET=1"])
         result.response[/git< version (\d+)/, 1] || 'unknown'
       end
 
@@ -205,20 +205,15 @@ module QA
         run("cat #{file}").to_s
       end
 
+      def delete_netrc
+        File.delete(netrc_file_path) if File.exist?(netrc_file_path)
+      end
+
       private
 
-      attr_reader :uri, :username, :password, :known_hosts_file,
-        :private_key_file, :use_lfs
+      attr_reader :uri, :username, :password, :ssh, :use_lfs
 
       alias_method :use_lfs?, :use_lfs
-
-      Result = Struct.new(:command, :exitstatus, :response) do
-        alias_method :to_s, :response
-
-        def success?
-          exitstatus == 0
-        end
-      end
 
       def add_credentials?
         return false if !username || !password
@@ -228,7 +223,7 @@ module QA
       end
 
       def ssh_key_set?
-        !private_key_file.nil?
+        ssh && !ssh.private_key_file.nil?
       end
 
       def enable_lfs
@@ -237,31 +232,9 @@ module QA
         touch_gitconfig_result = run("touch #{tmp_home_dir}/.gitconfig")
         return touch_gitconfig_result.response unless touch_gitconfig_result.success?
 
-        git_lfs_install_result = run('git lfs install')
+        git_lfs_install_result = run_git('git lfs install')
 
         touch_gitconfig_result.to_s + git_lfs_install_result.to_s
-      end
-
-      def run(command_str, env: [], max_attempts: 1)
-        command = [env_vars, *env, command_str, '2>&1'].compact.join(' ')
-        result = nil
-
-        repeat_until(max_attempts: max_attempts, raise_on_failure: false) do
-          Runtime::Logger.debug "Git: pwd=[#{Dir.pwd}], command=[#{command}]"
-          output, status = Open3.capture2e(command)
-          output.chomp!
-          Runtime::Logger.debug "Git: output=[#{output}], exitstatus=[#{status.exitstatus}]"
-
-          result = Result.new(command, status.exitstatus, output)
-
-          result.success?
-        end
-
-        unless result.success?
-          raise RepositoryCommandError, "The command #{result.command} failed (#{result.exitstatus}) with the following output:\n#{result.response}"
-        end
-
-        result
       end
 
       def default_credentials
@@ -293,6 +266,23 @@ module QA
         @tmp_home_dir ||= File.join(Dir.tmpdir, "qa-netrc-credentials", $$.to_s)
       end
 
+      def push_options_hash_to_string(opts)
+        return if opts.nil?
+
+        prefix = "-o merge_request"
+        opts.each_with_object([]) do |(key, value), options|
+          if value.is_a?(Array)
+            value.each do |item|
+              options << "#{prefix}.#{key}=\"#{item}\""
+            end
+          elsif value == true
+            options << "#{prefix}.#{key}"
+          else
+            options << "#{prefix}.#{key}=\"#{value}\""
+          end
+        end.join(' ')
+      end
+
       def netrc_file_path
         @netrc_file_path ||= File.join(tmp_home_dir, '.netrc')
       end
@@ -303,6 +293,10 @@ module QA
 
       def netrc_already_contains_content?
         read_netrc_content.grep(/^#{Regexp.escape(netrc_content)}$/).any?
+      end
+
+      def run_git(command_str, env: self.env_vars, max_attempts: 1)
+        run(command_str, env: env, max_attempts: max_attempts, log_prefix: 'Git: ')
       end
     end
   end

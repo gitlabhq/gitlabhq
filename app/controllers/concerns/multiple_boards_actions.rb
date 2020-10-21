@@ -21,11 +21,13 @@ module MultipleBoardsActions
   end
 
   def create
-    board = Boards::CreateService.new(parent, current_user, board_params).execute
+    response = Boards::CreateService.new(parent, current_user, board_params).execute
 
     respond_to do |format|
       format.json do
-        if board.persisted?
+        board = response.payload
+
+        if response.success?
           extra_json = { board_path: board_path(board) }
           render json: serialize_as_json(board).merge(extra_json)
         else

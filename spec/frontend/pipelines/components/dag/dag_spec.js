@@ -4,13 +4,8 @@ import Dag from '~/pipelines/components/dag/dag.vue';
 import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
 
-import {
-  ADD_NOTE,
-  REMOVE_NOTE,
-  REPLACE_NOTES,
-  PARSE_FAILURE,
-  UNSUPPORTED_DATA,
-} from '~/pipelines/components/dag//constants';
+import { ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from '~/pipelines/components/dag/constants';
+import { PARSE_FAILURE, UNSUPPORTED_DATA } from '~/pipelines/constants';
 import {
   mockParsedGraphQLNodes,
   tooSmallGraph,

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Page::Base do
+RSpec.describe QA::Page::Base do
   describe 'page helpers' do
     it 'exposes helpful page helpers' do
       expect(subject).to respond_to :refresh, :wait_until, :scroll_to

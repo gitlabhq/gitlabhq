@@ -203,7 +203,7 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.title a.no-expand')).toBeDefined();
 
       expect(visibilityIconEl).not.toBe(null);
-      expect(visibilityIconEl.dataset.originalTitle).toBe(vm.visibilityTooltip);
+      expect(visibilityIconEl.title).toBe(vm.visibilityTooltip);
       expect(visibilityIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
 
       expect(vm.$el.querySelector('.access-type')).toBeDefined();

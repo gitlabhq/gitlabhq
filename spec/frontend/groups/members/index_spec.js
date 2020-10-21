@@ -1,5 +1,5 @@
 import { createWrapper } from '@vue/test-utils';
-import initGroupMembersApp from '~/groups/members';
+import { initGroupMembersApp } from '~/groups/members';
 import GroupMembersApp from '~/groups/members/components/app.vue';
 import { membersJsonString, membersParsed } from './mock_data';
 
@@ -9,7 +9,7 @@ describe('initGroupMembersApp', () => {
   let wrapper;
 
   const setup = () => {
-    vm = initGroupMembersApp(el);
+    vm = initGroupMembersApp(el, ['account'], () => ({}));
     wrapper = createWrapper(vm);
   };
 
@@ -17,14 +17,12 @@ describe('initGroupMembersApp', () => {
     el = document.createElement('div');
     el.setAttribute('data-members', membersJsonString);
     el.setAttribute('data-group-id', '234');
+    el.setAttribute('data-member-path', '/groups/foo-bar/-/group_members/:id');
 
     window.gon = { current_user_id: 123 };
-
-    document.body.appendChild(el);
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
     el = null;
 
     wrapper.destroy();
@@ -62,5 +60,23 @@ describe('initGroupMembersApp', () => {
     setup();
 
     expect(vm.$store.state.members).toEqual(membersParsed);
+  });
+
+  it('sets `tableFields` in Vuex store', () => {
+    setup();
+
+    expect(vm.$store.state.tableFields).toEqual(['account']);
+  });
+
+  it('sets `requestFormatter` in Vuex store', () => {
+    setup();
+
+    expect(vm.$store.state.requestFormatter()).toEqual({});
+  });
+
+  it('sets `memberPath` in Vuex store', () => {
+    setup();
+
+    expect(vm.$store.state.memberPath).toBe('/groups/foo-bar/-/group_members/:id');
   });
 });

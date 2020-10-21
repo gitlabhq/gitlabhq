@@ -5,6 +5,8 @@ class Admin::HooksController < Admin::ApplicationController
 
   before_action :hook_logs, only: :edit
 
+  feature_category :integrations
+
   def index
     @hooks = SystemHook.all
     @hook = SystemHook.new
@@ -34,7 +36,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def destroy
-    hook.destroy
+    destroy_hook(hook)
 
     redirect_to admin_hooks_path, status: :found
   end

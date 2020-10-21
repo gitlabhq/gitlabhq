@@ -1,6 +1,8 @@
 import $ from 'jquery';
+import { Rails } from '~/lib/utils/rails_ujs';
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { __, sprintf } from '~/locale';
 
 export default class Members {
   constructor() {
@@ -54,15 +56,43 @@ export default class Members {
   formSubmit(e, $el = null) {
     const $this = e ? $(e.currentTarget) : $el;
     const { $toggle, $dateInput } = this.getMemberListItems($this);
+    const formEl = $this.closest('form').get(0);
 
-    $this.closest('form').trigger('submit.rails');
+    Rails.fire(formEl, 'submit');
 
     $toggle.disable();
     $dateInput.disable();
   }
 
   formSuccess(e) {
-    const { $toggle, $dateInput } = this.getMemberListItems($(e.currentTarget).closest('.member'));
+    const { $toggle, $dateInput, $expiresIn, $expiresInText } = this.getMemberListItems(
+      $(e.currentTarget).closest('.js-member'),
+    );
+
+    const [data] = e.detail;
+    const expiresIn = data?.expires_in;
+
+    if (expiresIn) {
+      $expiresIn.removeClass('gl-display-none');
+
+      $expiresInText.text(sprintf(__('Expires in %{expires_at}'), { expires_at: expiresIn }));
+
+      const { expires_soon: expiresSoon, expires_at_formatted: expiresAtFormatted } = data;
+
+      if (expiresSoon) {
+        $expiresInText.addClass('text-warning');
+      } else {
+        $expiresInText.removeClass('text-warning');
+      }
+
+      // Update tooltip
+      if (expiresAtFormatted) {
+        $expiresInText.attr('title', expiresAtFormatted);
+        $expiresInText.attr('data-original-title', expiresAtFormatted);
+      }
+    } else {
+      $expiresIn.addClass('gl-display-none');
+    }
 
     $toggle.enable();
     $dateInput.enable();
@@ -70,10 +100,12 @@ export default class Members {
 
   // eslint-disable-next-line class-methods-use-this
   getMemberListItems($el) {
-    const $memberListItem = $el.is('.member') ? $el : $(`#${$el.data('elId')}`);
+    const $memberListItem = $el.is('.js-member') ? $el : $(`#${$el.data('elId')}`);
 
     return {
       $memberListItem,
+      $expiresIn: $memberListItem.find('.js-expires-in'),
+      $expiresInText: $memberListItem.find('.js-expires-in-text'),
       $toggle: $memberListItem.find('.dropdown-menu-toggle'),
       $dateInput: $memberListItem.find('.js-access-expiration-date'),
     };

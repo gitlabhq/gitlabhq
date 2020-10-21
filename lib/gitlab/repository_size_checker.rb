@@ -6,9 +6,10 @@ module Gitlab
     attr_reader :limit
 
     # @param current_size_proc [Proc] returns repository size in bytes
-    def initialize(current_size_proc:, limit:, enabled: true)
+    def initialize(current_size_proc:, limit:, namespace:, enabled: true)
       @current_size_proc = current_size_proc
       @limit = limit
+      @namespace = namespace
       @enabled = enabled && limit != 0
     end
 
@@ -40,7 +41,13 @@ module Gitlab
     end
 
     def error_message
-      @error_message_object ||= Gitlab::RepositorySizeErrorMessage.new(self)
+      @error_message_object ||= ::Gitlab::RepositorySizeErrorMessage.new(self)
     end
+
+    private
+
+    attr_reader :namespace
   end
 end
+
+Gitlab::RepositorySizeChecker.prepend_if_ee('EE::Gitlab::RepositorySizeChecker')

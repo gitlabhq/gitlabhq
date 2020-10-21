@@ -4,6 +4,7 @@ import VueDraggable from 'vuedraggable';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Index from '~/design_management/pages/index.vue';
 import uploadDesignQuery from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
@@ -21,6 +22,8 @@ import * as utils from '~/design_management/utils/design_management_utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 import {
   designListQueryResponse,
+  designUploadMutationCreatedResponse,
+  designUploadMutationUpdatedResponse,
   permissionsQueryResponse,
   moveDesignMutationResponse,
   reorderedDesigns,
@@ -29,6 +32,7 @@ import {
 import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
 import permissionsQuery from '~/design_management/graphql/queries/design_permissions.query.graphql';
 import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
+import { DESIGN_TRACKING_PAGE_NAME } from '~/design_management/utils/tracking';
 
 jest.mock('~/flash.js');
 const mockPageEl = {
@@ -92,6 +96,8 @@ describe('Design management index page', () => {
   const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
   const findSelectAllButton = () => wrapper.find('.js-select-all');
   const findToolbar = () => wrapper.find('.qa-selector-toolbar');
+  const findDesignCollectionIsCopying = () =>
+    wrapper.find('[data-testid="design-collection-is-copying"');
   const findDeleteButton = () => wrapper.find(DeleteButton);
   const findDropzone = () => wrapper.findAll(DesignDropzone).at(0);
   const dropzoneClasses = () => findDropzone().classes();
@@ -99,6 +105,7 @@ describe('Design management index page', () => {
   const findFirstDropzoneWithDesign = () => wrapper.findAll(DesignDropzone).at(1);
   const findDesignsWrapper = () => wrapper.find('[data-testid="designs-root"]');
   const findDesigns = () => wrapper.findAll(Design);
+  const draggableAttributes = () => wrapper.find(VueDraggable).vm.$attrs;
 
   async function moveDesigns(localWrapper) {
     await jest.runOnlyPendingTimers();
@@ -115,8 +122,8 @@ describe('Design management index page', () => {
 
   function createComponent({
     loading = false,
-    designs = [],
     allVersions = [],
+    designCollection = { designs: mockDesigns, copyState: 'READY' },
     createDesign = true,
     stubs = {},
     mockMutate = jest.fn().mockResolvedValue(),
@@ -124,7 +131,7 @@ describe('Design management index page', () => {
     mutate = mockMutate;
     const $apollo = {
       queries: {
-        designs: {
+        designCollection: {
           loading,
         },
         permissions: {
@@ -137,8 +144,8 @@ describe('Design management index page', () => {
     wrapper = shallowMount(Index, {
       data() {
         return {
-          designs,
           allVersions,
+          designCollection,
           permissions: {
             createDesign,
           },
@@ -200,13 +207,13 @@ describe('Design management index page', () => {
     });
 
     it('renders a toolbar with buttons when there are designs', () => {
-      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      createComponent({ allVersions: [mockVersion] });
 
       expect(findToolbar().exists()).toBe(true);
     });
 
     it('renders designs list and header with upload button', () => {
-      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      createComponent({ allVersions: [mockVersion] });
 
       expect(wrapper.element).toMatchSnapshot();
     });
@@ -236,7 +243,7 @@ describe('Design management index page', () => {
 
   describe('when has no designs', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ designCollection: { designs: [], copyState: 'READY' } });
     });
 
     it('renders design dropzone', () =>
@@ -257,6 +264,21 @@ describe('Design management index page', () => {
       wrapper.vm.$nextTick().then(() => {
         expect(findToolbar().exists()).toBe(false);
       }));
+  });
+
+  describe('handling design collection copy state', () => {
+    it.each`
+      copyState        | isRendered | description
+      ${'IN_PROGRESS'} | ${true}    | ${'renders'}
+      ${'READY'}       | ${false}   | ${'does not render'}
+      ${'ERROR'}       | ${false}   | ${'does not render'}
+    `(
+      '$description the copying message if design collection copyState is $copyState',
+      ({ copyState, isRendered }) => {
+        createComponent({ designCollection: { designs: [], copyState } });
+        expect(findDesignCollectionIsCopying().exists()).toBe(isRendered);
+      },
+    );
   });
 
   describe('uploading designs', () => {
@@ -282,6 +304,10 @@ describe('Design management index page', () => {
               {
                 __typename: 'Design',
                 id: expect.anything(),
+                currentUserTodos: {
+                  __typename: 'TodoConnection',
+                  nodes: [],
+                },
                 image: '',
                 imageV432x230: '',
                 filename: 'test',
@@ -348,7 +374,7 @@ describe('Design management index page', () => {
       createComponent({ stubs: { GlEmptyState } });
       wrapper.setData({ filesToBeSaved: [{ name: 'test' }] });
 
-      wrapper.vm.onUploadDesignDone();
+      wrapper.vm.onUploadDesignDone(designUploadMutationCreatedResponse);
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.filesToBeSaved).toEqual([]);
         expect(wrapper.vm.isSaving).toBeFalsy();
@@ -460,6 +486,34 @@ describe('Design management index page', () => {
         expect(createFlash).toHaveBeenCalledWith(message);
       });
     });
+
+    describe('tracking', () => {
+      let trackingSpy;
+
+      beforeEach(() => {
+        trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+
+        createComponent({ stubs: { GlEmptyState } });
+      });
+
+      afterEach(() => {
+        unmockTracking();
+      });
+
+      it('tracks design creation', () => {
+        wrapper.vm.onUploadDesignDone(designUploadMutationCreatedResponse);
+
+        expect(trackingSpy).toHaveBeenCalledTimes(1);
+        expect(trackingSpy).toHaveBeenCalledWith(DESIGN_TRACKING_PAGE_NAME, 'create_design');
+      });
+
+      it('tracks design modification', () => {
+        wrapper.vm.onUploadDesignDone(designUploadMutationUpdatedResponse);
+
+        expect(trackingSpy).toHaveBeenCalledTimes(1);
+        expect(trackingSpy).toHaveBeenCalledWith(DESIGN_TRACKING_PAGE_NAME, 'update_design');
+      });
+    });
   });
 
   describe('on latest version when has designs', () => {
@@ -531,13 +585,16 @@ describe('Design management index page', () => {
   });
 
   it('on latest version when has no designs toolbar buttons are invisible', () => {
-    createComponent({ designs: [], allVersions: [mockVersion] });
+    createComponent({
+      designCollection: { designs: [], copyState: 'READY' },
+      allVersions: [mockVersion],
+    });
     expect(findToolbar().isVisible()).toBe(false);
   });
 
   describe('on non-latest version', () => {
     beforeEach(() => {
-      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      createComponent({ allVersions: [mockVersion] });
     });
 
     it('does not render design checkboxes', async () => {
@@ -626,9 +683,8 @@ describe('Design management index page', () => {
 
   describe('when navigating', () => {
     it('ensures fullscreen layout is not applied', () => {
-      createComponent(true);
+      createComponent({ loading: true });
 
-      wrapper.vm.$router.push('/');
       expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
       expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
     });
@@ -637,7 +693,7 @@ describe('Design management index page', () => {
       router.replace({
         path: '/designs',
       });
-      createComponent(true);
+      createComponent({ loading: true });
 
       return wrapper.vm.$nextTick().then(() => {
         expect(scrollIntoViewMock).toHaveBeenCalled();
@@ -674,6 +730,20 @@ describe('Design management index page', () => {
           .at(0)
           .props('id'),
       ).toBe('2');
+    });
+
+    it('prevents reordering when reorderDesigns mutation is in progress', async () => {
+      createComponentWithApollo({});
+
+      await moveDesigns(wrapper);
+
+      expect(draggableAttributes().disabled).toBe(true);
+
+      await jest.runOnlyPendingTimers(); // kick off the mocked GQL stuff (promises)
+      await wrapper.vm.$nextTick(); // kick off the DOM update
+      await wrapper.vm.$nextTick(); // kick off the DOM update for finally block
+
+      expect(draggableAttributes().disabled).toBe(false);
     });
 
     it('displays flash if mutation had a recoverable error', async () => {

@@ -2,7 +2,7 @@
 
 module API
   module Release
-    class Links < Grape::API::Instance
+    class Links < ::API::Base
       include PaginationParams
 
       RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS

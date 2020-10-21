@@ -5,12 +5,10 @@ import initShow from '../init_merge_request_show';
 import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_issuable_header_warning';
 import store from '~/mr_notes/stores';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initShow();
-  if (gon.features && !gon.features.vueIssuableSidebar) {
-    initSidebarBundle();
-  }
-  initMrNotes();
-  initReviewBar();
-  initIssuableHeaderWarning(store);
-});
+initShow();
+if (gon.features && !gon.features.vueIssuableSidebar) {
+  initSidebarBundle();
+}
+initMrNotes();
+initReviewBar();
+initIssuableHeaderWarning(store);

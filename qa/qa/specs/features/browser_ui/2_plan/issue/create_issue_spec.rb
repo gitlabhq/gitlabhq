@@ -41,7 +41,7 @@ module QA
       context 'when using attachments in comments', :object_storage do
         let(:gif_file_name) { 'banana_sample.gif' }
         let(:file_to_attach) do
-          File.absolute_path(File.join('spec', 'fixtures', gif_file_name))
+          File.absolute_path(File.join('qa', 'fixtures', 'designs', gif_file_name))
         end
 
         before do

@@ -14,6 +14,8 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_fork_project!, only: [:new, :create]
   before_action :authorize_fork_namespace!, only: [:create]
 
+  feature_category :source_code_management
+
   def index
     @total_forks_count    = project.forks.size
     @public_forks_count   = project.forks.public_only.size

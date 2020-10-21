@@ -1,0 +1,5 @@
+---
+title: Update NuGet version validation to allow for extended versions
+merge_request: 44335
+author:
+type: fixed

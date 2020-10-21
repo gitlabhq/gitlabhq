@@ -5,6 +5,8 @@ module Groups
     before_action :group
     skip_cross_project_access_check :index
 
+    feature_category :subgroups
+
     def index
       parent = if params[:parent_id].present?
                  GroupFinder.new(current_user).execute(id: params[:parent_id])

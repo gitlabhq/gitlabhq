@@ -5,46 +5,27 @@ module Mutations
     class Update < Base
       graphql_name 'UpdateIssue'
 
-      argument :title,
-                GraphQL::STRING_TYPE,
-                required: false,
-                description: copy_field_description(Types::IssueType, :title)
+      include CommonMutationArguments
 
-      argument :description,
-                GraphQL::STRING_TYPE,
-                required: false,
-                description: copy_field_description(Types::IssueType, :description)
-
-      argument :due_date,
-               Types::TimeType,
+      argument :title, GraphQL::STRING_TYPE,
                required: false,
-               description: copy_field_description(Types::IssueType, :due_date)
+               description: copy_field_description(Types::IssueType, :title)
 
-      argument :confidential,
-               GraphQL::BOOLEAN_TYPE,
+      argument :milestone_id, GraphQL::ID_TYPE,
                required: false,
-               description: copy_field_description(Types::IssueType, :confidential)
+               description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null'
 
-      argument :locked,
-               GraphQL::BOOLEAN_TYPE,
-               as: :discussion_locked,
+      argument :add_label_ids, [GraphQL::ID_TYPE],
                required: false,
-               description: copy_field_description(Types::IssueType, :discussion_locked)
+               description: 'The IDs of labels to be added to the issue'
 
-      argument :add_label_ids,
-               [GraphQL::ID_TYPE],
+      argument :remove_label_ids, [GraphQL::ID_TYPE],
                required: false,
-               description: 'The IDs of labels to be added to the issue.'
+               description: 'The IDs of labels to be removed from the issue'
 
-      argument :remove_label_ids,
-               [GraphQL::ID_TYPE],
-               required: false,
-               description: 'The IDs of labels to be removed from the issue.'
-
-      argument :milestone_id,
-               GraphQL::ID_TYPE,
-               required: false,
-               description: 'The ID of the milestone to be assigned, milestone will be removed if set to null.'
+      argument :state_event, Types::IssueStateEventEnum,
+               description: 'Close or reopen an issue',
+               required: false
 
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)

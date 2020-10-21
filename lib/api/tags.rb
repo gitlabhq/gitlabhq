@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Tags < Grape::API::Instance
+  class Tags < ::API::Base
     include PaginationParams
 
     TAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)

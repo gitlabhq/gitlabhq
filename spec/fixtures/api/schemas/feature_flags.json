@@ -1,0 +1,13 @@
+{
+  "required": ["feature_flags", "count"],
+  "feature_flags": { "type": "array", "items": { "$ref": "feature_flag.json" } },
+  "count": {
+    "type": "object",
+    "properties" : {
+      "all": { "type": "integer" },
+      "enabled": { "type": "integer" },
+      "disabled": { "type": "integer" }
+    },
+    "additionalProperties": false
+  }
+}

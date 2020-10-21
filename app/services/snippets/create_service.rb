@@ -59,7 +59,7 @@ module Snippets
       log_error(e.message)
 
       # If the commit action failed we need to remove the repository if exists
-      @snippet.repository.remove if @snippet.repository_exists?
+      delete_repository(@snippet) if @snippet.repository_exists?
 
       # If the snippet was created, we need to remove it as we
       # would do like if it had had any validation error
@@ -81,12 +81,9 @@ module Snippets
     end
 
     def create_commit
-      commit_attrs = {
-        branch_name: @snippet.default_branch,
-        message: 'Initial commit'
-      }
+      attrs = commit_attrs(@snippet, INITIAL_COMMIT_MSG)
 
-      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit(@snippet), commit_attrs)
+      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit(@snippet), **attrs)
     end
 
     def move_temporary_files

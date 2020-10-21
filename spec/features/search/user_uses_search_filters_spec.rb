@@ -12,12 +12,12 @@ RSpec.describe 'User uses search filters', :js do
     project.add_reporter(user)
     group.add_owner(user)
     sign_in(user)
-
-    visit(search_path)
   end
 
   context 'when filtering by group' do
     it 'shows group projects' do
+      visit search_path
+
       find('.js-search-group-dropdown').click
 
       wait_for_requests
@@ -36,10 +36,27 @@ RSpec.describe 'User uses search filters', :js do
         expect(page).to have_link(group_project.full_name)
       end
     end
+
+    context 'when the group filter is set' do
+      before do
+        visit search_path(search: "test", group_id: group.id, project_id: project.id)
+      end
+
+      describe 'clear filter button' do
+        it 'removes Group and Project filters' do
+          link = find('[data-testid="group-filter"] .js-search-clear')
+          params = CGI.parse(URI.parse(link[:href]).query)
+
+          expect(params).not_to include(:group_id, :project_id)
+        end
+      end
+    end
   end
 
   context 'when filtering by project' do
     it 'shows a project' do
+      visit search_path
+
       page.within('.project-filter') do
         find('.js-search-project-dropdown').click
 
@@ -49,6 +66,23 @@ RSpec.describe 'User uses search filters', :js do
       end
 
       expect(find('.js-search-project-dropdown')).to have_content(project.full_name)
+    end
+
+    context 'when the project filter is set' do
+      before do
+        visit search_path(search: "test", project_id: project.id)
+      end
+
+      let(:query) { { project_id: project.id } }
+
+      describe 'clear filter button' do
+        it 'removes Project filters' do
+          link = find('.project-filter .js-search-clear')
+          params = CGI.parse(URI.parse(link[:href]).query)
+
+          expect(params).not_to include(:project_id)
+        end
+      end
     end
   end
 end

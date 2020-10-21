@@ -12,6 +12,8 @@ class Projects::HookLogsController < Projects::ApplicationController
 
   layout 'project_settings'
 
+  feature_category :integrations
+
   def show
   end
 

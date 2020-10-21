@@ -72,6 +72,9 @@ Parameters:
 | `in`                            | string         | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
 | `wip`                           | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 | `not`                           | Hash           | no       | Return merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji` |
+| `environment`                   | string         | no       | Returns merge requests deployed to the given environment
+| `deployed_before`               | datetime       | no       | Return merge requests deployed before the given date/time
+| `deployed_after`                | datetime       | no       | Return merge requests deployed after the given date/time
 
 NOTE: **Note:**
 [Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890),
@@ -1004,6 +1007,7 @@ order for it to take effect:
    value of zero disables approvals for that project.
 1. The provided value of `approvals_before_merge` must be greater than the
    target project's `approvals_before_merge`.
+1. This API returns 201 (created) for a successful response.
 
 ```json
 {
@@ -1310,7 +1314,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Merge changes submitted with MR using this API.
 
-If merge request is unable to be accepted (ie: Draft, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you'll get a `405` and the error message 'Method Not Allowed'
+If merge request is unable to be accepted (such as Draft, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you'll get a `405` and the error message 'Method Not Allowed'
 
 If it has some conflicts and can not be merged - you'll get a `406` and the error message 'Branch cannot be merged'
 
@@ -2085,10 +2089,10 @@ the `approvals_before_merge` parameter:
 }
 ```
 
-## Create a to-do
+## Create a to do
 
-Manually creates a to-do for the current user on a merge request.
-If there already exists a to-do for the user on that merge request,
+Manually creates a to do for the current user on a merge request.
+If there already exists a to do for the user on that merge request,
 status code `304` is returned.
 
 ```plaintext

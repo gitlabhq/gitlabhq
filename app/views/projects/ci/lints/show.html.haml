@@ -1,13 +1,10 @@
 - page_title _("CI Lint")
 - page_description _("Validate your GitLab CI configuration file")
-- unless Feature.enabled?(:monaco_ci)
-  - content_for :library_javascripts do
-    = page_specific_javascript_tag('lib/ace.js')
 
 %h2.pt-3.pb-3= _("Validate your GitLab CI configuration")
 
 - if Feature.enabled?(:ci_lint_vue, @project)
-  #js-ci-lint{ data: { endpoint: project_ci_lint_path(@project) } }
+  #js-ci-lint{ data: { endpoint: project_ci_lint_path(@project), help_page_path: help_page_path('ci/lint', anchor: 'pipeline-simulation') } }
 
 - else
   .project-ci-linter
@@ -17,12 +14,9 @@
           .file-holder
             .js-file-title.file-title.clearfix
               = _("Contents of .gitlab-ci.yml")
-            - if Feature.enabled?(:monaco_ci)
-              .file-editor.code
-                .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
-                  %pre.editor-loading-content= params[:content]
-            - else
-              #ci-editor.ci-editor= @content
+            .file-editor.code
+              .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
+                %pre.editor-loading-content= params[:content]
           = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
         .col-sm-12
           .float-left.gl-mt-3

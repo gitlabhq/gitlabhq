@@ -1,0 +1,5 @@
+---
+title: Remove jquery tooltip API call from delete environment button
+merge_request: 44191
+author:
+type: other

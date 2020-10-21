@@ -40,7 +40,8 @@ module Types
       field :status,
             AlertManagement::StatusEnum,
             null: true,
-            description: 'Status of the alert'
+            description: 'Status of the alert',
+            method: :status_name
 
       field :service,
             GraphQL::STRING_TYPE,
@@ -66,6 +67,11 @@ module Types
             Types::TimeType,
             null: true,
             description: 'Timestamp the alert ended'
+
+      field :environment,
+            Types::EnvironmentType,
+            null: true,
+            description: 'Environment for the alert'
 
       field :event_count,
             GraphQL::INT_TYPE,

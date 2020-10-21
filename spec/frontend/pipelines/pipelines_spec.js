@@ -1,9 +1,17 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { GlFilteredSearch } from '@gitlab/ui';
+import { GlFilteredSearch, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+
+import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
+import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
+import BlankState from '~/pipelines/components/pipelines_list/blank_state.vue';
+import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
+
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
 import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
@@ -49,6 +57,20 @@ describe('Pipelines', () => {
   };
 
   const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
+  const findByTestId = id => wrapper.find(`[data-testid="${id}"]`);
+  const findNavigationTabs = () => wrapper.find(NavigationTabs);
+  const findNavigationControls = () => wrapper.find(NavigationControls);
+  const findTab = tab => findByTestId(`pipelines-tab-${tab}`);
+
+  const findRunPipelineButton = () => findByTestId('run-pipeline-button');
+  const findCiLintButton = () => findByTestId('ci-lint-button');
+  const findCleanCacheButton = () => findByTestId('clear-cache-button');
+
+  const findEmptyState = () => wrapper.find(EmptyState);
+  const findBlankState = () => wrapper.find(BlankState);
+  const findStagesDropdown = () => wrapper.find('.js-builds-dropdown-button');
+
+  const findTablePagination = () => wrapper.find(TablePagination);
 
   const createComponent = (props = defaultProps, methods) => {
     wrapper = mount(PipelinesComponent, {
@@ -87,19 +109,19 @@ describe('Pipelines', () => {
       });
 
       it('renders tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
+        expect(findTab('all').text()).toContain('All');
       });
 
       it('renders Run Pipeline link', () => {
-        expect(wrapper.find('.js-run-pipeline').attributes('href')).toBe(paths.newPipelinePath);
+        expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
       });
 
       it('renders CI Lint link', () => {
-        expect(wrapper.find('.js-ci-lint').attributes('href')).toBe(paths.ciLintPath);
+        expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
       });
 
       it('renders Clear Runner Cache button', () => {
-        expect(wrapper.find('.js-clear-cache').text()).toBe('Clear Runner Caches');
+        expect(findCleanCacheButton().text()).toBe('Clear Runner Caches');
       });
 
       it('renders pipelines table', () => {
@@ -127,23 +149,31 @@ describe('Pipelines', () => {
       });
 
       it('renders tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
+        expect(findTab('all').text()).toContain('All');
       });
 
       it('renders Run Pipeline link', () => {
-        expect(wrapper.find('.js-run-pipeline').attributes('href')).toEqual(paths.newPipelinePath);
+        expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
       });
 
       it('renders CI Lint link', () => {
-        expect(wrapper.find('.js-ci-lint').attributes('href')).toEqual(paths.ciLintPath);
+        expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
       });
 
       it('renders Clear Runner Cache button', () => {
-        expect(wrapper.find('.js-clear-cache').text()).toEqual('Clear Runner Caches');
+        expect(findCleanCacheButton().text()).toBe('Clear Runner Caches');
       });
 
       it('renders tab empty state', () => {
-        expect(wrapper.find('.empty-state h4').text()).toEqual('There are currently no pipelines.');
+        expect(findBlankState().text()).toBe('There are currently no pipelines.');
+      });
+
+      it('renders tab empty state finished scope', () => {
+        wrapper.vm.scope = 'finished';
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findBlankState().text()).toBe('There are currently no finished pipelines.');
+        });
       });
     });
 
@@ -165,18 +195,23 @@ describe('Pipelines', () => {
       });
 
       it('renders empty state', () => {
-        expect(wrapper.find('.js-empty-state h4').text()).toEqual('Build with confidence');
-
-        expect(wrapper.find('.js-get-started-pipelines').attributes('href')).toEqual(
-          paths.helpPagePath,
-        );
+        expect(
+          findEmptyState()
+            .find('h4')
+            .text(),
+        ).toBe('Build with confidence');
+        expect(
+          findEmptyState()
+            .find(GlButton)
+            .attributes('href'),
+        ).toBe(paths.helpPagePath);
       });
 
       it('does not render tabs nor buttons', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').exists()).toBeFalsy();
-        expect(wrapper.find('.js-run-pipeline').exists()).toBeFalsy();
-        expect(wrapper.find('.js-ci-lint').exists()).toBeFalsy();
-        expect(wrapper.find('.js-clear-cache').exists()).toBeFalsy();
+        expect(findTab('all').exists()).toBe(false);
+        expect(findRunPipelineButton().exists()).toBeFalsy();
+        expect(findCiLintButton().exists()).toBeFalsy();
+        expect(findCleanCacheButton().exists()).toBeFalsy();
       });
     });
 
@@ -189,20 +224,18 @@ describe('Pipelines', () => {
       });
 
       it('renders tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
+        expect(findTab('all').text()).toContain('All');
       });
 
       it('renders buttons', () => {
-        expect(wrapper.find('.js-run-pipeline').attributes('href')).toEqual(paths.newPipelinePath);
+        expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
 
-        expect(wrapper.find('.js-ci-lint').attributes('href')).toEqual(paths.ciLintPath);
-        expect(wrapper.find('.js-clear-cache').text()).toEqual('Clear Runner Caches');
+        expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
+        expect(findCleanCacheButton().text()).toBe('Clear Runner Caches');
       });
 
       it('renders error state', () => {
-        expect(wrapper.find('.empty-state').text()).toContain(
-          'There was an error fetching the pipelines.',
-        );
+        expect(findBlankState().text()).toContain('There was an error fetching the pipelines.');
       });
     });
   });
@@ -218,13 +251,13 @@ describe('Pipelines', () => {
       });
 
       it('renders tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
+        expect(findTab('all').text()).toContain('All');
       });
 
       it('does not render buttons', () => {
-        expect(wrapper.find('.js-run-pipeline').exists()).toBeFalsy();
-        expect(wrapper.find('.js-ci-lint').exists()).toBeFalsy();
-        expect(wrapper.find('.js-clear-cache').exists()).toBeFalsy();
+        expect(findRunPipelineButton().exists()).toBeFalsy();
+        expect(findCiLintButton().exists()).toBeFalsy();
+        expect(findCleanCacheButton().exists()).toBeFalsy();
       });
 
       it('renders pipelines table', () => {
@@ -252,17 +285,17 @@ describe('Pipelines', () => {
       });
 
       it('renders tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
+        expect(findTab('all').text()).toContain('All');
       });
 
       it('does not render buttons', () => {
-        expect(wrapper.find('.js-run-pipeline').exists()).toBeFalsy();
-        expect(wrapper.find('.js-ci-lint').exists()).toBeFalsy();
-        expect(wrapper.find('.js-clear-cache').exists()).toBeFalsy();
+        expect(findRunPipelineButton().exists()).toBeFalsy();
+        expect(findCiLintButton().exists()).toBeFalsy();
+        expect(findCleanCacheButton().exists()).toBeFalsy();
       });
 
       it('renders tab empty state', () => {
-        expect(wrapper.find('.empty-state h4').text()).toEqual('There are currently no pipelines.');
+        expect(wrapper.find('.empty-state h4').text()).toBe('There are currently no pipelines.');
       });
     });
 
@@ -284,18 +317,22 @@ describe('Pipelines', () => {
       });
 
       it('renders empty state without button to set CI', () => {
-        expect(wrapper.find('.js-empty-state').text()).toEqual(
+        expect(findEmptyState().text()).toBe(
           'This project is not currently set up to run pipelines.',
         );
 
-        expect(wrapper.find('.js-get-started-pipelines').exists()).toBeFalsy();
+        expect(
+          findEmptyState()
+            .find(GlButton)
+            .exists(),
+        ).toBeFalsy();
       });
 
       it('does not render tabs or buttons', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').exists()).toBeFalsy();
-        expect(wrapper.find('.js-run-pipeline').exists()).toBeFalsy();
-        expect(wrapper.find('.js-ci-lint').exists()).toBeFalsy();
-        expect(wrapper.find('.js-clear-cache').exists()).toBeFalsy();
+        expect(findTab('all').exists()).toBe(false);
+        expect(findRunPipelineButton().exists()).toBeFalsy();
+        expect(findCiLintButton().exists()).toBeFalsy();
+        expect(findCleanCacheButton().exists()).toBeFalsy();
       });
     });
 
@@ -309,13 +346,13 @@ describe('Pipelines', () => {
       });
 
       it('renders tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
+        expect(findTab('all').text()).toContain('All');
       });
 
       it('does not renders buttons', () => {
-        expect(wrapper.find('.js-run-pipeline').exists()).toBeFalsy();
-        expect(wrapper.find('.js-ci-lint').exists()).toBeFalsy();
-        expect(wrapper.find('.js-clear-cache').exists()).toBeFalsy();
+        expect(findRunPipelineButton().exists()).toBeFalsy();
+        expect(findCiLintButton().exists()).toBeFalsy();
+        expect(findCleanCacheButton().exists()).toBeFalsy();
       });
 
       it('renders error state', () => {
@@ -342,14 +379,20 @@ describe('Pipelines', () => {
         );
       });
 
+      it('should set up navigation tabs', () => {
+        expect(findNavigationTabs().props('tabs')).toEqual([
+          { name: 'All', scope: 'all', count: '3', isActive: true },
+          { name: 'Finished', scope: 'finished', count: undefined, isActive: false },
+          { name: 'Branches', scope: 'branches', isActive: false },
+          { name: 'Tags', scope: 'tags', isActive: false },
+        ]);
+      });
+
       it('should render navigation tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
-
-        expect(wrapper.find('.js-pipelines-tab-finished').text()).toContain('Finished');
-
-        expect(wrapper.find('.js-pipelines-tab-branches').text()).toContain('Branches');
-
-        expect(wrapper.find('.js-pipelines-tab-tags').text()).toContain('Tags');
+        expect(findTab('all').html()).toContain('All');
+        expect(findTab('finished').text()).toContain('Finished');
+        expect(findTab('branches').text()).toContain('Branches');
+        expect(findTab('tags').text()).toContain('Tags');
       });
 
       it('should make an API request when using tabs', () => {
@@ -362,7 +405,7 @@ describe('Pipelines', () => {
         );
 
         return waitForPromises().then(() => {
-          wrapper.find('.js-pipelines-tab-finished').trigger('click');
+          findTab('finished').trigger('click');
 
           expect(updateContentMock).toHaveBeenCalledWith({ scope: 'finished', page: '1' });
         });
@@ -401,133 +444,172 @@ describe('Pipelines', () => {
     });
   });
 
-  describe('methods', () => {
+  describe('User Interaction', () => {
+    let updateContentMock;
+
     beforeEach(() => {
       jest.spyOn(window.history, 'pushState').mockImplementation(() => null);
     });
 
-    describe('onChangeTab', () => {
-      it('should set page to 1', () => {
-        const updateContentMock = jest.fn(() => {});
-        createComponent(
-          { hasGitlabCi: true, canCreatePipeline: true, ...paths },
-          {
-            updateContent: updateContentMock,
-          },
-        );
+    beforeEach(() => {
+      mock.onGet(paths.endpoint).reply(200, pipelines);
+      createComponent();
 
-        wrapper.vm.onChangeTab('running');
+      updateContentMock = jest.spyOn(wrapper.vm, 'updateContent');
+
+      return waitForPromises();
+    });
+
+    describe('when user changes tabs', () => {
+      it('should set page to 1', () => {
+        findNavigationTabs().vm.$emit('onChangeTab', 'running');
 
         expect(updateContentMock).toHaveBeenCalledWith({ scope: 'running', page: '1' });
       });
     });
 
-    describe('onChangePage', () => {
+    describe('when user changes page', () => {
       it('should update page and keep scope', () => {
-        const updateContentMock = jest.fn(() => {});
-        createComponent(
-          { hasGitlabCi: true, canCreatePipeline: true, ...paths },
-          {
-            updateContent: updateContentMock,
-          },
-        );
-
-        wrapper.vm.onChangePage(4);
+        findTablePagination().vm.change(4);
 
         expect(updateContentMock).toHaveBeenCalledWith({ scope: wrapper.vm.scope, page: '4' });
       });
     });
+
+    describe('updates results when a staged is clicked', () => {
+      beforeEach(() => {
+        const copyPipeline = { ...pipelineWithStages };
+        copyPipeline.id += 1;
+        mock
+          .onGet('twitter/flight/pipelines.json')
+          .reply(
+            200,
+            {
+              pipelines: [pipelineWithStages],
+              count: {
+                all: 1,
+                finished: 1,
+                pending: 0,
+                running: 0,
+              },
+            },
+            {
+              'POLL-INTERVAL': 100,
+            },
+          )
+          .onGet(pipelineWithStages.details.stages[0].dropdown_path)
+          .reply(200, stageReply);
+
+        createComponent();
+      });
+
+      describe('when a request is being made', () => {
+        it('stops polling, cancels the request, & restarts polling', () => {
+          const stopMock = jest.spyOn(wrapper.vm.poll, 'stop');
+          const restartMock = jest.spyOn(wrapper.vm.poll, 'restart');
+          const cancelMock = jest.spyOn(wrapper.vm.service.cancelationSource, 'cancel');
+          mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
+
+          return waitForPromises()
+            .then(() => {
+              wrapper.vm.isMakingRequest = true;
+              findStagesDropdown().trigger('click');
+            })
+            .then(() => {
+              expect(cancelMock).toHaveBeenCalled();
+              expect(stopMock).toHaveBeenCalled();
+              expect(restartMock).toHaveBeenCalled();
+            });
+        });
+      });
+
+      describe('when no request is being made', () => {
+        it('stops polling & restarts polling', () => {
+          const stopMock = jest.spyOn(wrapper.vm.poll, 'stop');
+          const restartMock = jest.spyOn(wrapper.vm.poll, 'restart');
+          mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
+
+          return waitForPromises()
+            .then(() => {
+              findStagesDropdown().trigger('click');
+              expect(stopMock).toHaveBeenCalled();
+            })
+            .then(() => {
+              expect(restartMock).toHaveBeenCalled();
+            });
+        });
+      });
+    });
   });
 
-  describe('computed properties', () => {
+  describe('Rendered content', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    describe('tabs', () => {
-      it('returns default tabs', () => {
-        expect(wrapper.vm.tabs).toEqual([
-          { name: 'All', scope: 'all', count: undefined, isActive: true },
-          { name: 'Finished', scope: 'finished', count: undefined, isActive: false },
-          { name: 'Branches', scope: 'branches', isActive: false },
-          { name: 'Tags', scope: 'tags', isActive: false },
-        ]);
-      });
-    });
-
-    describe('emptyTabMessage', () => {
-      it('returns message with finished scope', () => {
-        wrapper.vm.scope = 'finished';
-
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.emptyTabMessage).toEqual('There are currently no finished pipelines.');
-        });
+    describe('displays different content', () => {
+      it('shows loading state when the app is loading', () => {
+        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       });
 
-      it('returns message without scope when scope is `all`', () => {
-        expect(wrapper.vm.emptyTabMessage).toEqual('There are currently no pipelines.');
-      });
-    });
-
-    describe('stateToRender', () => {
-      it('returns loading state when the app is loading', () => {
-        expect(wrapper.vm.stateToRender).toEqual('loading');
-      });
-
-      it('returns error state when app has error', () => {
+      it('shows error state when app has error', () => {
         wrapper.vm.hasError = true;
         wrapper.vm.isLoading = false;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.stateToRender).toEqual('error');
+          expect(findBlankState().props('message')).toBe(
+            'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
+          );
         });
       });
 
-      it('returns table list when app has pipelines', () => {
+      it('shows table list when app has pipelines', () => {
         wrapper.vm.isLoading = false;
         wrapper.vm.hasError = false;
         wrapper.vm.state.pipelines = pipelines.pipelines;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.stateToRender).toEqual('tableList');
+          expect(wrapper.find(PipelinesTableComponent).exists()).toBe(true);
         });
       });
 
-      it('returns empty tab when app does not have pipelines but project has pipelines', () => {
+      it('shows empty tab when app does not have pipelines but project has pipelines', () => {
         wrapper.vm.state.count.all = 10;
         wrapper.vm.isLoading = false;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.stateToRender).toEqual('emptyTab');
+          expect(findBlankState().exists()).toBe(true);
+          expect(findBlankState().props('message')).toBe('There are currently no pipelines.');
         });
       });
 
-      it('returns empty tab when project has CI', () => {
+      it('shows empty tab when project has CI', () => {
         wrapper.vm.isLoading = false;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.stateToRender).toEqual('emptyTab');
+          expect(findBlankState().exists()).toBe(true);
+          expect(findBlankState().props('message')).toBe('There are currently no pipelines.');
         });
       });
 
-      it('returns empty state when project does not have pipelines nor CI', () => {
+      it('shows empty state when project does not have pipelines nor CI', () => {
         createComponent({ hasGitlabCi: false, canCreatePipeline: true, ...paths });
 
         wrapper.vm.isLoading = false;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.stateToRender).toEqual('emptyState');
+          expect(wrapper.find(EmptyState).exists()).toBe(true);
         });
       });
     });
 
-    describe('shouldRenderTabs', () => {
+    describe('displays tabs', () => {
       it('returns true when state is loading & has already made the first request', () => {
         wrapper.vm.isLoading = true;
         wrapper.vm.hasMadeRequest = true;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderTabs).toEqual(true);
+          expect(findNavigationTabs().exists()).toBe(true);
         });
       });
 
@@ -537,7 +619,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasMadeRequest = true;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderTabs).toEqual(true);
+          expect(findNavigationTabs().exists()).toBe(true);
         });
       });
 
@@ -547,7 +629,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasMadeRequest = true;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderTabs).toEqual(true);
+          expect(findNavigationTabs().exists()).toBe(true);
         });
       });
 
@@ -557,7 +639,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasMadeRequest = true;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderTabs).toEqual(true);
+          expect(findNavigationTabs().exists()).toBe(true);
         });
       });
 
@@ -565,7 +647,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasMadeRequest = false;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderTabs).toEqual(false);
+          expect(findNavigationTabs().exists()).toBe(false);
         });
       });
 
@@ -576,17 +658,17 @@ describe('Pipelines', () => {
         wrapper.vm.hasMadeRequest = true;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderTabs).toEqual(false);
+          expect(findNavigationTabs().exists()).toBe(false);
         });
       });
     });
 
-    describe('shouldRenderButtons', () => {
+    describe('displays buttons', () => {
       it('returns true when it has paths & has made the first request', () => {
         wrapper.vm.hasMadeRequest = true;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderButtons).toEqual(true);
+          expect(findNavigationControls().exists()).toBe(true);
         });
       });
 
@@ -594,73 +676,8 @@ describe('Pipelines', () => {
         wrapper.vm.hasMadeRequest = false;
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.shouldRenderButtons).toEqual(false);
+          expect(findNavigationControls().exists()).toBe(false);
         });
-      });
-    });
-  });
-
-  describe('updates results when a staged is clicked', () => {
-    beforeEach(() => {
-      const copyPipeline = { ...pipelineWithStages };
-      copyPipeline.id += 1;
-      mock
-        .onGet('twitter/flight/pipelines.json')
-        .reply(
-          200,
-          {
-            pipelines: [pipelineWithStages],
-            count: {
-              all: 1,
-              finished: 1,
-              pending: 0,
-              running: 0,
-            },
-          },
-          {
-            'POLL-INTERVAL': 100,
-          },
-        )
-        .onGet(pipelineWithStages.details.stages[0].dropdown_path)
-        .reply(200, stageReply);
-
-      createComponent();
-    });
-
-    describe('when a request is being made', () => {
-      it('stops polling, cancels the request, & restarts polling', () => {
-        const stopMock = jest.spyOn(wrapper.vm.poll, 'stop');
-        const restartMock = jest.spyOn(wrapper.vm.poll, 'restart');
-        const cancelMock = jest.spyOn(wrapper.vm.service.cancelationSource, 'cancel');
-        mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
-
-        return waitForPromises()
-          .then(() => {
-            wrapper.vm.isMakingRequest = true;
-            wrapper.find('.js-builds-dropdown-button').trigger('click');
-          })
-          .then(() => {
-            expect(cancelMock).toHaveBeenCalled();
-            expect(stopMock).toHaveBeenCalled();
-            expect(restartMock).toHaveBeenCalled();
-          });
-      });
-    });
-
-    describe('when no request is being made', () => {
-      it('stops polling & restarts polling', () => {
-        const stopMock = jest.spyOn(wrapper.vm.poll, 'stop');
-        const restartMock = jest.spyOn(wrapper.vm.poll, 'restart');
-        mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
-
-        return waitForPromises()
-          .then(() => {
-            wrapper.find('.js-builds-dropdown-button').trigger('click');
-            expect(stopMock).toHaveBeenCalled();
-          })
-          .then(() => {
-            expect(restartMock).toHaveBeenCalled();
-          });
       });
     });
   });

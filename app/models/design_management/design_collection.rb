@@ -5,6 +5,7 @@ module DesignManagement
     attr_reader :issue
 
     delegate :designs, :project, to: :issue
+    delegate :empty?, to: :designs
 
     state_machine :copy_state, initial: :ready, namespace: :copy do
       after_transition any => any, do: :update_stored_copy_state!

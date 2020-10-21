@@ -38,7 +38,11 @@ module ChatMessage
     private
 
     def message
-      "Deploy to #{environment} #{humanized_status}"
+      if running?
+        "Starting deploy to #{environment}"
+      else
+        "Deploy to #{environment} #{humanized_status}"
+      end
     end
 
     def color
@@ -72,6 +76,10 @@ module ChatMessage
 
     def humanized_status
       status == 'success' ? 'succeeded' : status
+    end
+
+    def running?
+      status == 'running'
     end
   end
 end

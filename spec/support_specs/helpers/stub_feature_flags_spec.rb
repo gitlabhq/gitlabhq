@@ -3,12 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe StubFeatureFlags do
-  let(:feature_name) { :test_feature }
+  let_it_be(:dummy_feature_flag) { :dummy_feature_flag }
+
+  # We inject dummy feature flag defintion
+  # to ensure that we strong validate it's usage
+  # as well
+  before(:all) do
+    definition = Feature::Definition.new(
+      nil,
+      name: dummy_feature_flag,
+      type: 'development',
+      # we allow ambigious usage of `default_enabled:`
+      default_enabled: [false, true]
+    )
+
+    Feature::Definition.definitions[dummy_feature_flag] = definition
+  end
+
+  after(:all) do
+    Feature::Definition.definitions.delete(dummy_feature_flag)
+  end
 
   describe '#stub_feature_flags' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:feature_name) { :test_feature }
+    let(:feature_name) { dummy_feature_flag }
 
     context 'when checking global state' do
       where(:feature_actors, :expected_result) do
@@ -121,14 +140,14 @@ RSpec.describe StubFeatureFlags do
 
   describe 'stub timing' do
     context 'let_it_be variable' do
-      let_it_be(:let_it_be_var) { Feature.enabled?(:any_feature_flag) }
+      let_it_be(:let_it_be_var) { Feature.enabled?(dummy_feature_flag) }
 
       it { expect(let_it_be_var).to eq true }
     end
 
     context 'before_all variable' do
       before_all do
-        @suite_var = Feature.enabled?(:any_feature_flag)
+        @suite_var = Feature.enabled?(dummy_feature_flag)
       end
 
       it { expect(@suite_var).to eq true }
@@ -136,14 +155,14 @@ RSpec.describe StubFeatureFlags do
 
     context 'before(:all) variable' do
       before(:all) do
-        @suite_var = Feature.enabled?(:any_feature_flag)
+        @suite_var = Feature.enabled?(dummy_feature_flag)
       end
 
       it { expect(@suite_var).to eq true }
     end
 
     context 'with stub_feature_flags meta' do
-      let(:var) { Feature.enabled?(:any_feature_flag) }
+      let(:var) { Feature.enabled?(dummy_feature_flag) }
 
       context 'as true', :stub_feature_flags do
         it { expect(var).to eq true }

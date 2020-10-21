@@ -146,4 +146,24 @@ RSpec.describe ApplicationSettingsHelper do
         ])
     end
   end
+
+  describe '.show_documentation_base_url_field?' do
+    subject { helper.show_documentation_base_url_field? }
+
+    before do
+      stub_feature_flags(help_page_documentation_redirect: feature_flag)
+    end
+
+    context 'when feature flag is enabled' do
+      let(:feature_flag) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when feature flag is disabled' do
+      let(:feature_flag) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

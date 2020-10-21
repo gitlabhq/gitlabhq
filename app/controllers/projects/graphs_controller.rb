@@ -11,6 +11,8 @@ class Projects::GraphsController < Projects::ApplicationController
 
   track_unique_visits :charts, target_id: 'p_analytics_repo'
 
+  feature_category :source_code_management
+
   def show
     respond_to do |format|
       format.html
@@ -57,7 +59,6 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def get_daily_coverage_options
-    return unless Feature.enabled?(:ci_download_daily_code_coverage, @project, default_enabled: true)
     return unless can?(current_user, :read_build_report_results, project)
 
     date_today = Date.current

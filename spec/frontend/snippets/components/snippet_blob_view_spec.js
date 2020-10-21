@@ -140,10 +140,10 @@ describe('Blob Embeddable', () => {
         async ({ snippetBlobs, currentBlob, expectedContent }) => {
           const apolloData = {
             snippets: {
-              edges: [
+              nodes: [
                 {
-                  node: {
-                    blobs: snippetBlobs,
+                  blobs: {
+                    nodes: snippetBlobs,
                   },
                 },
               ],

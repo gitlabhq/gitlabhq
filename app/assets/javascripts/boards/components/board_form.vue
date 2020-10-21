@@ -5,6 +5,8 @@ import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import boardsStore from '~/boards/stores/boards_store';
 
+import BoardConfigurationOptions from './board_configuration_options.vue';
+
 const boardDefaults = {
   id: false,
   name: '',
@@ -13,12 +15,15 @@ const boardDefaults = {
   assignee: {},
   assignee_id: undefined,
   weight: null,
+  hide_backlog_list: false,
+  hide_closed_list: false,
 };
 
 export default {
   components: {
     BoardScope: () => import('ee_component/boards/components/board_scope.vue'),
     DeprecatedModal,
+    BoardConfigurationOptions,
   },
   props: {
     canAdminBoard: {
@@ -140,7 +145,17 @@ export default {
       } else {
         boardsStore
           .createBoard(this.board)
-          .then(resp => resp.data)
+          .then(resp => {
+            // This handles 2 use cases
+            // - In create call we only get one parameter, the new board
+            // - In update call, due to Promise.all, we get REST response in
+            // array index 0
+
+            if (Array.isArray(resp)) {
+              return resp[0].data;
+            }
+            return resp.data ? resp.data : resp;
+          })
           .then(data => {
             visitUrl(data.board_path);
           })
@@ -182,7 +197,7 @@ export default {
       <form v-else class="js-board-config-modal" @submit.prevent>
         <div v-if="!readonly" class="append-bottom-20">
           <label class="form-section-title label-bold" for="board-new-name">{{
-            __('Board name')
+            __('Title')
           }}</label>
           <input
             id="board-new-name"
@@ -195,6 +210,12 @@ export default {
             @keyup.enter="submit"
           />
         </div>
+
+        <board-configuration-options
+          :is-new-form="isNewForm"
+          :board="board"
+          :current-board="currentBoard"
+        />
 
         <board-scope
           v-if="scopedIssueBoardFeatureEnabled"

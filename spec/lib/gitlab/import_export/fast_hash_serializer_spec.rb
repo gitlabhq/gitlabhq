@@ -10,14 +10,17 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
   # all items are properly serialized while traversing the simple hash.
   subject { Gitlab::Json.parse(Gitlab::Json.generate(described_class.new(project, tree).execute)) }
 
-  let!(:project) { setup_project }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { setup_project }
   let(:shared) { project.import_export_shared }
   let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
   let(:tree) { reader.project_tree }
 
-  before do
+  before_all do
     project.add_maintainer(user)
+  end
+
+  before do
     allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
     allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
   end
@@ -224,7 +227,6 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
                      group: group,
                      approvals_before_merge: 1
                     )
-    allow(project).to receive(:commit).and_return(Commit.new(RepoHelpers.sample_commit, project))
 
     issue = create(:issue, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)

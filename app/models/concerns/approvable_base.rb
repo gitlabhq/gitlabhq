@@ -2,10 +2,34 @@
 
 module ApprovableBase
   extend ActiveSupport::Concern
+  include FromUnion
 
   included do
     has_many :approvals, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
     has_many :approved_by_users, through: :approvals, source: :user
+
+    scope :without_approvals, -> { left_outer_joins(:approvals).where(approvals: { id: nil }) }
+    scope :with_approvals, -> { joins(:approvals) }
+    scope :approved_by_users_with_ids, -> (*user_ids) do
+      with_approvals
+        .merge(Approval.with_user)
+        .where(users: { id: user_ids })
+        .group(:id)
+        .having("COUNT(users.id) = ?", user_ids.size)
+    end
+    scope :approved_by_users_with_usernames, -> (*usernames) do
+      with_approvals
+        .merge(Approval.with_user)
+        .where(users: { username: usernames })
+        .group(:id)
+        .having("COUNT(users.id) = ?", usernames.size)
+    end
+  end
+
+  class_methods do
+    def select_from_union(relations)
+      where(id: from_union(relations))
+    end
   end
 
   def approved_by?(user)

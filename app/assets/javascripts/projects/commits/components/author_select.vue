@@ -119,7 +119,6 @@ export default {
       <gl-dropdown-divider />
       <gl-search-box-by-type
         v-model.trim="authorInput"
-        class="gl-m-3"
         :placeholder="__('Search')"
         @input="searchAuthors"
       />

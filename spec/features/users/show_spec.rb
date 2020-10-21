@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User page' do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
 
   context 'with public profile' do
     it 'shows all the tabs' do
@@ -171,6 +171,56 @@ RSpec.describe 'User page' do
         visit(user_path(user))
 
         expect(page).not_to have_content('Most Recent Activity')
+      end
+    end
+  end
+
+  context 'page description' do
+    before do
+      visit(user_path(user))
+    end
+
+    it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
+  end
+
+  context 'with a bot user' do
+    let(:user) { create(:user, user_type: :security_bot) }
+
+    describe 'feature flag enabled' do
+      before do
+        stub_feature_flags(security_auto_fix: true)
+      end
+
+      it 'only shows Overview and Activity tabs' do
+        visit(user_path(user))
+
+        page.within '.nav-links' do
+          expect(page).to have_link('Overview')
+          expect(page).to have_link('Activity')
+          expect(page).not_to have_link('Groups')
+          expect(page).not_to have_link('Contributed projects')
+          expect(page).not_to have_link('Personal projects')
+          expect(page).not_to have_link('Snippets')
+        end
+      end
+    end
+
+    describe 'feature flag disabled' do
+      before do
+        stub_feature_flags(security_auto_fix: false)
+      end
+
+      it 'only shows Overview and Activity tabs' do
+        visit(user_path(user))
+
+        page.within '.nav-links' do
+          expect(page).to have_link('Overview')
+          expect(page).to have_link('Activity')
+          expect(page).to have_link('Groups')
+          expect(page).to have_link('Contributed projects')
+          expect(page).to have_link('Personal projects')
+          expect(page).to have_link('Snippets')
+        end
       end
     end
   end

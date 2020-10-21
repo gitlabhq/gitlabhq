@@ -99,6 +99,7 @@ module UsageDataHelpers
       projects_with_error_tracking_enabled
       projects_with_alerts_service_enabled
       projects_with_prometheus_alerts
+      projects_with_tracing_enabled
       projects_with_expiration_policy_enabled
       projects_with_expiration_policy_disabled
       projects_with_expiration_policy_enabled_with_keep_n_unset
@@ -133,6 +134,7 @@ module UsageDataHelpers
       todos
       uploads
       web_hooks
+      user_preferences_user_gitpod_enabled
     ).push(*SMAU_KEYS)
 
   USAGE_DATA_KEYS = %i(
@@ -169,6 +171,10 @@ module UsageDataHelpers
   def stub_usage_data_connections
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
     allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+  end
+
+  def clear_memoized_values(values)
+    values.each { |v| described_class.clear_memoization(v) }
   end
 
   def stub_object_store_settings
@@ -228,9 +234,9 @@ module UsageDataHelpers
     receive_matchers.each { |m| expect(prometheus_client).to m }
   end
 
-  def for_defined_days_back(days: [29, 2])
+  def for_defined_days_back(days: [31, 3])
     days.each do |n|
-      Timecop.travel(n.days.ago) do
+      travel_to(n.days.ago) do
         yield
       end
     end

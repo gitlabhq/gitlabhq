@@ -69,7 +69,7 @@ RSpec.describe Issuable do
 
     it 'returns nil when author is nil' do
       issue.author_id = nil
-      issue.save(validate: false)
+      issue.save!(validate: false)
 
       expect(issue.author_name).to eq nil
     end
@@ -361,13 +361,13 @@ RSpec.describe Issuable do
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        issue.subscriptions.create(user: user, project: project, subscribed: true)
+        issue.subscriptions.create!(user: user, project: project, subscribed: true)
 
         expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        issue.subscriptions.create(user: user, project: project, subscribed: false)
+        issue.subscriptions.create!(user: user, project: project, subscribed: false)
 
         expect(issue.subscribed?(user, project)).to be_falsey
       end
@@ -383,13 +383,13 @@ RSpec.describe Issuable do
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        issue.subscriptions.create(user: user, project: project, subscribed: true)
+        issue.subscriptions.create!(user: user, project: project, subscribed: true)
 
         expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        issue.subscriptions.create(user: user, project: project, subscribed: false)
+        issue.subscriptions.create!(user: user, project: project, subscribed: false)
 
         expect(issue.subscribed?(user, project)).to be_falsey
       end
@@ -437,7 +437,7 @@ RSpec.describe Issuable do
       let(:labels) { create_list(:label, 2) }
 
       before do
-        issue.update(labels: [labels[1]])
+        issue.update!(labels: [labels[1]])
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(issue).and_return(builder)
       end
@@ -456,7 +456,7 @@ RSpec.describe Issuable do
     context 'total_time_spent is updated' do
       before do
         issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.current)
-        issue.save
+        issue.save!
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(issue).and_return(builder)
       end
@@ -497,8 +497,8 @@ RSpec.describe Issuable do
       let(:user2) { create(:user) }
 
       before do
-        merge_request.update(assignees: [user])
-        merge_request.update(assignees: [user, user2])
+        merge_request.update!(assignees: [user])
+        merge_request.update!(assignees: [user, user2])
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(merge_request).and_return(builder)
       end
@@ -554,7 +554,7 @@ RSpec.describe Issuable do
       before do
         label_link = issue.label_links.find_by(label_id: second_label.id)
         label_link.label_id = nil
-        label_link.save(validate: false)
+        label_link.save!(validate: false)
       end
 
       it 'filters out bad labels' do
@@ -824,7 +824,7 @@ RSpec.describe Issuable do
 
     where(:issuable_type, :supports_time_tracking) do
       :issue         | true
-      :incident      | false
+      :incident      | true
       :merge_request | true
     end
 
@@ -922,60 +922,6 @@ RSpec.describe Issuable do
 
         it 'returns issuable serverity' do
           is_expected.to eq('critical')
-        end
-      end
-    end
-  end
-
-  describe '#update_severity' do
-    let(:severity) { 'low' }
-
-    subject(:update_severity) { issuable.update_severity(severity) }
-
-    context 'when issuable not an incident' do
-      %i(issue merge_request).each do |issuable_type|
-        let(:issuable) { build_stubbed(issuable_type) }
-
-        it { is_expected.to be_nil }
-
-        it 'does not set severity' do
-          expect { subject }.not_to change(IssuableSeverity, :count)
-        end
-      end
-    end
-
-    context 'when issuable is an incident' do
-      let!(:issuable) { create(:incident) }
-
-      context 'when issuable does not have issuable severity yet' do
-        it 'creates new record' do
-          expect { update_severity }.to change { IssuableSeverity.where(issue: issuable).count }.to(1)
-        end
-
-        it 'sets severity to specified value' do
-          expect { update_severity }.to change { issuable.severity }.to('low')
-        end
-      end
-
-      context 'when issuable has an issuable severity' do
-        let!(:issuable_severity) { create(:issuable_severity, issue: issuable, severity: 'medium') }
-
-        it 'does not create new record' do
-          expect { update_severity }.not_to change(IssuableSeverity, :count)
-        end
-
-        it 'updates existing issuable severity' do
-          expect { update_severity }.to change { issuable_severity.severity }.to(severity)
-        end
-      end
-
-      context 'when severity value is unsupported' do
-        let(:severity) { 'unsupported-severity' }
-
-        it 'sets the severity to default value' do
-          update_severity
-
-          expect(issuable.issuable_severity.severity).to eq(IssuableSeverity::DEFAULT)
         end
       end
     end

@@ -52,37 +52,14 @@ RSpec.describe PackagesHelper do
     end
   end
 
-  describe 'packages_coming_soon_enabled?' do
-    it 'returns false when the feature flag is disabled' do
-      stub_feature_flags(packages_coming_soon: false)
+  describe 'composer_config_repository_name' do
+    let(:host) { Gitlab.config.gitlab.host }
+    let(:group_id) { 1 }
 
-      expect(helper.packages_coming_soon_enabled?(project)).to eq(false)
-    end
+    it 'return global unique composer registry id' do
+      id = helper.composer_config_repository_name(group_id)
 
-    it 'returns false when not on dev or gitlab.com' do
-      expect(helper.packages_coming_soon_enabled?(project)).to eq(false)
-    end
-  end
-
-  describe 'packages_coming_soon_data' do
-    let_it_be(:group) { create(:group) }
-
-    before do
-      allow(Gitlab).to receive(:dev_env_or_com?) { true }
-    end
-
-    it 'returns the gitlab project on gitlab.com' do
-      allow(Gitlab).to receive(:com?) { true }
-
-      expect(helper.packages_coming_soon_data(project)).to include({ project_path: 'gitlab-org/gitlab' })
-    end
-
-    it 'returns the test project when not on gitlab.com' do
-      expect(helper.packages_coming_soon_data(project)).to include({ project_path: 'gitlab-org/gitlab-test' })
-    end
-
-    it 'works correctly with a group' do
-      expect(helper.packages_coming_soon_data(group)).to include({ project_path: 'gitlab-org/gitlab-test' })
+      expect(id).to eq("#{host}/#{group_id}")
     end
   end
 end

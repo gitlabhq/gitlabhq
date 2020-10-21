@@ -3,6 +3,8 @@
 class Projects::ConfluencesController < Projects::ApplicationController
   before_action :ensure_confluence
 
+  feature_category :integrations
+
   def show
   end
 

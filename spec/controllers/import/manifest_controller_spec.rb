@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::ManifestController do
+RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state do
   include ImportSpecHelper
 
   let_it_be(:user) { create(:user) }
@@ -16,42 +16,93 @@ RSpec.describe Import::ManifestController do
     sign_in(user)
   end
 
-  def assign_session_group
-    session[:manifest_import_repositories] = []
-    session[:manifest_import_group_id] = group.id
+  describe 'POST upload' do
+    context 'with a valid manifest' do
+      it 'saves the manifest and redirects to the status page', :aggregate_failures do
+        post :upload, params: {
+               group_id: group.id,
+               manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+             }
+
+        metadata = Gitlab::ManifestImport::Metadata.new(user)
+
+        expect(metadata.group_id).to eq(group.id)
+        expect(metadata.repositories.size).to eq(660)
+        expect(metadata.repositories.first).to include(name: 'platform/build', path: 'build/make')
+
+        expect(response).to redirect_to(status_import_manifest_path)
+      end
+    end
+
+    context 'with an invalid manifest' do
+      it 'displays an error' do
+        post :upload, params: {
+               group_id: group.id,
+               manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
+             }
+
+        expect(assigns(:errors)).to be_present
+      end
+    end
+
+    context 'when the user cannot create projects in the group' do
+      it 'displays an error' do
+        sign_in(create(:user))
+
+        post :upload, params: {
+               group_id: group.id,
+               manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+             }
+
+        expect(assigns(:errors)).to be_present
+      end
+    end
   end
 
   describe 'GET status' do
-    let(:repo1) { OpenStruct.new(id: 'test1', url: 'http://demo.host/test1') }
-    let(:repo2) { OpenStruct.new(id: 'test2', url: 'http://demo.host/test2') }
+    let(:repo1) { { id: 'test1', url: 'http://demo.host/test1' } }
+    let(:repo2) { { id: 'test2', url: 'http://demo.host/test2' } }
     let(:repos) { [repo1, repo2] }
 
-    before do
-      assign_session_group
+    shared_examples 'status action' do
+      it "returns variables for json request" do
+        project = create(:project, import_type: 'manifest', creator_id: user.id)
 
-      session[:manifest_import_repositories] = repos
+        get :status, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
+        expect(json_response.dig("provider_repos", 0, "id")).to eq(repo1[:id])
+        expect(json_response.dig("provider_repos", 1, "id")).to eq(repo2[:id])
+        expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
+      end
+
+      it "does not show already added project" do
+        project = create(:project, import_type: 'manifest', namespace: user.namespace, import_status: :finished, import_url: repo1[:url])
+
+        get :status, format: :json
+
+        expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
+        expect(json_response.dig("provider_repos").length).to eq(1)
+        expect(json_response.dig("provider_repos", 0, "id")).not_to eq(repo1[:id])
+      end
     end
 
-    it "returns variables for json request" do
-      project = create(:project, import_type: 'manifest', creator_id: user.id)
+    context 'when the data is stored via Gitlab::ManifestImport::Metadata' do
+      before do
+        Gitlab::ManifestImport::Metadata.new(user).save(repos, group.id)
+      end
 
-      get :status, format: :json
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
-      expect(json_response.dig("provider_repos", 0, "id")).to eq(repo1.id)
-      expect(json_response.dig("provider_repos", 1, "id")).to eq(repo2.id)
-      expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
+      include_examples 'status action'
     end
 
-    it "does not show already added project" do
-      project = create(:project, import_type: 'manifest', namespace: user.namespace, import_status: :finished, import_url: repo1.url)
+    context 'when the data is stored in the user session' do
+      before do
+        session[:manifest_import_repositories] = repos
+        session[:manifest_import_group_id] = group.id
+      end
 
-      get :status, format: :json
-
-      expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
-      expect(json_response.dig("provider_repos").length).to eq(1)
-      expect(json_response.dig("provider_repos", 0, "id")).not_to eq(repo1.id)
+      include_examples 'status action'
     end
   end
 end

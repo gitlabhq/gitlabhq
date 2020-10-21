@@ -286,7 +286,7 @@ export default {
 <template>
   <div
     ref="presentationViewport"
-    class="h-100 w-100 p-3 overflow-auto position-relative"
+    class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
     :style="presentationStyle"
     @mousedown="onPresentationMousedown"
     @mousemove="onPresentationMousemove"
@@ -297,7 +297,7 @@ export default {
     @touchend="onPresentationMouseup"
     @touchcancel="onPresentationMouseup"
   >
-    <div class="h-100 w-100 d-flex align-items-center position-relative">
+    <div class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative">
       <design-image
         v-if="image"
         :image="image"

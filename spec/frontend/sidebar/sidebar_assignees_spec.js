@@ -20,6 +20,7 @@ describe('sidebar assignees', () => {
         mediator,
         field: '',
         projectPath: 'projectPath',
+        changing: false,
         ...props,
       },
       provide: {

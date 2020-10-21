@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 module BlobHelper
-  def highlight(file_name, file_content, language: nil, plain: false)
-    highlighted = Gitlab::Highlight.highlight(file_name, file_content, plain: plain, language: language)
-
-    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
-  end
-
   def no_highlight_files
     %w(credits changelog news copying copyright license authors)
   end
@@ -33,11 +27,19 @@ module BlobHelper
   end
 
   def ide_fork_and_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    if current_user
-      project_forks_path(project,
-                        namespace_key: current_user&.namespace&.id,
-                        continue: edit_blob_fork_params(ide_edit_path(project, ref, path)))
-    end
+    fork_path_for_current_user(project, ide_edit_path(project, ref, path))
+  end
+
+  def fork_and_edit_path(project = @project, ref = @ref, path = @path, options = {})
+    fork_path_for_current_user(project, edit_blob_path(project, ref, path, options))
+  end
+
+  def fork_path_for_current_user(project, path)
+    return unless current_user
+
+    project_forks_path(project,
+                      namespace_key: current_user.namespace&.id,
+                      continue: edit_blob_fork_params(path))
   end
 
   def encode_ide_path(path)
@@ -148,7 +150,7 @@ module BlobHelper
   # mode - File unix mode
   # mode - File name
   def blob_icon(mode, name)
-    icon("#{file_type_icon_class('file', mode, name)} fw")
+    sprite_icon(file_type_icon_class('file', mode, name))
   end
 
   def blob_raw_url(**kwargs)

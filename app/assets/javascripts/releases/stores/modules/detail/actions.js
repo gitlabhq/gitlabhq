@@ -3,7 +3,13 @@ import api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';
+import {
+  releaseToApiJson,
+  apiJsonToRelease,
+  gqClient,
+  convertOneReleaseGraphQLResponse,
+} from '~/releases/util';
+import oneReleaseQuery from '~/releases/queries/one_release.query.graphql';
 
 export const initializeRelease = ({ commit, dispatch, getters }) => {
   if (getters.isExistingRelease) {
@@ -18,8 +24,28 @@ export const initializeRelease = ({ commit, dispatch, getters }) => {
   return Promise.resolve();
 };
 
-export const fetchRelease = ({ commit, state }) => {
+export const fetchRelease = ({ commit, state, rootState }) => {
   commit(types.REQUEST_RELEASE);
+
+  if (rootState.featureFlags?.graphqlIndividualReleasePage) {
+    return gqClient
+      .query({
+        query: oneReleaseQuery,
+        variables: {
+          fullPath: state.projectPath,
+          tagName: state.tagName,
+        },
+      })
+      .then(response => {
+        const { data: release } = convertOneReleaseGraphQLResponse(response);
+
+        commit(types.RECEIVE_RELEASE_SUCCESS, release);
+      })
+      .catch(error => {
+        commit(types.RECEIVE_RELEASE_ERROR, error);
+        createFlash(s__('Release|Something went wrong while getting the release details'));
+      });
+  }
 
   return api
     .release(state.projectId, state.tagName)
@@ -45,6 +71,9 @@ export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_REL
 export const updateReleaseMilestones = ({ commit }, milestones) =>
   commit(types.UPDATE_RELEASE_MILESTONES, milestones);
 
+export const updateReleaseGroupMilestones = ({ commit }, groupMilestones) =>
+  commit(types.UPDATE_RELEASE_GROUP_MILESTONES, groupMilestones);
+
 export const addEmptyAssetLink = ({ commit }) => {
   commit(types.ADD_EMPTY_ASSET_LINK);
 };
@@ -65,9 +94,9 @@ export const removeAssetLink = ({ commit }, linkIdToRemove) => {
   commit(types.REMOVE_ASSET_LINK, linkIdToRemove);
 };
 
-export const receiveSaveReleaseSuccess = ({ commit, state, rootState }, release) => {
+export const receiveSaveReleaseSuccess = ({ commit }, release) => {
   commit(types.RECEIVE_SAVE_RELEASE_SUCCESS);
-  redirectTo(rootState.featureFlags.releaseShowPage ? release._links.self : state.releasesPagePath);
+  redirectTo(release._links.self);
 };
 
 export const saveRelease = ({ commit, dispatch, getters }) => {

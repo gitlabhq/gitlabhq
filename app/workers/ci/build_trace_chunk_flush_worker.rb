@@ -8,8 +8,8 @@ module Ci
     idempotent!
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def perform(chunk_id)
-      ::Ci::BuildTraceChunk.find_by(id: chunk_id).try do |chunk|
+    def perform(id)
+      ::Ci::BuildTraceChunk.find_by(id: id).try do |chunk|
         chunk.persist_data!
       end
     end

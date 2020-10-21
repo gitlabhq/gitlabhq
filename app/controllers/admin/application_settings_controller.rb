@@ -2,6 +2,7 @@
 
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
+  include ServicesHelper
 
   # NOTE: Use @application_setting in this controller when you need to access
   # application_settings after it has been modified. This is because the
@@ -15,6 +16,24 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action only: [:ci_cd] do
     push_frontend_feature_flag(:ci_instance_variables_ui, default_enabled: true)
   end
+
+  feature_category :not_owned, [
+                     :general, :reporting, :metrics_and_profiling, :network,
+                     :preferences, :update, :reset_health_check_token
+                   ]
+
+  feature_category :metrics, [
+                     :create_self_monitoring_project,
+                     :status_create_self_monitoring_project,
+                     :delete_self_monitoring_project,
+                     :status_delete_self_monitoring_project
+                   ]
+
+  feature_category :source_code_management, [:repository, :clear_repository_check_states]
+  feature_category :continuous_integration, [:ci_cd, :reset_registration_token]
+  feature_category :collection, [:usage_data]
+  feature_category :integrations, [:integrations]
+  feature_category :pages, [:lets_encrypt_terms_of_service]
 
   VALID_SETTING_PANELS = %w(general repository
                             ci_cd reporting metrics_and_profiling
@@ -32,6 +51,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def integrations
+    return not_found unless instance_level_integrations?
+
     @integrations = Service.find_or_initialize_all(Service.for_instance).sort_by(&:title)
   end
 

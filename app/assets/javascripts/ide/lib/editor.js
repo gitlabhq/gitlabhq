@@ -157,8 +157,10 @@ export default class Editor {
   }
 
   updateDimensions() {
-    this.instance.layout();
-    this.updateDiffView();
+    if (this.instance) {
+      this.instance.layout();
+      this.updateDiffView();
+    }
   }
 
   setPosition({ lineNumber, column }) {

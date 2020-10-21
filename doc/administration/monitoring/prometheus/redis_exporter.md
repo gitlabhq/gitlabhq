@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: APM
+group: Health
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -11,7 +11,7 @@ various [Redis](https://redis.io) metrics. For more information on what is expor
 [read the upstream documentation](https://github.com/oliver006/redis_exporter/blob/master/README.md#whats-exported).
 
 NOTE: **Note:**
-For installations from source you'll have to install and configure it yourself.
+For installations from source you must install and configure it yourself.
 
 To enable the Redis exporter:
 

@@ -19,19 +19,20 @@ export default {
     }
   },
   [types.TOGGLE_FILE_OPEN](state, path) {
-    Object.assign(state.entries[path], {
-      opened: !state.entries[path].opened,
-    });
+    const entry = state.entries[path];
 
-    if (state.entries[path].opened) {
+    entry.opened = !entry.opened;
+    if (entry.opened && !entry.tempFile) {
+      entry.loading = true;
+    }
+
+    if (entry.opened) {
       Object.assign(state, {
         openFiles: state.openFiles.filter(f => f.path !== path).concat(state.entries[path]),
       });
     } else {
-      const file = state.entries[path];
-
       Object.assign(state, {
-        openFiles: state.openFiles.filter(f => f.key !== file.key),
+        openFiles: state.openFiles.filter(f => f.key !== entry.key),
       });
     }
   },

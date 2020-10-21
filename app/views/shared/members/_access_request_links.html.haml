@@ -5,13 +5,13 @@
   = link_to link_text, polymorphic_path([:leave, source, :members]),
             method: :delete,
             data: { confirm: leave_confirmation_message(source), qa_selector: 'leave_group_link' },
-            class: 'access-request-link js-leave-link'
+            class: '.gl-pl-3.gl-border-l-1.gl-border-l-solid.gl-border-l-gray-500 js-leave-link'
 - elsif requester = source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord
   = link_to _('Withdraw Access Request'), polymorphic_path([:leave, source, :members]),
             method: :delete,
             data: { confirm: remove_member_message(requester) },
-            class: 'access-request-link'
+            class: '.gl-pl-3.gl-border-l-1.gl-border-l-solid.gl-border-l-gray-500'
 - elsif source.request_access_enabled && can?(current_user, :request_access, source)
   = link_to _('Request Access'), polymorphic_path([:request_access, source, :members]),
             method: :post,
-            class: 'access-request-link'
+            class: '.gl-pl-3.gl-border-l-1.gl-border-l-solid.gl-border-l-gray-500'

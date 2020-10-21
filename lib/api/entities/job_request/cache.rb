@@ -4,7 +4,7 @@ module API
   module Entities
     module JobRequest
       class Cache < Grape::Entity
-        expose :key, :untracked, :paths, :policy
+        expose :key, :untracked, :paths, :policy, :when
       end
     end
   end

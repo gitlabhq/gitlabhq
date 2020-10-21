@@ -11,7 +11,7 @@ exports[`Expand button on click when short text is provided renders button after
     <!---->
      
     <svg
-      class="gl-icon s16"
+      class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
     >
       <use
@@ -39,7 +39,7 @@ exports[`Expand button on click when short text is provided renders button after
     <!---->
      
     <svg
-      class="gl-icon s16"
+      class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
     >
       <use
@@ -62,7 +62,7 @@ exports[`Expand button when short text is provided renders button before text 1`
     <!---->
      
     <svg
-      class="gl-icon s16"
+      class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
     >
       <use
@@ -90,7 +90,7 @@ exports[`Expand button when short text is provided renders button before text 1`
     <!---->
      
     <svg
-      class="gl-icon s16"
+      class="gl-button-icon gl-icon s16"
       data-testid="ellipsis_h-icon"
     >
       <use

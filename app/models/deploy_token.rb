@@ -78,6 +78,20 @@ class DeployToken < ApplicationRecord
     end
   end
 
+  def group
+    strong_memoize(:group) do
+      groups.first
+    end
+  end
+
+  def accessible_projects
+    if project_type?
+      projects
+    elsif group_type?
+      group.all_projects
+    end
+  end
+
   def holder
     strong_memoize(:holder) do
       if project_type?

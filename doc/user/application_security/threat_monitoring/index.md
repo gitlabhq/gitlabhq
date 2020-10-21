@@ -105,11 +105,10 @@ disabled state. Once enabled,a predefined policy deploys to the
 selected environment's deployment platform and you can manage it like
 the regular policies.
 
-NOTE: **Note:**
-If you're using [Auto DevOps](../../../topics/autodevops/index.md) and
-change a policy in this section, your `auto-deploy-values.yaml` file
-doesn't update. Auto DevOps users must make changes by following
-the [Container Network Policy documentation](../../../topics/autodevops/stages.md#network-policy).
+Note that if you're using [Auto DevOps](../../../topics/autodevops/index.md)
+and change a policy in this section, your `auto-deploy-values.yaml` file doesn't update. Auto DevOps
+users must make changes by following the
+[Container Network Policy documentation](../../../topics/autodevops/stages.md#network-policy).
 
 ### Changing enforcement status
 
@@ -119,12 +118,9 @@ To change a network policy's enforcement status:
 - Click the **Enforcement status** toggle to update the selected policy.
 - Click the **Apply changes** button to deploy network policy changes.
 
-NOTE: **Note:**
-Disabled network policies have the
-`network-policy.gitlab.com/disabled_by: gitlab` selector inside the
-`podSelector` block. This narrows the scope of such a policy and as a
-result it doesn't affect any pods. The policy itself is still deployed
-to the corresponding deployment namespace.
+Disabled network policies have the `network-policy.gitlab.com/disabled_by: gitlab` selector inside
+the `podSelector` block. This narrows the scope of such a policy and as a result it doesn't affect
+any pods. The policy itself is still deployed to the corresponding deployment namespace.
 
 ### Container Network Policy editor
 
@@ -135,10 +131,8 @@ create a new policy click the **New policy** button located in the
 **Policy** tab's header. To edit an existing policy, click**Edit
 policy** in the selected policy drawer.
 
-NOTE: **Note:**
-The policy editor only supports the
-[CiliumNetworkPolicy](https://docs.cilium.io/en/v1.8/policy/)specification. Regular
-Kubernetes
+Note that the policy editor only supports the
+[CiliumNetworkPolicy](https://docs.cilium.io/en/v1.8/policy/)specification. Regular Kubernetes
 [NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicy-v1-networking-k8s-io)
 resources aren't supported.
 

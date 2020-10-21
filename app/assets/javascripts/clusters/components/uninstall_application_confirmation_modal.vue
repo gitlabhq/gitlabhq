@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import trackUninstallButtonClickMixin from 'ee_else_ce/clusters/mixins/track_uninstall_button_click';
 import { sprintf, s__ } from '~/locale';
 import {
@@ -44,6 +43,9 @@ const CUSTOM_APP_WARNING_TEXT = {
 export default {
   components: {
     GlModal,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [trackUninstallButtonClickMixin],
   props: {
@@ -94,6 +96,6 @@ export default {
     :title="title"
     @ok="confirmUninstall()"
   >
-    {{ warningText }} <span v-html="customAppWarningText"></span>
+    {{ warningText }} <span v-safe-html="customAppWarningText"></span>
   </gl-modal>
 </template>

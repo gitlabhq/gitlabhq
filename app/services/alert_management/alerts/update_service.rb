@@ -13,6 +13,7 @@ module AlertManagement
         @current_user = current_user
         @params = params
         @param_errors = []
+        @status = params.delete(:status)
       end
 
       def execute
@@ -35,7 +36,7 @@ module AlertManagement
 
       private
 
-      attr_reader :alert, :current_user, :params, :param_errors
+      attr_reader :alert, :current_user, :params, :param_errors, :status
       delegate :resolved?, to: :alert
 
       def allowed?
@@ -68,8 +69,12 @@ module AlertManagement
         param_errors << message
       end
 
+      def param_errors?
+        params.empty? && status.blank?
+      end
+
       def filter_params
-        param_errors << _('Please provide attributes to update') if params.empty?
+        param_errors << _('Please provide attributes to update') if param_errors?
 
         filter_status
         filter_assignees
@@ -110,9 +115,9 @@ module AlertManagement
 
       # ------ Status-related behavior -------
       def filter_status
-        return unless params[:status]
+        return unless status
 
-        status_event = AlertManagement::Alert::STATUS_EVENTS[status_key]
+        status_event = alert.status_event_for(status)
 
         unless status_event
           param_errors << _('Invalid status')
@@ -120,13 +125,6 @@ module AlertManagement
         end
 
         params[:status_event] = status_event
-      end
-
-      def status_key
-        strong_memoize(:status_key) do
-          status = params.delete(:status)
-          AlertManagement::Alert::STATUSES.key(status)
-        end
       end
 
       def handle_status_change
@@ -144,7 +142,7 @@ module AlertManagement
 
       def filter_duplicate
         # Only need to check if changing to an open status
-        return unless params[:status_event] && AlertManagement::Alert::OPEN_STATUSES.include?(status_key)
+        return unless params[:status_event] && AlertManagement::Alert.open_status?(status)
 
         param_errors << unresolved_alert_error if duplicate_alert?
       end

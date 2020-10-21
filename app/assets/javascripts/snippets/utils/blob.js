@@ -7,6 +7,8 @@ import {
   SNIPPET_LEVELS_MAP,
   SNIPPET_VISIBILITY,
 } from '../constants';
+import { performanceMarkAndMeasure } from '~/performance_utils';
+import { SNIPPET_MARK_BLOBS_CONTENT, SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance_constants';
 
 const createLocalId = () => uniqueId('blob_local_');
 
@@ -78,4 +80,17 @@ export const defaultSnippetVisibilityLevels = arr => {
     });
   }
   return [];
+};
+
+export const markBlobPerformance = () => {
+  performanceMarkAndMeasure({
+    mark: SNIPPET_MARK_BLOBS_CONTENT,
+    measures: [
+      {
+        name: SNIPPET_MEASURE_BLOBS_CONTENT,
+        start: undefined,
+        end: SNIPPET_MARK_BLOBS_CONTENT,
+      },
+    ],
+  });
 };

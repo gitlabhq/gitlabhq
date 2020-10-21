@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Draft merge requests
+# Draft merge requests **(CORE)**
 
 If a merge request is not yet ready to be merged, perhaps due to continued development
 or open threads, you can prevent it from being accepted before it's ready by flagging
@@ -16,10 +16,12 @@ being merged, and it will stay disabled until the "Draft" flag has been removed.
 
 ## Adding the "Draft" flag to a merge request
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32692) in GitLab 13.2, Work-In-Progress (WIP) merge requests were renamed to **Draft**. Support for using **WIP** will be removed in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32692) in GitLab 13.2, Work-In-Progress (WIP) merge requests were renamed to **Draft**. Support for using **WIP** will be removed in GitLab 14.0.
+> - **Mark as draft** and **Mark as ready** buttons [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227421) in GitLab 13.5.
 
 There are several ways to flag a merge request as a Draft:
 
+- Click the **Mark as draft** button on the top-right corner of the merge request's page.
 - Add `[Draft]`, `Draft:` or `(Draft)` to the start of the merge request's title. Clicking on
   **Start the title with Draft:**, under the title box, when editing the merge request's
   description will have the same effect.
@@ -28,15 +30,16 @@ There are several ways to flag a merge request as a Draft:
 - Add the `/wip` [quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics)
   in a comment in the merge request. This is a toggle, and can be repeated
   to change the status back. Note that any other text in the comment will be discarded.
-- Add `draft:` or `Draft:` to the start of a commit message targeting the merge request's
-  source branch. This is not a toggle, and doing it again in another commit will have
-  no effect.
+- Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the beginning of a commit message targeting the
+  merge request's source branch. This is not a toggle, and doing it again in another
+  commit will have no effect.
 
 ## Removing the "Draft" flag from a merge request
 
 Similar to above, when a Merge Request is ready to be merged, you can remove the
 `Draft` flag in several ways:
 
+- Click the **Mark as ready** button on the top-right corner of the merge request's page.
 - Remove `[Draft]`, `Draft:` or `(Draft)` from the start of the merge request's title. Clicking on
   **Remove the Draft: prefix from the title**, under the title box, when editing the merge
   request's description, will have the same effect.

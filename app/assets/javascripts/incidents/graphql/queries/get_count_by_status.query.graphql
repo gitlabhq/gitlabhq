@@ -1,6 +1,17 @@
-query getIncidentsCountByStatus($searchTerm: String, $projectPath: ID!, $issueTypes: [IssueType!]) {
+query getIncidentsCountByStatus(
+  $searchTerm: String
+  $projectPath: ID!
+  $issueTypes: [IssueType!]
+  $authorUsername: String = ""
+  $assigneeUsername: String = ""
+) {
   project(fullPath: $projectPath) {
-    issueStatusCounts(search: $searchTerm, types: $issueTypes) {
+    issueStatusCounts(
+      search: $searchTerm
+      types: $issueTypes
+      authorUsername: $authorUsername
+      assigneeUsername: $assigneeUsername
+    ) {
       all
       opened
       closed

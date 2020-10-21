@@ -5,8 +5,8 @@ import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
 import refQuery from './queries/ref.query.graphql';
 
-let fetchpromise;
-let resolvers = [];
+const fetchpromises = {};
+const resolvers = {};
 
 export function resolveCommit(commits, path, { resolve, entry }) {
   const commit = commits.find(c => c.filePath === `${path}/${entry.name}` && c.type === entry.type);
@@ -18,15 +18,19 @@ export function resolveCommit(commits, path, { resolve, entry }) {
 
 export function fetchLogsTree(client, path, offset, resolver = null) {
   if (resolver) {
-    resolvers.push(resolver);
+    if (!resolvers[path]) {
+      resolvers[path] = [resolver];
+    } else {
+      resolvers[path].push(resolver);
+    }
   }
 
-  if (fetchpromise) return fetchpromise;
+  if (fetchpromises[path]) return fetchpromises[path];
 
   const { projectPath } = client.readQuery({ query: projectPathQuery });
   const { escapedRef } = client.readQuery({ query: refQuery });
 
-  fetchpromise = axios
+  fetchpromises[path] = axios
     .get(
       `${gon.relative_url_root}/${projectPath}/-/refs/${escapedRef}/logs_tree/${encodeURIComponent(
         path.replace(/^\//, ''),
@@ -46,16 +50,16 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
         data,
       });
 
-      resolvers.forEach(r => resolveCommit(data.commits, path, r));
+      resolvers[path].forEach(r => resolveCommit(data.commits, path, r));
 
-      fetchpromise = null;
+      delete fetchpromises[path];
 
       if (headerLogsOffset) {
         fetchLogsTree(client, path, headerLogsOffset);
       } else {
-        resolvers = [];
+        delete resolvers[path];
       }
     });
 
-  return fetchpromise;
+  return fetchpromises[path];
 }

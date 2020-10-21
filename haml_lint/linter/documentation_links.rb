@@ -13,7 +13,7 @@ module HamlLint
       DOCS_DIRECTORY = File.join(File.expand_path('../..', __dir__), 'doc')
 
       HELP_PATH_LINK_PATTERN = <<~PATTERN
-      `(send nil? :help_page_path $...)
+      `(send nil? {:help_page_url :help_page_path} $...)
       PATTERN
 
       MARKDOWN_HEADER = %r{\A\#{1,6}\s+(?<header>.+)\Z}.freeze

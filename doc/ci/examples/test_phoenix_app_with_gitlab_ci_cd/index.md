@@ -117,7 +117,6 @@ Generated hello_gitlab_ci app
 The database for HelloGitlabCi.Repo has been created
 ```
 
-NOTE: **Note:**
 Phoenix assumes that our PostgreSQL database will have a `postgres` user account with the correct
 permissions and a password of `postgres`. If it's not your case, check
 [Ecto's instructions](https://hexdocs.pm/ecto/Ecto.html#module-repositories).
@@ -205,7 +204,6 @@ when running our Phoenix in our `localhost`.
   Without `.gitkeep`, Git will not upload this empty directory and we'll got an error when running our
   test on GitLab.
 
-  NOTE: **Note:**
   If we add a folder via the GitLab UI, GitLab itself will add the `.gitkeep` to that new dir.
 
 Now, let's run a local test and see if everything we did didn't break anything.

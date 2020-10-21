@@ -57,12 +57,23 @@ RSpec.describe AuditEventService do
       let(:audit_service) { described_class.new(user, user, with: 'standard') }
 
       it 'creates an authentication event' do
-        expect(AuthenticationEvent).to receive(:create).with(
+        expect(AuthenticationEvent).to receive(:new).with(
           user: user,
           user_name: user.name,
           ip_address: user.current_sign_in_ip,
           result: AuthenticationEvent.results[:success],
           provider: 'standard'
+        )
+
+        audit_service.for_authentication.security_event
+      end
+
+      it 'tracks exceptions when the event cannot be created' do
+        allow(user).to receive_messages(current_sign_in_ip: 'invalid IP')
+
+        expect(Gitlab::ErrorTracking).to(
+          receive(:track_exception)
+            .with(ActiveRecord::RecordInvalid, audit_event_type: 'AuthenticationEvent').and_call_original
         )
 
         audit_service.for_authentication.security_event

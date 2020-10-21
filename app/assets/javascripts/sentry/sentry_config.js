@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import $ from 'jquery';
+import * as Sentry from '~/sentry/wrapper';
 import { __ } from '~/locale';
 
 const IGNORE_ERRORS = [

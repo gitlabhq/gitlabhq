@@ -34,7 +34,8 @@ RSpec.describe 'User comments on a diff', :js do
           page.within('.diff-files-holder > div:nth-child(3)') do
             expect(page).to have_content('Line is wrong')
 
-            find('.js-btn-vue-toggle-comments').click
+            find('.js-diff-more-actions').click
+            click_button 'Hide comments on this file'
 
             expect(page).not_to have_content('Line is wrong')
           end
@@ -67,7 +68,8 @@ RSpec.describe 'User comments on a diff', :js do
 
           # Hide the comment.
           page.within('.diff-files-holder > div:nth-child(3)') do
-            find('.js-btn-vue-toggle-comments').click
+            find('.js-diff-more-actions').click
+            click_button 'Hide comments on this file'
 
             expect(page).not_to have_content('Line is wrong')
           end
@@ -80,7 +82,8 @@ RSpec.describe 'User comments on a diff', :js do
 
           # Show the comment.
           page.within('.diff-files-holder > div:nth-child(3)') do
-            find('.js-btn-vue-toggle-comments').click
+            find('.js-diff-more-actions').click
+            click_button 'Show comments on this file'
           end
 
           # Now both the comments should be shown.

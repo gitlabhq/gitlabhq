@@ -233,26 +233,11 @@ RSpec.describe Issues::CloseService do
         expect(email.subject).to include(issue.title)
       end
 
-      context 'when resource state events are disabled' do
-        before do
-          stub_feature_flags(track_resource_state_change_events: false)
-        end
+      it 'creates resource state event about the issue being closed' do
+        close_issue
 
-        it 'creates system note about the issue being closed' do
-          close_issue
-
-          note = issue.notes.last
-          expect(note.note).to include "closed"
-        end
-      end
-
-      context 'when resource state events are enabled' do
-        it 'creates resource state event about the issue being closed' do
-          close_issue
-
-          event = issue.resource_state_events.last
-          expect(event.state).to eq('closed')
-        end
+        event = issue.resource_state_events.last
+        expect(event.state).to eq('closed')
       end
 
       it 'marks todos as done' do

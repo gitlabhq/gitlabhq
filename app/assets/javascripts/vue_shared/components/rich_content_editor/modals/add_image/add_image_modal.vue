@@ -32,8 +32,8 @@ export default {
       uploadImageTab: null,
     };
   },
-  modalTitle: __('Image Details'),
-  okTitle: __('Insert'),
+  modalTitle: __('Image details'),
+  okTitle: __('Insert image'),
   urlTabTitle: __('By URL'),
   urlLabel: __('Image URL'),
   descriptionLabel: __('Description'),

@@ -73,7 +73,7 @@ describe('CI variable list mutations', () => {
   });
 
   describe('ADD_WILD_CARD_SCOPE', () => {
-    it('should add wild card scope to enviroments array and sort', () => {
+    it('should add wild card scope to environments array and sort', () => {
       stateCopy.environments = ['dev', 'staging'];
       mutations[types.ADD_WILD_CARD_SCOPE](stateCopy, 'production');
 

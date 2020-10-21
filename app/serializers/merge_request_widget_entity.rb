@@ -67,15 +67,15 @@ class MergeRequestWidgetEntity < Grape::Entity
     )
   end
 
-  expose :user_callouts_path, if: -> (*) { Feature.enabled?(:suggest_pipeline) } do |merge_request|
+  expose :user_callouts_path, if: -> (_, opts) { opts[:experiment_enabled] == :suggest_pipeline } do |_merge_request|
     user_callouts_path
   end
 
-  expose :suggest_pipeline_feature_id, if: -> (*) { Feature.enabled?(:suggest_pipeline) } do |merge_request|
+  expose :suggest_pipeline_feature_id, if: -> (_, opts) { opts[:experiment_enabled] == :suggest_pipeline } do |_merge_request|
     SUGGEST_PIPELINE
   end
 
-  expose :is_dismissed_suggest_pipeline, if: -> (*) { Feature.enabled?(:suggest_pipeline) } do |merge_request|
+  expose :is_dismissed_suggest_pipeline, if: -> (_, opts) { opts[:experiment_enabled] == :suggest_pipeline } do |_merge_request|
     current_user && current_user.dismissed_callout?(feature_name: SUGGEST_PIPELINE)
   end
 
@@ -120,8 +120,16 @@ class MergeRequestWidgetEntity < Grape::Entity
     end
 
     expose :base_path do |merge_request|
-      base_pipeline_downloadable_path_for_report_type(:codequality)
+      if use_merge_base_with_merged_results?
+        merge_base_pipeline_downloadable_path_for_report_type(:codequality)
+      else
+        base_pipeline_downloadable_path_for_report_type(:codequality)
+      end
     end
+  end
+
+  expose :security_reports_docs_path do |merge_request|
+    help_page_path('user/application_security/sast/index.md', anchor: 'reports-json-format')
   end
 
   private
@@ -150,6 +158,16 @@ class MergeRequestWidgetEntity < Grape::Entity
 
   def base_pipeline_downloadable_path_for_report_type(file_type)
     object.base_pipeline&.present(current_user: current_user)
+      &.downloadable_path_for_report_type(file_type)
+  end
+
+  def use_merge_base_with_merged_results?
+    Feature.enabled?(:merge_base_pipelines, object.target_project) &&
+      object.actual_head_pipeline&.merge_request_event_type == :merged_result
+  end
+
+  def merge_base_pipeline_downloadable_path_for_report_type(file_type)
+    object.merge_base_pipeline&.present(current_user: current_user)
       &.downloadable_path_for_report_type(file_type)
   end
 end

@@ -3,6 +3,8 @@
 module Groups
   module Settings
     class CiCdController < Groups::ApplicationController
+      include RunnerSetupScripts
+
       skip_cross_project_access_check :show
       before_action :authorize_admin_group!
       before_action :authorize_update_max_artifacts_size!, only: [:update]
@@ -10,6 +12,8 @@ module Groups
         push_frontend_feature_flag(:new_variables_ui, @group, default_enabled: true)
       end
       before_action :define_variables, only: [:show]
+
+      feature_category :continuous_integration
 
       NUMBER_OF_RUNNERS_PER_PAGE = 4
 
@@ -47,6 +51,10 @@ module Groups
         end
 
         redirect_to group_settings_ci_cd_path
+      end
+
+      def runner_setup_scripts
+        private_runner_setup_scripts(group: group)
       end
 
       private

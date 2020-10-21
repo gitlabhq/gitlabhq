@@ -3,7 +3,7 @@ import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
 import { IS_HIGHLIGHTED, LINK_SELECTOR, NODE_SELECTOR } from '~/pipelines/components/dag/constants';
 import { highlightIn, highlightOut } from '~/pipelines/components/dag/interactions';
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
-import { removeOrphanNodes } from '~/pipelines/components/dag/parsing_utils';
+import { removeOrphanNodes } from '~/pipelines/components/parsing_utils';
 import { parsedData } from './mock_data';
 
 describe('The DAG graph', () => {

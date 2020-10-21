@@ -41,7 +41,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
       write_comment
 
       page.within('.review-bar-content') do
-        click_button 'Finish review'
         click_button 'Submit review'
       end
 
@@ -62,18 +61,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
       expect(page).not_to have_selector('.draft-note-component', text: 'Line is wrong')
 
       expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
-    end
-
-    it 'discards review' do
-      write_comment
-
-      click_button 'Discard review'
-
-      click_button 'Delete all pending comments'
-
-      wait_for_requests
-
-      expect(page).not_to have_selector('.draft-note-component')
     end
 
     it 'deletes draft note' do
@@ -149,7 +136,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
         write_reply_to_discussion(resolve: true)
 
         page.within('.review-bar-content') do
-          click_button 'Finish review'
           click_button 'Submit review'
         end
 
@@ -192,7 +178,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
         write_reply_to_discussion(button_text: 'Start a review', unresolve: true)
 
         page.within('.review-bar-content') do
-          click_button 'Finish review'
           click_button 'Submit review'
         end
 

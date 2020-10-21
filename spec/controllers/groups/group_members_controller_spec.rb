@@ -233,6 +233,42 @@ RSpec.describe Groups::GroupMembersController do
         end
       end
     end
+
+    context 'expiration date' do
+      let(:expiry_date) { 1.month.from_now.to_date }
+
+      before do
+        travel_to Time.now.utc.beginning_of_day
+
+        put(
+          :update,
+          params: {
+            group_member: { expires_at: expiry_date },
+            group_id: group,
+            id: requester
+          },
+          format: :json
+        )
+      end
+
+      context 'when `expires_at` is set' do
+        it 'returns correct json response' do
+          expect(json_response).to eq({
+            "expires_in" => "about 1 month",
+            "expires_soon" => false,
+            "expires_at_formatted" => expiry_date.to_time.in_time_zone.to_s(:medium)
+          })
+        end
+      end
+
+      context 'when `expires_at` is not set' do
+        let(:expiry_date) { nil }
+
+        it 'returns empty json response' do
+          expect(json_response).to be_empty
+        end
+      end
+    end
   end
 
   describe 'DELETE destroy' do
@@ -441,7 +477,7 @@ RSpec.describe Groups::GroupMembersController do
               group_id: group,
               id: membership
             },
-            format: :js
+            format: :json
 
         expect(response).to have_gitlab_http_status(:ok)
       end

@@ -285,6 +285,44 @@ RSpec.describe Groups::TransferService do
         end
       end
 
+      context 'shared runners configuration' do
+        before do
+          create(:group_member, :owner, group: new_parent_group, user: user)
+        end
+
+        context 'if parent group has disabled shared runners but allows overrides' do
+          let(:new_parent_group) { create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true) }
+
+          it 'calls update service' do
+            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: 'disabled_with_override' }).and_call_original
+
+            transfer_service.execute(new_parent_group)
+          end
+        end
+
+        context 'if parent group does not allow shared runners' do
+          let(:new_parent_group) { create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false) }
+
+          it 'calls update service' do
+            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: 'disabled_and_unoverridable' }).and_call_original
+
+            transfer_service.execute(new_parent_group)
+          end
+        end
+
+        context 'if parent group allows shared runners' do
+          let(:group) { create(:group, :public, :nested, shared_runners_enabled: false) }
+          let(:new_parent_group) { create(:group, shared_runners_enabled: true) }
+
+          it 'does not call update service and keeps them disabled on the group' do
+            expect(Groups::UpdateSharedRunnersService).not_to receive(:new)
+
+            transfer_service.execute(new_parent_group)
+            expect(group.reload.shared_runners_enabled).to be_falsy
+          end
+        end
+      end
+
       context 'when a group is transferred to its subgroup' do
         let(:new_parent_group) { create(:group, parent: group) }
 
@@ -525,6 +563,39 @@ RSpec.describe Groups::TransferService do
 
               transfer_service.execute(new_parent_group)
             end
+          end
+        end
+      end
+
+      context 'when transferring a group with two factor authentication switched on' do
+        before do
+          TestEnv.clean_test_path
+          create(:group_member, :owner, group: new_parent_group, user: user)
+          create(:group, :private, parent: group, require_two_factor_authentication: true)
+          group.update!(require_two_factor_authentication: true)
+        end
+
+        it 'does not update group two factor authentication setting' do
+          transfer_service.execute(new_parent_group)
+
+          expect(group.require_two_factor_authentication).to eq(true)
+        end
+
+        context 'when new parent disallows two factor authentication switched on for descendants' do
+          before do
+            new_parent_group.namespace_settings.update!(allow_mfa_for_subgroups: false)
+          end
+
+          it 'updates group two factor authentication setting' do
+            transfer_service.execute(new_parent_group)
+
+            expect(group.require_two_factor_authentication).to eq(false)
+          end
+
+          it 'schedules update of group two factor authentication setting for descendants' do
+            expect(DisallowTwoFactorForSubgroupsWorker).to receive(:perform_async).with(group.id)
+
+            transfer_service.execute(new_parent_group)
           end
         end
       end

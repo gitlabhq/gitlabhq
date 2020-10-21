@@ -6,6 +6,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     push_frontend_feature_flag(:webauthn)
   end
 
+  feature_category :authentication_and_authorization
+
   def show
     unless current_user.two_factor_enabled?
       current_user.otp_secret = User.generate_otp_secret(32)
@@ -45,7 +47,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def create
-    if current_user.validate_and_consume_otp!(params[:pin_code])
+    otp_validation_result =
+      ::Users::ValidateOtpService.new(current_user).execute(params[:pin_code])
+
+    if otp_validation_result[:status] == :success
       ActiveSession.destroy_all_but_current(current_user, session)
 
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute! do |user|

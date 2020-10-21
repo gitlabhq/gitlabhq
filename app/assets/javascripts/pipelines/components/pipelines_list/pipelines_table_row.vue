@@ -1,6 +1,7 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import eventHub from '../../event_hub';
+import { __ } from '~/locale';
 import PipelinesActionsComponent from './pipelines_actions.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -17,6 +18,14 @@ import { PIPELINES_TABLE } from '../../constants';
  * Given the received object renders a table row in the pipelines' table.
  */
 export default {
+  i18n: {
+    cancelTitle: __('Cancel'),
+    redeployTitle: __('Retry'),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+    GlModalDirective,
+  },
   components: {
     PipelinesActionsComponent,
     PipelinesArtifactsComponent,
@@ -321,7 +330,11 @@ export default {
       </div>
     </div>
 
-    <pipelines-timeago :duration="pipelineDuration" :finished-time="pipelineFinishedAt" />
+    <pipelines-timeago
+      class="gl-text-right"
+      :duration="pipelineDuration"
+      :finished-time="pipelineFinishedAt"
+    />
 
     <div
       v-if="displayPipelineActions"
@@ -338,8 +351,11 @@ export default {
 
         <gl-button
           v-if="pipeline.flags.retryable"
-          :loading="isRetrying"
+          v-gl-tooltip.hover
+          :aria-label="$options.i18n.redeployTitle"
+          :title="$options.i18n.redeployTitle"
           :disabled="isRetrying"
+          :loading="isRetrying"
           class="js-pipelines-retry-button btn-retry"
           data-qa-selector="pipeline_retry_button"
           icon="repeat"
@@ -350,10 +366,12 @@ export default {
 
         <gl-button
           v-if="pipeline.flags.cancelable"
+          v-gl-tooltip.hover
+          v-gl-modal-directive="'confirmation-modal'"
+          :aria-label="$options.i18n.cancelTitle"
+          :title="$options.i18n.cancelTitle"
           :loading="isCancelling"
           :disabled="isCancelling"
-          data-toggle="modal"
-          data-target="#confirmation-modal"
           icon="close"
           variant="danger"
           category="primary"

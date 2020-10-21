@@ -502,21 +502,11 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   describe '#persist_data!' do
     let(:build) { create(:ci_build, :running) }
 
-    subject { build_trace_chunk.persist_data! }
-
-    shared_examples_for 'Atomic operation' do
-      context 'when the other process is persisting' do
-        let(:lease_key) { "trace_write:#{build_trace_chunk.build.id}:chunks:#{build_trace_chunk.chunk_index}" }
-
-        before do
-          stub_exclusive_lease_taken(lease_key)
-        end
-
-        it 'raise an error' do
-          expect { subject }.to raise_error('Failed to obtain a lock')
-        end
-      end
+    before do
+      build_trace_chunk.save!
     end
+
+    subject { build_trace_chunk.persist_data! }
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
@@ -548,8 +538,6 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
             expect(build_trace_chunk.reload.checksum).to eq '3398914352'
           end
-
-          it_behaves_like 'Atomic operation'
         end
 
         context 'when data size has not reached CHUNK_SIZE' do
@@ -573,6 +561,62 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
               subject
 
               expect(build_trace_chunk.fog?).to be_truthy
+            end
+          end
+
+          context 'when the chunk has been modifed by a different worker' do
+            it 'reloads the chunk before migration' do
+              described_class
+                .find(build_trace_chunk.id)
+                .update!(data_store: :fog)
+
+              build_trace_chunk.persist_data!
+            end
+
+            it 'verifies the operation using optimistic locking' do
+              allow(build_trace_chunk)
+                .to receive(:save!)
+                .and_raise(ActiveRecord::StaleObjectError)
+
+              expect { build_trace_chunk.persist_data! }
+                .to raise_error(described_class::FailedToPersistDataError)
+            end
+
+            it 'does not allow flushing unpersisted chunk' do
+              build_trace_chunk.checksum = '12345'
+
+              expect { build_trace_chunk.persist_data! }
+                .to raise_error(described_class::FailedToPersistDataError,
+                                /Modifed build trace chunk detected/)
+            end
+          end
+
+          context 'when the chunk is being locked by a different worker' do
+            let(:metrics) { spy('metrics') }
+
+            it 'does not raise an exception' do
+              lock_chunk do
+                expect { build_trace_chunk.persist_data! }.not_to raise_error
+              end
+            end
+
+            it 'increments stalled chunk trace metric' do
+              allow(build_trace_chunk)
+                .to receive(:metrics)
+                .and_return(metrics)
+
+              lock_chunk { build_trace_chunk.persist_data! }
+
+              expect(metrics)
+                .to have_received(:increment_trace_operation)
+                .with(operation: :stalled)
+                .once
+            end
+
+            def lock_chunk(&block)
+              "trace_write:#{build.id}:chunks:#{chunk_index}".then do |key|
+                build_trace_chunk.in_lock(key, &block)
+              end
             end
           end
         end
@@ -609,8 +653,6 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
           end
-
-          it_behaves_like 'Atomic operation'
         end
 
         context 'when data size has not reached CHUNK_SIZE' do
@@ -670,8 +712,6 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
           end
-
-          it_behaves_like 'Atomic operation'
         end
 
         context 'when data size has not reached CHUNK_SIZE' do
@@ -777,6 +817,64 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
 
       it_behaves_like 'deletes all build_trace_chunk and data in redis'
+    end
+  end
+
+  describe 'comparable build trace chunks' do
+    describe '#<=>' do
+      context 'when chunks are associated with different builds' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, chunk_index: 1) }
+
+        it 'returns nil' do
+          expect(first <=> second).to be_nil
+        end
+      end
+
+      context 'when there are two chunks with different indexes' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, build: build, chunk_index: 0) }
+
+        it 'indicates the the first one is greater than then second' do
+          expect(first <=> second).to eq 1
+        end
+      end
+
+      context 'when there are two chunks with the same index within the same build' do
+        let(:chunk) { create(:ci_build_trace_chunk) }
+
+        it 'indicates the these are equal' do
+          expect(chunk <=> chunk).to be_zero # rubocop:disable Lint/UselessComparison
+        end
+      end
+    end
+
+    describe '#==' do
+      context 'when chunks have the same index' do
+        let(:chunk) { create(:ci_build_trace_chunk) }
+
+        it 'indicates that the chunks are equal' do
+          expect(chunk).to eq chunk
+        end
+      end
+
+      context 'when chunks have different indexes' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, build: build, chunk_index: 0) }
+
+        it 'indicates that the chunks are not equal' do
+          expect(first).not_to eq second
+        end
+      end
+
+      context 'when chunks are associated with different builds' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, chunk_index: 1) }
+
+        it 'indicates that the chunks are not equal' do
+          expect(first).not_to eq second
+        end
+      end
     end
   end
 end

@@ -7,7 +7,7 @@ class AddForeignKeyToUserIdOnAlertManagementAlertAssignees < ActiveRecord::Migra
 
   def up
     with_lock_retries do
-      add_foreign_key :alert_management_alert_assignees, :users, column: :user_id, on_delete: :cascade # rubocop:disable Migration/AddConcurrentForeignKey
+      add_foreign_key :alert_management_alert_assignees, :users, column: :user_id, on_delete: :cascade
     end
   end
 

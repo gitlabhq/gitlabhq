@@ -20,8 +20,8 @@ many organizations .
 
 | Users        | Configuration           | GCP            | AWS             | Azure          |
 |--------------|-------------------------|----------------|-----------------|----------------|
-| Up to 500    | 4 vCPU, 3.6GB memory    | n1-highcpu-4   | c5.xlarge       | F4s v2         |
-| Up to 1,000  | 8 vCPU, 7.2GB memory    | n1-highcpu-8   | c5.2xlarge      | F8s v2         |
+| Up to 500    | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | c5.xlarge       | F4s v2         |
+| Up to 1,000  | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | c5.2xlarge      | F8s v2         |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -30,20 +30,28 @@ or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-In addition to the stated configurations, we recommend having at least 2GB of
+In addition to the stated configurations, we recommend having at least 2 GB of
 swap on your server, even if you currently have enough available memory. Having
-swap will help reduce the chance of errors occurring if your available memory
+swap helps to reduce the chance of errors occurring if your available memory
 changes. We also recommend configuring the kernel's swappiness setting to a
 lower value (such as `10`) to make the most of your memory, while still having
 the swap available when needed.
 
 ## Setup instructions
 
-For this default reference architecture, to install GitLab use the standard
+To install GitLab for this default reference architecture, use the standard
 [installation instructions](../../install/README.md).
 
-NOTE: **Note:**
-You can also optionally configure GitLab to use an
-[external PostgreSQL service](../postgresql/external.md) or an
-[external object storage service](../high_availability/object_storage.md) for
-added performance and reliability at a reduced complexity cost.
+You can also optionally configure GitLab to use an [external PostgreSQL service](../postgresql/external.md)
+or an [external object storage service](../object_storage.md) for added
+performance and reliability at a reduced complexity cost.
+
+## Configure Advanced Search **(STARTER ONLY)**
+
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+for faster, more advanced code search across your entire GitLab instance.
+
+Elasticsearch cluster design and requirements are dependent on your specific
+data. For recommended best practices about how to set up your Elasticsearch
+cluster alongside your instance, read how to
+[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).

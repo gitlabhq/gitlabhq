@@ -22,10 +22,10 @@ Testing (SAST), and Secret Detection by adding the following to your `.gitlab-ci
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
-  - template: License-Scanning.gitlab-ci.yml
-  - template: SAST.gitlab-ci.yml
-  - template: Secret-Detection.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 ```
 
 To add Dynamic Application Security Testing (DAST) scanning, add the following to your
@@ -33,7 +33,7 @@ To add Dynamic Application Security Testing (DAST) scanning, add the following t
 
 ```yaml
 include:
-  - template: DAST.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
 
 variables:
   DAST_WEBSITE: https://staging.example.com
@@ -449,7 +449,7 @@ To fix this issue, you can either:
 
   ```yaml
   include:
-    template: SAST.gitlab-ci.yml
+    template: Security/SAST.gitlab-ci.yml
 
   spotbugs-sast:
     stage: unit-tests
@@ -457,6 +457,15 @@ To fix this issue, you can either:
 
 [Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 All the security scanning tools define their stage, so this error can occur with all of them.
+
+### Getting warning messages `… report.json: no matching files`
+
+This is often followed by the [error `No files to upload`](../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload),
+and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Please
+check the entire job log for such messages. If you don't find these messages, retry the failed job
+after setting `SECURE_LOG_LEVEL: "debug"` as a
+[custom environment variable](../../ci/variables/README.md#custom-environment-variables).
+This provides useful information to investigate further.
 
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
 
@@ -490,7 +499,7 @@ would look similar to:
 
 ```yaml
 include:
-  - template: SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is only executed on master or merge requests
 spotbugs-sast:
@@ -505,7 +514,7 @@ would be written as follows:
 
 ```yaml
 include:
-  - template: SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is only executed on master or merge requests
 spotbugs-sast:
@@ -519,7 +528,7 @@ it would look similar to:
 
 ```yaml
 include:
-  - template: SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is not executed on tags
 spotbugs-sast:
@@ -531,7 +540,7 @@ To transition to the new `rules` syntax, the override would be rewritten as:
 
 ```yaml
 include:
-  - template: SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is not executed on tags
 spotbugs-sast:
