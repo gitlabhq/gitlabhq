@@ -19,10 +19,6 @@ export default {
       type: Array,
       required: true,
     },
-    iconName: {
-      type: String,
-      required: true,
-    },
     stagedList: {
       type: Boolean,
       required: false,
@@ -73,7 +69,6 @@ export default {
   <div class="ide-commit-list-container">
     <header class="multi-file-commit-panel-header d-flex mb-0">
       <div class="d-flex align-items-center flex-fill">
-        <gl-icon v-once :name="iconName" :size="18" class="gl-mr-3" />
         <strong> {{ titleText }} </strong>
         <div class="d-flex ml-auto">
           <button

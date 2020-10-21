@@ -264,26 +264,23 @@ sentry_dsn = "X"
 
 ### Windows shared runners (beta)
 
-The Windows shared runners are currently in
-[beta](https://about.gitlab.com/handbook/product/#beta) and should not be used
-for production workloads.
+The Windows shared runners are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+and shouldn't be used for production workloads.
 
-During the beta period, the
-[shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
-will apply for groups and projects in the same way as Linux runners.
-This may change when the beta period ends, as discussed in this
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).
+During this beta period, the [shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
+applies for groups and projects in the same manner as Linux runners. This may
+change when the beta period ends, as discussed in this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).
 
-Windows shared runners on GitLab.com automatically autoscale by
-launching virtual machines on the Google Cloud Platform. This solution uses
-a new [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
+Windows shared runners on GitLab.com autoscale by launching virtual machines on
+the Google Cloud Platform. This solution uses an
+[autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
-Windows shared runners execute your CI/CD jobs on `n1-standard-2` instances with 2
-vCPUs and 7.5GB RAM. You can find a full list of available Windows packages in the
-[package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
+Windows shared runners execute your CI/CD jobs on `n1-standard-2` instances with
+2 vCPUs and 7.5 GB RAM. You can find a full list of available Windows packages in
+the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
 
 We want to keep iterating to get Windows shared runners in a stable state and
-[generally available](https://about.gitlab.com/handbook/product/#generally-available-ga).
+[generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
 
@@ -292,7 +289,7 @@ You can follow our work towards this goal in the
 The full contents of our `config.toml` are:
 
 NOTE: **Note:**
-Settings that are not public are shown as `X`.
+Settings that aren't public are shown as `X`.
 
 ```toml
 concurrent = X

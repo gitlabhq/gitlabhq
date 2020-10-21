@@ -68,7 +68,6 @@ export default {
         :active-file-key="activeFileKey"
         :empty-state-text="__('There are no changes')"
         class="is-first"
-        icon-name="unstaged"
       />
     </template>
     <empty-state v-else />
