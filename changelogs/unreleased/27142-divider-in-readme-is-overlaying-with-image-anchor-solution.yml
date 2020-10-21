@@ -1,0 +1,5 @@
+---
+title: Fix rendering of markdown headings and floated images
+merge_request: 25442
+author: Gwen_
+type: fixed

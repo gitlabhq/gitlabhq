@@ -16,10 +16,6 @@ export default {
       type: Object,
       required: true,
     },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     tooltipPlacement: {
       type: String,
       default: 'bottom',
@@ -76,7 +72,7 @@ export default {
     <!-- use d-flex so that slot can be appropriately styled -->
     <span class="d-flex">
       <assignee-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
-      <slot :user="user"></slot>
+      <slot></slot>
     </span>
   </gl-link>
 </template>

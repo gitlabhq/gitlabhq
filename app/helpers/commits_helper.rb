@@ -196,7 +196,7 @@ module CommitsHelper
     return unless external_url
 
     link_to(external_url, class: 'btn btn-file-option has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: "View on #{environment.formatted_external_url}", data: { container: 'body' }) do
-      icon('external-link')
+      sprite_icon('external-link')
     end
   end
 

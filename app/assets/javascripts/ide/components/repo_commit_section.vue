@@ -1,6 +1,5 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import tooltip from '~/vue_shared/directives/tooltip';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import { stageKeys } from '../constants';
@@ -9,9 +8,6 @@ export default {
   components: {
     CommitFilesList,
     EmptyState,
-  },
-  directives: {
-    tooltip,
   },
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'lastCommitMsg']),

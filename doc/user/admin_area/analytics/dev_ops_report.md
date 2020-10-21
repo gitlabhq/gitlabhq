@@ -10,6 +10,8 @@ The DevOps Report gives you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
 from planning to monitoring.
 
+To see DevOps Report, go to **Admin Area > Analytics > DevOps Report**.
+
 ## DevOps Score
 
 DevOps Score displays the usage of GitLab's major features on your instance over

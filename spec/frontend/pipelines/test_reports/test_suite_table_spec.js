@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlFriendlyWrap } from '@gitlab/ui';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { TestStatus } from '~/pipelines/constants';
@@ -40,6 +40,7 @@ describe('Test reports suite table', () => {
     wrapper = shallowMount(SuiteTable, {
       store,
       localVue,
+      stubs: { GlFriendlyWrap },
     });
   };
 

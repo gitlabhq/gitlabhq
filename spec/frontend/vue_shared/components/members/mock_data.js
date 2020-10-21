@@ -3,6 +3,7 @@ export const member = {
   canUpdate: false,
   canRemove: false,
   canOverride: false,
+  isOverridden: false,
   accessLevel: { integerValue: 50, stringValue: 'Owner' },
   source: {
     id: 178,

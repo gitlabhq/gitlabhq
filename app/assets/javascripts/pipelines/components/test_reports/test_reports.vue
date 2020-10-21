@@ -61,7 +61,7 @@ export default {
   <div
     v-else-if="!isLoading && showTests"
     ref="container"
-    class="tests-detail position-relative"
+    class="position-relative"
     data-testid="tests-detail"
   >
     <transition
@@ -69,13 +69,13 @@ export default {
       @before-enter="beforeEnterTransition"
       @after-leave="afterLeaveTransition"
     >
-      <div v-if="showSuite" key="detail" class="w-100 position-absolute slide-enter-to-element">
+      <div v-if="showSuite" key="detail" class="w-100 slide-enter-to-element">
         <test-summary :report="getSelectedSuite" show-back @on-back-click="summaryBackClick" />
 
         <test-suite-table />
       </div>
 
-      <div v-else key="summary" class="w-100 position-absolute slide-enter-from-element">
+      <div v-else key="summary" class="w-100 slide-enter-from-element">
         <test-summary :report="testReports" />
 
         <test-summary-table @row-click="summaryTableRowClick" />

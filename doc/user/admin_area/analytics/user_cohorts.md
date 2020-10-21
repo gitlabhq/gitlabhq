@@ -5,6 +5,8 @@
 As a benefit of having the [usage ping active](../settings/usage_statistics.md),
 GitLab lets you analyze the users' activities over time of your GitLab installation.
 
+To see User Cohorts, go to **Admin Area > Analytics > Cohorts**.
+
 ## Overview
 
 How do we read the user cohorts table? Let's take an example with the following

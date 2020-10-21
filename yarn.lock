@@ -1173,20 +1173,20 @@
     dom-accessibility-api "^0.5.1"
     pretty-format "^26.4.2"
 
-"@toast-ui/editor@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.4.0.tgz#0ed082da7e0160162dbc8f69d00ad3ab2adf81bc"
-  integrity sha512-49YCYcDnCjv4mC9VVNlytJ23SA5t6ox540GnmysluJHJ8aGRdWcVoH8hiyCZi9ZVIXi90B/TU+2HUQ7mOCHHRQ==
+"@toast-ui/editor@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.5.0.tgz#02779b119eaa6dd7601249d75ca031e0b98400f1"
+  integrity sha512-h4LgcGz+oedTqNAaSCp0VpR+k4C6Ag01hdDb1kPvO4aMQ/aTtT8uA34plpmYQgJvM0CWD1mXqWUSPkyJtRzDyA==
   dependencies:
     "@types/codemirror" "0.0.71"
     codemirror "^5.48.4"
 
-"@toast-ui/vue-editor@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.4.0.tgz#18b6629006f2dac5bfef4a26388499931d5fa869"
-  integrity sha512-fj4H4jM+usW43mD0VEIfBeUpANY9/pQLB8GlXLQH2iAmpmJFX+xMZl6r7d/vw6TDJaHLfFxP/iXcYIfyJobepQ==
+"@toast-ui/vue-editor@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.5.0.tgz#8094136588b0f726241b5f89d0754a7169f2ffee"
+  integrity sha512-GREAaVOe5esQaQFmFCZLjo6iOtIvqvYhANulvsKpbh4QNnsPLaFRIQoUDSImNPVGkDDQn60wxXBnZVKOl9sMmg==
   dependencies:
-    "@toast-ui/editor" "^2.4.0"
+    "@toast-ui/editor" "^2.5.0"
 
 "@types/aria-query@^4.2.0":
   version "4.2.0"
@@ -4174,10 +4174,10 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-dompurify@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.1.1.tgz#b5aa988676b093a9c836d8b855680a8598af25fe"
-  integrity sha512-NijiNVkS/OL8mdQL1hUbCD6uty/cgFpmNiuFxrmJ5YPH2cXrPKIewoixoji56rbZ6XBPmtM8GA8/sf9unlSuwg==
+dompurify@^2.1.1, dompurify@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.0.tgz#51d34e76faa38b5d6b4e83a0678530f27fe3965c"
+  integrity sha512-bqFOQ7XRmmozp0VsKdIEe8UwZYxj0yttz7l80GBtBqdVRY48cOpXH2J/CVO7AEkV51qY0EBVXfilec18mdmQ/w==
 
 domutils@^1.5.1:
   version "1.6.2"

@@ -1,6 +1,6 @@
 import createState from 'ee_else_ce/vuex_shared/modules/members/state';
-import * as actions from './actions';
-import mutations from './mutations';
+import mutations from 'ee_else_ce/vuex_shared/modules/members/mutations';
+import * as actions from 'ee_else_ce/vuex_shared/modules/members/actions';
 
 export default initialState => ({
   namespaced: true,

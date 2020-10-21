@@ -933,11 +933,10 @@ the [Kubernetes integration](../../user/project/clusters/index.md)), GitLab can 
 a terminal session to your environment.
 
 This is a powerful feature that allows you to debug issues without leaving the comfort
-of your web browser. To enable it, just follow the instructions given in the service integration
+of your web browser. To enable it, follow the instructions given in the service integration
 documentation.
 
-NOTE: **Note:**
-Container-based deployments often lack basic tools (like an editor), and may
+Note that container-based deployments often lack basic tools (like an editor), and may
 be stopped or restarted at any time. If this happens, you will lose all your
 changes. Treat this as a debugging tool, not a comprehensive online IDE.
 
