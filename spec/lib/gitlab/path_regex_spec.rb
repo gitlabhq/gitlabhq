@@ -101,8 +101,13 @@ RSpec.describe Gitlab::PathRegex do
       .concat(ee_top_level_words)
       .concat(files_in_public)
       .concat(Array(API::API.prefix.to_s))
+      .concat(sitemap_words)
       .compact
       .uniq
+  end
+
+  let(:sitemap_words) do
+    %w(sitemap.xml sitemap.xml.gz)
   end
 
   let(:ee_top_level_words) do
@@ -172,7 +177,7 @@ RSpec.describe Gitlab::PathRegex do
 
     # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
     it 'does not allow expansion' do
-      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(41)
+      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(43)
     end
   end
 
@@ -218,6 +223,8 @@ RSpec.describe Gitlab::PathRegex do
       expect(subject).not_to match('admin/')
       expect(subject).not_to match('api/')
       expect(subject).not_to match('.well-known/')
+      expect(subject).not_to match('sitemap.xml/')
+      expect(subject).not_to match('sitemap.xml.gz/')
     end
 
     it 'accepts project wildcard routes' do

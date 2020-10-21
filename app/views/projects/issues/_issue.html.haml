@@ -37,12 +37,15 @@
               &nbsp;
               = sprite_icon('calendar')
               = issue.due_date.to_s(:medium)
+
+          = render_if_exists "projects/issues/issue_weight", issue: issue
+          = render_if_exists "projects/issues/health_status", issue: issue
+
           - if issue.labels.any?
             &nbsp;
             - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
               = link_to_label(label, small: true)
 
-          = render_if_exists "projects/issues/issue_weight", issue: issue
           = render "projects/issues/issue_estimate", issue: issue
 
       .issuable-meta

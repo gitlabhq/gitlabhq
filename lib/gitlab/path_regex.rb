@@ -49,6 +49,8 @@ module Gitlab
       s
       search
       sent_notifications
+      sitemap.xml
+      sitemap.xml.gz
       slash-command-logo.png
       snippets
       unsubscribes

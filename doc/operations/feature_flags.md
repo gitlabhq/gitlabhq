@@ -135,24 +135,21 @@ Selecting **Random** provides inconsistent application behavior for individual u
 
 ### Percent of Users
 
-Enables the feature for a percentage of authenticated users. It uses the
-[`gradualRolloutUserId`](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid)
-Unleash activation strategy.
-
-NOTE: **Note:**
-[Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
-behavior. It is recommended to use percent rollout instead of percent of users as
-it is more flexible.
+Enables the feature for a percentage of authenticated users. It uses the Unleash activation strategy
+[`gradualRolloutUserId`](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid).
 
 For example, set a value of 15% to enable the feature for 15% of authenticated users.
 
 The rollout percentage can be from 0% to 100%.
 
-NOTE: **Note:**
-Stickiness (consistent application behavior for the same user) is guaranteed for logged-in users, but not anonymous users.
+Stickiness (consistent application behavior for the same user) is guaranteed for logged-in users,
+but not anonymous users.
+
+Note that [percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
+behavior. We recommend using percent rollout because it's more flexible than percent of users
 
 CAUTION: **Caution:**
-If this strategy is selected, then the Unleash client **must** be given a user
+If the percent of users strategy is selected, then the Unleash client **must** be given a user
 ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
 ### User IDs
@@ -164,11 +161,9 @@ Enables the feature for a list of target users. It is implemented
 using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
 activation strategy.
 
-Enter user IDs as a comma-separated list of values. For example,
-`user@example.com, user2@example.com`, or `username1,username2,username3`, and so on.
-
-NOTE: **Note:**
-User IDs are identifiers for your application users. They do not need to be GitLab users.
+Enter user IDs as a comma-separated list of values (for example,
+`user@example.com, user2@example.com`, or `username1,username2,username3`, and so on). Note that
+user IDs are identifiers for your application users. They do not need to be GitLab users.
 
 CAUTION: **Caution:**
 The Unleash client **must** be given a user ID for the feature to be enabled for
@@ -306,11 +301,9 @@ To get the access credentials that your application needs to communicate with Gi
      For example, if the application runs for a production server, the **Application name**
      could be `production` or similar. This value is used for the environment spec evaluation.
 
-NOTE: **Note:**
-The meaning of these fields might change over time. For example, we are not sure
-if **Instance ID** will be single token or multiple tokens, assigned to the
-**Environment**. Also, **Application name** could describe the version of
-application instead of the running environment.
+Note that the meaning of these fields might change over time. For example, we're not sure if
+**Instance ID** will be single token or multiple tokens, assigned to the **Environment**. Also,
+**Application name** could describe the application version instead of the running environment.
 
 ### Choose a client library
 

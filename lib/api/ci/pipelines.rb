@@ -128,15 +128,9 @@ module API
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
 
-          if Feature.enabled?(:ci_jobs_finder_refactor, default_enabled: true)
-            builds = ::Ci::JobsFinder
-              .new(current_user: current_user, pipeline: pipeline, params: params)
-              .execute
-          else
-            authorize!(:read_build, pipeline)
-            builds = pipeline.builds
-            builds = filter_builds(builds, params[:scope])
-          end
+          builds = ::Ci::JobsFinder
+            .new(current_user: current_user, pipeline: pipeline, params: params)
+            .execute
 
           builds = builds.with_preloads
 
@@ -157,16 +151,9 @@ module API
 
           pipeline = user_project.all_pipelines.find(params[:pipeline_id])
 
-          if Feature.enabled?(:ci_jobs_finder_refactor, default_enabled: true)
-            bridges = ::Ci::JobsFinder
-              .new(current_user: current_user, pipeline: pipeline, params: params, type: ::Ci::Bridge)
-              .execute
-          else
-            authorize!(:read_pipeline, pipeline)
-            bridges = pipeline.bridges
-            bridges = filter_builds(bridges, params[:scope])
-          end
-
+          bridges = ::Ci::JobsFinder
+            .new(current_user: current_user, pipeline: pipeline, params: params, type: ::Ci::Bridge)
+            .execute
           bridges = bridges.with_preloads
 
           present paginate(bridges), with: Entities::Ci::Bridge
@@ -246,21 +233,6 @@ module API
       end
 
       helpers do
-        # NOTE: This method should be removed once the ci_jobs_finder_refactor FF is
-        # removed. https://gitlab.com/gitlab-org/gitlab/-/issues/245183
-        # rubocop: disable CodeReuse/ActiveRecord
-        def filter_builds(builds, scope)
-          return builds if scope.nil? || scope.empty?
-
-          available_statuses = ::CommitStatus::AVAILABLE_STATUSES
-
-          unknown = scope - available_statuses
-          render_api_error!('Scope contains invalid value(s)', 400) unless unknown.empty?
-
-          builds.where(status: scope)
-        end
-        # rubocop: enable CodeReuse/ActiveRecord
-
         def pipeline
           strong_memoize(:pipeline) do
             user_project.all_pipelines.find(params[:pipeline_id])

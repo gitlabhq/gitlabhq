@@ -76,6 +76,8 @@ Currently the following names are reserved as top level groups:
 - `s`
 - `search`
 - `sent_notifications`
+- `sitemap.xml`
+- `sitemap.xml.gz`
 - `slash-command-logo.png`
 - `snippets`
 - `unsubscribes`

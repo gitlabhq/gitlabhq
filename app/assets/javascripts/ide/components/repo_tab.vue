@@ -29,9 +29,9 @@ export default {
     ...mapGetters(['getUrlForPath']),
     closeLabel() {
       if (this.fileHasChanged) {
-        return sprintf(__(`%{tabname} changed`), { tabname: this.tab.name });
+        return sprintf(__('%{tabname} changed'), { tabname: this.tab.name });
       }
-      return sprintf(__(`Close %{tabname}`, { tabname: this.tab.name }));
+      return sprintf(__('Close %{tabname}'), { tabname: this.tab.name });
     },
     showChangedIcon() {
       if (this.tab.pending) return true;
