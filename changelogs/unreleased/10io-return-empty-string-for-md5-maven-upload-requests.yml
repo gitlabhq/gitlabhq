@@ -1,5 +1,0 @@
----
-title: Fix the maven md5 upload endpoint
-merge_request: 45271
-author:
-type: fixed

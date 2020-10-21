@@ -1,5 +1,0 @@
----
-title: Cleanup request http method/code metrics
-merge_request: 42618
-author:
-type: performance

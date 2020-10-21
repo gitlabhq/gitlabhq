@@ -1,5 +1,0 @@
----
-title: Remove linux arch only rule for coverage fuzzing
-merge_request: 42316
-author:
-type: fixed

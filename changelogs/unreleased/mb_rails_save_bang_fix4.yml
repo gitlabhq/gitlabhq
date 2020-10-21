@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses in spec/services/projects/*
-merge_request: 44980
-author: matthewbried
-type: other

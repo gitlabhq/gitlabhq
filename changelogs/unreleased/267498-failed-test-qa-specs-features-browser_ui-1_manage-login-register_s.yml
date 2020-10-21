@@ -1,5 +1,0 @@
----
-title: Redirect when no user is signed in when updating registration
-merge_request: 45276
-author:
-type: fixed

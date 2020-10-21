@@ -1,5 +1,0 @@
----
-title: Fix merge conflict button text if "None" code style selected
-merge_request: 44427
-author: David Barr @davebarr
-type: fixed

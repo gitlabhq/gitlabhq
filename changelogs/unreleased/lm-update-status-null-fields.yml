@@ -1,5 +1,0 @@
----
-title: 'GraphQL: Changes fields in detailedStatus to be nullable'
-merge_request: 45072
-author:
-type: changed

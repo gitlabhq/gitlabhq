@@ -1,5 +1,0 @@
----
-title: Limit postgres_indexes to owned schemas
-merge_request: 43834
-author:
-type: other

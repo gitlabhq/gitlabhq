@@ -1,5 +1,0 @@
----
-title: Add cache:when keyword for ci yml config
-merge_request: 41822
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Fix table border hover for incidents and alerts
-merge_request: 45117
-author:
-type: fixed

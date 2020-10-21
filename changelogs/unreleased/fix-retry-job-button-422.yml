@@ -1,5 +1,0 @@
----
-title: Remove retry icon on failed job if merge pipeline
-merge_request: 42495
-author:
-type: fixed

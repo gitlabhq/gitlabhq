@@ -1,5 +1,0 @@
----
-title: Ensure JobWaiter keys always expire
-merge_request: 43320
-author:
-type: fixed

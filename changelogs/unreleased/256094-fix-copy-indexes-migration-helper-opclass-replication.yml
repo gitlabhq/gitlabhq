@@ -1,6 +1,0 @@
----
-title: Fix copy_indexes migration helper skipping the opclass for indexes
-  with operator classes defined for them
-merge_request: 43471
-author:
-type: fixed

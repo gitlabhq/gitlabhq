@@ -1,5 +1,0 @@
----
-title: Remove duplicate index from the Vulnerabilities table
-merge_request: 44422
-author: Borivoje Tasovac @borivojetasovac
-type: performance

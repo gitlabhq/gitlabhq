@@ -1,6 +1,0 @@
----
-title: Add a database column to enable or disable the setting that puts newly registered
-  users in a pending state, requiring admin approval for their activation
-merge_request: 43661
-author:
-type: added

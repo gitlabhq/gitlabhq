@@ -1,5 +1,0 @@
----
-title: Reduce cached SQL for JobsController#show
-merge_request: 43559
-author:
-type: performance

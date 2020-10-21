@@ -1,5 +1,0 @@
----
-title: Optimise cleaning up LFS objects
-merge_request: 42830
-author:
-type: performance

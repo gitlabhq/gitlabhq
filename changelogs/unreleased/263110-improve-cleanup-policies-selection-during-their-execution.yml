@@ -1,5 +1,0 @@
----
-title: Exclude policies with no container repositories when executing them
-merge_request: 44748
-author:
-type: fixed

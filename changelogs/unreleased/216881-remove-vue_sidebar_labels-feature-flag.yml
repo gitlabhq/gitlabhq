@@ -1,5 +1,0 @@
----
-title: Update issue and MR sidebar labels to use Vue instead of Haml
-merge_request: 44942
-author:
-type: changed

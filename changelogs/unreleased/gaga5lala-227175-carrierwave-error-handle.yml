@@ -1,5 +1,0 @@
----
-title: Log CarrierWave::IntegrityError without sending exception
-merge_request: 43750
-author: gaga5lala
-type: other

@@ -1,5 +1,0 @@
----
-title: Add sort by similarity to getProjects GraphQL call
-merge_request: 43136
-author:
-type: changed

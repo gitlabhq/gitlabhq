@@ -1,6 +1,0 @@
----
-title: Migrating deprecated buttons to GlButtons for modals that have not yet been
-  migrated to the new GlModal component
-merge_request: 44611
-author:
-type: other

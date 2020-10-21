@@ -1,5 +1,0 @@
----
-title: Allow users to navigate to the incidents show details page wrapper through `/issues/incidents/:id` from the Incident list
-merge_request: 44438
-author:
-type: changed

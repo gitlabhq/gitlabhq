@@ -1,5 +1,0 @@
----
-title: Recover gracefully when issuable counts are too expensive
-merge_request: 44184
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Updated the admin and user SSH key delete confirmation to use GlModal
-merge_request: 42824
-author:
-type: changed

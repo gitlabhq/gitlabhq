@@ -1,5 +1,0 @@
----
-title: Fixed incorrect parameter in GraphQL startup call
-merge_request: 45115
-author:
-type: fixed

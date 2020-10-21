@@ -1,5 +1,0 @@
----
-title: Introduce 'image_upload_path' entry support for '.gitlab/static-site-editor.yml' config file.
-merge_request: 43481
-author:
-type: added

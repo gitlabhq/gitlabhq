@@ -1,5 +1,0 @@
----
-title: Add limit to number of test cases parsed by JUnit parser
-merge_request: 44615
-author:
-type: changed

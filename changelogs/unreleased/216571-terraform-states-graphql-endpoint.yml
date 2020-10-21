@@ -1,5 +1,0 @@
----
-title: Add GraphQL endpoint for Terraform state metadata
-merge_request: 43375
-author:
-type: added

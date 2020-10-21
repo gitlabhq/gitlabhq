@@ -1,5 +1,0 @@
----
-title: Fixed a bug causing 'Missing author note' to be added to notes for mapped users when importing project using GitLab Import.
-merge_request: 42648
-author:
-type: fixed

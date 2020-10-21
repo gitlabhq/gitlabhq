@@ -1,5 +1,0 @@
----
-title: Loads cropper css only when needed
-merge_request: 44137
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix undefined tooltip text flashing on clipboard icon
-merge_request: 45482
-author:
-type: fixed

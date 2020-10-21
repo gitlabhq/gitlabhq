@@ -1,6 +1,0 @@
----
-title: Add namespace setting to allow to mark if parent group allow subgroups to require
-  2FA
-merge_request: 41760
-author:
-type: added

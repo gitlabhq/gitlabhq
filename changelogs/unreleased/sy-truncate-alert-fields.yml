@@ -1,5 +1,0 @@
----
-title: Truncate over-long alert fields instead of return error response
-merge_request: 45099
-author:
-type: changed

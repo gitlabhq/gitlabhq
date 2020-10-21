@@ -1,5 +1,0 @@
----
-title: Remove unused cluster_providers_aws.created_by_user_id column
-merge_request: 43064
-author:
-type: other

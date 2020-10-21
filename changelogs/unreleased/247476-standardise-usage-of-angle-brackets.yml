@@ -1,5 +1,0 @@
----
-title: Remove angle brackets from empty name in U2F device settings
-merge_request: 42440
-author:
-type: changed

@@ -1,6 +1,0 @@
----
-title: Expose the option to use namespace-per-project instead of namespace-per-environment
-  for Kubernetes clusters
-merge_request: 42309
-author:
-type: changed

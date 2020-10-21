@@ -1,5 +1,0 @@
----
-title: Fix triggering multiple children pipeline with the same artifact
-merge_request: 42595
-author:
-type: fixed

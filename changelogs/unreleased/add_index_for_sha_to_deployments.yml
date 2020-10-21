@@ -1,5 +1,0 @@
----
-title: Add index for project_id and sha to deployments table
-merge_request: 43836
-author:
-type: performance

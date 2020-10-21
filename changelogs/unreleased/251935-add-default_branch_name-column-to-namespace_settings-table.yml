@@ -1,5 +1,0 @@
----
-title: Add :default_branch_name column to namespace_settings
-merge_request: 42778
-author:
-type: added

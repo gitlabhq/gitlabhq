@@ -1,5 +1,0 @@
----
-title: Add state_id index for merge_requests list
-merge_request: 42481
-author:
-type: performance

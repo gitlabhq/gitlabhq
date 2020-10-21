@@ -1,5 +1,0 @@
----
-title: Fix GraphQL token authentication when installed under a relative URL
-merge_request: 42706
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses in spec/uploaders/* and spec/tasks/
-merge_request: 44820
-author: matthewbried
-type: other

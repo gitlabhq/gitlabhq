@@ -1,5 +1,0 @@
----
-title: Match against description and unicode character when autocompleting GFM emoji
-merge_request: 42669
-author: Ethan Reesor (@firelizzard)
-type: added

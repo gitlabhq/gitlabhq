@@ -1,5 +1,0 @@
----
-title: Set default Referrer-Policy to strict-origin-when-cross-origin and set it in a header rather than HTML
-merge_request: 26065
-author: nhirokinet
-type: changed

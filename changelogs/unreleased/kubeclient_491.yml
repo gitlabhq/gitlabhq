@@ -1,6 +1,0 @@
----
-title: Bump kubeclient to 4.9.1 which includes ability to integrate Kubernetes clusters
-  where their API url is on a sub-path
-merge_request: 44856
-author:
-type: other

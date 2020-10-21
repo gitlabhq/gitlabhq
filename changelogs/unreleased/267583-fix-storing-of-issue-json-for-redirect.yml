@@ -1,5 +1,0 @@
----
-title: Fix redirects to issue sidebar JSON when visiting the login page
-merge_request: 45194
-author:
-type: fixed

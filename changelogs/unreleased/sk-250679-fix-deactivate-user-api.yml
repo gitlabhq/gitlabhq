@@ -1,5 +1,0 @@
----
-title: Fix incorrect HTTP response in deactivate user API for internal user
-merge_request: 43356
-author: Sashi Kumar
-type: fixed

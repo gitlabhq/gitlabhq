@@ -1,5 +1,0 @@
----
-title: Include `used_fields` and `used_deprecated_fields` in GraphQL logs
-merge_request: 42820
-author:
-type: added

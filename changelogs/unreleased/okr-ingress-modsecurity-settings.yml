@@ -1,5 +1,0 @@
----
-title: Migrate deprecated button to GlButton in ingress_modsecurity_settings.vue
-merge_request: 43717
-author:
-type: other

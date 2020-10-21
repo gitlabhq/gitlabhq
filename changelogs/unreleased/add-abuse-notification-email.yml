@@ -1,5 +1,0 @@
----
-title: Set abuse_notification_email instead of admin_notification_email.
-merge_request: 41319
-author: Hiromi Nozawa
-type: deprecated

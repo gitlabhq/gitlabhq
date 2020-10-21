@@ -1,6 +1,0 @@
----
-title: Validate not null file_store field on packages_package_files to maintain data
-  integrity
-merge_request: 42400
-author:
-type: added

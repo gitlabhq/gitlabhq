@@ -1,5 +1,0 @@
----
-title: Remove coverage_report_view feature flag
-merge_request: 43711
-author: David Barr @davebarr
-type: removed

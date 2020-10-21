@@ -1,5 +1,0 @@
----
-title: Fix design scale bug when navigating to a design after zooming
-merge_request: 44262
-author:
-type: fixed

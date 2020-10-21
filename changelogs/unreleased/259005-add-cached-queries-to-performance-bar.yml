@@ -1,5 +1,0 @@
----
-title: Include cached sql calls in performance bar
-merge_request: 44022
-author:
-type: changed

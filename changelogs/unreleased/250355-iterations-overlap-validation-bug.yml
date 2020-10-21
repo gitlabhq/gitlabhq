@@ -1,5 +1,0 @@
----
-title: Fix iteration validation not checking parent groups
-merge_request: 43234
-author:
-type: fixed

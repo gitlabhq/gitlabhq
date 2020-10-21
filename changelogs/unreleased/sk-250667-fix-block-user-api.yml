@@ -1,5 +1,0 @@
----
-title: Fix 500 error in block user API for internal user
-merge_request: 43461
-author: Sashi Kumar
-type: fixed

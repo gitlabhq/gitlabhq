@@ -1,5 +1,0 @@
----
-title: Fix unnecessarily escaped merge error text
-merge_request: 44844
-author:
-type: fixed

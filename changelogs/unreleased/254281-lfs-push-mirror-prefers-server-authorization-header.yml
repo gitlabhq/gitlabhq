@@ -1,5 +1,0 @@
----
-title: Prefer server-provided authentication for LFS push mirroring
-merge_request: 44284
-author:
-type: fixed

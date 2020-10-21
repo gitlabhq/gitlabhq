@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/profiles/accounts/show.html.haml
-merge_request: 41299
-author: Gilang Gumilar
-type: changed
