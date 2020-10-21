@@ -25,7 +25,7 @@ RSpec.describe Clusters::Applications::Fluentd do
 
     it 'is initialized with fluentd arguments' do
       expect(subject.name).to eq('fluentd')
-      expect(subject.chart).to eq('stable/fluentd')
+      expect(subject.chart).to eq('fluentd/fluentd')
       expect(subject.version).to eq('2.4.0')
       expect(subject).to be_rbac
     end

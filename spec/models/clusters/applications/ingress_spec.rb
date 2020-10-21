@@ -135,7 +135,7 @@ RSpec.describe Clusters::Applications::Ingress do
 
     it 'is initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
-      expect(subject.chart).to eq('stable/nginx-ingress')
+      expect(subject.chart).to eq('ingress/nginx-ingress')
       expect(subject.version).to eq('1.40.2')
       expect(subject).to be_rbac
       expect(subject.files).to eq(ingress.files)
