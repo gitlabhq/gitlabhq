@@ -79,13 +79,12 @@ module Projects
       end
 
       def try_to_set_repository_read_only!
-        # Mitigate any push operation to start during migration
-        unless project.set_repository_read_only!
-          migration_error = "Target repository '#{old_disk_path}' cannot be made read-only as there is a git transfer in progress"
-          logger.error migration_error
+        project.set_repository_read_only!
+      rescue Project::RepositoryReadOnlyError => err
+        migration_error = "Target repository '#{old_disk_path}' cannot be made read-only: #{err.message}"
+        logger.error migration_error
 
-          raise RepositoryInUseError, migration_error
-        end
+        raise RepositoryInUseError, migration_error
       end
 
       def wiki_path_suffix

@@ -1,0 +1,5 @@
+---
+title: Fix a race condition checking whether a project is read-only
+merge_request: 45160
+author:
+type: fixed

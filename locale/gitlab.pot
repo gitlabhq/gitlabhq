@@ -8411,6 +8411,9 @@ msgstr ""
 msgid "Data is still calculating..."
 msgstr ""
 
+msgid "Database update failed"
+msgstr ""
+
 msgid "Datasource name not found"
 msgstr ""
 
@@ -12247,6 +12250,9 @@ msgid "Git shallow clone"
 msgstr ""
 
 msgid "Git strategy for pipelines"
+msgstr ""
+
+msgid "Git transfer in progress"
 msgstr ""
 
 msgid "Git version"
@@ -22295,6 +22301,9 @@ msgid "Repository Graph"
 msgstr ""
 
 msgid "Repository Settings"
+msgstr ""
+
+msgid "Repository already read-only"
 msgstr ""
 
 msgid "Repository check"

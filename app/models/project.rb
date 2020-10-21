@@ -2090,21 +2090,36 @@ class Project < ApplicationRecord
     (auto_devops || build_auto_devops)&.predefined_variables
   end
 
-  # Tries to set repository as read_only, checking for existing Git transfers in progress beforehand
+  RepositoryReadOnlyError = Class.new(StandardError)
+
+  # Tries to set repository as read_only, checking for existing Git transfers in
+  # progress beforehand. Setting a repository read-only will fail if it is
+  # already in that state.
   #
-  # @return [Boolean] true when set to read_only or false when an existing git transfer is in progress
+  # @return nil. Failures will raise an exception
   def set_repository_read_only!
     with_lock do
-      break false if git_transfer_in_progress?
+      raise RepositoryReadOnlyError, _('Git transfer in progress') if
+        git_transfer_in_progress?
 
-      update_column(:repository_read_only, true)
+      raise RepositoryReadOnlyError, _('Repository already read-only') if
+        self.class.where(id: id).pick(:repository_read_only)
+
+      raise ActiveRecord::RecordNotSaved, _('Database update failed') unless
+        update_column(:repository_read_only, true)
+
+      nil
     end
   end
 
-  # Set repository as writable again
+  # Set repository as writable again. Unlike setting it read-only, this will
+  # succeed if the repository is already writable.
   def set_repository_writable!
     with_lock do
-      update_column(:repository_read_only, false)
+      raise ActiveRecord::RecordNotSaved, _('Database update failed') unless
+        update_column(:repository_read_only, false)
+
+      nil
     end
   end
 

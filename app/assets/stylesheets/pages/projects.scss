@@ -252,15 +252,6 @@
   }
 }
 
-.split-one {
-  display: inline-table;
-  margin-right: 12px;
-
-  > a {
-    margin: -1px;
-  }
-}
-
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
@@ -505,92 +496,6 @@
   }
 }
 
-.create-project-options {
-  display: flex;
-
-  @include media-breakpoint-down(xs) {
-    display: block;
-  }
-
-  .first-column {
-    @include media-breakpoint-up(xs) {
-      max-width: 50%;
-      padding-right: 30px;
-    }
-
-    @include media-breakpoint-down(xs) {
-      max-width: 100%;
-      width: 100%;
-    }
-  }
-
-  .second-column {
-    @include media-breakpoint-up(xs) {
-      width: 50%;
-      flex: 1;
-      padding-left: 30px;
-      position: relative;
-    }
-
-    @include media-breakpoint-down(xs) {
-      max-width: 100%;
-      width: 100%;
-      padding-left: 0;
-      position: relative;
-    }
-
-    // Mobile
-    @include media-breakpoint-down(xs) {
-      padding-top: 30px;
-    }
-
-    &::before {
-      content: 'OR';
-      position: absolute;
-      left: -10px;
-      top: 50%;
-      z-index: 10;
-      padding: $gl-padding-8 0;
-      text-align: center;
-      background-color: $white;
-      color: $gl-text-color-tertiary;
-      transform: translateY(-50%);
-      font-size: 12px;
-      font-weight: $gl-font-weight-bold;
-      line-height: 20px;
-
-      // Mobile
-      @include media-breakpoint-down(xs) {
-        left: 50%;
-        top: 0;
-        transform: translateX(-50%);
-        padding: 0 $gl-padding-8;
-      }
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      background-color: $border-color;
-      bottom: 0;
-      left: 0;
-      right: auto;
-      height: 100%;
-      width: 1px;
-      top: 0;
-
-      // Mobile
-      @include media-breakpoint-down(xs) {
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        height: 1px;
-        width: auto;
-      }
-    }
-  }
-}
-
 .project-stats,
 .project-buttons {
   .scrolling-tabs-container {
@@ -751,17 +656,6 @@ pre.light-well {
     color: $well-light-text-color;
     font-size: 13px;
     line-height: 1.6em;
-  }
-}
-
-.project-footer {
-  margin-top: 20px;
-
-  .btn-remove {
-    @include btn-middle;
-    @include btn-red;
-
-    float: left !important;
   }
 }
 
@@ -1059,24 +953,6 @@ pre.light-well {
   }
 }
 
-.cannot-be-merged,
-.cannot-be-merged:hover {
-  color: $red-500;
-  margin-top: 2px;
-  position: relative;
-  z-index: 2;
-}
-
-.private-forks-notice .private-fork-icon {
-  i:nth-child(1) {
-    color: $green-600;
-  }
-
-  i:nth-child(2) {
-    color: $white;
-  }
-}
-
 .new-protected-branch,
 .new-protected-tag {
   label {
@@ -1233,34 +1109,6 @@ pre.light-well {
   }
 }
 
-.variables-table {
-  table-layout: fixed;
-
-  &.table-responsive {
-    border: 0;
-  }
-
-  .variable-key {
-    max-width: 120px;
-    overflow: hidden;
-    word-wrap: break-word;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .variable-value {
-    max-width: 150px;
-    overflow: hidden;
-    word-wrap: break-word;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .variable-menu {
-    text-align: right;
-  }
-}
-
 .services-installation-info .row {
   margin-bottom: 10px;
 }
@@ -1284,18 +1132,6 @@ pre.light-well {
 .issuable-footer {
   padding-top: $gl-padding;
   padding-bottom: 37px;
-}
-
-.project-ci-body {
-  .incorrect-syntax {
-    font-size: 18px;
-    color: $red-500;
-  }
-
-  .correct-syntax {
-    font-size: 18px;
-    color: $green-500;
-  }
 }
 
 .project-ci-linter {
