@@ -37,7 +37,7 @@ RSpec.describe Todos::Destroy::ConfidentialIssueService do
 
       context 'when provided issue is not confidential' do
         it 'does not remove any todos' do
-          issue_1.update(confidential: false)
+          issue_1.update!(confidential: false)
 
           expect { subject }.not_to change { Todo.count }
         end

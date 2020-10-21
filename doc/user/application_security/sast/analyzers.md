@@ -33,7 +33,7 @@ SAST supports the following official analyzers:
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
 
-The analyzers are published as Docker images that SAST will use to launch
+The analyzers are published as Docker images that SAST uses to launch
 dedicated containers for each analysis.
 
 SAST is pre-configured with a set of **default images** that are maintained by
@@ -77,12 +77,12 @@ variables:
   SAST_DEFAULT_ANALYZERS: "bandit,flawfinder"
 ```
 
-`bandit` runs first. When merging the reports, SAST will
-remove the duplicates and will keep the `bandit` entries.
+`bandit` runs first. When merging the reports, SAST
+removes the duplicates and keeps the `bandit` entries.
 
 ### Disabling default analyzers
 
-Setting `SAST_DEFAULT_ANALYZERS` to an empty string will disable all the official
+Setting `SAST_DEFAULT_ANALYZERS` to an empty string disables all the official
 default analyzers. In `.gitlab-ci.yml` define:
 
 ```yaml

@@ -11,7 +11,7 @@ RSpec.describe ResourceEvents::ChangeMilestoneService do
 
   [:issue, :merge_request].each do |issuable|
     it_behaves_like 'timebox(milestone or iteration) resource events creator', ResourceMilestoneEvent do
-      let_it_be(:resource) { create(issuable) }
+      let_it_be(:resource) { create(issuable) } # rubocop:disable Rails/SaveBang
     end
   end
 end

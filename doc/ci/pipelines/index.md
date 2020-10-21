@@ -79,6 +79,27 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 - [Pipeline schedules](schedules.md).
 - [Custom CI/CD variables](../variables/README.md#custom-environment-variables).
 
+### Ref Specs for Runners
+
+When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
+which indicate which ref (branch, tag, and so on) and commit (SHA1) are checked out from your
+project repository.
+
+This table lists the refspecs injected for each pipeline type:
+
+| Pipeline type                                                      | Refspecs                                                                                       |
+|---------------                                                     |----------------------------------------                                                        |
+| Pipeline for Branches                                              | `+refs/pipelines/<id>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for Tags                                                  | `+refs/pipelines/<id>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
+| [Pipeline for Merge Requests](../merge_request_pipelines/index.md) | `+refs/pipelines/<id>:refs/pipelines/<id>`                                                     |
+
+The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
+project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
+running pipeline job. This ref can be created even after the associated branch or tag has been
+deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#automatically-stopping-an-environment),
+and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+that might run pipelines after branch deletion.
+
 ### View pipelines
 
 You can find the current and historical pipeline runs under your project's

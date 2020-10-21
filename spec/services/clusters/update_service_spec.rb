@@ -197,7 +197,7 @@ RSpec.describe Clusters::UpdateService do
 
         context 'manangement_project is outside of the namespace scope' do
           before do
-            management_project.update(group: create(:group))
+            management_project.update!(group: create(:group))
           end
 
           let(:params) do
@@ -224,7 +224,7 @@ RSpec.describe Clusters::UpdateService do
 
         context 'manangement_project is outside of the namespace scope' do
           before do
-            management_project.update(group: create(:group))
+            management_project.update!(group: create(:group))
           end
 
           let(:params) do

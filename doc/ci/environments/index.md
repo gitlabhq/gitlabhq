@@ -219,10 +219,17 @@ You can also specify a static part of the URL at `environment:url:`, such as
 
 The assigned URL for the `review/your-branch-name` environment is [visible in the UI](#using-the-environment-url).
 
-> **Notes:**
->
-> - `stop_review` doesn't generate a dotenv report artifact, so it won't recognize the `DYNAMIC_ENVIRONMENT_URL` variable. Therefore you should not set `environment:url:` in the `stop_review` job.
-> - If the environment URL is not valid (for example, the URL is malformed), the system doesn't update the environment URL.
+Note the following:
+
+- `stop_review` doesn't generate a dotenv report artifact, so it won't recognize the
+  `DYNAMIC_ENVIRONMENT_URL` variable. Therefore you shouldn't set `environment:url:` in the
+  `stop_review` job.
+- If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
+  the environment URL.
+- If the script that runs in `stop_review` exists only in your repository and therefore can't use
+  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
+  for these jobs. This ensures that runners can fetch the repository even after a feature branch is
+  deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
 ### Configuring manual deployments
 
@@ -675,24 +682,23 @@ deploy_review:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
 
 stop_review:
   stage: deploy
-  variables:
-    GIT_STRATEGY: none
   script:
     - echo "Remove review app"
-  when: manual
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
 ```
 
-Setting the [`GIT_STRATEGY`](../yaml/README.md#git-strategy) to `none` is necessary in the
+If you can't use [Pipelines for merge requests](../merge_request_pipelines/index.md),
+setting the [`GIT_STRATEGY`](../yaml/README.md#git-strategy) to `none` is necessary in the
 `stop_review` job so that the [runner](https://docs.gitlab.com/runner/) won't
 try to check out the code after the branch is deleted.
 
@@ -748,13 +754,17 @@ review_app:
     name: review/$CI_COMMIT_REF_NAME
     on_stop: stop_review_app
     auto_stop_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
 
 stop_review_app:
   script: stop-review-app
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
-  when: manual
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
 ```
 
 As long as a merge request is active and keeps getting new commits,

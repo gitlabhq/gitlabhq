@@ -286,7 +286,7 @@ RSpec.describe Notes::CreateService do
               QuickAction.new(
                 action_text: "/wip",
                 before_action: -> {
-                  issuable.reload.update(title: "title")
+                  issuable.reload.update!(title: "title")
                 },
                 expectation: ->(issuable, can_use_quick_action) {
                   expect(issuable.work_in_progress?).to eq(can_use_quick_action)
@@ -296,7 +296,7 @@ RSpec.describe Notes::CreateService do
               QuickAction.new(
                 action_text: "/wip",
                 before_action: -> {
-                  issuable.reload.update(title: "WIP: title")
+                  issuable.reload.update!(title: "WIP: title")
                 },
                 expectation: ->(noteable, can_use_quick_action) {
                   expect(noteable.work_in_progress?).not_to eq(can_use_quick_action)

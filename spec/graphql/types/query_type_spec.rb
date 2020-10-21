@@ -80,4 +80,12 @@ RSpec.describe GitlabSchema.types['Query'] do
       is_expected.to have_graphql_type(Types::Ci::RunnerPlatformType.connection_type)
     end
   end
+
+  describe 'runner_setup field' do
+    subject { described_class.fields['runnerSetup'] }
+
+    it 'returns runner setup instructions' do
+      is_expected.to have_graphql_type(Types::Ci::RunnerSetupType)
+    end
+  end
 end

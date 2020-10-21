@@ -28386,6 +28386,9 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
+msgid "Update username"
+msgstr ""
+
 msgid "Update variable"
 msgstr ""
 

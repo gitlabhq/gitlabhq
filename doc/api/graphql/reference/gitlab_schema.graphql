@@ -1695,7 +1695,7 @@ input BoardIssueInput {
   """
   Filter by epic ID. Incompatible with epicWildcardId
   """
-  epicId: ID
+  epicId: EpicID
 
   """
   Filter by epic ID wildcard. Incompatible with epicId
@@ -8572,6 +8572,11 @@ type Group {
 }
 
 """
+Identifier of Group
+"""
+scalar GroupID
+
+"""
 Represents a Group Membership
 """
 type GroupMember implements MemberInterface {
@@ -12568,7 +12573,7 @@ input NegatedBoardIssueInput {
   """
   Filter by epic ID. Incompatible with epicWildcardId
   """
-  epicId: ID
+  epicId: EpicID
 
   """
   Filter by label name
@@ -15630,6 +15635,31 @@ type Query {
   ): RunnerPlatformConnection
 
   """
+  Get runner setup instructions
+  """
+  runnerSetup(
+    """
+    Architecture to generate the instructions for
+    """
+    architecture: String!
+
+    """
+    Group to register the runner for
+    """
+    groupId: GroupID
+
+    """
+    Platform to generate the instructions for
+    """
+    platform: String!
+
+    """
+    Project to register the runner for
+    """
+    projectId: ProjectID
+  ): RunnerSetup
+
+  """
   Find Snippets visible to the current user
   """
   snippets(
@@ -16920,6 +16950,18 @@ type RunnerPlatformEdge {
   The item at the end of the edge.
   """
   node: RunnerPlatform
+}
+
+type RunnerSetup {
+  """
+  Instructions for installing the runner on the specified architecture
+  """
+  installInstructions: String!
+
+  """
+  Instructions for registering the runner
+  """
+  registerInstructions: String!
 }
 
 """

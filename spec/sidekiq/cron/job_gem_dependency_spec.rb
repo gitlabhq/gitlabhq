@@ -7,7 +7,7 @@ RSpec.describe Sidekiq::Cron::Job do
     context 'when Fugit depends on ZoTime or EoTime' do
       before do
         described_class
-          .create(name: 'TestCronWorker',
+          .create(name: 'TestCronWorker', # rubocop:disable Rails/SaveBang
                   cron: Settings.cron_jobs[:pipeline_schedule_worker]['cron'],
                   class: Settings.cron_jobs[:pipeline_schedule_worker]['job_class'])
       end

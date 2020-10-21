@@ -89,10 +89,10 @@ RSpec.describe Labels::PromoteService do
 
       it 'keeps users\' subscriptions' do
         user2 = create(:user)
-        project_label_1_1.subscriptions.create(user: user, subscribed: true)
-        project_label_2_1.subscriptions.create(user: user, subscribed: true)
-        project_label_3_2.subscriptions.create(user: user, subscribed: true)
-        project_label_2_1.subscriptions.create(user: user2, subscribed: true)
+        project_label_1_1.subscriptions.create!(user: user, subscribed: true)
+        project_label_2_1.subscriptions.create!(user: user, subscribed: true)
+        project_label_3_2.subscriptions.create!(user: user, subscribed: true)
+        project_label_2_1.subscriptions.create!(user: user2, subscribed: true)
 
         expect { service.execute(project_label_1_1) }.to change { Subscription.count }.from(4).to(3)
 

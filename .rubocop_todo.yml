@@ -1125,33 +1125,6 @@ Rails/SaveBang:
     - 'spec/requests/api/labels_spec.rb'
     - 'spec/requests/api/project_import_spec.rb'
     - 'spec/requests/projects/cycle_analytics_events_spec.rb'
-    - 'spec/services/auth/container_registry_authentication_service_spec.rb'
-    - 'spec/services/auto_merge/base_service_spec.rb'
-    - 'spec/services/auto_merge_service_spec.rb'
-    - 'spec/services/clusters/update_service_spec.rb'
-    - 'spec/services/deployments/after_create_service_spec.rb'
-    - 'spec/services/design_management/generate_image_versions_service_spec.rb'
-    - 'spec/services/discussions/resolve_service_spec.rb'
-    - 'spec/services/draft_notes/destroy_service_spec.rb'
-    - 'spec/services/emails/confirm_service_spec.rb'
-    - 'spec/services/groups/destroy_service_spec.rb'
-    - 'spec/services/groups/import_export/import_service_spec.rb'
-    - 'spec/services/labels/promote_service_spec.rb'
-    - 'spec/services/notes/create_service_spec.rb'
-    - 'spec/services/notification_recipients/build_service_spec.rb'
-    - 'spec/services/notification_service_spec.rb'
-    - 'spec/services/packages/conan/create_package_file_service_spec.rb'
-    - 'spec/services/reset_project_cache_service_spec.rb'
-    - 'spec/services/resource_events/change_milestone_service_spec.rb'
-    - 'spec/services/system_hooks_service_spec.rb'
-    - 'spec/services/system_note_service_spec.rb'
-    - 'spec/services/system_notes/issuables_service_spec.rb'
-    - 'spec/services/todo_service_spec.rb'
-    - 'spec/services/todos/destroy/confidential_issue_service_spec.rb'
-    - 'spec/services/users/destroy_service_spec.rb'
-    - 'spec/services/users/repair_ldap_blocked_service_spec.rb'
-    - 'spec/services/verify_pages_domain_service_spec.rb'
-    - 'spec/sidekiq/cron/job_gem_dependency_spec.rb'
 
 # Offense count: 187
 # Cop supports --auto-correct.
@@ -1269,11 +1242,10 @@ RSpec/TimecopTravel:
     - 'spec/workers/concerns/reenqueuer_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/median_spec.rb'
 
-# Offense count: 43
+# Offense count: 21
 Graphql/IDType:
   Exclude:
     - 'ee/app/graphql/ee/mutations/issues/update.rb'
-    - 'ee/app/graphql/ee/types/boards/board_issue_input_base_type.rb'
     - 'ee/app/graphql/mutations/iterations/update.rb'
     - 'ee/app/graphql/resolvers/iterations_resolver.rb'
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'

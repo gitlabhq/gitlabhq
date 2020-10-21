@@ -373,7 +373,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
         before do
           # Mention issue (noteable) from commit0
           system_note = service.cross_reference(commit0)
-          system_note.update(note: system_note.note.capitalize)
+          system_note.update!(note: system_note.note.capitalize)
         end
 
         it 'is truthy when already mentioned' do
@@ -407,7 +407,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
         before do
           # Mention commit1 from commit0
           system_note = service.cross_reference(commit1)
-          system_note.update(note: system_note.note.capitalize)
+          system_note.update!(note: system_note.note.capitalize)
         end
 
         it 'is truthy when already mentioned' do
@@ -436,7 +436,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
       context 'legacy capitalized cross reference' do
         before do
           system_note = service.cross_reference(commit0)
-          system_note.update(note: system_note.note.capitalize)
+          system_note.update!(note: system_note.note.capitalize)
         end
 
         it 'is true when a fork mentions an external issue' do
@@ -582,7 +582,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
       it 'creates the note text correctly' do
         [:issue, :merge_request].each do |type|
-          issuable = create(type)
+          issuable = create(type) # rubocop:disable Rails/SaveBang
 
           service = described_class.new(noteable: issuable, author: author)
           expect(service.discussion_lock.note)

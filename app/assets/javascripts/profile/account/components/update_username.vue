@@ -1,16 +1,18 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
-import { GlButton } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
     GlButton,
+  },
+  directives: {
+    GlModalDirective,
+    SafeHtml,
   },
   props: {
     actionUrl: {
@@ -53,6 +55,21 @@ Please update your Git repository remotes as soon as possible.`),
         },
         false,
       );
+    },
+    primaryProps() {
+      return {
+        text: s__('Update username'),
+        attributes: [
+          { variant: 'warning' },
+          { category: 'primary' },
+          { disabled: this.isRequestPending },
+        ],
+      };
+    },
+    cancelProps() {
+      return {
+        text: s__('Cancel'),
+      };
     },
   },
   methods: {
@@ -103,22 +120,21 @@ Please update your Git repository remotes as soon as possible.`),
       <p class="form-text text-muted">{{ path }}</p>
     </div>
     <gl-button
-      :data-target="`#${$options.modalId}`"
+      v-gl-modal-directive="$options.modalId"
       :disabled="isRequestPending || newUsername === username"
       category="primary"
       variant="warning"
-      data-toggle="modal"
+      data-testid="username-change-confirmation-modal"
+      >{{ $options.buttonText }}</gl-button
     >
-      {{ $options.buttonText }}
-    </gl-button>
     <gl-modal
-      :id="$options.modalId"
-      :header-title-text="s__('Profiles|Change username') + '?'"
-      :footer-primary-button-text="$options.buttonText"
-      footer-primary-button-variant="warning"
-      @submit="onConfirm"
+      :modal-id="$options.modalId"
+      :title="s__('Profiles|Change username') + '?'"
+      :action-primary="primaryProps"
+      :action-cancel="cancelProps"
+      @primary="onConfirm"
     >
-      <span v-html="modalText"></span>
+      <span v-safe-html="modalText"></span>
     </gl-modal>
   </div>
 </template>

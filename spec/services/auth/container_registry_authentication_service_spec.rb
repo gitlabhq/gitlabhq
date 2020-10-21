@@ -642,7 +642,7 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
       let_it_be(:project) { create(:project, :public, container_registry_enabled: false) }
 
       before do
-        project.update(container_registry_enabled: false)
+        project.update!(container_registry_enabled: false)
       end
 
       context 'disallow when pulling' do

@@ -40,11 +40,11 @@ RSpec.describe Discussions::ResolveService do
 
     context 'with a project that requires all discussion to be resolved' do
       before do
-        project.update(only_allow_merge_if_all_discussions_are_resolved: true)
+        project.update!(only_allow_merge_if_all_discussions_are_resolved: true)
       end
 
       after do
-        project.update(only_allow_merge_if_all_discussions_are_resolved: false)
+        project.update!(only_allow_merge_if_all_discussions_are_resolved: false)
       end
 
       let_it_be(:other_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
