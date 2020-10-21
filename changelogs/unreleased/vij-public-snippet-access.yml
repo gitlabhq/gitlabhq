@@ -1,5 +1,0 @@
----
-title: Allow unauthenticated users access to public Personal Snippets via the REST API
-merge_request: 44135
-author:
-type: fixed

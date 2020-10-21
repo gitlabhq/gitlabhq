@@ -1,6 +1,0 @@
----
-title: Add on-demand DAST scan options (scanType, showDebugMessages, useAjaxSpider)
-  ajax spider and set the scan type
-merge_request: 43240
-author:
-type: added

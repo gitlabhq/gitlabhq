@@ -1,5 +1,0 @@
----
-title: Fixes Rails/SaveBang cop for spec files in spec/models/concerns/*
-merge_request: 42942
-author: Rajendra Kadam
-type: other

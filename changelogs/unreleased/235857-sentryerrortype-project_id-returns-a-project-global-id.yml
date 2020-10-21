@@ -1,5 +1,0 @@
----
-title: Fix type of SentryErrorType global ID
-merge_request: 42185
-author:
-type: fixed

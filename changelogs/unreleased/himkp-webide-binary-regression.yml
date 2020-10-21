@@ -1,5 +1,0 @@
----
-title: Fix regression when uploading / viewing binary files in the Web IDE
-merge_request: 44699
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix bug to allow container cleanup policies to properly run
-merge_request: 43359
-author:
-type: fixed

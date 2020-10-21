@@ -1,5 +1,0 @@
----
-title: Remove index on issues.relative_position
-merge_request: 43991
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Remove the commit count from the commits API
-merge_request: 44934
-author:
-type: performance

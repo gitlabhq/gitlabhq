@@ -1,5 +1,0 @@
----
-title: Don't expose http_request_duration_seconds metrics in sidekiq exporter
-merge_request: 43941
-author:
-type: performance

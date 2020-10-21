@@ -1,5 +1,0 @@
----
-title: Automatically expand diffs for merge requests with changes to a single file
-merge_request: 44629
-author:
-type: changed

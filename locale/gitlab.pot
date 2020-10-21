@@ -30084,10 +30084,10 @@ msgstr ""
 msgid "You can also create a project from the command line."
 msgstr ""
 
-msgid "You can also press &#8984;-Enter"
+msgid "You can also press Ctrl-Enter"
 msgstr ""
 
-msgid "You can also press Ctrl-Enter"
+msgid "You can also press ⌘-Enter"
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."

@@ -1,5 +1,0 @@
----
-title: Deprecate lowercase values for sort enums in GraphQL
-merge_request: 43650
-author:
-type: changed

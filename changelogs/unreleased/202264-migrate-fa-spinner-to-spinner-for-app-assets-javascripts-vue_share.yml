@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to '.spinner' for 'awards_list.vue'
-merge_request: 45393
-author:
-type: changed

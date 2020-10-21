@@ -1,5 +1,0 @@
----
-title: Fix GraphQL backward pagination when merge requests are ordered by merged_at
-merge_request: 43701
-author:
-type: fixed

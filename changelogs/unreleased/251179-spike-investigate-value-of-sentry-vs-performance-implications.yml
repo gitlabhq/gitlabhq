@@ -1,5 +1,0 @@
----
-title: Remove Sentry implementation to investigate performance impact
-merge_request: 44643
-author:
-type: performance

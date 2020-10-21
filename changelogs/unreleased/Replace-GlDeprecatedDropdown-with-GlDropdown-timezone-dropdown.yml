@@ -1,5 +1,0 @@
----
-title: Replace GlDeprecatedDropdown with GlDropDown in timezone-dropdown.vue
-merge_request: 41434
-author: nuwe1
-type: other

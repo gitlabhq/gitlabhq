@@ -1,5 +1,0 @@
----
-title: Fix Web hook deletion not working when many hook logs are present
-merge_request: 43464
-author:
-type: fixed

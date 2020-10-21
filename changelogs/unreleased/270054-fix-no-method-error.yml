@@ -1,5 +1,0 @@
----
-title: Fix error when cleaning up MR with no head ref
-merge_request: 45504
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add empty dependencies value to ECS Deploy job
-merge_request: 36862
-author:
-type: fixed

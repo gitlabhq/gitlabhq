@@ -1,5 +1,0 @@
----
-title: Does not refresh project/snippet statistics on a read-only instance
-merge_request: 42417
-author:
-type: fixed

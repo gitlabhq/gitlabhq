@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec files in spec/support/shared_example/*
-merge_request: 44424
-author: matthewbried
-type: other

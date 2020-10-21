@@ -1,5 +1,0 @@
----
-title: Introduce 'mounts' entry support for '.gitlab/static-site-editor.yml' config file.
-merge_request: 43485
-author:
-type: added

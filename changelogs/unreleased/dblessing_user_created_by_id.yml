@@ -1,5 +1,0 @@
----
-title: Always set created_by_id when creating a user
-merge_request: 43342
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Avoid New Environment button glitching when changing tabs
-merge_request: 44603
-author:
-type: fixed

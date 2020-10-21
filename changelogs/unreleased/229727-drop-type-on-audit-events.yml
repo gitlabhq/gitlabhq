@@ -1,5 +1,0 @@
----
-title: Remove type column on audit_events table
-merge_request: 43703
-author:
-type: other

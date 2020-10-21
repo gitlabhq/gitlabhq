@@ -2,6 +2,7 @@ import $ from 'jquery';
 import '../commons/bootstrap';
 import { isInIssuePage } from '../lib/utils/common_utils';
 import { __ } from '~/locale';
+import { add, show, hide } from '~/tooltips';
 
 // Quick Submit behavior
 //
@@ -65,18 +66,17 @@ $(document).on(
       return;
     }
 
-    const $this = $(this);
+    const $el = $(this);
     const title = isMac()
-      ? __('You can also press &#8984;-Enter')
+      ? __('You can also press \u{2318}-Enter')
       : __('You can also press Ctrl-Enter');
 
-    $this.tooltip({
-      container: 'body',
-      html: true,
-      placement: 'top',
+    add($el, {
+      triggers: 'manual',
+      show: true,
       title,
-      trigger: 'manual',
     });
-    $this.tooltip('show').one('blur click', () => $this.tooltip('hide'));
+    $el.one('blur click', () => hide($el));
+    show($el);
   },
 );

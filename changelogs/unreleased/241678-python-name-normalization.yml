@@ -1,6 +1,0 @@
----
-title: Search for python packages with normalized name to allow installs of packages
-  with periods and underscores
-merge_request: 44807
-author:
-type: changed

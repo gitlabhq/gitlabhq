@@ -1,5 +1,0 @@
----
-title: Use optimistic locking to safely migrate a build trace chunk
-merge_request: 44588
-author:
-type: fixed

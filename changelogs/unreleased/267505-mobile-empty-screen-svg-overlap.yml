@@ -1,5 +1,0 @@
----
-title: Class and markup cleanup to prevent SVG header bar overlap in Static Site Editor
-merge_request: 45334
-author:
-type: fixed

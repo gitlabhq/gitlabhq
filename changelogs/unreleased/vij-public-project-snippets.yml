@@ -1,5 +1,0 @@
----
-title: Allow unauthenticated users access to public Project Snippets via the REST API
-merge_request: 44446
-author:
-type: fixed

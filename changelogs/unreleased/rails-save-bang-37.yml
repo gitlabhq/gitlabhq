@@ -1,5 +1,0 @@
----
-title: Fixes Rails/SaveBang cop for spec files in spec/lib/gitlab/git/*
-merge_request: 43013
-author: Rajendra Kadam
-type: other

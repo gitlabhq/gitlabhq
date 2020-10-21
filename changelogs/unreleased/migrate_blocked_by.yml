@@ -1,5 +1,0 @@
----
-title: Migrate blocked_by issue links to blocks type by swapping source and target
-merge_request: 45262
-author:
-type: other

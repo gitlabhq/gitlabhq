@@ -1,5 +1,0 @@
----
-title: Update golang version in vendored Dockerfile template
-merge_request: 42917
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Introduce '.gitlab/static-site-editor.yml' config file, with support for 'static_site_generator'
-  entry.
-merge_request: 41957
-author:
-type: added

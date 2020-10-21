@@ -1,5 +1,0 @@
----
-title: Optimize the loading of diffStats in merge request GraphQL API
-merge_request: 44752
-author:
-type: performance

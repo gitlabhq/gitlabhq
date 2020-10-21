@@ -40,7 +40,7 @@ of memory and CPU usage.
 
 GitLab is committed to support at least two production-ready Kubernetes minor
 versions at any given time. We regularly review the versions we support, and
-provide a four-month deprecation period before we remove support of a specific
+provide a three-month deprecation period before we remove support of a specific
 version. The range of supported versions is based on the evaluation of:
 
 - Our own needs.

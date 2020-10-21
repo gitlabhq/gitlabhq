@@ -1,5 +1,0 @@
----
-title: Load issues tab in the milestone page asynchronously
-merge_request: 42473
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec files in spec/services/issuable/*
-merge_request: 42780
-author: Rajendra Kadam
-type: other

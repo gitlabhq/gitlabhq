@@ -108,6 +108,7 @@ export default {
       :container="tooltip.container"
       :boundary="tooltip.boundary"
       :disabled="tooltip.disabled"
+      :show="tooltip.show"
     >
       <span v-if="tooltip.html" v-safe-html="tooltip.title"></span>
       <span v-else>{{ tooltip.title }}</span>

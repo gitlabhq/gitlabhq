@@ -1,5 +1,0 @@
----
-title: Modify time_period for last 28 days to improve batch counting performance
-merge_request: 42972
-author:
-type: performance

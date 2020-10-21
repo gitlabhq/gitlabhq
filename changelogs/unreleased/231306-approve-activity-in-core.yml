@@ -1,5 +1,0 @@
----
-title: Fix issues with optional merge requests approval in CE
-author: Pavel Kuznetsov
-merge_request: 42119
-type: fixed

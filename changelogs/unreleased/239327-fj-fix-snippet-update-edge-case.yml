@@ -1,5 +1,0 @@
----
-title: Fix edge case when updating snippet with no repo
-merge_request: 42964
-author:
-type: fixed

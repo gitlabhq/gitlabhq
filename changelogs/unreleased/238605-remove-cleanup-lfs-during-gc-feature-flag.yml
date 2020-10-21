@@ -1,5 +1,0 @@
----
-title: Clean up unused LFS objects during repository housekeeping
-merge_request: 40979
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Fix filtering epics when sorting by dates
-merge_request: 42827
-author:
-type: fixed

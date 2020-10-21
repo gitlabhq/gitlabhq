@@ -1,5 +1,0 @@
----
-title: Disallow NULL Bytes (U+0000) in requests
-merge_request: 45223
-author:
-type: added

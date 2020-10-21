@@ -106,6 +106,7 @@ describe('DropdownFilter', () => {
         firstDropDownItem().vm.$emit('click');
 
         expect(urlUtils.setUrlParams).toHaveBeenCalledWith({
+          page: null,
           [stateFilterData.filterParam]: filter,
         });
       });
@@ -183,6 +184,7 @@ describe('DropdownFilter', () => {
       firstDropDownItem().vm.$emit('click');
 
       expect(urlUtils.setUrlParams).toHaveBeenCalledWith({
+        page: null,
         [confidentialFilterData.filterParam]: filter,
       });
     });

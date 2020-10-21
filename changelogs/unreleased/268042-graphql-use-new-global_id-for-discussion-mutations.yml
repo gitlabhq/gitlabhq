@@ -1,5 +1,0 @@
----
-title: Update GraphQL discussionToggleResolve mutation input id to be more type-specific
-merge_request: 45346
-author:
-type: changed

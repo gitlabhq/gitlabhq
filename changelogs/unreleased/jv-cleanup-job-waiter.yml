@@ -1,5 +1,0 @@
----
-title: Add cleanup migration for JobWaiter Redis keys
-merge_request: 43882
-author:
-type: fixed

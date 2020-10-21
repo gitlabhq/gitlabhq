@@ -1,5 +1,0 @@
----
-title: Add index on ci_builds relation to improve Usage Ping metrics collection performance.
-merge_request: 37581
-author:
-type: added

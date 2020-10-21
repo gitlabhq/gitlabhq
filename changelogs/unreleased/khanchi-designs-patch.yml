@@ -1,5 +1,0 @@
----
-title: 'Designs: return an error if uploading designs with duplicate names'
-merge_request: 42514
-author: Sushil Khanchi
-type: fixed

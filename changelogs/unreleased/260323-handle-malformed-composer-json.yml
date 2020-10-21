@@ -1,5 +1,0 @@
----
-title: Return 422 error rather than 500 when composer.json is missing or malformed
-merge_request: 44587
-author: David Barr @davebarr
-type: fixed

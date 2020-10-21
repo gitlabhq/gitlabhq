@@ -1,5 +1,0 @@
----
-title: Fix group deploy tokens permissions for package access
-merge_request: 43007
-author:
-type: fixed

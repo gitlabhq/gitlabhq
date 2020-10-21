@@ -34,7 +34,7 @@ The following analytics features are available at the project level:
 
 - [CI/CD](../../ci/pipelines/index.md#pipeline-success-and-duration-charts). **(STARTER)**
 - [Code Review](code_review_analytics.md). **(STARTER)**
-- [Insights](../group/insights/index.md). **(ULTIMATE)**
+- [Insights](../project/insights/index.md). **(ULTIMATE)**
 - [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
   [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(STARTER)**

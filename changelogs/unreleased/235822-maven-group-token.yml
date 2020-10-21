@@ -1,6 +1,0 @@
----
-title: Fix group deploy tokens to return all projects and work with the Maven group
-  endpoint
-merge_request: 43628
-author:
-type: fixed

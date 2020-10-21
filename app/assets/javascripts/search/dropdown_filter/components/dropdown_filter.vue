@@ -43,7 +43,15 @@ export default {
         return this.filterData.filters.ANY.value;
       },
       set(filter) {
-        visitUrl(setUrlParams({ [this.filterData.filterParam]: filter }));
+        // we need to remove the pagination cursor to ensure the
+        // relevancy of the new results
+
+        visitUrl(
+          setUrlParams({
+            page: null,
+            [this.filterData.filterParam]: filter,
+          }),
+        );
       },
     },
     selectedFilterText() {

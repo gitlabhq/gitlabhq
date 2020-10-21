@@ -307,6 +307,9 @@ gem 'rack-attack', '~> 6.3.0'
 # Sentry integration
 gem 'sentry-raven', '~> 3.0'
 
+# PostgreSQL query parsing
+gem 'pg_query', '~> 1.2'
+
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation

@@ -1,5 +1,0 @@
----
-title: Improve n+1 in pipeline serializer for triggered pipelines
-merge_request: 42421
-author:
-type: performance

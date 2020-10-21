@@ -1,5 +1,0 @@
----
-title: Remove project bot user membership when project access token expires
-merge_request: 43605
-author:
-type: fixed

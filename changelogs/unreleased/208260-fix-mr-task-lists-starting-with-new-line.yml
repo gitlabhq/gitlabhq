@@ -1,5 +1,0 @@
----
-title: Fix checking of task lists when MR description starts with a blank line
-merge_request: 43125
-author:
-type: fixed

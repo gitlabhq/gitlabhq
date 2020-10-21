@@ -1,5 +1,0 @@
----
-title: 'GraphQL: No longer allows to omit ID when querying for a single board.'
-merge_request: 43627
-author:
-type: fixed

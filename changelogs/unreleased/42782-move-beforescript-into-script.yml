@@ -1,5 +1,0 @@
----
-title: Move before_script into script for CQ template
-merge_request: 42782
-author: Vicken Simonian @vicken.papaya
-type: fixed

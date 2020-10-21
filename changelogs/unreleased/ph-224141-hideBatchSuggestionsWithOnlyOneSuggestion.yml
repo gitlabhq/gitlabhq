@@ -1,5 +1,0 @@
----
-title: Hides batch suggestions button if there is only 1 suggestion
-merge_request: 42681
-author:
-type: fixed

@@ -37,10 +37,10 @@
 
   .detail-page-header-actions.js-issuable-actions.js-issuable-buttons{ data: { "action": "close-reopen" } }
     .clearfix.issue-btn-group.dropdown
-      %button.btn.btn-default.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
+      %button.btn.btn-default.float-left.d-md-none{ type: "button", data: { toggle: "dropdown" } }
         Options
         = icon('caret-down')
-      .dropdown-menu.dropdown-menu-right.d-lg-none.d-xl-none
+      .dropdown-menu.dropdown-menu-right.d-lg-none
         %ul
           - unless current_user == @issue.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @issue.author.id, ref_url: issue_url(@issue))
@@ -58,9 +58,9 @@
     = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue, can_reopen: can_reopen_issue, warn_before_close: defined?(@issue.blocked?) && @issue.blocked?
 
     - if can_report_spam
-      = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-sm-none d-md-block gl-button btn btn-grouped btn-spam', title: 'Submit as spam'
+      = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-md-block gl-button btn btn-grouped btn-spam', title: 'Submit as spam'
     - if can_create_issue
-      = link_to new_project_issue_path(@project), class: 'd-none d-sm-none d-md-block gl-button btn btn-grouped btn-success btn-inverted', title: 'New issue', id: 'new_issue_link' do
+      = link_to new_project_issue_path(@project), class: 'd-none d-md-block gl-button btn btn-grouped btn-success btn-inverted', title: 'New issue', id: 'new_issue_link' do
         New issue
 
 .issue-details.issuable-details

@@ -1,5 +1,0 @@
----
-title: Expose `created_at` in Group and Project members API response
-merge_request: 45156
-author: Rajendra Kadam
-type: added

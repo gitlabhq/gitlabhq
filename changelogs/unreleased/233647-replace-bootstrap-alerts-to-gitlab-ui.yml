@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/admin/broadcast_messages/_form.html.haml
-merge_request: 41271
-author: Gilang Gumilar
-type: changed

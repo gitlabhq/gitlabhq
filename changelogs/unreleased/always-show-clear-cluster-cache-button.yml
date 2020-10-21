@@ -1,5 +1,0 @@
----
-title: Always show the "Clear cluster cache" button among the advanced Kubernetes cluster configuration options
-merge_request: 43619
-author:
-type: changed

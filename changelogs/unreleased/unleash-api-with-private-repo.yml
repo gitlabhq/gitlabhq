@@ -1,5 +1,0 @@
----
-title: Allow Unleash clients to request feature flags when repository is private
-merge_request: 43059
-author:
-type: fixed

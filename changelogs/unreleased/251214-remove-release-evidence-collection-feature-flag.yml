@@ -1,5 +1,0 @@
----
-title: Remove release_evidence_collection feature flag
-merge_request: 44234
-author: David Barr @davebarr
-type: removed

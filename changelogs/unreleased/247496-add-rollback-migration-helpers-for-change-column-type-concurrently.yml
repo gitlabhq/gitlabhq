@@ -1,5 +1,0 @@
----
-title: Add undo helpers for change_column_type_concurrently and cleanup_concurrent_column_type_change
-merge_request: 44155
-author:
-type: other

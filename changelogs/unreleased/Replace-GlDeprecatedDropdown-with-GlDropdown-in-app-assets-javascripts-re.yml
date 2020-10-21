@@ -1,5 +1,0 @@
----
-title: Replace `GlDeprecatedDropdown` with `GlDropdown` in `app/assets/javascripts/repository/components/breadcrumbs.vue`
-merge_request: 41427
-author: nuwe1
-type: other

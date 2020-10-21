@@ -1,5 +1,0 @@
----
-title: Remove banner that suggests Web IDE for editing gitlab-ci.yml
-merge_request: 42815
-author:
-type: changed

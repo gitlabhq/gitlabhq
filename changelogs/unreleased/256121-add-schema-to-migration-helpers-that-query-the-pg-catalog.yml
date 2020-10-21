@@ -1,5 +1,0 @@
----
-title: Update database helpers to set the current_schema
-merge_request: 43568
-author:
-type: fixed

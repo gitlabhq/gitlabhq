@@ -1,5 +1,0 @@
----
-title: Remove the `store_instance_statistics_measurements` feature flag
-merge_request: 44566
-author:
-type: changed

@@ -1,5 +1,15 @@
 import jQuery from 'jquery';
-import { initTooltips, dispose, destroy, hide, show, enable, disable, fixTitle } from '~/tooltips';
+import {
+  add,
+  initTooltips,
+  dispose,
+  destroy,
+  hide,
+  show,
+  enable,
+  disable,
+  fixTitle,
+} from '~/tooltips';
 
 describe('tooltips/index.js', () => {
   let tooltipsApp;
@@ -64,6 +74,20 @@ describe('tooltips/index.js', () => {
 
       expect(document.querySelector('.gl-tooltip')).not.toBe(null);
       expect(document.querySelector('.gl-tooltip').innerHTML).toContain('default title');
+    });
+  });
+
+  describe('add', () => {
+    it('adds a GlTooltip for the specified elements', async () => {
+      const target = createTooltipTarget();
+
+      buildTooltipsApp();
+      add([target], { title: 'custom title' });
+
+      await tooltipsApp.$nextTick();
+
+      expect(document.querySelector('.gl-tooltip')).not.toBe(null);
+      expect(document.querySelector('.gl-tooltip').innerHTML).toContain('custom title');
     });
   });
 
@@ -136,12 +160,13 @@ describe('tooltips/index.js', () => {
       ${disable}  | ${'disable'}  | ${'disable'}
       ${hide}     | ${'hide'}     | ${'hide'}
       ${show}     | ${'show'}     | ${'show'}
+      ${add}      | ${'init'}     | ${{ title: 'the title' }}
     `('delegates $methodName to bootstrap tooltip API', ({ method, bootstrapParams }) => {
       const elements = jQuery(createTooltipTarget());
 
       jest.spyOn(jQuery.fn, 'tooltip');
 
-      method(elements);
+      method(elements, bootstrapParams);
 
       expect(elements.tooltip).toHaveBeenCalledWith(bootstrapParams);
     });
