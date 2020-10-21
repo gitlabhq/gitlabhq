@@ -14,7 +14,7 @@ module Projects
 
       def create
         token = extract_alert_manager_token(request)
-        result = notify_service.execute(token)
+        result = notify_service.execute(token, integration)
 
         head result.http_status
       end
@@ -43,6 +43,20 @@ module Projects
         else
           Projects::Alerting::NotifyService
         end
+      end
+
+      def integration
+        return unless Feature.enabled?(:multiple_http_integrations, project)
+
+        AlertManagement::HttpIntegrationsFinder.new(
+          project,
+          endpoint_identifier: endpoint_identifier,
+          active: true
+        ).execute.first
+      end
+
+      def endpoint_identifier
+        params[:endpoint_identifier] || AlertManagement::HttpIntegration::LEGACY_IDENTIFIER
       end
 
       def notification_payload

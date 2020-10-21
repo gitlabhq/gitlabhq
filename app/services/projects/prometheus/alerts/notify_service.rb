@@ -17,7 +17,7 @@ module Projects
 
         SUPPORTED_VERSION = '4'
 
-        def execute(token)
+        def execute(token, _integration = nil)
           return bad_request unless valid_payload_size?
           return unprocessable_entity unless self.class.processable?(params)
           return unauthorized unless valid_alert_manager_token?(token)

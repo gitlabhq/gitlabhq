@@ -6,9 +6,11 @@ module Projects
       include Gitlab::Utils::StrongMemoize
       include ::IncidentManagement::Settings
 
-      def execute(token)
+      def execute(token, integration = nil)
+        @integration = integration
+
         return bad_request unless valid_payload_size?
-        return forbidden unless alerts_service_activated?
+        return forbidden unless active_integration?
         return unauthorized unless valid_token?(token)
 
         process_alert
@@ -22,6 +24,7 @@ module Projects
 
       private
 
+      attr_reader :integration
       delegate :alerts_service, :alerts_service_activated?, to: :project
 
       def process_alert
@@ -66,10 +69,7 @@ module Projects
         return unless alert.save
 
         alert.execute_services
-        SystemNoteService.create_new_alert(
-          alert,
-          alert.monitoring_tool || 'Generic Alert Endpoint'
-        )
+        SystemNoteService.create_new_alert(alert, notification_source)
       end
 
       def process_incident_issues
@@ -106,11 +106,27 @@ module Projects
         end
       end
 
+      def notification_source
+        alert.monitoring_tool || integration&.name || 'Generic Alert Endpoint'
+      end
+
       def valid_payload_size?
         Gitlab::Utils::DeepSize.new(params).valid?
       end
 
+      def active_integration?
+        if Feature.enabled?(:multiple_http_integrations, project)
+          return true if integration
+        end
+
+        alerts_service_activated?
+      end
+
       def valid_token?(token)
+        if Feature.enabled?(:multiple_http_integrations, project)
+          return token == integration.token if integration
+        end
+
         token == alerts_service.token
       end
 

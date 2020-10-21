@@ -16,6 +16,10 @@ the coordinator API of GitLab CI/CD, runs the job, and sends the result back to 
 Runners are created by an administrator and are visible in the GitLab UI.
 Runners can be specific to certain projects or available to all projects.
 
+This documentation is focused on using runners in GitLab.
+If you need to install and configure GitLab Runner, see
+[the GitLab Runner documentation](https://docs.gitlab.com/runner/).
+
 ## Types of runners
 
 In the GitLab UI there are three types of runners, based on who you want to have access:
