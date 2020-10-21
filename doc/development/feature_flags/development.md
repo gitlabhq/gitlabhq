@@ -309,11 +309,6 @@ used as an actor for `Feature.enabled?`.
 
 ### Feature flags for licensed features
 
-If a feature is license-gated, there's no need to add an additional
-explicit feature flag check since the flag is checked as part of the
-`License.feature_available?` call. Similarly, there's no need to "clean up" a
-feature flag once the feature has reached general availability.
-
 The [`Project#feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/app/models/project_feature.rb#L63-68),
 [`Namespace#feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/ee/namespace.rb#L71-85) (EE), and
 [`License.feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/license.rb#L293-300) (EE) methods all implicitly check for
@@ -328,38 +323,11 @@ Due to limitations with `feature_available?`, the YAML definition for `licensed`
 flags accepts only `default_enabled: true`. This is under development as per the
 [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667).
 
-#### Alpha/beta licensed feature flags
+If you want a licensed feature to be disabled by default or enabled only for a given gate, you can use a feature flag with a different name. The feature checks would then
+look like:
 
-This is relevant when developing the feature using
-[several smaller merge requests](https://about.gitlab.com/handbook/values/#make-small-merge-requests), or when the feature is considered to be an
-[alpha or beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), and
-should not be available by default.
-
-As an example, if you were to ship the frontend half of a feature without the
-backend, you'd want to disable the feature entirely until the backend half is
-also ready to be shipped. To make sure this feature is disabled for both
-GitLab.com and self-managed instances, you should use the
-[`Namespace#alpha_feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/458749872f4a8f27abe8add930dbb958044cb926/ee/app/models/ee/namespace.rb#L113) or
-[`Namespace#beta_feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/458749872f4a8f27abe8add930dbb958044cb926/ee/app/models/ee/namespace.rb#L100-112)
-method, according to our [definitions](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga). This ensures the feature is disabled unless the feature flag is
-_explicitly_ enabled.
-
-CAUTION: **Caution:**
-If `alpha_feature_available?` or `beta_feature_available?` is used, the YAML definition
-for the feature flag must use `default_enabled: [false, true]`, because the usage
-of the feature flag is undefined. These methods may change, as per the
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667).
-
-The resulting YAML should be similar to:
-
-```yaml
-name: scoped_labels
-group: group::memory
-type: licensed
-# The `default_enabled:` is undefined
-# as `feature_available?` uses `default_enabled: true`
-# as `beta_feature_available?` uses `default_enabled: false`
-default_enabled: [false, true]
+```ruby
+Feature.enabled?(:licensed_feature_feature_flag, project) && project.feature_available?(:licensed_feature)
 ```
 
 ### Feature groups

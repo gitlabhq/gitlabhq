@@ -4,9 +4,27 @@ def gitlab_danger
   @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
 end
 
+def feature_mr?
+  (gitlab.mr_labels & %w[feature::addition feature::enhancement]).any?
+end
+
+DOCUMENTATION_UPDATE_MISSING = <<~MSG
+~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers).
+
+For more information, see:
+
+- The Handbook page on [throughput implementation](https://about.gitlab.com/handbook/engineering/management/throughput/#implementation).
+- The [definition of done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) documentation.
+MSG
+
 docs_paths_to_review = helper.changes_by_category[:docs]
 
-return if docs_paths_to_review.empty?
+# Documentation should be updated for feature::addition and feature::enhancement
+if docs_paths_to_review.empty?
+  warn(DOCUMENTATION_UPDATE_MISSING) if feature_mr?
+
+  return
+end
 
 message 'This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.'
 

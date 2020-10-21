@@ -121,7 +121,7 @@ class ApplicationController < ActionController::Base
   end
 
   def route_not_found
-    if current_user
+    if current_user || browser.bot.search_engine?
       not_found
     else
       store_location_for(:user, request.fullpath) unless request.xhr?

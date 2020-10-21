@@ -7036,6 +7036,11 @@ type EpicIssueConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
+  """
+  Total weight of issues collection
+  """
+  weight: Int!
 }
 
 """
@@ -9234,6 +9239,11 @@ type IssueConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
+  """
+  Total weight of issues collection
+  """
+  weight: Int!
 }
 
 """
