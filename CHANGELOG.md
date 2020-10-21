@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.3.8 (2020-10-21)
+
+### Fixed (2 changes)
+
+- Make SSH keys publicly accessible. !42288
+- Revert required encryption on CI runner tokens. !42623
+
+### Added (1 change)
+
+- Add missing fontawesome file icon classes. !43091
+
+### Other (1 change)
+
+- GitLab-managed apps: Use GitLab's repo as replacement for the Helm stable repo. !44875
+
+
 ## 13.3.7 (2020-10-01)
 
 ### Security (14 changes)

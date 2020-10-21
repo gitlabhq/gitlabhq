@@ -1,5 +1,0 @@
----
-title: "GitLab-managed apps: Use GitLab's repo as replacement for the Helm stable repo"
-merge_request: 44875
-author:
-type: other
