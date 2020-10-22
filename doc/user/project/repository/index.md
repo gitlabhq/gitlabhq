@@ -247,6 +247,7 @@ used for cloning your project. The button is only shown on macOS.
 ## Download Source Code
 
 > Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/24704) in GitLab 11.11.
+> Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
 
 The source code stored in a repository can be downloaded from the UI.
 By clicking the download icon, a dropdown will open with links to download the following:
