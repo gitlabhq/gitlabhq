@@ -1,6 +1,10 @@
 ---
 comments: false
-description: 'Learn how to contribute to GitLab.'
+type: index, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+description: "Development Guidelines: learn how to contribute to GitLab."
 ---
 
 # Contributor and Development Docs
@@ -59,6 +63,19 @@ Complementary reads:
 - [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
 - [Adding a new service component to GitLab](adding_service_component.md)
+
+### Development guidelines review
+
+When you submit a change to GitLab's development guidelines, request a review
+from:
+
+- A member of your team or group, to check for technical accuracy.
+- For **significant** changes or proposals, request review from:
+  - Engineering managers (FE, BE, DB, Security, UX, and others), according to the subject or process you're proposing.
+  - The VP of Development (DRI) ([@clefelhocz1](https://gitlab.com/clefelhocz1)), for
+  final approval of the new or changed guidelines.
+- The [Technical Writer assigned to dev guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines),
+  to review the content for consistency and adherence to documentation guidelines.
 
 ## UX and Frontend guides
 

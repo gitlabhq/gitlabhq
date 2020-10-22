@@ -1,0 +1,13 @@
+---
+# Error: gitlab.AlertBoxCaution
+#
+# Makes sure DANGER: alert boxes follow standard formatting.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: "CAUTION: alert boxes must be of the format 'CAUTION: **Caution:**'. 'Caution' can be replaced with 'Warning' or 'Important'."
+level: warning
+nonword: true
+scope: raw
+swap:
+  'CAUTION: *?\*\*.*\*\*': 'CAUTION: \*\*(?:Caution|Warning|Important):\*\*'

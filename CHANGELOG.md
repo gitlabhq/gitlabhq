@@ -1234,6 +1234,22 @@ entry.
 - Expand the visible highlight for collapsed diffs (re: !41393). !42343
 
 
+## 13.3.8 (2020-10-21)
+
+### Fixed (2 changes)
+
+- Make SSH keys publicly accessible. !42288
+- Revert required encryption on CI runner tokens. !42623
+
+### Added (1 change)
+
+- Add missing fontawesome file icon classes. !43091
+
+### Other (1 change)
+
+- GitLab-managed apps: Use GitLab's repo as replacement for the Helm stable repo. !44875
+
+
 ## 13.3.4 (2020-09-02)
 
 ### Security (1 change)
