@@ -18,6 +18,10 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     end
   end
 
+  before do
+    stub_feature_flags(remove_resolve_note: false)
+  end
+
   describe 'as a user with access to the project' do
     before do
       project.add_maintainer(user)

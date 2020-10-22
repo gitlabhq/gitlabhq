@@ -14400,6 +14400,8 @@ CREATE TABLE pages_deployments (
     file_store smallint NOT NULL,
     size integer NOT NULL,
     file text NOT NULL,
+    file_count integer NOT NULL,
+    file_sha256 bytea NOT NULL,
     CONSTRAINT check_f0fe8032dd CHECK ((char_length(file) <= 255))
 );
 

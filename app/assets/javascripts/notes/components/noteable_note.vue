@@ -73,6 +73,11 @@ export default {
       required: false,
       default: false,
     },
+    discussionResolvePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -81,6 +86,7 @@ export default {
       isRequesting: false,
       isResolving: false,
       commentLineStart: {},
+      resolveAsThread: this.glFeatures.removeResolveNote,
     };
   },
   computed: {
@@ -133,6 +139,8 @@ export default {
       return this.note.isDraft;
     },
     canResolve() {
+      if (this.glFeatures.removeResolveNote && !this.discussionRoot) return false;
+
       return (
         this.note.current_user.can_resolve ||
         (this.note.isDraft && this.note.discussion_id !== null)

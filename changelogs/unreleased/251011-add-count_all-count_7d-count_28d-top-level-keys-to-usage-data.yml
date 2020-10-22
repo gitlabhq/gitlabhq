@@ -1,0 +1,5 @@
+---
+title: Add basic top level keys license, settings, and counts_weekly for usage data payload
+merge_request: 45540
+author:
+type: added

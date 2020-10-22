@@ -13,6 +13,14 @@ FactoryBot.define do
       name { '' }
     end
 
+    trait :status_delete_scheduled do
+      status { :delete_scheduled }
+    end
+
+    trait :status_delete_failed do
+      status { :delete_failed }
+    end
+
     after(:build) do |repository, evaluator|
       next if evaluator.tags.to_a.none?
 

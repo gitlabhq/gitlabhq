@@ -5,13 +5,11 @@ import mountGrafanaIntegration from '~/grafana_integration';
 import initSettingsPanels from '~/settings_panels';
 import initIncidentsSettings from '~/incidents_settings';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initIncidentsSettings();
-  mountErrorTrackingForm();
-  mountOperationSettings();
-  mountGrafanaIntegration();
-  if (!IS_EE) {
-    initSettingsPanels();
-  }
-  mountAlertsSettings(document.querySelector('.js-alerts-settings'));
-});
+initIncidentsSettings();
+mountErrorTrackingForm();
+mountOperationSettings();
+mountGrafanaIntegration();
+if (!IS_EE) {
+  initSettingsPanels();
+}
+mountAlertsSettings(document.querySelector('.js-alerts-settings'));

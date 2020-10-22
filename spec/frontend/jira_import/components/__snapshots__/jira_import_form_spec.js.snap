@@ -98,6 +98,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             </span>
              
             <svg
+              aria-hidden="true"
               class="gl-button-icon dropdown-chevron gl-icon s16"
               data-testid="chevron-down-icon"
             >
@@ -209,6 +210,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             </span>
              
             <svg
+              aria-hidden="true"
               class="gl-button-icon dropdown-chevron gl-icon s16"
               data-testid="chevron-down-icon"
             >

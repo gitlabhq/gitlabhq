@@ -1,0 +1,7 @@
+---
+name: remove_resolve_note
+introduced_by_url:
+rollout_issue_url:
+type: development
+group: group::source code
+default_enabled: false

@@ -647,6 +647,23 @@ applications you have configured. In case of pipeline failure, the
 output of the [Helm Tiller](https://v2.helm.sh/docs/install/#running-tiller-locally) binary
 is saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
+For GitLab versions 13.5 and below, the Ingress, Fluentd, Prometheus,
+and Sentry apps are fetched from the central Helm [stable
+repository](https://kubernetes-charts.storage.googleapis.com/), which
+will be [deleted](https://github.com/helm/charts#deprecation-timeline)
+on November 13, 2020. This will cause the installation CI/CD pipeline to
+fail. Upgrade to GitLab 13.6, or alternatively, you can
+use the following `.gitlab-ci.yml`, which has been tested on GitLab
+13.5:
+
+```yaml
+include:
+  - template: Managed-Cluster-Applications.gitlab-ci.yml
+
+apply:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.34.1"
+```
+
 ### Important notes
 
 Note the following:

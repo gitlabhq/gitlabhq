@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Gitaly automatic failover and manual recovery', :orchestrated, :gitaly_cluster, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238953', type: :flaky } do
+    context 'Gitaly automatic failover and recovery', :orchestrated, :gitaly_cluster, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238953', type: :flaky } do
       # Variables shared between contexts. They're used and shared between
       # contexts so they can't be `let` variables.
       praefect_manager = Service::PraefectManager.new
@@ -66,17 +66,13 @@ module QA
       end
 
       context 'when recovering from dataloss after failover' do
-        it 'allows reconciliation', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/977' do
+        it 'automatically reconciles', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/977' do
           # Start the old primary node again
           praefect_manager.start_primary_node
           praefect_manager.wait_for_health_check_current_primary_node
 
-          # Confirm dataloss (i.e., inconsistent nodes)
-          expect(praefect_manager.replicated?(project.id)).to be false
-
-          # Reconcile nodes to recover from dataloss
-          praefect_manager.reconcile_nodes
-          praefect_manager.wait_for_replication(project.id)
+          # Confirm automatic reconciliation
+          expect(praefect_manager.replicated?(project.id)).to be true
 
           # Confirm that all commits are available after reconciliation
           expect(project.commits.map { |commit| commit[:message].chomp })

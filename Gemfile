@@ -310,7 +310,7 @@ gem 'sentry-raven', '~> 3.0'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '0.12.2'
+gem 'gitlab-labkit', '0.13.1'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false

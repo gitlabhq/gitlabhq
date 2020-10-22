@@ -4,6 +4,7 @@ RSpec.shared_examples 'pages size limit is' do |size_limit|
   context "when size is below the limit" do
     before do
       allow(metadata).to receive(:total_size).and_return(size_limit - 1.megabyte)
+      allow(metadata).to receive(:entries).and_return([])
     end
 
     it 'updates pages correctly' do
@@ -17,6 +18,7 @@ RSpec.shared_examples 'pages size limit is' do |size_limit|
   context "when size is above the limit" do
     before do
       allow(metadata).to receive(:total_size).and_return(size_limit + 1.megabyte)
+      allow(metadata).to receive(:entries).and_return([])
     end
 
     it 'limits the maximum size of gitlab pages' do

@@ -548,7 +548,17 @@ for how to use its API to query for data.
 
 ## Developing and testing Usage Ping
 
-### 1. Use your Rails console to manually test counters
+### 1. Naming and placing the metrics
+
+Add the metric in one of the top level keys
+
+- `license`: for license related metrics.
+- `settings`: for settings related metrics.
+- `counts_weekly`: for counters that have data for the most recent 7 days.
+- `counts_monthly`: for counters that have data for the most recent 28 days.
+- `counts`: for counters that have data for all time.
+
+### 2. Use your Rails console to manually test counters
 
 ```ruby
 # count
@@ -560,7 +570,7 @@ Gitlab::UsageData.distinct_count(::Project, :creator_id)
 Gitlab::UsageData.distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
 ```
 
-### 2. Generate the SQL query
+### 3. Generate the SQL query
 
 Your Rails console will return the generated SQL queries.
 
@@ -574,7 +584,7 @@ pry(main)> Gitlab::UsageData.count(User.active)
    (1.9ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4)) AND "users"."id" BETWEEN 1 AND 100000
 ```
 
-### 3. Optimize queries with #database-lab
+### 4. Optimize queries with #database-lab
 
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
@@ -601,27 +611,27 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 - Avoid joins and write the queries as simply as possible, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
 - Set a custom `batch_size` for `distinct_count`, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 
-### 4. Add the metric definition
+### 5. Add the metric definition
 
 When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](event_dictionary.md).
 
-### 5. Add new metric to Versions Application
+### 6. Add new metric to Versions Application
 
 Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
 
-### 6. Add the feature label
+### 7. Add the feature label
 
 Add the `feature` label to the Merge Request for new Usage Ping metrics. These are user-facing changes and are part of expanding the Usage Ping feature.
 
-### 7. Add a changelog file
+### 8. Add a changelog file
 
 Ensure you comply with the [Changelog entries guide](../changelog.md).
 
-### 8. Ask for a Product Analytics Review
+### 9. Ask for a Product Analytics Review
 
 On GitLab.com, we have DangerBot setup to monitor Product Analytics related files and DangerBot will recommend a Product Analytics review. Mention `@gitlab-org/growth/product_analytics/engineers` in your MR for a review.
 
-### 9. Verify your metric
+### 10. Verify your metric
 
 On GitLab.com, the Product Analytics team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "Saas" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 

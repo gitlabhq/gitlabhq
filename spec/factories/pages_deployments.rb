@@ -5,9 +5,13 @@ FactoryBot.define do
     project
 
     after(:build) do |deployment, _evaluator|
-      deployment.file = fixture_file_upload(
-        Rails.root.join("spec/fixtures/pages.zip")
-      )
+      filepath =  Rails.root.join("spec/fixtures/pages.zip")
+
+      deployment.file = fixture_file_upload(filepath)
+      deployment.file_sha256 = Digest::SHA256.file(filepath).hexdigest
+      ::Zip::File.open(filepath) do |zip_archive|
+        deployment.file_count = zip_archive.count
+      end
     end
   end
 end

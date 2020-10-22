@@ -365,7 +365,7 @@ RSpec.shared_examples 'pages settings editing' do
       end
 
       let!(:artifact) do
-        create(:ci_job_artifact, :archive,
+        create(:ci_job_artifact, :archive, :correct_checksum,
                file: fixture_file_upload(File.join('spec/fixtures/pages.zip')), job: ci_build)
       end
 

@@ -10,8 +10,15 @@ RSpec.describe PagesDeployment do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:file) }
+
     it { is_expected.to validate_presence_of(:size) }
     it { is_expected.to validate_numericality_of(:size).only_integer.is_greater_than(0) }
+
+    it { is_expected.to validate_presence_of(:file_count) }
+    it { is_expected.to validate_numericality_of(:file_count).only_integer.is_greater_than_or_equal_to(0) }
+
+    it { is_expected.to validate_presence_of(:file_sha256) }
+
     it { is_expected.to validate_inclusion_of(:file_store).in_array(ObjectStorage::SUPPORTED_STORES) }
 
     it 'is valid when created from the factory' do

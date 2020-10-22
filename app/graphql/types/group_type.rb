@@ -87,6 +87,13 @@ module Types
           extras: [:lookahead],
           resolver: Resolvers::GroupMembersResolver
 
+    field :container_repositories,
+          Types::ContainerRepositoryType.connection_type,
+          null: true,
+          description: 'Container repositories of the project',
+          resolver: Resolvers::ContainerRepositoriesResolver,
+          authorize: :read_container_image
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder
