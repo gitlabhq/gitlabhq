@@ -239,4 +239,30 @@ describe('Local Storage Sync', () => {
       });
     });
   });
+
+  it('clears localStorage when clear property is true', async () => {
+    const storageKey = 'key';
+    const value = 'initial';
+
+    createComponent({
+      props: {
+        storageKey,
+      },
+    });
+    wrapper.setProps({
+      value,
+    });
+
+    await wrapper.vm.$nextTick();
+
+    expect(localStorage.getItem(storageKey)).toBe(value);
+
+    wrapper.setProps({
+      clear: true,
+    });
+
+    await wrapper.vm.$nextTick();
+
+    expect(localStorage.getItem(storageKey)).toBe(null);
+  });
 });

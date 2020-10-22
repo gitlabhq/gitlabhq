@@ -6808,6 +6808,16 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   healthStatus: HealthStatus
 
   """
+  Human-readable time estimate of the issue
+  """
+  humanTimeEstimate: String
+
+  """
+  Human-readable total time reported as spent on the issue
+  """
+  humanTotalTimeSpent: String
+
+  """
   Global ID of the epic-issue relation
   """
   id: ID
@@ -9019,6 +9029,16 @@ type Issue implements CurrentUserTodos & Noteable {
   Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.
   """
   healthStatus: HealthStatus
+
+  """
+  Human-readable time estimate of the issue
+  """
+  humanTimeEstimate: String
+
+  """
+  Human-readable total time reported as spent on the issue
+  """
+  humanTotalTimeSpent: String
 
   """
   ID of the issue

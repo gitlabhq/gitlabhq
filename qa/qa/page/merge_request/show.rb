@@ -23,7 +23,6 @@ module QA
           element :merge_button
           element :fast_forward_message, 'Fast-forward merge without a merge commit' # rubocop:disable QA/ElementWithPattern
           element :merge_moment_dropdown
-          element :merge_when_pipeline_succeeds_option
           element :merge_immediately_option
         end
 

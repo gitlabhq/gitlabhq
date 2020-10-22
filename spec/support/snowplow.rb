@@ -13,7 +13,7 @@ RSpec.configure do |config|
 
     stub_application_setting(snowplow_enabled: true)
 
-    allow(Gitlab::Tracking).to receive(:event).and_call_original
+    allow(Gitlab::Tracking).to receive(:event).and_call_original # rubocop:disable RSpec/ExpectGitlabTracking
   end
 
   config.after(:each, :snowplow) do

@@ -161,10 +161,10 @@ RSpec.describe Clusters::Applications::CheckInstallationProgressService, '#execu
         expect(application.status_reason).to be_nil
       end
 
-      it 'tracks application install' do
-        expect(Gitlab::Tracking).to receive(:event).with('cluster:applications', "cluster_application_helm_installed")
-
+      it 'tracks application install', :snowplow do
         service.execute
+
+        expect_snowplow_event(category: 'cluster:applications', action: 'cluster_application_helm_installed')
       end
     end
 

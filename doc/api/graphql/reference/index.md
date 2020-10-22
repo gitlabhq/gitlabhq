@@ -1081,6 +1081,8 @@ Relationship between an epic and an issue.
 | `epic` | Epic | Epic to which this issue belongs |
 | `epicIssueId` | ID! | ID of the epic-issue relation |
 | `healthStatus` | HealthStatus | Current health status. Returns null if `save_issuable_health_status` feature flag is disabled. |
+| `humanTimeEstimate` | String | Human-readable time estimate of the issue |
+| `humanTotalTimeSpent` | String | Human-readable total time reported as spent on the issue |
 | `id` | ID | Global ID of the epic-issue relation |
 | `iid` | ID! | Internal ID of the issue |
 | `iteration` | Iteration | Iteration of the issue |
@@ -1273,6 +1275,8 @@ Represents a recorded measurement (object count) for the Admins.
 | `dueDate` | Time | Due date of the issue |
 | `epic` | Epic | Epic to which this issue belongs |
 | `healthStatus` | HealthStatus | Current health status. Returns null if `save_issuable_health_status` feature flag is disabled. |
+| `humanTimeEstimate` | String | Human-readable time estimate of the issue |
+| `humanTotalTimeSpent` | String | Human-readable total time reported as spent on the issue |
 | `id` | ID! | ID of the issue |
 | `iid` | ID! | Internal ID of the issue |
 | `iteration` | Iteration | Iteration of the issue |

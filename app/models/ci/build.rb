@@ -1059,7 +1059,7 @@ module Ci
 
         jwt = Gitlab::Ci::Jwt.for_build(self)
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
-      rescue OpenSSL::PKey::RSAError => e
+      rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
     end

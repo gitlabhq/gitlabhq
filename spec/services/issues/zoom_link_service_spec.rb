@@ -46,10 +46,15 @@ RSpec.describe Issues::ZoomLinkService do
         expect(ZoomMeeting.canonical_meeting_url(issue)).to eq(zoom_link)
       end
 
-      it 'tracks the add event' do
-        expect(Gitlab::Tracking).to receive(:event)
-          .with('IncidentManagement::ZoomIntegration', 'add_zoom_meeting', label: 'Issue ID', value: issue.id)
+      it 'tracks the add event', :snowplow do
         result
+
+        expect_snowplow_event(
+          category: 'IncidentManagement::ZoomIntegration',
+          action: 'add_zoom_meeting',
+          label: 'Issue ID',
+          value: issue.id
+        )
       end
 
       it 'creates a zoom_link_added notification' do
@@ -180,10 +185,15 @@ RSpec.describe Issues::ZoomLinkService do
         expect(ZoomMeeting.canonical_meeting_url(issue)).to eq(nil)
       end
 
-      it 'tracks the remove event' do
-        expect(Gitlab::Tracking).to receive(:event)
-        .with('IncidentManagement::ZoomIntegration', 'remove_zoom_meeting', label: 'Issue ID', value: issue.id)
+      it 'tracks the remove event', :snowplow do
         result
+
+        expect_snowplow_event(
+          category: 'IncidentManagement::ZoomIntegration',
+          action: 'remove_zoom_meeting',
+          label: 'Issue ID',
+          value: issue.id
+        )
       end
     end
 

@@ -20,7 +20,8 @@ module SearchHelper
     resources_results = [
       recent_items_autocomplete(term),
       groups_autocomplete(term),
-      projects_autocomplete(term)
+      projects_autocomplete(term),
+      issue_autocomplete(term)
     ].flatten
 
     search_pattern = Regexp.new(Regexp.escape(term), "i")
@@ -182,6 +183,24 @@ module SearchHelper
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def issue_autocomplete(term)
+    return [] unless @project.present? && current_user && term =~ /\A#{Issue.reference_prefix}\d+\z/
+
+    iid = term.sub(Issue.reference_prefix, '').to_i
+    issue = @project.issues.find_by_iid(iid)
+    return [] unless issue && Ability.allowed?(current_user, :read_issue, issue)
+
+    [
+        {
+            category: 'In this project',
+            id: issue.id,
+            label: search_result_sanitize("#{issue.title} (#{issue.to_reference})"),
+            url: issue_path(issue),
+            avatar_url: issue.project.avatar_url || ''
+        }
+    ]
+  end
 
   # Autocomplete results for the current user's projects
   # rubocop: disable CodeReuse/ActiveRecord

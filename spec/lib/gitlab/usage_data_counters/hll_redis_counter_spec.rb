@@ -77,6 +77,12 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           stub_application_setting(usage_ping_enabled: true)
         end
 
+        it 'tracks event when using symbol' do
+          expect(Gitlab::Redis::HLL).to receive(:add)
+
+          described_class.track_event(entity1, :g_analytics_contribution)
+        end
+
         it "raise error if metrics don't have same aggregation" do
           expect { described_class.track_event(entity1, different_aggregation, Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
         end
@@ -199,6 +205,10 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       context 'when data for the week 4 weeks ago' do
         it { expect(described_class.unique_events(event_names: weekly_event, start_date: 4.weeks.ago, end_date: 3.weeks.ago)).to eq(1) }
+      end
+
+      context 'when using symbol as parameter' do
+        it { expect(described_class.unique_events(event_names: weekly_event.to_sym, start_date: 4.weeks.ago, end_date: 3.weeks.ago)).to eq(1) }
       end
 
       context 'when using daily aggregation' do

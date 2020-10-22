@@ -22,10 +22,20 @@ export default {
       required: false,
       default: true,
     },
+    clear: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   watch: {
     value(newVal) {
       this.saveValue(this.serialize(newVal));
+    },
+    clear(newVal) {
+      if (newVal) {
+        localStorage.removeItem(this.storageKey);
+      }
     },
   },
   mounted() {

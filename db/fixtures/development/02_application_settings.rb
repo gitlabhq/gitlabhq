@@ -7,4 +7,7 @@ ApplicationSetting.create_from_defaults
 puts "Enable hashed storage for every new projects.".color(:green)
 ApplicationSetting.current_without_cache.update!(hashed_storage_enabled: true)
 
+puts "Generate CI JWT signing key".color(:green)
+ApplicationSetting.current_without_cache.update!(ci_jwt_signing_key: OpenSSL::PKey::RSA.new(2048).to_pem)
+
 print '.'

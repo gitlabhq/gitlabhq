@@ -14,7 +14,7 @@ module Gitlab
             validations do
               validates :config, variables: { array_values: true }
               validates :config, length: {
-                minimum: :minimum,
+                minimum: 1,
                 too_short: 'requires at least %{count} items'
               }
             end
@@ -27,10 +27,6 @@ module Gitlab
               @config
                 .map { |key, value| [key.to_s, Array(value).map(&:to_s)] }
                 .to_h
-            end
-
-            def minimum
-              ::Gitlab::Ci::Features.one_dimensional_matrix_enabled? ? 1 : 2
             end
           end
         end

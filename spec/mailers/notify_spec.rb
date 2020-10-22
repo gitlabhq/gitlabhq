@@ -619,6 +619,7 @@ RSpec.describe Notify do
       let(:mailer) do
         mailer = described_class.new
         mailer.instance_variable_set(:@note, mail_thread_note)
+        mailer.instance_variable_set(:@target_url, "https://some.link")
         mailer
       end
 

@@ -1,13 +1,17 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 import EditMetaControls from './edit_meta_controls.vue';
+
+import { MR_META_LOCAL_STORAGE_KEY } from '../constants';
 
 export default {
   components: {
     GlModal,
     EditMetaControls,
+    LocalStorageSync,
   },
   props: {
     sourcePath: {
@@ -17,6 +21,7 @@ export default {
   },
   data() {
     return {
+      clearStorage: false,
       mergeRequestMeta: {
         title: sprintf(s__(`StaticSiteEditor|Update %{sourcePath} file`), {
           sourcePath: this.sourcePath,
@@ -51,7 +56,7 @@ export default {
     },
     onPrimary() {
       this.$emit('primary', this.mergeRequestMeta);
-      this.$refs.editMetaControls.resetCachedEditable();
+      this.clearStorage = true;
     },
     onSecondary() {
       this.hide();
@@ -60,6 +65,7 @@ export default {
       this.mergeRequestMeta = { ...mergeRequestMeta };
     },
   },
+  storageKey: MR_META_LOCAL_STORAGE_KEY,
 };
 </script>
 
@@ -75,6 +81,12 @@ export default {
     @secondary="onSecondary"
     @hide="() => $emit('hide')"
   >
+    <local-storage-sync
+      v-model="mergeRequestMeta"
+      :storage-key="$options.storageKey"
+      :clear="clearStorage"
+      as-json
+    />
     <edit-meta-controls
       ref="editMetaControls"
       :title="mergeRequestMeta.title"

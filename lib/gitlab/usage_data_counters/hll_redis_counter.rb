@@ -44,7 +44,7 @@ module Gitlab
         end
 
         def unique_events(event_names:, start_date:, end_date:)
-          events = events_for(Array(event_names))
+          events = events_for(Array(event_names).map(&:to_s))
 
           raise 'Events should be in same slot' unless events_in_same_slot?(events)
           raise 'Events should be in same category' unless events_in_same_category?(events)
@@ -141,7 +141,7 @@ module Gitlab
         end
 
         def event_for(event_name)
-          known_events.find { |event| event[:name] == event_name }
+          known_events.find { |event| event[:name] == event_name.to_s }
         end
 
         def events_for(event_names)

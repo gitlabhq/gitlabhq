@@ -44,4 +44,14 @@ RSpec.describe 'Merge Requests > User filters by target branch', :js do
       expect(page).not_to have_content mr2.title
     end
   end
+
+  context 'filtering by target-branch:!=master' do
+    it 'applies the filter' do
+      input_filtered_search('target-branch:!=master')
+
+      expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
+      expect(page).not_to have_content mr1.title
+      expect(page).to have_content mr2.title
+    end
+  end
 end

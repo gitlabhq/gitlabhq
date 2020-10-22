@@ -9294,9 +9294,12 @@ CREATE TABLE application_settings (
     require_admin_approval_after_user_signup boolean DEFAULT false NOT NULL,
     help_page_documentation_base_url text,
     automatic_purchased_storage_allocation boolean DEFAULT false NOT NULL,
+    encrypted_ci_jwt_signing_key text,
+    encrypted_ci_jwt_signing_key_iv text,
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
+    CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
@@ -15857,6 +15860,7 @@ CREATE TABLE security_findings (
     confidence smallint NOT NULL,
     project_fingerprint text NOT NULL,
     deduplicated boolean DEFAULT false NOT NULL,
+    "position" integer,
     CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
 );
 
@@ -21527,6 +21531,8 @@ CREATE INDEX index_security_findings_on_confidence ON security_findings USING bt
 CREATE INDEX index_security_findings_on_project_fingerprint ON security_findings USING btree (project_fingerprint);
 
 CREATE INDEX index_security_findings_on_scan_id_and_deduplicated ON security_findings USING btree (scan_id, deduplicated);
+
+CREATE UNIQUE INDEX index_security_findings_on_scan_id_and_position ON security_findings USING btree (scan_id, "position");
 
 CREATE INDEX index_security_findings_on_scanner_id ON security_findings USING btree (scanner_id);
 

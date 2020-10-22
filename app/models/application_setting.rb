@@ -384,6 +384,9 @@ class ApplicationSetting < ApplicationRecord
   validates :raw_blob_request_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :ci_jwt_signing_key,
+            rsa_key: true, allow_nil: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -409,6 +412,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :recaptcha_site_key, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :slack_app_secret, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :slack_app_verification_token, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :ci_jwt_signing_key, encryption_options_base_truncated_aes_256_gcm
 
   before_validation :ensure_uuid!
 

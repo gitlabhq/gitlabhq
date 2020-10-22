@@ -56,3 +56,7 @@
     vertical-align: text-bottom;
   }
 }
+
+.spin {
+  animation: spinner-rotate 2s infinite linear;
+}

@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { GlFormInput, GlFormTextarea } from '@gitlab/ui';
 
 import EditMetaControls from '~/static_site_editor/components/edit_meta_controls.vue';
@@ -8,8 +7,6 @@ import EditMetaControls from '~/static_site_editor/components/edit_meta_controls
 import { mergeRequestMeta } from '../mock_data';
 
 describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
-  useLocalStorageSpy();
-
   let wrapper;
   let mockSelect;
   let mockGlFormInputTitleInstance;
@@ -85,15 +82,6 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
       const newSettings = { ...mergeRequestMeta, [key]: value };
 
       expect(wrapper.emitted('updateSettings')[0][0]).toMatchObject(newSettings);
-    });
-
-    it('should remember the input changes', () => {
-      findGlFormInputTitle().vm.$emit('input', newTitle);
-      findGlFormTextAreaDescription().vm.$emit('input', newDescription);
-
-      const newSettings = { title: newTitle, description: newDescription };
-
-      expect(localStorage.setItem).toHaveBeenCalledWith(storageKey, JSON.stringify(newSettings));
     });
   });
 });

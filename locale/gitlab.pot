@@ -25558,6 +25558,9 @@ msgstr ""
 msgid "Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details."
 msgstr ""
 
+msgid "Successfully synced %{synced_timeago}."
+msgstr ""
+
 msgid "Successfully unblocked"
 msgstr ""
 
@@ -25693,10 +25696,16 @@ msgstr ""
 msgid "Sync information"
 msgstr ""
 
+msgid "Sync now"
+msgstr ""
+
 msgid "Synced"
 msgstr ""
 
 msgid "Synchronization disabled"
+msgstr ""
+
+msgid "Syncing…"
 msgstr ""
 
 msgid "System"

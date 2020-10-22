@@ -1,0 +1,5 @@
+---
+title: Add `position` column into security_findings table
+merge_request: 44815
+author:
+type: fixed

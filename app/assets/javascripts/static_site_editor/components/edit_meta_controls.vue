@@ -1,6 +1,5 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
-import AccessorUtilities from '~/lib/utils/accessor';
 
 export default {
   components: {
@@ -19,55 +18,25 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      editable: {
-        title: this.title,
-        description: this.description,
-      },
-    };
-  },
-  computed: {
-    editableStorageKey() {
-      return this.getId('local-storage', 'editable');
-    },
-    hasLocalStorage() {
-      return AccessorUtilities.isLocalStorageAccessSafe();
-    },
-  },
   mounted() {
-    this.initCachedEditable();
     this.preSelect();
   },
   methods: {
     getId(type, key) {
       return `sse-merge-request-meta-${type}-${key}`;
     },
-    initCachedEditable() {
-      if (this.hasLocalStorage) {
-        const cachedEditable = JSON.parse(localStorage.getItem(this.editableStorageKey));
-        if (cachedEditable) {
-          this.editable = cachedEditable;
-        }
-      }
-    },
     preSelect() {
       this.$nextTick(() => {
         this.$refs.title.$el.select();
       });
     },
-    resetCachedEditable() {
-      if (this.hasLocalStorage) {
-        window.localStorage.removeItem(this.editableStorageKey);
-      }
-    },
-    onUpdate() {
-      const payload = { ...this.editable };
+    onUpdate(field, value) {
+      const payload = {
+        title: this.title,
+        description: this.description,
+        [field]: value,
+      };
       this.$emit('updateSettings', payload);
-
-      if (this.hasLocalStorage) {
-        window.localStorage.setItem(this.editableStorageKey, JSON.stringify(payload));
-      }
     },
   },
 };
@@ -83,9 +52,9 @@ export default {
       <gl-form-input
         :id="getId('control', 'title')"
         ref="title"
-        v-model.lazy="editable.title"
+        :value="title"
         type="text"
-        @input="onUpdate"
+        @input="onUpdate('title', $event)"
       />
     </gl-form-group>
 
@@ -96,8 +65,8 @@ export default {
     >
       <gl-form-textarea
         :id="getId('control', 'description')"
-        v-model.lazy="editable.description"
-        @input="onUpdate"
+        :value="description"
+        @input="onUpdate('description', $event)"
       />
     </gl-form-group>
   </gl-form>
