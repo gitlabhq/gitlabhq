@@ -13,7 +13,6 @@ import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
 import { validateParams } from '../../utils';
 import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../../constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -23,7 +22,7 @@ export default {
     PipelinesFilteredSearch,
     GlIcon,
   },
-  mixins: [pipelinesMixin, CIPaginationMixin, glFeatureFlagsMixin()],
+  mixins: [pipelinesMixin, CIPaginationMixin],
   props: {
     store: {
       type: Object,
@@ -209,9 +208,6 @@ export default {
         },
       ];
     },
-    canFilterPipelines() {
-      return this.glFeatures.filterPipelinesSearch;
-    },
     validatedParams() {
       return validateParams(this.params);
     },
@@ -306,7 +302,6 @@ export default {
     </div>
 
     <pipelines-filtered-search
-      v-if="canFilterPipelines"
       :project-id="projectId"
       :params="validatedParams"
       @filterPipelines="filterPipelines"

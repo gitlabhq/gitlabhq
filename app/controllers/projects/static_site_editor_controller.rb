@@ -47,6 +47,8 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
     payload.transform_values do |value|
       if value.is_a?(String) || value.is_a?(Integer)
         value
+      elsif value.nil?
+        ''
       else
         value.to_json
       end

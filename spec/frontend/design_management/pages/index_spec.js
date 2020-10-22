@@ -19,7 +19,6 @@ import {
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import createRouter from '~/design_management/router';
 import * as utils from '~/design_management/utils/design_management_utils';
-import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 import {
   designListQueryResponse,
   designUploadMutationCreatedResponse,
@@ -682,13 +681,6 @@ describe('Design management index page', () => {
   });
 
   describe('when navigating', () => {
-    it('ensures fullscreen layout is not applied', () => {
-      createComponent({ loading: true });
-
-      expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
-      expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
-    });
-
     it('should trigger a scrollIntoView method if designs route is detected', () => {
       router.replace({
         path: '/designs',

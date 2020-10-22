@@ -24,7 +24,13 @@ import mockAllVersions from '../../mock_data/all_versions';
 jest.mock('~/flash');
 
 const focusInput = jest.fn();
-
+const mutate = jest.fn().mockResolvedValue();
+const mockPageLayoutElement = {
+  classList: {
+    add: jest.fn(),
+    remove: jest.fn(),
+  },
+};
 const DesignReplyForm = {
   template: '<div><textarea ref="textarea"></textarea></div>',
   methods: {
@@ -37,6 +43,32 @@ const mockDesignNoDiscussions = {
     nodes: [],
   },
 };
+const newComment = 'new comment';
+const annotationCoordinates = {
+  x: 10,
+  y: 10,
+  width: 100,
+  height: 100,
+};
+const createDiscussionMutationVariables = {
+  mutation: createImageDiffNoteMutation,
+  update: expect.anything(),
+  variables: {
+    input: {
+      body: newComment,
+      noteableId: design.id,
+      position: {
+        headSha: 'headSha',
+        baseSha: 'baseSha',
+        startSha: 'startSha',
+        paths: {
+          newPath: 'full-design-path',
+        },
+        ...annotationCoordinates,
+      },
+    },
+  },
+};
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);
@@ -44,35 +76,6 @@ localVue.use(VueRouter);
 describe('Design management design index page', () => {
   let wrapper;
   let router;
-
-  const newComment = 'new comment';
-  const annotationCoordinates = {
-    x: 10,
-    y: 10,
-    width: 100,
-    height: 100,
-  };
-  const createDiscussionMutationVariables = {
-    mutation: createImageDiffNoteMutation,
-    update: expect.anything(),
-    variables: {
-      input: {
-        body: newComment,
-        noteableId: design.id,
-        position: {
-          headSha: 'headSha',
-          baseSha: 'baseSha',
-          startSha: 'startSha',
-          paths: {
-            newPath: 'full-design-path',
-          },
-          ...annotationCoordinates,
-        },
-      },
-    },
-  };
-
-  const mutate = jest.fn().mockResolvedValue();
 
   const findDiscussionForm = () => wrapper.find(DesignReplyForm);
   const findSidebar = () => wrapper.find(DesignSidebar);
@@ -122,19 +125,44 @@ describe('Design management design index page', () => {
     wrapper.destroy();
   });
 
-  describe('when navigating', () => {
-    it('applies fullscreen layout', () => {
-      const mockEl = {
-        classList: {
-          add: jest.fn(),
-          remove: jest.fn(),
-        },
-      };
-      jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockEl);
+  describe('when navigating to component', () => {
+    it('applies fullscreen layout class', () => {
+      jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
       createComponent({ loading: true });
 
-      expect(mockEl.classList.add).toHaveBeenCalledTimes(1);
-      expect(mockEl.classList.add).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+      expect(mockPageLayoutElement.classList.add).toHaveBeenCalledTimes(1);
+      expect(mockPageLayoutElement.classList.add).toHaveBeenCalledWith(
+        ...DESIGN_DETAIL_LAYOUT_CLASSLIST,
+      );
+    });
+  });
+
+  describe('when navigating within the component', () => {
+    it('`scale` prop of DesignPresentation component is 1', async () => {
+      jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
+      createComponent({ loading: false }, { data: { design, scale: 2 } });
+
+      await wrapper.vm.$nextTick();
+      expect(findDesignPresentation().props('scale')).toBe(2);
+
+      DesignIndex.beforeRouteUpdate.call(wrapper.vm, {}, {}, jest.fn());
+      await wrapper.vm.$nextTick();
+
+      expect(findDesignPresentation().props('scale')).toBe(1);
+    });
+  });
+
+  describe('when navigating away from component', () => {
+    it('removes fullscreen layout class', async () => {
+      jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
+      createComponent({ loading: true });
+
+      wrapper.vm.$options.beforeRouteLeave[0].call(wrapper.vm, {}, {}, jest.fn());
+
+      expect(mockPageLayoutElement.classList.remove).toHaveBeenCalledTimes(1);
+      expect(mockPageLayoutElement.classList.remove).toHaveBeenCalledWith(
+        ...DESIGN_DETAIL_LAYOUT_CLASSLIST,
+      );
     });
   });
 

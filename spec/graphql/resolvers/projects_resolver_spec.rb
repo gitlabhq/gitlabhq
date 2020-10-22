@@ -134,8 +134,8 @@ RSpec.describe Resolvers::ProjectsResolver do
             is_expected.to eq([named_project3, named_project1, named_project2])
           end
 
-          it 'returns projects not in order of similarity to search if flag is off' do
-            is_expected.not_to eq([named_project3, named_project1, named_project2])
+          it 'returns projects in any order if flag is off' do
+            is_expected.to match_array([named_project3, named_project1, named_project2])
           end
         end
       end

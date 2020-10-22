@@ -74,7 +74,6 @@ describe('Pipelines', () => {
 
   const createComponent = (props = defaultProps, methods) => {
     wrapper = mount(PipelinesComponent, {
-      provide: { glFeatures: { filterPipelinesSearch: true } },
       propsData: {
         store: new Store(),
         projectId: '21',

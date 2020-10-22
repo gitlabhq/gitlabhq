@@ -21,6 +21,7 @@ import {
   updateImageDiffNoteOptimisticResponse,
   toDiffNoteGid,
   extractDesignNoteId,
+  getPageLayoutElement,
 } from '../../utils/design_management_utils';
 import {
   updateStoreAfterAddImageDiffNote,
@@ -38,7 +39,7 @@ import {
 } from '../../utils/error_messages';
 import { trackDesignDetailView } from '../../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
-import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES, DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../../constants';
 
 const DEFAULT_SCALE = 1;
 
@@ -299,6 +300,22 @@ export default {
     toggleResolvedComments() {
       this.resolvedDiscussionsExpanded = !this.resolvedDiscussionsExpanded;
     },
+  },
+  beforeRouteEnter(to, from, next) {
+    const pageEl = getPageLayoutElement();
+    if (pageEl) {
+      pageEl.classList.add(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    const pageEl = getPageLayoutElement();
+    if (pageEl) {
+      pageEl.classList.remove(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    next();
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,
