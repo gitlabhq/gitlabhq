@@ -226,10 +226,6 @@ table {
   display: none;
 }
 
-.parallel-comment {
-  padding: 6px;
-}
-
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -311,29 +307,10 @@ table {
   }
 }
 
-.discussion-notes-count {
-  font-size: 16px;
-}
-
-.edit_note {
-  .markdown-area {
-    min-height: 140px;
-    max-height: 500px;
-  }
-
-  .note-form-actions {
-    background: transparent;
-  }
-}
-
 .comment-toolbar {
   padding-top: $gl-padding-top;
   color: $gl-text-color-secondary;
   border-top: 1px solid $border-color;
-}
-
-.md-helper {
-  padding-top: 10px;
 }
 
 .toolbar-button {

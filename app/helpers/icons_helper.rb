@@ -89,15 +89,6 @@ module IconsHelper
     sprite_icon(name, css_class: css_class)
   end
 
-  def spinner(text = nil, visible = false)
-    css_class = ['loading']
-    css_class << 'hide' unless visible
-
-    content_tag :div, class: css_class.join(' ') do
-      icon('spinner spin') + text
-    end
-  end
-
   def boolean_to_icon(value)
     if value
       sprite_icon('check', css_class: 'cgreen')

@@ -15,7 +15,7 @@ We will look at three scenarios: the target directory is empty, the
 target directory contains an outdated copy of the repositories, and
 how to deal with thousands of repositories.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Each of the approaches we list can/will overwrite data in the
 target directory `/mnt/gitlab/repositories`. Do not mix up the
 source and the target.

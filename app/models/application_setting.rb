@@ -9,7 +9,6 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
   ignore_column :instance_statistics_visibility_private, remove_with: '13.6', remove_after: '2020-10-22'
-  ignore_column :snowplow_iglu_registry_url, remove_with: '13.6', remove_after: '2020-11-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

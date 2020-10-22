@@ -76,7 +76,7 @@ Follow these steps to do so:
    address's format. The older format is still supported, however, allowing existing aliases or
    contacts to continue working.
 
-   DANGER: **Danger:**
+   DANGER: **Warning:**
    This email address can be used by anyone to create an issue on this project, whether or not they
    have access to your GitLab instance. We recommend **putting this behind an alias** so it can be
    changed if needed, and **[enabling Akismet](../../integration/akismet.md)** on your GitLab

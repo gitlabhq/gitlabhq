@@ -75,7 +75,7 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.7
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Only upgrade to GitLab 12.7.5 or later. Do not upgrade to versions 12.7.0
 through 12.7.4 because there is [an initialization order
 bug](https://gitlab.com/gitlab-org/gitlab/-/issues/199672) that causes Geo
@@ -139,7 +139,7 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.3
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 If the existing PostgreSQL server version is 9.6.x, it is recommended to
 upgrade to GitLab 12.4 or newer. By default, GitLab 12.3 will attempt to
 automatically update the embedded PostgreSQL server to 10.9 from 9.6. In
@@ -155,7 +155,7 @@ for the recommended procedure.
 
 ## Updating to GitLab 12.2
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 If the existing PostgreSQL server version is 9.6.x, it is recommended to
 upgrade to GitLab 12.4 or newer. By default, GitLab 12.2 will attempt to
 automatically update the embedded PostgreSQL server to 10.9 from 9.6. In
@@ -187,7 +187,7 @@ The restart avoids a version mismatch when PostgreSQL tries to load the FDW exte
 
 ## Updating to GitLab 12.1
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 If the existing PostgreSQL server version is 9.6.x, it is recommended to
 upgrade to GitLab 12.4 or newer. By default, GitLab 12.1 will attempt to
 automatically update the embedded PostgreSQL server to 10.9 from 9.6. In

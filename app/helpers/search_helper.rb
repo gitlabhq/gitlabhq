@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 module SearchHelper
-  SEARCH_PERMITTED_PARAMS = [:search, :scope, :project_id, :group_id, :repository_ref, :snippets, :sort, :state, :confidential].freeze
+  SEARCH_PERMITTED_PARAMS = [
+    :search,
+    :scope,
+    :project_id,
+    :group_id,
+    :repository_ref,
+    :snippets,
+    :sort,
+    :state,
+    :confidential,
+    :force_search_results
+  ].freeze
 
   def search_autocomplete_opts(term)
     return unless current_user

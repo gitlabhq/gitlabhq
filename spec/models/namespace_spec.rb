@@ -855,8 +855,8 @@ RSpec.describe Namespace do
   end
 
   describe '#all_projects' do
-    shared_examples 'all projects for a namespace' do
-      let(:namespace) { create(:namespace) }
+    shared_examples 'all projects for a group' do
+      let(:namespace) { create(:group) }
       let(:child) { create(:group, parent: namespace) }
       let!(:project1) { create(:project_empty_repo, namespace: namespace) }
       let!(:project2) { create(:project_empty_repo, namespace: child) }
@@ -865,30 +865,34 @@ RSpec.describe Namespace do
       it { expect(child.all_projects.to_a).to match_array([project2]) }
     end
 
-    shared_examples 'all project examples' do
-      include_examples 'all projects for a namespace'
+    shared_examples 'all projects for personal namespace' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:user_namespace) { create(:namespace, owner: user) }
+      let_it_be(:project) { create(:project, namespace: user_namespace) }
 
-      context 'when namespace is a group' do
-        let_it_be(:namespace) { create(:group) }
-
-        include_examples 'all projects for a namespace'
-      end
-
-      context 'when namespace is a user namespace' do
-        let_it_be(:user) { create(:user) }
-        let_it_be(:user_namespace) { create(:namespace, owner: user) }
-        let_it_be(:project) { create(:project, namespace: user_namespace) }
-
-        it { expect(user_namespace.all_projects.to_a).to match_array([project]) }
-      end
+      it { expect(user_namespace.all_projects.to_a).to match_array([project]) }
     end
 
     context 'with recursive approach' do
-      before do
-        stub_feature_flags(recursive_approach_for_all_projects: true)
+      context 'when namespace is a group' do
+        include_examples 'all projects for a group'
+
+        it 'queries for the namespace and its descendants' do
+          expect(Project).to receive(:where).with(namespace: [namespace, child])
+
+          namespace.all_projects
+        end
       end
 
-      include_examples 'all project examples'
+      context 'when namespace is a user namespace' do
+        include_examples 'all projects for personal namespace'
+
+        it 'only queries for the namespace itself' do
+          expect(Project).to receive(:where).with(namespace: user_namespace)
+
+          user_namespace.all_projects
+        end
+      end
     end
 
     context 'with route path wildcard approach' do
@@ -896,7 +900,13 @@ RSpec.describe Namespace do
         stub_feature_flags(recursive_approach_for_all_projects: false)
       end
 
-      include_examples 'all project examples'
+      context 'when namespace is a group' do
+        include_examples 'all projects for a group'
+      end
+
+      context 'when namespace is a user namespace' do
+        include_examples 'all projects for personal namespace'
+      end
     end
   end
 

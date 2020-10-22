@@ -35,13 +35,6 @@ module ServicesHelper
     "#{event}_events"
   end
 
-  def service_save_button(disabled: false)
-    button_tag(class: 'btn btn-success', type: 'submit', disabled: disabled, data: { qa_selector: 'save_changes_button' }) do
-      icon('spinner spin', class: 'hidden js-btn-spinner') +
-        content_tag(:span, 'Save changes', class: 'js-btn-label')
-    end
-  end
-
   def scoped_integrations_path
     if @project.present?
       project_settings_integrations_path(@project)

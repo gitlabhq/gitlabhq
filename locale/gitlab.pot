@@ -30303,6 +30303,9 @@ msgstr ""
 msgid "You have been invited"
 msgstr ""
 
+msgid "You have been redirected to the only result; see the %{a_start}search results%{a_end} instead."
+msgstr ""
+
 msgid "You have been unsubscribed from this thread."
 msgstr ""
 

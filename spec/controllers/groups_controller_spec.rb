@@ -1213,4 +1213,60 @@ RSpec.describe GroupsController, factory_default: :keep do
       it_behaves_like 'disabled when using an external authorization service'
     end
   end
+
+  describe 'GET #unfoldered_environment_names' do
+    it 'shows the environment names of a public project to an anonymous user' do
+      public_project = create(:project, :public, namespace: group)
+
+      create(:environment, project: public_project, name: 'foo')
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(%w[foo])
+    end
+
+    it 'does not show environment names of private projects to anonymous users' do
+      create(:environment, project: project, name: 'foo')
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_empty
+    end
+
+    it 'shows environment names of a private project to a group member' do
+      create(:environment, project: project, name: 'foo')
+      sign_in(developer)
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(%w[foo])
+    end
+
+    it 'does not show environment names of private projects to a logged-in non-member' do
+      alice = create(:user)
+
+      create(:environment, project: project, name: 'foo')
+      sign_in(alice)
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_empty
+    end
+  end
 end

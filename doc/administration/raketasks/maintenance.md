@@ -267,7 +267,7 @@ clear it.
 
 To clear all exclusive leases:
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Don't run it while GitLab or Sidekiq is running
 
 ```shell

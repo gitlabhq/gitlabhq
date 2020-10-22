@@ -1437,4 +1437,55 @@ RSpec.describe ProjectsController do
   def project_moved_message(redirect_route, project)
     "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
+
+  describe 'GET #unfoldered_environment_names' do
+    it 'shows the environment names of a public project to an anonymous user' do
+      create(:environment, project: public_project, name: 'foo')
+
+      get(
+        :unfoldered_environment_names,
+        params: { namespace_id: public_project.namespace, id: public_project, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(%w[foo])
+    end
+
+    it 'does not show environment names of a private project to anonymous users' do
+      create(:environment, project: project, name: 'foo')
+
+      get(
+        :unfoldered_environment_names,
+        params: { namespace_id: project.namespace, id: project, format: :json }
+      )
+
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it 'shows environment names of a private project to a project member' do
+      create(:environment, project: project, name: 'foo')
+      project.add_developer(user)
+      sign_in(user)
+
+      get(
+        :unfoldered_environment_names,
+        params: { namespace_id: project.namespace, id: project, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(%w[foo])
+    end
+
+    it 'does not show environment names of a private project to a logged-in non-member' do
+      create(:environment, project: project, name: 'foo')
+      sign_in(user)
+
+      get(
+        :unfoldered_environment_names,
+        params: { namespace_id: project.namespace, id: project, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
 end

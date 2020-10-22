@@ -32,7 +32,7 @@ This also applies when using the `pipelines` or `triggers` keywords with the leg
 
 A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Passing plain text tokens in public projects is a security issue. Potential
 attackers can impersonate the user that exposed their trigger token publicly in
 their `.gitlab-ci.yml` file. Use [variables](../variables/README.md#gitlab-cicd-environment-variables)

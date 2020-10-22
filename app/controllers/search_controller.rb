@@ -35,6 +35,8 @@ class SearchController < ApplicationController
 
     return unless search_term_valid?
 
+    return if check_single_commit_result?
+
     @search_term = params[:search]
 
     @scope = search_service.scope
@@ -47,8 +49,6 @@ class SearchController < ApplicationController
     eager_load_user_status if @scope == 'users'
 
     increment_search_counters
-
-    check_single_commit_result
   end
 
   def count
@@ -103,14 +103,23 @@ class SearchController < ApplicationController
     @search_objects = @search_objects.eager_load(:status) # rubocop:disable CodeReuse/ActiveRecord
   end
 
-  def check_single_commit_result
-    if @search_results.single_commit_result?
-      only_commit = @search_results.objects('commits').first
-      query = params[:search].strip.downcase
-      found_by_commit_sha = Commit.valid_hash?(query) && only_commit.sha.start_with?(query)
+  def check_single_commit_result?
+    return false if params[:force_search_results]
+    return false unless @project.present?
+    # download_code project policy grants user the read_commit ability
+    return false unless Ability.allowed?(current_user, :download_code, @project)
 
-      redirect_to project_commit_path(@project, only_commit) if found_by_commit_sha
-    end
+    query = params[:search].strip.downcase
+    return false unless Commit.valid_hash?(query)
+
+    commit = @project.commit_by(oid: query)
+    return false unless commit.present?
+
+    link = search_path(safe_params.merge(force_search_results: true))
+    flash[:notice] = html_escape(_("You have been redirected to the only result; see the %{a_start}search results%{a_end} instead.")) % { a_start: "<a href=\"#{link}\"><u>".html_safe, a_end: '</u></a>'.html_safe }
+    redirect_to project_commit_path(@project, commit)
+
+    true
   end
 
   def increment_search_counters

@@ -1,0 +1,8 @@
+.debhelper
+debhelper-build-stamp
+files
+*.substvars
+libsample0
+sample-dev
+sample-udeb
+

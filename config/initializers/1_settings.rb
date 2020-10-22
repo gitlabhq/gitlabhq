@@ -354,9 +354,10 @@ Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 # Packages
 #
 Settings['packages'] ||= Settingslogic.new({})
-Settings.packages['enabled']      = true if Settings.packages['enabled'].nil?
-Settings.packages['storage_path'] = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
-Settings.packages['object_store'] = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'])
+Settings.packages['enabled']       = true if Settings.packages['enabled'].nil?
+Settings.packages['dpkg_deb_path'] = '/usr/bin/dpkg-deb' if Settings.packages['dpkg_deb_path'].nil?
+Settings.packages['storage_path']  = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
+Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'])
 
 #
 # Dependency Proxy

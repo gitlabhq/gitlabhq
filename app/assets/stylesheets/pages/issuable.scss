@@ -77,14 +77,6 @@
   }
 }
 
-.issuable-filter-count {
-  span {
-    display: block;
-    margin-bottom: -16px;
-    padding: 13px 0;
-  }
-}
-
 .issuable-show-labels {
   .gl-label {
     margin-bottom: 5px;
@@ -659,12 +651,6 @@
 
   .btn-link:focus {
     text-decoration: none;
-  }
-}
-
-.issuable-form-padding-top {
-  @include media-breakpoint-up(sm) {
-    padding-top: 7px;
   }
 }
 

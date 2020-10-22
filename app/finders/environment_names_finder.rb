@@ -13,7 +13,7 @@
 class EnvironmentNamesFinder
   attr_reader :project_or_group, :current_user
 
-  def initialize(project_or_group, current_user)
+  def initialize(project_or_group, current_user = nil)
     @project_or_group = project_or_group
     @current_user = current_user
   end
@@ -38,7 +38,7 @@ class EnvironmentNamesFinder
   end
 
   def project_environments
-    if current_user.can?(:read_environment, project_or_group)
+    if Ability.allowed?(current_user, :read_environment, project_or_group)
       project_or_group.environments
     else
       Environment.none

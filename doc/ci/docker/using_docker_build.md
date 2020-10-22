@@ -103,7 +103,7 @@ image in privileged mode.
 CI builds, follow the `docker-compose`
 [installation instructions](https://docs.docker.com/compose/install/).
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 By enabling `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check

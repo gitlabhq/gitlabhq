@@ -1,11 +1,12 @@
 <script>
 import { uniqBy } from 'lodash';
-import { GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
+    GlButton,
     GlIcon,
     UserAvatarLink,
     TimeAgoTooltip,
@@ -57,14 +58,15 @@ export default {
           tooltip-placement="bottom"
         />
       </div>
-      <button
-        class="btn btn-link js-replies-text"
+      <gl-button
+        class="js-replies-text"
+        category="tertiary"
+        variant="link"
         data-qa-selector="expand_replies_button"
-        type="button"
         @click="toggle"
       >
         {{ replies.length }} {{ n__('reply', 'replies', replies.length) }}
-      </button>
+      </gl-button>
       {{ __('Last reply by') }}
       <a :href="lastReply.author.path" class="btn btn-link author-link">
         {{ lastReply.author.name }}

@@ -51,43 +51,6 @@
   outline: 0;
 }
 
-.flex-users-panel {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  @include media-breakpoint-down(sm) {
-    display: block;
-
-    .flex-project-title {
-      vertical-align: top;
-      display: inline-block;
-      max-width: 90%;
-    }
-  }
-
-  .flex-project-title {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .badge.badge-pill {
-    height: 17px;
-    line-height: 16px;
-    margin-right: 5px;
-    padding-top: 1px;
-    padding-bottom: 1px;
-  }
-
-  .flex-users-form {
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    margin-left: auto;
-  }
-}
-
 .content-list.members-list li {
   display: flex;
   justify-content: space-between;

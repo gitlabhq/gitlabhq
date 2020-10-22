@@ -1571,13 +1571,13 @@ This is something to be cautious about.
 ### Danger
 
 ```markdown
-DANGER: **Danger:**
+DANGER: **Warning:**
 This is a breaking change, a bug, or something very important to note.
 ```
 
 How it renders on the GitLab documentation site:
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 This is a breaking change, a bug, or something very important to note.
 
 ## Blockquotes

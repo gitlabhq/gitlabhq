@@ -514,7 +514,7 @@ your main application server.
 
 To configure GitLab Pages on a separate server:
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 The following procedure includes steps to back up and edit the
 `gitlab-secrets.json` file. This file contains secrets that control
 database encryption. Proceed with caution.

@@ -317,6 +317,7 @@ production: &base
   ## Packages (maven repository, npm registry, etc...)
   packages:
     enabled: true
+    dpkg_deb_path: /usr/bin/dpkg-deb
     # The location where build packages are stored (default: shared/packages).
     # storage_path: shared/packages
     object_store:

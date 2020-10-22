@@ -37,7 +37,7 @@ Report suspected security vulnerabilities in private to
 `support@gitlab.com`, also see the
 [disclosure section on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Do **NOT** create publicly viewable issues for suspected security vulnerabilities.
 
 ## Code of conduct

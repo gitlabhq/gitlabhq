@@ -20,7 +20,7 @@ RSpec.shared_context 'Debian repository shared context' do |object_type|
   let(:source_package) { 'sample' }
   let(:letter) { source_package[0..2] == 'lib' ? source_package[0..3] : source_package[0] }
   let(:package_name) { 'libsample0' }
-  let(:package_version) { '1.2.3~alpha2-1' }
+  let(:package_version) { '1.2.3~alpha2' }
   let(:file_name) { "#{package_name}_#{package_version}_#{architecture}.deb" }
 
   let(:method) { :get }

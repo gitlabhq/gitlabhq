@@ -1,0 +1,35 @@
+Source: sample
+Priority: optional
+Maintainer: John Doe <john.doe@example.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.0
+Section: libs
+Homepage: https://gitlab.com/
+#Vcs-Browser: https://salsa.debian.org/debian/sample-1.2.3
+#Vcs-Git: https://salsa.debian.org/debian/sample-1.2.3.git
+Rules-Requires-Root: no
+
+Package: sample-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libsample0 (= ${binary:Version}), ${misc:Depends}
+Description: Some mostly empty developpement files
+ Used in GitLab tests.
+ .
+ Testing another paragraph.
+
+Package: libsample0
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Some mostly empty lib
+ Used in GitLab tests.
+ .
+ Testing another paragraph.
+
+Package: sample-udeb
+Package-Type: udeb
+Architecture: any
+Depends: installed-base
+Description: Some mostly empty udeb

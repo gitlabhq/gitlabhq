@@ -94,10 +94,6 @@ module Gitlab
       @limited_users_count ||= limited_count(users)
     end
 
-    def single_commit_result?
-      false
-    end
-
     def count_limit
       COUNT_LIMIT
     end

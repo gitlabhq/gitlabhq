@@ -18,7 +18,7 @@ We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blo
 over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
 [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Rewriting repository history is a destructive operation. Make sure to back up your repository before
 you begin. The best way back up a repository is to
 [export the project](../settings/import_export.md#exporting-a-project-and-its-data).

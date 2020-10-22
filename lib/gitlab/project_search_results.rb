@@ -75,15 +75,6 @@ module Gitlab
       @commits_count ||= commits(limit: count_limit).count
     end
 
-    def single_commit_result?
-      return false if commits_count != 1
-
-      counts = %i(limited_milestones_count limited_notes_count
-                  limited_merge_requests_count limited_issues_count
-                  limited_blobs_count wiki_blobs_count)
-      counts.all? { |count_method| public_send(count_method) == 0 } # rubocop:disable GitlabSecurity/PublicSend
-    end
-
     private
 
     def paginated_commits(page, per_page)
