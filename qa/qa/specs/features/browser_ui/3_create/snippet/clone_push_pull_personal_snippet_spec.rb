@@ -22,13 +22,13 @@ module QA
       end
 
       let(:repository_uri_http) do
-        snippet
+        snippet.visit!
         Page::Dashboard::Snippet::Show.perform(&:get_repository_uri_http)
       end
 
       let(:repository_uri_ssh) do
         ssh_key
-        snippet
+        snippet.visit!
         Page::Dashboard::Snippet::Show.perform(&:get_repository_uri_ssh)
       end
 

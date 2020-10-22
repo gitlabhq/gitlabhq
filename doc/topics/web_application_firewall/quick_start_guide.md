@@ -1,5 +1,5 @@
 ---
-stage: Defend
+stage: Protect
 group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
@@ -17,7 +17,7 @@ These instructions will also work for a self-managed GitLab instance. However, y
 need to ensure your own [runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
-**Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
+GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
 so it will be available to your applications no matter how you deploy them to Kubernetes.
 
 ## Configuring your Google account
@@ -252,7 +252,7 @@ You can now see the benefits of a using a Web Application Firewall.
 ModSecurity and the OWASP Core Rule Set, offer many more benefits.
 You can explore them in more detail:
 
-- [GitLab Defend Vision](https://about.gitlab.com/direction/defend/#waf)
+- [Category Direction - Web Application Firewall](https://about.gitlab.com/direction/protect/web_application_firewall/)
 - [ModSecurity](https://www.modsecurity.org/)
 - [OWASP Core Rule Set](https://github.com/coreruleset/coreruleset/)
 - [AutoDevOps](../autodevops/index.md)

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 CAUTION: **Caution:**
 This [Closed Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#sts=Closed%20Beta) feature is being re-evaluated in favor of a different
-[identity model](https://gitlab.com/gitlab-org/gitlab/-/issues/218631) that does not require separate accounts.
+[identity model](https://gitlab.com/groups/gitlab-org/-/epics/4345) that does not require separate accounts.
 We recommend that group administrators who haven't yet implemented this feature wait for
 the new solution.
 

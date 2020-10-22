@@ -226,7 +226,7 @@ links:
 ## Troubleshooting
 
 When troubleshooting issues with a managed Prometheus app, it is often useful to
-[view the Prometheus UI](../../../development/prometheus.md#access-the-ui-of-a-prometheus-managed-application-in-kubernetes).
+[view the Prometheus UI](../../../user/project/integrations/prometheus.md#access-the-ui-of-a-prometheus-managed-application-in-kubernetes).
 
 ### "No data found" error on Metrics dashboard page
 

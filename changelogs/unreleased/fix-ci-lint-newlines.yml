@@ -1,0 +1,5 @@
+---
+title: 'Render script newlines in CI Lint view'
+merge_request: 45087
+author: Nejc Habjan
+type: fixed

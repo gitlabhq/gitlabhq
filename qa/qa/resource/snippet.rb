@@ -3,7 +3,7 @@
 module QA
   module Resource
     class Snippet < Base
-      attr_accessor :title, :description, :file_content, :visibility, :file_name
+      attr_accessor :title, :description, :file_content, :visibility, :file_name, :snippet_id
 
       def initialize
         @title = 'New snippet title'
@@ -35,6 +35,34 @@ module QA
           end
           new_page.click_create_snippet_button
         end
+      end
+
+      def fabricate_via_api!
+        resource_web_url(api_post)
+      rescue ResourceNotFoundError
+        super
+      end
+
+      def api_get_path
+        "/snippets/#{snippet_id}"
+      end
+
+      def api_post_path
+        '/snippets'
+      end
+
+      def api_post_body
+        {
+            title: title,
+            description: description,
+            visibility: visibility.downcase,
+            files: [
+                {
+                    content: file_content,
+                    file_path: file_name
+                }
+            ]
+        }
       end
     end
   end

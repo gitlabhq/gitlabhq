@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
@@ -12,6 +13,7 @@ export default {
   components: {
     MrWidgetAuthor,
     statusIcon,
+    GlLoadingIcon,
   },
   mixins: [autoMergeMixin],
   props: {
@@ -100,7 +102,7 @@ export default {
           class="btn btn-sm btn-default js-cancel-auto-merge"
           @click.prevent="cancelAutomaticMerge"
         >
-          <i v-if="isCancellingAutoMerge" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+          <gl-loading-icon v-if="isCancellingAutoMerge" inline class="gl-mr-1" />
           {{ cancelButtonText }}
         </a>
       </h4>
@@ -122,7 +124,7 @@ export default {
             href="#"
             @click.prevent="removeSourceBranch"
           >
-            <i v-if="isRemovingSourceBranch" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+            <gl-loading-icon v-if="isRemovingSourceBranch" inline class="gl-mr-1" />
             {{ s__('mrWidget|Delete source branch') }}
           </a>
         </p>

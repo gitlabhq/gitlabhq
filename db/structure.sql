@@ -18332,6 +18332,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_project_stages
 ALTER TABLE ONLY analytics_instance_statistics_measurements
     ADD CONSTRAINT analytics_instance_statistics_measurements_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY analytics_language_trend_repository_languages
+    ADD CONSTRAINT analytics_language_trend_repository_languages_pkey PRIMARY KEY (programming_language_id, project_id, snapshot_date);
+
 ALTER TABLE ONLY appearances
     ADD CONSTRAINT appearances_pkey PRIMARY KEY (id);
 
@@ -18361,6 +18364,9 @@ ALTER TABLE ONLY approval_project_rules_groups
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT approval_project_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY approval_project_rules_protected_branches
+    ADD CONSTRAINT approval_project_rules_protected_branches_pkey PRIMARY KEY (approval_project_rule_id, protected_branch_id);
 
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT approval_project_rules_users_pkey PRIMARY KEY (id);
@@ -18463,6 +18469,9 @@ ALTER TABLE ONLY ci_build_trace_chunks
 
 ALTER TABLE ONLY ci_build_trace_section_names
     ADD CONSTRAINT ci_build_trace_section_names_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_build_trace_sections
+    ADD CONSTRAINT ci_build_trace_sections_pkey PRIMARY KEY (build_id, section_name_id);
 
 ALTER TABLE ONLY ci_builds_metadata
     ADD CONSTRAINT ci_builds_metadata_pkey PRIMARY KEY (id);
@@ -18671,6 +18680,9 @@ ALTER TABLE ONLY deploy_tokens
 ALTER TABLE ONLY deployment_clusters
     ADD CONSTRAINT deployment_clusters_pkey PRIMARY KEY (deployment_id);
 
+ALTER TABLE ONLY deployment_merge_requests
+    ADD CONSTRAINT deployment_merge_requests_pkey PRIMARY KEY (deployment_id, merge_request_id);
+
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT deployments_pkey PRIMARY KEY (id);
 
@@ -18869,6 +18881,9 @@ ALTER TABLE ONLY issuable_severities
 ALTER TABLE ONLY issuable_slas
     ADD CONSTRAINT issuable_slas_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY issue_assignees
+    ADD CONSTRAINT issue_assignees_pkey PRIMARY KEY (issue_id, user_id);
+
 ALTER TABLE ONLY issue_email_participants
     ADD CONSTRAINT issue_email_participants_pkey PRIMARY KEY (id);
 
@@ -18886,6 +18901,12 @@ ALTER TABLE ONLY issue_user_mentions
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT issues_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY issues_prometheus_alert_events
+    ADD CONSTRAINT issues_prometheus_alert_events_pkey PRIMARY KEY (issue_id, prometheus_alert_event_id);
+
+ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
+    ADD CONSTRAINT issues_self_managed_prometheus_alert_events_pkey PRIMARY KEY (issue_id, self_managed_prometheus_alert_event_id);
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT iteration_start_and_due_daterange_group_id_constraint EXCLUDE USING gist (group_id WITH =, daterange(start_date, due_date, '[]'::text) WITH &&) WHERE ((group_id IS NOT NULL));
@@ -18950,8 +18971,14 @@ ALTER TABLE ONLY merge_request_blocks
 ALTER TABLE ONLY merge_request_context_commits
     ADD CONSTRAINT merge_request_context_commits_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY merge_request_diff_commits
+    ADD CONSTRAINT merge_request_diff_commits_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
+
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT merge_request_diff_details_pkey PRIMARY KEY (merge_request_diff_id);
+
+ALTER TABLE ONLY merge_request_diff_files
+    ADD CONSTRAINT merge_request_diff_files_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT merge_request_diffs_pkey PRIMARY KEY (id);
@@ -18979,6 +19006,9 @@ ALTER TABLE ONLY metrics_dashboard_annotations
 
 ALTER TABLE ONLY metrics_users_starred_dashboards
     ADD CONSTRAINT metrics_users_starred_dashboards_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY milestone_releases
+    ADD CONSTRAINT milestone_releases_pkey PRIMARY KEY (milestone_id, release_id);
 
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
@@ -19133,6 +19163,9 @@ ALTER TABLE ONLY project_alerting_settings
 ALTER TABLE ONLY project_aliases
     ADD CONSTRAINT project_aliases_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_authorizations
+    ADD CONSTRAINT project_authorizations_pkey PRIMARY KEY (user_id, project_id, access_level);
+
 ALTER TABLE ONLY project_auto_devops
     ADD CONSTRAINT project_auto_devops_pkey PRIMARY KEY (id);
 
@@ -19177,6 +19210,9 @@ ALTER TABLE ONLY project_metrics_settings
 
 ALTER TABLE ONLY project_mirror_data
     ADD CONSTRAINT project_mirror_data_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_pages_metadata
+    ADD CONSTRAINT project_pages_metadata_pkey PRIMARY KEY (project_id);
 
 ALTER TABLE ONLY project_repositories
     ADD CONSTRAINT project_repositories_pkey PRIMARY KEY (id);
@@ -19235,6 +19271,9 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 ALTER TABLE ONLY protected_tags
     ADD CONSTRAINT protected_tags_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY push_event_payloads
+    ADD CONSTRAINT push_event_payloads_pkey PRIMARY KEY (event_id);
+
 ALTER TABLE ONLY push_rules
     ADD CONSTRAINT push_rules_pkey PRIMARY KEY (id);
 
@@ -19252,6 +19291,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT remote_mirrors_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY repository_languages
+    ADD CONSTRAINT repository_languages_pkey PRIMARY KEY (project_id, programming_language_id);
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT required_code_owners_sections_pkey PRIMARY KEY (id);
@@ -19418,6 +19460,9 @@ ALTER TABLE ONLY user_details
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT user_highest_roles_pkey PRIMARY KEY (user_id);
 
+ALTER TABLE ONLY user_interacted_projects
+    ADD CONSTRAINT user_interacted_projects_pkey PRIMARY KEY (project_id, user_id);
+
 ALTER TABLE ONLY user_preferences
     ADD CONSTRAINT user_preferences_pkey PRIMARY KEY (id);
 
@@ -19432,6 +19477,9 @@ ALTER TABLE ONLY users_ops_dashboard_projects
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY users_security_dashboard_projects
+    ADD CONSTRAINT users_security_dashboard_projects_pkey PRIMARY KEY (project_id, user_id);
 
 ALTER TABLE ONLY users_star_projects
     ADD CONSTRAINT users_star_projects_pkey PRIMARY KEY (id);
@@ -19638,8 +19686,6 @@ CREATE INDEX analytics_index_events_on_created_at_and_author_id ON events USING 
 
 CREATE INDEX analytics_repository_languages_on_project_id ON analytics_language_trend_repository_languages USING btree (project_id);
 
-CREATE UNIQUE INDEX analytics_repository_languages_unique_index ON analytics_language_trend_repository_languages USING btree (programming_language_id, project_id, snapshot_date);
-
 CREATE UNIQUE INDEX any_approver_merge_request_rule_type_unique_index ON approval_merge_request_rules USING btree (merge_request_id, rule_type) WHERE (rule_type = 4);
 
 CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON approval_project_rules USING btree (project_id) WHERE (rule_type = 3);
@@ -19681,8 +19727,6 @@ CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_r
 CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at_enabled ON container_expiration_policies USING btree (project_id, next_run_at, enabled);
 
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
-
-CREATE UNIQUE INDEX idx_deployment_merge_requests_unique_index ON deployment_merge_requests USING btree (deployment_id, merge_request_id);
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
 
@@ -19852,8 +19896,6 @@ CREATE INDEX index_approval_project_rules_on_rule_type ON approval_project_rules
 
 CREATE INDEX index_approval_project_rules_protected_branches_pb_id ON approval_project_rules_protected_branches USING btree (protected_branch_id);
 
-CREATE UNIQUE INDEX index_approval_project_rules_protected_branches_unique ON approval_project_rules_protected_branches USING btree (approval_project_rule_id, protected_branch_id);
-
 CREATE UNIQUE INDEX index_approval_project_rules_users_1 ON approval_project_rules_users USING btree (approval_project_rule_id, user_id);
 
 CREATE INDEX index_approval_project_rules_users_2 ON approval_project_rules_users USING btree (user_id);
@@ -19977,8 +20019,6 @@ CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_resu
 CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON ci_build_trace_chunks USING btree (build_id, chunk_index);
 
 CREATE UNIQUE INDEX index_ci_build_trace_section_names_on_project_id_and_name ON ci_build_trace_section_names USING btree (project_id, name);
-
-CREATE UNIQUE INDEX index_ci_build_trace_sections_on_build_id_and_section_name_id ON ci_build_trace_sections USING btree (build_id, section_name_id);
 
 CREATE INDEX index_ci_build_trace_sections_on_project_id ON ci_build_trace_sections USING btree (project_id);
 
@@ -20686,8 +20726,6 @@ CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities
 
 CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree (issue_id);
 
-CREATE UNIQUE INDEX index_issue_assignees_on_issue_id_and_user_id ON issue_assignees USING btree (issue_id, user_id);
-
 CREATE INDEX index_issue_assignees_on_user_id ON issue_assignees USING btree (user_id);
 
 CREATE UNIQUE INDEX index_issue_email_participants_on_issue_id_and_email ON issue_email_participants USING btree (issue_id, email);
@@ -20844,13 +20882,9 @@ CREATE INDEX index_merge_request_assignees_on_user_id ON merge_request_assignees
 
 CREATE INDEX index_merge_request_blocks_on_blocked_merge_request_id ON merge_request_blocks USING btree (blocked_merge_request_id);
 
-CREATE UNIQUE INDEX index_merge_request_diff_commits_on_mr_diff_id_and_order ON merge_request_diff_commits USING btree (merge_request_diff_id, relative_order);
-
 CREATE INDEX index_merge_request_diff_commits_on_sha ON merge_request_diff_commits USING btree (sha);
 
 CREATE INDEX index_merge_request_diff_details_on_merge_request_diff_id ON merge_request_diff_details USING btree (merge_request_diff_id);
-
-CREATE UNIQUE INDEX index_merge_request_diff_files_on_mr_diff_id_and_order ON merge_request_diff_files USING btree (merge_request_diff_id, relative_order);
 
 CREATE INDEX index_merge_request_diffs_by_id_partial ON merge_request_diffs USING btree (id) WHERE ((files_count > 0) AND ((NOT stored_externally) OR (stored_externally IS NULL)));
 
@@ -20953,8 +20987,6 @@ CREATE UNIQUE INDEX index_milestones_on_project_id_and_iid ON milestones USING b
 CREATE INDEX index_milestones_on_title ON milestones USING btree (title);
 
 CREATE INDEX index_milestones_on_title_trigram ON milestones USING gin (title gin_trgm_ops);
-
-CREATE UNIQUE INDEX index_miletone_releases_on_milestone_and_release ON milestone_releases USING btree (milestone_id, release_id);
 
 CREATE INDEX index_mirror_data_on_next_execution_and_retry_count ON project_mirror_data USING btree (next_execution_timestamp, retry_count);
 
@@ -21198,8 +21230,6 @@ CREATE INDEX index_project_aliases_on_project_id ON project_aliases USING btree 
 
 CREATE INDEX index_project_authorizations_on_project_id ON project_authorizations USING btree (project_id);
 
-CREATE UNIQUE INDEX index_project_authorizations_on_user_id_project_id_access_level ON project_authorizations USING btree (user_id, project_id, access_level);
-
 CREATE UNIQUE INDEX index_project_auto_devops_on_project_id ON project_auto_devops USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_ci_cd_settings_on_project_id ON project_ci_cd_settings USING btree (project_id);
@@ -21251,8 +21281,6 @@ CREATE INDEX index_project_mirror_data_on_status ON project_mirror_data USING bt
 CREATE INDEX index_project_pages_metadata_on_artifacts_archive_id ON project_pages_metadata USING btree (artifacts_archive_id);
 
 CREATE INDEX index_project_pages_metadata_on_pages_deployment_id ON project_pages_metadata USING btree (pages_deployment_id);
-
-CREATE UNIQUE INDEX index_project_pages_metadata_on_project_id ON project_pages_metadata USING btree (project_id);
 
 CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON project_pages_metadata USING btree (project_id) WHERE (deployed = true);
 
@@ -21426,8 +21454,6 @@ CREATE INDEX index_protected_tags_on_project_id ON protected_tags USING btree (p
 
 CREATE UNIQUE INDEX index_protected_tags_on_project_id_and_name ON protected_tags USING btree (project_id, name);
 
-CREATE UNIQUE INDEX index_push_event_payloads_on_event_id ON push_event_payloads USING btree (event_id);
-
 CREATE INDEX index_push_rules_on_is_sample ON push_rules USING btree (is_sample) WHERE is_sample;
 
 CREATE INDEX index_push_rules_on_project_id ON push_rules USING btree (project_id);
@@ -21451,8 +21477,6 @@ CREATE INDEX index_releases_on_project_id_and_tag ON releases USING btree (proje
 CREATE INDEX index_remote_mirrors_on_last_successful_update_at ON remote_mirrors USING btree (last_successful_update_at);
 
 CREATE INDEX index_remote_mirrors_on_project_id ON remote_mirrors USING btree (project_id);
-
-CREATE UNIQUE INDEX index_repository_languages_on_project_and_languages_id ON repository_languages USING btree (project_id, programming_language_id);
 
 CREATE INDEX index_required_code_owners_sections_on_protected_branch_id ON required_code_owners_sections USING btree (protected_branch_id);
 
@@ -21766,8 +21790,6 @@ CREATE UNIQUE INDEX index_user_details_on_user_id ON user_details USING btree (u
 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
-CREATE UNIQUE INDEX index_user_interacted_projects_on_project_id_and_user_id ON user_interacted_projects USING btree (project_id, user_id);
-
 CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
 
 CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);
@@ -21962,10 +21984,6 @@ CREATE INDEX issue_id_issues_prometheus_alert_events_index ON issues_prometheus_
 
 CREATE INDEX issue_id_issues_self_managed_rometheus_alert_events_index ON issues_self_managed_prometheus_alert_events USING btree (self_managed_prometheus_alert_event_id);
 
-CREATE UNIQUE INDEX issue_id_prometheus_alert_event_id_index ON issues_prometheus_alert_events USING btree (issue_id, prometheus_alert_event_id);
-
-CREATE UNIQUE INDEX issue_id_self_managed_prometheus_alert_event_id_index ON issues_self_managed_prometheus_alert_events USING btree (issue_id, self_managed_prometheus_alert_event_id);
-
 CREATE UNIQUE INDEX issue_user_mentions_on_issue_id_and_note_id_index ON issue_user_mentions USING btree (issue_id, note_id);
 
 CREATE UNIQUE INDEX issue_user_mentions_on_issue_id_index ON issue_user_mentions USING btree (issue_id) WHERE (note_id IS NULL);
@@ -22021,8 +22039,6 @@ CREATE INDEX tmp_idx_index_issues_with_outdate_blocking_count ON issues USING bt
 CREATE INDEX tmp_index_for_email_unconfirmation_migration ON emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
-
-CREATE UNIQUE INDEX users_security_dashboard_projects_unique_index ON users_security_dashboard_projects USING btree (project_id, user_id);
 
 CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
 

@@ -18,7 +18,7 @@ module QA
 
       context 'when the snippet is public' do
         it 'can be shared with not signed-in users', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1016' do
-          snippet
+          snippet.visit!
 
           sharing_link = Page::Dashboard::Snippet::Show.perform do |snippet|
             expect(snippet).to have_embed_dropdown
@@ -40,7 +40,7 @@ module QA
 
       context 'when the snippet is changed to private' do
         it 'does not display Embed/Share dropdown', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1015' do
-          snippet
+          snippet.visit!
 
           Page::Dashboard::Snippet::Show.perform do |snippet|
             expect(snippet).to have_embed_dropdown

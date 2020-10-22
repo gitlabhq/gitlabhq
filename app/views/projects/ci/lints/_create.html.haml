@@ -17,9 +17,9 @@
           %tr
             %td #{job[:stage].capitalize} Job - #{job[:name]}
             %td
-              %pre= job[:before_script].to_a.join('\n')
-              %pre= job[:script].to_a.join('\n')
-              %pre= job[:after_script].to_a.join('\n')
+              %pre= job[:before_script].to_a.join('<br />')
+              %pre= job[:script].to_a.join('<br />')
+              %pre= job[:after_script].to_a.join('<br />')
               %br
               %b= _("Tag list:")
               = job[:tag_list].to_a.join(", ")
