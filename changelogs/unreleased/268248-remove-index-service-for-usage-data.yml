@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary index on services for usage data
+merge_request: 45655
+author:
+type: other

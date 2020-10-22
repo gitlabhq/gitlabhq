@@ -14,7 +14,7 @@ environment, reducing the effort to assess the impact of changes. Thus, when we 
 and it will immediately be clear that the application can still be properly built and deployed. After all, you can _see_ it
 running!
 
-<img src="img/deployed_dependency_update.png" alt="dependencies.io" class="image-noshadow">
+<img src="img/deployed_dependency_update.png" alt="dependencies.io">
 
 However, looking at the freshly deployed code to check whether it still looks and behaves as
 expected is repetitive manual work, which means it is a prime candidate for automation. This is

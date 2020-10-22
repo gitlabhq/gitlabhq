@@ -3,7 +3,7 @@ import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
-import PipelinesChart from '~/analytics/instance_statistics/components/pipelines_chart.vue';
+import InstanceStatisticsCountChart from '~/analytics/instance_statistics/components/instance_statistics_count_chart.vue';
 import pipelinesStatsQuery from '~/analytics/instance_statistics/graphql/queries/pipeline_stats.query.graphql';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import { mockCountsData1, mockCountsData2 } from '../mock_data';
@@ -12,7 +12,17 @@ import { getApolloResponse } from '../apollo_mock_data';
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-describe('PipelinesChart', () => {
+const PIPELINES_KEY_TO_NAME_MAP = {
+  total: 'Total',
+  succeeded: 'Succeeded',
+  failed: 'Failed',
+  canceled: 'Canceled',
+  skipped: 'Skipped',
+};
+const loadChartErrorMessage = 'My load error message';
+const noDataMessage = 'My no data message';
+
+describe('InstanceStatisticsCountChart', () => {
   let wrapper;
   let queryHandler;
 
@@ -21,9 +31,19 @@ describe('PipelinesChart', () => {
   };
 
   const createComponent = apolloProvider => {
-    return shallowMount(PipelinesChart, {
+    return shallowMount(InstanceStatisticsCountChart, {
       localVue,
       apolloProvider,
+      propsData: {
+        keyToNameMap: PIPELINES_KEY_TO_NAME_MAP,
+        prefix: 'pipelines',
+        loadChartErrorMessage,
+        noDataMessage,
+        chartTitle: 'Foo',
+        yAxisTitle: 'Bar',
+        xAxisTitle: 'Baz',
+        query: pipelinesStatsQuery,
+      },
     });
   };
 
@@ -69,7 +89,7 @@ describe('PipelinesChart', () => {
     });
 
     it('renders an no data message', () => {
-      expect(findAlert().text()).toBe('There is no data available.');
+      expect(findAlert().text()).toBe(noDataMessage);
     });
 
     it('hides the skeleton loader', () => {
@@ -180,9 +200,7 @@ describe('PipelinesChart', () => {
       });
 
       it('show an error message', () => {
-        expect(findAlert().text()).toBe(
-          'Could not load the pipelines chart. Please refresh the page to try again.',
-        );
+        expect(findAlert().text()).toBe(loadChartErrorMessage);
       });
     });
   });

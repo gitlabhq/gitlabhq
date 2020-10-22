@@ -29,7 +29,7 @@ directly from a repository in GitLab.
 </ul>
 </p>
 </div>
-<div class="col-md-3"><img src="img/ssgs_pages.png" alt="Examples of SSGs supported by Pages" class="image-noshadow middle display-block"></div>
+<div class="col-md-3"><img src="img/ssgs_pages.png" alt="Examples of SSGs supported by Pages" class="middle display-block"></div>
 </div>
 
 To publish a website with Pages, you can use any SSG,
@@ -89,7 +89,7 @@ need admin access to your domain's registrar (or control panel) to set it up wit
 
 The following diagrams show the workflows you might follow to get started with Pages.
 
-<img src="img/new_project_for_pages_v12_5.png" alt="New projects for GitLab Pages" class="image-noshadow">
+<img src="img/new_project_for_pages_v12_5.png" alt="New projects for GitLab Pages">
 
 ## Access to your Pages site
 

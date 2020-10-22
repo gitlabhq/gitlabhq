@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PipelinesChart when fetching more data when the fetchMore query returns data passes the data to the line chart 1`] = `
+exports[`InstanceStatisticsCountChart when fetching more data when the fetchMore query returns data passes the data to the line chart 1`] = `
 Array [
   Object {
     "data": Array [
@@ -90,7 +90,7 @@ Array [
 ]
 `;
 
-exports[`PipelinesChart with data passes the data to the line chart 1`] = `
+exports[`InstanceStatisticsCountChart with data passes the data to the line chart 1`] = `
 Array [
   Object {
     "data": Array [

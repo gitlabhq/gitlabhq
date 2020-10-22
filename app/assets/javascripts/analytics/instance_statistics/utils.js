@@ -1,6 +1,7 @@
 import { masks } from 'dateformat';
-import { mapKeys, mapValues, pick, sortBy } from 'lodash';
+import { get, sortBy } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
+import { convertToTitleCase } from '~/lib/utils/text_utility';
 
 const { isoDate } = masks;
 
@@ -46,16 +47,25 @@ export function getAverageByMonth(items = [], options = {}) {
  * const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
  * extractValues(data, ['fooBar'], 'foo', 'baz') => { bazBar: 'quis' }
  * @param  {Object} data set to extract values from
- * @param  {Array}  dataKeys keys describing where to look for values in the data set
- * @param  {String} replaceKey name key to be replaced in the data set
+ * @param  {Array}  nameKeys keys describing where to look for values in the data set
+ * @param  {String} dataPrefix prefix to `nameKey` on where to get the data
  * @param  {String} nestedKey key nested in the data set to be extracted,
  *                  this is also used to rename the newly created data set
+ * @param  {Object} options
+ * @param  {String} options.renameKey? optional rename key, if not provided nestedKey will be used
  * @return {Object} the newly created data set with the extracted values
  */
-export function extractValues(data, dataKeys = [], replaceKey, nestedKey) {
-  return mapKeys(pick(mapValues(data, nestedKey), dataKeys), (value, key) =>
-    key.replace(replaceKey, nestedKey),
-  );
+export function extractValues(data, nameKeys = [], dataPrefix, nestedKey, options = {}) {
+  const { renameKey = nestedKey } = options;
+
+  return nameKeys.reduce((memo, name) => {
+    const titelCaseName = convertToTitleCase(name);
+    const dataKey = `${dataPrefix}${titelCaseName}`;
+    const newKey = `${renameKey}${titelCaseName}`;
+    const itemData = get(data[dataKey], nestedKey);
+
+    return { ...memo, [newKey]: itemData };
+  }, {});
 }
 
 /**

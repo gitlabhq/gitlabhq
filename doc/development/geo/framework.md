@@ -207,6 +207,11 @@ For example, to add support for files referenced by a `Widget` model with a
    end
    ```
 
+   NOTE: **Note:**
+
+   If there is a common constraint for records to be available for replication,
+   make sure to also overwrite the `available_replicables` scope.
+
 1. Create `ee/app/replicators/geo/widget_replicator.rb`. Implement the
    `#carrierwave_uploader` method which should return a `CarrierWave::Uploader`.
    And implement the class method `.model` to return the `Widget` class.
@@ -559,6 +564,10 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in
      verification_failure { 'Could not calculate the checksum' }
    end
    ```
+
+1. Make sure the factory also allows setting a `project` attribute. If the model
+   does not have a direct relation to a project, you can use a `transient`
+   attribute. Check out `spec/factories/merge_request_diffs.rb` for an example.
 
 Widget replication and verification metrics should now be available in the API,
 the Admin Area UI, and Prometheus!

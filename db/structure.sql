@@ -14645,6 +14645,34 @@ CREATE VIEW postgres_indexes AS
      JOIN pg_indexes ON ((pg_class.relname = pg_indexes.indexname)))
   WHERE ((pg_namespace.nspname <> 'pg_catalog'::name) AND (pg_namespace.nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])));
 
+CREATE VIEW postgres_partitioned_tables AS
+ SELECT (((pg_namespace.nspname)::text || '.'::text) || (pg_class.relname)::text) AS identifier,
+    pg_class.oid,
+    pg_namespace.nspname AS schema,
+    pg_class.relname AS name,
+        CASE partitioned_tables.partstrat
+            WHEN 'l'::"char" THEN 'list'::text
+            WHEN 'r'::"char" THEN 'range'::text
+            WHEN 'h'::"char" THEN 'hash'::text
+            ELSE NULL::text
+        END AS strategy,
+    array_agg(pg_attribute.attname) AS key_columns
+   FROM (((( SELECT pg_partitioned_table.partrelid,
+            pg_partitioned_table.partstrat,
+            unnest(pg_partitioned_table.partattrs) AS column_position
+           FROM pg_partitioned_table) partitioned_tables
+     JOIN pg_class ON ((partitioned_tables.partrelid = pg_class.oid)))
+     JOIN pg_namespace ON ((pg_class.relnamespace = pg_namespace.oid)))
+     JOIN pg_attribute ON (((pg_attribute.attrelid = pg_class.oid) AND (pg_attribute.attnum = partitioned_tables.column_position))))
+  WHERE (pg_namespace.nspname = "current_schema"())
+  GROUP BY (((pg_namespace.nspname)::text || '.'::text) || (pg_class.relname)::text), pg_class.oid, pg_namespace.nspname, pg_class.relname,
+        CASE partitioned_tables.partstrat
+            WHEN 'l'::"char" THEN 'list'::text
+            WHEN 'r'::"char" THEN 'range'::text
+            WHEN 'h'::"char" THEN 'hash'::text
+            ELSE NULL::text
+        END;
+
 CREATE TABLE postgres_reindex_actions (
     id bigint NOT NULL,
     action_start timestamp with time zone NOT NULL,
@@ -20030,8 +20058,6 @@ CREATE INDEX index_ci_job_artifacts_on_file_store ON ci_job_artifacts USING btre
 
 CREATE UNIQUE INDEX index_ci_job_artifacts_on_job_id_and_file_type ON ci_job_artifacts USING btree (job_id, file_type);
 
-CREATE INDEX index_ci_job_artifacts_on_license_compliance_file_types ON ci_job_artifacts USING btree (job_id, file_type) WHERE ((file_type = 10) OR (file_type = 101));
-
 CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_for_security_reports ON ci_job_artifacts USING btree (project_id) WHERE (file_type = ANY (ARRAY[5, 6, 7, 8]));
@@ -21569,8 +21595,6 @@ CREATE UNIQUE INDEX index_services_on_type_and_instance_partial ON services USIN
 CREATE UNIQUE INDEX index_services_on_type_and_template_partial ON services USING btree (type, template) WHERE (template = true);
 
 CREATE INDEX index_services_on_type_id_when_active_and_project_id_not_null ON services USING btree (type, id) WHERE ((active = true) AND (project_id IS NOT NULL));
-
-CREATE INDEX index_services_on_type_id_when_active_not_instance_not_template ON services USING btree (type, id) WHERE ((active = true) AND (instance = false) AND (template = false));
 
 CREATE UNIQUE INDEX index_services_on_unique_group_id_and_type ON services USING btree (group_id, type);
 

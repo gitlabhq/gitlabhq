@@ -47,7 +47,21 @@ describe('getAverageByMonth', () => {
 describe('extractValues', () => {
   it('extracts only requested values', () => {
     const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
-    expect(extractValues(data, ['fooBar'], 'foo', 'baz')).toEqual({ bazBar: 'quis' });
+    expect(extractValues(data, ['bar'], 'foo', 'baz')).toEqual({ bazBar: 'quis' });
+  });
+
+  it('it renames with the `renameKey` if provided', () => {
+    const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
+    expect(extractValues(data, ['bar'], 'foo', 'baz', { renameKey: 'renamed' })).toEqual({
+      renamedBar: 'quis',
+    });
+  });
+
+  it('is able to get nested data', () => {
+    const data = { fooBar: { even: [{ further: 'nested' }] }, ignored: 'ignored' };
+    expect(extractValues(data, ['bar'], 'foo', 'even[0].further')).toEqual({
+      'even[0].furtherBar': 'nested',
+    });
   });
 
   it('is able to extract multiple values', () => {
@@ -56,7 +70,7 @@ describe('extractValues', () => {
       fooBaz: { baz: 'quis' },
       fooQuis: { baz: 'quis' },
     };
-    expect(extractValues(data, ['fooBar', 'fooBaz', 'fooQuis'], 'foo', 'baz')).toEqual({
+    expect(extractValues(data, ['bar', 'baz', 'quis'], 'foo', 'baz')).toEqual({
       bazBar: 'quis',
       bazBaz: 'quis',
       bazQuis: 'quis',
@@ -65,7 +79,7 @@ describe('extractValues', () => {
 
   it('returns empty data set when keys are not found', () => {
     const data = { foo: { baz: 'quis' }, ignored: 'ignored' };
-    expect(extractValues(data, ['fooBar'], 'foo', 'baz')).toEqual({});
+    expect(extractValues(data, ['bar'], 'foo', 'baz')).toEqual({});
   });
 
   it('returns empty data when params are missing', () => {

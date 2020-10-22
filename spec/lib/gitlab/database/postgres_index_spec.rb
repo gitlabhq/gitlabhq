@@ -3,9 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PostgresIndex do
+  let(:schema) { 'public' }
+  let(:name) { 'foo_idx' }
+  let(:identifier) { "#{schema}.#{name}" }
+
   before do
     ActiveRecord::Base.connection.execute(<<~SQL)
-      CREATE INDEX foo_idx ON public.users (name);
+      CREATE INDEX #{name} ON public.users (name);
       CREATE UNIQUE INDEX bar_key ON public.users (id);
 
       CREATE TABLE example_table (id serial primary key);
@@ -16,19 +20,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     described_class.by_identifier(name)
   end
 
-  describe '.by_identifier' do
-    it 'finds the index' do
-      expect(find('public.foo_idx')).to be_a(Gitlab::Database::PostgresIndex)
-    end
-
-    it 'raises an error if not found' do
-      expect { find('public.idontexist') }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it 'raises ArgumentError if given a non-fully qualified index name' do
-      expect { find('foo') }.to raise_error(ArgumentError, /not fully qualified/)
-    end
-  end
+  it_behaves_like 'a postgres model'
 
   describe '.regular' do
     it 'only non-unique indexes' do
@@ -76,7 +68,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
 
   describe '#valid_index?' do
     it 'returns true if the index is invalid' do
-      expect(find('public.foo_idx')).to be_valid_index
+      expect(find(identifier)).to be_valid_index
     end
 
     it 'returns false if the index is marked as invalid' do
@@ -86,31 +78,13 @@ RSpec.describe Gitlab::Database::PostgresIndex do
         WHERE pg_class.relname = 'foo_idx' AND pg_index.indexrelid = pg_class.oid
       SQL
 
-      expect(find('public.foo_idx')).not_to be_valid_index
-    end
-  end
-
-  describe '#to_s' do
-    it 'returns the index name' do
-      expect(find('public.foo_idx').to_s).to eq('foo_idx')
-    end
-  end
-
-  describe '#name' do
-    it 'returns the name' do
-      expect(find('public.foo_idx').name).to eq('foo_idx')
-    end
-  end
-
-  describe '#schema' do
-    it 'returns the index schema' do
-      expect(find('public.foo_idx').schema).to eq('public')
+      expect(find(identifier)).not_to be_valid_index
     end
   end
 
   describe '#definition' do
     it 'returns the index definition' do
-      expect(find('public.foo_idx').definition).to eq('CREATE INDEX foo_idx ON public.users USING btree (name)')
+      expect(find(identifier).definition).to eq('CREATE INDEX foo_idx ON public.users USING btree (name)')
     end
   end
 end

@@ -1,29 +1,19 @@
 <script>
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
-import { mapKeys, mapValues, pick, some, sum } from 'lodash';
+import { mapValues, some, sum } from 'lodash';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
-import { s__ } from '~/locale';
 import {
   differenceInMonths,
   formatDateAsMonth,
   getDayDifference,
 } from '~/lib/utils/datetime_utility';
+import { convertToTitleCase } from '~/lib/utils/text_utility';
 import { getAverageByMonth, sortByDate, extractValues } from '../utils';
-import pipelineStatsQuery from '../graphql/queries/pipeline_stats.query.graphql';
 import { TODAY, START_DATE } from '../constants';
 
-const DATA_KEYS = [
-  'pipelinesTotal',
-  'pipelinesSucceeded',
-  'pipelinesFailed',
-  'pipelinesCanceled',
-  'pipelinesSkipped',
-];
-const PREFIX = 'pipelines';
-
 export default {
-  name: 'PipelinesChart',
+  name: 'InstanceStatisticsCountChart',
   components: {
     GlLineChart,
     GlAlert,
@@ -31,19 +21,42 @@ export default {
   },
   startDate: START_DATE,
   endDate: TODAY,
-  i18n: {
-    loadPipelineChartError: s__(
-      'InstanceAnalytics|Could not load the pipelines chart. Please refresh the page to try again.',
-    ),
-    noDataMessage: s__('InstanceAnalytics|There is no data available.'),
-    total: s__('InstanceAnalytics|Total'),
-    succeeded: s__('InstanceAnalytics|Succeeded'),
-    failed: s__('InstanceAnalytics|Failed'),
-    canceled: s__('InstanceAnalytics|Canceled'),
-    skipped: s__('InstanceAnalytics|Skipped'),
-    chartTitle: s__('InstanceAnalytics|Pipelines'),
-    yAxisTitle: s__('InstanceAnalytics|Items'),
-    xAxisTitle: s__('InstanceAnalytics|Month'),
+  dataKey: 'nodes',
+  pageInfoKey: 'pageInfo',
+  firstKey: 'first',
+  props: {
+    prefix: {
+      type: String,
+      required: true,
+    },
+    keyToNameMap: {
+      type: Object,
+      required: true,
+    },
+    chartTitle: {
+      type: String,
+      required: true,
+    },
+    loadChartErrorMessage: {
+      type: String,
+      required: true,
+    },
+    noDataMessage: {
+      type: String,
+      required: true,
+    },
+    xAxisTitle: {
+      type: String,
+      required: true,
+    },
+    yAxisTitle: {
+      type: String,
+      required: true,
+    },
+    query: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -53,19 +66,23 @@ export default {
   },
   apollo: {
     pipelineStats: {
-      query: pipelineStatsQuery,
+      query() {
+        return this.query;
+      },
       variables() {
-        return {
-          firstTotal: this.totalDaysToShow,
-          firstSucceeded: this.totalDaysToShow,
-          firstFailed: this.totalDaysToShow,
-          firstCanceled: this.totalDaysToShow,
-          firstSkipped: this.totalDaysToShow,
-        };
+        return this.nameKeys.reduce((memo, key) => {
+          const firstKey = `${this.$options.firstKey}${convertToTitleCase(key)}`;
+          return { ...memo, [firstKey]: this.totalDaysToShow };
+        }, {});
       },
       update(data) {
-        const allData = extractValues(data, DATA_KEYS, PREFIX, 'nodes');
-        const allPageInfo = extractValues(data, DATA_KEYS, PREFIX, 'pageInfo');
+        const allData = extractValues(data, this.nameKeys, this.prefix, this.$options.dataKey);
+        const allPageInfo = extractValues(
+          data,
+          this.nameKeys,
+          this.prefix,
+          this.$options.pageInfoKey,
+        );
 
         return {
           ...mapValues(allData, sortByDate),
@@ -83,6 +100,9 @@ export default {
     },
   },
   computed: {
+    nameKeys() {
+      return Object.keys(this.keyToNameMap);
+    },
     isLoading() {
       return this.$apollo.queries.pipelineStats.loading;
     },
@@ -90,37 +110,35 @@ export default {
       return getDayDifference(this.$options.startDate, this.$options.endDate);
     },
     firstVariables() {
-      const allData = pick(this.pipelineStats, [
-        'nodesTotal',
-        'nodesSucceeded',
-        'nodesFailed',
-        'nodesCanceled',
-        'nodesSkipped',
-      ]);
-      const allDayDiffs = mapValues(allData, data => {
-        const firstdataPoint = data[0];
-        if (!firstdataPoint) {
-          return 0;
+      const firstDataPoints = extractValues(
+        this.pipelineStats,
+        this.nameKeys,
+        this.$options.dataKey,
+        '[0].recordedAt',
+        { renameKey: this.$options.firstKey },
+      );
+
+      return Object.keys(firstDataPoints).reduce((memo, name) => {
+        const recordedAt = firstDataPoints[name];
+        if (!recordedAt) {
+          return { ...memo, [name]: 0 };
         }
 
-        return Math.max(
+        const numberOfDays = Math.max(
           0,
-          getDayDifference(this.$options.startDate, new Date(firstdataPoint.recordedAt)),
+          getDayDifference(this.$options.startDate, new Date(recordedAt)),
         );
-      });
 
-      return mapKeys(allDayDiffs, (value, key) => key.replace('nodes', 'first'));
+        return { ...memo, [name]: numberOfDays };
+      }, {});
     },
     cursorVariables() {
-      const pageInfoKeys = [
-        'pageInfoTotal',
-        'pageInfoSucceeded',
-        'pageInfoFailed',
-        'pageInfoCanceled',
-        'pageInfoSkipped',
-      ];
-
-      return extractValues(this.pipelineStats, pageInfoKeys, 'pageInfo', 'endCursor');
+      return extractValues(
+        this.pipelineStats,
+        this.nameKeys,
+        this.$options.pageInfoKey,
+        'endCursor',
+      );
     },
     hasNextPage() {
       return (
@@ -132,19 +150,13 @@ export default {
       return this.chartData.every(({ data }) => data.length === 0);
     },
     chartData() {
-      const allData = pick(this.pipelineStats, [
-        'nodesTotal',
-        'nodesSucceeded',
-        'nodesFailed',
-        'nodesCanceled',
-        'nodesSkipped',
-      ]);
       const options = { shouldRound: true };
-      return Object.keys(allData).map(key => {
-        const i18nName = key.slice('nodes'.length).toLowerCase();
+
+      return this.nameKeys.map(key => {
+        const dataKey = `${this.$options.dataKey}${convertToTitleCase(key)}`;
         return {
-          name: this.$options.i18n[i18nName],
-          data: getAverageByMonth(allData[key], options),
+          name: this.keyToNameMap[key],
+          data: getAverageByMonth(this.pipelineStats?.[dataKey], options),
         };
       });
     },
@@ -155,11 +167,11 @@ export default {
       };
     },
     chartOptions() {
-      const { endDate, startDate, i18n } = this.$options;
+      const { endDate, startDate } = this.$options;
       return {
         xAxis: {
           ...this.range,
-          name: i18n.xAxisTitle,
+          name: this.xAxisTitle,
           type: 'time',
           splitNumber: differenceInMonths(startDate, endDate) + 1,
           axisLabel: {
@@ -171,7 +183,7 @@ export default {
           },
         },
         yAxis: {
-          name: i18n.yAxisTitle,
+          name: this.yAxisTitle,
         },
       };
     },
@@ -202,13 +214,13 @@ export default {
 </script>
 <template>
   <div>
-    <h3>{{ $options.i18n.chartTitle }}</h3>
+    <h3>{{ chartTitle }}</h3>
     <gl-alert v-if="loadingError" variant="danger" :dismissible="false" class="gl-mt-3">
-      {{ this.$options.i18n.loadPipelineChartError }}
+      {{ loadChartErrorMessage }}
     </gl-alert>
     <chart-skeleton-loader v-else-if="isLoading" />
     <gl-alert v-else-if="hasEmptyDataSet" variant="info" :dismissible="false" class="gl-mt-3">
-      {{ $options.i18n.noDataMessage }}
+      {{ noDataMessage }}
     </gl-alert>
     <gl-line-chart v-else :option="chartOptions" :include-legend-avg-max="true" :data="chartData" />
   </div>

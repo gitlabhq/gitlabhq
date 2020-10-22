@@ -14149,13 +14149,25 @@ msgstr ""
 msgid "InstanceAnalytics|Canceled"
 msgstr ""
 
+msgid "InstanceAnalytics|Could not load the issues and merge requests chart. Please refresh the page to try again."
+msgstr ""
+
 msgid "InstanceAnalytics|Could not load the pipelines chart. Please refresh the page to try again."
 msgstr ""
 
 msgid "InstanceAnalytics|Failed"
 msgstr ""
 
+msgid "InstanceAnalytics|Issues"
+msgstr ""
+
+msgid "InstanceAnalytics|Issues & Merge Requests"
+msgstr ""
+
 msgid "InstanceAnalytics|Items"
+msgstr ""
+
+msgid "InstanceAnalytics|Merge Requests"
 msgstr ""
 
 msgid "InstanceAnalytics|Month"
