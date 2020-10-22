@@ -50,7 +50,7 @@ describe('ItemActions', () => {
       expect(findEditGroupBtn().classes()).toContain('no-expand');
       expect(findEditGroupBtn().attributes('href')).toBe(group.editPath);
       expect(findEditGroupBtn().attributes('aria-label')).toBe('Edit group');
-      expect(findEditGroupBtn().attributes('data-original-title')).toBe('Edit group');
+      expect(findEditGroupBtn().attributes('title')).toBe('Edit group');
       expect(findEditGroupIcon().exists()).toBe(true);
       expect(findEditGroupIcon().props('name')).toBe('settings');
     });
@@ -70,7 +70,7 @@ describe('ItemActions', () => {
         expect(findLeaveGroupBtn().classes()).toContain('no-expand');
         expect(findLeaveGroupBtn().attributes('href')).toBe(group.leavePath);
         expect(findLeaveGroupBtn().attributes('aria-label')).toBe('Leave this group');
-        expect(findLeaveGroupBtn().attributes('data-original-title')).toBe('Leave this group');
+        expect(findLeaveGroupBtn().attributes('title')).toBe('Leave this group');
         expect(findLeaveGroupIcon().exists()).toBe(true);
         expect(findLeaveGroupIcon().props('name')).toBe('leave');
       });

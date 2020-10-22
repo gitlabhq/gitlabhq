@@ -170,6 +170,7 @@ module QA
         def add_comment(comment)
           fill_element(:note_field, comment)
           click_element(:comment_button)
+          wait_until(reload: false) { has_element?(:note_author_content) }
         end
 
         def has_comment_author?(author_username)
@@ -194,6 +195,7 @@ module QA
           click_element(:edit_comment_button)
           fill_element(:edit_note_field, comment)
           click_element(:save_comment_button)
+          wait_until(reload: false) { has_element?(:note_author_content) }
         end
 
         def delete_comment(comment)
@@ -201,6 +203,7 @@ module QA
           accept_alert do
             click_element(:delete_comment_button)
           end
+          wait_until(reload: false) { has_no_text?(comment) }
         end
       end
     end

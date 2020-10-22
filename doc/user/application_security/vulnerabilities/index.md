@@ -25,7 +25,7 @@ several different ways:
   title and description pre-populated with information from the vulnerability report.
   By default, such issues are [confidential](../../project/issues/confidential_issues.md).
 - [Link issues](#link-issues-to-the-vulnerability) - Link existing issues to vulnerability.
-- [Solution](#automatic-remediation-for-vulnerabilities) - For some vulnerabilities,
+- [Automatic remediation](#automatic-remediation-for-vulnerabilities) - For some vulnerabilities,
   a solution is provided for how to fix the vulnerability.
 
 ## Changing vulnerability status
@@ -61,4 +61,4 @@ that the resolution of one issue would resolve multiple vulnerabilities.
 ## Automatic remediation for vulnerabilities
 
 You can fix some vulnerabilities by applying the solution that GitLab automatically
-generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#solutions-for-vulnerabilities-auto-remediation).
+generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#automatic-remediation-for-vulnerabilities).

@@ -66,8 +66,7 @@ external links exposed in the UI. These links might not be accessible within an 
 
 ### Automatic remediation for vulnerabilities
 
-The [automatic remediation for vulnerabilities](../index.md#solutions-for-vulnerabilities-auto-remediation) feature
-(auto-remediation) is available for offline Dependency Scanning and Container Scanning, but may not work
+The [automatic remediation for vulnerabilities](../index.md#automatic-remediation-for-vulnerabilities) feature is available for offline Dependency Scanning and Container Scanning, but may not work
 depending on your instance's configuration. We can only suggest solutions, which are generally more
 current versions that have been patched, when we are able to access up-to-date registry services
 hosting the latest versions of that dependency or image.

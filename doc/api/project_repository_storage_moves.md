@@ -194,7 +194,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `project_id` | integer | yes | ID of the project |
-| `destination_storage_name` | string | no | Name of the destination storage shard. If not provided the storage will be selected automatically. |
+| `destination_storage_name` | string | no | Name of the destination storage shard. In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/3209), the storage is selected automatically if not provided. |
 
 Example request:
 

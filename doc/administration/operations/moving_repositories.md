@@ -1,24 +1,26 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference
 ---
 
 # Moving repositories managed by GitLab
 
 Sometimes you need to move all repositories managed by GitLab to
-another filesystem or another server. In this document we will look
+another file system or another server. In this document we look
 at some of the ways you can copy all your repositories from
 `/var/opt/gitlab/git-data/repositories` to `/mnt/gitlab/repositories`.
 
-We will look at three scenarios: the target directory is empty, the
-target directory contains an outdated copy of the repositories, and
-how to deal with thousands of repositories.
+We look at three scenarios:
+
+- The target directory is empty.
+- The target directory contains an outdated copy of the repositories.
+- How to deal with thousands of repositories.
 
 DANGER: **Warning:**
-Each of the approaches we list can/will overwrite data in the
-target directory `/mnt/gitlab/repositories`. Do not mix up the
-source and the target.
+Each of the approaches we list can or does overwrite data in the target directory
+`/mnt/gitlab/repositories`. Do not mix up the source and the target.
 
 ## Target directory is empty: use a `tar` pipe
 
@@ -47,7 +49,7 @@ sudo -u git sh -c 'tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
 ```
 
 If you want to compress the data before it goes over the network
-(which will cost you CPU cycles) you can replace `ssh` with `ssh -C`.
+(which costs you CPU cycles) you can replace `ssh` with `ssh -C`.
 
 ## The target directory contains an outdated copy of the repositories: use `rsync`
 
@@ -55,7 +57,7 @@ If the target directory already contains a partial / outdated copy
 of the repositories it may be wasteful to copy all the data again
 with `tar`. In this scenario it is better to use `rsync`. This utility
 is either already installed on your system or easily installable
-via `apt`, `yum`, etc.
+via `apt`, `yum`, and so on.
 
 ```shell
 sudo -u git  sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
@@ -86,11 +88,9 @@ for your GitLab server. In cases like this you can make `rsync`'s
 life easier by dividing its work in smaller pieces, and sync one
 repository at a time.
 
-In addition to `rsync` we will use [GNU
-Parallel](http://www.gnu.org/software/parallel/). This utility is
-not included in GitLab so you need to install it yourself with `apt`
-or `yum`. Also note that the GitLab scripts we used below were added
-in GitLab 8.1.
+In addition to `rsync` we use [GNU Parallel](http://www.gnu.org/software/parallel/).
+This utility is not included in GitLab so you need to install it yourself with `apt`
+or `yum`. Also note that the GitLab scripts we used below were added in GitLab 8.1.
 
 **This process does not clean up repositories at the target location that no
 longer exist at the source.** If you start using your GitLab instance with
@@ -99,7 +99,7 @@ after switching to the new repository storage directory.
 
 ### Parallel `rsync` for all repositories known to GitLab
 
-This will sync repositories with 10 `rsync` processes at a time. We keep
+This syncs repositories with 10 `rsync` processes at a time. We keep
 track of progress so that the transfer can be restarted if necessary.
 
 First we create a new directory, owned by `git`, to hold transfer
