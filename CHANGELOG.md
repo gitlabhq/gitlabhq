@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.5.1 (2020-10-22)
+
+### Other (1 change)
+
+- Update GitLab Shell to v13.11.0. !45660
+
+
 ## 13.5.0 (2020-10-22)
 
 ### Security (1 change)
