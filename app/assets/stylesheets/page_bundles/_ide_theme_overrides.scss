@@ -5,7 +5,7 @@
   $bs-input-focus-border: #80bdff;
   $bs-input-focus-box-shadow: rgba(0, 123, 255, 0.25);
 
-  a:not(.btn),
+  a:not(.btn):not(.gl-tab-nav-item),
   .gl-button.btn-link,
   .gl-button.btn-link:hover,
   .gl-button.btn-link:focus,

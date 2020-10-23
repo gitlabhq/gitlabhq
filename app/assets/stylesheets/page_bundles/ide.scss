@@ -915,12 +915,6 @@ $ide-commit-header-height: 48px;
   }
 }
 
-.ide-pipeline-list {
-  flex: 1;
-  overflow: auto;
-  padding: 0 $gl-padding;
-}
-
 .ide-pipeline-header {
   min-height: 55px;
   padding-left: $gl-padding;
