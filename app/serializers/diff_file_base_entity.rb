@@ -48,7 +48,7 @@ class DiffFileBaseEntity < Grape::Entity
 
     next unless has_edit_path?(merge_request)
 
-    gitlab_ide_merge_request_path(merge_request)
+    ide_merge_request_path(merge_request, diff_file.new_path)
   end
 
   expose :old_path_html do |diff_file|

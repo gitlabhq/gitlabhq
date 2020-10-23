@@ -343,18 +343,6 @@ module GitlabRoutingHelper
     Gitlab::UrlBuilder.wiki_page_url(wiki, page, only_path: true, **options)
   end
 
-  def gitlab_ide_merge_request_path(merge_request)
-    target_project = merge_request.target_project
-    source_project = merge_request.source_project
-    params = {}
-
-    if target_project != source_project
-      params = { target_project: target_project.full_path }
-    end
-
-    ide_merge_request_path(source_project.namespace, source_project, merge_request, params)
-  end
-
   private
 
   def snippet_query_params(snippet, *args)

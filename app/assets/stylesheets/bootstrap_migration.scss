@@ -131,12 +131,6 @@ table {
   border-spacing: 0;
 }
 
-.tooltip,
-.no-pointer-events {
-  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
-  pointer-events: none;
-}
-
 @each $breakpoint in map-keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);

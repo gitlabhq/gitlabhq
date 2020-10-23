@@ -118,7 +118,7 @@ module API
 
     # There is a small chance some users depend on the old behavior.
     # We this change under a feature flag to see if affects GitLab.com users.
-    if Feature.enabled?(:api_json_content_type)
+    if Gitlab::Database.cached_table_exists?('features') && Feature.enabled?(:api_json_content_type)
       content_type :json, 'application/json'
     else
       content_type :txt, 'text/plain'

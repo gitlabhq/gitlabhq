@@ -26,6 +26,25 @@ module BlobHelper
     File.join(segments)
   end
 
+  def ide_merge_request_path(merge_request, path = '')
+    target_project = merge_request.target_project
+    source_project = merge_request.source_project
+
+    if merge_request.merged?
+      branch = merge_request.target_branch_exists? ? merge_request.target_branch : target_project.default_branch
+
+      return ide_edit_path(target_project, branch, path)
+    end
+
+    if target_project != source_project
+      params = { target_project: target_project.full_path }
+    end
+
+    result = File.join(ide_path, 'project', source_project.full_path, 'merge_requests', merge_request.to_param)
+    result += "?#{params.to_query}" unless params.nil?
+    result
+  end
+
   def ide_fork_and_edit_path(project = @project, ref = @ref, path = @path, options = {})
     fork_path_for_current_user(project, ide_edit_path(project, ref, path))
   end

@@ -369,7 +369,7 @@ create an issue or an MR to propose a change to the user interface text.
   - milestones
   - reorder issues
   - runner, runners, shared runners
-  - a to-do item, to dos
+  - a to-do item (tested in [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
 - *Some features are capitalized*, typically nouns naming GitLab-specific
   capabilities or tools. For example:
   - GitLab CI/CD

@@ -175,7 +175,7 @@ export default {
         issues: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         mergeRequests: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         epics: this.enableAutocomplete,
-        milestones: this.enableAutocomplete,
+        milestones: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         labels: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         snippets: this.enableAutocomplete,
       },

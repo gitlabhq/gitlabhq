@@ -1,0 +1,13 @@
+---
+# Warning: gitlab.ToDo
+#
+# You should not use "To Do", unless it refers to the UI element.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Use "%s" instead of "%s" unless referring to the "Add a To Do" button in the UI.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#feature-names
+level: warning
+ignorecase: true
+swap:
+  'to dos': to-do items

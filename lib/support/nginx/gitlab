@@ -18,7 +18,7 @@
 
 upstream gitlab-workhorse {
   # GitLab socket file,
-  # for Omnibus this would be: unix:/var/opt/gitlab/gitlab-workhorse/socket
+  # for Omnibus this would be: unix:/var/opt/gitlab/gitlab-workhorse/sockets/socket
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 

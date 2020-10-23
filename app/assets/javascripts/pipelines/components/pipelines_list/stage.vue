@@ -168,7 +168,7 @@ export default {
       aria-expanded="false"
       @click="onClickStage"
     >
-      <span :aria-label="stage.title" aria-hidden="true" class="no-pointer-events">
+      <span :aria-label="stage.title" aria-hidden="true" class="gl-pointer-events-none">
         <gl-icon :name="borderlessIcon" />
       </span>
     </button>

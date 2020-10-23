@@ -122,7 +122,6 @@ Rails.application.routes.draw do
 
     get 'ide' => 'ide#index'
     get 'ide/*vueroute' => 'ide#index', format: false
-    get 'ide/project/:namespace/:project/merge_requests/:id' => 'ide#index', format: false, as: :ide_merge_request
 
     draw :operations
     draw :jira_connect
