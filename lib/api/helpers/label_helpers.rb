@@ -28,23 +28,23 @@ module API
         at_least_one_of :new_name, :color, :description
       end
 
-      def find_label(parent, id_or_title, include_ancestor_groups: true)
-        labels = available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)
+      def find_label(parent, id_or_title, params = { include_ancestor_groups: true })
+        labels = available_labels_for(parent, params)
         label = labels.find_by_id(id_or_title) || labels.find_by_title(id_or_title)
 
         label || not_found!('Label')
       end
 
-      def get_labels(parent, entity, include_ancestor_groups: true)
-        present paginate(available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)),
+      def get_labels(parent, entity, params = {})
+        present paginate(available_labels_for(parent, params)),
                 with: entity,
                 current_user: current_user,
                 parent: parent,
                 with_counts: params[:with_counts]
       end
 
-      def get_label(parent, entity, include_ancestor_groups: true)
-        label = find_label(parent, params_id_or_title, include_ancestor_groups: include_ancestor_groups)
+      def get_label(parent, entity, params = {})
+        label = find_label(parent, params_id_or_title, params)
 
         present label, with: entity, current_user: current_user, parent: parent
       end

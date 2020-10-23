@@ -43,9 +43,9 @@ module TableSchemaHelpers
         sequence.relname as name
       FROM pg_catalog.pg_class as sequence
       INNER JOIN pg_catalog.pg_depend depend
-        ON depend.objid = sequence.relfilenode
+        ON depend.objid = sequence.oid
       INNER JOIN pg_catalog.pg_class class
-        ON class.relfilenode = depend.refobjid
+        ON class.oid = depend.refobjid
       INNER JOIN pg_catalog.pg_attribute attribute
         ON attribute.attnum = depend.refobjsubid
         AND attribute.attrelid = depend.refobjid

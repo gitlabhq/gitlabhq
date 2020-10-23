@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :audit_event, class: 'AuditEvent', aliases: [:user_audit_event] do
     user
 
-    transient { target_user { create(:user) } }
+    transient { target_user { association(:user) } }
 
     entity_type { 'User' }
     entity_id   { target_user.id }
@@ -27,7 +27,7 @@ FactoryBot.define do
     end
 
     trait :project_event do
-      transient { target_project { create(:project) } }
+      transient { target_project { association(:project) } }
 
       entity_type { 'Project' }
       entity_id   { target_project.id }
@@ -50,7 +50,7 @@ FactoryBot.define do
     end
 
     trait :group_event do
-      transient { target_group { create(:group) } }
+      transient { target_group { association(:group) } }
 
       entity_type { 'Group' }
       entity_id   { target_group.id }

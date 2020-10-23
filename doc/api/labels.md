@@ -24,6 +24,7 @@ GET /projects/:id/labels
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                              |
 | `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31543))_ |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
+| `search` | string | no | Keyword to filter labels by. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259024) in GitLab 13.6 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels?with_counts=true"

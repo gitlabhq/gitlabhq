@@ -51,7 +51,7 @@ module RoutableActions
         flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
       end
 
-      redirect_to build_canonical_path(routable)
+      redirect_to build_canonical_path(routable), status: :moved_permanently
     end
   end
 end

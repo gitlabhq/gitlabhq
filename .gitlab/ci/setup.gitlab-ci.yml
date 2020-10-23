@@ -52,7 +52,7 @@ no_ee_check:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   stage: test
   needs: []
   script:
@@ -61,7 +61,7 @@ verify-tests-yml:
     - scripts/verify-tff-mapping
 
 .detect-test-base:
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   needs: []
   stage: prepare
   script:

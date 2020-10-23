@@ -1847,6 +1847,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: propagate_integration_inherit_descendant
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: propagate_integration_project
   :feature_category: :integrations
   :has_external_dependencies:

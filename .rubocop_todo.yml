@@ -1269,7 +1269,6 @@ FactoryBot/InlineAssociation:
     - 'ee/spec/factories/resource_weight_events.rb'
     - 'ee/spec/factories/vulnerabilities/feedback.rb'
     - 'spec/factories/atlassian_identities.rb'
-    - 'spec/factories/audit_events.rb'
     - 'spec/factories/design_management/design_at_version.rb'
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/design_management/versions.rb'

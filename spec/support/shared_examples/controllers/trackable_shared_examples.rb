@@ -15,7 +15,7 @@ RSpec.shared_examples 'a Trackable Controller' do
       end
 
       it 'tracks the action name' do
-        expect(Gitlab::Tracking).to receive(:event).with('AnonymousController', 'index', {})
+        expect(Gitlab::Tracking).to receive(:event).with('AnonymousController', 'index')
         get :index
       end
     end

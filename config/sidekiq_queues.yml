@@ -254,6 +254,8 @@
   - 1
 - - propagate_integration_inherit
   - 1
+- - propagate_integration_inherit_descendant
+  - 1
 - - propagate_integration_project
   - 1
 - - propagate_service_template

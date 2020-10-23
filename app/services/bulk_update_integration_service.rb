@@ -23,7 +23,7 @@ class BulkUpdateIntegrationService
   attr_reader :integration, :batch
 
   def service_hash
-    integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.id }
+    integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
   end
 
   def data_fields_hash

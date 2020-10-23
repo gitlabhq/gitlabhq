@@ -96,9 +96,9 @@ From there, you can see the following actions:
 - Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Number of required approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Added or removed users and groups from project approval groups ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2)
-- Project CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4.
+- Project CI/CD variable added, removed, or protected status changed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4)
 
-Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events)
+Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 
 ### Instance events **(PREMIUM ONLY)**
 
@@ -113,8 +113,8 @@ To view the server-wide administrator log, visit **Admin Area > Monitoring > Aud
 In addition to the group and project events, the following user actions are also
 recorded:
 
-- Failed Logins
 - Sign-in events and the authentication type (such as standard, LDAP, or OmniAuth)
+- Failed sign-ins
 - Added SSH key
 - Added or removed email
 - Changed password
@@ -134,7 +134,7 @@ the filter dropdown box. You can further filter by specific group, project, or u
 
 ![audit log](img/audit_log.png)
 
-Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events)
+Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
 ### Missing events
 

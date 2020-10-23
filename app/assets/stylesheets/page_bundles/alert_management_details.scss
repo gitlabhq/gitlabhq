@@ -1,24 +1,26 @@
+@import 'mixins_and_variables_and_functions';
+
 .alert-management-details {
   @include media-breakpoint-down(xs) {
     .alert-details-incident-button {
-      width: 100%;
+      @include gl-w-full;
     }
   }
 
   .toggle-sidebar-mobile-button {
-    right: 0;
+    @include gl-right-0;
   }
 
   .dropdown-menu-toggle {
     &:hover {
-      background-color: $white;
+      @include gl-bg-white;
     }
   }
 
   .assignee-dropdown-item {
     .dropdown-item {
-      display: flex;
-      align-items: center;
+      @include gl-display-flex;
+      @include gl-align-items-center;
 
       &::before {
         top: 50% !important;
@@ -26,7 +28,9 @@
 
       &.is-active {
         &:last-child {
-          border-bottom: 1px solid $gray-100;
+          @include gl-border-b-gray-100;
+          @include gl-border-b-1;
+          @include gl-border-b-solid;
         }
       }
     }

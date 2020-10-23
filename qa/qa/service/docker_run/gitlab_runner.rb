@@ -21,7 +21,7 @@ module QA
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
           @run_untagged = true
           @executor = :shell
-          @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6'
+          @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
 
           super()
         end

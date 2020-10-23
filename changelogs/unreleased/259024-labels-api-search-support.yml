@@ -1,0 +1,5 @@
+---
+title: Add support for search and inclusion of project labels within Group Labels API
+merge_request: 44415
+author:
+type: changed

@@ -67,12 +67,24 @@ RSpec.describe Admin::PropagateIntegrationService do
         end
       end
 
-      context 'with a group without integration' do
+      context 'with a subgroup without integration' do
         let(:subgroup) { create(:group, parent: group) }
 
         it 'calls to PropagateIntegrationGroupWorker' do
           expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
             .with(group_integration.id, subgroup.id, subgroup.id)
+
+          described_class.propagate(group_integration)
+        end
+      end
+
+      context 'with a subgroup with integration' do
+        let(:subgroup) { create(:group, parent: group) }
+        let(:subgroup_integration) { create(:jira_service, group: subgroup, project: nil, inherit_from_id: group_integration.id) }
+
+        it 'calls to PropagateIntegrationInheritDescendantWorker' do
+          expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)
+            .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
 
           described_class.propagate(group_integration)
         end

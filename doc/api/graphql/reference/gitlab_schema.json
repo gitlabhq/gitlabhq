@@ -6184,6 +6184,24 @@
           "description": "The connection type for ClusterAgent.",
           "fields": [
             {
+              "name": "count",
+              "description": "Total count of collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "edges",
               "description": "A list of edges.",
               "args": [
@@ -6442,6 +6460,24 @@
           "name": "ClusterAgentTokenConnection",
           "description": "The connection type for ClusterAgentToken.",
           "fields": [
+            {
+              "name": "count",
+              "description": "Total count of collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "edges",
               "description": "A list of edges.",
@@ -23634,7 +23670,16 @@
               "name": "vulnerabilityGrades",
               "description": "Represents vulnerable project counts for each grade",
               "args": [
-
+                {
+                  "name": "includeSubgroups",
+                  "description": "Include grades belonging to subgroups",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                }
               ],
               "type": {
                 "kind": "NON_NULL",
@@ -54902,6 +54947,24 @@
           "name": "TerraformStateConnection",
           "description": "The connection type for TerraformState.",
           "fields": [
+            {
+              "name": "count",
+              "description": "Total count of collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "edges",
               "description": "A list of edges.",

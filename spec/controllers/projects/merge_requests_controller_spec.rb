@@ -161,7 +161,7 @@ RSpec.describe Projects::MergeRequestsController do
               }
 
           expect(response).to redirect_to(project_merge_request_path(new_project, merge_request))
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to have_gitlab_http_status(:moved_permanently)
         end
 
         it 'redirects from an old merge request commits correctly' do
@@ -173,7 +173,7 @@ RSpec.describe Projects::MergeRequestsController do
               }
 
           expect(response).to redirect_to(commits_project_merge_request_path(new_project, merge_request))
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to have_gitlab_http_status(:moved_permanently)
         end
       end
     end

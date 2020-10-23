@@ -274,6 +274,17 @@ class Service < ApplicationRecord
     end
   end
 
+  def self.inherited_descendants_from_self_or_ancestors_from(integration)
+    inherit_from_ids =
+      where(type: integration.type, group: integration.group.self_and_ancestors)
+        .or(where(type: integration.type, instance: true)).select(:id)
+
+    from_union([
+      where(type: integration.type, inherit_from_id: inherit_from_ids, group: integration.group.descendants),
+      where(type: integration.type, inherit_from_id: inherit_from_ids, project: Project.in_namespace(integration.group.self_and_descendants))
+    ])
+  end
+
   def activated?
     active
   end

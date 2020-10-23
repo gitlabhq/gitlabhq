@@ -42,7 +42,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is present' do
-        let(:test_case) { build(:test_case, :failed_with_attachment, job: job) }
+        let(:test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
 
         it 'returns the attachment_url' do
           expect(subject).to include(:attachment_url)
@@ -50,7 +50,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is not present' do
-        let(:test_case) { build(:test_case, job: job) }
+        let(:test_case) { build(:report_test_case, job: job) }
 
         it 'returns a nil attachment_url' do
           expect(subject[:attachment_url]).to be_nil
@@ -64,7 +64,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is present' do
-        let(:test_case) { build(:test_case, :failed_with_attachment, job: job) }
+        let(:test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
 
         it 'returns no attachment_url' do
           expect(subject).not_to include(:attachment_url)
@@ -72,7 +72,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is not present' do
-        let(:test_case) { build(:test_case, job: job) }
+        let(:test_case) { build(:report_test_case, job: job) }
 
         it 'returns no attachment_url' do
           expect(subject).not_to include(:attachment_url)

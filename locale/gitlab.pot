@@ -7791,6 +7791,9 @@ msgstr ""
 msgid "Created on"
 msgstr ""
 
+msgid "Created on %{created_at}"
+msgstr ""
+
 msgid "Created on:"
 msgstr ""
 
@@ -15304,6 +15307,9 @@ msgid "Last updated"
 msgstr ""
 
 msgid "Last used"
+msgstr ""
+
+msgid "Last used %{last_used_at} ago"
 msgstr ""
 
 msgid "Last used on:"
@@ -22938,6 +22944,9 @@ msgstr ""
 msgid "SSH host keys are not available on this system. Please use %{ssh_keyscan} command or contact your GitLab administrator for more information."
 msgstr ""
 
+msgid "SSH key"
+msgstr ""
+
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
 msgstr ""
 
@@ -23044,6 +23053,9 @@ msgid "Scopes"
 msgstr ""
 
 msgid "Scopes can't be blank"
+msgstr ""
+
+msgid "Scopes: %{scope_list}"
 msgstr ""
 
 msgid "Score"
@@ -26242,6 +26254,12 @@ msgid "The following %{user} can also merge into this branch: %{branch}"
 msgstr ""
 
 msgid "The following %{user} can also push to this branch: %{branch}"
+msgstr ""
+
+msgid "The following Personal Access Token was revoked by an administrator, %{username}."
+msgstr ""
+
+msgid "The following SSH key was deleted by an administrator, %{username}."
 msgstr ""
 
 msgid "The following items will NOT be exported:"
@@ -30138,6 +30156,15 @@ msgstr ""
 msgid "You can always edit this later"
 msgstr ""
 
+msgid "You can create a new %{link}."
+msgstr ""
+
+msgid "You can create a new Personal Access Token by visiting %{link}"
+msgstr ""
+
+msgid "You can create a new SSH key by visiting %{link}"
+msgstr ""
+
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings"
 msgstr ""
 
@@ -30582,6 +30609,9 @@ msgstr ""
 msgid "Your License"
 msgstr ""
 
+msgid "Your Personal Access Token was revoked"
+msgstr ""
+
 msgid "Your Personal Access Tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
@@ -30595,6 +30625,9 @@ msgid "Your Projects' Activity"
 msgstr ""
 
 msgid "Your Public Email will be displayed on your public profile."
+msgstr ""
+
+msgid "Your SSH key was deleted"
 msgstr ""
 
 msgid "Your SSH keys (%{count})"

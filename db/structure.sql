@@ -10656,6 +10656,38 @@ CREATE SEQUENCE ci_subscriptions_projects_id_seq
 
 ALTER SEQUENCE ci_subscriptions_projects_id_seq OWNED BY ci_subscriptions_projects.id;
 
+CREATE TABLE ci_test_case_failures (
+    id bigint NOT NULL,
+    failed_at timestamp with time zone,
+    test_case_id bigint NOT NULL,
+    build_id bigint NOT NULL
+);
+
+CREATE SEQUENCE ci_test_case_failures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_test_case_failures_id_seq OWNED BY ci_test_case_failures.id;
+
+CREATE TABLE ci_test_cases (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    key_hash text NOT NULL,
+    CONSTRAINT check_dd3c5d1c15 CHECK ((char_length(key_hash) <= 64))
+);
+
+CREATE SEQUENCE ci_test_cases_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_test_cases_id_seq OWNED BY ci_test_cases.id;
+
 CREATE TABLE ci_trigger_requests (
     id integer NOT NULL,
     trigger_id integer NOT NULL,
@@ -16157,7 +16189,8 @@ CREATE TABLE snippets (
     description_html text,
     encrypted_secret_token character varying(255),
     encrypted_secret_token_iv character varying(255),
-    secret boolean DEFAULT false NOT NULL
+    secret boolean DEFAULT false NOT NULL,
+    repository_read_only boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE snippets_id_seq
@@ -17534,6 +17567,10 @@ ALTER TABLE ONLY ci_stages ALTER COLUMN id SET DEFAULT nextval('ci_stages_id_seq
 
 ALTER TABLE ONLY ci_subscriptions_projects ALTER COLUMN id SET DEFAULT nextval('ci_subscriptions_projects_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_test_case_failures ALTER COLUMN id SET DEFAULT nextval('ci_test_case_failures_id_seq'::regclass);
+
+ALTER TABLE ONLY ci_test_cases ALTER COLUMN id SET DEFAULT nextval('ci_test_cases_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_trigger_requests ALTER COLUMN id SET DEFAULT nextval('ci_trigger_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_triggers ALTER COLUMN id SET DEFAULT nextval('ci_triggers_id_seq'::regclass);
@@ -18573,6 +18610,12 @@ ALTER TABLE ONLY ci_stages
 
 ALTER TABLE ONLY ci_subscriptions_projects
     ADD CONSTRAINT ci_subscriptions_projects_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_test_case_failures
+    ADD CONSTRAINT ci_test_case_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_test_cases
+    ADD CONSTRAINT ci_test_cases_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_trigger_requests
     ADD CONSTRAINT ci_trigger_requests_pkey PRIMARY KEY (id);
@@ -20238,6 +20281,10 @@ CREATE INDEX index_ci_subscriptions_projects_on_upstream_project_id ON ci_subscr
 
 CREATE UNIQUE INDEX index_ci_subscriptions_projects_unique_subscription ON ci_subscriptions_projects USING btree (downstream_project_id, upstream_project_id);
 
+CREATE INDEX index_ci_test_case_failures_on_build_id ON ci_test_case_failures USING btree (build_id);
+
+CREATE UNIQUE INDEX index_ci_test_cases_on_project_id_and_key_hash ON ci_test_cases USING btree (project_id, key_hash);
+
 CREATE INDEX index_ci_trigger_requests_on_commit_id ON ci_trigger_requests USING btree (commit_id);
 
 CREATE INDEX index_ci_trigger_requests_on_trigger_id_and_id ON ci_trigger_requests USING btree (trigger_id, id DESC);
@@ -21740,6 +21787,8 @@ CREATE UNIQUE INDEX index_terraform_states_on_project_id_and_name ON terraform_s
 
 CREATE UNIQUE INDEX index_terraform_states_on_uuid ON terraform_states USING btree (uuid);
 
+CREATE UNIQUE INDEX index_test_case_failures_unique_columns ON ci_test_case_failures USING btree (test_case_id, failed_at DESC, build_id);
+
 CREATE INDEX index_timelogs_on_issue_id ON timelogs USING btree (issue_id);
 
 CREATE INDEX index_timelogs_on_merge_request_id ON timelogs USING btree (merge_request_id);
@@ -22328,6 +22377,9 @@ ALTER TABLE ONLY clusters_applications_runners
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_test_cases
+    ADD CONSTRAINT fk_0526c30ded FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_05f1e72feb FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -22840,6 +22892,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_d5af95fcd9 FOREIGN KEY (lfs_object_deleted_event_id) REFERENCES geo_lfs_object_deleted_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_test_case_failures
+    ADD CONSTRAINT fk_d69404d827 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_d6cf4279f7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -24133,6 +24188,9 @@ ALTER TABLE ONLY merge_request_blocks
 
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_e9eb8dc025 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_test_case_failures
+    ADD CONSTRAINT fk_rails_eab6349715 FOREIGN KEY (test_case_id) REFERENCES ci_test_cases(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

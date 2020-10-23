@@ -59,7 +59,7 @@ RSpec.describe Projects::Registry::RepositoriesController do
           end
 
           it 'tracks the event' do
-            expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
+            expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories')
 
             go_to_index(format: :json)
           end
@@ -133,7 +133,7 @@ RSpec.describe Projects::Registry::RepositoriesController do
         end
 
         it 'tracks the event' do
-          expect(Gitlab::Tracking).to receive(:event).with(anything, 'delete_repository', {})
+          expect(Gitlab::Tracking).to receive(:event).with(anything, 'delete_repository')
           allow(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
 
           delete_repository(repository)

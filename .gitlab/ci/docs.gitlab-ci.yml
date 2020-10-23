@@ -2,7 +2,7 @@
   extends:
     - .default-retry
     - .docs:rules:review-docs
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   stage: review
   needs: []
   variables:

@@ -1,4 +1,4 @@
-######################
+#######################
 # rspec job base specs
 .rails-job-base:
   extends:
@@ -181,6 +181,7 @@ update-coverage-cache:
     - .shared:rules:update-cache
   stage: prepare
   script:
+    - run_timed_command "gem install bundler -v 1.17.3"
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
   cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
@@ -358,6 +359,7 @@ rspec:coverage:
     - memory-static
     - memory-on-boot
   script:
+    - run_timed_command "gem install bundler -v 1.17.3"
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
     - run_timed_command "bundle exec scripts/merge-simplecov"
     - run_timed_command "bundle exec scripts/gather-test-memory-data"

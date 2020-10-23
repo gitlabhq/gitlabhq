@@ -52,14 +52,14 @@ RSpec.describe Projects::IssuesController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to redirect_to(project_issues_path(new_project))
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to have_gitlab_http_status(:moved_permanently)
         end
 
         it 'redirects from an old issue correctly' do
           get :show, params: { namespace_id: project.namespace, project_id: project, id: issue }
 
           expect(response).to redirect_to(project_issue_path(new_project, issue))
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to have_gitlab_http_status(:moved_permanently)
         end
       end
     end
@@ -1869,7 +1869,7 @@ RSpec.describe Projects::IssuesController do
             }
 
         expect(response).to redirect_to(designs_project_issue_path(new_project, issue))
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to have_gitlab_http_status(:moved_permanently)
       end
     end
   end

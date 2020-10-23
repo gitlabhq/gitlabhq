@@ -55,6 +55,14 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 
 For more information about labels, see [Technical Writing workflows - Labels](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#labels).
 
+For suggestions that you are confident don't need to be reviewed, change them locally
+and push a commit directly to save others from unneeded reviews. For example:
+
+- Clear typos, like `this is a typpo`.
+- Minor issues, like single quotes instead of double quotes, Oxford commas, and periods.
+
+For more information, see our documentation on [Merging a merge request](https://docs.gitlab.com/ee/development/code_review.html#merging-a-merge-request).
+
 **3. Maintainer**
 
 1. [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.

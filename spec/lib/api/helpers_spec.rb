@@ -177,7 +177,7 @@ RSpec.describe API::Helpers do
 
   describe '#track_event' do
     it "creates a gitlab tracking event" do
-      expect(Gitlab::Tracking).to receive(:event).with('foo', 'my_event', {})
+      expect(Gitlab::Tracking).to receive(:event).with('foo', 'my_event')
 
       subject.track_event('my_event', category: 'foo')
     end
