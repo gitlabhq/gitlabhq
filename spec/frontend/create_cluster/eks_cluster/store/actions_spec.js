@@ -23,6 +23,7 @@ import {
   REQUEST_CREATE_CLUSTER,
   CREATE_CLUSTER_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
+import { DEFAULT_REGION } from '~/create_cluster/eks_cluster/constants';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 
@@ -109,12 +110,13 @@ describe('EKS Cluster Store Actions', () => {
       secretAccessKey: 'secret-key-id',
     };
 
-    describe('when request succeeds', () => {
+    describe('when request succeeds with default region', () => {
       beforeEach(() => {
         mock
           .onPost(state.createRolePath, {
             role_arn: payload.roleArn,
             role_external_id: payload.externalId,
+            region: DEFAULT_REGION,
           })
           .reply(201, response);
       });
@@ -125,7 +127,51 @@ describe('EKS Cluster Store Actions', () => {
           payload,
           state,
           [],
-          [{ type: 'requestCreateRole' }, { type: 'createRoleSuccess', payload: response }],
+          [
+            { type: 'requestCreateRole' },
+            {
+              type: 'createRoleSuccess',
+              payload: {
+                region: DEFAULT_REGION,
+                ...response,
+              },
+            },
+          ],
+        ));
+    });
+
+    describe('when request succeeds with custom region', () => {
+      const customRegion = 'custom-region';
+
+      beforeEach(() => {
+        mock
+          .onPost(state.createRolePath, {
+            role_arn: payload.roleArn,
+            role_external_id: payload.externalId,
+            region: customRegion,
+          })
+          .reply(201, response);
+      });
+
+      it('dispatches createRoleSuccess action', () =>
+        testAction(
+          actions.createRole,
+          {
+            selectedRegion: customRegion,
+            ...payload,
+          },
+          state,
+          [],
+          [
+            { type: 'requestCreateRole' },
+            {
+              type: 'createRoleSuccess',
+              payload: {
+                region: customRegion,
+                ...response,
+              },
+            },
+          ],
         ));
     });
 
@@ -138,6 +184,7 @@ describe('EKS Cluster Store Actions', () => {
           .onPost(state.createRolePath, {
             role_arn: payload.roleArn,
             role_external_id: payload.externalId,
+            region: DEFAULT_REGION,
           })
           .reply(400, error);
       });
@@ -160,8 +207,14 @@ describe('EKS Cluster Store Actions', () => {
   });
 
   describe('createRoleSuccess', () => {
-    it('commits createRoleSuccess mutation', () => {
-      testAction(actions.createRoleSuccess, null, state, [{ type: CREATE_ROLE_SUCCESS }]);
+    it('sets region and commits createRoleSuccess mutation', () => {
+      testAction(
+        actions.createRoleSuccess,
+        { region },
+        state,
+        [{ type: CREATE_ROLE_SUCCESS }],
+        [{ type: 'setRegion', payload: { region } }],
+      );
     });
   });
 

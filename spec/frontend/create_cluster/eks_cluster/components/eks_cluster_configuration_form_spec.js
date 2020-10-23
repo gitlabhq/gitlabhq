@@ -16,7 +16,6 @@ describe('EksClusterConfigurationForm', () => {
   let getters;
   let state;
   let rolesState;
-  let regionsState;
   let vpcsState;
   let subnetsState;
   let keyPairsState;
@@ -24,7 +23,6 @@ describe('EksClusterConfigurationForm', () => {
   let instanceTypesState;
   let vpcsActions;
   let rolesActions;
-  let regionsActions;
   let subnetsActions;
   let keyPairsActions;
   let securityGroupsActions;
@@ -45,9 +43,6 @@ describe('EksClusterConfigurationForm', () => {
       setInstanceType: jest.fn(),
       setNodeCount: jest.fn(),
       setGitlabManagedCluster: jest.fn(),
-    };
-    regionsActions = {
-      fetchItems: jest.fn(),
     };
     keyPairsActions = {
       fetchItems: jest.fn(),
@@ -71,10 +66,6 @@ describe('EksClusterConfigurationForm', () => {
     rolesState = {
       ...clusterDropdownStoreState(),
       ...config.rolesState,
-    };
-    regionsState = {
-      ...clusterDropdownStoreState(),
-      ...config.regionsState,
     };
     vpcsState = {
       ...clusterDropdownStoreState(),
@@ -108,11 +99,6 @@ describe('EksClusterConfigurationForm', () => {
           namespaced: true,
           state: vpcsState,
           actions: vpcsActions,
-        },
-        regions: {
-          namespaced: true,
-          state: regionsState,
-          actions: regionsActions,
         },
         subnets: {
           namespaced: true,
@@ -189,7 +175,6 @@ describe('EksClusterConfigurationForm', () => {
   const findClusterNameInput = () => vm.find('[id=eks-cluster-name]');
   const findEnvironmentScopeInput = () => vm.find('[id=eks-environment-scope]');
   const findKubernetesVersionDropdown = () => vm.find('[field-id="eks-kubernetes-version"]');
-  const findRegionDropdown = () => vm.find('[field-id="eks-region"]');
   const findKeyPairDropdown = () => vm.find('[field-id="eks-key-pair"]');
   const findVpcDropdown = () => vm.find('[field-id="eks-vpc"]');
   const findSubnetDropdown = () => vm.find('[field-id="eks-subnet"]');
@@ -200,12 +185,43 @@ describe('EksClusterConfigurationForm', () => {
   const findGitlabManagedClusterCheckbox = () => vm.find(GlFormCheckbox);
 
   describe('when mounted', () => {
-    it('fetches available regions', () => {
-      expect(regionsActions.fetchItems).toHaveBeenCalled();
-    });
-
     it('fetches available roles', () => {
       expect(rolesActions.fetchItems).toHaveBeenCalled();
+    });
+
+    describe('when fetching vpcs and key pairs', () => {
+      const region = 'us-west-2';
+
+      beforeEach(() => {
+        createValidStateStore({ selectedRegion: region });
+        buildWrapper();
+      });
+
+      it('fetches available vpcs', () => {
+        expect(vpcsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region });
+      });
+
+      it('fetches available key pairs', () => {
+        expect(keyPairsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region });
+      });
+
+      it('cleans selected vpc', () => {
+        expect(actions.setVpc).toHaveBeenCalledWith(expect.anything(), { vpc: null });
+      });
+
+      it('cleans selected key pair', () => {
+        expect(actions.setKeyPair).toHaveBeenCalledWith(expect.anything(), { keyPair: null });
+      });
+
+      it('cleans selected subnet', () => {
+        expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] });
+      });
+
+      it('cleans selected security group', () => {
+        expect(actions.setSecurityGroup).toHaveBeenCalledWith(expect.anything(), {
+          securityGroup: null,
+        });
+      });
     });
   });
 
@@ -226,26 +242,6 @@ describe('EksClusterConfigurationForm', () => {
 
     return Vue.nextTick().then(() => {
       expect(findRoleDropdown().props('hasErrors')).toEqual(true);
-    });
-  });
-
-  it('sets isLoadingRegions to RegionDropdown loading property', () => {
-    regionsState.isLoadingItems = true;
-
-    return Vue.nextTick().then(() => {
-      expect(findRegionDropdown().props('loading')).toBe(regionsState.isLoadingItems);
-    });
-  });
-
-  it('sets regions to RegionDropdown regions property', () => {
-    expect(findRegionDropdown().props('items')).toBe(regionsState.items);
-  });
-
-  it('sets loadingRegionsError to RegionDropdown error property', () => {
-    regionsState.loadingItemsError = new Error();
-
-    return Vue.nextTick().then(() => {
-      expect(findRegionDropdown().props('hasErrors')).toEqual(true);
     });
   });
 
@@ -391,44 +387,6 @@ describe('EksClusterConfigurationForm', () => {
 
     return Vue.nextTick().then(() => {
       expect(findSecurityGroupDropdown().props('hasErrors')).toEqual(true);
-    });
-  });
-
-  describe('when region is selected', () => {
-    const region = { name: 'us-west-2' };
-
-    beforeEach(() => {
-      findRegionDropdown().vm.$emit('input', region);
-    });
-
-    it('dispatches setRegion action', () => {
-      expect(actions.setRegion).toHaveBeenCalledWith(expect.anything(), { region });
-    });
-
-    it('fetches available vpcs', () => {
-      expect(vpcsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region });
-    });
-
-    it('fetches available key pairs', () => {
-      expect(keyPairsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region });
-    });
-
-    it('cleans selected vpc', () => {
-      expect(actions.setVpc).toHaveBeenCalledWith(expect.anything(), { vpc: null });
-    });
-
-    it('cleans selected key pair', () => {
-      expect(actions.setKeyPair).toHaveBeenCalledWith(expect.anything(), { keyPair: null });
-    });
-
-    it('cleans selected subnet', () => {
-      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] });
-    });
-
-    it('cleans selected security group', () => {
-      expect(actions.setSecurityGroup).toHaveBeenCalledWith(expect.anything(), {
-        securityGroup: null,
-      });
     });
   });
 

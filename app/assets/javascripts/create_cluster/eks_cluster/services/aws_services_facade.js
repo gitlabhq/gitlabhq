@@ -8,13 +8,8 @@ const lookupVpcName = ({ Tags: tags, VpcId: id }) => {
   return nameTag ? nameTag.Value : id;
 };
 
-export const DEFAULT_REGION = 'us-east-2';
-
 export const setAWSConfig = ({ awsCredentials }) => {
-  AWS.config = {
-    ...awsCredentials,
-    region: DEFAULT_REGION,
-  };
+  AWS.config = awsCredentials;
 };
 
 export const fetchRoles = () => {
@@ -24,20 +19,6 @@ export const fetchRoles = () => {
     .listRoles()
     .promise()
     .then(({ Roles: roles }) => roles.map(({ RoleName: name, Arn: value }) => ({ name, value })));
-};
-
-export const fetchRegions = () => {
-  const ec2 = new EC2();
-
-  return ec2
-    .describeRegions()
-    .promise()
-    .then(({ Regions: regions }) =>
-      regions.map(({ RegionName: name }) => ({
-        name,
-        value: name,
-      })),
-    );
 };
 
 export const fetchKeyPairs = ({ region }) => {

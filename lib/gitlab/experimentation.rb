@@ -201,7 +201,7 @@ module Gitlab
         return false unless EXPERIMENTS.key?(experiment_key)
 
         experiment = experiment(experiment_key)
-        experiment.enabled? && experiment.enabled_for_environment?
+        experiment.enabled_for_environment? && experiment.enabled?
       end
 
       def enabled_for_attribute?(experiment_key, attribute)

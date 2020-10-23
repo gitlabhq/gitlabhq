@@ -11,6 +11,8 @@ class BulkCreateIntegrationService
     service_list = ServiceList.new(batch, service_hash, association).to_array
 
     Service.transaction do
+      run_callbacks(batch) if association == 'project'
+
       results = bulk_insert(*service_list)
 
       if integration.data_fields_present?
@@ -18,8 +20,6 @@ class BulkCreateIntegrationService
 
         bulk_insert(*data_list)
       end
-
-      run_callbacks(batch) if association == 'project'
     end
   end
 
@@ -33,17 +33,15 @@ class BulkCreateIntegrationService
     klass.insert_all(items_to_insert, returning: [:id])
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def run_callbacks(batch)
-    if integration.issue_tracker?
-      Project.where(id: batch.select(:id)).update_all(has_external_issue_tracker: true)
+    if integration.issue_tracker? && integration.active?
+      batch.update_all(has_external_issue_tracker: true)
     end
 
-    if integration.type == 'ExternalWikiService'
-      Project.where(id: batch.select(:id)).update_all(has_external_wiki: true)
+    if integration.type == 'ExternalWikiService' && integration.active?
+      batch.update_all(has_external_wiki: true)
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def service_hash
     if integration.template?

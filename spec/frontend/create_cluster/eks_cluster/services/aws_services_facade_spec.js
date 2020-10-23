@@ -3,12 +3,10 @@ import EC2 from 'aws-sdk/clients/ec2';
 import {
   setAWSConfig,
   fetchRoles,
-  fetchRegions,
   fetchKeyPairs,
   fetchVpcs,
   fetchSubnets,
   fetchSecurityGroups,
-  DEFAULT_REGION,
 } from '~/create_cluster/eks_cluster/services/aws_services_facade';
 
 const mockListRolesPromise = jest.fn();
@@ -45,19 +43,17 @@ describe('awsServicesFacade', () => {
     vpc = 'vpc-2';
   });
 
-  it('setAWSConfig configures AWS SDK with provided credentials and default region', () => {
+  it('setAWSConfig configures AWS SDK with provided credentials', () => {
     const awsCredentials = {
       accessKeyId: 'access-key',
       secretAccessKey: 'secret-key',
       sessionToken: 'session-token',
+      region,
     };
 
     setAWSConfig({ awsCredentials });
 
-    expect(AWS.config).toEqual({
-      ...awsCredentials,
-      region: DEFAULT_REGION,
-    });
+    expect(AWS.config).toEqual(awsCredentials);
   });
 
   describe('when fetchRoles succeeds', () => {
@@ -76,22 +72,6 @@ describe('awsServicesFacade', () => {
 
     it('return list of regions where each item has a name and value', () => {
       return expect(fetchRoles()).resolves.toEqual(rolesOutput);
-    });
-  });
-
-  describe('when fetchRegions succeeds', () => {
-    let regions;
-    let regionsOutput;
-
-    beforeEach(() => {
-      regions = [{ RegionName: 'east-1' }, { RegionName: 'west-2' }];
-      regionsOutput = regions.map(({ RegionName: name }) => ({ name, value: name }));
-
-      mockDescribeRegionsPromise.mockResolvedValueOnce({ Regions: regions });
-    });
-
-    it('return list of roles where each item has a name and value', () => {
-      return expect(fetchRegions()).resolves.toEqual(regionsOutput);
     });
   });
 

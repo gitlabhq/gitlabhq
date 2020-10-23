@@ -1,0 +1,5 @@
+---
+title: Remove default EKS Region dropdown in cluster create form
+merge_request: 43017
+author:
+type: fixed

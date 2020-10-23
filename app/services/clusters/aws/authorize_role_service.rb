@@ -17,7 +17,8 @@ module Clusters
 
       def initialize(user, params:)
         @user = user
-        @params = params
+        @role_arn = params[:role_arn]
+        @region = params[:region]
       end
 
       def execute
@@ -33,18 +34,18 @@ module Clusters
 
       private
 
-      attr_reader :role, :params
+      attr_reader :role, :role_arn, :region
 
       def ensure_role_exists!
         @role = ::Aws::Role.find_by_user_id!(user.id)
       end
 
       def update_role_arn!
-        role.update!(params)
+        role.update!(role_arn: role_arn)
       end
 
       def credentials
-        Clusters::Aws::FetchCredentialsService.new(role).execute
+        Clusters::Aws::FetchCredentialsService.new(role, region: region).execute
       end
     end
   end

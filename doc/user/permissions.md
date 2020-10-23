@@ -391,7 +391,7 @@ with the permissions described on the documentation on [auditor users permission
 
 [Read more about Auditor users.](../administration/auditor_users.md)
 
-## Users with minimal access **(PREMIUM ONLY)**
+## Users with minimal access **(PREMIUM)**
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 

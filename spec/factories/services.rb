@@ -139,6 +139,13 @@ FactoryBot.define do
     end
   end
 
+  factory :external_wiki_service do
+    project
+    type { ExternalWikiService }
+    active { true }
+    external_wiki_url { 'http://external-wiki-url.com' }
+  end
+
   factory :open_project_service do
     project
     active { true }

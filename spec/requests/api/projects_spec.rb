@@ -890,7 +890,7 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:created)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
+        next if %i[has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -1309,7 +1309,7 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:created)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker path storage_version].include?(k)
+        next if %i[has_external_issue_tracker has_external_wiki path storage_version].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end

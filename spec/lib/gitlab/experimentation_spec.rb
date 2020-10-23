@@ -442,6 +442,14 @@ RSpec.describe Gitlab::Experimentation, :snowplow do
       let(:environment) { ::Gitlab.com? }
 
       it { is_expected.to be_falsey }
+
+      it 'ensures the typically less expensive environment is checked before the more expensive call to database for Feature' do
+        expect_next_instance_of(described_class::Experiment) do |experiment|
+          expect(experiment).not_to receive(:enabled?)
+        end
+
+        subject
+      end
     end
   end
 

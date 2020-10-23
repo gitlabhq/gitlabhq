@@ -38,7 +38,8 @@ the `author` field. GitLab team members **should not**.
 - [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md)
   **must** have a changelog entry, without `merge_request` value
   and with `type` set to `security`.
-- Any user-facing change **should** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
+- Any user-facing change **must** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
+- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
 - Performance improvements **should** have a changelog entry.
 - Changes that need to be documented in the Product Analytics [Event Dictionary](product_analytics/event_dictionary.md)
   also require a changelog entry.

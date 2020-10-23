@@ -203,6 +203,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       for_defined_days_back do
         user = create(:user)
 
+        create(:bulk_import, user: user)
+
         %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest fogbugz phabricator).each do |type|
           create(:project, import_type: type, creator_id: user.id)
         end
@@ -215,6 +217,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(
         {
+          bulk_imports: {
+            gitlab: 2
+          },
           projects_imported: {
             gitlab_project: 2,
             gitlab: 2,
@@ -235,6 +240,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
         {
+          bulk_imports: {
+            gitlab: 1
+          },
           projects_imported: {
             gitlab_project: 1,
             gitlab: 1,

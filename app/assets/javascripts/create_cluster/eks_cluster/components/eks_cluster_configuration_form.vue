@@ -1,15 +1,12 @@
 <script>
 import { createNamespacedHelpers, mapState, mapActions, mapGetters } from 'vuex';
-import { GlFormInput, GlFormCheckbox, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlFormCheckbox, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
 import { KUBERNETES_VERSIONS } from '../constants';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 const { mapState: mapRolesState, mapActions: mapRolesActions } = createNamespacedHelpers('roles');
-const { mapState: mapRegionsState, mapActions: mapRegionsActions } = createNamespacedHelpers(
-  'regions',
-);
 const { mapState: mapKeyPairsState, mapActions: mapKeyPairsActions } = createNamespacedHelpers(
   'keyPairs',
 );
@@ -27,6 +24,7 @@ export default {
   components: {
     ClusterFormDropdown,
     GlFormCheckbox,
+    GlFormGroup,
     GlFormInput,
     GlIcon,
     GlLink,
@@ -60,11 +58,10 @@ export default {
     ),
     roleDropdownHelpPath:
       'https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role',
-    regionsDropdownHelpText: s__(
-      'ClusterIntegration|Learn more about %{linkStart}Regions%{linkEnd}.',
+    regionInputLabel: s__('ClusterIntegration|Cluster Region'),
+    regionHelpText: s__(
+      'ClusterIntegration|The region the new cluster will be created in. You must reauthenticate to change regions.',
     ),
-    regionsDropdownHelpPath:
-      'https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/',
     keyPairDropdownHelpText: s__(
       'ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{linkStart}Amazon Web Services%{linkEnd}.',
     ),
@@ -116,11 +113,6 @@ export default {
       roles: 'items',
       isLoadingRoles: 'isLoadingItems',
       loadingRolesError: 'loadingItemsError',
-    }),
-    ...mapRegionsState({
-      regions: 'items',
-      isLoadingRegions: 'isLoadingItems',
-      loadingRegionsError: 'loadingItemsError',
     }),
     ...mapKeyPairsState({
       keyPairs: 'items',
@@ -195,8 +187,8 @@ export default {
     },
   },
   mounted() {
-    this.fetchRegions();
     this.fetchRoles();
+    this.setRegionAndFetchVpcsAndKeyPairs();
   },
   methods: {
     ...mapActions([
@@ -215,20 +207,18 @@ export default {
       'setGitlabManagedCluster',
       'setNamespacePerEnvironment',
     ]),
-    ...mapRegionsActions({ fetchRegions: 'fetchItems' }),
     ...mapVpcActions({ fetchVpcs: 'fetchItems' }),
     ...mapSubnetActions({ fetchSubnets: 'fetchItems' }),
     ...mapRolesActions({ fetchRoles: 'fetchItems' }),
     ...mapKeyPairsActions({ fetchKeyPairs: 'fetchItems' }),
     ...mapSecurityGroupsActions({ fetchSecurityGroups: 'fetchItems' }),
-    setRegionAndFetchVpcsAndKeyPairs(region) {
-      this.setRegion({ region });
+    setRegionAndFetchVpcsAndKeyPairs() {
       this.setVpc({ vpc: null });
       this.setKeyPair({ keyPair: null });
       this.setSubnet({ subnet: [] });
       this.setSecurityGroup({ securityGroup: null });
-      this.fetchVpcs({ region });
-      this.fetchKeyPairs({ region });
+      this.fetchVpcs({ region: this.selectedRegion });
+      this.fetchKeyPairs({ region: this.selectedRegion });
     },
     setVpcAndFetchSubnets(vpc) {
       this.setVpc({ vpc });
@@ -314,33 +304,12 @@ export default {
         </gl-sprintf>
       </p>
     </div>
-    <div class="form-group">
-      <label class="label-bold" for="eks-role">{{ s__('ClusterIntegration|Region') }}</label>
-      <cluster-form-dropdown
-        field-id="eks-region"
-        field-name="eks-region"
-        :value="selectedRegion"
-        :items="regions"
-        :loading="isLoadingRegions"
-        :loading-text="s__('ClusterIntegration|Loading Regions')"
-        :placeholder="s__('ClusterIntergation|Select a region')"
-        :search-field-placeholder="s__('ClusterIntegration|Search regions')"
-        :empty-text="s__('ClusterIntegration|No region found')"
-        :has-errors="Boolean(loadingRegionsError)"
-        :error-message="s__('ClusterIntegration|Could not load regions from your AWS account')"
-        @input="setRegionAndFetchVpcsAndKeyPairs($event)"
-      />
-      <p class="form-text text-muted">
-        <gl-sprintf :message="$options.i18n.regionsDropdownHelpText">
-          <template #link="{ content }">
-            <gl-link :href="$options.i18n.regionsDropdownHelpPath" target="_blank">
-              {{ content }}
-              <gl-icon name="external-link" class="gl-vertical-align-middle" />
-            </gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </div>
+    <gl-form-group
+      :label="$options.i18n.regionInputLabel"
+      :description="$options.i18n.regionHelpText"
+    >
+      <gl-form-input id="eks-region" :value="selectedRegion" type="text" readonly />
+    </gl-form-group>
     <div class="form-group">
       <label class="label-bold" for="eks-key-pair">{{
         s__('ClusterIntegration|Key pair name')

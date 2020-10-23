@@ -1,0 +1,5 @@
+---
+title: Fix project callbacks when propagating integrations
+merge_request: 45781
+author:
+type: fixed

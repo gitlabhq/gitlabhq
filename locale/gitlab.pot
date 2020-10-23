@@ -5687,6 +5687,9 @@ msgstr ""
 msgid "ClusterIntegration|Clear the local cache of namespace and service accounts."
 msgstr ""
 
+msgid "ClusterIntegration|Cluster Region"
+msgstr ""
+
 msgid "ClusterIntegration|Cluster management project (alpha)"
 msgstr ""
 
@@ -5742,9 +5745,6 @@ msgid "ClusterIntegration|Could not load instance types"
 msgstr ""
 
 msgid "ClusterIntegration|Could not load networks"
-msgstr ""
-
-msgid "ClusterIntegration|Could not load regions from your AWS account"
 msgstr ""
 
 msgid "ClusterIntegration|Could not load security groups for the selected VPC"
@@ -6002,9 +6002,6 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{linkStart}Regions%{linkEnd}."
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
@@ -6018,9 +6015,6 @@ msgid "ClusterIntegration|Loading IAM Roles"
 msgstr ""
 
 msgid "ClusterIntegration|Loading Key Pairs"
-msgstr ""
-
-msgid "ClusterIntegration|Loading Regions"
 msgstr ""
 
 msgid "ClusterIntegration|Loading VPCs"
@@ -6089,9 +6083,6 @@ msgstr ""
 msgid "ClusterIntegration|No projects matched your search"
 msgstr ""
 
-msgid "ClusterIntegration|No region found"
-msgstr ""
-
 msgid "ClusterIntegration|No security group found"
 msgstr ""
 
@@ -6156,9 +6147,6 @@ msgid "ClusterIntegration|Read our %{link_start}help page%{link_end} on Kubernet
 msgstr ""
 
 msgid "ClusterIntegration|Real-time web application monitoring, logging and access control. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
-msgid "ClusterIntegration|Region"
 msgstr ""
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
@@ -6227,9 +6215,6 @@ msgstr ""
 msgid "ClusterIntegration|Search projects"
 msgstr ""
 
-msgid "ClusterIntegration|Search regions"
-msgstr ""
-
 msgid "ClusterIntegration|Search security groups"
 msgstr ""
 
@@ -6288,6 +6273,9 @@ msgid "ClusterIntegration|Select project to choose zone"
 msgstr ""
 
 msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
+msgstr ""
+
+msgid "ClusterIntegration|Select the region you want to create the new cluster in. Make sure you have access to this region for your role to be able to authenticate. If no region is selected, we will use %{codeStart}DEFAULT_REGION%{codeEnd}. Learn more about %{linkStart}Regions%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Select zone"
@@ -6372,6 +6360,9 @@ msgid "ClusterIntegration|The endpoint is in the process of being assigned. Plea
 msgstr ""
 
 msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
+msgstr ""
+
+msgid "ClusterIntegration|The region the new cluster will be created in. You must reauthenticate to change regions."
 msgstr ""
 
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
@@ -6513,9 +6504,6 @@ msgid "ClusterIntergation|Select a VPC"
 msgstr ""
 
 msgid "ClusterIntergation|Select a network"
-msgstr ""
-
-msgid "ClusterIntergation|Select a region"
 msgstr ""
 
 msgid "ClusterIntergation|Select a security group"

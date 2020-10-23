@@ -53,9 +53,11 @@ RSpec.describe Clusters::Aws::FetchCredentialsService do
 
       context 'provider is not specifed' do
         let(:provider) { nil }
-        let(:region) { Clusters::Providers::Aws::DEFAULT_REGION }
+        let(:region) { 'custom-region' }
         let(:session_name) { "gitlab-eks-autofill-user-#{user.id}" }
         let(:session_policy) { 'policy-document' }
+
+        subject { described_class.new(provision_role, provider: provider, region: region).execute }
 
         before do
           allow(File).to receive(:read)
