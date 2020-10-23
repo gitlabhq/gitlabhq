@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :terraform_state, class: 'Terraform::State' do
-    project { create(:project) }
+    project { association(:project) }
 
     sequence(:name) { |n| "state-#{n}" }
 
@@ -14,7 +14,7 @@ FactoryBot.define do
     trait :locked do
       sequence(:lock_xid) { |n| "lock-#{n}" }
       locked_at { Time.current }
-      locked_by_user { create(:user) }
+      locked_by_user { association(:user) }
     end
 
     trait :with_version do

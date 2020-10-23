@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :serverless_domain_cluster, class: '::Serverless::DomainCluster' do
-    pages_domain { create(:pages_domain) }
-    knative { create(:clusters_applications_knative) }
-    creator { create(:user) }
+    pages_domain { association(:pages_domain) }
+    knative { association(:clusters_applications_knative) }
+    creator { association(:user) }
 
     certificate do
       File.read(Rails.root.join('spec/fixtures/', 'ssl_certificate.pem'))

@@ -57,11 +57,6 @@ module SnippetsActions
         render 'show'
       end
 
-      format.json do
-        conditionally_expand_blob(blob)
-        render_blob_json(blob)
-      end
-
       format.js do
         if @snippet.embeddable?
           conditionally_expand_blobs(blobs)

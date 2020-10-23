@@ -85,6 +85,7 @@ which is part of [GitLab CI/CD](#gitlab-cicd).
 ## GitLab CI/CD
 
 Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
+Any settings or feature limits not listed here are using the defaults listed in the related documentation.
 
 | Setting                 | GitLab.com        | Default       |
 | -----------             | ----------------- | ------------- |
@@ -94,7 +95,6 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
-| [Max number of instance level variables](../../administration/instance_limits.md#number-of-instance-level-variables) | `25` | `25` |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 | Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
 

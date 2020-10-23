@@ -35,6 +35,13 @@
   --ide-btn-success-hover-border-width: 2px;
   --ide-btn-success-focus-box-shadow: 0 0 0 1px #2da160;
 
+  // Danger styles should be the same as default styles in dark theme
+  --ide-btn-danger-secondary-background: var(--ide-btn-default-background);
+  --ide-btn-danger-secondary-border: var(--ide-btn-default-border);
+  --ide-btn-danger-secondary-hover-border: var(--ide-btn-default-hover-border);
+  --ide-btn-danger-secondary-hover-border-width: var(--ide-btn-default-hover-border-width);
+  --ide-btn-danger-secondary-focus-box-shadow: var(--ide-btn-default-focus-box-shadow);
+
   --ide-btn-disabled-background: transparent;
   --ide-btn-disabled-border: rgba(223, 223, 223, 0.24);
   --ide-btn-disabled-hover-border: rgba(223, 223, 223, 0.24);
