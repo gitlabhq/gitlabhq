@@ -11,6 +11,7 @@
 - add_page_specific_style 'page_bundles/merge_requests'
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/reports'
+- add_page_specific_style 'page_bundles/ci_status'
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"

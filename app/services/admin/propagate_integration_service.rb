@@ -20,7 +20,7 @@ module Admin
 
     # rubocop: disable Cop/InBatches
     def update_inherited_integrations
-      Service.by_type(integration.type).inherit_from_id(integration.id).in_batches(of: BATCH_SIZE) do |services|
+      Service.by_type(integration.type).inherit_from_id(integration.id).each_batch(of: BATCH_SIZE) do |services|
         min_id, max_id = services.pick("MIN(services.id), MAX(services.id)")
         PropagateIntegrationInheritWorker.perform_async(integration.id, min_id, max_id)
       end

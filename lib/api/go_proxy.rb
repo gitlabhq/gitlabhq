@@ -9,6 +9,8 @@ module API
 
     MODULE_VERSION_REQUIREMENTS = { module_version: MODULE_VERSION_REGEX }.freeze
 
+    content_type :txt, 'text/plain'
+
     before { require_packages_enabled! }
 
     helpers do

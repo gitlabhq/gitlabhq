@@ -2774,10 +2774,6 @@ Otherwise cache content can be overwritten.
 
 > Introduced in GitLab Runner v1.0.0.
 
-The cache is shared between jobs, so if you're using different
-paths for different jobs, you should also set a different `cache:key`.
-Otherwise cache content can be overwritten.
-
 The `key` keyword defines the affinity of caching between jobs.
 You can have a single cache for all jobs, cache per-job, cache per-branch,
 or any other way that fits your workflow. This way, you can fine tune caching,

@@ -51,6 +51,7 @@ export const mockIssuable = {
   labels: {
     nodes: mockLabels,
   },
+  assignees: [mockAuthor],
 };
 
 export const mockIssuables = [

@@ -14,7 +14,8 @@ export default {
     },
     tabCounts: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     currentTab: {
       type: String,
@@ -40,7 +41,7 @@ export default {
       >
         <template #title>
           <span :title="tab.titleTooltip">{{ tab.title }}</span>
-          <gl-badge variant="neutral" size="sm" class="gl-px-2 gl-py-1!">{{
+          <gl-badge v-if="tabCounts" variant="neutral" size="sm" class="gl-px-2 gl-py-1!">{{
             tabCounts[tab.name]
           }}</gl-badge>
         </template>

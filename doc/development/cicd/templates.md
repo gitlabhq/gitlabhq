@@ -174,3 +174,7 @@ is updated in a major version GitLab release.
 A template could contain malicious code. For example, a template that contains the `export` shell command in a job
 might accidentally expose project secret variables in a job log.
 If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
+
+## Contribute CI/CD Template Merge Requests
+
+After your CI/CD Template MR is created and labeled with `ci::templates`, DangerBot suggests one reviewer and one maintainer that can review your code. When your merge request is ready for review, please `@mention` the reviewer and ask them to review your CI/CD Template changes. See details in the merge request that added [a DangerBot task for CI/CD Template MRs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44688).

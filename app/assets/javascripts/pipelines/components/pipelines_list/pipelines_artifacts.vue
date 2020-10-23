@@ -29,7 +29,7 @@ export default {
       :aria-label="__('Artifacts')"
     >
       <gl-icon name="download" />
-      <i class="fa fa-caret-down" aria-hidden="true"></i>
+      <gl-icon name="chevron-down" />
     </button>
     <ul class="dropdown-menu dropdown-menu-right">
       <li v-for="(artifact, i) in artifacts" :key="i">

@@ -31,6 +31,7 @@ describe('Tracking', () => {
         contexts: { webPage: true, performanceTiming: true },
         formTracking: false,
         linkClickTracking: false,
+        pageUnloadTimer: 10,
       });
     });
   });

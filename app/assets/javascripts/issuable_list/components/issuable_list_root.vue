@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 
+import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 import IssuableTabs from './issuable_tabs.vue';
@@ -35,6 +36,11 @@ export default {
       type: Array,
       required: true,
     },
+    urlParams: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     initialFilterValue: {
       type: Array,
       required: false,
@@ -55,7 +61,8 @@ export default {
     },
     tabCounts: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     currentTab: {
       type: String,
@@ -81,6 +88,11 @@ export default {
       required: false,
       default: 20,
     },
+    totalPages: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     currentPage: {
       type: Number,
       required: false,
@@ -95,6 +107,26 @@ export default {
       type: Number,
       required: false,
       default: 2,
+    },
+    enableLabelPermalinks: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  watch: {
+    urlParams: {
+      deep: true,
+      immediate: true,
+      handler(params) {
+        if (Object.keys(params).length) {
+          updateHistory({
+            url: setUrlParams(params, window.location.href, true),
+            title: document.title,
+            replace: true,
+          });
+        }
+      },
     },
   },
 };
@@ -135,12 +167,21 @@ export default {
           :key="issuable.id"
           :issuable-symbol="issuableSymbol"
           :issuable="issuable"
-        />
+          :enable-label-permalinks="enableLabelPermalinks"
+        >
+          <template #reference>
+            <slot name="reference" :issuable="issuable"></slot>
+          </template>
+          <template #status>
+            <slot name="status" :issuable="issuable"></slot>
+          </template>
+        </issuable-item>
       </ul>
       <slot v-if="!issuablesLoading && !issuables.length" name="empty-state"></slot>
       <gl-pagination
         v-if="showPaginationControls"
         :per-page="defaultPageSize"
+        :total-items="totalPages"
         :value="currentPage"
         :prev-page="previousPage"
         :next-page="nextPage"

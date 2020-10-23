@@ -8,6 +8,7 @@ class Service < ApplicationRecord
   include ProjectServicesLoggable
   include DataFields
   include FromUnion
+  include EachBatch
 
   SERVICE_NAMES = %w[
     alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
@@ -294,7 +295,7 @@ class Service < ApplicationRecord
   end
 
   def initialize_properties
-    self.properties = {} if properties.nil?
+    self.properties = {} if has_attribute?(:properties) && properties.nil?
   end
 
   def title

@@ -67,132 +67,43 @@ RSpec.describe Notes::CreateService do
           let(:current_user) { user }
         end
       end
-    end
 
-    context 'noteable highlight cache clearing' do
-      let(:project_with_repo) { create(:project, :repository) }
-      let(:merge_request) do
-        create(:merge_request, source_project: project_with_repo,
-                               target_project: project_with_repo)
+      it 'tracks issue comment usage data', :clean_gitlab_redis_shared_state do
+        event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED
+        counter = Gitlab::UsageDataCounters::HLLRedisCounter
+
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_added_action).with(author: user).and_call_original
+        expect do
+          described_class.new(project, user, opts).execute
+        end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
       end
 
-      let(:position) do
-        Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                                   new_path: "files/ruby/popen.rb",
-                                   old_line: nil,
-                                   new_line: 14,
-                                   diff_refs: merge_request.diff_refs)
-      end
-
-      let(:new_opts) do
-        opts.merge(in_reply_to_discussion_id: nil,
-                   type: 'DiffNote',
-                   noteable_type: 'MergeRequest',
-                   noteable_id: merge_request.id,
-                   position: position.to_h)
-      end
-
-      before do
-        allow_any_instance_of(Gitlab::Diff::Position)
-          .to receive(:unfolded_diff?) { true }
-      end
-
-      it 'clears noteable diff cache when it was unfolded for the note position' do
-        expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
-
-        described_class.new(project_with_repo, user, new_opts).execute
-      end
-
-      it 'does not clear cache when note is not the first of the discussion' do
-        prev_note =
-          create(:diff_note_on_merge_request, noteable: merge_request,
-                                              project: project_with_repo)
-        reply_opts =
-          opts.merge(in_reply_to_discussion_id: prev_note.discussion_id,
-                     type: 'DiffNote',
-                     noteable_type: 'MergeRequest',
-                     noteable_id: merge_request.id,
-                     position: position.to_h)
-
-        expect(merge_request).not_to receive(:diffs)
-
-        described_class.new(project_with_repo, user, reply_opts).execute
-      end
-    end
-
-    context 'note diff file' do
-      let(:project_with_repo) { create(:project, :repository) }
-      let(:merge_request) do
-        create(:merge_request,
-               source_project: project_with_repo,
-               target_project: project_with_repo)
-      end
-
-      let(:line_number) { 14 }
-      let(:position) do
-        Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                                   new_path: "files/ruby/popen.rb",
-                                   old_line: nil,
-                                   new_line: line_number,
-                                   diff_refs: merge_request.diff_refs)
-      end
-
-      let(:previous_note) do
-        create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
-      end
-
-      before do
-        project_with_repo.add_maintainer(user)
-      end
-
-      context 'when eligible to have a note diff file' do
-        let(:new_opts) do
-          opts.merge(in_reply_to_discussion_id: nil,
-                     type: 'DiffNote',
-                     noteable_type: 'MergeRequest',
-                     noteable_id: merge_request.id,
-                     position: position.to_h)
+      context 'in a merge request' do
+        let_it_be(:project_with_repo) { create(:project, :repository) }
+        let_it_be(:merge_request) do
+          create(:merge_request, source_project: project_with_repo,
+                 target_project: project_with_repo)
         end
 
-        it 'note is associated with a note diff file' do
-          MergeRequests::MergeToRefService.new(merge_request.project, merge_request.author).execute(merge_request)
+        context 'issue comment usage data' do
+          let(:opts) do
+            { note: 'Awesome comment', noteable_type: 'MergeRequest', noteable_id: merge_request.id }
+          end
 
-          note = described_class.new(project_with_repo, user, new_opts).execute
+          it 'does not track' do
+            expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_added_action)
 
-          expect(note).to be_persisted
-          expect(note.note_diff_file).to be_present
-          expect(note.diff_note_positions).to be_present
-        end
-      end
-
-      context 'when DiffNote is a reply' do
-        let(:new_opts) do
-          opts.merge(in_reply_to_discussion_id: previous_note.discussion_id,
-                     type: 'DiffNote',
-                     noteable_type: 'MergeRequest',
-                     noteable_id: merge_request.id,
-                     position: position.to_h)
+            described_class.new(project, user, opts).execute
+          end
         end
 
-        it 'note is not associated with a note diff file' do
-          expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
-
-          note = described_class.new(project_with_repo, user, new_opts).execute
-
-          expect(note).to be_persisted
-          expect(note.note_diff_file).to be_nil
-        end
-
-        context 'when DiffNote from an image' do
-          let(:image_position) do
-            Gitlab::Diff::Position.new(old_path: "files/images/6049019_460s.jpg",
-                                       new_path: "files/images/6049019_460s.jpg",
-                                       width: 100,
-                                       height: 100,
-                                       x: 1,
-                                       y: 100,
-                                       diff_refs: merge_request.diff_refs,
-                                       position_type: 'image')
+        context 'noteable highlight cache clearing' do
+          let(:position) do
+            Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
+                                       new_path: "files/ruby/popen.rb",
+                                       old_line: nil,
+                                       new_line: 14,
+                                       diff_refs: merge_request.diff_refs)
           end
 
           let(:new_opts) do
@@ -200,14 +111,120 @@ RSpec.describe Notes::CreateService do
                        type: 'DiffNote',
                        noteable_type: 'MergeRequest',
                        noteable_id: merge_request.id,
-                       position: image_position.to_h)
+                       position: position.to_h)
           end
 
-          it 'note is not associated with a note diff file' do
-            note = described_class.new(project_with_repo, user, new_opts).execute
+          before do
+            allow_any_instance_of(Gitlab::Diff::Position)
+              .to receive(:unfolded_diff?) { true }
+          end
 
-            expect(note).to be_persisted
-            expect(note.note_diff_file).to be_nil
+          it 'clears noteable diff cache when it was unfolded for the note position' do
+            expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
+
+            described_class.new(project_with_repo, user, new_opts).execute
+          end
+
+          it 'does not clear cache when note is not the first of the discussion' do
+            prev_note =
+              create(:diff_note_on_merge_request, noteable: merge_request,
+                     project: project_with_repo)
+            reply_opts =
+              opts.merge(in_reply_to_discussion_id: prev_note.discussion_id,
+                         type: 'DiffNote',
+                         noteable_type: 'MergeRequest',
+                         noteable_id: merge_request.id,
+                         position: position.to_h)
+
+            expect(merge_request).not_to receive(:diffs)
+
+            described_class.new(project_with_repo, user, reply_opts).execute
+          end
+        end
+
+        context 'note diff file' do
+          let(:line_number) { 14 }
+          let(:position) do
+            Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
+                                       new_path: "files/ruby/popen.rb",
+                                       old_line: nil,
+                                       new_line: line_number,
+                                       diff_refs: merge_request.diff_refs)
+          end
+
+          let(:previous_note) do
+            create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
+          end
+
+          before do
+            project_with_repo.add_maintainer(user)
+          end
+
+          context 'when eligible to have a note diff file' do
+            let(:new_opts) do
+              opts.merge(in_reply_to_discussion_id: nil,
+                         type: 'DiffNote',
+                         noteable_type: 'MergeRequest',
+                         noteable_id: merge_request.id,
+                         position: position.to_h)
+            end
+
+            it 'note is associated with a note diff file' do
+              MergeRequests::MergeToRefService.new(merge_request.project, merge_request.author).execute(merge_request)
+
+              note = described_class.new(project_with_repo, user, new_opts).execute
+
+              expect(note).to be_persisted
+              expect(note.note_diff_file).to be_present
+              expect(note.diff_note_positions).to be_present
+            end
+          end
+
+          context 'when DiffNote is a reply' do
+            let(:new_opts) do
+              opts.merge(in_reply_to_discussion_id: previous_note.discussion_id,
+                         type: 'DiffNote',
+                         noteable_type: 'MergeRequest',
+                         noteable_id: merge_request.id,
+                         position: position.to_h)
+            end
+
+            it 'note is not associated with a note diff file' do
+              expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
+
+              note = described_class.new(project_with_repo, user, new_opts).execute
+
+              expect(note).to be_persisted
+              expect(note.note_diff_file).to be_nil
+            end
+
+            context 'when DiffNote from an image' do
+              let(:image_position) do
+                Gitlab::Diff::Position.new(old_path: "files/images/6049019_460s.jpg",
+                                           new_path: "files/images/6049019_460s.jpg",
+                                           width: 100,
+                                           height: 100,
+                                           x: 1,
+                                           y: 100,
+                                           diff_refs: merge_request.diff_refs,
+                                           position_type: 'image')
+              end
+
+              let(:new_opts) do
+                opts.merge(in_reply_to_discussion_id: nil,
+                           type: 'DiffNote',
+                           noteable_type: 'MergeRequest',
+                           noteable_id: merge_request.id,
+                           position: image_position.to_h)
+              end
+
+              it 'note is not associated with a note diff file' do
+                note = described_class.new(project_with_repo, user, new_opts).execute
+
+                expect(note).to be_persisted
+                expect(note.note_diff_file).to be_nil
+              end
+            end
           end
         end
       end

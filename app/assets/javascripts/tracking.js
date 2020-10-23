@@ -12,6 +12,7 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   contexts: { webPage: true, performanceTiming: true },
   formTracking: false,
   linkClickTracking: false,
+  pageUnloadTimer: 10,
 };
 
 const createEventPayload = (el, { suffix = '' } = {}) => {

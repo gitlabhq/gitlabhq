@@ -42603,6 +42603,16 @@
               "description": "Releases of the project",
               "args": [
                 {
+                  "name": "sort",
+                  "description": "Sort releases by this criteria",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ReleaseSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "RELEASED_AT_DESC"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -47515,6 +47525,41 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ReleaseSort",
+          "description": "Values for sorting releases",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RELEASED_AT_DESC",
+              "description": "Released at by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RELEASED_AT_ASC",
+              "description": "Released at by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

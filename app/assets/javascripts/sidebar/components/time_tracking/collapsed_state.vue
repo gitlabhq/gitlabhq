@@ -96,7 +96,12 @@ export default {
 </script>
 
 <template>
-  <div v-gl-tooltip:body.viewport.left :title="tooltipText" class="sidebar-collapsed-icon">
+  <div
+    v-gl-tooltip:body.viewport.left
+    :title="tooltipText"
+    data-testid="collapsedState"
+    class="sidebar-collapsed-icon"
+  >
     <gl-icon name="timer" />
     <div class="time-tracking-collapsed-summary">
       <div :class="divClass">

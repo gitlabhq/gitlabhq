@@ -13,7 +13,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
   end
 
   it 'renders the sidebar component empty state' do
-    page.within '.time-tracking-no-tracking-pane' do
+    page.within '[data-testid="noTrackingPane"]' do
       expect(page).to have_content 'No estimate or time spent'
     end
   end
@@ -22,7 +22,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     submit_time('/estimate 3w 1d 1h')
 
     wait_for_requests
-    page.within '.time-tracking-estimate-only-pane' do
+    page.within '[data-testid="estimateOnlyPane"]' do
       expect(page).to have_content '3w 1d 1h'
     end
   end
@@ -31,7 +31,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     submit_time('/spend 3w 1d 1h')
 
     wait_for_requests
-    page.within '.time-tracking-spend-only-pane' do
+    page.within '[data-testid="spentOnlyPane"]' do
       expect(page).to have_content '3w 1d 1h'
     end
   end
@@ -41,7 +41,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     submit_time('/spend 3w 1d 1h')
 
     wait_for_requests
-    page.within '.time-tracking-comparison-pane' do
+    page.within '[data-testid="timeTrackingComparisonPane"]' do
       expect(page).to have_content '3w 1d 1h'
     end
   end

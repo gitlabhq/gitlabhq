@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 
+import { TEST_HOST } from 'helpers/test_constants';
+
 import IssuableListRoot from '~/issuable_list/components/issuable_list_root.vue';
 import IssuableTabs from '~/issuable_list/components/issuable_tabs.vue';
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
@@ -30,6 +32,29 @@ describe('IssuableListRoot', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('watch', () => {
+    describe('urlParams', () => {
+      it('updates window URL reflecting props within `urlParams`', async () => {
+        const urlParams = {
+          state: 'closed',
+          sort: 'updated_asc',
+          page: 1,
+          search: 'foo',
+        };
+
+        wrapper.setProps({
+          urlParams,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(global.window.location.href).toBe(
+          `${TEST_HOST}/?state=${urlParams.state}&sort=${urlParams.sort}&page=${urlParams.page}&search=${urlParams.search}`,
+        );
+      });
+    });
   });
 
   describe('template', () => {
@@ -114,6 +139,7 @@ describe('IssuableListRoot', () => {
     it('renders gl-pagination when `showPaginationControls` prop is true', async () => {
       wrapper.setProps({
         showPaginationControls: true,
+        totalPages: 10,
       });
 
       await wrapper.vm.$nextTick();
@@ -125,6 +151,7 @@ describe('IssuableListRoot', () => {
         value: 1,
         prevPage: 0,
         nextPage: 2,
+        totalItems: 10,
         align: 'center',
       });
     });

@@ -5,6 +5,8 @@ module API
     class Runner < ::API::Base
       helpers ::API::Helpers::Runner
 
+      content_type :txt, 'text/plain'
+
       resource :runners do
         desc 'Registers a new Runner' do
           success Entities::RunnerRegistrationDetails

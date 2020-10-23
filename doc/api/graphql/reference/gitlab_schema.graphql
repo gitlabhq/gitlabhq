@@ -14745,6 +14745,11 @@ type Project {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Sort releases by this criteria
+    """
+    sort: ReleaseSort = RELEASED_AT_DESC
   ): ReleaseConnection
 
   """
@@ -16517,6 +16522,31 @@ type ReleaseLinks {
   HTTP URL of the release
   """
   selfUrl: String
+}
+
+"""
+Values for sorting releases
+"""
+enum ReleaseSort {
+  """
+  Created at ascending order
+  """
+  CREATED_ASC
+
+  """
+  Created at descending order
+  """
+  CREATED_DESC
+
+  """
+  Released at by ascending order
+  """
+  RELEASED_AT_ASC
+
+  """
+  Released at by descending order
+  """
+  RELEASED_AT_DESC
 }
 
 """

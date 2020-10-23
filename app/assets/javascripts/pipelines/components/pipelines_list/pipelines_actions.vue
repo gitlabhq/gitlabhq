@@ -87,7 +87,7 @@ export default {
       :aria-label="__('Run manual or delayed jobs')"
     >
       <gl-icon name="play" class="icon-play" />
-      <i class="fa fa-caret-down" aria-hidden="true"></i>
+      <gl-icon name="chevron-down" />
       <gl-loading-icon v-if="isLoading" />
     </button>
 

@@ -300,4 +300,77 @@ RSpec.describe 'Query.project(fullPath).releases()' do
       it_behaves_like 'no access to any release data'
     end
   end
+
+  describe 'sorting behavior' do
+    let_it_be(:today) { Time.now }
+    let_it_be(:yesterday) { today - 1.day }
+    let_it_be(:tomorrow) { today + 1.day }
+
+    let_it_be(:project) { create(:project, :repository, :public) }
+
+    let_it_be(:release_v1) { create(:release, project: project, tag: 'v1', released_at: yesterday, created_at: tomorrow) }
+    let_it_be(:release_v2) { create(:release, project: project, tag: 'v2', released_at: today,     created_at: yesterday) }
+    let_it_be(:release_v3) { create(:release, project: project, tag: 'v3', released_at: tomorrow,  created_at: today) }
+
+    let(:current_user) { developer }
+
+    let(:params) { nil }
+
+    let(:sorted_tags) do
+      graphql_data.dig('project', 'releases', 'nodes').map { |release| release['tagName'] }
+    end
+
+    let(:query) do
+      graphql_query_for(:project, { fullPath: project.full_path },
+        %{
+          releases#{params ? "(#{params})" : ""} {
+            nodes {
+              tagName
+            }
+          }
+        })
+    end
+
+    before do
+      post_query
+    end
+
+    context 'when no sort: parameter is provided' do
+      it 'returns the results with the default sort applied (sort: RELEASED_AT_DESC)' do
+        expect(sorted_tags).to eq(%w(v3 v2 v1))
+      end
+    end
+
+    context 'with sort: RELEASED_AT_DESC' do
+      let(:params) { 'sort: RELEASED_AT_DESC' }
+
+      it 'returns the releases ordered by released_at in descending order' do
+        expect(sorted_tags).to eq(%w(v3 v2 v1))
+      end
+    end
+
+    context 'with sort: RELEASED_AT_ASC' do
+      let(:params) { 'sort: RELEASED_AT_ASC' }
+
+      it 'returns the releases ordered by released_at in ascending order' do
+        expect(sorted_tags).to eq(%w(v1 v2 v3))
+      end
+    end
+
+    context 'with sort: CREATED_DESC' do
+      let(:params) { 'sort: CREATED_DESC' }
+
+      it 'returns the releases ordered by created_at in descending order' do
+        expect(sorted_tags).to eq(%w(v1 v3 v2))
+      end
+    end
+
+    context 'with sort: CREATED_ASC' do
+      let(:params) { 'sort: CREATED_ASC' }
+
+      it 'returns the releases ordered by created_at in ascending order' do
+        expect(sorted_tags).to eq(%w(v2 v3 v1))
+      end
+    end
+  end
 end

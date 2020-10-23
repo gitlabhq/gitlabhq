@@ -105,11 +105,17 @@ export default {
     />
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
-      <div v-if="!showHelpState" class="help-button float-right" @click="toggleHelpState(true)">
+      <div
+        v-if="!showHelpState"
+        data-testid="helpButton"
+        class="help-button float-right"
+        @click="toggleHelpState(true)"
+      >
         <gl-icon name="question-o" />
       </div>
       <div
-        v-if="showHelpState"
+        v-else
+        data-testid="closeHelpButton"
         class="close-help-button float-right"
         @click="toggleHelpState(false)"
       >

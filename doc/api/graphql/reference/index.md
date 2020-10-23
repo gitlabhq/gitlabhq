@@ -3643,6 +3643,17 @@ Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`.
 | `PACKAGE` | Package link type |
 | `RUNBOOK` | Runbook link type |
 
+### ReleaseSort
+
+Values for sorting releases.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order |
+| `CREATED_DESC` | Created at descending order |
+| `RELEASED_AT_ASC` | Released at by ascending order |
+| `RELEASED_AT_DESC` | Released at by descending order |
+
 ### RequirementState
 
 State of a requirement.

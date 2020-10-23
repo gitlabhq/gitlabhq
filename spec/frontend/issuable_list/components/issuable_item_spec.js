@@ -2,28 +2,34 @@ import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlLabel } from '@gitlab/ui';
 
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
+import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 
 import { mockIssuable, mockRegularLabel, mockScopedLabel } from '../mock_data';
 
-const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable } = {}) =>
+const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable, slots = {} } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
       issuableSymbol,
       issuable,
+      enableLabelPermalinks: true,
     },
+    slots,
   });
 
 describe('IssuableItem', () => {
   const mockLabels = mockIssuable.labels.nodes;
   const mockAuthor = mockIssuable.author;
+  const originalUrl = gon.gitlab_url;
   let wrapper;
 
   beforeEach(() => {
+    gon.gitlab_url = 'http://0.0.0.0:3000';
     wrapper = createComponent();
   });
 
   afterEach(() => {
     wrapper.destroy();
+    gon.gitlab_url = originalUrl;
   });
 
   describe('computed', () => {
@@ -38,8 +44,8 @@ describe('IssuableItem', () => {
         authorId                 | returnValue
         ${1}                     | ${1}
         ${'1'}                   | ${1}
-        ${'gid://gitlab/User/1'} | ${'1'}
-        ${'foo'}                 | ${''}
+        ${'gid://gitlab/User/1'} | ${1}
+        ${'foo'}                 | ${null}
       `(
         'returns $returnValue when value of `issuable.author.id` is $authorId',
         async ({ authorId, returnValue }) => {
@@ -56,6 +62,30 @@ describe('IssuableItem', () => {
           await wrapper.vm.$nextTick();
 
           expect(wrapper.vm.authorId).toBe(returnValue);
+        },
+      );
+    });
+
+    describe('isIssuableUrlExternal', () => {
+      it.each`
+        issuableWebUrl                                             | urlType                    | returnValue
+        ${'/gitlab-org/gitlab-test/-/issues/2'}                    | ${'relative'}              | ${false}
+        ${'http://0.0.0.0:3000/gitlab-org/gitlab-test/-/issues/1'} | ${'absolute and internal'} | ${false}
+        ${'http://jira.atlassian.net/browse/IG-1'}                 | ${'external'}              | ${true}
+        ${'https://github.com/gitlabhq/gitlabhq/issues/1'}         | ${'external'}              | ${true}
+      `(
+        'returns $returnValue when `issuable.webUrl` is $urlType',
+        async ({ issuableWebUrl, returnValue }) => {
+          wrapper.setProps({
+            issuable: {
+              ...mockIssuable,
+              webUrl: issuableWebUrl,
+            },
+          });
+
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.vm.isIssuableUrlExternal).toBe(returnValue);
         },
       );
     });
@@ -92,6 +122,12 @@ describe('IssuableItem', () => {
       });
     });
 
+    describe('assignees', () => {
+      it('returns `issuable.assignees` reference when it is available', () => {
+        expect(wrapper.vm.assignees).toBe(mockIssuable.assignees);
+      });
+    });
+
     describe('createdAt', () => {
       it('returns string containing timeago string based on `issuable.createdAt`', () => {
         expect(wrapper.vm.createdAt).toContain('created');
@@ -120,6 +156,34 @@ describe('IssuableItem', () => {
         },
       );
     });
+
+    describe('labelTitle', () => {
+      it.each`
+        label               | propWithTitle | returnValue
+        ${{ title: 'foo' }} | ${'title'}    | ${'foo'}
+        ${{ name: 'foo' }}  | ${'name'}     | ${'foo'}
+      `('returns string value of `label.$propWithTitle`', ({ label, returnValue }) => {
+        expect(wrapper.vm.labelTitle(label)).toBe(returnValue);
+      });
+    });
+
+    describe('labelTarget', () => {
+      it('returns target string for a provided label param when `enableLabelPermalinks` is true', () => {
+        expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe(
+          '?label_name%5B%5D=Documentation%20Update',
+        );
+      });
+
+      it('returns string "#" for a provided label param when `enableLabelPermalinks` is false', async () => {
+        wrapper.setProps({
+          enableLabelPermalinks: false,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.labelTarget(mockRegularLabel)).toBe('#');
+      });
+    });
   });
 
   describe('template', () => {
@@ -128,7 +192,26 @@ describe('IssuableItem', () => {
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.find(GlLink).attributes('href')).toBe(mockIssuable.webUrl);
+      expect(titleEl.find(GlLink).attributes('target')).not.toBeDefined();
       expect(titleEl.find(GlLink).text()).toBe(mockIssuable.title);
+    });
+
+    it('renders issuable title with `target` set as "_blank" when issuable.webUrl is external', async () => {
+      wrapper.setProps({
+        issuable: {
+          ...mockIssuable,
+          webUrl: 'http://jira.atlassian.net/browse/IG-1',
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(
+        wrapper
+          .find('[data-testid="issuable-title"]')
+          .find(GlLink)
+          .attributes('target'),
+      ).toBe('_blank');
     });
 
     it('renders issuable reference', () => {
@@ -136,6 +219,24 @@ describe('IssuableItem', () => {
 
       expect(referenceEl.exists()).toBe(true);
       expect(referenceEl.text()).toBe(`#${mockIssuable.iid}`);
+    });
+
+    it('renders issuable reference via slot', () => {
+      const wrapperWithRefSlot = createComponent({
+        issuableSymbol: '#',
+        issuable: mockIssuable,
+        slots: {
+          reference: `
+            <b class="js-reference">${mockIssuable.iid}</b>
+          `,
+        },
+      });
+      const referenceEl = wrapperWithRefSlot.find('.js-reference');
+
+      expect(referenceEl.exists()).toBe(true);
+      expect(referenceEl.text()).toBe(`${mockIssuable.iid}`);
+
+      wrapperWithRefSlot.destroy();
     });
 
     it('renders issuable createdAt info', () => {
@@ -151,7 +252,7 @@ describe('IssuableItem', () => {
 
       expect(authorEl.exists()).toBe(true);
       expect(authorEl.attributes()).toMatchObject({
-        'data-user-id': wrapper.vm.authorId,
+        'data-user-id': `${wrapper.vm.authorId}`,
         'data-username': mockAuthor.username,
         'data-name': mockAuthor.name,
         'data-avatar-url': mockAuthor.avatarUrl,
@@ -170,7 +271,37 @@ describe('IssuableItem', () => {
         title: mockLabels[0].title,
         description: mockLabels[0].description,
         scoped: false,
+        target: wrapper.vm.labelTarget(mockLabels[0]),
         size: 'sm',
+      });
+    });
+
+    it('renders issuable status via slot', () => {
+      const wrapperWithStatusSlot = createComponent({
+        issuableSymbol: '#',
+        issuable: mockIssuable,
+        slots: {
+          status: `
+            <b class="js-status">${mockIssuable.state}</b>
+          `,
+        },
+      });
+      const statusEl = wrapperWithStatusSlot.find('.js-status');
+
+      expect(statusEl.exists()).toBe(true);
+      expect(statusEl.text()).toBe(`${mockIssuable.state}`);
+
+      wrapperWithStatusSlot.destroy();
+    });
+
+    it('renders issuable-assignees component', () => {
+      const assigneesEl = wrapper.find(IssuableAssignees);
+
+      expect(assigneesEl.exists()).toBe(true);
+      expect(assigneesEl.props()).toMatchObject({
+        assignees: mockIssuable.assignees,
+        iconSize: 16,
+        maxVisible: 4,
       });
     });
 
