@@ -9,6 +9,9 @@ export default {
   [types.SET_SELECTED_MILESTONES](state, selectedMilestones) {
     Vue.set(state, 'selectedMilestones', selectedMilestones);
   },
+  [types.CLEAR_SELECTED_MILESTONES](state) {
+    Vue.set(state, 'selectedMilestones', []);
+  },
   [types.ADD_SELECTED_MILESTONE](state, selectedMilestone) {
     state.selectedMilestones.push(selectedMilestone);
   },
@@ -18,8 +21,8 @@ export default {
     );
     Vue.set(state, 'selectedMilestones', filteredMilestones);
   },
-  [types.SET_QUERY](state, query) {
-    state.query = query;
+  [types.SET_SEARCH_QUERY](state, searchQuery) {
+    state.searchQuery = searchQuery;
   },
   [types.REQUEST_START](state) {
     state.requestCount += 1;

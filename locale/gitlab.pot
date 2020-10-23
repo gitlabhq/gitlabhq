@@ -2994,9 +2994,6 @@ msgstr ""
 msgid "An error occurred while loading merge requests."
 msgstr ""
 
-msgid "An error occurred while loading milestones"
-msgstr ""
-
 msgid "An error occurred while loading project creation UI"
 msgstr ""
 
@@ -3076,9 +3073,6 @@ msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
 msgid "An error occurred while saving assignees"
-msgstr ""
-
-msgid "An error occurred while searching for milestones"
 msgstr ""
 
 msgid "An error occurred while subscribing to notifications."
@@ -16992,6 +16986,27 @@ msgstr ""
 msgid "Milestone lists show all issues from the selected milestone."
 msgstr ""
 
+msgid "MilestoneCombobox|An error occurred while searching for milestones"
+msgstr ""
+
+msgid "MilestoneCombobox|Milestone"
+msgstr ""
+
+msgid "MilestoneCombobox|No matching results"
+msgstr ""
+
+msgid "MilestoneCombobox|No milestone"
+msgstr ""
+
+msgid "MilestoneCombobox|Project milestones"
+msgstr ""
+
+msgid "MilestoneCombobox|Search Milestones"
+msgstr ""
+
+msgid "MilestoneCombobox|Select milestone"
+msgstr ""
+
 msgid "MilestoneSidebar|Closed:"
 msgstr ""
 
@@ -23061,9 +23076,6 @@ msgstr ""
 msgid "Search Jira issues"
 msgstr ""
 
-msgid "Search Milestones"
-msgstr ""
-
 msgid "Search an environment spec"
 msgstr ""
 
@@ -27871,6 +27883,9 @@ msgid "Total weight"
 msgstr ""
 
 msgid "Total: %{total}"
+msgstr ""
+
+msgid "TotalMilestonesIndicator|1000+"
 msgstr ""
 
 msgid "TotalRefCountIndicator|1000+"

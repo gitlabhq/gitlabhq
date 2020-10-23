@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BulkImport::Client do
+RSpec.describe BulkImports::Clients::Http do
   include ImportSpecHelper
 
   let(:uri) { 'http://gitlab.example' }

@@ -6,7 +6,6 @@ import { s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { UNFOLD_COUNT, INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import * as utils from '../store/utils';
-import tooltip from '../../vue_shared/directives/tooltip';
 
 const EXPAND_ALL = 0;
 const EXPAND_UP = 1;
@@ -28,9 +27,6 @@ const i18n = {
 
 export default {
   i18n,
-  directives: {
-    tooltip,
-  },
   components: {
     GlIcon,
   },

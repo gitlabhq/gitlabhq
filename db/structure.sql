@@ -14673,6 +14673,20 @@ CREATE VIEW postgres_partitioned_tables AS
             ELSE NULL::text
         END;
 
+CREATE VIEW postgres_partitions AS
+ SELECT (((pg_namespace.nspname)::text || '.'::text) || (pg_class.relname)::text) AS identifier,
+    pg_class.oid,
+    pg_namespace.nspname AS schema,
+    pg_class.relname AS name,
+    (((parent_namespace.nspname)::text || '.'::text) || (parent_class.relname)::text) AS parent_identifier,
+    pg_get_expr(pg_class.relpartbound, pg_inherits.inhrelid) AS condition
+   FROM ((((pg_class
+     JOIN pg_namespace ON ((pg_namespace.oid = pg_class.relnamespace)))
+     JOIN pg_inherits ON ((pg_class.oid = pg_inherits.inhrelid)))
+     JOIN pg_class parent_class ON ((pg_inherits.inhparent = parent_class.oid)))
+     JOIN pg_namespace parent_namespace ON ((parent_class.relnamespace = parent_namespace.oid)))
+  WHERE (pg_class.relispartition AND (pg_namespace.nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])));
+
 CREATE TABLE postgres_reindex_actions (
     id bigint NOT NULL,
     action_start timestamp with time zone NOT NULL,
@@ -20334,7 +20348,7 @@ CREATE INDEX index_dast_site_tokens_on_project_id ON dast_site_tokens USING btre
 
 CREATE INDEX index_dast_site_validations_on_dast_site_token_id ON dast_site_validations USING btree (dast_site_token_id);
 
-CREATE INDEX index_dast_site_validations_on_url_base ON dast_site_validations USING btree (url_base);
+CREATE INDEX index_dast_site_validations_on_url_base_and_state ON dast_site_validations USING btree (url_base, state);
 
 CREATE INDEX index_dast_sites_on_dast_site_validation_id ON dast_sites USING btree (dast_site_validation_id);
 

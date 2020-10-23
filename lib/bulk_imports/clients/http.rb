@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module Gitlab
-  module BulkImport
-    class Client
+module BulkImports
+  module Clients
+    class Http
       API_VERSION = 'v4'.freeze
       DEFAULT_PAGE = 1.freeze
       DEFAULT_PER_PAGE = 30.freeze

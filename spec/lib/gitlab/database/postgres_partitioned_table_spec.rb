@@ -33,6 +33,10 @@ RSpec.describe Gitlab::Database::PostgresPartitionedTable, type: :model do
     described_class.by_identifier(identifier)
   end
 
+  describe 'associations' do
+    it { is_expected.to have_many(:postgres_partitions).with_primary_key('identifier').with_foreign_key('parent_identifier') }
+  end
+
   it_behaves_like 'a postgres model'
 
   describe '#dynamic?' do

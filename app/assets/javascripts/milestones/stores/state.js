@@ -1,7 +1,7 @@
 export default () => ({
   projectId: null,
   groupId: null,
-  query: '',
+  searchQuery: '',
   matches: {
     projectMilestones: {
       list: [],

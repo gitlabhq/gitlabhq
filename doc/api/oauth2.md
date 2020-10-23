@@ -1,3 +1,10 @@
+---
+type: reference, howto
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technica  l-writing/#designated-technical-writers
+---
+  
 # GitLab as an OAuth2 provider
 
 This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow
@@ -28,12 +35,24 @@ During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you'll obtain the
 `application` credentials: _Application ID_ and _Client Secret_ - **keep them secure**.
 
-CAUTION: **Important:**
-OAuth specification advises sending the `state` parameter with each request to
-`/oauth/authorize`. We highly recommended sending a unique value with each request
-and validate it against the one in the redirect request. This is important in
-order to prevent [CSRF attacks](https://wiki.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)).
-The `state` parameter really should have been a requirement in the standard!
+### Prevent CSRF attacks
+
+To [protect redirect-based flows](https://tools.ietf.org/id/draft-ietf-oauth-security-topics-13.html#rec_redirect),
+the OAuth specification recommends the use of "One-time use CSRF tokens carried in the state
+parameter, which are securely bound to the user agent", with each request to the
+`/oauth/authorize` endpoint. This can prevent 
+[CSRF attacks](https://wiki.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)).
+
+### Use HTTPS in production
+
+For production, please use HTTPS for your `redirect_uri`.
+For development, GitLab allows insecure HTTP redirect URIs.
+
+As OAuth2 bases its security entirely on the transport layer, you should not use unprotected
+URIs. For more information, see the [OAuth 2.0 RFC](https://tools.ietf.org/html/rfc6749#section-3.1.2.1)
+and the [OAuth 2.0 Threat Model RFC](https://tools.ietf.org/html/rfc6819#section-4.4.2.1). 
+These factors are particularly important when using the
+[Implicit grant flow](#implicit-grant-flow), where actual credentials are included in the `redirect_uri`.
 
 In the following sections you will find detailed instructions on how to obtain
 authorization with each flow.

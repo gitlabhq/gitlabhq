@@ -6,13 +6,13 @@ class Import::BulkImportsController < ApplicationController
 
   feature_category :importers
 
-  rescue_from Gitlab::BulkImport::Client::ConnectionError, with: :bulk_import_connection_error
+  rescue_from BulkImports::Clients::Http::ConnectionError, with: :bulk_import_connection_error
 
   def configure
-    session[access_token_key] = params[access_token_key]&.strip
-    session[url_key] = params[url_key]
+    session[access_token_key] = configure_params[access_token_key]&.strip
+    session[url_key] = configure_params[url_key]
 
-    redirect_to status_import_bulk_import_url
+    redirect_to status_import_bulk_imports_url
   end
 
   def status
@@ -23,6 +23,12 @@ class Import::BulkImportsController < ApplicationController
 
       format.html
     end
+  end
+
+  def create
+    BulkImportService.new(current_user, create_params, credentials).execute
+
+    render json: :ok
   end
 
   private
@@ -40,14 +46,28 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def client
-    @client ||= Gitlab::BulkImport::Client.new(
+    @client ||= BulkImports::Clients::Http.new(
       uri: session[url_key],
       token: session[access_token_key]
     )
   end
 
-  def import_params
+  def configure_params
     params.permit(access_token_key, url_key)
+  end
+
+  def create_params
+    params.permit(:bulk_import, [*bulk_import_params])
+  end
+
+  def bulk_import_params
+    %i[
+      source_type
+      source_name
+      source_full_path
+      destination_name
+      destination_namespace
+    ]
   end
 
   def ensure_group_import_enabled
@@ -105,5 +125,12 @@ class Import::BulkImportsController < ApplicationController
   def clear_session_data
     session[url_key] = nil
     session[access_token_key] = nil
+  end
+
+  def credentials
+    {
+      url: session[url_key],
+      access_token: [access_token_key]
+    }
   end
 end

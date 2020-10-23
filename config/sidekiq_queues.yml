@@ -44,6 +44,8 @@
   - 3
 - - background_migration
   - 1
+- - bulk_import
+  - 1
 - - chaos
   - 2
 - - chat_notification

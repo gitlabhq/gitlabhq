@@ -506,7 +506,14 @@ GEM
     graphiql-rails (1.4.10)
       railties
       sprockets-rails
+    graphlient (0.4.0)
+      faraday (>= 1.0)
+      faraday_middleware
+      graphql-client
     graphql (1.11.4)
+    graphql-client (0.16.0)
+      activesupport (>= 3.0)
+      graphql (~> 1.8)
     graphql-docs (1.6.0)
       commonmarker (~> 0.16)
       escape_utils (~> 1.2)
@@ -1353,6 +1360,7 @@ DEPENDENCIES
   grape-path-helpers (~> 1.4)
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
+  graphlient (~> 0.4.0)
   graphql (~> 1.11.4)
   graphql-docs (~> 1.6.0)
   grpc (~> 1.30.2)

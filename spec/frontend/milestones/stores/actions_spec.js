@@ -41,6 +41,14 @@ describe('Milestone combobox Vuex store actions', () => {
     });
   });
 
+  describe('clearSelectedMilestones', () => {
+    it(`commits ${types.CLEAR_SELECTED_MILESTONES} with the new selected milestones name`, () => {
+      testAction(actions.clearSelectedMilestones, null, state, [
+        { type: types.CLEAR_SELECTED_MILESTONES },
+      ]);
+    });
+  });
+
   describe('toggleMilestones', () => {
     const selectedMilestone = 'v1.2.3';
     it(`commits ${types.ADD_SELECTED_MILESTONE} with the new selected milestone name`, () => {
@@ -58,13 +66,13 @@ describe('Milestone combobox Vuex store actions', () => {
   });
 
   describe('search', () => {
-    it(`commits ${types.SET_QUERY} with the new search query`, () => {
-      const query = 'v1.0';
+    it(`commits ${types.SET_SEARCH_QUERY} with the new search query`, () => {
+      const searchQuery = 'v1.0';
       testAction(
         actions.search,
-        query,
+        searchQuery,
         state,
-        [{ type: types.SET_QUERY, payload: query }],
+        [{ type: types.SET_SEARCH_QUERY, payload: searchQuery }],
         [{ type: 'searchMilestones' }],
       );
     });

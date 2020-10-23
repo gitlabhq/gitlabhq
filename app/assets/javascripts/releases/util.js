@@ -15,15 +15,13 @@ import {
 export const releaseToApiJson = (release, createFrom = null) => {
   const name = release.name?.trim().length > 0 ? release.name.trim() : null;
 
-  const milestones = release.milestones ? release.milestones.map(milestone => milestone.title) : [];
-
   return convertObjectPropsToSnakeCase(
     {
       name,
       tagName: release.tagName,
       ref: createFrom,
       description: release.description,
-      milestones,
+      milestones: release.milestones,
       assets: release.assets,
     },
     { deep: true },

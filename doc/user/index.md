@@ -84,18 +84,6 @@ it all at once, from one single project.
 - [Milestones](project/milestones/index.md): Work on multiple issues and merge
   requests towards the same target date with Milestones.
 
-## GitLab CI/CD
-
-Use built-in [GitLab CI/CD](../ci/README.md) to test, build, and deploy your applications
-directly from GitLab. No third-party integrations needed.
-
-- [GitLab Auto Deploy](../topics/autodevops/stages.md#auto-deploy): Deploy your application out-of-the-box with GitLab Auto Deploy.
-- [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
-- [GitLab Pages](project/pages/index.md): Publish your static site directly from
-  GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
-- [GitLab Container Registry](packages/container_registry/index.md): Build and deploy Docker
-  images with Container Registry.
-
 ## Account
 
 There is a lot you can customize and configure
@@ -150,6 +138,11 @@ requests you're assigned to.
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
 you have quick access to. You can also gather feedback on them through
 [Discussions](#discussions).
+
+## GitLab CI/CD
+
+Use built-in [GitLab CI/CD](../ci/README.md) to test, build, and deploy your applications
+directly from GitLab. No third-party integrations needed.
 
 ## Features behind feature flags
 

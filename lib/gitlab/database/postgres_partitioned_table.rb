@@ -7,6 +7,8 @@ module Gitlab
 
       self.primary_key = :identifier
 
+      has_many :postgres_partitions, foreign_key: 'parent_identifier', primary_key: 'identifier'
+
       scope :by_identifier, ->(identifier) do
         raise ArgumentError, "Table name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
 

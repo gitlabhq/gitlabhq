@@ -6,6 +6,8 @@ export const setProjectId = ({ commit }, projectId) => commit(types.SET_PROJECT_
 export const setSelectedMilestones = ({ commit }, selectedMilestones) =>
   commit(types.SET_SELECTED_MILESTONES, selectedMilestones);
 
+export const clearSelectedMilestones = ({ commit }) => commit(types.CLEAR_SELECTED_MILESTONES);
+
 export const toggleMilestones = ({ commit, state }, selectedMilestone) => {
   const removeMilestone = state.selectedMilestones.includes(selectedMilestone);
 
@@ -16,8 +18,8 @@ export const toggleMilestones = ({ commit, state }, selectedMilestone) => {
   }
 };
 
-export const search = ({ dispatch, commit }, query) => {
-  commit(types.SET_QUERY, query);
+export const search = ({ dispatch, commit }, searchQuery) => {
+  commit(types.SET_SEARCH_QUERY, searchQuery);
 
   dispatch('searchMilestones');
 };
@@ -41,7 +43,7 @@ export const searchMilestones = ({ commit, state }) => {
   commit(types.REQUEST_START);
 
   const options = {
-    search: state.query,
+    search: state.searchQuery,
     scope: 'milestones',
   };
 

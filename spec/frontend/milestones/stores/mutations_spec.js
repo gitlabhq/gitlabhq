@@ -14,7 +14,7 @@ describe('Milestones combobox Vuex store mutations', () => {
       expect(state).toEqual({
         projectId: null,
         groupId: null,
-        query: '',
+        searchQuery: '',
         matches: {
           projectMilestones: {
             list: [],
@@ -46,6 +46,20 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
+  describe(`${types.CLEAR_SELECTED_MILESTONES}`, () => {
+    it('clears the selected milestones', () => {
+      const selectedMilestones = ['v1.2.3'];
+
+      // Set state.selectedMilestones
+      mutations[types.SET_SELECTED_MILESTONES](state, selectedMilestones);
+
+      // Clear state.selectedMilestones
+      mutations[types.CLEAR_SELECTED_MILESTONES](state);
+
+      expect(state.selectedMilestones).toEqual([]);
+    });
+  });
+
   describe(`${types.ADD_SELECTED_MILESTONESs}`, () => {
     it('adds the selected milestones', () => {
       const selectedMilestone = 'v1.2.3';
@@ -67,12 +81,12 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
-  describe(`${types.SET_QUERY}`, () => {
+  describe(`${types.SET_SEARCH_QUERY}`, () => {
     it('updates the search query', () => {
       const newQuery = 'hello';
-      mutations[types.SET_QUERY](state, newQuery);
+      mutations[types.SET_SEARCH_QUERY](state, newQuery);
 
-      expect(state.query).toBe(newQuery);
+      expect(state.searchQuery).toBe(newQuery);
     });
   });
 

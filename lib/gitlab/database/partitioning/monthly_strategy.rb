@@ -17,23 +17,8 @@ module Gitlab
         end
 
         def current_partitions
-          result = connection.select_all(<<~SQL)
-            select
-              pg_class.relname,
-              parent_class.relname as base_table,
-              pg_get_expr(pg_class.relpartbound, inhrelid) as condition
-            from pg_class
-            inner join pg_inherits i on pg_class.oid = inhrelid
-            inner join pg_class parent_class on parent_class.oid = inhparent
-            inner join pg_namespace ON pg_namespace.oid = pg_class.relnamespace
-            where pg_namespace.nspname = #{connection.quote(Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)}
-              and parent_class.relname = #{connection.quote(table_name)}
-              and pg_class.relispartition
-            order by pg_class.relname
-          SQL
-
-          result.map do |record|
-            TimePartition.from_sql(table_name, record['relname'], record['condition'])
+          Gitlab::Database::PostgresPartition.for_parent_table(table_name).map do |partition|
+            TimePartition.from_sql(table_name, partition.name, partition.condition)
           end
         end
 

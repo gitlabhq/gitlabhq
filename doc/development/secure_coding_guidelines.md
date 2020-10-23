@@ -311,6 +311,7 @@ Specifically, the following options are dangerous because they mark strings as t
 |----------------------|-------------------------------|
 | HAML templates       | `html_safe`, `raw`, `!=`      |
 | Embedded Ruby (ERB)  | `html_safe`, `raw`, `<%== %>` |
+
 In case you want to sanitize user-controlled values against XSS vulnerabilities, you can use
 [`ActionView::Helpers::SanitizeHelper`](https://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html).
 Calling `link_to` and `redirect_to` with user-controlled parameters can also lead to cross-site scripting.

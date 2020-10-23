@@ -15,5 +15,20 @@ class BulkImport < ApplicationRecord
 
   state_machine :status, initial: :created do
     state :created, value: 0
+    state :started, value: 1
+    state :finished, value: 2
+    state :failed, value: -1
+
+    event :start do
+      transition created: :started
+    end
+
+    event :finish do
+      transition started: :finished
+    end
+
+    event :fail_op do
+      transition any => :failed
+    end
   end
 end
