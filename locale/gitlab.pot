@@ -4265,6 +4265,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching issues. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching labels. Please reload the page."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching the board issues. Please reload the page."
 msgstr ""
 
@@ -4272,6 +4275,9 @@ msgid "Boards|An error occurred while fetching the board lists. Please reload th
 msgstr ""
 
 msgid "Boards|An error occurred while fetching the board swimlanes. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while generating lists. Please reload the page."
 msgstr ""
 
 msgid "Boards|An error occurred while moving the issue. Please try again."
@@ -29693,9 +29699,6 @@ msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
 msgid "Welcome to the guided GitLab tour"
-msgstr ""
-
-msgid "Welcome to your issue board!"
 msgstr ""
 
 msgid "What are you searching for?"

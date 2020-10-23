@@ -61,26 +61,10 @@ RSpec.describe 'search/_results' do
           expect(rendered).to have_selector('#js-search-filter-by-state')
         end
 
-        context 'Feature search_filter_by_confidential' do
-          context 'when disabled' do
-            before do
-              stub_feature_flags(search_filter_by_confidential: false)
-            end
+        it 'renders the confidential drop down' do
+          render
 
-            it 'does not render the confidential drop down' do
-              render
-
-              expect(rendered).not_to have_selector('#js-search-filter-by-confidential')
-            end
-          end
-
-          context 'when enabled' do
-            it 'renders the confidential drop down' do
-              render
-
-              expect(rendered).to have_selector('#js-search-filter-by-confidential')
-            end
-          end
+          expect(rendered).to have_selector('#js-search-filter-by-confidential')
         end
       end
     end

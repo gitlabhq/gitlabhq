@@ -7,7 +7,8 @@ type: reference, api
 
 # Search API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41763) in GitLab 10.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41763) in GitLab 10.5.
+> - [Feature flag `search_filter_by_confidential` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/244923) in GitLab 13.6.
 
 Every API call to search must be authenticated.
 
@@ -24,7 +25,7 @@ GET /search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 | `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
-| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. This parameter is behind a [feature flag (`search_filter_by_confidential`)](../administration/feature_flags.md). |
+| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, users.
 
@@ -434,7 +435,7 @@ GET /groups/:id/search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 | `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
-| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. This parameter is behind a [feature flag (`search_filter_by_confidential`)](../administration/feature_flags.md). |
+| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
 
 Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, users.
 
@@ -814,7 +815,7 @@ GET /projects/:id/search
 | `search`      | string   | yes        | The search query  |
 | `ref`         | string   | no         | The name of a repository branch or tag to search on. The project's default branch is used by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.  |
 | `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
-| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. This parameter is behind a [feature flag (`search_filter_by_confidential`)](../administration/feature_flags.md). |
+| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
 
 Search the expression within the specified scope. Currently these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users.
 

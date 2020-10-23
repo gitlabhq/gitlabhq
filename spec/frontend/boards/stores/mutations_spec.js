@@ -82,7 +82,7 @@ describe('Board Store Mutations', () => {
       mutations.SET_ACTIVE_ID(state, expected);
     });
 
-    it('updates aciveListId to be the value that is passed', () => {
+    it('updates activeListId to be the value that is passed', () => {
       expect(state.activeId).toBe(expected.id);
     });
 
@@ -98,6 +98,34 @@ describe('Board Store Mutations', () => {
       mutations.SET_FILTERS(state, filterParams);
 
       expect(state.filterParams).toBe(filterParams);
+    });
+  });
+
+  describe('CREATE_LIST_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.CREATE_LIST_FAILURE(state);
+
+      expect(state.error).toEqual('An error occurred while creating the list. Please try again.');
+    });
+  });
+
+  describe('RECEIVE_LABELS_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.RECEIVE_LABELS_FAILURE(state);
+
+      expect(state.error).toEqual(
+        'An error occurred while fetching labels. Please reload the page.',
+      );
+    });
+  });
+
+  describe('GENERATE_DEFAULT_LISTS_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.GENERATE_DEFAULT_LISTS_FAILURE(state);
+
+      expect(state.error).toEqual(
+        'An error occurred while generating lists. Please reload the page.',
+      );
     });
   });
 

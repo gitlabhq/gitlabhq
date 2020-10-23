@@ -432,7 +432,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
-| Erase job artifacts and trace         |                 | ✓ (*1*)     | ✓        | ✓      |
+| Erase job artifacts and job logs      |                 | ✓ (*1*)     | ✓        | ✓      |
 | Delete project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |

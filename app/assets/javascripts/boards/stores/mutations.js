@@ -62,6 +62,14 @@ export default {
     state.error = s__('Boards|An error occurred while creating the list. Please try again.');
   },
 
+  [mutationTypes.RECEIVE_LABELS_FAILURE]: state => {
+    state.error = s__('Boards|An error occurred while fetching labels. Please reload the page.');
+  },
+
+  [mutationTypes.GENERATE_DEFAULT_LISTS_FAILURE]: state => {
+    state.error = s__('Boards|An error occurred while generating lists. Please reload the page.');
+  },
+
   [mutationTypes.REQUEST_ADD_LIST]: () => {
     notImplemented();
   },

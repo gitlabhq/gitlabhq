@@ -151,7 +151,6 @@ RSpec.describe API::Search do
 
         context 'filter by confidentiality' do
           before do
-            stub_feature_flags(search_filter_by_confidential: true)
             create(:issue, project: project, author: user, title: 'awesome non-confidential issue')
             create(:issue, :confidential, project: project, author: user, title: 'awesome confidential issue')
           end

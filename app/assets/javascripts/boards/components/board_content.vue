@@ -38,12 +38,11 @@ export default {
   },
   mounted() {
     if (this.glFeatures.graphqlBoardLists) {
-      this.fetchLists();
       this.showPromotionList();
     }
   },
   methods: {
-    ...mapActions(['fetchLists', 'showPromotionList']),
+    ...mapActions(['showPromotionList']),
   },
 };
 </script>
