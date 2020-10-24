@@ -268,12 +268,15 @@ RSpec.describe SearchController do
         last_payload = payload
       end
 
-      get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456' }
+      get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', confidential: true, state: true, force_search_results: true }
 
       expect(last_payload[:metadata]['meta.search.group_id']).to eq('123')
       expect(last_payload[:metadata]['meta.search.project_id']).to eq('456')
       expect(last_payload[:metadata]['meta.search.search']).to eq('hello world')
       expect(last_payload[:metadata]['meta.search.scope']).to eq('issues')
+      expect(last_payload[:metadata]['meta.search.force_search_results']).to eq('true')
+      expect(last_payload[:metadata]['meta.search.filters.confidential']).to eq('true')
+      expect(last_payload[:metadata]['meta.search.filters.state']).to eq('true')
     end
   end
 end

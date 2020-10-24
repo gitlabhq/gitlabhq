@@ -139,6 +139,9 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.project_id'] = params[:project_id]
     payload[:metadata]['meta.search.search'] = params[:search]
     payload[:metadata]['meta.search.scope'] = params[:scope]
+    payload[:metadata]['meta.search.filters.confidential'] = params[:confidential]
+    payload[:metadata]['meta.search.filters.state'] = params[:state]
+    payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
   end
 
   def block_anonymous_global_searches
