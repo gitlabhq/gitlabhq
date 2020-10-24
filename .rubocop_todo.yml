@@ -1244,7 +1244,6 @@ Graphql/IDType:
     - 'app/graphql/mutations/snippets/destroy.rb'
     - 'app/graphql/mutations/snippets/mark_as_spam.rb'
     - 'app/graphql/mutations/snippets/update.rb'
-    - 'app/graphql/resolvers/boards_resolver.rb'
     - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'
     - 'app/graphql/resolvers/design_management/design_resolver.rb'
     - 'app/graphql/resolvers/design_management/designs_resolver.rb'

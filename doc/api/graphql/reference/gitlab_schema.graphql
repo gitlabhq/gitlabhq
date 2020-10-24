@@ -7746,7 +7746,7 @@ type Group {
     """
     Find a board by its ID
     """
-    id: ID
+    id: BoardID
 
     """
     Returns the last _n_ elements from the list.
@@ -13733,7 +13733,7 @@ type Project {
     """
     Find a board by its ID
     """
-    id: ID
+    id: BoardID
 
     """
     Returns the last _n_ elements from the list.

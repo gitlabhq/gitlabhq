@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Uploads migrate Rake tasks **(CORE ONLY)**
 
 There is a Rake task for migrating uploads between different storage types.

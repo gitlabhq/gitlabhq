@@ -4,7 +4,7 @@ module Resolvers
   class BoardsResolver < BaseResolver
     type Types::BoardType, null: true
 
-    argument :id, GraphQL::ID_TYPE,
+    argument :id, ::Types::GlobalIDType[::Board],
              required: false,
              description: 'Find a board by its ID'
 
@@ -23,10 +23,13 @@ module Resolvers
 
     private
 
-    def extract_board_id(gid)
-      return unless gid.present?
+    def extract_board_id(id)
+      return unless id.present?
 
-      GitlabSchema.parse_gid(gid, expected_type: ::Board).model_id
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      id = Types::GlobalIDType[Board].coerce_isolated_input(id)
+      id.model_id
     end
   end
 end

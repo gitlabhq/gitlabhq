@@ -35,6 +35,7 @@ module API
           state: params[:state],
           confidential: params[:confidential],
           snippets: snippets?,
+          basic_search: params[:basic_search],
           page: params[:page],
           per_page: params[:per_page]
         }.merge(additional_params)
