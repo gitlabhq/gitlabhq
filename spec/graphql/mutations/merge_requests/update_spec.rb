@@ -18,9 +18,7 @@ RSpec.describe Mutations::MergeRequests::Update do
       mutation.resolve(project_path: merge_request.project.full_path, iid: merge_request.iid, **attributes)
     end
 
-    it 'raises an error if the resource is not accessible to the user' do
-      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-    end
+    it_behaves_like 'permission level for merge request mutation is correctly verified'
 
     context 'when the user can update the merge request' do
       before do

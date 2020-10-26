@@ -1,8 +1,8 @@
 - if viewer.valid?(project: @project, sha: @commit.sha, user: @current_user)
-  = icon('check fw')
+  = sprite_icon('check')
   This GitLab CI configuration is valid.
 - else
-  = icon('warning fw')
+  = sprite_icon('warning-solid')
   This GitLab CI configuration is invalid:
   = viewer.validation_message(project: @project, sha: @commit.sha, user: @current_user)
 

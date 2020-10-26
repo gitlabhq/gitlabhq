@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative "../../../app/controllers/concerns/controller_with_feature_category"
+require_relative "../../../lib/gitlab/with_feature_category"
 
-RSpec.describe ControllerWithFeatureCategory do
+RSpec.describe Gitlab::WithFeatureCategory do
   describe ".feature_category_for_action" do
     let(:base_controller) do
       Class.new do
-        include ControllerWithFeatureCategory
+        include ::Gitlab::WithFeatureCategory
       end
     end
 
@@ -55,6 +55,15 @@ RSpec.describe ControllerWithFeatureCategory do
           feature_category :goodbye, ["world"]
         end
       end.to raise_error(ArgumentError, "Actions have multiple feature categories: world")
+    end
+
+    it "does not raise an error when multiple calls define the same action and feature category" do
+      expect do
+        Class.new(base_controller) do
+          feature_category :hello, [:world]
+          feature_category :hello, ["world"]
+        end
+      end.not_to raise_error
     end
   end
 end

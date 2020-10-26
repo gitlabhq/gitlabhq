@@ -8,6 +8,7 @@ module Gitlab
 
         STRATEGIES = {
           until_executing: UntilExecuting,
+          until_executed: UntilExecuted,
           none: None
         }.freeze
 

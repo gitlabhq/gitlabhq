@@ -293,6 +293,9 @@ class ApplicationSetting < ApplicationRecord
   validates :container_registry_delete_tags_service_timeout,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :container_registry_expiration_policies_worker_capacity,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

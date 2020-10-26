@@ -594,23 +594,19 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           context 'when the chunk is being locked by a different worker' do
             let(:metrics) { spy('metrics') }
 
-            it 'does not raise an exception' do
-              lock_chunk do
-                expect { build_trace_chunk.persist_data! }.not_to raise_error
-              end
-            end
-
             it 'increments stalled chunk trace metric' do
               allow(build_trace_chunk)
                 .to receive(:metrics)
                 .and_return(metrics)
 
-              lock_chunk { build_trace_chunk.persist_data! }
+              expect do
+                subject
 
-              expect(metrics)
-                .to have_received(:increment_trace_operation)
-                .with(operation: :stalled)
-                .once
+                expect(metrics)
+                  .to have_received(:increment_trace_operation)
+                    .with(operation: :stalled)
+                    .once
+              end.to raise_error(described_class::FailedToPersistDataError)
             end
 
             def lock_chunk(&block)

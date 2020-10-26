@@ -63,7 +63,7 @@ module Gitlab
           if health_endpoint
             RequestsRackMiddleware.http_health_requests_total.increment(status: status, method: method)
           else
-            RequestsRackMiddleware.http_request_total.increment(status: status, method: method, feature_category: feature_category || FEATURE_CATEGORY_DEFAULT)
+            RequestsRackMiddleware.http_request_total.increment(status: status, method: method, feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT)
           end
         end
       end

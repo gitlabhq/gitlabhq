@@ -21,6 +21,18 @@ FactoryBot.define do
       status { :delete_failed }
     end
 
+    trait :cleanup_scheduled do
+      expiration_policy_cleanup_status { :cleanup_scheduled }
+    end
+
+    trait :cleanup_unfinished do
+      expiration_policy_cleanup_status { :cleanup_unfinished }
+    end
+
+    trait :cleanup_ongoing do
+      expiration_policy_cleanup_status { :cleanup_ongoing }
+    end
+
     after(:build) do |repository, evaluator|
       next if evaluator.tags.to_a.none?
 

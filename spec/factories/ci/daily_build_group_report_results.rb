@@ -10,5 +10,11 @@ FactoryBot.define do
     data do
       { 'coverage' => 77.0 }
     end
+    default_branch { true }
+
+    trait :on_feature_branch do
+      ref_path { Gitlab::Git::BRANCH_REF_PREFIX + 'feature' }
+      default_branch { false }
+    end
   end
 end

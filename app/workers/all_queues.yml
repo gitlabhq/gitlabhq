@@ -97,7 +97,15 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
+  :tags: []
+- :name: container_repository:container_expiration_policies_cleanup_container_repository
+  :feature_category: :container_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: container_repository:delete_container_repository
   :feature_category: :container_registry

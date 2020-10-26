@@ -1,8 +1,8 @@
 - if viewer.valid?
-  = icon('check fw')
+  = sprite_icon('check')
   This Route Map is valid.
 - else
-  = icon('warning fw')
+  = sprite_icon('warning-solid')
   This Route Map is invalid:
   = viewer.validation_message
 

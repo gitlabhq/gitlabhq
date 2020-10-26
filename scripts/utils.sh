@@ -31,8 +31,8 @@ function install_api_client_dependencies_with_apt() {
 }
 
 function install_gitlab_gem() {
-  gem install httparty --no-document --version 0.17.3
-  gem install gitlab --no-document --version 4.13.0
+  gem install httparty --no-document --version 0.18.1
+  gem install gitlab --no-document --version 4.14.1
 }
 
 function install_tff_gem() {

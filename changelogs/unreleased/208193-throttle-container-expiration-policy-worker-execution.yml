@@ -1,0 +1,5 @@
+---
+title: Throttle container cleanup policies execution by using a limited capacity worker
+merge_request: 40740
+author:
+type: changed

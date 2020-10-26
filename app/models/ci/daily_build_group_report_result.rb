@@ -14,6 +14,7 @@ module Ci
     scope :with_included_projects, -> { includes(:project) }
     scope :by_projects, -> (ids) { where(project_id: ids) }
     scope :with_coverage, -> { where("(data->'coverage') IS NOT NULL") }
+    scope :with_default_branch, -> { where(default_branch: true) }
 
     store_accessor :data, :coverage
 

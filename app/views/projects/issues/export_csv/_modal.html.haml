@@ -13,7 +13,7 @@
           - issues_count = issuables_count_for_state(:issues, params[:state])
           - unless issues_count == -1 # The count timed out
             .modal-subheader
-              = icon('check', { class: 'checkmark' })
+              = sprite_icon('check', css_class: 'gl-text-green-400')
               %strong.gl-ml-3
                 = n_('%d issue selected', '%d issues selected', issues_count) % issues_count
           .modal-text

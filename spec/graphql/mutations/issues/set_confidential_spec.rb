@@ -17,9 +17,7 @@ RSpec.describe Mutations::Issues::SetConfidential do
 
     subject { mutation.resolve(project_path: project.full_path, iid: issue.iid, confidential: confidential) }
 
-    it 'raises an error if the resource is not accessible to the user' do
-      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-    end
+    it_behaves_like 'permission level for issue mutation is correctly verified'
 
     context 'when the user can update the issue' do
       before do

@@ -136,9 +136,10 @@ module Ci
     # We are using optimistic locking combined with Redis locking to ensure
     # that a chunk gets migrated properly.
     #
-    # We are catching an exception related to an exclusive lock not being
-    # acquired because it is creating a lot of noise, and is a result of
-    # duplicated workers running in parallel for the same build trace chunk.
+    # We are using until_executed deduplication strategy for workers,
+    # which should prevent duplicated workers running in parallel for the same build trace,
+    # and causing an exception related to an exclusive lock not being
+    # acquired
     #
     def persist_data!
       in_lock(*lock_params) do         # exclusive Redis lock is acquired first
@@ -150,6 +151,8 @@ module Ci
       end
     rescue FailedToObtainLockError
       metrics.increment_trace_operation(operation: :stalled)
+
+      raise FailedToPersistDataError, 'Data migration failed due to a worker duplication'
     rescue ActiveRecord::StaleObjectError
       raise FailedToPersistDataError, <<~MSG
         Data migration race condition detected

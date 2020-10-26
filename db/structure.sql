@@ -9296,6 +9296,8 @@ CREATE TABLE application_settings (
     automatic_purchased_storage_allocation boolean DEFAULT false NOT NULL,
     encrypted_ci_jwt_signing_key text,
     encrypted_ci_jwt_signing_key_iv text,
+    container_registry_expiration_policies_worker_capacity integer DEFAULT 0 NOT NULL,
+    CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
@@ -10132,7 +10134,8 @@ CREATE TABLE ci_daily_build_group_report_results (
     last_pipeline_id bigint NOT NULL,
     ref_path text NOT NULL,
     group_name text NOT NULL,
-    data jsonb NOT NULL
+    data jsonb NOT NULL,
+    default_branch boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE ci_daily_build_group_report_results_id_seq
@@ -11248,7 +11251,8 @@ CREATE TABLE container_repositories (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     status smallint,
-    expiration_policy_started_at timestamp with time zone
+    expiration_policy_started_at timestamp with time zone,
+    expiration_policy_cleanup_status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE container_repositories_id_seq
@@ -19810,6 +19814,8 @@ CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_r
 
 CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at_enabled ON container_expiration_policies USING btree (project_id, next_run_at, enabled);
 
+CREATE INDEX idx_container_repositories_on_exp_cleanup_status_and_start_date ON container_repositories USING btree (expiration_policy_cleanup_status, expiration_policy_started_at);
+
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
@@ -20164,6 +20170,8 @@ CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON ci_builds_runn
 
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON ci_daily_build_group_report_results USING btree (last_pipeline_id);
 
+CREATE INDEX index_ci_daily_build_group_report_results_on_project_and_date ON ci_daily_build_group_report_results USING btree (project_id, date DESC) WHERE ((default_branch = true) AND ((data -> 'coverage'::text) IS NOT NULL));
+
 CREATE INDEX index_ci_deleted_objects_on_pick_up_at ON ci_deleted_objects USING btree (pick_up_at);
 
 CREATE INDEX index_ci_freeze_periods_on_project_id ON ci_freeze_periods USING btree (project_id);
@@ -20397,6 +20405,8 @@ CREATE UNIQUE INDEX index_commit_user_mentions_on_note_id ON commit_user_mention
 CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON container_expiration_policies USING btree (next_run_at, enabled);
 
 CREATE INDEX index_container_repositories_on_project_id ON container_repositories USING btree (project_id);
+
+CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repositories USING btree (project_id, id);
 
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON container_repositories USING btree (project_id, name);
 

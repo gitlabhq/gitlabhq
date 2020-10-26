@@ -1,8 +1,8 @@
 - if viewer.valid?
-  = icon('check fw')
+  = sprite_icon('check')
   = _('Metrics Dashboard YAML definition is valid.')
 - else
-  = icon('warning fw')
+  = sprite_icon('warning-solid')
   = _('Metrics Dashboard YAML definition is invalid:')
   %ul
     - viewer.errors.each do |error|

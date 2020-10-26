@@ -35,7 +35,7 @@
                 %li.droplab-item-selected.qa-new-project-option{ role: "button", data: { value: "new-project", text: new_project_label } }
                   .menu-item
                     .icon-container
-                      = icon("check", class: "list-item-checkmark")
+                      = sprite_icon("check", css_class: "list-item-checkmark")
                     .description
                       %strong= new_project_label
                       %span= s_("GroupsTree|Create a project in this group.")
@@ -43,7 +43,7 @@
                   %li.qa-new-subgroup-option{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
                     .menu-item
                       .icon-container
-                        = icon("check", class: "list-item-checkmark")
+                        = sprite_icon("check", css_class: "list-item-checkmark")
                       .description
                         %strong= new_subgroup_label
                         %span= s_("GroupsTree|Create a subgroup in this group.")

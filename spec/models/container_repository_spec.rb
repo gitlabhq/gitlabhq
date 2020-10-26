@@ -352,4 +352,20 @@ RSpec.describe ContainerRepository do
 
     it { is_expected.to contain_exactly(repository) }
   end
+
+  describe '.for_project_id' do
+    subject { described_class.for_project_id(project.id) }
+
+    it { is_expected.to contain_exactly(repository) }
+  end
+
+  describe '.waiting_for_cleanup' do
+    let_it_be(:repository_cleanup_scheduled) { create(:container_repository, :cleanup_scheduled) }
+    let_it_be(:repository_cleanup_unfinished) { create(:container_repository, :cleanup_unfinished) }
+    let_it_be(:repository_cleanup_ongoing) { create(:container_repository, :cleanup_ongoing) }
+
+    subject { described_class.waiting_for_cleanup }
+
+    it { is_expected.to contain_exactly(repository_cleanup_scheduled, repository_cleanup_unfinished) }
+  end
 end

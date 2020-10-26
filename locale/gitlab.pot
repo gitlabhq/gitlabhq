@@ -17394,8 +17394,10 @@ msgstr ""
 msgid "Namespace:"
 msgstr ""
 
-msgid "NamespaceStorageSize|%{namespace_name} contains a locked project"
-msgstr ""
+msgid "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked project"
+msgid_plural "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked projects"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "NamespaceStorageSize|%{namespace_name} is now read-only. You cannot: %{base_message}"
 msgstr ""
@@ -17403,17 +17405,19 @@ msgstr ""
 msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{base_message}"
 msgstr ""
 
-msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free 10GB project limit. You can't %{base_message}"
+msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free %{free_size_limit} project limit. You can't %{base_message}"
 msgstr ""
 
-msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free 10GB limit. You can't %{base_message}"
+msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{base_message}"
 msgstr ""
 
 msgid "NamespaceStorageSize|You have reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
 msgstr ""
 
-msgid "NamespaceStorageSize|You have reached the free storage limit of 10GB on %{locked_project_count} projects. To unlock them, please purchase additional storage"
-msgstr ""
+msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{locked_project_count} project. To unlock it, please purchase additional storage"
+msgid_plural "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{locked_project_count} projects. To unlock them, please purchase additional storage"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""

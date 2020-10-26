@@ -35,11 +35,7 @@ RSpec.describe Mutations::Issues::Update do
 
     subject { mutation.resolve(mutation_params) }
 
-    context 'when the user cannot access the issue' do
-      it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-      end
-    end
+    it_behaves_like 'permission level for issue mutation is correctly verified'
 
     context 'when the user can update the issue' do
       before do
