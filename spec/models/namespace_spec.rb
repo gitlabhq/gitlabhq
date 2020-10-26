@@ -147,7 +147,7 @@ RSpec.describe Namespace do
   end
 
   describe '.search' do
-    let(:namespace) { create(:namespace) }
+    let_it_be(:namespace) { create(:namespace) }
 
     it 'returns namespaces with a matching name' do
       expect(described_class.search(namespace.name)).to eq([namespace])
@@ -171,6 +171,18 @@ RSpec.describe Namespace do
 
     it 'returns namespaces with a matching path regardless of the casing' do
       expect(described_class.search(namespace.path.upcase)).to eq([namespace])
+    end
+
+    it 'returns namespaces with a matching route path' do
+      expect(described_class.search(namespace.route.path, include_parents: true)).to eq([namespace])
+    end
+
+    it 'returns namespaces with a partially matching route path' do
+      expect(described_class.search(namespace.route.path[0..2], include_parents: true)).to eq([namespace])
+    end
+
+    it 'returns namespaces with a matching route path regardless of the casing' do
+      expect(described_class.search(namespace.route.path.upcase, include_parents: true)).to eq([namespace])
     end
   end
 

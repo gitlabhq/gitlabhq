@@ -1,5 +1,3 @@
-import { joinPaths } from '~/lib/utils/url_utility';
-
 function loadScript(path) {
   const script = document.createElement('script');
   script.type = 'application/javascript';
@@ -19,11 +17,10 @@ export default function initSourcegraph() {
     return;
   }
 
-  const base = gon.asset_host || gon.gitlab_url;
-  const assetsUrl = joinPaths(base, '/assets/webpack/sourcegraph/');
-  const scriptPath = joinPaths(assetsUrl, 'scripts/integration.bundle.js');
+  const assetsUrl = new URL('/assets/webpack/sourcegraph/', window.location.href);
+  const scriptPath = new URL('scripts/integration.bundle.js', assetsUrl).href;
 
-  window.SOURCEGRAPH_ASSETS_URL = assetsUrl;
+  window.SOURCEGRAPH_ASSETS_URL = assetsUrl.href;
   window.SOURCEGRAPH_URL = url;
   window.SOURCEGRAPH_INTEGRATION = 'gitlab-integration';
 

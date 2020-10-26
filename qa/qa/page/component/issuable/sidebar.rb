@@ -64,8 +64,14 @@ module QA
           end
 
           def has_assignee?(username)
-            page.within(element_selector_css(:assignee_block)) do
+            within_element(:assignee_block) do
               has_text?(username)
+            end
+          end
+
+          def has_no_assignee_named?(username)
+            within_element(:assignee_block) do
+              has_no_text?(username)
             end
           end
 

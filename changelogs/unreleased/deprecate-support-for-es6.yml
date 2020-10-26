@@ -1,0 +1,5 @@
+---
+title: Deprecate support for Elasticsearch 6.x
+merge_request: 45619
+author:
+type: deprecated

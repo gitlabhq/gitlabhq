@@ -21616,6 +21616,8 @@ CREATE INDEX index_reviews_on_merge_request_id ON reviews USING btree (merge_req
 
 CREATE INDEX index_reviews_on_project_id ON reviews USING btree (project_id);
 
+CREATE INDEX index_route_on_name_trigram ON routes USING gin (name gin_trgm_ops);
+
 CREATE UNIQUE INDEX index_routes_on_path ON routes USING btree (path);
 
 CREATE INDEX index_routes_on_path_text_pattern_ops ON routes USING btree (path varchar_pattern_ops);
