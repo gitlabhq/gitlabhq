@@ -23,6 +23,7 @@ import {
   submitChangesError,
   trackingCategory,
   images,
+  mounts,
 } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -41,6 +42,7 @@ describe('static_site_editor/pages/home', () => {
     project,
     username,
     sourcePath,
+    mounts,
   };
   const hasSubmittedChangesMutationPayload = {
     data: {
@@ -119,6 +121,7 @@ describe('static_site_editor/pages/home', () => {
     it('provides source content, returnUrl, and isSavingChanges to the edit area', () => {
       expect(findEditArea().props()).toMatchObject({
         title,
+        mounts,
         content,
         returnUrl,
         savingChanges: false,

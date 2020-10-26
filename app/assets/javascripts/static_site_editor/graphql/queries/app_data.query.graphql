@@ -6,5 +6,9 @@ query appData {
     sourcePath
     username
     returnUrl
+    mounts {
+      source
+      target
+    }
   }
 }

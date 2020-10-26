@@ -67,3 +67,10 @@ export const images = new Map([
   ['path/to/image1.png', 'image1-content'],
   ['path/to/image2.png', 'image2-content'],
 ]);
+
+export const mounts = [
+  {
+    source: 'some/source/',
+    target: '',
+  },
+];

@@ -2,9 +2,9 @@
 
 module Gitlab
   module Middleware
-    # There is no valid reason for a request to contain a null byte (U+0000)
+    # There is no valid reason for a request to contain a malformed string
     # so just return HTTP 400 (Bad Request) if we receive one
-    class HandleNullBytes
+    class HandleMalformedStrings
       NULL_BYTE_REGEX = Regexp.new(Regexp.escape("\u0000")).freeze
 
       attr_reader :app
@@ -14,17 +14,19 @@ module Gitlab
       end
 
       def call(env)
-        return [400, {}, ["Bad Request"]] if request_has_null_byte?(env)
+        return [400, { 'Content-Type' => 'text/plain' }, ['Bad Request']] if request_contains_malformed_string?(env)
 
         app.call(env)
       end
 
       private
 
-      def request_has_null_byte?(request)
-        return false if ENV['REJECT_NULL_BYTES'] == "1"
+      def request_contains_malformed_string?(request)
+        return false if ENV['DISABLE_REQUEST_VALIDATION'] == '1'
 
         request = Rack::Request.new(request)
+
+        return true if string_malformed?(request.path)
 
         request.params.values.any? do |value|
           param_has_null_byte?(value)
@@ -39,7 +41,7 @@ module Gitlab
         depth += 1
 
         if value.respond_to?(:match)
-          string_contains_null_byte?(value)
+          string_malformed?(value)
         elsif value.respond_to?(:values)
           value.values.any? do |hash_value|
             param_has_null_byte?(hash_value, depth)
@@ -53,8 +55,11 @@ module Gitlab
         end
       end
 
-      def string_contains_null_byte?(string)
+      def string_malformed?(string)
         string.match?(NULL_BYTE_REGEX)
+      rescue ArgumentError
+        # If we're here, we caught a malformed string. Return true
+        true
       end
     end
   end

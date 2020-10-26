@@ -134,6 +134,7 @@ mobsf-android-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
+    MOBSF_API_KEY: key
   rules:
     - if: $SAST_DISABLED
       when: never
@@ -152,6 +153,7 @@ mobsf-ios-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
+    MOBSF_API_KEY: key
   rules:
     - if: $SAST_DISABLED
       when: never

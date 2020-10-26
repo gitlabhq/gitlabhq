@@ -37,6 +37,10 @@ export default {
       required: false,
       default: '',
     },
+    mounts: {
+      type: Array,
+      required: true,
+    },
     imageRoot: {
       type: String,
       required: false,

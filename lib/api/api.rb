@@ -25,7 +25,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new,
                     Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ContextLogger.new
+                    Gitlab::GrapeLogging::Loggers::ContextLogger.new,
+                    Gitlab::GrapeLogging::Loggers::ContentLogger.new
                   ]
 
     allow_access_with_scope :api

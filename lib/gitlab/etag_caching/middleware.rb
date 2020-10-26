@@ -54,7 +54,13 @@ module Gitlab
 
         add_instrument_for_cache_hit(status_code, route, request)
 
-        [status_code, { 'ETag' => etag, 'X-Gitlab-From-Cache' => 'true' }, []]
+        new_headers = {
+          'ETag' => etag,
+          'X-Gitlab-From-Cache' => 'true',
+          ::Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER => route.feature_category
+        }
+
+        [status_code, new_headers, []]
       end
 
       def track_cache_miss(if_none_match, cached_value_present, route)

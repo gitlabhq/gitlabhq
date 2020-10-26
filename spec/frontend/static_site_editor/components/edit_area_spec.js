@@ -15,6 +15,7 @@ import {
   sourceContentHeaderObjYAML as headerSettings,
   sourceContentBody as body,
   returnUrl,
+  mounts,
 } from '../mock_data';
 
 jest.mock('~/static_site_editor/services/formatter', () => jest.fn(str => `${str} format-pass`));
@@ -31,6 +32,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
         title,
         content,
         returnUrl,
+        mounts,
         savingChanges,
         ...propsData,
       },

@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GraphQL API
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19008) in GitLab 11.0 (enabled by feature flag `graphql`).

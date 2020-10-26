@@ -3,7 +3,7 @@
 module Gitlab
   module EtagCaching
     class Router
-      Route = Struct.new(:regexp, :name)
+      Route = Struct.new(:regexp, :name, :feature_category)
       # We enable an ETag for every request matching the regex.
       # To match a regex the path needs to match the following:
       #   - Don't contain a reserved word (expect for the words used in the
@@ -20,59 +20,73 @@ module Gitlab
       ROUTES = [
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/noteable/issue/\d+/notes\z),
-          'issue_notes'
+          'issue_notes',
+          'issue_tracking'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/noteable/merge_request/\d+/notes\z),
-          'merge_request_notes'
+          'merge_request_notes',
+          'code_review'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/issues/\d+/realtime_changes\z),
-          'issue_title'
+          'issue_title',
+          'issue_tracking'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/commit/\S+/pipelines\.json\z),
-          'commit_pipelines'
+          'commit_pipelines',
+          'continuous_integration'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/merge_requests/new\.json\z),
-          'new_merge_request_pipelines'
+          'new_merge_request_pipelines',
+          'continuous_integration'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/pipelines\.json\z),
-          'merge_request_pipelines'
+          'merge_request_pipelines',
+          'continuous_integration'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/pipelines\.json\z),
-          'project_pipelines'
+          'project_pipelines',
+          'continuous_integration'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/pipelines/\d+\.json\z),
-          'project_pipeline'
+          'project_pipeline',
+          'continuous_integration'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/builds/\d+\.json\z),
-          'project_build'
+          'project_build',
+          'continuous_integration'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/clusters/\d+/environments\z),
-          'cluster_environments'
+          'cluster_environments',
+          'continuous_delivery'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/environments\.json\z),
-          'environments'
+          'environments',
+          'continuous_delivery'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/import/github/realtime_changes\.json\z),
-          'realtime_changes_import_github'
+          'realtime_changes_import_github',
+          'importers'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/import/gitea/realtime_changes\.json\z),
-          'realtime_changes_import_gitea'
+          'realtime_changes_import_gitea',
+          'importers'
         ),
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/cached_widget\.json\z),
-          'merge_request_widget'
+          'merge_request_widget',
+          'code_review'
         )
       ].freeze
 

@@ -23,9 +23,9 @@ selected group. From your group page:
 To create an epic from the epic list, in a group:
 
 1. Go to **{epic}** **Epics**.
-1. Click **New epic**.
+1. Select **New epic**.
 1. Enter a descriptive title.
-1. Click **Create epic**.
+1. Select **Create epic**.
 
 ### Access the New Epic form
 
@@ -33,8 +33,8 @@ To create an epic from the epic list, in a group:
 
 There are two ways to get to the New Epic form and create an epic in the group you're in:
 
-- From an epic in your group, click **New Epic**.
-- From anywhere, in the top menu, click **plus** (**{plus-square}**) **> New epic**.
+- From an epic in your group, select **New Epic**.
+- From anywhere, in the top menu, select **plus** (**{plus-square}**) **> New epic**.
 
   ![New epic from an open epic](img/new_epic_from_groups_v13.2.png)
 
@@ -63,13 +63,13 @@ After you create an epic, you can edit change the following details:
 
 To edit an epic's title or description:
 
-1. Click the **Edit title and description** **{pencil}** button.
+1. Select the **Edit title and description** **{pencil}** button.
 1. Make your changes.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 To edit an epics' start date, due date, or labels:
 
-1. Click **Edit** next to each section in the epic sidebar.
+1. Select **Edit** next to each section in the epic sidebar.
 1. Select the dates or labels for your epic.
 
 ## Bulk-edit epics
@@ -82,7 +82,7 @@ You can edit multiple epics at once. To learn how to do it, visit
 NOTE: **Note:**
 To delete an epic, you need to be an [Owner](../../permissions.md#group-members-permissions) of a group/subgroup.
 
-When editing the description of an epic, click the **Delete** button to delete the epic.
+When editing the description of an epic, select the **Delete** button to delete the epic.
 A modal appears to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
@@ -92,7 +92,7 @@ Deleting an epic releases all existing issues from their associated epic in the 
 Whenever you decide that there is no longer need for that epic,
 close the epic by:
 
-- Clicking the **Close epic** button.
+- Selecting the **Close epic** button.
 
   ![close epic - button](img/button_close_epic.png)
 
@@ -129,7 +129,7 @@ that of Issues and Merge Requests) based on following parameters:
 
 ![epics search](img/epics_search.png)
 
-To search, go to the list of epics and click the field **Search or filter results**.
+To search, go to the list of epics and select the field **Search or filter results**.
 It will display a dropdown menu, from which you can add an author. You can also enter plain
 text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
 keyboard to filter the list.
@@ -168,7 +168,7 @@ To make an epic confidential:
 
 ### Add a new issue to an epic
 
-You can add an existing issue to an epic, or, create a new issue that's
+You can add an existing issue to an epic, or create a new issue that's
 automatically added to the epic.
 
 #### Add an existing issue to an epic
@@ -183,15 +183,15 @@ current parent.
 
 To add a new issue to an epic:
 
-1. Click the **Add** dropdown button.
-1. Click **Add a new issue**.
+1. On the epic's page, under **Epics and Issues**, select the **Add** dropdown button.
+1. Select **Add an existing issue**.
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
      match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
    If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
-1. Click **Add**.
+1. Select **Add**.
 
 #### Create an issue from an epic
 
@@ -202,11 +202,11 @@ while dividing work into smaller parts.
 
 To create an issue from an epic:
 
-1. On the epic's page, under **Epics and Issues**, click the **Add** dropdown button and select
-   **Create new issue**.
+1. On the epic's page, under **Epics and Issues**, select the **Add** dropdown button.
+1. Select **Add a new issue**.
 1. Under **Title**, enter the title for the new issue.
 1. From the **Project** dropdown, select the project in which the issue should be created.
-1. Click **Create issue**.
+1. Select **Create issue**.
 
 ### Remove an issue from an epic
 
@@ -215,9 +215,9 @@ After you remove an issue from an epic, the issue will no longer be associated w
 
 To remove an issue from an epic:
 
-1. Click the **Remove** (**{close}**) button next to the issue you want to remove.
+1. Select the **Remove** (**{close}**) button next to the issue you want to remove.
    The **Remove issue** warning appears.
-1. Click **Remove**.
+1. Select **Remove**.
 
 ![List of issues assigned to an epic](img/issue_list_v13_1.png)
 
@@ -285,15 +285,15 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 To add a child epic to an epic:
 
-1. Click the **Add** dropdown button.
-1. Click **Add a new epic**.
+1. Select the **Add** dropdown button.
+1. Select **Add a new epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
    - Search for the desired issue by entering part of the epic's title, then selecting the desired
      match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
    If there are multiple epics to be added, press <kbd>Spacebar</kbd> and repeat this step.
-1. Click **Add**.
+1. Select **Add**.
 
 ### Move child epics between epics
 
@@ -325,5 +325,5 @@ To reorder child epics assigned to an epic:
 
 To remove a child epic from a parent epic:
 
-1. Click on the <kbd>x</kbd> button in the parent epic's list of epics.
-1. Click **Remove** in the **Remove epic** warning message.
+1. Select the <kbd>x</kbd> button in the parent epic's list of epics.
+1. Select **Remove** in the **Remove epic** warning message.

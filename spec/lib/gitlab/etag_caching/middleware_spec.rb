@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::EtagCaching::Middleware do
+RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:app_status_code) { 200 }
@@ -17,10 +17,12 @@ RSpec.describe Gitlab::EtagCaching::Middleware do
       mock_app_response
     end
 
-    it 'does not add ETag header' do
+    it 'does not add ETag headers' do
       _, headers, _ = middleware.call(build_request(path, if_none_match))
 
       expect(headers['ETag']).to be_nil
+      expect(headers['X-Gitlab-From-Cache']).to be_nil
+      expect(headers[::Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER]).to be_nil
     end
 
     it 'passes status code from app' do
@@ -68,7 +70,7 @@ RSpec.describe Gitlab::EtagCaching::Middleware do
       mock_value_in_store('123')
     end
 
-    it 'returns this value as header' do
+    it 'returns the correct headers' do
       _, headers, _ = middleware.call(build_request(path, if_none_match))
 
       expect(headers['ETag']).to eq 'W/"123"'
@@ -124,6 +126,13 @@ RSpec.describe Gitlab::EtagCaching::Middleware do
       status, _, _ = middleware.call(build_request(path, if_none_match))
 
       expect(status).to eq 304
+    end
+
+    it 'sets correct headers' do
+      _, headers, _ = middleware.call(build_request(path, if_none_match))
+
+      expect(headers).to include('X-Gitlab-From-Cache' => 'true',
+                                 ::Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER => 'issue_tracking')
     end
 
     it_behaves_like 'sends a process_action.action_controller notification', 304

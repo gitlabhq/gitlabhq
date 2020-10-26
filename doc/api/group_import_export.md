@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Group Import/Export API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8.
