@@ -114,7 +114,9 @@ There are a couple of exceptions to the [original dotenv rules](https://github.c
 
 - The variable key can contain only letters, digits, and underscores (`_`).
 - The maximum size of the `.env` file is 5 KB.
-- The maximum number of variables is 10.
+- In GitLab 13.5 and older, the maximum number of inherited variables is 10.
+- In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/247913),
+  the maximum number of inherited variables is 20.
 - Variable substitution in the `.env` file is not supported.
 - The `.env` file can't have empty lines or comments (starting with `#`).
 - Key values in the `env` file cannot have spaces or newline characters (`\n`), including when using single or double quotes.

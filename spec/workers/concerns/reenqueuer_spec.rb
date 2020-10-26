@@ -40,9 +40,7 @@ RSpec.describe Reenqueuer do
 
   it_behaves_like 'reenqueuer'
 
-  it_behaves_like 'it is rate limited to 1 call per', 5.seconds do
-    let(:rate_limited_method) { subject.perform }
-  end
+  it_behaves_like '#perform is rate limited to 1 call per', 5.seconds
 
   it 'disables Sidekiq retries' do
     expect(job.sidekiq_options_hash).to include('retry' => false)
@@ -98,7 +96,7 @@ RSpec.describe Reenqueuer::ReenqueuerSleeper do
     Class.new do
       include Reenqueuer::ReenqueuerSleeper
 
-      def rate_limited_method
+      def perform
         ensure_minimum_duration(11.seconds) do
           # do work
         end
@@ -108,12 +106,11 @@ RSpec.describe Reenqueuer::ReenqueuerSleeper do
 
   subject(:dummy) { dummy_class.new }
 
-  # Test that rate_limited_method is rate limited by ensure_minimum_duration
-  it_behaves_like 'it is rate limited to 1 call per', 11.seconds do
-    let(:rate_limited_method) { dummy.rate_limited_method }
-  end
+  # Slightly higher-level test of ensure_minimum_duration since we conveniently
+  # already have this shared example anyway.
+  it_behaves_like '#perform is rate limited to 1 call per', 11.seconds
 
-  # Test ensure_minimum_duration more directly
+  # Unit test ensure_minimum_duration
   describe '#ensure_minimum_duration' do
     around do |example|
       # Allow Timecop.travel without the block form

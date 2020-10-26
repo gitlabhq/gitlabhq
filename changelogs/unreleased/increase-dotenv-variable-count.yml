@@ -1,0 +1,5 @@
+---
+title: increase allowed dotenv variables from 10 to 20
+merge_request: 45815
+author: jrreid
+type: changed

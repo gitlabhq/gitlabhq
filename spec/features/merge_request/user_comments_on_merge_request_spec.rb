@@ -30,6 +30,27 @@ RSpec.describe 'User comments on a merge request', :js do
     end
   end
 
+  it 'replys to a new comment' do
+    page.within('.js-main-target-form') do
+      fill_in('note[note]', with: 'comment 1')
+      click_button('Comment')
+    end
+
+    wait_for_requests
+
+    page.within('.note') do
+      click_button('Reply to comment')
+
+      fill_in('note[note]', with: 'comment 2')
+      click_button('Add comment now')
+    end
+
+    wait_for_requests
+
+    # Test that the discussion doesn't get auto-resolved
+    expect(page).to have_button('Resolve thread')
+  end
+
   it 'loads new comment' do
     # Add new comment in background in order to check
     # if it's going to be loaded automatically for current user.

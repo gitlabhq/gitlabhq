@@ -10,7 +10,7 @@ export default {
         const { notes, resolved } = this.discussion;
 
         if (this.glFeatures.removeResolveNote) {
-          return resolved;
+          return Boolean(resolved);
         }
 
         if (notes) {

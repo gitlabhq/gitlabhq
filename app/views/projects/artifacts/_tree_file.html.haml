@@ -9,7 +9,7 @@
       = link_to path_to_file, class: 'tree-item-file-external-link js-artifact-tree-tooltip str-truncated',
           target: '_blank', rel: 'noopener noreferrer', title: _('Opens in a new window') do
         %span>= blob.name
-      = icon('external-link', class: 'js-artifact-tree-external-icon')
+      = sprite_icon('external-link', css_class: 'js-artifact-tree-external-icon')
     - else
       = link_to path_to_file, class: 'str-truncated' do
         %span= blob.name
