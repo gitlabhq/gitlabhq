@@ -28629,12 +28629,6 @@ msgstr ""
 msgid "UsageQuota|LFS Storage"
 msgstr ""
 
-msgid "UsageQuota|Learn more about excess storage usage"
-msgstr ""
-
-msgid "UsageQuota|Learn more about usage quotas"
-msgstr ""
-
 msgid "UsageQuota|Packages"
 msgstr ""
 
@@ -28657,6 +28651,12 @@ msgid "UsageQuota|Snippets"
 msgstr ""
 
 msgid "UsageQuota|Storage"
+msgstr ""
+
+msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
+msgstr ""
+
+msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
 msgstr ""
 
 msgid "UsageQuota|This namespace contains locked projects"

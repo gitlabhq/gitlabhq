@@ -83,6 +83,8 @@ module Gitlab
         return unless ::Gitlab::Auth::CI_JOB_USER == login
 
         job = find_valid_running_job_by_token!(password)
+        @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
         job.user
       end
 

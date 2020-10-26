@@ -1009,7 +1009,7 @@ GEM
     rspec-support (3.9.2)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rspec_profiling (0.0.5)
+    rspec_profiling (0.0.6)
       activerecord
       pg
       rails
@@ -1467,7 +1467,7 @@ DEPENDENCIES
   rspec-rails (~> 4.0.0)
   rspec-retry (~> 0.6.1)
   rspec_junit_formatter
-  rspec_profiling (~> 0.0.5)
+  rspec_profiling (~> 0.0.6)
   rubocop (~> 0.82.0)
   rubocop-performance (~> 1.5.2)
   rubocop-rspec (~> 1.37.0)

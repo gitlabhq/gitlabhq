@@ -607,6 +607,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
         set_basic_auth_header(username, build.token)
 
         is_expected.to eq user
+        expect(@current_authenticated_job).to eq build
       end
 
       it 'raises error with invalid token' do

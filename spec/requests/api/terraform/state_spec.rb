@@ -113,7 +113,7 @@ RSpec.describe API::Terraform::State do
   end
 
   describe 'POST /projects/:id/terraform/state/:name' do
-    let(:params) { { 'instance': 'example-instance', 'serial': '1' } }
+    let(:params) { { 'instance': 'example-instance', 'serial': state.latest_version.version + 1 } }
 
     subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
 
@@ -196,6 +196,18 @@ RSpec.describe API::Terraform::State do
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
+      end
+    end
+
+    context 'when using job token authentication' do
+      let(:job) { create(:ci_build, status: :running, project: project, user: maintainer) }
+      let(:auth_header) { job_basic_auth_header(job) }
+
+      it 'associates the job with the newly created state version' do
+        expect { request }.to change { state.versions.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(state.reload_latest_version.build).to eq(job)
       end
     end
   end

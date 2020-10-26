@@ -52,7 +52,7 @@ module API
             no_content! if data.empty?
 
             remote_state_handler.handle_with_lock do |state|
-              state.update_file!(CarrierWaveStringFile.new(data), version: params[:serial])
+              state.update_file!(CarrierWaveStringFile.new(data), version: params[:serial], build: current_authenticated_job)
               status :ok
             end
           end

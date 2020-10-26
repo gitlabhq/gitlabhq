@@ -7,6 +7,7 @@ tasks:
 
   - init: |
       echo "$(date) – Copying GDK" | tee -a /workspace/startup.log
+      rm -r /workspace/.rvm
       mv $HOME/.rvm-workspace /workspace/.rvm
       cp -r $HOME/gitlab-development-kit /workspace/
       (
