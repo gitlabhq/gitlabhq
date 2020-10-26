@@ -87,26 +87,22 @@ RSpec.describe "User browses files" do
       end
 
       it "shows correct files and links" do
-        # rubocop:disable Lint/Void
-        # Test the full URLs of links instead of relative paths by `have_link(text: "...", href: "...")`.
-        find("a", text: /^empty$/)["href"]            == project_tree_url(project, "markdown")
-        find("a", text: /^#id$/)["href"]              == project_tree_url(project, "markdown", anchor: "#id")
-        find("a", text: %r{^/#id$})["href"]           == project_tree_url(project, "markdown", anchor: "#id")
-        find("a", text: /^README.md#id$/)["href"]     == project_blob_url(project, "markdown/README.md", anchor: "#id")
-        find("a", text: %r{^d/README.md#id$})["href"] == project_blob_url(project, "d/markdown/README.md", anchor: "#id")
-        # rubocop:enable Lint/Void
-
         expect(current_path).to eq(project_tree_path(project, "markdown"))
         expect(page).to have_content("README.md")
-                   .and have_content("CHANGELOG")
-                   .and have_content("Welcome to GitLab GitLab is a free project and repository management application")
-                   .and have_link("GitLab API doc")
-                   .and have_link("GitLab API website")
-                   .and have_link("Rake tasks")
-                   .and have_link("backup and restore procedure")
-                   .and have_link("GitLab API doc directory")
-                   .and have_link("Maintenance")
-                   .and have_header_with_correct_id_and_link(2, "Application details", "application-details")
+          .and have_content("CHANGELOG")
+          .and have_content("Welcome to GitLab GitLab is a free project and repository management application")
+          .and have_link("GitLab API doc")
+          .and have_link("GitLab API website")
+          .and have_link("Rake tasks")
+          .and have_link("backup and restore procedure")
+          .and have_link("GitLab API doc directory")
+          .and have_link("Maintenance")
+          .and have_header_with_correct_id_and_link(2, "Application details", "application-details")
+          .and have_link("empty", href: "")
+          .and have_link("#id", href: "#id")
+          .and have_link("/#id", href: project_blob_path(project, "markdown/README.md", anchor: "id"))
+          .and have_link("README.md#id", href: project_blob_path(project, "markdown/README.md", anchor: "id"))
+          .and have_link("d/README.md#id", href: project_blob_path(project, "markdown/db/README.md", anchor: "id"))
       end
 
       it "shows correct content of file" do
@@ -114,10 +110,10 @@ RSpec.describe "User browses files" do
 
         expect(current_path).to eq(project_blob_path(project, "markdown/doc/api/README.md"))
         expect(page).to have_content("All API requests require authentication")
-                   .and have_content("Contents")
-                   .and have_link("Users")
-                   .and have_link("Rake tasks")
-                   .and have_header_with_correct_id_and_link(1, "GitLab API", "gitlab-api")
+          .and have_content("Contents")
+          .and have_link("Users")
+          .and have_link("Rake tasks")
+          .and have_header_with_correct_id_and_link(1, "GitLab API", "gitlab-api")
 
         click_link("Users")
 
@@ -148,16 +144,13 @@ RSpec.describe "User browses files" do
           click_link("d")
         end
 
-        # rubocop:disable Lint/Void
-        # Test the full URLs of links instead of relative paths by `have_link(text: "...", href: "...")`.
-        find("a", text: "..")["href"] == project_tree_url(project, "markdown/d")
-        # rubocop:enable Lint/Void
+        expect(page).to have_link("..", href: project_tree_path(project, "markdown/"))
 
         page.within(".tree-table") do
           click_link("README.md")
         end
-        # Test the full URLs of links instead of relative paths by `have_link(text: "...", href: "...")`.
-        find("a", text: /^empty$/)["href"] == project_blob_url(project, "markdown/d/README.md")
+
+        expect(page).to have_link("empty", href: "")
       end
 
       it "shows correct content of directory" do

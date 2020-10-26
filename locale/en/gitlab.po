@@ -305,12 +305,6 @@ msgstr ""
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
-msgid "Cycle Analytics"
-msgstr ""
-
-msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr ""
-
 msgid "CycleAnalyticsStage|Code"
 msgstr ""
 
@@ -481,9 +475,6 @@ msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
 msgid "Interval Pattern"
-msgstr ""
-
-msgid "Introducing Cycle Analytics"
 msgstr ""
 
 msgid "Jobs for last month"

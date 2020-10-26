@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div class="append-bottom-20">
-    <label class="form-section-title label-bold" for="board-new-name">
+    <label class="label-bold gl-font-lg" for="board-new-name">
       {{ __('List options') }}
     </label>
     <p class="text-secondary gl-mb-3">

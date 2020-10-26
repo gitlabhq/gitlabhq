@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 .pipeline-schedule-form {
   .gl-field-error {
     margin: 10px 0 0;
@@ -32,11 +34,11 @@
   }
 
   .next-run-cell {
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gray-500);
   }
 
   a {
-    color: $text-color;
+    color: var(--gl-text-color, $gl-text-color);
   }
 
   svg {
@@ -46,13 +48,13 @@
 
 .pipeline-schedules-user-callout {
   .bordered-box.content-block {
-    border: 1px solid $border-color;
+    border: 1px solid var(--border-color, $border-color);
     background-color: transparent;
     padding: 16px;
   }
 
   #dismiss-callout-btn {
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
   }
 }
 

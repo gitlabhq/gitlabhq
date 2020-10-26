@@ -51,44 +51,44 @@ RSpec.describe ::SystemNotes::MergeRequestsService do
     end
   end
 
-  describe '.handle_merge_request_wip' do
+  describe '.handle_merge_request_draft' do
     context 'adding draft note' do
       let(:noteable) { create(:merge_request, source_project: project, title: 'Draft: Lorem ipsum') }
 
-      subject { service.handle_merge_request_wip }
+      subject { service.handle_merge_request_draft }
 
       it_behaves_like 'a system note' do
         let(:action) { 'title' }
       end
 
       it 'sets the note text' do
-        expect(subject.note).to eq 'marked as a **Work In Progress**'
+        expect(subject.note).to eq 'marked this merge request as **draft**'
       end
     end
 
-    context 'removing wip note' do
-      subject { service.handle_merge_request_wip }
+    context 'removing draft note' do
+      subject { service.handle_merge_request_draft }
 
       it_behaves_like 'a system note' do
         let(:action) { 'title' }
       end
 
       it 'sets the note text' do
-        expect(subject.note).to eq 'unmarked as a **Work In Progress**'
+        expect(subject.note).to eq 'marked this merge request as **ready**'
       end
     end
   end
 
-  describe '.add_merge_request_wip_from_commit' do
-    subject { service.add_merge_request_wip_from_commit(noteable.diff_head_commit) }
+  describe '.add_merge_request_draft_from_commit' do
+    subject { service.add_merge_request_draft_from_commit(noteable.diff_head_commit) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'title' }
     end
 
-    it "posts the 'marked as a Work In Progress from commit' system note" do
+    it "posts the 'marked this merge request as draft from commit' system note" do
       expect(subject.note).to match(
-        /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
+        /marked this merge request as \*\*draft\*\* from #{Commit.reference_pattern}/
       )
     end
   end

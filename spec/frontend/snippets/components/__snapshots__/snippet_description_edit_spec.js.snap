@@ -53,7 +53,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
               class="div-dropzone-hover"
             >
               <svg
-                class="div-dropzone-icon"
+                class="div-dropzone-icon s24"
               >
                 <use
                   xlink:href="undefined#paperclip"

@@ -133,7 +133,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="d-flex board-card-header" dir="auto">
+    <div class="gl-display-flex" dir="auto">
       <h4 class="board-card-title gl-mb-0 gl-mt-0">
         <gl-icon
           v-if="issue.blocked"
@@ -156,7 +156,7 @@ export default {
         }}</a>
       </h4>
     </div>
-    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 d-flex flex-wrap">
+    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
@@ -169,24 +169,26 @@ export default {
         />
       </template>
     </div>
-    <div class="board-card-footer d-flex justify-content-between align-items-end">
+    <div
+      class="board-card-footer gl-display-flex gl-justify-content-space-between gl-align-items-flex-end"
+    >
       <div
-        class="d-flex align-items-start flex-wrap-reverse board-card-number-container overflow-hidden js-board-card-number-container"
+        class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden js-board-card-number-container"
       >
         <span
           v-if="issue.referencePath"
-          class="board-card-number overflow-hidden d-flex gl-mr-3 gl-mt-3"
+          class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"
         >
           <tooltip-on-truncate
             v-if="issueReferencePath"
             :title="issueReferencePath"
             placement="bottom"
-            class="board-issue-path block-truncated bold"
+            class="board-issue-path gl-text-truncate gl-font-weight-bold"
             >{{ issueReferencePath }}</tooltip-on-truncate
           >
           #{{ issue.iid }}
         </span>
-        <span class="board-info-items gl-mt-3 d-inline-block">
+        <span class="board-info-items gl-mt-3 gl-display-inline-block">
           <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" :closed="issue.closed" />
           <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
           <issue-card-weight
@@ -196,7 +198,7 @@ export default {
           />
         </span>
       </div>
-      <div class="board-card-assignee d-flex">
+      <div class="board-card-assignee gl-display-flex">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
           v-if="shouldRenderAssignee(index)"
@@ -209,7 +211,7 @@ export default {
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="bold d-block">{{ __('Assignee') }}</span>
+            <span class="gl-font-weight-bold gl-display-block">{{ __('Assignee') }}</span>
             {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>

@@ -18,4 +18,8 @@ module InviteMembersHelper
       experiment_enabled?(:invite_members_version_b) && !can_import_members?
     end
   end
+
+  def invite_group_members?(group)
+    experiment_enabled?(:invite_members_empty_group_version_a) && Ability.allowed?(current_user, :admin_group_member, group)
+  end
 end

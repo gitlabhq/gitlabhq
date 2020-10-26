@@ -1,4 +1,4 @@
-import GetSnippetQuery from '../queries/snippet.query.graphql';
+import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 
 const blobsDefault = [];
 
@@ -8,7 +8,7 @@ export const getSnippetMixin = {
       query: GetSnippetQuery,
       variables() {
         return {
-          ids: this.snippetGid,
+          ids: [this.snippetGid],
         };
       },
       update: data => {

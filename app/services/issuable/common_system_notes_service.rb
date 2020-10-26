@@ -51,11 +51,11 @@ module Issuable
       end
     end
 
-    def create_wip_note(old_title)
+    def create_draft_note(old_title)
       return unless issuable.is_a?(MergeRequest)
 
       if MergeRequest.work_in_progress?(old_title) != issuable.work_in_progress?
-        SystemNoteService.handle_merge_request_wip(issuable, issuable.project, current_user)
+        SystemNoteService.handle_merge_request_draft(issuable, issuable.project, current_user)
       end
     end
 
@@ -69,7 +69,7 @@ module Issuable
     end
 
     def create_title_change_note(old_title)
-      create_wip_note(old_title)
+      create_draft_note(old_title)
 
       if issuable.wipless_title_changed(old_title)
         SystemNoteService.change_title(issuable, issuable.project, current_user, old_title)

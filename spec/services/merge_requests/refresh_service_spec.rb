@@ -683,14 +683,14 @@ RSpec.describe MergeRequests::RefreshService do
       end
     end
 
-    context 'marking the merge request as work in progress' do
+    context 'marking the merge request as draft' do
       let(:refresh_service) { service.new(@project, @user) }
 
       before do
         allow(refresh_service).to receive(:execute_hooks)
       end
 
-      it 'marks the merge request as work in progress from fixup commits' do
+      it 'marks the merge request as draft from fixup commits' do
         fixup_merge_request = create(:merge_request,
                                      source_project: @project,
                                      source_branch: 'wip',
@@ -705,11 +705,11 @@ RSpec.describe MergeRequests::RefreshService do
 
         expect(fixup_merge_request.work_in_progress?).to eq(true)
         expect(fixup_merge_request.notes.last.note).to match(
-          /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
+          /marked this merge request as \*\*draft\*\* from #{Commit.reference_pattern}/
         )
       end
 
-      it 'references the commit that caused the Work in Progress status' do
+      it 'references the commit that caused the draft status' do
         wip_merge_request = create(:merge_request,
                                    source_project: @project,
                                    source_branch: 'wip',
@@ -724,11 +724,11 @@ RSpec.describe MergeRequests::RefreshService do
         refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
 
         expect(wip_merge_request.reload.notes.last.note).to eq(
-          "marked as a **Work In Progress** from #{wip_commit.id}"
+          "marked this merge request as **draft** from #{wip_commit.id}"
         )
       end
 
-      it 'does not mark as WIP based on commits that do not belong to an MR' do
+      it 'does not mark as draft based on commits that do not belong to an MR' do
         allow(refresh_service).to receive(:find_new_commits)
         refresh_service.instance_variable_set("@commits", [
           double(

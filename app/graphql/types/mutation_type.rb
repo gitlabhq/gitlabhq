@@ -54,6 +54,9 @@ module Types
                                 'If the body of the Note contains only quick actions, the Note will be ' \
                                 'destroyed during the update, and no Note will be returned'
     mount_mutation Mutations::Notes::Destroy
+    mount_mutation Mutations::Terraform::State::Delete
+    mount_mutation Mutations::Terraform::State::Lock
+    mount_mutation Mutations::Terraform::State::Unlock
     mount_mutation Mutations::Todos::MarkDone
     mount_mutation Mutations::Todos::Restore
     mount_mutation Mutations::Todos::MarkAllDone

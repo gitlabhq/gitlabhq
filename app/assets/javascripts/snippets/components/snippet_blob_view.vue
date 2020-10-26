@@ -1,8 +1,8 @@
 <script>
+import GetBlobContent from 'shared_queries/snippet/snippet_blob_content.query.graphql';
+
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
-
-import GetBlobContent from '../queries/snippet.blob.content.query.graphql';
 
 import {
   SIMPLE_BLOB_VIEWER,
@@ -21,7 +21,7 @@ export default {
       query: GetBlobContent,
       variables() {
         return {
-          ids: this.snippet.id,
+          ids: [this.snippet.id],
           rich: this.activeViewerType === RICH_BLOB_VIEWER,
           paths: [this.blob.path],
         };

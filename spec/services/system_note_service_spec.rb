@@ -566,25 +566,25 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.handle_merge_request_wip' do
+  describe '.handle_merge_request_draft' do
     it 'calls MergeRequestsService' do
       expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:handle_merge_request_wip)
+        expect(service).to receive(:handle_merge_request_draft)
       end
 
-      described_class.handle_merge_request_wip(noteable, project, author)
+      described_class.handle_merge_request_draft(noteable, project, author)
     end
   end
 
-  describe '.add_merge_request_wip_from_commit' do
+  describe '.add_merge_request_draft_from_commit' do
     it 'calls MergeRequestsService' do
       commit = double
 
       expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:add_merge_request_wip_from_commit).with(commit)
+        expect(service).to receive(:add_merge_request_draft_from_commit).with(commit)
       end
 
-      described_class.add_merge_request_wip_from_commit(noteable, project, author, commit)
+      described_class.add_merge_request_draft_from_commit(noteable, project, author, commit)
     end
   end
 

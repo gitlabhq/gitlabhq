@@ -56,25 +56,40 @@ RSpec.describe PageLayoutHelper do
     end
 
     %w(project user group).each do |type|
-      context "with @#{type} assigned" do
-        it "uses #{type.titlecase} avatar if available" do
-          object = double(avatar_url: 'http://example.com/uploads/-/system/avatar.png')
-          assign(type, object)
+      let(:object) { build(type, trait) }
+      let(:trait) { :with_avatar }
 
-          expect(helper.page_image).to eq object.avatar_url
+      context "with @#{type} assigned" do
+        before do
+          assign(type, object)
         end
 
-        it 'falls back to the default when avatar_url is nil' do
-          object = double(avatar_url: nil)
-          assign(type, object)
+        it "uses #{type.titlecase} avatar full url" do
+          expect(helper.page_image).to eq object.avatar_url(only_path: false)
+        end
 
-          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+        context 'when avatar_url is nil' do
+          let(:trait) { nil }
+
+          it 'falls back to the default when avatar_url is nil' do
+            expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+          end
         end
       end
 
       context "with no assignments" do
         it 'falls back to the default' do
           expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+        end
+      end
+
+      context 'if avatar_with_host is disabled' do
+        it "#{type.titlecase} does not generate avatar full url" do
+          stub_feature_flags(avatar_with_host: false)
+
+          assign(type, object)
+
+          expect(helper.page_image).to eq object.avatar_url(only_path: true)
         end
       end
     end

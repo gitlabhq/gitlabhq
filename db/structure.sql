@@ -16146,6 +16146,27 @@ CREATE TABLE snippet_repositories (
     CONSTRAINT snippet_repositories_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
 );
 
+CREATE TABLE snippet_repository_storage_moves (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    snippet_id bigint NOT NULL,
+    state smallint DEFAULT 1 NOT NULL,
+    source_storage_name text NOT NULL,
+    destination_storage_name text NOT NULL,
+    CONSTRAINT snippet_repository_storage_moves_destination_storage_name CHECK ((char_length(destination_storage_name) <= 255)),
+    CONSTRAINT snippet_repository_storage_moves_source_storage_name CHECK ((char_length(source_storage_name) <= 255))
+);
+
+CREATE SEQUENCE snippet_repository_storage_moves_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE snippet_repository_storage_moves_id_seq OWNED BY snippet_repository_storage_moves.id;
+
 CREATE TABLE snippet_statistics (
     snippet_id bigint NOT NULL,
     repository_size bigint DEFAULT 0 NOT NULL,
@@ -18048,6 +18069,8 @@ ALTER TABLE ONLY slack_integrations ALTER COLUMN id SET DEFAULT nextval('slack_i
 
 ALTER TABLE ONLY smartcard_identities ALTER COLUMN id SET DEFAULT nextval('smartcard_identities_id_seq'::regclass);
 
+ALTER TABLE ONLY snippet_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('snippet_repository_storage_moves_id_seq'::regclass);
+
 ALTER TABLE ONLY snippet_user_mentions ALTER COLUMN id SET DEFAULT nextval('snippet_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY snippets ALTER COLUMN id SET DEFAULT nextval('snippets_id_seq'::regclass);
@@ -19433,6 +19456,9 @@ ALTER TABLE ONLY smartcard_identities
 
 ALTER TABLE ONLY snippet_repositories
     ADD CONSTRAINT snippet_repositories_pkey PRIMARY KEY (snippet_id);
+
+ALTER TABLE ONLY snippet_repository_storage_moves
+    ADD CONSTRAINT snippet_repository_storage_moves_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT snippet_statistics_pkey PRIMARY KEY (snippet_id);
@@ -21700,6 +21726,8 @@ CREATE UNIQUE INDEX index_snippet_repositories_on_disk_path ON snippet_repositor
 
 CREATE INDEX index_snippet_repositories_on_shard_id ON snippet_repositories USING btree (shard_id);
 
+CREATE INDEX index_snippet_repository_storage_moves_on_snippet_id ON snippet_repository_storage_moves USING btree (snippet_id);
+
 CREATE UNIQUE INDEX index_snippet_user_mentions_on_note_id ON snippet_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE INDEX index_snippets_on_author_id ON snippets USING btree (author_id);
@@ -23407,6 +23435,9 @@ ALTER TABLE ONLY ci_pipeline_artifacts
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_rails_4b8c694a6c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY snippet_repository_storage_moves
+    ADD CONSTRAINT fk_rails_4b950f5b94 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_management_designs
     ADD CONSTRAINT fk_rails_4bb1073360 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

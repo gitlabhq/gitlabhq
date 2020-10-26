@@ -81,4 +81,28 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
       end
     end
   end
+
+  describe 'scopes' do
+    let_it_be(:project) { create(:project) }
+    let(:recent_build_group_report_result) { create(:ci_daily_build_group_report_result, project: project) }
+    let(:old_build_group_report_result) do
+      create(:ci_daily_build_group_report_result, date: 1.week.ago, project: project)
+    end
+
+    describe '.by_projects' do
+      subject { described_class.by_projects([project.id]) }
+
+      it 'returns records by projects' do
+        expect(subject).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+
+    describe '.with_coverage' do
+      subject { described_class.with_coverage }
+
+      it 'returns data with coverage' do
+        expect(subject).to contain_exactly(recent_build_group_report_result, old_build_group_report_result)
+      end
+    end
+  end
 end

@@ -83,9 +83,6 @@
 }
 
 .board {
-  // the next line cannot be replaced with .d-inline-block because it breaks display: none of SortableJS
-  // see https://gitlab.com/gitlab-org/gitlab-foss/issues/64828
-  display: inline-block;
   width: calc(85vw - 15px);
 
   @include media-breakpoint-up(sm) {
@@ -116,37 +113,8 @@
   &.is-collapsed {
     width: 50px;
 
-    .board-title {
-      flex-direction: column;
-    }
-
     .board-title-caret {
       margin-top: 1px;
-    }
-
-    .user-avatar-link,
-    .milestone-icon {
-      margin-top: $gl-padding-8;
-      transform: rotate(90deg);
-    }
-
-    .board-title-text {
-      flex-grow: 0;
-      margin: $gl-padding-8 0;
-
-      .board-title-main-text {
-        display: block;
-      }
-
-      .board-title-sub-text {
-        display: none;
-      }
-    }
-
-    .issue-count-badge {
-      border: 0;
-      white-space: nowrap;
-      padding: 0;
     }
 
     .board-title-text > span,
@@ -197,10 +165,7 @@
 }
 
 .board-title {
-  align-items: center;
-  font-size: 1em;
   border-bottom: 1px solid var(--gray-100, $gray-100);
-  padding: 0 $gl-spacing-scale-3;
   height: 3rem;
 
   .js-max-issue-size::before {
@@ -208,39 +173,11 @@
   }
 }
 
-.board-title-text {
-  flex-grow: 1;
-}
-
-.board-delete.gl-button {
-  background-color: transparent;
-  outline: 0;
-
-  &:hover {
-    color: var(--blue-600, $blue-600);
-    box-shadow: none;
-  }
-}
-
-.board-blank-state,
 .board-promotion-state {
   background-color: var(--white, $white);
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.board-blank-state-list {
-  > li:not(:last-child) {
-    margin-bottom: 8px;
-  }
-
-  .label-color {
-    top: 2px;
-    width: 16px;
-    height: 16px;
-    margin-right: 3px;
-  }
 }
 
 .board-list-component {
@@ -309,10 +246,6 @@
   @include media-breakpoint-down(md) {
     font-size: $label-font-size;
   }
-}
-
-.board-card-header {
-  text-align: initial;
 }
 
 .board-card-assignee {
@@ -586,28 +519,6 @@
   }
 }
 
-.board-swimlanes {
-  overflow-x: auto;
-}
-
 .board-header-collapsed-info-icon:hover {
   color: var(--gray-900, $gray-900);
-}
-
-$epic-icons-spacing: 40px;
-
-.board-epic-lane {
-  max-width: calc(100vw - #{$contextual-sidebar-width} - #{$epic-icons-spacing});
-
-  .page-with-icon-sidebar & {
-    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$epic-icons-spacing});
-  }
-
-  .page-with-icon-sidebar .is-compact & {
-    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$gutter-width} - #{$epic-icons-spacing});
-  }
-
-  .is-compact & {
-    max-width: calc(100vw - #{$contextual-sidebar-width} - #{$gutter-width} - #{$epic-icons-spacing});
-  }
 }

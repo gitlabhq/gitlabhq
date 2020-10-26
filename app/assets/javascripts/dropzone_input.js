@@ -26,7 +26,7 @@ function getErrorMessage(res) {
 
 export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const divHover = '<div class="div-dropzone-hover"></div>';
-  const iconPaperclip = spriteIcon('paperclip', 'div-dropzone-icon');
+  const iconPaperclip = spriteIcon('paperclip', 'div-dropzone-icon s24');
   const $attachButton = form.find('.button-attach-file');
   const $attachingFileMessage = form.find('.attaching-file-message');
   const $cancelButton = form.find('.button-cancel-uploading-files');

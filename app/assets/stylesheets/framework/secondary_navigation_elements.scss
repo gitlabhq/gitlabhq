@@ -69,7 +69,7 @@
     line-height: 28px;
     white-space: normal;
 
-    /* Small devices (phones, tablets, 768px and lower) */
+    /* Small devices (phones, 768px and lower) */
     @include media-breakpoint-down(xs) {
       width: 100%;
     }
@@ -92,7 +92,7 @@
       padding: 16px 15px 11px;
     }
 
-    /* Small devices (phones, tablets, 768px and lower) */
+    /* Small devices (phones, 768px and lower) */
     @include media-breakpoint-down(sm) {
       width: 100%;
     }
@@ -101,15 +101,6 @@
   .nav-controls {
     display: inline-block;
     text-align: right;
-
-    @include media-breakpoint-down(sm) {
-      margin-top: $gl-padding-8;
-    }
-
-    @include media-breakpoint-up(md) {
-      display: flex;
-      align-items: center;
-    }
 
     > .btn,
     > .btn-group,
@@ -143,6 +134,35 @@
 
         /* Large devices (large desktops, 1200px and up) */
         @include media-breakpoint-up(lg) { width: 250px; }
+      }
+    }
+
+    @include media-breakpoint-up(md) {
+      display: flex;
+      align-items: center;
+    }
+
+    @include media-breakpoint-down(md) {
+      $controls-margin: $btn-margin-5 - 2px;
+      flex: 0 0 100%;
+      margin-top: $gl-padding-8;
+
+      .controls-item,
+      .controls-item-full,
+      .controls-item:last-child {
+        flex: 1 1 35%;
+        display: block;
+        width: 100%;
+        margin: $controls-margin;
+
+        .btn,
+        .dropdown {
+          margin: 0;
+        }
+      }
+
+      .controls-item-full {
+        flex: 1 1 100%;
       }
     }
 
@@ -238,32 +258,6 @@
 
   pre {
     width: 100%;
-  }
-
-  @include media-breakpoint-down(md) {
-    .nav-controls {
-      $controls-margin: $btn-margin-5 - 2px;
-      flex: 0 0 100%;
-      margin-top: $gl-padding-8;
-
-      .controls-item,
-      .controls-item-full,
-      .controls-item:last-child {
-        flex: 1 1 35%;
-        display: block;
-        width: 100%;
-        margin: $controls-margin;
-
-        .btn,
-        .dropdown {
-          margin: 0;
-        }
-      }
-
-      .controls-item-full {
-        flex: 1 1 100%;
-      }
-    }
   }
 }
 

@@ -61,17 +61,17 @@ export default {
     <span v-if="canAttachFile" class="uploading-container">
       <span class="uploading-progress-container hide">
         <template>
-          <gl-icon name="media" :size="16" class="gl-vertical-align-text-bottom" />
+          <gl-icon name="media" />
         </template>
         <span class="attaching-file-message"></span>
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <span class="uploading-progress">0%</span>
-        <gl-loading-icon inline class="align-text-bottom" />
+        <gl-loading-icon inline />
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
           <template>
-            <gl-icon name="media" :size="16" class="gl-vertical-align-text-bottom" />
+            <gl-icon name="media" />
           </template>
         </span>
         <span class="uploading-error-message"></span>
