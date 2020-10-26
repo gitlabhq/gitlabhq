@@ -9,15 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab provides a comprehensive set of features for viewing and managing vulnerabilities:
 
-- Security dashboards: An overview of the security status in your instance, groups, and projects.
-- Vulnerability reports: Detailed lists of all vulnerabilities for the instance, group, project, or
+- Security dashboards: An overview of the security status in your instance, [groups](#group-security-dashboard), and
+  [projects](#project-security-dashboard).
+- [Vulnerability reports](#vulnerability-report): Detailed lists of all vulnerabilities for the instance, group, project, or
   pipeline. This is where you triage and manage vulnerabilities.
-- Security Center: A dedicated area for vulnerability management at the instance level. This
+- [Security Center](#instance-security-center): A dedicated area for vulnerability management at the instance level. This
   includes a security dashboard, vulnerability report, and settings.
 
-You can also drill down into a vulnerability and get extra information. This includes the project it
-comes from, any related file(s), and metadata that helps you analyze the risk it poses. You can also
-dismiss a vulnerability or create an issue for it.
+You can also drill down into a vulnerability and get extra information on the
+[Vulnerability Page](../vulnerabilities/index.md). This view includes the project it
+comes from, any related file(s), and metadata that helps you analyze the risk it poses.
+You can also confirm, dismiss, or resolve a vulnerability, create an issue for it,
+and in some cases, generate a merge request to fix the vulnerability.
 
 To benefit from these features, you must first configure one of the
 [security scanners](../index.md).
@@ -30,7 +33,7 @@ The vulnerability report displays vulnerabilities detected by scanners such as:
 - [Dynamic Application Security Testing](../dast/index.md)
 - [Dependency Scanning](../dependency_scanning/index.md)
 - [Static Application Security Testing](../sast/index.md)
-- And others!
+- And [others](../index.md#security-scanning-tools)!
 
 ## Requirements
 
@@ -64,10 +67,10 @@ the analyzer outputs an
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
-At the project level, the Security Dashboard displays the vulnerabilities merged into your project's
+At the project level, the Security Dashboard displays the vulnerabilities that exist in your project's
 [default branch](../../project/repository/branches/index.md#default-branch). Access it by navigating
-to **Security & Compliance > Security Dashboard**. By default, the Security Dashboard displays all
-detected and confirmed vulnerabilities.
+to **Security & Compliance > Security Dashboard**. By default, the Security Dashboard is filtered to
+display all detected and confirmed vulnerabilities.
 
 The Security Dashboard first displays the time at which the last pipeline completed on the project's
 default branch. There's also a link to view this in more detail.
@@ -81,9 +84,11 @@ page to view more information about that vulnerability.
 
 You can filter the vulnerabilities by one or more of the following:
 
-- Status
-- Severity
-- Scanner
+| Filter | Available Options |
+| --- | --- |
+| Status | Detected, Confirmed, Dismissed, Resolved |
+| Severity | Critical, High, Medium, Low, Info, Unknown |
+| Scanner | [Available Scanners](../index.md#security-scanning-tools) |
 
 You can also dismiss vulnerabilities in the table:
 
@@ -96,7 +101,7 @@ You can also dismiss vulnerabilities in the table:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
 
-The group Security Dashboard gives an overview of the vulnerabilities in the default branches of the
+The group Security Dashboard gives an overview of the vulnerabilities found in the default branches of the
 projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
 after selecting your group. By default, the Security Dashboard displays all detected and confirmed
 vulnerabilities. If you don't see the vulnerabilities over time graph, the likely cause is that you
@@ -115,11 +120,12 @@ more details about the open vulnerabilities at a specific time.
 
 Next to the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
 
-- F: One or more "critical"
-- D: One or more "high" or "unknown"
-- C: One or more "medium"
-- B: One or more "low"
-- A: Zero vulnerabilities
+| Grade | Description |
+| F | One or more "critical" |
+| D | One or more "high" or "unknown" |
+| C | One or more "medium" |
+| B | One or more "low" |
+| A | Zero vulnerabilities |
 
 Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
 vulnerabilities are excluded.
@@ -232,10 +238,12 @@ into the default branch.
 
 You can filter which vulnerabilities the vulnerability report displays by:
 
-- Status
-- Severity
-- Scanner
-- Project
+| Filter | Available Options |
+| --- | --- |
+| Status | Detected, Confirmed, Dismissed, Resolved |
+| Severity | Critical, High, Medium, Low, Info, Unknown |
+| Scanner | [Available Scanners](../index.md#security-scanning-tools) |
+| Project | Projects configured in the Security Center settings |
 
 Clicking any vulnerability in the table takes you to its
 [Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.

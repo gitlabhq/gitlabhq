@@ -50,6 +50,24 @@ RSpec.describe SortingHelper do
     end
   end
 
+  describe '#search_sort_direction_button' do
+    before do
+      set_sorting_url 'test_label'
+    end
+
+    it 'keeps label filter param' do
+      expect(search_sort_direction_button('created_asc')).to include('label_name=test_label')
+    end
+
+    it 'returns icon with sort-lowest when sort is asc' do
+      expect(search_sort_direction_button('created_asc')).to include('sort-lowest')
+    end
+
+    it 'returns icon with sort-highest when sort is desc' do
+      expect(search_sort_direction_button('created_desc')).to include('sort-highest')
+    end
+  end
+
   def stub_controller_path(value)
     allow(helper.controller).to receive(:controller_path).and_return(value)
   end

@@ -183,6 +183,25 @@ RSpec.describe Emails::ServiceDesk do
 
         it_behaves_like 'handle template content', 'new_note'
       end
+
+      context 'with upload link in the note' do
+        let_it_be(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
+        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [file](#{upload_path})") }
+
+        let(:template_content) { 'some text %{ NOTE_TEXT  }' }
+        let(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-link="true" class="gfm">file</a>) }
+
+        it_behaves_like 'handle template content', 'new_note'
+      end
+
+      context 'with all-user reference in a an external author comment' do
+        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: User.support_bot) }
+
+        let(:template_content) { 'some text %{ NOTE_TEXT  }' }
+        let(:expected_body) { 'Hey , just a ping' }
+
+        it_behaves_like 'handle template content', 'new_note'
+      end
     end
   end
 end

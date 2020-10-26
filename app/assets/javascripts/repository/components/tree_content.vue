@@ -1,9 +1,9 @@
 <script>
+import filesQuery from 'shared_queries/repository/files.query.graphql';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '../../locale';
 import FileTable from './table/index.vue';
 import getRefMixin from '../mixins/get_ref';
-import filesQuery from '../queries/files.query.graphql';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import FilePreview from './preview/index.vue';
 import { readmeFile } from '../utils/readme';

@@ -48,7 +48,7 @@
           = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default.") % {settings_link: settings_link}).html_safe
 
     .form-actions
-      = f.submit s_('Pipeline|Run Pipeline'), class: 'btn btn-success js-variables-save-button', tabindex: 3
+      = f.submit s_('Pipeline|Run Pipeline'), class: 'btn btn-success js-variables-save-button'
       = link_to _('Cancel'), project_pipelines_path(@project), class: 'btn btn-default float-right'
 
   %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

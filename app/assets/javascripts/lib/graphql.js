@@ -5,6 +5,7 @@ import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
 import csrf from '~/lib/utils/csrf';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
+import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
@@ -62,7 +63,7 @@ export default (resolvers = {}, config = {}) => {
 
   return new ApolloClient({
     typeDefs: config.typeDefs,
-    link: ApolloLink.from([performanceBarLink, uploadsLink]),
+    link: ApolloLink.from([performanceBarLink, new StartupJSLink(), uploadsLink]),
     cache: new InMemoryCache({
       ...config.cacheConfig,
       freezeResults: config.assumeImmutableResults,

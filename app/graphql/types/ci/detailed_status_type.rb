@@ -30,7 +30,7 @@ module Types
               if obj.has_action?
                 {
                   button_title: obj.action_button_title,
-                  icon: obj.icon,
+                  icon: obj.action_icon,
                   method: obj.action_method,
                   path: obj.action_path,
                   title: obj.action_title

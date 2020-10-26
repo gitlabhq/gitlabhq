@@ -26,6 +26,7 @@ export default {
     name: 'text',
     error: null,
     automaticallyCollapsed: false,
+    manuallyCollapsed: null,
   },
   added_lines: 0,
   removed_lines: 0,

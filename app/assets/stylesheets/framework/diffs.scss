@@ -6,11 +6,18 @@
     border-top: 1px solid $border-color;
   }
 
+  &.has-body {
+    .file-title {
+      box-shadow: 0 -2px 0 0 var(--white);
+    }
+  }
+
+  table.code tr:last-of-type td:last-of-type {
+    @include gl-rounded-bottom-right-base();
+  }
+
   .file-title,
   .file-title-flex-parent {
-    border-top-left-radius: $border-radius-default;
-    border-top-right-radius: $border-radius-default;
-    box-shadow: 0 -2px 0 0 var(--white);
     cursor: pointer;
 
     .dropdown-menu {
@@ -113,7 +120,6 @@
   .diff-content {
     background: $white;
     color: $gl-text-color;
-    border-radius: 0 0 3px 3px;
 
     .unfold {
       cursor: pointer;
@@ -457,8 +463,11 @@ table.code {
     border-top: 0;
   }
 
-  tr:nth-last-of-type(2).line_expansion > td {
-    border-bottom: 0;
+  tr:nth-last-of-type(2).line_expansion,
+  tr:last-of-type.line_expansion {
+    > td {
+      border-bottom: 0;
+    }
   }
 
   tr.line_holder td {

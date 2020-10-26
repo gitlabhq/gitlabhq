@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', [
-      'hasCollapsedFile',
+      'whichCollapsedTypes',
       'diffCompareDropdownTargetVersions',
       'diffCompareDropdownSourceVersions',
     ]),
@@ -129,7 +129,7 @@ export default {
           {{ __('Show latest version') }}
         </gl-button>
         <gl-button
-          v-show="hasCollapsedFile"
+          v-show="whichCollapsedTypes.any"
           variant="default"
           class="gl-mr-3"
           @click="expandAllFiles"

@@ -4,16 +4,16 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Issue Boards API
+# Project Issue Boards API
 
 Every API call to boards must be authenticated.
 
 If a user is not a member of a project and the project is private, a `GET`
 request on that project will result to a `404` status code.
 
-## Project Board
+## List project issue boards
 
-Lists Issue Boards in the given project.
+Lists project issue boards in the given project.
 
 ```plaintext
 GET /projects/:id/boards
@@ -88,9 +88,15 @@ Example response:
 ]
 ```
 
-## Single board
+Another example response when no board has been activated or exist in the project:
 
-Get a single board.
+```json
+[]
+```
+
+## Show a single issue board
+
+Get a single project issue board.
 
 ```plaintext
 GET /projects/:id/boards/:board_id
@@ -165,9 +171,9 @@ Example response:
   }
 ```
 
-## Create a board **(STARTER)**
+## Create an issue board **(STARTER)**
 
-Creates a board.
+Creates a project issue board.
 
 ```plaintext
 POST /projects/:id/boards
@@ -242,11 +248,11 @@ Example response:
   }
 ```
 
-## Update a board **(STARTER)**
+## Update an issue board **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.1.
 
-Updates a board.
+Updates a project issue board.
 
 ```plaintext
 PUT /projects/:id/boards/:board_id
@@ -323,9 +329,9 @@ Example response:
   }
 ```
 
-## Delete a board **(STARTER)**
+## Delete an issue board **(STARTER)**
 
-Deletes a board.
+Deletes a project issue board.
 
 ```plaintext
 DELETE /projects/:id/boards/:board_id
@@ -340,10 +346,10 @@ DELETE /projects/:id/boards/:board_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1"
 ```
 
-## List board lists
+## List board lists in a project issue board
 
 Get a list of the board's lists.
-Does not include `open` and `closed` lists
+Does not include `open` and `closed` lists.
 
 ```plaintext
 GET /projects/:id/boards/:board_id/lists
@@ -401,7 +407,7 @@ Example response:
 ]
 ```
 
-## Single board list
+## Show a single board list
 
 Get a single board list.
 
@@ -436,9 +442,9 @@ Example response:
 }
 ```
 
-## New board list
+## Create a board list
 
-Creates a new Issue Board list.
+Creates a new issue board list.
 
 ```plaintext
 POST /projects/:id/boards/:board_id/lists
@@ -479,9 +485,9 @@ Example response:
 }
 ```
 
-## Edit board list
+## Reorder a list in a board
 
-Updates an existing Issue Board list. This call is used to change list position.
+Updates an existing issue board list. This call is used to change list position.
 
 ```plaintext
 PUT /projects/:id/boards/:board_id/lists/:list_id
@@ -515,7 +521,7 @@ Example response:
 }
 ```
 
-## Delete a board list
+## Delete a board list from a board
 
 Only for admins and project owners. Deletes the board list in question.
 

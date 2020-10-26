@@ -1,4 +1,9 @@
-import { DIFF_FILE_SYMLINK_MODE, DIFF_FILE_DELETED_MODE } from './constants';
+import {
+  DIFF_FILE_SYMLINK_MODE,
+  DIFF_FILE_DELETED_MODE,
+  DIFF_FILE_MANUAL_COLLAPSE,
+  DIFF_FILE_AUTOMATIC_COLLAPSE,
+} from './constants';
 
 function fileSymlinkInformation(file, fileList) {
   const duplicates = fileList.filter(iteratedFile => iteratedFile.file_hash === file.file_hash);
@@ -23,6 +28,7 @@ function collapsed(file) {
 
   return {
     automaticallyCollapsed: viewer.automaticallyCollapsed || viewer.collapsed || false,
+    manuallyCollapsed: null,
   };
 }
 
@@ -36,4 +42,20 @@ export function prepareRawDiffFile({ file, allFiles }) {
   });
 
   return file;
+}
+
+export function collapsedType(file) {
+  const isManual = typeof file.viewer?.manuallyCollapsed === 'boolean';
+
+  return isManual ? DIFF_FILE_MANUAL_COLLAPSE : DIFF_FILE_AUTOMATIC_COLLAPSE;
+}
+
+export function isCollapsed(file) {
+  const type = collapsedType(file);
+  const collapsedStates = {
+    [DIFF_FILE_AUTOMATIC_COLLAPSE]: file.viewer?.automaticallyCollapsed || false,
+    [DIFF_FILE_MANUAL_COLLAPSE]: file.viewer?.manuallyCollapsed,
+  };
+
+  return collapsedStates[type];
 }

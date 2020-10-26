@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'search results sorted' do
   context 'sort: newest' do
-    let(:sort) { 'newest' }
+    let(:sort) { 'created_desc' }
 
     it 'sorts results by created_at' do
       expect(results.objects(scope).map(&:id)).to eq([new_result.id, old_result.id, very_old_result.id])
@@ -10,7 +10,7 @@ RSpec.shared_examples 'search results sorted' do
   end
 
   context 'sort: oldest' do
-    let(:sort) { 'oldest' }
+    let(:sort) { 'created_asc' }
 
     it 'sorts results by created_at' do
       expect(results.objects(scope).map(&:id)).to eq([very_old_result.id, old_result.id, new_result.id])

@@ -697,7 +697,7 @@ describe('diffs/components/app', () => {
       });
 
       describe('collapsed files', () => {
-        it('should render the collapsed files warning if there are any collapsed files', () => {
+        it('should render the collapsed files warning if there are any automatically collapsed files', () => {
           createComponent({}, ({ state }) => {
             state.diffs.diffFiles = [{ viewer: { automaticallyCollapsed: true } }];
           });
@@ -705,15 +705,13 @@ describe('diffs/components/app', () => {
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
         });
 
-        it('should not render the collapsed files warning if the user has dismissed the alert already', async () => {
+        it('should not render the collapsed files warning if there are no automatically collapsed files', () => {
           createComponent({}, ({ state }) => {
-            state.diffs.diffFiles = [{ viewer: { automaticallyCollapsed: true } }];
+            state.diffs.diffFiles = [
+              { viewer: { automaticallyCollapsed: false, manuallyCollapsed: true } },
+              { viewer: { automaticallyCollapsed: false, manuallyCollapsed: false } },
+            ];
           });
-
-          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
-
-          wrapper.vm.collapsedWarningDismissed = true;
-          await wrapper.vm.$nextTick();
 
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
         });

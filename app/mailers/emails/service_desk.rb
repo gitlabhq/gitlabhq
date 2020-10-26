@@ -58,10 +58,12 @@ module Emails
 
     def template_content(email_type)
       template = Gitlab::Template::ServiceDeskTemplate.find(email_type, @project)
-
       text = substitute_template_replacements(template.content)
 
-      markdown(text, project: @project)
+      context = { project: @project, pipeline: :email }
+      context[:author] = @note.author if email_type == 'new_note'
+
+      markdown(text, context)
     rescue Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
       nil
     end

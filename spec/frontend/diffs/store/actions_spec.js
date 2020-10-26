@@ -42,7 +42,7 @@ import {
   fetchFullDiff,
   toggleFullDiff,
   switchToFullDiffFromRenamedFile,
-  setFileCollapsed,
+  setFileCollapsedByUser,
   setExpandedDiffLines,
   setSuggestPopoverDismissed,
   changeCurrentCommit,
@@ -1216,13 +1216,18 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('setFileCollapsed', () => {
+  describe('setFileUserCollapsed', () => {
     it('commits SET_FILE_COLLAPSED', done => {
       testAction(
-        setFileCollapsed,
+        setFileCollapsedByUser,
         { filePath: 'test', collapsed: true },
         null,
-        [{ type: types.SET_FILE_COLLAPSED, payload: { filePath: 'test', collapsed: true } }],
+        [
+          {
+            type: types.SET_FILE_COLLAPSED,
+            payload: { filePath: 'test', collapsed: true, trigger: 'manual' },
+          },
+        ],
         [],
         done,
       );

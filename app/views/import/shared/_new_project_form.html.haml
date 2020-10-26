@@ -10,7 +10,7 @@
           .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
             .input-group-text
               = root_url
-          = select_tag :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), class: 'select2 js-select-namespace block-truncated', tabindex: 1
+          = select_tag :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), class: 'select2 js-select-namespace block-truncated'
         - else
           .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
             .input-group-text.border-0
@@ -18,4 +18,4 @@
           = hidden_field_tag :namespace_id, current_user.namespace_id
   .form-group.col-12.col-sm-6.project-path
     = label_tag :path, _('Project slug'), class: 'label-bold'
-    = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control", tabindex: 2, required: true
+    = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control", required: true

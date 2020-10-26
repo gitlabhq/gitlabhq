@@ -11,9 +11,19 @@
 }
 
 .diff-tree-list {
+  // This 11px value should match the additional value found in
+  //      /assets/stylesheets/framework/diffs.scss
+  // for the $mr-file-header-top SCSS variable within the
+  //      .file-title,
+  //      .file-title-flex-parent {
+  // rule.
+  // If they don't match, the file tree and the diff files stick
+  // to the top at different heights, which is a bad-looking defect
+  $diff-file-header-top: 11px;
+  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + $diff-file-header-top;
+
   position: -webkit-sticky;
   position: sticky;
-  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 15px;
   top: $top-pos;
   max-height: calc(100vh - #{$top-pos});
   z-index: 202;

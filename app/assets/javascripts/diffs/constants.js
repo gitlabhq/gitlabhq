@@ -73,6 +73,10 @@ export const ALERT_OVERFLOW_HIDDEN = 'overflow';
 export const ALERT_MERGE_CONFLICT = 'merge-conflict';
 export const ALERT_COLLAPSED_FILES = 'collapsed';
 
+// Diff File collapse types
+export const DIFF_FILE_AUTOMATIC_COLLAPSE = 'automatic';
+export const DIFF_FILE_MANUAL_COLLAPSE = 'manual';
+
 // State machine states
 export const STATE_IDLING = 'idle';
 export const STATE_LOADING = 'loading';

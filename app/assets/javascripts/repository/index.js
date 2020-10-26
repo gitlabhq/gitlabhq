@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import PathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { escapeFileUrl } from '../lib/utils/url_utility';
 import createRouter from './router';
 import App from './components/app.vue';
@@ -19,10 +18,6 @@ export default function setupVueRepositoryList() {
   const { dataset } = el;
   const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
   const router = createRouter(projectPath, escapedRef);
-  const pathRegex = /-\/tree\/[^/]+\/(.+$)/;
-  const matches = window.location.href.match(pathRegex);
-
-  const currentRoutePath = matches ? matches[1] : '';
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
@@ -48,28 +43,7 @@ export default function setupVueRepositoryList() {
       },
     });
 
-  if (window.gl.startup_graphql_calls) {
-    const query = window.gl.startup_graphql_calls.find(
-      call => call.operationName === 'pathLastCommit',
-    );
-    query.fetchCall
-      .then(res => res.json())
-      .then(res => {
-        apolloProvider.clients.defaultClient.writeQuery({
-          query: PathLastCommitQuery,
-          data: res.data,
-          variables: {
-            projectPath,
-            ref,
-            path: currentRoutePath,
-          },
-        });
-      })
-      .catch(() => {})
-      .finally(() => initLastCommitApp());
-  } else {
-    initLastCommitApp();
-  }
+  initLastCommitApp();
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);

@@ -112,6 +112,16 @@ module GraphqlHelpers
     end
   end
 
+  def resolve_field(name, object, args = {})
+    context = double("Context",
+                    schema: GitlabSchema,
+                    query: GraphQL::Query.new(GitlabSchema),
+                    parent: nil)
+    field = described_class.fields[name]
+    instance = described_class.authorized_new(object, context)
+    field.resolve_field(instance, {}, context)
+  end
+
   # Recursively convert a Hash with Ruby-style keys to GraphQL fieldname-style keys
   #
   # prepare_input_for_mutation({ 'my_key' => 1 })

@@ -127,6 +127,41 @@ RSpec.describe Repositories::LfsStorageController do
           end
         end
 
+        context 'when existing file has been deleted' do
+          let(:lfs_object) { create(:lfs_object, :with_file) }
+
+          before do
+            FileUtils.rm(lfs_object.file.path)
+            params[:oid] = lfs_object.oid
+            params[:size] = lfs_object.size
+          end
+
+          it 'replaces the file' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(message: "LFS file replaced because it did not exist", oid: lfs_object.oid, size: lfs_object.size)
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(lfs_object.reload.file).to exist
+          end
+
+          context 'with invalid file' do
+            before do
+              allow_next_instance_of(ActionController::Parameters) do |params|
+                allow(params).to receive(:[]).and_call_original
+                allow(params).to receive(:[]).with(:file).and_return({})
+              end
+            end
+
+            it 'renders LFS forbidden' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(lfs_object.reload.file).not_to exist
+            end
+          end
+        end
+
         context 'when file is not stored' do
           it 'renders unprocessable entity' do
             expect(controller).to receive(:store_file!).and_return(nil)

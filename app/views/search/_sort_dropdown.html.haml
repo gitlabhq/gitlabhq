@@ -1,0 +1,16 @@
+- return unless ['issues', 'merge_requests'].include?(@scope)
+
+- sort_value = @sort
+- sort_title = search_sort_option_title(sort_value)
+
+.dropdown.gl-display-inline-block.gl-ml-3.filter-dropdown-container
+  .btn-group{ role: 'group' }
+    .btn-group{ role: 'group' }
+    %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn btn-default' }
+      = sort_title
+      = icon('chevron-down')
+    %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable.dropdown-menu-sort
+      %li
+        = render_if_exists('search/sort_by_relevancy', sort_title: sort_title)
+        = sortable_item(sort_title_recently_created, page_filter_path(sort: sort_value_recently_created), sort_title)
+    = search_sort_direction_button(sort_value)

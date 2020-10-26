@@ -1,6 +1,8 @@
 query getPermissions($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    __typename
     userPermissions {
+      __typename
       pushCode
       forkProject
       createMergeRequestIn

@@ -3,22 +3,26 @@
   = render partial: "search/results/empty"
   = render_if_exists 'shared/promotions/promote_advanced_search'
 - else
-  .row-content-block.d-md-flex.text-left.align-items-center
-    - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
-      = search_entries_info(@search_objects, @scope, @search_term)
-    - unless @show_snippets
-      - if @project
-        - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1')
-        - if @scope == 'blobs'
-          = s_("SearchCodeResults|in")
-          .mx-md-1
-            = render partial: "shared/ref_switcher", locals: { ref: repository_ref(@project), form_path: request.fullpath, field_name: 'repository_ref' }
-          = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
-        - else
-          = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
-      - elsif @group
-        - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
-        = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
+  .search-results-status
+    .row-content-block.gl-display-flex
+      .gl-display-md-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1
+        - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
+          = search_entries_info(@search_objects, @scope, @search_term)
+        - unless @show_snippets
+          - if @project
+            - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1')
+            - if @scope == 'blobs'
+              = s_("SearchCodeResults|in")
+              .mx-md-1
+                = render partial: "shared/ref_switcher", locals: { ref: repository_ref(@project), form_path: request.fullpath, field_name: 'repository_ref' }
+              = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
+            - else
+              = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
+          - elsif @group
+            - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
+            = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
+      .gl-display-md-flex.gl-flex-direction-column
+        = render partial: 'search/sort_dropdown'
   = render_if_exists 'shared/promotions/promote_advanced_search'
   = render partial: "search/results/filters"
 

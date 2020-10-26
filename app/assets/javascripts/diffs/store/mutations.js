@@ -1,6 +1,10 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { INLINE_DIFF_VIEW_TYPE } from '../constants';
+import {
+  DIFF_FILE_MANUAL_COLLAPSE,
+  DIFF_FILE_AUTOMATIC_COLLAPSE,
+  INLINE_DIFF_VIEW_TYPE,
+} from '../constants';
 import {
   findDiffFile,
   addLineReferences,
@@ -14,6 +18,12 @@ import * as types from './mutation_types';
 
 function updateDiffFilesInState(state, files) {
   return Object.assign(state, { diffFiles: files });
+}
+
+function renderFile(file) {
+  Object.assign(file, {
+    renderIt: true,
+  });
 }
 
 export default {
@@ -81,9 +91,7 @@ export default {
   },
 
   [types.RENDER_FILE](state, file) {
-    Object.assign(file, {
-      renderIt: true,
-    });
+    renderFile(file);
   },
 
   [types.SET_MERGE_REQUEST_DIFFS](state, mergeRequestDiffs) {
@@ -173,6 +181,7 @@ export default {
       Object.assign(file, {
         viewer: Object.assign(file.viewer, {
           automaticallyCollapsed: false,
+          manuallyCollapsed: false,
         }),
       });
     });
@@ -351,11 +360,24 @@ export default {
     file.isShowingFullFile = true;
     file.isLoadingFullFile = false;
   },
-  [types.SET_FILE_COLLAPSED](state, { filePath, collapsed }) {
+  [types.SET_FILE_COLLAPSED](
+    state,
+    { filePath, collapsed, trigger = DIFF_FILE_AUTOMATIC_COLLAPSE },
+  ) {
     const file = state.diffFiles.find(f => f.file_path === filePath);
 
     if (file && file.viewer) {
-      file.viewer.automaticallyCollapsed = collapsed;
+      if (trigger === DIFF_FILE_MANUAL_COLLAPSE) {
+        file.viewer.automaticallyCollapsed = false;
+        file.viewer.manuallyCollapsed = collapsed;
+      } else if (trigger === DIFF_FILE_AUTOMATIC_COLLAPSE) {
+        file.viewer.automaticallyCollapsed = collapsed;
+        file.viewer.manuallyCollapsed = null;
+      }
+    }
+
+    if (file && !collapsed) {
+      renderFile(file);
     }
   },
   [types.SET_HIDDEN_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
