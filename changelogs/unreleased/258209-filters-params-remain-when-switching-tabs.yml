@@ -1,0 +1,5 @@
+---
+title: Reset search results filters whenever a user changes scope.
+merge_request: 45808
+author:
+type: fixed

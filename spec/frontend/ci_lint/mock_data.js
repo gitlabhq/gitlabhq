@@ -1,3 +1,37 @@
+export const mockLintResponse = {
+  valid: true,
+  errors: [],
+  warnings: [],
+  jobs: [
+    {
+      name: 'job_1',
+      stage: 'test',
+      before_script: ["echo 'before script 1'"],
+      script: ["echo 'script 1'"],
+      after_script: ["echo 'after script 1"],
+      tag_list: ['tag 1'],
+      environment: 'prd',
+      when: 'on_success',
+      allow_failure: false,
+      only: null,
+      except: { refs: ['master@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
+    },
+    {
+      name: 'job_2',
+      stage: 'test',
+      before_script: ["echo 'before script 2'"],
+      script: ["echo 'script 2'"],
+      after_script: ["echo 'after script 2"],
+      tag_list: ['tag 2'],
+      environment: 'stg',
+      when: 'on_success',
+      allow_failure: true,
+      only: { refs: ['web', 'chat', 'pushes'] },
+      except: { refs: ['master@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
+    },
+  ],
+};
+
 export const mockJobs = [
   {
     name: 'job_1',

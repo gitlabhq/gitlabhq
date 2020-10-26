@@ -373,6 +373,19 @@ RSpec.describe SearchHelper do
       expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello', project_id: 23))
     end
 
+    it 'restricts the params' do
+      expect(self).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          search: 'hello',
+          unknown: 42
+        )
+      )
+
+      link = search_filter_link('projects', 'Projects')
+
+      expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello'))
+    end
+
     it 'assigns given data attributes on the list container' do
       link = search_filter_link('projects', 'Projects', data: { foo: 'bar' })
 

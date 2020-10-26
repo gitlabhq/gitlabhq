@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SearchHelper
-  SEARCH_PERMITTED_PARAMS = [
+  SEARCH_GENERIC_PARAMS = [
     :search,
     :scope,
     :project_id,
@@ -9,8 +9,6 @@ module SearchHelper
     :repository_ref,
     :snippets,
     :sort,
-    :state,
-    :confidential,
     :force_search_results
   ].freeze
 
@@ -255,7 +253,7 @@ module SearchHelper
     search_params = params
       .merge(search)
       .merge({ scope: scope })
-      .permit(SEARCH_PERMITTED_PARAMS)
+      .permit(SEARCH_GENERIC_PARAMS)
 
     if @scope == scope
       li_class = 'active'

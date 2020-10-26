@@ -79,7 +79,7 @@ describe('Deploy keys key', () => {
       deployKeysProjects[0] = { ...deployKeysProjects[0], can_push: true };
       createComponent({ deployKey: { ...deployKey, deploy_keys_projects: deployKeysProjects } });
 
-      expect(wrapper.find('.deploy-project-label').attributes('data-original-title')).toBe(
+      expect(wrapper.find('.deploy-project-label').attributes('title')).toBe(
         'Write access allowed',
       );
     });
@@ -88,9 +88,7 @@ describe('Deploy keys key', () => {
       deployKeysProjects[0] = { ...deployKeysProjects[0], can_push: false };
       createComponent({ deployKey: { ...deployKey, deploy_keys_projects: deployKeysProjects } });
 
-      expect(wrapper.find('.deploy-project-label').attributes('data-original-title')).toBe(
-        'Read access only',
-      );
+      expect(wrapper.find('.deploy-project-label').attributes('title')).toBe('Read access only');
     });
 
     it('shows expandable button if more than two projects', () => {
@@ -99,7 +97,7 @@ describe('Deploy keys key', () => {
 
       expect(labels.length).toBe(2);
       expect(labels.at(1).text()).toContain('others');
-      expect(labels.at(1).attributes('data-original-title')).toContain('Expand');
+      expect(labels.at(1).attributes('title')).toContain('Expand');
     });
 
     it('expands all project labels after click', () => {
@@ -115,7 +113,7 @@ describe('Deploy keys key', () => {
 
         expect(labels.length).toBe(length);
         expect(labels.at(1).text()).not.toContain(`+${length} others`);
-        expect(labels.at(1).attributes('data-original-title')).not.toContain('Expand');
+        expect(labels.at(1).attributes('title')).not.toContain('Expand');
       });
     });
 
