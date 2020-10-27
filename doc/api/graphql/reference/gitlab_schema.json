@@ -61224,7 +61224,7 @@
         {
           "kind": "OBJECT",
           "name": "VulnerabilitiesCountByDay",
-          "description": "Represents the count of vulnerabilities by severity on a particular day",
+          "description": "Represents the count of vulnerabilities by severity on a particular day. This data is retained for 365 days",
           "fields": [
             {
               "name": "critical",
@@ -61381,7 +61381,7 @@
         {
           "kind": "OBJECT",
           "name": "VulnerabilitiesCountByDayAndSeverity",
-          "description": "Represents the number of vulnerabilities for a particular severity on a particular day",
+          "description": "Represents the number of vulnerabilities for a particular severity on a particular day. This data is retained for 365 days",
           "fields": [
             {
               "name": "count",

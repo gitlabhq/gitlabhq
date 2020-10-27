@@ -17,7 +17,7 @@
 
     -# Only show it in the first page
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-    .prioritized-labels{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
+    .prioritized-labels.gl-mb-7{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
       %h5.gl-mt-3= _('Prioritized Labels')
       .content-list.manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
         #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }

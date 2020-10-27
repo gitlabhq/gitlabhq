@@ -92,13 +92,8 @@
       margin-bottom: 0;
     }
 
-    &.sortable-ghost {
-      opacity: 0.3;
-    }
-
     .prioritized-labels:not(.is-not-draggable) & {
       box-shadow: 0 1px 2px $issue-boards-card-shadow;
-      cursor: move;
       cursor: grab;
       border: 0;
 
@@ -108,126 +103,20 @@
     }
   }
 
-  .btn-action {
-    .fa {
-      font-size: 18px;
-      vertical-align: middle;
-      pointer-events: none;
-    }
-
-    &:hover {
-      color: $blue-600;
-
-      &.remove-row {
-        color: $red-500;
-      }
-    }
-  }
-
-  .color-label {
-    padding: $gl-padding-4 $grid-size;
-  }
-
   .prepend-description-left {
     vertical-align: top;
     line-height: 24px;
   }
 }
 
-.prioritized-labels {
-  margin-bottom: 30px;
-
-  .add-priority {
-    display: none;
-    color: $gray-light;
-  }
-
-  li:hover {
-    .draggable-handler {
-      display: inline-block;
-      opacity: 1;
-    }
-  }
-}
-
-.other-labels {
-  .remove-priority {
-    display: none;
-  }
-}
-
-.filtered-labels {
-  font-size: 0;
-  padding: 12px 16px;
-
-  .label-row {
-    margin-top: 4px;
-    margin-bottom: 4px;
-
-    &:not(:last-child) {
-      margin-right: 8px;
-    }
-  }
-
-  .label-remove {
-    border-left: 1px solid $label-remove-border;
-    z-index: 3;
-    border-radius: $label-border-radius;
-    padding: 6px 10px 6px 9px;
-
-    &:hover {
-      box-shadow: inset 0 0 0 80px $label-remove-border;
-    }
-  }
-
-  .btn {
-    color: inherit;
-  }
-
-  a.btn {
-    padding: 0;
-
-    .has-tooltip {
-      top: 0;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      line-height: 1.1;
-    }
-  }
-}
-
-.label-subscription {
-  vertical-align: middle;
-
-  .dropdown-group-label a {
-    cursor: pointer;
-  }
+.prioritized-labels .add-priority,
+.other-labels .remove-priority {
+  display: none;
 }
 
 .label-subscribe-button {
   width: 105px;
   font-weight: 200;
-
-  .label-subscribe-button-icon {
-    &[disabled] {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-  }
-
-  .label-subscribe-button-loading {
-    display: none;
-  }
-
-  &.disabled {
-    .label-subscribe-button-icon {
-      display: none;
-    }
-
-    .label-subscribe-button-loading {
-      display: block;
-    }
-  }
 }
 
 .labels-container {
@@ -255,11 +144,6 @@
 }
 
 .label-list-item {
-  .content-list &::before,
-  .content-list &::after {
-    content: none;
-  }
-
   .label-name {
     width: 200px;
 
@@ -268,37 +152,16 @@
     }
   }
 
-  .label {
-    padding: 4px $grid-size;
-    font-size: $label-font-size;
-    position: relative;
-    top: $gl-padding-4;
-  }
-
   .label-action {
     color: $gray-700;
     cursor: pointer;
 
-    svg {
-      fill: $gray-700;
-    }
-
     &:hover {
       color: $blue-600;
-
-      svg {
-        fill: $blue-600;
-      }
     }
 
-    &.remove-row {
-      &:hover {
-        color: $red-500;
-
-        svg {
-          fill: $red-500;
-        }
-      }
+    &.remove-row:hover {
+      color: $red-500;
     }
   }
 }

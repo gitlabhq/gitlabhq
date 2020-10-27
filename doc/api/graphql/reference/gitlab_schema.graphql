@@ -21153,7 +21153,7 @@ enum VisibilityScopesEnum {
 }
 
 """
-Represents the count of vulnerabilities by severity on a particular day
+Represents the count of vulnerabilities by severity on a particular day. This data is retained for 365 days
 """
 type VulnerabilitiesCountByDay {
   """
@@ -21198,7 +21198,7 @@ type VulnerabilitiesCountByDay {
 }
 
 """
-Represents the number of vulnerabilities for a particular severity on a particular day
+Represents the number of vulnerabilities for a particular severity on a particular day. This data is retained for 365 days
 """
 type VulnerabilitiesCountByDayAndSeverity {
   """

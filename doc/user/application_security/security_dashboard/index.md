@@ -116,7 +116,7 @@ enabled in a group.
 There is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can display the vulnerability
 trends over a 30, 60, or 90-day time frame (the default is 90 days). Hover over the chart to get
-more details about the open vulnerabilities at a specific time.
+more details about the open vulnerabilities at a specific time. Aggregated data beyond 90 days can be accessed by querying our [VulnerabilitiesCountByDay GraphQL API](../../../api/graphql/reference/index.md#vulnerabilitiescountbyday). This data is retained for 365 days.
 
 Next to the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
 
