@@ -37,6 +37,7 @@ import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
+// import ExtensionsContainer from './components/extensions/container';
 import eventHub from './event_hub';
 import notify from '~/lib/utils/notify';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
@@ -57,6 +58,7 @@ export default {
   },
   components: {
     Loading,
+    // ExtensionsContainer,
     'mr-widget-header': WidgetHeader,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     'mr-widget-merge-help': WidgetMergeHelp,
@@ -454,6 +456,7 @@ export default {
       :service="service"
     />
     <div class="mr-section-container mr-widget-workflow">
+      <!-- <extensions-container :mr="mr" /> -->
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality"
         :base-path="mr.codeclimate.base_path"

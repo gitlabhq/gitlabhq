@@ -27,71 +27,55 @@ const initLabelIndex = () => {
     eventHub.$once('promoteLabelModal.requestFinished', onRequestFinished);
   };
 
-  const onDeleteButtonClick = event => {
-    const button = event.currentTarget;
-    const modalProps = {
-      labelTitle: button.dataset.labelTitle,
-      labelColor: button.dataset.labelColor,
-      labelTextColor: button.dataset.labelTextColor,
-      url: button.dataset.url,
-      groupName: button.dataset.groupName,
-    };
-    eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
-    eventHub.$emit('promoteLabelModal.props', modalProps);
-  };
-
   const promoteLabelButtons = document.querySelectorAll('.js-promote-project-label-button');
-  promoteLabelButtons.forEach(button => {
-    button.addEventListener('click', onDeleteButtonClick);
-  });
 
-  eventHub.$once('promoteLabelModal.mounted', () => {
-    promoteLabelButtons.forEach(button => {
-      button.removeAttribute('disabled');
-    });
-  });
-
-  const promoteLabelModal = document.getElementById('promote-label-modal');
-  let promoteLabelModalComponent;
-
-  if (promoteLabelModal) {
-    promoteLabelModalComponent = new Vue({
-      el: promoteLabelModal,
-      components: {
-        PromoteLabelModal,
-      },
-      data() {
-        return {
-          modalProps: {
-            labelTitle: '',
-            labelColor: '',
-            labelTextColor: '',
-            url: '',
-            groupName: '',
-          },
-        };
-      },
-      mounted() {
-        eventHub.$on('promoteLabelModal.props', this.setModalProps);
-        eventHub.$emit('promoteLabelModal.mounted');
-      },
-      beforeDestroy() {
-        eventHub.$off('promoteLabelModal.props', this.setModalProps);
-      },
-      methods: {
-        setModalProps(modalProps) {
-          this.modalProps = modalProps;
+  return new Vue({
+    el: '#js-promote-label-modal',
+    data() {
+      return {
+        modalProps: {
+          labelTitle: '',
+          labelColor: '',
+          labelTextColor: '',
+          url: '',
+          groupName: '',
         },
-      },
-      render(createElement) {
-        return createElement('promote-label-modal', {
-          props: this.modalProps,
-        });
-      },
-    });
-  }
+      };
+    },
+    mounted() {
+      eventHub.$on('promoteLabelModal.props', this.setModalProps);
+      eventHub.$emit('promoteLabelModal.mounted');
 
-  return promoteLabelModalComponent;
+      promoteLabelButtons.forEach(button => {
+        button.removeAttribute('disabled');
+        button.addEventListener('click', () => {
+          this.$root.$emit('bv::show::modal', 'promote-label-modal');
+          eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
+
+          this.setModalProps({
+            labelTitle: button.dataset.labelTitle,
+            labelColor: button.dataset.labelColor,
+            labelTextColor: button.dataset.labelTextColor,
+            url: button.dataset.url,
+            groupName: button.dataset.groupName,
+          });
+        });
+      });
+    },
+    beforeDestroy() {
+      eventHub.$off('promoteLabelModal.props', this.setModalProps);
+    },
+    methods: {
+      setModalProps(modalProps) {
+        this.modalProps = modalProps;
+      },
+    },
+    render(createElement) {
+      return createElement(PromoteLabelModal, {
+        props: this.modalProps,
+      });
+    },
+  });
 };
 
 document.addEventListener('DOMContentLoaded', initLabelIndex);

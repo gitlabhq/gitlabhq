@@ -317,7 +317,7 @@ gem 'premailer-rails', '~> 1.10.3'
 gem 'gitlab-labkit', '0.13.1'
 
 # I18n
-gem 'ruby_parser', '~> 3.8', require: false
+gem 'ruby_parser', '~> 3.15', require: false
 gem 'rails-i18n', '~> 6.0'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'

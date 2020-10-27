@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :csv_issue_import do
+  factory :issue_csv_import, class: 'Issues::CsvImport' do
     project
     user
   end

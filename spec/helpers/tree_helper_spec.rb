@@ -7,6 +7,8 @@ RSpec.describe TreeHelper do
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
 
+  let_it_be(:user) { create(:user) }
+
   def create_file(filename)
     project.repository.create_file(
       project.creator,
@@ -219,7 +221,6 @@ RSpec.describe TreeHelper do
     context 'user does not have write access but a personal fork exists' do
       include ProjectForksHelper
 
-      let_it_be(:user) { create(:user) }
       let(:forked_project) { create(:project, :repository, namespace: user.namespace) }
 
       before do
@@ -277,8 +278,6 @@ RSpec.describe TreeHelper do
     end
 
     context 'user has write access' do
-      let_it_be(:user) { create(:user) }
-
       before do
         project.add_developer(user)
 
@@ -314,8 +313,6 @@ RSpec.describe TreeHelper do
     end
 
     context 'gitpod feature is enabled' do
-      let_it_be(:user) { create(:user) }
-
       before do
         stub_feature_flags(gitpod: true)
         allow(Gitlab::CurrentSettings)
@@ -355,6 +352,30 @@ RSpec.describe TreeHelper do
           show_web_ide_button: false,
           show_gitpod_button: false
         )
+      end
+    end
+  end
+
+  describe '.patch_branch_name' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    subject { helper.patch_branch_name('master') }
+
+    it 'returns a patch branch name' do
+      freeze_time do
+        epoch = Time.now.strftime('%s%L').last(5)
+
+        expect(subject).to eq "#{user.username}-master-patch-#{epoch}"
+      end
+    end
+
+    context 'without a current_user' do
+      let(:user) { nil }
+
+      it 'returns nil' do
+        expect(subject).to be nil
       end
     end
   end

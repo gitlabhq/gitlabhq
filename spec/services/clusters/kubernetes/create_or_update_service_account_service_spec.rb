@@ -141,6 +141,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       before do
         cluster.platform_kubernetes.rbac!
 
+        stub_kubeclient_delete_role_binding(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)

@@ -14,6 +14,8 @@ const createTranslatedTextForFiles = (files, text) => {
 export const discardDraftButtonDisabled = state =>
   state.commitMessage === '' || state.submitCommitLoading;
 
+// Note: If changing the structure of the placeholder branch name, please also
+// update #patch_branch_name in app/helpers/tree_helper.rb
 export const placeholderBranchName = (state, _, rootState) =>
   `${gon.current_username}-${rootState.currentBranchId}-patch-${`${new Date().getTime()}`.substr(
     -BRANCH_SUFFIX_COUNT,

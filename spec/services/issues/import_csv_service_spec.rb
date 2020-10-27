@@ -16,7 +16,7 @@ RSpec.describe Issues::ImportCsvService do
   shared_examples_for 'an issue importer' do
     it 'records the import attempt' do
       expect { subject }
-        .to change { CsvIssueImport.where(project: project, user: user).count }
+        .to change { Issues::CsvImport.where(project: project, user: user).count }
         .by 1
     end
   end

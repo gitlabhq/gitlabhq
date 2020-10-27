@@ -212,7 +212,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         jira_project = create(:project, creator_id: user.id)
         create(:jira_import_state, :finished, project: jira_project)
 
-        create(:csv_issue_import, user: user)
+        create(:issue_csv_import, user: user)
       end
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(

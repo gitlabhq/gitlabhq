@@ -1,0 +1,7 @@
+query getIssues($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    issues {
+      count
+    }
+  }
+}

@@ -36,7 +36,7 @@ module Gitlab
           }
         end
 
-        @client = Client.new(credentials[:user], opts)
+        @client = Client.new(credentials[:user], **opts)
       end
 
       def execute

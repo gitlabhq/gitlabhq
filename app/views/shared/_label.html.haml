@@ -34,10 +34,7 @@
                             label_title: label.title,
                             label_color: label.color,
                             label_text_color: label.text_color,
-                            group_name: label.project.group.name,
-                            target: '#promote-label-modal',
-                            container: 'body',
-                            toggle: 'modal' } }
+                            group_name: label.project.group.name } }
                     = _('Promote to group label')
               - if can?(current_user, :admin_label, label)
                 %li

@@ -3,6 +3,8 @@
 module Packages
   class CreateEventService < BaseService
     def execute
+      return unless Feature.enabled?(:collect_package_events, default_enabled: false)
+
       event_scope = scope.is_a?(::Packages::Package) ? scope.package_type : scope
 
       ::Packages::Event.create!(

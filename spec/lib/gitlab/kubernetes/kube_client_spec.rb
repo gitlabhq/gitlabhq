@@ -302,6 +302,8 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
       :create_role,
       :get_role,
       :update_role,
+      :delete_role_binding,
+      :update_role_binding,
       :update_cluster_role_binding
     ].each do |method|
       describe "##{method}" do

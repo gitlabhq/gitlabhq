@@ -5,7 +5,7 @@
 - labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present?
 
 - if labels_or_filters
-  #promote-label-modal
+  #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
   .labels-container.gl-mt-3

@@ -65,8 +65,8 @@ module Gitlab
         protected_uri_with_hostname
       end
 
-      def blocked_url?(*args)
-        validate!(*args)
+      def blocked_url?(url, **kwargs)
+        validate!(url, **kwargs)
 
         false
       rescue BlockedUrlError

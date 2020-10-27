@@ -8,10 +8,10 @@ import {
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlSprintf,
   GlTable,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import AncestorNotice from './ancestor_notice.vue';
 import NodeErrorHelpText from './node_error_help_text.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import { __, sprintf } from '~/locale';
 
@@ -30,7 +30,7 @@ export default {
     NodeErrorHelpText,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   computed: {
     ...mapState([
@@ -227,7 +227,7 @@ export default {
 
           <gl-loading-icon
             v-if="item.status === 'deleting' || item.status === 'creating'"
-            v-tooltip
+            v-gl-tooltip
             :title="statusTitle(item.status)"
             size="sm"
           />

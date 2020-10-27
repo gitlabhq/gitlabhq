@@ -69,7 +69,13 @@ module Clusters
 
       def create_role_or_cluster_role_binding
         if namespace_creator
-          kubeclient.create_or_update_role_binding(role_binding_resource)
+          begin
+            kubeclient.delete_role_binding(role_binding_name, service_account_namespace)
+          rescue Kubeclient::ResourceNotFoundError
+            # Do nothing as we will create new role binding below
+          end
+
+          kubeclient.update_role_binding(role_binding_resource)
         else
           kubeclient.create_or_update_cluster_role_binding(cluster_role_binding_resource)
         end

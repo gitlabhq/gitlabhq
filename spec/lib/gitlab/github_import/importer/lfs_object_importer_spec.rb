@@ -12,7 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectImporter do
     }
   end
 
-  let(:lfs_download_object) { LfsDownloadObject.new(lfs_attributes) }
+  let(:lfs_download_object) { LfsDownloadObject.new(**lfs_attributes) }
   let(:github_lfs_object) { Gitlab::GithubImport::Representation::LfsObject.new(lfs_attributes) }
 
   let(:importer) { described_class.new(github_lfs_object, project, nil) }

@@ -75,9 +75,25 @@ module TreeHelper
     if user_access(project).can_push_to_branch?(ref)
       ref
     else
-      project = tree_edit_project(project)
-      project.repository.next_branch('patch')
+      patch_branch_name(ref)
     end
+  end
+
+  # Generate a patch branch name that should look like:
+  # `username-branchname-patch-epoch`
+  # where `epoch` is the last 5 digits of the time since epoch (in
+  # milliseconds)
+  #
+  # Note: this correlates with how the WebIDE formats the branch name
+  # and if this implementation changes, so should the `placeholderBranchName`
+  # definition in app/assets/javascripts/ide/stores/modules/commit/getters.js
+  def patch_branch_name(ref)
+    return unless current_user
+
+    username = current_user.username
+    epoch = time_in_milliseconds.to_s.last(5)
+
+    "#{username}-#{ref}-patch-#{epoch}"
   end
 
   def tree_edit_project(project = @project)

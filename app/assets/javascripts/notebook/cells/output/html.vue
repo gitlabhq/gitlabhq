@@ -37,6 +37,6 @@ export default {
 <template>
   <div class="output">
     <prompt type="Out" :count="count" :show-output="showOutput" />
-    <div v-html="sanitizedOutput"></div>
+    <div class="gl-overflow-auto" v-html="sanitizedOutput"></div>
   </div>
 </template>

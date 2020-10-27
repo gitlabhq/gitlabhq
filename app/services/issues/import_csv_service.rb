@@ -20,7 +20,7 @@ module Issues
     private
 
     def record_import_attempt
-      CsvIssueImport.create!(user: @user, project: @project)
+      Issues::CsvImport.create!(user: @user, project: @project)
     end
 
     def process_csv

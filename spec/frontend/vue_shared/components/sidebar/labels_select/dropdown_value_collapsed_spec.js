@@ -81,9 +81,7 @@ describe('DropdownValueCollapsedComponent', () => {
 
   describe('template', () => {
     it('renders component container element with tooltip`', () => {
-      expect(vm.$el.dataset.placement).toBe('left');
-      expect(vm.$el.dataset.container).toBe('body');
-      expect(vm.$el.dataset.originalTitle).toBe(vm.labelsList);
+      expect(vm.$el.title).toBe(vm.labelsList);
     });
 
     it('renders tags icon element', () => {

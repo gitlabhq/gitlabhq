@@ -21,6 +21,7 @@ Disallow: /dashboard
 Disallow: /users
 Disallow: /help
 Disallow: /s/
+Disallow: /-/profile
 # Only specifically allow the Sign In page to avoid very ugly search results
 Allow: /users/sign_in
 

@@ -61,18 +61,11 @@ module Gitlab
       # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
       # group client
       delegate :update_cluster_role_binding,
-        to: :rbac_client
-
-      # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
-      # group client
-      delegate :create_role,
-      :get_role,
-      :update_role,
-      to: :rbac_client
-
-      # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
-      # group client
-      delegate :update_role_binding,
+        :create_role,
+        :get_role,
+        :update_role,
+        :delete_role_binding,
+        :update_role_binding,
         to: :rbac_client
 
       # non-entity methods that can only work with the core client
@@ -186,6 +179,7 @@ module Gitlab
         update_cluster_role_binding(resource)
       end
 
+      # Note that we cannot update roleRef as that is immutable
       def create_or_update_role_binding(resource)
         update_role_binding(resource)
       end

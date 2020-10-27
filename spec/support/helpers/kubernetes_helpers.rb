@@ -250,6 +250,11 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_delete_role_binding(api_url, name, namespace: 'default')
+    WebMock.stub_request(:delete, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
+      .to_return(kube_response({}))
+  end
+
   def stub_kubeclient_put_role_binding(api_url, name, namespace: 'default')
     WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
       .to_return(kube_response({}))

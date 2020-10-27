@@ -16,13 +16,29 @@ RSpec.describe Packages::CreateEventService do
 
   describe '#execute' do
     shared_examples 'package event creation' do |originator_type, expected_scope|
-      it 'creates the event' do
-        expect { subject }.to change { Packages::Event.count }.by(1)
+      context 'with feature flag disable' do
+        before do
+          stub_feature_flags(collect_package_events: false)
+        end
 
-        expect(subject.originator_type).to eq(originator_type)
-        expect(subject.originator).to eq(user&.id)
-        expect(subject.event_scope).to eq(expected_scope)
-        expect(subject.event_type).to eq(event_name)
+        it 'returns nil' do
+          expect(subject).to be nil
+        end
+      end
+
+      context 'with feature flag enabled' do
+        before do
+          stub_feature_flags(collect_package_events: true)
+        end
+
+        it 'creates the event' do
+          expect { subject }.to change { Packages::Event.count }.by(1)
+
+          expect(subject.originator_type).to eq(originator_type)
+          expect(subject.originator).to eq(user&.id)
+          expect(subject.event_scope).to eq(expected_scope)
+          expect(subject.event_type).to eq(event_name)
+        end
       end
     end
 

@@ -32,4 +32,8 @@ module TimeHelper
       "%02d:%02d:%02d" % [hours, minutes, seconds]
     end
   end
+
+  def time_in_milliseconds
+    (Time.now.to_f * 1000).to_i
+  end
 end
