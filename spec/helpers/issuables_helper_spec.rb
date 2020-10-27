@@ -352,35 +352,4 @@ RSpec.describe IssuablesHelper do
       expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
     end
   end
-
-  describe '#serialize_issuable' do
-    context 'when it is a merge request' do
-      let(:merge_request) { build(:merge_request) }
-      let(:user) { build(:user) }
-
-      before do
-        allow(helper).to receive(:current_user) { user }
-      end
-
-      it 'has suggest_pipeline experiment enabled' do
-        allow(helper).to receive(:experiment_enabled?).with(:suggest_pipeline) { true }
-
-        expect_next_instance_of(MergeRequestSerializer) do |serializer|
-          expect(serializer).to receive(:represent).with(merge_request, { serializer: 'widget', experiment_enabled: :suggest_pipeline })
-        end
-
-        helper.serialize_issuable(merge_request, serializer: 'widget')
-      end
-
-      it 'suggest_pipeline experiment disabled' do
-        allow(helper).to receive(:experiment_enabled?).with(:suggest_pipeline) { false }
-
-        expect_next_instance_of(MergeRequestSerializer) do |serializer|
-          expect(serializer).to receive(:represent).with(merge_request, { serializer: 'widget' })
-        end
-
-        helper.serialize_issuable(merge_request, serializer: 'widget')
-      end
-    end
-  end
 end

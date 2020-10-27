@@ -9,8 +9,6 @@ RSpec.describe 'Merge request > User sees suggest pipeline', :js do
 
   before do
     stub_application_setting(auto_devops_enabled: false)
-    stub_experiment(suggest_pipeline: true)
-    stub_experiment_for_user(suggest_pipeline: true)
     project.add_maintainer(user)
     sign_in(user)
     visit project_merge_request_path(project, merge_request)

@@ -2,7 +2,7 @@
 
 module SuggestPipelineHelper
   def should_suggest_gitlab_ci_yml?
-    experiment_enabled?(:suggest_pipeline) &&
+    Feature.enabled?(:suggest_pipeline, default_enabled: true) &&
       current_user &&
       params[:suggest_gitlab_ci_yml] == 'true'
   end

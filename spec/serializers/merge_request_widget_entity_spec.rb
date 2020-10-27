@@ -333,6 +333,10 @@ RSpec.describe MergeRequestWidgetEntity do
     end
 
     context 'when suggest pipeline feature is not enabled' do
+      before do
+        stub_feature_flags(suggest_pipeline: false)
+      end
+
       it 'provides no valid value for user callout path' do
         expect(subject[:user_callouts_path]).to be_nil
       end

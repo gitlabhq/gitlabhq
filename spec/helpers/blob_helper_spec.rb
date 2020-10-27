@@ -236,11 +236,7 @@ RSpec.describe BlobHelper do
         let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
         let(:blob) { fake_blob(path: Gitlab::FileDetector::PATTERNS[:gitlab_ci], data: data) }
 
-        context 'experiment enabled' do
-          before do
-            allow(helper).to receive(:experiment_enabled?).and_return(true)
-          end
-
+        context 'feature enabled' do
           it 'is true' do
             expect(helper.show_suggest_pipeline_creation_celebration?).to be_truthy
           end
@@ -284,9 +280,9 @@ RSpec.describe BlobHelper do
           end
         end
 
-        context 'experiment disabled' do
+        context 'feature disabled' do
           before do
-            allow(helper).to receive(:experiment_enabled?).and_return(false)
+            stub_feature_flags(suggest_pipeline: false)
           end
 
           it 'is false' do
@@ -298,11 +294,7 @@ RSpec.describe BlobHelper do
       context 'when file is not a pipeline config file' do
         let(:blob) { fake_blob(path: 'LICENSE') }
 
-        context 'experiment enabled' do
-          before do
-            allow(helper).to receive(:experiment_enabled?).and_return(true)
-          end
-
+        context 'feature enabled' do
           it 'is false' do
             expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
           end

@@ -36,9 +36,6 @@ module Gitlab
       onboarding_issues: {
         tracking_category: 'Growth::Conversion::Experiment::OnboardingIssues'
       },
-      suggest_pipeline: {
-        tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'
-      },
       ci_notification_dot: {
         tracking_category: 'Growth::Expansion::Experiment::CiNotificationDot'
       },

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import { withGonExperiment } from 'helpers/experimentation_helper';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
@@ -850,7 +849,7 @@ describe('mrWidgetOptions', () => {
     });
   });
 
-  describe('suggestPipeline Experiment', () => {
+  describe('suggestPipeline feature flag', () => {
     beforeEach(() => {
       mock.onAny().reply(200);
 
@@ -859,10 +858,10 @@ describe('mrWidgetOptions', () => {
       jest.spyOn(console, 'warn').mockImplementation();
     });
 
-    describe('given experiment is enabled', () => {
-      withGonExperiment('suggestPipeline');
-
+    describe('given feature flag is enabled', () => {
       beforeEach(() => {
+        gon.features = { suggestPipeline: true };
+
         createComponent();
 
         vm.mr.hasCI = false;
@@ -893,10 +892,10 @@ describe('mrWidgetOptions', () => {
       });
     });
 
-    describe('given suggestPipeline experiment is not enabled', () => {
-      withGonExperiment('suggestPipeline', false);
-
+    describe('given feature flag is not enabled', () => {
       beforeEach(() => {
+        gon.features = { suggestPipeline: false };
+
         createComponent();
 
         vm.mr.hasCI = false;

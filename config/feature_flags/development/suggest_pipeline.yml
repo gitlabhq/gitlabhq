@@ -1,0 +1,7 @@
+---
+name: suggest_pipeline
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45926
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267492
+type: development
+group: group::growth
+default_enabled: true

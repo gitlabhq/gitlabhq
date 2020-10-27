@@ -76,7 +76,6 @@ module IssuablesHelper
                        when Issue
                          IssueSerializer
                        when MergeRequest
-                         opts[:experiment_enabled] = :suggest_pipeline if experiment_enabled?(:suggest_pipeline) && opts[:serializer] == 'widget'
                          MergeRequestSerializer
                        end
 

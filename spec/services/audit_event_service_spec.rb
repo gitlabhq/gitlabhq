@@ -3,17 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe AuditEventService do
-  let(:project) { create(:project) }
-  let(:user) { create(:user, :with_sign_ins) }
-  let(:project_member) { create(:project_member, user: user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user, :with_sign_ins) }
+  let_it_be(:project_member) { create(:project_member, user: user) }
   let(:service) { described_class.new(user, project, { action: :destroy }) }
   let(:logger) { instance_double(Gitlab::AuditJsonLogger) }
 
   describe '#security_event' do
-    before do
-      stub_licensed_features(admin_audit_log: false)
-    end
-
     it 'creates an event and logs to a file' do
       expect(service).to receive(:file_logger).and_return(logger)
       expect(logger).to receive(:info).with(author_id: user.id,
@@ -77,6 +73,31 @@ RSpec.describe AuditEventService do
         )
 
         audit_service.for_authentication.security_event
+      end
+
+      context 'with IP address', :request_store do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:from_caller, :from_context, :from_author_sign_in, :output) do
+          '192.168.0.1' | '192.168.0.2' | '192.168.0.3' | '192.168.0.1'
+          nil           | '192.168.0.2' | '192.168.0.3' | '192.168.0.2'
+          nil           | nil           | '192.168.0.3' | '192.168.0.3'
+        end
+
+        with_them do
+          let(:user) { create(:user, current_sign_in_ip: from_author_sign_in) }
+          let(:audit_service) { described_class.new(user, user, with: 'standard', ip_address: from_caller) }
+
+          before do
+            allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(from_context)
+          end
+
+          specify do
+            expect(AuthenticationEvent).to receive(:new).with(hash_including(ip_address: output))
+
+            audit_service.for_authentication.security_event
+          end
+        end
       end
     end
   end
