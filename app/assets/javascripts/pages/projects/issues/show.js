@@ -24,7 +24,7 @@ export default function() {
       initIncidentApp(issuableData);
       break;
     case IssuableType.Issue:
-      initIssueApp(issuableData);
+      initIssueApp(issuableData, store);
       break;
     default:
       break;

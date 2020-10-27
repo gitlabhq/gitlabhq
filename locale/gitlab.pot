@@ -2266,6 +2266,9 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
+msgid "Adoption"
+msgstr ""
+
 msgid "Advanced"
 msgstr ""
 
@@ -9216,6 +9219,9 @@ msgid "DevOps"
 msgstr ""
 
 msgid "DevOps Report"
+msgstr ""
+
+msgid "DevOps Score"
 msgstr ""
 
 msgid "Diff content limits"
@@ -26880,7 +26886,7 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
 msgstr ""
 
-msgid "This action cannot be undone. You will lose the project's repository and all content: issues, merge requests, etc."
+msgid "This action cannot be undone. You will lose this project's repository and all content: issues, merge requests, etc."
 msgstr ""
 
 msgid "This action has been performed too many times. Try again later."

@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import initIssuableApp from '~/issue_show/issue';
 import * as parseData from '~/issue_show/utils/parse_data';
 import { appProps } from './mock_data';
+import createStore from '~/notes/stores';
 
 const mock = new MockAdapter(axios);
 mock.onGet().reply(200);
@@ -30,7 +31,7 @@ describe('Issue show index', () => {
       });
 
       const issuableData = parseData.parseIssuableData();
-      initIssuableApp(issuableData);
+      initIssuableApp(issuableData, createStore());
 
       await waitForPromises();
 

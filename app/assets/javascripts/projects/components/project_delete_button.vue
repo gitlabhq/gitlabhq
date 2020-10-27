@@ -25,7 +25,7 @@ export default {
       'Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc.',
     ),
     modalBody: __(
-      "This action cannot be undone. You will lose the project's repository and all content: issues, merge requests, etc.",
+      "This action cannot be undone. You will lose this project's repository and all content: issues, merge requests, etc.",
     ),
   },
 };

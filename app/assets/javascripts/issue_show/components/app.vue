@@ -217,8 +217,8 @@ export default {
     defaultErrorMessage() {
       return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
-    isOpenStatus() {
-      return this.issuableStatus === IssuableStatus.Open;
+    isClosed() {
+      return this.issuableStatus === IssuableStatus.Closed;
     },
     pinnedLinkClasses() {
       return this.showTitleBorder
@@ -226,13 +226,13 @@ export default {
         : '';
     },
     statusIcon() {
-      return this.isOpenStatus ? 'issue-open-m' : 'mobile-issue-close';
+      return this.isClosed ? 'mobile-issue-close' : 'issue-open-m';
     },
     statusText() {
       return IssuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return this.isStickyHeaderShowing && this.issuableType === IssuableType.Issue;
+      return this.issuableType === IssuableType.Issue;
     },
   },
   created() {
@@ -432,10 +432,14 @@ export default {
         :show-inline-edit-button="showInlineEditButton"
       />
 
-      <gl-intersection-observer @appear="hideStickyHeader" @disappear="showStickyHeader">
+      <gl-intersection-observer
+        v-if="shouldShowStickyHeader"
+        @appear="hideStickyHeader"
+        @disappear="showStickyHeader"
+      >
         <transition name="issuable-header-slide">
           <div
-            v-if="shouldShowStickyHeader"
+            v-if="isStickyHeaderShowing"
             class="issue-sticky-header gl-fixed gl-z-index-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
             data-testid="issue-sticky-header"
           >
@@ -444,7 +448,7 @@ export default {
             >
               <p
                 class="issuable-status-box status-box gl-my-0"
-                :class="[isOpenStatus ? 'status-box-open' : 'status-box-issue-closed']"
+                :class="[isClosed ? 'status-box-issue-closed' : 'status-box-open']"
               >
                 <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />
                 <span class="gl-display-none d-sm-block">{{ statusText }}</span>

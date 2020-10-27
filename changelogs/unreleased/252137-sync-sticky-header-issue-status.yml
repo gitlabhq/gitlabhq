@@ -1,0 +1,5 @@
+---
+title: Fix sticky header issue status not syncing
+merge_request: 45895
+author:
+type: fixed
