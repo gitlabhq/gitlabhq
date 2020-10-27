@@ -30,11 +30,13 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
   def perform_throttled
     try_obtain_lease do
       with_runnable_policy do |policy|
-        policy.schedule_next_run!
-        ContainerRepository.for_project_id(policy.id)
-                           .each_batch do |relation|
-                             relation.update_all(expiration_policy_cleanup_status: :cleanup_scheduled)
-                           end
+        ContainerExpirationPolicy.transaction do
+          policy.schedule_next_run!
+          ContainerRepository.for_project_id(policy.id)
+                             .each_batch do |relation|
+                               relation.update_all(expiration_policy_cleanup_status: :cleanup_scheduled)
+                             end
+        end
       end
 
       ContainerExpirationPolicies::CleanupContainerRepositoryWorker.perform_with_capacity
@@ -53,9 +55,7 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
 
       scope.each do |policy|
         if policy.valid?
-          ContainerExpirationPolicy.transaction do
-            yield policy
-          end
+          yield policy
         else
           disable_invalid_policy!(policy)
         end

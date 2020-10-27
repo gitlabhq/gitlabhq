@@ -29,6 +29,7 @@ Migration/UpdateLargeTable:
     - :push_event_payloads
     - :resource_label_events
     - :routes
+    - :security_findings
     - :sent_notifications
     - :system_note_metadata
     - :taggings

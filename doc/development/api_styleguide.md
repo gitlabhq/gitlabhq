@@ -292,3 +292,8 @@ expect(response).to match_response_schema('merge_requests')
 ```
 
 Also see [verifying N+1 performance](#verifying-with-tests) in tests.
+
+## Include a changelog entry
+
+All client-facing changes **must** include a [changelog entry](changelog.md).
+This does not include internal APIs.

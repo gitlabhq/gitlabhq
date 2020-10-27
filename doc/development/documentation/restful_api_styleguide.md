@@ -178,8 +178,3 @@ do something like this:
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "skip_users[]=<user_id>" --data "skip_users[]=<user_id>" "https://gitlab.example.com/api/v4/projects/<project_id>/users"
 ```
-
-## Include a changelog entry
-
-All client-facing changes **must** include a [changelog entry](../changelog.md).
-This does not include internal APIs.

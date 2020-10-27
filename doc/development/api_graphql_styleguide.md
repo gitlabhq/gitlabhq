@@ -1446,3 +1446,7 @@ For information on generating GraphQL documentation and schema files, see
 
 To help our readers, you should also add a new page to our [GraphQL API](../api/graphql/index.md) documentation.
 For guidance, see the [GraphQL API](documentation/graphql_styleguide.md) page.
+
+## Include a changelog entry
+
+All client-facing changes **must** include a [changelog entry](changelog.md).

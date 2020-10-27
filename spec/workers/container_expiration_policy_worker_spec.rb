@@ -106,12 +106,11 @@ RSpec.describe ContainerExpirationPolicyWorker do
 
         context 'a valid policy' do
           it 'runs the policy' do
-            service = instance_double(ContainerExpirationPolicyService, execute: true)
-
             expect(ContainerExpirationPolicyService)
-              .to receive(:new).with(container_expiration_policy.project, user).and_return(service)
+              .to receive(:new).with(container_expiration_policy.project, user).and_call_original
+            expect(CleanupContainerRepositoryWorker).to receive(:perform_async).once.and_call_original
 
-            subject
+            expect { subject }.not_to raise_error
           end
         end
 

@@ -3,7 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
 import { GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import eventHub from '../../notes/event_hub';
@@ -12,6 +12,7 @@ import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
 import { collapsedType, isCollapsed } from '../diff_file';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '../constants';
+import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
 
 export default {
   components: {
@@ -49,13 +50,17 @@ export default {
       isCollapsed: isCollapsed(this.file),
     };
   },
+  i18n: {
+    ...DIFF_FILE,
+    genericError: GENERIC_ERROR,
+  },
   computed: {
     ...mapState('diffs', ['currentDiffFileId']),
     ...mapGetters(['isNotesFetched']),
     ...mapGetters('diffs', ['getDiffFileDiscussions']),
     viewBlobLink() {
       return sprintf(
-        __('You can %{linkStart}view the blob%{linkEnd} instead.'),
+        this.$options.i18n.blobView,
         {
           linkStart: `<a href="${escape(this.file.view_path)}">`,
           linkEnd: '</a>',
@@ -77,9 +82,7 @@ export default {
     },
     forkMessage() {
       return sprintf(
-        __(
-          "You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request.",
-        ),
+        this.$options.i18n.editInFork,
         {
           tag_start: '<span class="js-file-fork-suggestion-section-action">',
           tag_end: '</span>',
@@ -187,7 +190,7 @@ export default {
         })
         .catch(() => {
           this.isLoadingCollapsedDiff = false;
-          createFlash(__('Something went wrong on our end. Please try again!'));
+          createFlash(this.$options.i18n.genericError);
         });
     },
     showForkMessage() {
@@ -229,14 +232,14 @@ export default {
       <a
         :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
-        >{{ __('Fork') }}</a
+        >{{ $options.i18n.fork }}</a
       >
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
         type="button"
         @click="hideForkMessage"
       >
-        {{ __('Cancel') }}
+        {{ $options.i18n.cancel }}
       </button>
     </div>
     <template v-else>
@@ -255,14 +258,14 @@ export default {
         </div>
         <template v-else>
           <div v-show="showWarning" class="nothing-here-block diff-collapsed">
-            {{ __('This diff is collapsed.') }}
+            {{ $options.i18n.collapsed }}
             <a
               class="click-to-expand"
               data-testid="toggle-link"
               href="#"
               @click.prevent="handleToggle"
             >
-              {{ __('Click to expand it.') }}
+              {{ $options.i18n.expand }}
             </a>
           </div>
           <diff-content
