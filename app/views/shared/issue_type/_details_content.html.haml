@@ -1,0 +1,31 @@
+- related_branches_path = related_branches_project_issue_path(@project, issuable)
+
+.issue-details.issuable-details
+  .detail-page-description.content-block
+    #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json} }
+      .title-container
+        %h2.title= markdown_field(issuable, :title)
+      - if issuable.description.present?
+        .description
+          .md= markdown_field(issuable, :description)
+
+      = edited_time_ago_with_tooltip(issuable, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
+
+    = render 'shared/issue_type/sentry_stack_trace', issuable: issuable
+
+    = render 'projects/issues/design_management'
+
+    = render_if_exists 'projects/issues/related_issues'
+
+    #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: issuable.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
+
+    - if can?(current_user, :download_code, @project)
+      - add_page_startup_api_call related_branches_path
+      #related-branches{ data: { url: related_branches_path } }
+        -# This element is filled in using JavaScript.
+
+  = render 'shared/issue_type/emoji_block', issuable: issuable
+
+  = render 'projects/issues/discussion'
+
+= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

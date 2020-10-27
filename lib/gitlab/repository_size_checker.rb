@@ -32,7 +32,7 @@ module Gitlab
     def changes_will_exceed_size_limit?(change_size)
       return false unless enabled?
 
-      change_size > limit || exceeded_size(change_size) > 0
+      above_size_limit? || exceeded_size(change_size) > 0
     end
 
     # @param change_size [int] in bytes

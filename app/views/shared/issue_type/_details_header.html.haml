@@ -1,0 +1,52 @@
+- can_update_issue = can?(current_user, :update_issue, issuable)
+- can_reopen_issue = can?(current_user, :reopen_issue, issuable)
+- can_report_spam = issuable.submittable_as_spam_by?(current_user)
+- can_create_issue = show_new_issue_link?(@project)
+- display_issuable_type = issuable_display_type(issuable)
+- new_issuable_params = ({ issuable_template: 'incident', issue: { issue_type: 'incident' } } if issuable.incident?)
+
+.detail-page-header
+  .detail-page-header-body
+    .issuable-status-box.status-box.status-box-issue-closed{ class: issue_status_visibility(issuable, status_box: :closed) }
+      = sprite_icon('mobile-issue-close', css_class: 'gl-display-block gl-display-sm-none!')
+      .gl-display-none.gl-display-sm-block!
+        = issue_closed_text(issuable, current_user)
+    .issuable-status-box.status-box.status-box-open{ class: issue_status_visibility(issuable, status_box: :open) }
+      = sprite_icon('issue-open-m', css_class: 'gl-display-block gl-display-sm-none!')
+      %span.gl-display-none.gl-display-sm-block!
+        = _('Open')
+
+    .issuable-meta
+      #js-issuable-header-warnings
+      = issuable_meta(issuable, @project, display_issuable_type)
+
+    %a.btn.gl-button.btn-default.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+      = sprite_icon('chevron-double-lg-left')
+
+  .detail-page-header-actions.js-issuable-actions.js-issuable-buttons{ data: { "action": "close-reopen" } }
+    .clearfix.issue-btn-group.dropdown
+      %button.btn.gl-button.btn-default.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
+        = _('Options')
+        = icon('caret-down')
+      .dropdown-menu.dropdown-menu-right.d-lg-none.d-xl-none
+        %ul
+          - unless current_user == issuable.author
+            %li= link_to _('Report abuse'), new_abuse_report_path(user_id: issuable.author.id, ref_url: issue_url(issuable))
+          - if can_update_issue
+            %li= link_to _('Close %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, issue_path(issuable, issue: { state_event: :close }, format: 'json'), class: "btn-close js-btn-issue-action #{issue_button_visibility(issuable, true)}", title: _('Close %{display_issuable_type}') % { display_issuable_type: display_issuable_type }
+          - if can_reopen_issue
+            %li= link_to _('Reopen %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, issue_path(issuable, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen js-btn-issue-action #{issue_button_visibility(issuable, false)}", title: _('Reopen %{display_issuable_type}') % { display_issuable_type: display_issuable_type }
+          - if can_report_spam
+            %li= link_to _('Submit as spam'), mark_as_spam_project_issue_path(@project, issuable), method: :post, class: 'btn-spam', title: 'Submit as spam'
+          - if can_create_issue
+            - if can_update_issue || can_report_spam
+              %li.divider
+            %li= link_to _('New %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, new_project_issue_path(@project, new_issuable_params), id: 'new_%{display_issuable_type}_link' % { display_issuable_type: display_issuable_type }
+
+    = render 'shared/issuable/close_reopen_button', issuable: issuable, can_update: can_update_issue, can_reopen: can_reopen_issue, warn_before_close: defined?(issuable.blocked?) && issuable.blocked?
+
+    - if can_report_spam
+      = link_to _('Submit as spam'), mark_as_spam_project_issue_path(@project, issuable), method: :post, class: 'gl-display-none gl-display-sm-none gl-display-md-block gl-button btn btn-grouped btn-spam', title: 'Submit as spam'
+    - if can_create_issue
+      = link_to new_project_issue_path(@project, new_issuable_params), class: 'gl-display-none gl-display-sm-none gl-display-md-block gl-button btn btn-grouped btn-success btn-inverted', title: _('New %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, id: 'new_%{display_issuable_type}_link' % { display_issuable_type: display_issuable_type } do
+        = _('New %{display_issuable_type}') % { display_issuable_type: display_issuable_type }

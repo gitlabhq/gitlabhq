@@ -1,1 +1,6 @@
-= render template: 'projects/issues/show'
+- @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs _("Incidents"), project_incidents_path(@project)
+- breadcrumb_title @issue.to_reference
+- page_title "#{@issue.title} (#{@issue.to_reference})", _("Incidents")
+
+= render 'projects/issuable/show', issuable: @issue

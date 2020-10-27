@@ -34,7 +34,7 @@ RSpec.describe 'User uses header search field', :js do
         wait_for_all_requests
       end
 
-      it 'shows the category search dropdown' do
+      it 'shows the category search dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/250285' do
         expect(page).to have_selector('.dropdown-header', text: /#{scope_name}/i)
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe 'User uses header search field', :js do
         page.find('#search').click
       end
 
-      it 'shows category search dropdown' do
+      it 'shows category search dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/250285' do
         expect(page).to have_selector('.dropdown-header', text: /#{scope_name}/i)
       end
 
@@ -104,7 +104,7 @@ RSpec.describe 'User uses header search field', :js do
       let(:scope_name) { 'All GitLab' }
     end
 
-    it 'displays search options' do
+    it 'displays search options', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/251076' do
       fill_in_search('test')
 
       expect(page).to have_selector(scoped_search_link('test'))

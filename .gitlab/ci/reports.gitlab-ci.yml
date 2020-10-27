@@ -15,7 +15,7 @@ code_quality:
   stage: test
   needs: []
   variables:
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10-gitlab.1"
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.18"
   script:
     - |
       if ! docker info &>/dev/null; then

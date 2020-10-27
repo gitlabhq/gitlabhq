@@ -14,6 +14,7 @@ tasks:
         set -e
         cd /workspace/gitlab-development-kit
         [[ ! -L /workspace/gitlab-development-kit/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
+        mv /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
         # make webpack static, prevents that GitLab tries to connect to localhost webpack from browser outside the workspace
         echo "webpack:" >> gdk.yml
         echo "  static: true" >> gdk.yml
@@ -47,14 +48,6 @@ tasks:
         # Run DB migrations
         if [ "$GITLAB_RUN_DB_MIGRATIONS" == true ]; then
           make gitlab-db-migrate
-        fi
-        # Fix DB key
-        if [ "$GITLAB_FIX_DB_KEY" = true ]; then
-          echo "$(date) – Fixing DB key" | tee -a /workspace/startup.log
-          cd gitlab
-          # see https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56403#note_132515069
-          printf 'ApplicationSetting.last.update_column(:runners_registration_token_encrypted, nil)\nexit\n' | bundle exec rails c
-          cd -
         fi
         # Waiting for GitLab ...
         gp await-port 3000

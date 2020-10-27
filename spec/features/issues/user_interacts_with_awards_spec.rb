@@ -68,7 +68,7 @@ RSpec.describe 'User interacts with awards' do
       page.within('.awards') do
         expect(page).to have_selector('.js-emoji-btn')
         expect(page.find('.js-emoji-btn.active .js-counter')).to have_content('1')
-        expect(page).to have_css(".js-emoji-btn.active[data-original-title='You']")
+        expect(page).to have_css(".js-emoji-btn.active[title='You']")
 
         expect do
           page.find('.js-emoji-btn.active').click

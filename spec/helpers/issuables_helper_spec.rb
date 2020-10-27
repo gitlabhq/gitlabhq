@@ -345,6 +345,24 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#issuable_display_type' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :issuable_display_type) do
+      :issue         | 'issue'
+      :incident      | 'incident'
+      :merge_request | 'merge request'
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { helper.issuable_display_type(issuable) }
+
+      it { is_expected.to eq(issuable_display_type) }
+    end
+  end
+
   describe '#sidebar_milestone_tooltip_label' do
     it 'escapes HTML in the milestone title' do
       milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;')

@@ -96,7 +96,7 @@ POST /projects/:id/protected_environments
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_environments?name=staging&deploy_access_levels%5B%5D%5Buser_id%5D=1"
+curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
 | Attribute | Type | Required | Description |
@@ -105,21 +105,22 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | yes | Array of access levels allowed to deploy, with each described by a hash. |
 
-Elements in the `deploy_access_levels` array should take the
-form `{user_id: integer}`, `{group_id: integer}` or `{access_level: integer}`.
+Elements in the `deploy_access_levels` array should be one of `user_id`, `group_id` or
+`access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
+`{access_level: integer}`.
 Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md).
 
 Example response:
 
 ```json
 {
-   "name":"staging",
+   "name":"production",
    "deploy_access_levels":[
       {
-         "access_level":null,
-         "access_level_description":"Administrator",
-         "user_id":1,
-         "group_id":null
+         "access_level":40,
+         "access_level_description":"protected-access-group",
+         "user_id":null,
+         "group_id":9899826
       }
    ]
 }

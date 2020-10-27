@@ -940,9 +940,7 @@ message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab
 and then try again.
 
 NOTE: **Note:**
-There is a known issue with restore not working with `pgbouncer`. The [workaround is to bypass
-`pgbouncer` and connect directly to the primary database node](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
-[Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
+There is a known issue with restore not working with `pgbouncer`. [Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
 
 ### Restore for Docker image and GitLab Helm chart installations
 
@@ -1039,26 +1037,60 @@ practical use.
 
 ## Backup and restore for installations using PgBouncer
 
-PgBouncer can cause the following errors when performing backups and restores:
+Do NOT backup or restore GitLab through a PgBouncer connection. These
+tasks must [bypass PgBouncer and connect directly to the PostgreSQL primary database node](#bypassing-pgbouncer),
+or they will cause a GitLab outage.
+
+When the GitLab backup or restore task is used with PgBouncer, the
+following error message is shown:
 
 ```ruby
 ActiveRecord::StatementInvalid: PG::UndefinedTable
 ```
 
-There is a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3470) for restore not working
-with `pgbouncer`.
+This happens because the task uses `pg_dump`, which [sets a null search
+path and explicitly includes the schema in every SQL query](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
+to address [CVE-2018-1058](https://www.postgresql.org/about/news/postgresql-103-968-9512-9417-and-9322-released-1834/).
 
-To workaround this issue, the GitLab server will need to bypass `pgbouncer` and
-[connect directly to the primary database node](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
-to perform the database restore.
+Since connections are reused with PgBouncer in transaction pooling mode,
+PostgreSQL fails to search the default `public` schema. As a result,
+this clearing of the search path causes tables and columns to appear
+missing.
 
-There is also a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23211)
-with PostgreSQL 9 and running a database backup through PgBouncer that can cause
-an outage to GitLab. If you're still on PostgreSQL 9 and upgrading PostgreSQL isn't
-an option, workarounds include having a dedicated application node just for backups,
-configured to connect directly the primary database node as noted above. You're
-advised to upgrade your PostgreSQL version though, GitLab 11.11 shipped with PostgreSQL
-10.7, and that is the recommended version for GitLab 12+.
+### Bypassing PgBouncer
+
+There are two ways to fix this:
+
+1. [Use environment variables to override the database settings](#environment-variable-overrides) for the backup task.
+1. Reconfigure a node to [connect directly to the PostgreSQL primary database node](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+
+#### Environment variable overrides
+
+By default, GitLab uses the database configuration stored in a
+configuration file (`database.yml`). However, you can override the database settings
+for the backup and restore task by setting environment
+variables that are prefixed with `GITLAB_BACKUP_`:
+
+- `GITLAB_BACKUP_PGHOST`
+- `GITLAB_BACKUP_PGUSER`
+- `GITLAB_BACKUP_PGPORT`
+- `GITLAB_BACKUP_PGPASSWORD`
+- `GITLAB_BACKUP_PGSSLMODE`
+- `GITLAB_BACKUP_PGSSLKEY`
+- `GITLAB_BACKUP_PGSSLCERT`
+- `GITLAB_BACKUP_PGSSLROOTCERT`
+- `GITLAB_BACKUP_PGSSLCRL`
+- `GITLAB_BACKUP_PGSSLCOMPRESSION`
+
+For example, to override the database host and port to use 192.168.1.10
+and port 5432 with the Omnibus package:
+
+```shell
+sudo GITLAB_BACKUP_PGHOST=192.168.1.10 GITLAB_BACKUP_PGPORT=5432 /opt/gitlab/bin/gitlab-backup create
+```
+
+See the [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-envars.html)
+for more details on what these parameters do.
 
 ## Additional notes
 

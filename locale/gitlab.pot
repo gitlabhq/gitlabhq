@@ -17716,6 +17716,9 @@ msgstr ""
 msgid "New"
 msgstr ""
 
+msgid "New %{display_issuable_type}"
+msgstr ""
+
 msgid "New Application"
 msgstr ""
 
@@ -25455,6 +25458,9 @@ msgid "Submit %{humanized_resource_name}"
 msgstr ""
 
 msgid "Submit a review"
+msgstr ""
+
+msgid "Submit as spam"
 msgstr ""
 
 msgid "Submit changes"

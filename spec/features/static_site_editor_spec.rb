@@ -73,4 +73,44 @@ RSpec.describe 'Static Site Editor' do
       expect(node['data-static-site-generator']).to eq('middleman')
     end
   end
+
+  describe 'Static Site Editor Content Security Policy' do
+    subject { response_headers['Content-Security-Policy'] }
+
+    context 'when no global CSP config exists' do
+      before do
+        expect_next_instance_of(Projects::StaticSiteEditorController) do |controller|
+          expect(controller).to receive(:current_content_security_policy)
+            .and_return(ActionDispatch::ContentSecurityPolicy.new)
+        end
+      end
+
+      it 'does not add CSP directives' do
+        visit sse_path
+
+        is_expected.to be_blank
+      end
+    end
+
+    context 'when a global CSP config exists' do
+      let_it_be(:cdn_url) { 'https://some-cdn.test' }
+      let_it_be(:youtube_url) { 'https://www.youtube.com' }
+
+      before do
+        csp = ActionDispatch::ContentSecurityPolicy.new do |p|
+          p.frame_src :self, cdn_url
+        end
+
+        expect_next_instance_of(Projects::StaticSiteEditorController) do |controller|
+          expect(controller).to receive(:current_content_security_policy).and_return(csp)
+        end
+      end
+
+      it 'appends youtube to the CSP frame-src policy' do
+        visit sse_path
+
+        is_expected.to eql("frame-src 'self' #{cdn_url} #{youtube_url}")
+      end
+    end
+  end
 end

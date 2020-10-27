@@ -30,31 +30,33 @@ The Package Registry supports the following formats:
 
 You can also use the [API](../../api/packages.md) to administer the Package Registry.
 
-The GitLab [Container Registry](container_registry/index.md) is a secure and private registry for container images.
-It's built on open source software and completely integrated within GitLab.
-Use GitLab CI/CD to create and publish images. Use the GitLab [API](../../api/container_registry.md) to
-manage the registry across groups and projects.
+## Accepting contributions
 
-The [Dependency Proxy](dependency_proxy/index.md) is a local proxy for frequently-used upstream images and packages.
-
-## Suggested contributions
-
-Consider contributing to GitLab. This [development documentation](../../development/packages.md) will
+The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md) will
 guide you through the process. Or check out how other members of the community
 are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17417) or [Terraform](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834).
 
-| Format | Use case |
+| Format | Status |
 | ------ | ------ |
-| [Cargo](https://gitlab.com/gitlab-org/gitlab/-/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
-| [Chef](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
-| [CocoaPods](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) | Speed up development with Xcode and CocoaPods. |
-| [Conda](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) | Secure and private local Conda repositories. |
-| [CRAN](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) | Deploy and resolve CRAN packages for the R language. |
-| [Debian](https://gitlab.com/gitlab-org/gitlab/-/issues/5835) | Host and provision Debian packages. |
-| [Opkg](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) | Optimize your work with OpenWrt using Opkg repositories. |
-| [P2](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) | Host all your Eclipse plugins in your own GitLab P2 repository. |
-| [Puppet](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) | Configuration management meets repository management with Puppet repositories. |
-| [RPM](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) | Distribute RPMs directly from GitLab. |
-| [RubyGems](https://gitlab.com/gitlab-org/gitlab/-/issues/803) | Use GitLab to host your own gems. |
-| [SBT](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
-| [Vagrant](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) | Securely host your Vagrant boxes in local repositories. |
+| Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
+| CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
+| CocoaPods | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
+| Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
+| CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
+| Debian    | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44746) |
+| Opkg      | [#36894](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) |
+| P2        | [#36895](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) |
+| Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |
+| RPM       | [#5932](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) |
+| RubyGems  | [#803](https://gitlab.com/gitlab-org/gitlab/-/issues/803) |
+| SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
+| Terraform | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
+| Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
+
+## Container Registry
+
+The GitLab [Container Registry](container_registry/index.md) is a secure and private registry for container images. It's built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab [API](../../api/container_registry.md) to manage the registry across groups and projects.
+
+## Dependency Proxy
+
+The [Dependency Proxy](dependency_proxy/index.md) is a local proxy for frequently-used upstream images and packages.

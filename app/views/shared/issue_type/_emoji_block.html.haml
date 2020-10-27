@@ -1,0 +1,9 @@
+.content-block.emoji-block.emoji-block-sticky
+  .row.gl-m-0.gl-justify-content-space-between
+    .js-noteable-awards
+      = render 'award_emoji/awards_block', awardable: issuable, inline: true
+    .new-branch-col
+      = render_if_exists "projects/issues/timeline_toggle", issuable: issuable
+      #js-vue-sort-issue-discussions
+      #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(issuable), notes_filters: UserPreference.notes_filters.to_json } }
+      = render 'new_branch' if show_new_branch_button?

@@ -3,7 +3,7 @@ comments: false
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
-<div class="display-none">
+<div class="d-none">
   <em>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for optimized
   navigation, discoverability, and readability.</em>
 </div>

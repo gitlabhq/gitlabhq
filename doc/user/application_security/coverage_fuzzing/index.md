@@ -30,6 +30,7 @@ Docker image with the fuzz engine to run your app.
 | Swift    | [libfuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md) | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example) |
 | Rust     | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz) | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example) |
 | Java     | [JQF](https://github.com/rohanpadhye/JQF) | [java-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example) |
+| Java     | [javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example) |
 
 ## Configuration
 
