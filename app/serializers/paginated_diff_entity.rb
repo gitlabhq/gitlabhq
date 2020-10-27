@@ -11,8 +11,13 @@ class PaginatedDiffEntity < Grape::Entity
   expose :diff_files do |diffs, options|
     submodule_links = Gitlab::SubmoduleLinks.new(merge_request.project.repository)
 
-    DiffFileEntity.represent(diffs.diff_files,
-      options.merge(submodule_links: submodule_links, code_navigation_path: code_navigation_path(diffs)))
+    DiffFileEntity.represent(
+      diffs.diff_files,
+      options.merge(
+        submodule_links: submodule_links,
+        code_navigation_path: code_navigation_path(diffs)
+      )
+    )
   end
 
   expose :pagination do

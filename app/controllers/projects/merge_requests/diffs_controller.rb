@@ -20,7 +20,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def diffs_batch
-    diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
+    diff_options_hash = diff_options
+    diff_options_hash[:paths] = params[:paths] if params[:paths]
+
+    diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
     positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
     environment = @merge_request.environments_for(current_user, latest: true).last
 

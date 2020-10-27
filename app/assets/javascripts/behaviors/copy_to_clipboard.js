@@ -79,3 +79,33 @@ export default function initCopyToClipboard() {
     clipboardData.setData('text/x-gfm', json.gfm);
   });
 }
+
+/**
+ * Programmatically triggers a click event on a
+ * "copy to clipboard" button, causing its
+ * contents to be copied. Handles some of the messiniess
+ * around managing the button's tooltip.
+ * @param {HTMLElement} btnElement
+ */
+export function clickCopyToClipboardButton(btnElement) {
+  const $btnElement = $(btnElement);
+
+  // Ensure the button has already been tooltip'd.
+  // If the use hasn't yet interacted (i.e. hovered or clicked)
+  // with the button, Bootstrap hasn't yet initialized
+  // the tooltip, and its `data-original-title` will be `undefined`.
+  // This value is used in the functions above.
+  $btnElement.tooltip();
+  btnElement.dispatchEvent(new MouseEvent('mouseover'));
+
+  btnElement.click();
+
+  // Manually trigger the necessary events to hide the
+  // button's tooltip and allow the button to perform its
+  // tooltip cleanup (updating the title from "Copied" back
+  // to its original title, "Copy branch name").
+  setTimeout(() => {
+    btnElement.dispatchEvent(new MouseEvent('mouseout'));
+    $btnElement.tooltip('hide');
+  }, 2000);
+}

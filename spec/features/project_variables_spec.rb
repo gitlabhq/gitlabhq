@@ -12,32 +12,29 @@ RSpec.describe 'Project variables', :js do
     sign_in(user)
     project.add_maintainer(user)
     project.variables << variable
-    stub_feature_flags(new_variables_ui: false)
     visit page_path
   end
 
   it_behaves_like 'variable list'
 
-  it 'adds new variable with a special environment scope' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('somekey')
-      find('.js-ci-variable-input-value').set('somevalue')
+  it 'adds a new variable with an environment scope' do
+    click_button('Add Variable')
 
-      find('.js-variable-environment-toggle').click
-      find('.js-variable-environment-dropdown-wrapper .dropdown-input-field').set('review/*')
-      find('.js-variable-environment-dropdown-wrapper .js-dropdown-create-new-item').click
+    page.within('#add-ci-variable') do
+      find('[data-qa-selector="ci_variable_key_field"] input').set('akey')
+      find('#ci-variable-value').set('akey_value')
+      find('[data-testid="environment-scope"]').click
+      find_button('clear').click
+      find('[data-testid="ci-environment-search"]').set('review/*')
+      find('[data-testid="create-wildcard-button"]').click
 
-      expect(find('input[name="variables[variables_attributes][][environment_scope]"]', visible: false).value).to eq('review/*')
+      click_button('Add variable')
     end
 
-    click_button('Save variables')
     wait_for_requests
 
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('somekey')
-      expect(page).to have_content('review/*')
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
     end
   end
 end

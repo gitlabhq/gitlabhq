@@ -82,16 +82,6 @@ RSpec.describe PageLayoutHelper do
           expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
         end
       end
-
-      context 'if avatar_with_host is disabled' do
-        it "#{type.titlecase} does not generate avatar full url" do
-          stub_feature_flags(avatar_with_host: false)
-
-          assign(type, object)
-
-          expect(helper.page_image).to eq object.avatar_url(only_path: true)
-        end
-      end
     end
   end
 

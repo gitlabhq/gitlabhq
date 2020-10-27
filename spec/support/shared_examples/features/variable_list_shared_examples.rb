@@ -1,70 +1,243 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'variable list' do
-  it 'shows list of variables' do
-    page.within('.js-ci-variable-list-section') do
-      expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
+  it 'shows a list of variables' do
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq(variable.key)
     end
   end
 
-  it 'adds new CI variable' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('key')
-      find('.js-ci-variable-input-value').set('key_value')
+  it 'adds a new CI variable' do
+    click_button('Add Variable')
+
+    fill_variable('key', 'key_value') do
+      click_button('Add variable')
     end
 
-    click_button('Save variables')
     wait_for_requests
 
-    visit page_path
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('key')
     end
   end
 
   it 'adds a new protected variable' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('key')
-      find('.js-ci-variable-input-value').set('key_value')
+    click_button('Add Variable')
 
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
+    fill_variable('key', 'key_value') do
+      click_button('Add variable')
     end
 
-    click_button('Save variables')
     wait_for_requests
 
-    visit page_path
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('key')
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Protected"] svg[data-testid="mobile-issue-close-icon"]')).to be_present
     end
   end
 
   it 'defaults to unmasked' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('key')
-      find('.js-ci-variable-input-value').set('key_value')
+    click_button('Add Variable')
 
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+    fill_variable('key', 'key_value') do
+      click_button('Add variable')
     end
 
-    click_button('Save variables')
     wait_for_requests
 
-    visit page_path
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('key')
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Masked"] svg[data-testid="close-icon"]')).to be_present
     end
+  end
+
+  it 'reveals and hides variables' do
+    page.within('.ci-variable-table') do
+      expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
+      expect(page).to have_content('*' * 17)
+
+      click_button('Reveal value')
+
+      expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
+      expect(first('.js-ci-variable-row td[data-label="Value"]').text).to eq(variable.value)
+      expect(page).not_to have_content('*' * 17)
+
+      click_button('Hide value')
+
+      expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
+      expect(page).to have_content('*' * 17)
+    end
+  end
+
+  it 'deletes a variable' do
+    expect(page).to have_selector('.js-ci-variable-row', count: 1)
+
+    page.within('.ci-variable-table') do
+      click_button('Edit')
+    end
+
+    page.within('#add-ci-variable') do
+      click_button('Delete variable')
+    end
+
+    wait_for_requests
+
+    expect(first('.js-ci-variable-row').text).to eq('There are no variables yet.')
+  end
+
+  it 'edits a variable' do
+    page.within('.ci-variable-table') do
+      click_button('Edit')
+    end
+
+    page.within('#add-ci-variable') do
+      find('[data-qa-selector="ci_variable_key_field"] input').set('new_key')
+
+      click_button('Update variable')
+    end
+
+    wait_for_requests
+
+    expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq('new_key')
+  end
+
+  it 'edits a variable to be unmasked' do
+    page.within('.ci-variable-table') do
+      click_button('Edit')
+    end
+
+    page.within('#add-ci-variable') do
+      find('[data-testid="ci-variable-protected-checkbox"]').click
+      find('[data-testid="ci-variable-masked-checkbox"]').click
+
+      click_button('Update variable')
+    end
+
+    wait_for_requests
+
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Masked"] svg[data-testid="close-icon"]')).to be_present
+    end
+  end
+
+  it 'edits a variable to be masked' do
+    page.within('.ci-variable-table') do
+      click_button('Edit')
+    end
+
+    page.within('#add-ci-variable') do
+      find('[data-testid="ci-variable-masked-checkbox"]').click
+
+      click_button('Update variable')
+    end
+
+    wait_for_requests
+
+    page.within('.ci-variable-table') do
+      click_button('Edit')
+    end
+
+    page.within('#add-ci-variable') do
+      find('[data-testid="ci-variable-masked-checkbox"]').click
+
+      click_button('Update variable')
+    end
+
+    page.within('.ci-variable-table') do
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Masked"] svg[data-testid="mobile-issue-close-icon"]')).to be_present
+    end
+  end
+
+  it 'shows a validation error box about duplicate keys' do
+    click_button('Add Variable')
+
+    fill_variable('key', 'key_value') do
+      click_button('Add variable')
+    end
+
+    wait_for_requests
+
+    click_button('Add Variable')
+
+    fill_variable('key', 'key_value') do
+      click_button('Add variable')
+    end
+
+    wait_for_requests
+
+    expect(find('.flash-container')).to be_present
+    expect(find('.flash-text').text).to have_content('Variables key (key) has already been taken')
+  end
+
+  it 'prevents a variable to be added if no values are provided when a variable is set to masked' do
+    click_button('Add Variable')
+
+    page.within('#add-ci-variable') do
+      find('[data-qa-selector="ci_variable_key_field"] input').set('empty_mask_key')
+      find('[data-testid="ci-variable-protected-checkbox"]').click
+      find('[data-testid="ci-variable-masked-checkbox"]').click
+
+      expect(find_button('Add variable', disabled: true)).to be_present
+    end
+  end
+
+  it 'shows validation error box about unmaskable values' do
+    click_button('Add Variable')
+
+    fill_variable('empty_mask_key', '???', protected: true, masked: true) do
+      expect(page).to have_content('This variable can not be masked')
+      expect(find_button('Add variable', disabled: true)).to be_present
+    end
+  end
+
+  it 'handles multiple edits and a deletion' do
+    # Create two variables
+    click_button('Add Variable')
+
+    fill_variable('akey', 'akeyvalue') do
+      click_button('Add variable')
+    end
+
+    wait_for_requests
+
+    click_button('Add Variable')
+
+    fill_variable('zkey', 'zkeyvalue') do
+      click_button('Add variable')
+    end
+
+    wait_for_requests
+
+    expect(page).to have_selector('.js-ci-variable-row', count: 3)
+
+    # Remove the `akey` variable
+    page.within('.ci-variable-table') do
+      page.within('.js-ci-variable-row:first-child') do
+        click_button('Edit')
+      end
+    end
+
+    page.within('#add-ci-variable') do
+      click_button('Delete variable')
+    end
+
+    wait_for_requests
+
+    # Add another variable
+    click_button('Add Variable')
+
+    fill_variable('ckey', 'ckeyvalue') do
+      click_button('Add variable')
+    end
+
+    wait_for_requests
+
+    # expect to find 3 rows of variables in alphabetical order
+    expect(page).to have_selector('.js-ci-variable-row', count: 3)
+    rows = all('.js-ci-variable-row')
+    expect(rows[0].find('td[data-label="Key"]').text).to eq('ckey')
+    expect(rows[1].find('td[data-label="Key"]').text).to eq('test_key')
+    expect(rows[2].find('td[data-label="Key"]').text).to eq('zkey')
   end
 
   context 'defaults to the application setting' do
@@ -76,13 +249,11 @@ RSpec.shared_examples 'variable list' do
       end
 
       it 'defaults to protected' do
-        page.within('.js-ci-variable-list-section .js-row:last-child') do
-          find('.js-ci-variable-input-key').set('key')
+        click_button('Add Variable')
+
+        page.within('#add-ci-variable') do
+          expect(find('[data-testid="ci-variable-protected-checkbox"]')).to be_checked
         end
-
-        values = all('.js-ci-variable-input-protected', visible: false).map(&:value)
-
-        expect(values).to eq %w(false true true)
       end
 
       it 'shows a message regarding the changed default' do
@@ -98,13 +269,11 @@ RSpec.shared_examples 'variable list' do
       end
 
       it 'defaults to unprotected' do
-        page.within('.js-ci-variable-list-section .js-row:last-child') do
-          find('.js-ci-variable-input-key').set('key')
+        click_button('Add Variable')
+
+        page.within('#add-ci-variable') do
+          expect(find('[data-testid="ci-variable-protected-checkbox"]')).not_to be_checked
         end
-
-        values = all('.js-ci-variable-input-protected', visible: false).map(&:value)
-
-        expect(values).to eq %w(false false false)
       end
 
       it 'does not show a message regarding the default' do
@@ -113,275 +282,14 @@ RSpec.shared_examples 'variable list' do
     end
   end
 
-  it 'reveals and hides variables' do
-    page.within('.js-ci-variable-list-section') do
-      expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
-      expect(first('.js-ci-variable-input-value', visible: false).value).to eq(variable.value)
-      expect(page).to have_content('*' * 17)
-
-      click_button('Reveal value')
-
-      expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
-      expect(first('.js-ci-variable-input-value').value).to eq(variable.value)
-      expect(page).not_to have_content('*' * 17)
-
-      click_button('Hide value')
-
-      expect(first('.js-ci-variable-input-key').value).to eq(variable.key)
-      expect(first('.js-ci-variable-input-value', visible: false).value).to eq(variable.value)
-      expect(page).to have_content('*' * 17)
-    end
-  end
-
-  it 'deletes variable' do
-    page.within('.js-ci-variable-list-section') do
-      expect(page).to have_selector('.js-row', count: 2)
-
-      first('.js-row-remove-button').click
-
-      click_button('Save variables')
-      wait_for_requests
-
-      expect(page).to have_selector('.js-row', count: 1)
-    end
-  end
-
-  it 'edits variable' do
-    page.within('.js-ci-variable-list-section') do
-      click_button('Reveal value')
-
-      page.within('.js-row:nth-child(2)') do
-        find('.js-ci-variable-input-key').set('new_key')
-        find('.js-ci-variable-input-value').set('new_value')
-      end
-
-      click_button('Save variables')
-      wait_for_requests
-
-      visit page_path
-
-      page.within('.js-row:nth-child(2)') do
-        expect(find('.js-ci-variable-input-key').value).to eq('new_key')
-        expect(find('.js-ci-variable-input-value', visible: false).value).to eq('new_value')
-      end
-    end
-  end
-
-  it 'edits variable to be protected' do
-    # Create the unprotected variable
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('unprotected_key')
-      find('.js-ci-variable-input-value').set('unprotected_value')
-      find('.ci-variable-protected-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(3)') do
-      find('.ci-variable-protected-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(3)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('unprotected_key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('unprotected_value')
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
-    end
-  end
-
-  it 'edits variable to be unprotected' do
-    # Create the protected variable
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('protected_key')
-      find('.js-ci-variable-input-value').set('protected_value')
-
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      find('.ci-variable-protected-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('protected_key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('protected_value')
-      expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
-    end
-  end
-
-  it 'edits variable to be unmasked' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('unmasked_key')
-      find('.js-ci-variable-input-value').set('unmasked_value')
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
-
-      find('.ci-variable-masked-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
-
-      find('.ci-variable-masked-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
-    end
-  end
-
-  it 'edits variable to be masked' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('masked_key')
-      find('.js-ci-variable-input-value').set('masked_value')
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
-
-      find('.ci-variable-masked-item .js-project-feature-toggle').click
-
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
-      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
-    end
-  end
-
-  it 'handles multiple edits and deletion in the middle' do
-    page.within('.js-ci-variable-list-section') do
-      # Create 2 variables
-      page.within('.js-row:last-child') do
-        find('.js-ci-variable-input-key').set('akey')
-        find('.js-ci-variable-input-value').set('akeyvalue')
-      end
-      page.within('.js-row:last-child') do
-        find('.js-ci-variable-input-key').set('zkey')
-        find('.js-ci-variable-input-value').set('zkeyvalue')
-      end
-
-      click_button('Save variables')
-      wait_for_requests
-
-      expect(page).to have_selector('.js-row', count: 4)
-
-      # Remove the `akey` variable
-      page.within('.js-row:nth-child(3)') do
-        first('.js-row-remove-button').click
-      end
-
-      # Add another variable
-      page.within('.js-row:last-child') do
-        find('.js-ci-variable-input-key').set('ckey')
-        find('.js-ci-variable-input-value').set('ckeyvalue')
-      end
-
-      click_button('Save variables')
-      wait_for_requests
-
-      visit page_path
-
-      # Expect to find 3 variables(4 rows) in alphbetical order
-      expect(page).to have_selector('.js-row', count: 4)
-      row_keys = all('.js-ci-variable-input-key')
-      expect(row_keys[0].value).to eq('ckey')
-      expect(row_keys[1].value).to eq('test_key')
-      expect(row_keys[2].value).to eq('zkey')
-      expect(row_keys[3].value).to eq('')
-    end
-  end
-
-  it 'shows validation error box about duplicate keys' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('samekey')
-      find('.js-ci-variable-input-value').set('value123')
-    end
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('samekey')
-      find('.js-ci-variable-input-value').set('value456')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    expect(all('.js-ci-variable-list-section .js-ci-variable-error-box ul li').count).to eq(1)
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section') do
-      expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables have duplicate values \(.+\)/)
-    end
-  end
-
-  it 'shows validation error box about masking empty values' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('empty_value')
-      find('.js-ci-variable-input-value').set('')
-      find('.ci-variable-masked-item .js-project-feature-toggle').click
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    page.within('.js-ci-variable-list-section') do
-      expect(all('.js-ci-variable-error-box ul li').count).to eq(1)
-      expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables value is invalid/)
-    end
-  end
-
-  it 'shows validation error box about unmaskable values' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('unmaskable_value')
-      find('.js-ci-variable-input-value').set('???')
-      find('.ci-variable-masked-item .js-project-feature-toggle').click
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    page.within('.js-ci-variable-list-section') do
-      expect(all('.js-ci-variable-error-box ul li').count).to eq(1)
-      expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables value is invalid/)
+  def fill_variable(key, value, protected: false, masked: false)
+    page.within('#add-ci-variable') do
+      find('[data-qa-selector="ci_variable_key_field"] input').set(key)
+      find('[data-qa-selector="ci_variable_value_field"]').set(value) if value.present?
+      find('[data-testid="ci-variable-protected-checkbox"]').click if protected
+      find('[data-testid="ci-variable-masked-checkbox"]').click if masked
+
+      yield
     end
   end
 end

@@ -454,6 +454,31 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       it_behaves_like 'successful request'
     end
 
+    context 'with paths param' do
+      let(:example_file_path) { "README" }
+      let(:file_path_option) { { paths: [example_file_path] } }
+
+      subject do
+        go(file_path_option)
+      end
+
+      it_behaves_like 'serializes diffs with expected arguments' do
+        let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+        let(:expected_options) do
+          collection_arguments(current_page: 1, total_pages: 1)
+        end
+      end
+
+      it_behaves_like 'successful request'
+
+      it 'filters down the response to the expected file path' do
+        subject
+
+        expect(json_response["diff_files"].size).to eq(1)
+        expect(json_response["diff_files"].first["file_path"]).to eq(example_file_path)
+      end
+    end
+
     context 'with default params' do
       subject { go }
 

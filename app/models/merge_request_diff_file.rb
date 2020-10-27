@@ -8,6 +8,10 @@ class MergeRequestDiffFile < ApplicationRecord
   belongs_to :merge_request_diff, inverse_of: :merge_request_diff_files
   alias_attribute :index, :relative_order
 
+  scope :by_paths, ->(paths) do
+    where("new_path in (?) OR old_path in (?)", paths, paths)
+  end
+
   def utf8_diff
     return '' if diff.blank?
 

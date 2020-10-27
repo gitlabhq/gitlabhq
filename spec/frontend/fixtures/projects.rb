@@ -20,7 +20,6 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   before do
-    stub_feature_flags(new_variables_ui: false)
     project.add_maintainer(admin)
     sign_in(admin)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
@@ -53,29 +52,6 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
       get :edit, params: {
         namespace_id: project.namespace.to_param,
         id: project
-      }
-
-      expect(response).to be_successful
-    end
-  end
-
-  describe Projects::Settings::CiCdController, '(JavaScript fixtures)', type: :controller do
-    it 'projects/ci_cd_settings.html' do
-      get :show, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project
-      }
-
-      expect(response).to be_successful
-    end
-
-    it 'projects/ci_cd_settings_with_variables.html' do
-      create(:ci_variable, project: project_variable_populated)
-      create(:ci_variable, project: project_variable_populated)
-
-      get :show, params: {
-        namespace_id: project_variable_populated.namespace.to_param,
-        project_id: project_variable_populated
       }
 
       expect(response).to be_successful

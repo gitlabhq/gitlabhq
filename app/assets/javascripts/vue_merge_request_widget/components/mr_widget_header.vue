@@ -1,6 +1,5 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import Mousetrap from 'mousetrap';
 import { escape } from 'lodash';
 import {
   GlButton,
@@ -84,17 +83,6 @@ export default {
         : '';
     },
   },
-  mounted() {
-    Mousetrap.bind('b', this.copyBranchName);
-  },
-  beforeDestroy() {
-    Mousetrap.unbind('b');
-  },
-  methods: {
-    copyBranchName() {
-      this.$refs.copyBranchNameButton.$el.click();
-    },
-  },
 };
 </script>
 <template>
@@ -110,7 +98,6 @@ export default {
             class="label-branch label-truncate js-source-branch"
             v-html="mr.sourceBranchLink"
           /><clipboard-button
-            ref="copyBranchNameButton"
             data-testid="mr-widget-copy-clipboard"
             :text="branchNameClipboardData"
             :title="__('Copy branch name')"

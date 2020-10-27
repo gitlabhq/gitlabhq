@@ -60,7 +60,7 @@ export default {
 </script>
 <template>
   <gl-dropdown :text="value">
-    <gl-search-box-by-type v-model.trim="searchTerm" />
+    <gl-search-box-by-type v-model.trim="searchTerm" data-testid="ci-environment-search" />
     <gl-dropdown-item
       v-for="environment in filteredResults"
       :key="environment"
@@ -75,7 +75,7 @@ export default {
     }}</gl-dropdown-item>
     <template v-if="shouldRenderCreateButton">
       <gl-dropdown-divider />
-      <gl-dropdown-item @click="createClicked">
+      <gl-dropdown-item data-testid="create-wildcard-button" @click="createClicked">
         {{ composedCreateButtonLabel }}
       </gl-dropdown-item>
     </template>

@@ -57,10 +57,7 @@ module PageLayoutHelper
 
     subject = @project || @user || @group
 
-    args = {}
-    args[:only_path] = false if Feature.enabled?(:avatar_with_host)
-
-    image = subject.avatar_url(args) if subject.present?
+    image = subject.avatar_url(only_path: false) if subject.present?
     image || default
   end
 

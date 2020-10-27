@@ -3,22 +3,41 @@
 require 'find'
 
 class RequireMigration
-  MIGRATION_FOLDERS = %w(db/migrate db/post_migrate ee/db/geo/migrate ee/db/geo/post_migrate).freeze
+  class AutoLoadError < RuntimeError
+    MESSAGE = "Can not find any migration file for `%{file_name}`!\n" \
+              "You can try to provide the migration file name manually."
+
+    def initialize(file_name)
+      message = format(MESSAGE, file_name: file_name)
+
+      super(message)
+    end
+  end
+
+  FOSS_MIGRATION_FOLDERS = %w[db/migrate db/post_migrate].freeze
+  ALL_MIGRATION_FOLDERS = (FOSS_MIGRATION_FOLDERS + %w[ee/db/geo/migrate ee/db/geo/post_migrate]).freeze
   SPEC_FILE_PATTERN = /.+\/(?<file_name>.+)_spec\.rb/.freeze
 
   class << self
     def require_migration!(file_name)
       file_paths = search_migration_file(file_name)
+      raise AutoLoadError.new(file_name) unless file_paths.first
 
       require file_paths.first
     end
 
     def search_migration_file(file_name)
-      MIGRATION_FOLDERS.flat_map do |path|
+      migration_folders.flat_map do |path|
         migration_path = Rails.root.join(path).to_s
 
         Find.find(migration_path).grep(/\d+_#{file_name}\.rb/)
       end
+    end
+
+    private
+
+    def migration_folders
+      Gitlab.ee? ? ALL_MIGRATION_FOLDERS : FOSS_MIGRATION_FOLDERS
     end
   end
 end

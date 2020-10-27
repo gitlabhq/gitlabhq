@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import TerminalEmptyState from '~/ide/components/terminal/empty_state.vue';
 
@@ -36,7 +36,7 @@ describe('IDE TerminalEmptyState', () => {
     const img = wrapper.find('.svg-content img');
 
     expect(img.exists()).toBe(true);
-    expect(img.attributes('src')).toEqual(TEST_PATH);
+    expect(img.attributes('src')).toBe(TEST_PATH);
   });
 
   it('when loading, shows loading icon', () => {
@@ -71,24 +71,23 @@ describe('IDE TerminalEmptyState', () => {
         },
       });
 
-      button = wrapper.find('button');
+      button = wrapper.find(GlButton);
     });
 
     it('shows button', () => {
-      expect(button.text()).toEqual('Start Web Terminal');
-      expect(button.attributes('disabled')).toBeFalsy();
+      expect(button.text()).toBe('Start Web Terminal');
+      expect(button.props('disabled')).toBe(false);
     });
 
     it('emits start when button is clicked', () => {
-      expect(wrapper.emitted().start).toBeFalsy();
-
-      button.trigger('click');
+      expect(wrapper.emitted().start).toBeUndefined();
+      button.vm.$emit('click');
 
       expect(wrapper.emitted().start).toHaveLength(1);
     });
 
     it('shows help path link', () => {
-      expect(wrapper.find('a').attributes('href')).toEqual(TEST_HELP_PATH);
+      expect(wrapper.find('a').attributes('href')).toBe(TEST_HELP_PATH);
     });
   });
 
@@ -101,7 +100,7 @@ describe('IDE TerminalEmptyState', () => {
       },
     });
 
-    expect(wrapper.find('button').attributes('disabled')).not.toBe(null);
-    expect(wrapper.find('.bs-callout').element.innerHTML).toEqual(TEST_HTML_MESSAGE);
+    expect(wrapper.find(GlButton).props('disabled')).toBe(true);
+    expect(wrapper.find('.bs-callout').element.innerHTML).toBe(TEST_HTML_MESSAGE);
   });
 });

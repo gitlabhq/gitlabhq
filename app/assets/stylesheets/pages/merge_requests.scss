@@ -1039,9 +1039,3 @@ $mr-widget-min-height: 69px;
 .diff-file-row.is-active {
   background-color: $gray-50;
 }
-
-.merge-request-container {
-  .flash-container {
-    @include gl-mb-4;
-  }
-}

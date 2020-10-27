@@ -212,39 +212,7 @@ When the user is added back to the SCIM app, GitLab cannot create a new user bec
 
 Solution: Have a user sign in directly to GitLab, then [manually link](#user-access-and-linking-setup) their account.
 
-### Azure
-
-#### How do I verify my SCIM configuration is correct?
-
-Review the following:
-
-- Ensure that the SCIM value for `id` matches the SAML value for `NameId`.
-- Ensure that the SCIM value for `externalId` matches the SAML value for `NameId`.
-
-Review the following SCIM parameters for sensible values:
-
-- `userName`
-- `displayName`
-- `emails[type eq "work"].value`
-
-#### Testing Azure connection: invalid credentials
-
-When testing the connection, you may encounter an error: **You appear to have entered invalid credentials. Please confirm you are using the correct information for an administrative account**. If `Tenant URL` and `secret token` are correct, check whether your group path contains characters that may be considered invalid JSON primitives (such as `.`). Removing such characters from the group path typically resolves the error.
-
-#### Azure: (Field) can't be blank sync error
-
-When checking the Audit Logs for the Provisioning, you can sometimes see the
-error `Namespace can't be blank, Name can't be blank, and User can't be blank.`
-
-This is likely caused because not all required fields (such as first name and last name) are present for all users being mapped.
-
-As a workaround, try an alternate mapping:
-
-1. Follow the Azure mapping instructions from above.
-1. Delete the `name.formatted` target attribute entry.
-1. Change the `displayName` source attribute to have `name.formatted` target attribute.
-
-#### How do I diagnose why a user is unable to sign in
+### How do I diagnose why a user is unable to sign in
 
 Ensure that the user has been added to the SCIM app.
 
@@ -256,7 +224,7 @@ This value is also used by SCIM to match users on the `id`, and is updated by SC
 
 It is important that this SCIM `id` and SCIM `externalId` are configured to the same value as the SAML `NameId`. SAML responses can be traced using [debugging tools](./index.md#saml-debugging-tools), and any errors can be checked against our [SAML troubleshooting docs](./index.md#troubleshooting).
 
-#### How do I verify user's SAML NameId matches the SCIM externalId
+### How do I verify user's SAML NameId matches the SCIM externalId
 
 Group owners can see the list of users and the `externalId` stored for each user in the group SAML SSO Settings page.
 
@@ -264,7 +232,7 @@ A possible alternative is to use the [SCIM API](../../../api/scim.md#get-a-list-
 
 To see how the `external_uid` compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
 
-#### Update or fix mismatched SCIM externalId and SAML NameId
+### Update or fix mismatched SCIM externalId and SAML NameId
 
 Whether the value was changed or you need to map to a different field, ensure `id`, `externalId`, and `NameId` all map to the same field.
 
@@ -284,8 +252,40 @@ you can address the problem in the following ways:
 
 It is important not to update these to incorrect values, since this will cause users to be unable to sign in. It is also important not to assign a value to the wrong user, as this would cause users to get signed into the wrong account.
 
-#### I need to change my SCIM app
+### I need to change my SCIM app
 
 Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](./index.md#i-need-to-change-my-saml-app) section.
 
 Alternatively, users can be removed from the SCIM app which will delink all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
+
+### Azure
+
+#### How do I verify my SCIM configuration is correct?
+
+Review the following:
+
+- Ensure that the SCIM value for `id` matches the SAML value for `NameId`.
+- Ensure that the SCIM value for `externalId` matches the SAML value for `NameId`.
+
+Review the following SCIM parameters for sensible values:
+
+- `userName`
+- `displayName`
+- `emails[type eq "work"].value`
+
+#### Testing Azure connection: invalid credentials
+
+When testing the connection, you may encounter an error: **You appear to have entered invalid credentials. Please confirm you are using the correct information for an administrative account**. If `Tenant URL` and `secret token` are correct, check whether your group path contains characters that may be considered invalid JSON primitives (such as `.`). Removing such characters from the group path typically resolves the error.
+
+#### (Field) can't be blank sync error
+
+When checking the Audit Logs for the Provisioning, you can sometimes see the
+error `Namespace can't be blank, Name can't be blank, and User can't be blank.`
+
+This is likely caused because not all required fields (such as first name and last name) are present for all users being mapped.
+
+As a workaround, try an alternate mapping:
+
+1. Follow the Azure mapping instructions from above.
+1. Delete the `name.formatted` target attribute entry.
+1. Change the `displayName` source attribute to have `name.formatted` target attribute.

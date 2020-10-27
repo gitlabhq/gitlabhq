@@ -15,7 +15,6 @@ RSpec.describe 'Groups (JavaScript fixtures)', type: :controller do
   end
 
   before do
-    stub_feature_flags(new_variables_ui: false)
     group.add_maintainer(admin)
     sign_in(admin)
   end
@@ -23,14 +22,6 @@ RSpec.describe 'Groups (JavaScript fixtures)', type: :controller do
   describe GroupsController, '(JavaScript fixtures)', type: :controller do
     it 'groups/edit.html' do
       get :edit, params: { id: group }
-
-      expect(response).to be_successful
-    end
-  end
-
-  describe Groups::Settings::CiCdController, '(JavaScript fixtures)', type: :controller do
-    it 'groups/ci_cd_settings.html' do
-      get :show, params: { group_id: group }
 
       expect(response).to be_successful
     end

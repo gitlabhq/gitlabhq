@@ -31,8 +31,18 @@ class EnvironmentNamesFinder
   end
 
   def namespace_environments
-    projects =
-      project_or_group.all_projects.public_or_visible_to_user(current_user)
+    # We assume reporter access is needed for the :read_environment permission
+    # here. This expection is also present in
+    # IssuableFinder::Params#min_access_level, which is used for filtering out
+    # merge requests that don't have the right permissions.
+    #
+    # We use this approach so we don't need to load every project into memory
+    # just to verify if we can see their environments. Doing so would not be
+    # efficient, and possibly mess up pagination if certain projects are not
+    # meant to be visible.
+    projects = project_or_group
+      .all_projects
+      .public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
 
     Environment.for_project(projects)
   end
