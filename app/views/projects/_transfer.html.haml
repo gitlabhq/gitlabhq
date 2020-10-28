@@ -1,0 +1,16 @@
+- return unless can?(current_user, :change_namespace, @project)
+
+.sub-section
+  %h4.danger-title= _('Transfer project')
+  = form_for @project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } do |f|
+    .form-group
+      = label_tag :new_namespace_id, nil, class: 'label-bold' do
+        %span= _('Select a new namespace')
+      .form-group
+        = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'
+      %ul
+        %li= _("Be careful. Changing the project's namespace can have unintended side effects.")
+        %li= _('You can only transfer the project to namespaces you manage.')
+        %li= _('You will need to update your local repositories to point to the new location.')
+        %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
+    = f.submit 'Transfer project', class: "gl-button btn btn-danger js-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }

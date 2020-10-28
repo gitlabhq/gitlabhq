@@ -557,12 +557,13 @@ tenses, words, and phrases:
   - Exceptions to this rule include commonly accepted technical terms, such as
     CI/CD and TCP/IP.
 - <!-- vale gitlab.LatinTerms = NO -->
-  We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
-  as even native users of English might misunderstand them.
-  (Tested in [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml).)
-  - Instead of "i.e.," use "that is."
-  - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
-  - Instead of "etc.," either use "and so on" or consider editing it out, since
+  We discourage the use of Latin abbreviations and terms, such as _e.g._,
+  _i.e._, _etc._, or _via_, as even native users of English can misunderstand
+  those terms. (Tested in [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml).)
+  - Instead of _i.e._, use _that is_.
+  - Instead of _via_, use _through_.
+  - Instead of _e.g._, use _for example_, _such as_, _for instance_, or _like_.
+  - Instead of _etc._, either use _and so on_ or consider editing it out, since
     it can be vague.
     <!-- vale gitlab.LatinTerms = YES -->
 - Avoid using the word *currently* when talking about the product or its
@@ -740,8 +741,7 @@ This is a list of available features:
 
 - Don't add commas (`,`) or semicolons (`;`) to the ends of list items.
 - Only add periods to the end of a list item if the item consists of a complete
-  sentence. The [definition of full sentence](https://www.le.ac.uk/oerresources/ssds/grammarguides/page_02.htm)
-  is: _"a complete sentence always contains a verb, expresses a complete idea, and makes sense standing alone"_.
+  sentence (with a subject and a verb).
 - Be consistent throughout the list: if the majority of the items do not end in
   a period, do not end any of the items in a period, even if they consist of a
   complete sentence. The opposite is also valid: if the majority of the items

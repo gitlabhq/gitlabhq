@@ -76,7 +76,7 @@ to activate it in the GitLab instance. You can also click on the **Sign-in page*
 to review the saved appearance settings:
 
 NOTE: **Note:**
-You can add also add a [customized help message](settings/help_page.md) below the sign in message.
+You can add also add a [customized help message](settings/help_page.md) below the sign in message or add [a Sign in text message](settings/sign_in_restrictions.md#sign-in-information).
 
 ## New project pages
 

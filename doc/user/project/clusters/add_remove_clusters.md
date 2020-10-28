@@ -149,6 +149,9 @@ Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level
    - [Amazon EKS](add_eks_clusters.md#new-eks-cluster).
    - [Google GKE](add_gke_clusters.md#creating-the-cluster-on-gke).
 
+After creating a cluster, you can install runners for it as described in
+[GitLab Managed Apps](../../clusters/applications.md).
+
 ## Add existing cluster
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
@@ -157,6 +160,9 @@ or instance.
 Kubernetes integration isn't supported for arm64 clusters. See the issue
 [Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838)
 for details.
+
+After adding an existing cluster, you can install runners for it as described in
+[GitLab Managed Apps](../../clusters/applications.md).
 
 ### Existing Kubernetes cluster
 

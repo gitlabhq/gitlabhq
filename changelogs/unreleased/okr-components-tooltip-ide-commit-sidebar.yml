@@ -1,0 +1,5 @@
+---
+title: "Migrate tooltip in app/assets/javascripts/ide/components/commit_sidebar/list.vue"
+merge_request: 46148
+author:
+type: other
