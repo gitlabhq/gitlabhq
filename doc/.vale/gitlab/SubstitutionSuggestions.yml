@@ -1,0 +1,15 @@
+---
+# Suggestion: gitlab.SubstitutionSuggestions
+#
+# Suggests better options for frequently misused terms at GitLab that are
+# often - but not always - incorrect.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: substitution
+message: 'Consider "%s" instead of "%s".'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+level: suggestion
+ignorecase: true
+swap:
+  since: because
+  utilize: use

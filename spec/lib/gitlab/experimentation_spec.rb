@@ -2,15 +2,46 @@
 
 require 'spec_helper'
 
+# This is temporary while https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45733 gets rolled out.
+# TODO: clean this up once the MR has been merged.
+RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
+  it 'temporarily ensures we know what experiments exist for backwards compatibility' do
+    known_experiments = [
+      :signup_flow,
+      :onboarding_issues,
+      :ci_notification_dot,
+      :upgrade_link_in_user_menu_a,
+      :invite_members_version_a,
+      :invite_members_version_b,
+      :invite_members_empty_group_version_a,
+      :new_create_project_ui,
+      :contact_sales_btn_in_app,
+      :customize_homepage,
+      :invite_email,
+      :invitation_reminders,
+      :group_only_trials,
+      :default_to_issues_board
+    ]
+
+    expect(described_class.keys).to match(known_experiments)
+  end
+end
+
 RSpec.describe Gitlab::Experimentation, :snowplow do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
+      backwards_compatible_test_experiment: {
+        environment: environment,
+        tracking_category: 'Team',
+        use_backwards_compatible_subject_index: true
+      },
       test_experiment: {
         environment: environment,
         tracking_category: 'Team'
       }
     })
 
+    Feature.enable_percentage_of_time(:backwards_compatible_test_experiment_experiment_percentage, enabled_percentage)
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end
 
@@ -84,25 +115,37 @@ RSpec.describe Gitlab::Experimentation, :snowplow do
     end
 
     describe '#experiment_enabled?' do
-      subject { controller.experiment_enabled?(:test_experiment) }
+      def check_experiment(exp_key = :test_experiment)
+        controller.experiment_enabled?(exp_key)
+      end
+
+      subject { check_experiment }
 
       context 'cookie is not present' do
         it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of nil' do
           expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, nil)
-          controller.experiment_enabled?(:test_experiment)
+          check_experiment
         end
       end
 
       context 'cookie is present' do
+        using RSpec::Parameterized::TableSyntax
+
         before do
           cookies.permanent.signed[:experimentation_subject_id] = 'abcd-1234'
           get :index
         end
 
-        it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of the modulo 100 of the hex value of the uuid' do
-          # 'abcd1234'.hex % 100 = 76
-          expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, 76)
-          controller.experiment_enabled?(:test_experiment)
+        where(:experiment_key, :index_value) do
+          :test_experiment | 40 # Zlib.crc32('test_experimentabcd-1234') % 100 = 40
+          :backwards_compatible_test_experiment | 76 # 'abcd1234'.hex % 100 = 76
+        end
+
+        with_them do
+          it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and the calculated experimentation_subject_index based on the uuid' do
+            expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(experiment_key, index_value)
+            check_experiment(experiment_key)
+          end
         end
       end
 
