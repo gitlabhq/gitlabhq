@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import DropdownField from '~/monitoring/components/variables/dropdown_field.vue';
 
 describe('Custom variable component', () => {
@@ -23,8 +23,8 @@ describe('Custom variable component', () => {
     });
   };
 
-  const findDropdown = () => wrapper.find(GlDeprecatedDropdown);
-  const findDropdownItems = () => wrapper.findAll(GlDeprecatedDropdownItem);
+  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
 
   it('renders dropdown element when all necessary props are passed', () => {
     createShallowWrapper();

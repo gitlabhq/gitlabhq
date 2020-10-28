@@ -265,6 +265,25 @@ Once the Code Quality job has completed:
   [downloadable artifact](../../../ci/pipelines/job_artifacts.md#downloading-artifacts)
   for the `code_quality` job.
 
+### Generating an HTML report
+
+In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/ci-cd/codequality/-/issues/10),
+it is possible to generate an HTML report file by setting the `REPORT_FORMAT`
+variable to `html`. This is useful if you just want to view the report in a more
+human-readable format or to publish this artifact on GitLab Pages for even
+easier reviewing.
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    REPORT_FORMAT: html
+  artifacts:
+    paths: [gl-code-quality-report.html]
+```
+
 ## Extending functionality
 
 ### Using Analysis Plugins

@@ -24,8 +24,9 @@ Disallow: /help
 Disallow: /s/
 Disallow: /-/profile
 Disallow: /-/ide/
-# Only specifically allow the Sign In page to avoid very ugly search results
+# Restrict allowed routes to avoid very ugly search results
 Allow: /users/sign_in
+Allow: /users/*/snippets
 
 # Generic resource routes like new, edit, raw
 # This will block routes like:

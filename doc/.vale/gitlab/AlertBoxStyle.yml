@@ -14,5 +14,5 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert
 level: error
 scope: raw
 raw:
-  - '((NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)|'
+  - '(\n(NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)|'
   - '((\n[> ]*(\*){1,2}(NOTE|Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger):(\*){1,2}))'

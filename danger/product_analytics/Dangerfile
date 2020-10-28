@@ -2,7 +2,7 @@
 
 PRODUCT_ANALYTICS_CHANGED_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Product Analytics team](https://gitlab.com/groups/gitlab-org/growth/product_analytics/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
-Please check the ~"product analytics(telemetry)" [guide](https://docs.gitlab.com/ee/development/product_analytics/usage_ping.html) and reach out to %<product_analytics_engineers_group>s group for a review.
+Please check the ~"product analytics" [guide](https://docs.gitlab.com/ee/development/product_analytics/usage_ping.html) and reach out to %<product_analytics_engineers_group>s group for a review.
 
 
 %<changed_files>s
@@ -41,8 +41,8 @@ if changed_files.any?
   warn format(PRODUCT_ANALYTICS_CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(changed_files), product_analytics_engineers_group: mention)
   warn format(UPDATE_METRICS_DEFINITIONS_MESSAGE) unless helper.changed_files(/usage_ping\.md/).any?
 
-  product_analytics_labels = ['product analytics(telemetry)']
-  product_analytics_labels << 'product analytics(telemetry)::review pending' unless helper.mr_has_labels?('product analytics(telemetry)::reviewed')
+  product_analytics_labels = ['product analytics']
+  product_analytics_labels << 'product analytics::review pending' unless helper.mr_has_labels?('product analytics::reviewed')
 
   markdown(helper.prepare_labels_for_mr(product_analytics_labels))
 end

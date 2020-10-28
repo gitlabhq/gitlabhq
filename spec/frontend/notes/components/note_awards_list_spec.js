@@ -92,15 +92,14 @@ describe('note_awards_list component', () => {
       }).$mount();
     };
 
-    const findTooltip = () =>
-      vm.$el.querySelector('[data-original-title]').getAttribute('data-original-title');
+    const findTooltip = () => vm.$el.querySelector('[title]').getAttribute('title');
 
     it('should only escape & and " characters', () => {
       awardsMock = [...new Array(1)].map(createAwardEmoji);
       mountComponent();
       const escapedName = awardsMock[0].user.name.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
-      expect(vm.$el.querySelector('[data-original-title]').outerHTML).toContain(escapedName);
+      expect(vm.$el.querySelector('[title]').outerHTML).toContain(escapedName);
     });
 
     it('should not escape special HTML characters twice when only 1 person awarded', () => {

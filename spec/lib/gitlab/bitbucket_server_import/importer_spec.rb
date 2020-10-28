@@ -525,4 +525,36 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
     end
   end
+
+  context "lfs files" do
+    before do
+      allow(project).to receive(:lfs_enabled?).and_return(true)
+      allow(subject).to receive(:import_repository)
+      allow(subject).to receive(:import_pull_requests)
+    end
+
+    it "downloads lfs objects if lfs_enabled is enabled for project" do
+      expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |lfs_import_service|
+        expect(lfs_import_service).to receive(:execute).and_return(status: :success)
+      end
+
+      subject.execute
+    end
+
+    it "adds the error message when the lfs download fails" do
+      allow_next_instance_of(Projects::LfsPointers::LfsImportService) do |lfs_import_service|
+        expect(lfs_import_service).to receive(:execute).and_return(status: :error, message: "LFS server not reachable")
+      end
+
+      subject.execute
+
+      expect(project.import_state.reload.last_error).to eq(Gitlab::Json.dump({
+        message: "The remote data could not be fully imported.",
+        errors: [{
+          type: "lfs_objects",
+          errors: "The Lfs import process failed. LFS server not reachable"
+        }]
+      }))
+    end
+  end
 end

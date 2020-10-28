@@ -190,7 +190,7 @@ adds a `missed::SLA` label to the incident.
 
 ## Incident Actions
 
-There are different actions avilable to help triage and respond to incidents.
+There are different actions available to help triage and respond to incidents.
 
 ### Assign incidents
 
@@ -200,9 +200,9 @@ Assign incidents to users that are actively responding. Select **Edit** in the r
 
 See [Incident List](#incident-list) for a full description of the severities available. Select **Edit** in the right-hand side bar to change the severity of an incident.
 
-### Add a to do
+### Add a to-do item
 
-Add a to-do for incidents that you want to track in your to-do list. Clicke the **Add a to do** button at the top of the right-hand side bar to add a to do.
+Add a to-do for incidents that you want to track in your to-do list. Click the **Add a to do** button at the top of the right-hand side bar to add a to-do item.
 
 ### Manage incidents from Slack
 

@@ -16,8 +16,8 @@ module ProjectServicesLoggable
   def build_message(message, params = {})
     {
       service_class: self.class.name,
-      project_id: project.id,
-      project_path: project.full_path,
+      project_id: project&.id,
+      project_path: project&.full_path,
       message: message
     }.merge(params)
   end

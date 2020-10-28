@@ -41,6 +41,7 @@ module Gitlab
       def execute
         import_repository
         import_pull_requests
+        download_lfs_objects
         delete_temp_branches
         handle_errors
         metrics.track_finished_import
@@ -146,6 +147,14 @@ module Gitlab
         project.repository.expire_content_cache if project.repository_exists?
 
         raise
+      end
+
+      def download_lfs_objects
+        result = Projects::LfsPointers::LfsImportService.new(project).execute
+
+        if result[:status] == :error
+          errors << { type: :lfs_objects, errors: "The Lfs import process failed. #{result[:message]}" }
+        end
       end
 
       # Bitbucket Server keeps tracks of references for open pull requests in

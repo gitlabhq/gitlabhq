@@ -9,7 +9,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include BlobActiveModel
 
-      attr_reader :project, :content_match, :blob_path
+      attr_reader :project, :content_match, :blob_path, :highlight_line
 
       PATH_REGEXP = /\A(?<ref>[^:]*):(?<path>[^\x00]*)\x00/.freeze
       CONTENT_REGEXP = /^(?<ref>[^:]*):(?<path>[^\x00]*)\x00(?<startline>\d+)\x00/.freeze
@@ -26,6 +26,7 @@ module Gitlab
         @binary_basename = opts.fetch(:basename, nil)
         @ref = opts.fetch(:ref, nil)
         @startline = opts.fetch(:startline, nil)
+        @highlight_line = opts.fetch(:highlight_line, nil)
         @binary_data = opts.fetch(:data, nil)
         @per_page = opts.fetch(:per_page, 20)
         @project = opts.fetch(:project, nil)

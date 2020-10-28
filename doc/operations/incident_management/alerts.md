@@ -186,19 +186,19 @@ After completing their portion of investigating or fixing the alert, users can
 unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
 and deselect the user from the list of assignees, or select **Unassigned**.
 
-### Create a to do from an alert
+### Create a to-do item from an alert
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 You can manually create [To-Do list items](../../user/todos.md) for yourself
 from the Alert details screen, and view them later on your **To-Do List**. To
-add a to do:
+add a to-do item:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**.
 1. Select your desired alert to display its **Alert Management Details View**.
 1. Select the **Add a To-Do** button in the right sidebar:
 
-   ![Alert Details Add A To Do](./img/alert_detail_add_todo_v13_1.png)
+   ![Alert Details Add a To-Do](./img/alert_detail_add_todo_v13_1.png)
 
 Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
 

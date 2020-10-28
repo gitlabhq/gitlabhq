@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash, { FLASH_TYPES } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { getFilename } from '~/lib/utils/file_upload';
 import UploadButton from '../components/upload/button.vue';
@@ -139,8 +139,8 @@ export default {
       if (!this.canCreateDesign) return false;
 
       if (files.length > MAXIMUM_FILE_UPLOAD_LIMIT) {
-        createFlash(
-          sprintf(
+        createFlash({
+          message: sprintf(
             s__(
               'DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again.',
             ),
@@ -148,7 +148,7 @@ export default {
               upload_limit: MAXIMUM_FILE_UPLOAD_LIMIT,
             },
           ),
-        );
+        });
 
         return false;
       }
@@ -191,7 +191,7 @@ export default {
       const skippedFiles = res?.data?.designManagementUpload?.skippedDesigns || [];
       const skippedWarningMessage = designUploadSkippedWarning(this.filesToBeSaved, skippedFiles);
       if (skippedWarningMessage) {
-        createFlash(skippedWarningMessage, 'warning');
+        createFlash({ message: skippedWarningMessage, types: FLASH_TYPES.WARNING });
       }
 
       // if this upload resulted in a new version being created, redirect user to the latest version
@@ -214,7 +214,7 @@ export default {
     },
     onUploadDesignError() {
       this.resetFilesToBeSaved();
-      createFlash(UPLOAD_DESIGN_ERROR);
+      createFlash({ message: UPLOAD_DESIGN_ERROR });
     },
     changeSelectedDesigns(filename) {
       if (this.isDesignSelected(filename)) {
@@ -245,18 +245,18 @@ export default {
     },
     onDesignDeleteError() {
       const errorMessage = designDeletionError({ singular: this.selectedDesigns.length === 1 });
-      createFlash(errorMessage);
+      createFlash({ message: errorMessage });
     },
     onExistingDesignDropzoneChange(files, existingDesignFilename) {
       const filesArr = Array.from(files);
 
       if (filesArr.length > 1) {
-        createFlash(EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE);
+        createFlash({ message: EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE });
         return;
       }
 
       if (!filesArr.some(({ name }) => existingDesignFilename === name)) {
-        createFlash(EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE);
+        createFlash({ message: EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE });
         return;
       }
 
@@ -307,7 +307,7 @@ export default {
           optimisticResponse: moveDesignOptimisticResponse(this.reorderedDesigns),
         })
         .catch(() => {
-          createFlash(MOVE_DESIGN_ERROR);
+          createFlash({ message: MOVE_DESIGN_ERROR });
         })
         .finally(() => {
           this.isReorderingInProgress = false;

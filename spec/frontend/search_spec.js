@@ -1,10 +1,10 @@
 import $ from 'jquery';
+import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import Api from '~/api';
 import Search from '~/pages/search/show/search';
-import setHighlightClass from '~/pages/search/show/highlight_blob_search_result';
 
 jest.mock('~/api');
-jest.mock('~/pages/search/show/highlight_blob_search_result');
+jest.mock('ee_else_ce/search/highlight_blob_search_result');
 
 describe('Search', () => {
   const fixturePath = 'search/show.html';

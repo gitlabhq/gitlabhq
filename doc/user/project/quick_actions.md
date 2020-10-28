@@ -74,7 +74,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/tableflip <comment>`                | ✓     | ✓             | ✓    | Append the comment with `(╯°□°)╯︵ ┻━┻`.                                                                                        |
 | `/target_branch <local branch name>`  |       | ✓             |      | Set target branch.                                                                                                              |
 | `/title <new title>`                  | ✓     | ✓             | ✓    | Change title.                                                                                                                  |
-| `/todo`                               | ✓     | ✓             | ✓    | Add a to do.                                                                                                                   |
+| `/todo`                               | ✓     | ✓             | ✓    | Add a to-do item.                                                                                                                   |
 | `/unassign @user1 @user2`             | ✓     | ✓             |      | Remove specific assignees. **(STARTER)**                                                                                       |
 | `/unassign`                           | ✓     | ✓             |      | Remove all assignees.                                                                                                          |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | ✓     | ✓             | ✓    | Remove specified labels.                                                                         |

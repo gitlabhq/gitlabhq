@@ -2,7 +2,7 @@
 
 import { differenceBy } from 'lodash';
 import produce from 'immer';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { extractCurrentDiscussion, extractDesign, extractDesigns } from './design_management_utils';
 import {
   ADD_IMAGE_DIFF_NOTE_ERROR,
@@ -237,7 +237,7 @@ export const deletePendingTodoFromStore = (store, todoMarkDone, query, queryVari
 };
 
 const onError = (data, message) => {
-  createFlash(message);
+  createFlash({ message });
   throw new Error(data.errors);
 };
 
@@ -286,7 +286,7 @@ export const updateStoreAfterUploadDesign = (store, data, query) => {
 
 export const updateDesignsOnStoreAfterReorder = (store, data, query) => {
   if (hasErrors(data)) {
-    createFlash(data.errors[0]);
+    createFlash({ message: data.errors[0] });
   } else {
     moveDesignInStore(store, data, query);
   }

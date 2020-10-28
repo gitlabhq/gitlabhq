@@ -228,7 +228,7 @@ available in the **Resolved Comment** area at the bottom of the right sidebar.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198439) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245074) in GitLab 13.5.
 
-Add a to do for a design by clicking **Add a To Do** on the design sidebar:
+Add a to-do item for a design by clicking **Add a to do** on the design sidebar:
 
 ![To-do button](img/design_todo_button_v13_5.png)
 

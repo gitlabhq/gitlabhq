@@ -424,10 +424,10 @@ DELETE /groups/:id/epics/:epic_iid
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
-## Create a to do
+## Create a to-do item
 
-Manually creates a to do for the current user on an epic. If
-there already exists a to do for the user on that epic, status code `304` is
+Manually creates a to-do item for the current user on an epic. If
+there already exists a to-do item for the user on that epic, status code `304` is
 returned.
 
 ```plaintext

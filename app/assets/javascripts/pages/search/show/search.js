@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import Api from '~/api';
@@ -6,7 +7,6 @@ import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import { visitUrl } from '~/lib/utils/url_utility';
 import refreshCounts from './refresh_counts';
-import setHighlightClass from './highlight_blob_search_result';
 
 export default class Search {
   constructor() {

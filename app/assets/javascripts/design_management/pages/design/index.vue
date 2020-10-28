@@ -2,7 +2,7 @@
 import Mousetrap from 'mousetrap';
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import allVersionsMixin from '../../mixins/all_versions';
 import Toolbar from '../../components/toolbar/index.vue';
@@ -230,7 +230,7 @@ export default {
     onQueryError(message) {
       // because we redirect user to /designs (the issue page),
       // we want to create these flashes on the issue page
-      createFlash(message);
+      createFlash({ message });
       this.$router.push({ name: this.$options.DESIGNS_ROUTE_NAME });
     },
     onError(message, e) {

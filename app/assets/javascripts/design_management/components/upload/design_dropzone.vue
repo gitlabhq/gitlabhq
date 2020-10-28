@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import uploadDesignMutation from '../../graphql/mutations/upload_design.mutation.graphql';
 import { UPLOAD_DESIGN_INVALID_FILETYPE_ERROR } from '../../utils/error_messages';
 import { isValidDesignFile } from '../../utils/design_management_utils';
@@ -56,7 +56,7 @@ export default {
 
       const { files } = dataTransfer;
       if (!this.isValidUpload(Array.from(files))) {
-        createFlash(UPLOAD_DESIGN_INVALID_FILETYPE_ERROR);
+        createFlash({ message: UPLOAD_DESIGN_INVALID_FILETYPE_ERROR });
         return;
       }
 

@@ -14,7 +14,9 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures do
   it 'allows the requests' do
     requests = [
       '/users/sign_in',
-      '/namespace/subnamespace/design.gitlab.com'
+      '/namespace/subnamespace/design.gitlab.com',
+      '/users/foo/snippets',
+      '/users/foo/snippets/1'
     ]
 
     requests.each do |request|

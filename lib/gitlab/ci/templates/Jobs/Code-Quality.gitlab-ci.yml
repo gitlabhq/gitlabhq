@@ -34,6 +34,7 @@ code_quality:
           CODECLIMATE_DEBUG \
           CODECLIMATE_DEV \
           REPORT_STDOUT \
+          REPORT_FORMAT \
           ENGINE_MEMORY_LIMIT_BYTES \
         ) \
         --volume "$PWD":/code \

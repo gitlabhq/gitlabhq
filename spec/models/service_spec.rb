@@ -843,5 +843,24 @@ RSpec.describe Service do
 
       service.log_error(test_message, additional_argument: 'some argument')
     end
+
+    context 'when project is nil' do
+      let(:project) { nil }
+      let(:arguments) do
+        {
+          service_class: service.class.name,
+          project_path: nil,
+          project_id: nil,
+          message: test_message,
+          additional_argument: 'some argument'
+        }
+      end
+
+      it 'logs info messages using json logger' do
+        expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+
+        service.log_info(test_message, additional_argument: 'some argument')
+      end
+    end
   end
 end

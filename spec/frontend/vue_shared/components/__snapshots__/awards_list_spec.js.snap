@@ -6,10 +6,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
 >
   <button
     class="btn award-control"
-    data-boundary="viewport"
-    data-original-title="Ada, Leonardo, and Marie"
     data-testid="award-button"
-    title=""
+    title="Ada, Leonardo, and Marie"
     type="button"
   >
     <span
@@ -32,10 +30,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
   <button
     class="btn award-control active"
-    data-boundary="viewport"
-    data-original-title="You, Ada, and Marie"
     data-testid="award-button"
-    title=""
+    title="You, Ada, and Marie"
     type="button"
   >
     <span
@@ -58,10 +54,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
   <button
     class="btn award-control"
-    data-boundary="viewport"
-    data-original-title="Ada and Jane"
     data-testid="award-button"
-    title=""
+    title="Ada and Jane"
     type="button"
   >
     <span
@@ -84,10 +78,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
   <button
     class="btn award-control active"
-    data-boundary="viewport"
-    data-original-title="You, Ada, Jane, and Leonardo"
     data-testid="award-button"
-    title=""
+    title="You, Ada, Jane, and Leonardo"
     type="button"
   >
     <span
@@ -110,10 +102,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
   <button
     class="btn award-control active"
-    data-boundary="viewport"
-    data-original-title="You"
     data-testid="award-button"
-    title=""
+    title="You"
     type="button"
   >
     <span
@@ -136,10 +126,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
   <button
     class="btn award-control"
-    data-boundary="viewport"
-    data-original-title="Marie"
     data-testid="award-button"
-    title=""
+    title="Marie"
     type="button"
   >
     <span
@@ -162,10 +150,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   </button>
   <button
     class="btn award-control active"
-    data-boundary="viewport"
-    data-original-title="You"
     data-testid="award-button"
-    title=""
+    title="You"
     type="button"
   >
     <span
@@ -193,9 +179,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     <button
       aria-label="Add reaction"
       class="award-control btn js-add-award js-test-add-button-class"
-      data-boundary="viewport"
-      data-original-title="Add reaction"
-      title=""
+      title="Add reaction"
       type="button"
     >
       <span
