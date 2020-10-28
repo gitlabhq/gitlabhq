@@ -5,7 +5,9 @@ def gitlab_danger
 end
 
 def feature_mr?
-  (gitlab.mr_labels & %w[feature::addition feature::enhancement]).any?
+  return false unless helper.gitlab_helper&.mr_labels
+
+  (helper.gitlab_helper.mr_labels & %w[feature::addition feature::enhancement]).any?
 end
 
 DOCUMENTATION_UPDATE_MISSING = <<~MSG

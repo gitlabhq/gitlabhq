@@ -126,6 +126,8 @@ class FeatureFlagOptionParser
       $stdout.puts ">> Specify the feature flag type:"
       $stdout.puts
       TYPES.each do |type, data|
+        next if data[:deprecated]
+
         $stdout.puts "#{type.to_s.rjust(15)}#{' '*6}#{data[:description]}"
       end
 
@@ -133,7 +135,7 @@ class FeatureFlagOptionParser
         $stdout.print "?> "
 
         type = $stdin.gets.strip.to_sym
-        return type if TYPES[type]
+        return type if TYPES[type] && !TYPES[type][:deprecated]
 
         $stderr.puts "Invalid type specified '#{type}'"
       end

@@ -121,7 +121,8 @@ RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_f
 
       it 'reports prometheus metrics' do
         allow(worker).to receive(:perform_work)
-        expect(worker).to receive(:report_prometheus_metrics)
+        expect(worker).to receive(:report_prometheus_metrics).once.and_call_original
+        expect(worker).to receive(:report_running_jobs_metrics).twice.and_call_original
 
         perform
       end

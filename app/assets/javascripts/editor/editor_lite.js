@@ -6,6 +6,7 @@ import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { clearDomElement } from './utils';
 import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX } from './constants';
+import { uuids } from '~/diffs/utils/uuids';
 
 export default class Editor {
   constructor(options = {}) {
@@ -72,7 +73,7 @@ export default class Editor {
     el = undefined,
     blobPath = '',
     blobContent = '',
-    blobGlobalId = '',
+    blobGlobalId = uuids()[0],
     extensions = [],
     ...instanceOptions
   } = {}) {

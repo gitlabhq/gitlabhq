@@ -123,6 +123,29 @@ RSpec.describe 'bin/feature-flag' do
         end
       end
 
+      context 'when there is deprecated feature flag type' do
+        before do
+          stub_const('FeatureFlagOptionParser::TYPES',
+            development: { description: 'short' },
+            deprecated: { description: 'deprecated', deprecated: true }
+          )
+        end
+
+        context 'and deprecated type is given' do
+          let(:type) { 'deprecated' }
+
+          it 'shows error message and retries' do
+            expect($stdin).to receive(:gets).and_return(type)
+            expect($stdin).to receive(:gets).and_raise('EOF')
+
+            expect do
+              expect { described_class.read_type }.to raise_error(/EOF/)
+            end.to output(/Specify the feature flag type/).to_stdout
+              .and output(/Invalid type specified/).to_stderr
+          end
+        end
+      end
+
       context 'when there are many types defined' do
         before do
           stub_const('FeatureFlagOptionParser::TYPES',

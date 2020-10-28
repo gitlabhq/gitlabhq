@@ -594,41 +594,78 @@ RSpec.describe 'Login' do
   describe 'UI tabs and panes' do
     context 'when no defaults are changed' do
       it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness
+        visit new_user_session_path
+
+        ensure_tab_pane_correctness(['Sign in', 'Register'])
       end
     end
 
     context 'when signup is disabled' do
       before do
         stub_application_setting(signup_enabled: false)
+
+        visit new_user_session_path
       end
 
       it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness
+        ensure_tab_pane_correctness(['Sign in'])
       end
     end
 
     context 'when ldap is enabled' do
+      include LdapHelpers
+
+      let(:provider) { 'ldapmain' }
+      let(:ldap_server_config) do
+        {
+          'label' => 'Main LDAP',
+          'provider_name' => provider,
+          'attributes' => {},
+          'encryption' => 'plain',
+          'uid' => 'uid',
+          'base' => 'dc=example,dc=com'
+        }
+      end
+
       before do
+        stub_ldap_setting(enabled: true)
+        allow(::Gitlab::Auth::Ldap::Config).to receive_messages(enabled: true, servers: [ldap_server_config])
+        allow(Gitlab::Auth::OAuth::Provider).to receive_messages(providers: [provider.to_sym])
+
+        Ldap::OmniauthCallbacksController.define_providers!
+        Rails.application.reload_routes!
+
+        allow_next_instance_of(ActionDispatch::Routing::RoutesProxy) do |instance|
+          allow(instance).to receive(:"user_#{provider}_omniauth_callback_path")
+            .and_return("/users/auth/#{provider}/callback")
+        end
+
         visit new_user_session_path
-        allow(page).to receive(:form_based_providers).and_return([:ldapmain])
-        allow(page).to receive(:ldap_enabled).and_return(true)
       end
 
       it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness(false)
+        ensure_tab_pane_correctness(['Main LDAP', 'Standard', 'Register'])
       end
     end
 
     context 'when crowd is enabled' do
       before do
+        allow(Gitlab::Auth::OAuth::Provider).to receive_messages(providers: [:crowd])
+        stub_application_setting(crowd_enabled: true)
+
+        Ldap::OmniauthCallbacksController.define_providers!
+        Rails.application.reload_routes!
+
+        allow_next_instance_of(ActionDispatch::Routing::RoutesProxy) do |instance|
+          allow(instance).to receive(:user_crowd_omniauth_authorize_path)
+            .and_return("/users/auth/crowd/callback")
+        end
+
         visit new_user_session_path
-        allow(page).to receive(:form_based_providers).and_return([:crowd])
-        allow(page).to receive(:crowd_enabled?).and_return(true)
       end
 
       it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness(false)
+        ensure_tab_pane_correctness(%w(Crowd Standard Register))
       end
     end
   end

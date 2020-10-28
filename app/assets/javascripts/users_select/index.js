@@ -14,6 +14,7 @@ import ModalStore from '../boards/stores/modal_store';
 import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { fixTitle, dispose } from '~/tooltips';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -229,7 +230,9 @@ function UsersSelect(currentUser, els, options = {}) {
           tooltipTitle = s__('UsersSelect|Assignee');
         }
         $value.html(assigneeTemplate(user));
-        $collapsedSidebar.attr('title', tooltipTitle).tooltip('_fixTitle');
+        $collapsedSidebar.attr('title', tooltipTitle);
+        fixTitle($collapsedSidebar);
+
         return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
       });
     };
@@ -423,7 +426,7 @@ function UsersSelect(currentUser, els, options = {}) {
         const { $el, e, isMarking } = options;
         const user = options.selectedObj;
 
-        $el.tooltip('dispose');
+        dispose($el);
 
         if ($dropdown.hasClass('js-multiselect')) {
           const isActive = $el.hasClass('is-active');
