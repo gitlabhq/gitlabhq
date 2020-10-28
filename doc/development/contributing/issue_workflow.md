@@ -90,25 +90,6 @@ explain what falls under each type label.
 
 The GitLab handbook documents [when something is a bug](https://about.gitlab.com/handbook/product/product-processes/#bug-issues) and [when it is a feature request](https://about.gitlab.com/handbook/product/product-processes/#feature-issues).
 
-### Facet labels
-
-Sometimes it's useful to refine the type of an issue. In those cases, you can
-add facet labels.
-
-Following is a non-exhaustive list of facet labels:
-
-- ~enhancement: This label can refine an issue that has the ~feature label.
-- ~"master:broken": This label can refine an issue that has the ~bug label.
-- ~"failure::flaky-test": This label can refine an issue that has the ~bug label.
-- ~"technical debt": This label can refine an issue that has the ~tooling label.
-- ~"static analysis": This label can refine an issue that has the ~tooling label.
-- ~"ci-build": This label can refine an issue that has the ~tooling label.
-- ~performance: A performance issue could describe a ~bug or a ~feature.
-- ~security: A security issue could describe a ~bug or a ~feature.
-- ~database: A database issue could describe a ~bug or a ~feature.
-- ~customer: This relates to an issue that was created by a customer, or that is of interest for a customer.
-- ~"UI text": Issues that add or modify any text within the UI such as user-assistance microcopy, button/menu labels, or error messages.
-
 ### Stage labels
 
 Stage labels specify which [stage](https://about.gitlab.com/handbook/product/product-categories/#hierarchy) the issue belongs to.

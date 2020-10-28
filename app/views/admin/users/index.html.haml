@@ -30,11 +30,10 @@
       = link_to admin_users_path(filter: "blocked") do
         = s_('AdminUsers|Blocked')
         %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
-    - if Feature.enabled?(:admin_approval_for_new_user_signups, default_enabled: true)
-      = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
-        = link_to admin_users_path(filter: "blocked_pending_approval") do
-          = s_('AdminUsers|Pending approval')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked_pending_approval)
+    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
+      = link_to admin_users_path(filter: "blocked_pending_approval") do
+        = s_('AdminUsers|Pending approval')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked_pending_approval)
     = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do
       = link_to admin_users_path(filter: "deactivated") do
         = s_('AdminUsers|Deactivated')

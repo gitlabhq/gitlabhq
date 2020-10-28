@@ -66,8 +66,14 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     end
 
     context 'with a set of regexps' do
+      let_it_be(:container_expiration_policy) { create(:container_expiration_policy) }
+
+      subject { container_expiration_policy }
+
       valid_regexps = %w[master .* v.+ v10.1.* (?:v.+|master|release)]
       invalid_regexps = ['[', '(?:v.+|master|release']
+
+      it { is_expected.to validate_presence_of(:name_regex) }
 
       valid_regexps.each do |valid_regexp|
         it { is_expected.to allow_value(valid_regexp).for(:name_regex) }
@@ -83,6 +89,8 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
         let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :disabled) }
 
         subject { container_expiration_policy }
+
+        it { is_expected.not_to validate_presence_of(:name_regex) }
 
         valid_regexps.each do |valid_regexp|
           it { is_expected.to allow_value(valid_regexp).for(:name_regex) }

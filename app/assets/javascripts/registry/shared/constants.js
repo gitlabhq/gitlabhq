@@ -32,7 +32,7 @@ export const KEEP_N_LABEL = s__('ContainerRegistry|Number of tags to retain:');
 export const NAME_REGEX_LABEL = s__(
   'ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}expire:%{italicEnd}',
 );
-export const NAME_REGEX_PLACEHOLDER = '.*';
+export const NAME_REGEX_PLACEHOLDER = '';
 export const NAME_REGEX_DESCRIPTION = s__(
   'ContainerRegistry|Wildcards such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}',
 );

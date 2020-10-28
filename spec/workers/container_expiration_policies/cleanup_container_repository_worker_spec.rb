@@ -13,6 +13,10 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
   describe '#perform_work' do
     subject { worker.perform_work }
 
+    before do
+      policy.update_column(:enabled, true)
+    end
+
     RSpec.shared_examples 'handling all repository conditions' do
       it 'sends the repository for cleaning' do
         expect(ContainerExpirationPolicies::CleanupService)

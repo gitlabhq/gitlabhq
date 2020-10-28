@@ -2659,6 +2659,7 @@ RSpec.describe API::Projects do
         project_param = {
           container_expiration_policy_attributes: {
             cadence: '1month',
+            enabled: true,
             keep_n: 1,
             name_regex_keep: '['
           }

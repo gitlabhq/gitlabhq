@@ -16,12 +16,20 @@ module QA
           end
 
           view 'app/assets/javascripts/notes/components/discussion_filter.vue' do
-            element :discussion_filter, required: true
-            element :filter_options
+            element :discussion_filter_dropdown, required: true
+            element :filter_menu_item
+          end
+
+          view 'app/assets/javascripts/notes/components/discussion_filter_note.vue' do
+            element :discussion_filter_container
           end
 
           view 'app/assets/javascripts/notes/components/noteable_note.vue' do
-            element :noteable_note_item
+            element :noteable_note_container
+          end
+
+          view 'app/assets/javascripts/notes/components/note_header.vue' do
+            element :system_note_content
           end
 
           view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
@@ -51,8 +59,8 @@ module QA
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
-            element :related_issuable_item
-            element :related_issues_loading_icon
+            element :related_issuable_content
+            element :related_issues_loading_placeholder
           end
 
           def relate_issue(issue)
@@ -62,11 +70,11 @@ module QA
           end
 
           def related_issuable_item
-            find_element(:related_issuable_item)
+            find_element(:related_issuable_content)
           end
 
           def wait_for_related_issues_to_load
-            has_no_element?(:related_issues_loading_icon, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            has_no_element?(:related_issues_loading_placeholder, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           end
 
           def click_remove_related_issue_button
@@ -95,11 +103,15 @@ module QA
           end
 
           def has_comment?(comment_text)
-            has_element?(:noteable_note_item, text: comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            has_element?(:noteable_note_container, text: comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          end
+
+          def has_system_note?(note_text)
+            has_element?(:system_note_content, text: note_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           end
 
           def noteable_note_item
-            find_element(:noteable_note_item)
+            find_element(:noteable_note_container)
           end
 
           def select_all_activities_filter
@@ -108,10 +120,18 @@ module QA
 
           def select_comments_only_filter
             select_filter_with_text('Show comments only')
+
+            wait_until do
+              has_no_element?(:system_note_content)
+            end
           end
 
           def select_history_only_filter
             select_filter_with_text('Show history only')
+
+            wait_until do
+              has_element?(:discussion_filter_container) && has_no_element?(:noteable_note_container)
+            end
           end
 
           def has_metrics_unfurled?
@@ -123,8 +143,8 @@ module QA
           def select_filter_with_text(text)
             retry_on_exception do
               click_element(:title)
-              click_element :discussion_filter
-              find_element(:filter_options, text: text).click
+              click_element :discussion_filter_dropdown
+              find_element(:filter_menu_item, text: text).click
 
               wait_for_loading
             end

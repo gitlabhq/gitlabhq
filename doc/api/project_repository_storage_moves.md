@@ -24,6 +24,10 @@ of `state` are:
 - `replicated`
 - `cleanup_failed`
 
+To ensure data integrity, projects are put in a temporary read-only state for the
+duration of the move. During this time, users receive a `The repository is temporarily
+read-only. Please try again later.` message if they try to push new commits.
+
 This API requires you to [authenticate yourself](README.md#authentication) as an administrator.
 
 ## Retrieve all project repository storage moves

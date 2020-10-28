@@ -16,7 +16,16 @@ POST /import/github
 | `target_namespace`   | string | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`.     |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "personal_access_token=abc123&repo_id=12345&target_namespace=group/subgroup" "https://gitlab.example.com/api/v4/import/github"
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/import/github" \
+  --header "content-type: application/json" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{
+    "personal_access_token": "aBc123abC12aBc123abC12abC123+_A/c123",
+    "repo_id": "12345",
+    "target_namespace": "group/subgroup",
+    "new_name": "NEW-NAME"
+}'
 ```
 
 Example response:

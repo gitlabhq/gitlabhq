@@ -13,12 +13,13 @@ See already supported package types in [Packages documentation](../administratio
 Since GitLab packages' UI is pretty generic, it is possible to add basic new
 package system support with solely backend changes. This guide is superficial and does
 not cover the way the code should be written. However, you can find a good example
-by looking at merge requests with Maven and NPM support:
+by looking at the following merge requests:
 
 - [NPM registry support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8673).
-- [Conan repository](https://gitlab.com/gitlab-org/gitlab/-/issues/8248).
 - [Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607).
-- [Instance level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8757)
+- [Composer repository for PHP dependencies](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22415).
+- [Terraform modules registry](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834).
+- [Instance-level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8757).
 
 ## General information
 

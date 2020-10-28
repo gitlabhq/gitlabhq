@@ -170,7 +170,9 @@ export default {
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">
-      <span class="system-note-message"> <slot></slot> </span>
+      <span class="system-note-message" data-qa-selector="system_note_content">
+        <slot></slot>
+      </span>
       <template v-if="createdAt">
         <span ref="actionText" class="system-note-separator">
           <template v-if="actionText">{{ actionText }}</template>

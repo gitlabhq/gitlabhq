@@ -41,7 +41,7 @@ Note the following:
 - Group members are exported as project members, as long as the user has
   maintainer or admin access to the group where the exported project lives.
 - Project members with owner access will be imported as maintainers.
-- Using an admin account to import will map users by primary email address (self-managed only).
+- Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues will be owned by the importer.
 - If an imported project contains merge requests originating from forks,

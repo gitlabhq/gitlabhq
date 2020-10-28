@@ -33,8 +33,7 @@ You can also use the [API](../../api/packages.md) to administer the Package Regi
 ## Accepting contributions
 
 The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md) will
-guide you through the process. Or check out how other members of the community
-are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17417) or [Terraform](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834).
+guide you through the process.
 
 | Format | Status |
 | ------ | ------ |

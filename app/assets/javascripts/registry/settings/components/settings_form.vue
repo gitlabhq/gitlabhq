@@ -117,8 +117,9 @@ export default {
           const errorMessage = data?.updateContainerExpirationPolicy?.errors[0];
           if (errorMessage) {
             this.$toast.show(errorMessage, { type: 'error' });
+          } else {
+            this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE, { type: 'success' });
           }
-          this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE, { type: 'success' });
         })
         .catch(error => {
           this.setApiErrors(error);

@@ -522,7 +522,7 @@ To create a cleanup policy in the UI:
    | **Expiration interval**                                                   | How long tags are exempt from being deleted.                                                                      |
    | **Expiration schedule**                                                   | How often the policy should run.                                                                                  |
    | **Number of tags to retain**                                              | How many tags to _always_ keep for each image.                                                                    |
-   | **Tags with names matching this regex pattern expire:**              | The regex pattern that determines which tags to remove. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Tags with names matching this regex pattern expire:**              | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
    | **Tags with names matching this regex pattern are preserved:**        | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
 1. Click **Set cleanup policy**.
@@ -543,6 +543,8 @@ Here are examples of regex patterns you may want to use:
   ```plaintext
   .*
   ```
+
+  This is the default value for the expiration regex.
 
 - Match tags that start with `v`:
 

@@ -1,0 +1,5 @@
+---
+title: Add default regexes and prevent blank regexes for container cleanup policies
+merge_request: 44757
+author:
+type: changed
