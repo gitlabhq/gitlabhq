@@ -59,6 +59,8 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
+  RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
+  RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
   BUILD_ASSETS_IMAGE: "false"
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"

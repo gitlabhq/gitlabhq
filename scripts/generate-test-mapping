@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require_relative '../tooling/lib/tooling/test_map_generator'
+
+test_mapping_json = ARGV.shift
+crystalball_yamls = ARGV
+
+unless test_mapping_json && !crystalball_yamls.empty?
+  puts "usage: #{__FILE__} <test_mapping_json> [crystalball_yamls...]"
+  exit 1
+end
+
+map_generator = Tooling::TestMapGenerator.new
+map_generator.parse(crystalball_yamls)
+mapping = map_generator.mapping
+
+File.write(test_mapping_json, JSON.pretty_generate(mapping))
+puts "Saved #{test_mapping_json}."

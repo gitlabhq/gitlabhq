@@ -2,6 +2,7 @@
 
 module Operations
   class FeatureFlag < ApplicationRecord
+    include AfterCommitQueue
     include AtomicInternalId
     include IidRoutes
     include Limitable
@@ -75,6 +76,22 @@ module Operations
         .includes(preload)
 
       Ability.issues_readable_by_user(issues, current_user)
+    end
+
+    def execute_hooks(current_user)
+      run_after_commit do
+        feature_flag_data = Gitlab::DataBuilder::FeatureFlag.build(self, current_user)
+        project.execute_hooks(feature_flag_data, :feature_flag_hooks)
+      end
+    end
+
+    def hook_attrs
+      {
+        id: id,
+        name: name,
+        description: description,
+        active: active
+      }
     end
 
     private

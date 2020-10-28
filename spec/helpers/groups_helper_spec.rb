@@ -370,6 +370,26 @@ RSpec.describe GroupsHelper do
     end
   end
 
+  describe '#show_thanks_for_purchase_banner?' do
+    subject { helper.show_thanks_for_purchase_banner? }
+
+    it 'returns true with purchased_quantity present in params' do
+      allow(controller).to receive(:params) { { purchased_quantity: '1' } }
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns false with purchased_quantity not present in params' do
+      is_expected.to be_falsey
+    end
+
+    it 'returns false with purchased_quantity is empty in params' do
+      allow(controller).to receive(:params) { { purchased_quantity: '' } }
+
+      is_expected.to be_falsey
+    end
+  end
+
   describe '#show_invite_banner?' do
     let_it_be(:current_user) { create(:user) }
     let_it_be_with_refind(:group) { create(:group) }

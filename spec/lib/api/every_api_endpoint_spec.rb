@@ -17,8 +17,14 @@ RSpec.describe 'Every API endpoint' do
     let_it_be(:routes_without_category) do
       api_endpoints.map do |(klass, path)|
         next if klass.try(:feature_category_for_action, path)
+
         # We'll add the rest in https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/463
-        next unless klass == ::API::Users || klass == ::API::Issues
+        completed_classes = [
+          ::API::Users, ::API::Issues, ::API::AccessRequests, ::API::Admin::Ci::Variables,
+          ::API::Admin::InstanceClusters, ::API::Admin::Sidekiq, ::API::Appearance,
+          ::API::Applications, ::API::Avatar, ::API::AwardEmoji
+        ]
+        next unless completed_classes.include?(klass)
 
         "#{klass}##{path}"
       end.compact.uniq

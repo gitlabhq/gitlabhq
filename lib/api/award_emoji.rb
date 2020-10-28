@@ -6,9 +6,9 @@ module API
 
     before { authenticate! }
     AWARDABLES = [
-      { type: 'issue', find_by: :iid },
-      { type: 'merge_request', find_by: :iid },
-      { type: 'snippet', find_by: :id }
+      { type: 'issue', find_by: :iid, feature_category: :issue_tracking },
+      { type: 'merge_request', find_by: :iid, feature_category: :code_review },
+      { type: 'snippet', find_by: :id, feature_category: :snippets }
     ].freeze
 
     params do
@@ -34,7 +34,7 @@ module API
           params do
             use :pagination
           end
-          get endpoint do
+          get endpoint, feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
               awards = awardable.award_emoji
               present paginate(awards), with: Entities::AwardEmoji
@@ -50,7 +50,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'The ID of the award'
           end
-          get "#{endpoint}/:award_id" do
+          get "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
               present awardable.award_emoji.find(params[:award_id]), with: Entities::AwardEmoji
             else
@@ -65,7 +65,7 @@ module API
           params do
             requires :name, type: String, desc: 'The name of a award_emoji (without colons)'
           end
-          post endpoint do
+          post endpoint, feature_category: awardable_params[:feature_category] do
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
 
             service = AwardEmojis::AddService.new(awardable, params[:name], current_user).execute
@@ -84,7 +84,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'The ID of an award emoji'
           end
-          delete "#{endpoint}/:award_id" do
+          delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])
 
             unauthorized! unless award.user == current_user || current_user.admin?

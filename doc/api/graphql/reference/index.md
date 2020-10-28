@@ -436,7 +436,7 @@ Represents a ComplianceFramework associated with a Project.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `name` | ProjectSettingEnum! | Name of the compliance framework |
+| `name` | String! | Name of the compliance framework |
 
 ### ConfigureSastPayload
 
@@ -1115,6 +1115,7 @@ Relationship between an epic and an issue.
 | `alertManagementAlert` | AlertManagementAlert | Alert associated to this issue |
 | `author` | User! | User that created the issue |
 | `blocked` | Boolean! | Indicates the issue is blocked |
+| `blockedByCount` | Int | Count of issues blocking this issue |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
 | `createdAt` | Time! | Timestamp of when the issue was created |
@@ -1311,6 +1312,7 @@ Represents a recorded measurement (object count) for the Admins.
 | `alertManagementAlert` | AlertManagementAlert | Alert associated to this issue |
 | `author` | User! | User that created the issue |
 | `blocked` | Boolean! | Indicates the issue is blocked |
+| `blockedByCount` | Int | Count of issues blocking this issue |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
 | `createdAt` | Time! | Timestamp of when the issue was created |
@@ -3487,6 +3489,8 @@ Values for sorting issues.
 | `RELATIVE_POSITION_ASC` | Relative position by ascending order |
 | `SEVERITY_ASC` | Severity from less critical to more critical |
 | `SEVERITY_DESC` | Severity from more critical to less critical |
+| `SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first |
+| `SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first |
 | `UPDATED_ASC` | Updated at ascending order |
 | `UPDATED_DESC` | Updated at descending order |
 | `WEIGHT_ASC` | Weight by ascending order |
@@ -3676,18 +3680,6 @@ Values for sorting projects.
 | `SKIPPED` |  |
 | `SUCCESS` |  |
 | `WAITING_FOR_RESOURCE` |  |
-
-### ProjectSettingEnum
-
-Names of compliance frameworks that can be assigned to a Project.
-
-| Value | Description |
-| ----- | ----------- |
-| `gdpr` |  |
-| `hipaa` |  |
-| `pci_dss` |  |
-| `soc_2` |  |
-| `sox` |  |
 
 ### RegistryState
 

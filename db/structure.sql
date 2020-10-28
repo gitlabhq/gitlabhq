@@ -14837,7 +14837,7 @@ ALTER SEQUENCE project_ci_cd_settings_id_seq OWNED BY project_ci_cd_settings.id;
 
 CREATE TABLE project_compliance_framework_settings (
     project_id bigint NOT NULL,
-    framework smallint NOT NULL,
+    framework smallint,
     framework_id bigint,
     CONSTRAINT check_d348de9e2d CHECK ((framework_id IS NOT NULL))
 );
@@ -17295,7 +17295,8 @@ CREATE TABLE web_hooks (
     encrypted_token_iv character varying,
     encrypted_url character varying,
     encrypted_url_iv character varying,
-    deployment_events boolean DEFAULT false NOT NULL
+    deployment_events boolean DEFAULT false NOT NULL,
+    feature_flag_events boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE web_hooks_id_seq

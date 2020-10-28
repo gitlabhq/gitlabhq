@@ -2,6 +2,8 @@
 
 module API
   class Avatar < ::API::Base
+    feature_category :users
+
     resource :avatar do
       desc 'Return avatar url for a user' do
         success Entities::Avatar

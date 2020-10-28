@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require_relative '../tooling/lib/tooling/test_map_packer'
+
+packed_json_mapping, unpacked_json_mapping = ARGV.shift(2)
+unless packed_json_mapping && unpacked_json_mapping
+  puts "usage: #{__FILE__} <packed_json_mapping> <unpacked_json_mapping>"
+  exit 1
+end
+
+packed_mapping = JSON.parse(File.read(packed_json_mapping))
+mapping = Tooling::TestMapPacker.new.unpack(packed_mapping)
+
+puts "Writing unpacked #{unpacked_json_mapping}"
+File.write(unpacked_json_mapping, JSON.generate(mapping))
+puts "Saved #{unpacked_json_mapping}."

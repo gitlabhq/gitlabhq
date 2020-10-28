@@ -7545,8 +7545,8 @@
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "ENUM",
-                  "name": "ProjectSettingEnum",
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -19042,6 +19042,20 @@
               "deprecationReason": null
             },
             {
+              "name": "blockedByCount",
+              "description": "Count of issues blocking this issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "closedAt",
               "description": "Timestamp of when the issue was closed",
               "args": [
@@ -24984,6 +24998,20 @@
               "deprecationReason": null
             },
             {
+              "name": "blockedByCount",
+              "description": "Count of issues blocking this issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "closedAt",
               "description": "Timestamp of when the issue was closed",
               "args": [
@@ -27866,6 +27894,18 @@
             {
               "name": "PUBLISHED_DESC",
               "description": "Published issues shown first",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SLA_DUE_AT_ASC",
+              "description": "Issues with earliest SLA due time shown first",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SLA_DUE_AT_DESC",
+              "description": "Issues with latest SLA due time shown first",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -45520,47 +45560,6 @@
 
           ],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "ProjectSettingEnum",
-          "description": "Names of compliance frameworks that can be assigned to a Project",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "gdpr",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "hipaa",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pci_dss",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "soc_2",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sox",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {

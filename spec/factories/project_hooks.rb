@@ -22,6 +22,7 @@ FactoryBot.define do
       pipeline_events { true }
       wiki_page_events { true }
       deployment_events { true }
+      feature_flag_events { true }
     end
   end
 end

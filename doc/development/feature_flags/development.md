@@ -188,6 +188,30 @@ if Feature.disabled?(:my_feature_flag, project, type: :ops)
 end
 ```
 
+DANGER: **Warning:**
+Don't use feature flags at application load time. For example, using the `Feature` class in
+`config/initializers/*` or at the class level could cause an unexpected error. This error occurs
+because a database that a feature flag adapter might depend on doesn't exist at load time
+(especially for fresh installations). Checking for the database's existence at the caller isn't
+recommended, as some adapters don't require a database at all (for example, the HTTP adapter). The
+feature flag setup check must be abstracted in the `Feature` namespace. This approach also requires
+application reload when the feature flag changes. You must therefore ask SREs to reload the
+Web/API/Sidekiq fleet on production, which takes time to fully rollout/rollback the changes. For
+these reasons, use environment variables (for example, `ENV['YOUR_FEATURE_NAME']`) or `gitlab.yml`
+instead.
+
+Here's an example of a pattern that you should avoid:
+
+```ruby
+class MyClass
+  if Feature.enabled?(:...)
+    new_process
+  else
+    legacy_process
+  end
+end
+```
+
 ### Frontend
 
 Use the `push_frontend_feature_flag` method for frontend code, which is

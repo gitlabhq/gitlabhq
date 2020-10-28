@@ -1358,6 +1358,55 @@ X-Gitlab-Event: Deployment Hook
 
 Note that `deployable_id` is the ID of the CI job.
 
+### Feature Flag events
+
+Triggered when a feature flag is turned on or off.
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Feature Flag Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "object_kind": "feature_flag",
+  "project": {
+    "id": 1,
+    "name":"Gitlab Test",
+    "description":"Aut reprehenderit ut est.",
+    "web_url":"http://example.com/gitlabhq/gitlab-test",
+    "avatar_url":null,
+    "git_ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
+    "git_http_url":"http://example.com/gitlabhq/gitlab-test.git",
+    "namespace":"GitlabHQ",
+    "visibility_level":20,
+    "path_with_namespace":"gitlabhq/gitlab-test",
+    "default_branch":"master",
+    "ci_config_path": null,
+    "homepage":"http://example.com/gitlabhq/gitlab-test",
+    "url":"http://example.com/gitlabhq/gitlab-test.git",
+    "ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
+    "http_url":"http://example.com/gitlabhq/gitlab-test.git"
+  },
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "email": "admin@example.com"
+  },
+  "user_url": "http://example.com/root",
+  "object_attributes": {
+    "id": 6,
+    "name": "test-feature-flag",
+    "description": "test-feature-flag-description",
+    "active": true
+  }
+}
+```
+
 ## Image URL rewriting
 
 From GitLab 11.2, simple image references are rewritten to use an absolute URL

@@ -22,6 +22,10 @@ module FeatureFlags
 
         audit_event = audit_event(feature_flag)
 
+        if feature_flag.active_changed?
+          feature_flag.execute_hooks(current_user)
+        end
+
         if feature_flag.save
           save_audit_event(audit_event)
 

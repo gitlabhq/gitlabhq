@@ -69,9 +69,12 @@ export default {
     {
       key: 'incidentSla',
       label: s__('IncidentManagement|Time to SLA'),
-      thClass: `gl-pointer-events-none gl-text-right gl-w-eighth`,
+      thClass: `gl-text-right gl-w-eighth`,
       tdClass: `${tdClass} gl-text-right`,
       thAttr: TH_INCIDENT_SLA_TEST_ID,
+      sortKey: 'SLA_DUE_AT',
+      sortable: true,
+      sortDirection: 'asc',
     },
     {
       key: 'assignees',
@@ -253,13 +256,22 @@ export default {
       this.redirecting = true;
     },
     fetchSortedData({ sortBy, sortDesc }) {
+      let sortKey;
+      // In bootstrap-vue v2.17.0, sortKey becomes natively supported and we can eliminate this function
+      const field = this.availableFields.find(({ key }) => key === sortBy);
       const sortingDirection = sortDesc ? 'DESC' : 'ASC';
-      const sortingColumn = convertToSnakeCase(sortBy)
-        .replace(/_.*/, '')
-        .toUpperCase();
+
+      // Use `sortKey` if provided, otherwise fall back to existing algorithm
+      if (field?.sortKey) {
+        sortKey = field.sortKey;
+      } else {
+        sortKey = convertToSnakeCase(sortBy)
+          .replace(/_.*/, '')
+          .toUpperCase();
+      }
 
       this.pagination = initialPaginationState;
-      this.sort = `${sortingColumn}_${sortingDirection}`;
+      this.sort = `${sortKey}_${sortingDirection}`;
     },
     getSeverity(severity) {
       return INCIDENT_SEVERITY[severity];

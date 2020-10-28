@@ -261,4 +261,38 @@ RSpec.describe Operations::FeatureFlag do
       expect(flags.map(&:id)).to eq([feature_flag.id, feature_flag_b.id])
     end
   end
+
+  describe '#hook_attrs' do
+    it 'includes expected attributes' do
+      hook_attrs = {
+        id: subject.id,
+        name: subject.name,
+        description: subject.description,
+        active: subject.active
+      }
+      expect(subject.hook_attrs).to eq(hook_attrs)
+    end
+  end
+
+  describe "#execute_hooks" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:feature_flag) { create(:operations_feature_flag, project: project) }
+
+    it 'does not execute the hook when feature_flag event is disabled' do
+      create(:project_hook, project: project, feature_flag_events: false)
+      expect(WebHookWorker).not_to receive(:perform_async)
+
+      feature_flag.execute_hooks(user)
+      feature_flag.touch
+    end
+
+    it 'executes hook when feature_flag event is enabled' do
+      hook = create(:project_hook, project: project, feature_flag_events: true)
+      expect(WebHookWorker).to receive(:perform_async).with(hook.id, an_instance_of(Hash), 'feature_flag_hooks')
+
+      feature_flag.execute_hooks(user)
+      feature_flag.touch
+    end
+  end
 end

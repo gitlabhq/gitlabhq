@@ -174,6 +174,10 @@ module GroupsHelper
       !multiple_members?(group)
   end
 
+  def show_thanks_for_purchase_banner?
+    params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
+  end
+
   private
 
   def just_created?

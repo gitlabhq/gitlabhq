@@ -2803,7 +2803,7 @@ type ComplianceFramework {
   """
   Name of the compliance framework
   """
-  name: ProjectSettingEnum!
+  name: String!
 }
 
 """
@@ -6909,6 +6909,11 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   blocked: Boolean!
 
   """
+  Count of issues blocking this issue
+  """
+  blockedByCount: Int
+
+  """
   Timestamp of when the issue was closed
   """
   closedAt: Time
@@ -9177,6 +9182,11 @@ type Issue implements CurrentUserTodos & Noteable {
   blocked: Boolean!
 
   """
+  Count of issues blocking this issue
+  """
+  blockedByCount: Int
+
+  """
   Timestamp of when the issue was closed
   """
   closedAt: Time
@@ -10205,6 +10215,16 @@ enum IssueSort {
   Severity from more critical to less critical
   """
   SEVERITY_DESC
+
+  """
+  Issues with earliest SLA due time shown first
+  """
+  SLA_DUE_AT_ASC
+
+  """
+  Issues with latest SLA due time shown first
+  """
+  SLA_DUE_AT_DESC
 
   """
   Updated at ascending order
@@ -15699,17 +15719,6 @@ type ProjectPermissions {
   Indicates the user can perform `upload_file` on this resource
   """
   uploadFile: Boolean!
-}
-
-"""
-Names of compliance frameworks that can be assigned to a Project
-"""
-enum ProjectSettingEnum {
-  gdpr
-  hipaa
-  pci_dss
-  soc_2
-  sox
 }
 
 type ProjectStatistics {

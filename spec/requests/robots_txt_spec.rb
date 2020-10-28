@@ -37,6 +37,7 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures do
       '/help',
       '/s/',
       '/-/profile',
+      '/-/ide/project',
       '/foo/bar/new',
       '/foo/bar/edit',
       '/foo/bar/raw',

@@ -103,6 +103,7 @@ class BroadcastMessage < ApplicationRecord
   end
 
   def matches_current_path(current_path)
+    return false if current_path.blank? && target_path.present?
     return true if current_path.blank? || target_path.blank?
 
     escaped = Regexp.escape(target_path).gsub('\\*', '.*')

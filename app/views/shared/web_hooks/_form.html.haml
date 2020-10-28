@@ -78,6 +78,12 @@
         %strong= s_('Webhooks|Deployment events')
       %p.text-muted.ml-1
         = s_('Webhooks|This URL is triggered when a deployment starts, finishes, fails, or is canceled')
+    %li
+      = form.check_box :feature_flag_events, class: 'form-check-input'
+      = form.label :feature_flag_events, class: 'list-label form-check-label ml-1' do
+        %strong= s_('Webhooks|Feature Flag events')
+      %p.text-muted.ml-1
+        = s_('Webhooks|This URL is triggered when a feature flag is turned on or off')
 .form-group
   = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'
   .form-check

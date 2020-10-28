@@ -199,6 +199,8 @@ GEM
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
     creole (0.5.0)
+    crystalball (0.7.0)
+      git
     css_parser (1.7.0)
       addressable
     daemons (1.2.6)
@@ -1291,6 +1293,7 @@ DEPENDENCIES
   connection_pool (~> 2.0)
   countries (~> 3.0)
   creole (~> 0.5.0)
+  crystalball (~> 0.7.0)
   danger (~> 8.0.6)
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.3.1)

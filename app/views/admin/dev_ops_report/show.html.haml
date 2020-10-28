@@ -14,7 +14,7 @@
         .tab-pane.active#devops_score_pane
           = render 'report'
         .tab-pane#devops_adoption_pane
-          .js-devops-adoption
+          .js-devops-adoption{ data: { empty_state_svg_path: image_path('illustrations/monitoring/getting_started.svg') } }
     - else
       = render 'report'
 

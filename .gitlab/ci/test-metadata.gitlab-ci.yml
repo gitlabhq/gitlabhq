@@ -9,6 +9,7 @@
       - knapsack/
       - rspec_flaky/
       - rspec_profiling/
+      - crystalball/
 
 retrieve-tests-metadata:
   extends:
@@ -41,3 +42,4 @@ update-tests-metadata:
     - run_timed_command "retry gem install bundler:1.17.3 fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh
     - update_tests_metadata
+    - update_tests_mapping

@@ -4,6 +4,8 @@ module API
   class Appearance < ::API::Base
     before { authenticated_as_admin! }
 
+    feature_category :navigation
+
     helpers do
       def current_appearance
         @current_appearance ||= (::Appearance.current || ::Appearance.new)
