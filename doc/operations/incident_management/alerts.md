@@ -219,46 +219,11 @@ the correct runbook:
 
 ## View the environment that generated the alert
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-environment-link-in-alert-details). **(CORE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5
+    behind a feature flag, disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.6.
 
 CAUTION: **Warning:**
 This feature might not be available to you. Check the **version history** note above for details.
 
 The environment information and the link are displayed in the [Alert Details tab](#alert-details-tab).
-
-### Enable or disable Environment Link in Alert Details **(CORE ONLY)**
-
-Viewing the environment is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:expose_environment_path_in_alert_details)
-```
-
-To enable for just a particular project:
-
-```ruby
-project = Project.find_by_full_path('your-group/your-project')
-Feature.enable(:expose_environment_path_in_alert_details, project)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:expose_environment_path_in_alert_details)
-```
-
-To disable for just a particular project:
-
-```ruby
-project = Project.find_by_full_path('your-group/your-project')
-Feature.disable(:expose_environment_path_in_alert_details, project)
-```

@@ -10,7 +10,7 @@ type: index, howto
 
 If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../introduction/index.md),
 and start making use of all its powerful features. Check out our
-[CircleCI vs GitLab](https://about.gitlab.com/devops-tools/circle-ci-vs-gitlab.html)
+[CircleCI vs GitLab](https://about.gitlab.com/devops-tools/circle-ci-vs-gitlab/)
 comparison to see what's different.
 
 We have collected several resources that you may find useful before starting to migrate.

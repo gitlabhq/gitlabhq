@@ -5,22 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, developer_projects: [project]) }
+  let(:seeds_block) { }
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
       origin_ref: 'master',
-      seeds_block: nil)
-  end
-
-  def run_chain(pipeline, command)
-    [
-      Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
-      Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command)
-    ].map(&:perform!)
-
-    described_class.new(pipeline, command).perform!
+      seeds_block: seeds_block)
   end
 
   let(:pipeline) { build(:ci_pipeline, project: project) }
@@ -28,22 +20,36 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   describe '#perform!' do
     before do
       stub_ci_pipeline_yaml_file(YAML.dump(config))
-      run_chain(pipeline, command)
     end
 
     let(:config) do
       { rspec: { script: 'rake' } }
     end
 
+    subject(:run_chain) do
+      [
+        Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
+        Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command)
+      ].map(&:perform!)
+
+      described_class.new(pipeline, command).perform!
+    end
+
     it 'allocates next IID' do
+      run_chain
+
       expect(pipeline.iid).to be_present
     end
 
     it 'ensures ci_ref' do
+      run_chain
+
       expect(pipeline.ci_ref).to be_present
     end
 
     it 'sets the seeds in the command object' do
+      run_chain
+
       expect(command.stage_seeds).to all(be_a Gitlab::Ci::Pipeline::Seed::Base)
       expect(command.stage_seeds.count).to eq 1
     end
@@ -58,6 +64,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'correctly fabricates a stage seeds object' do
+        run_chain
+
         seeds = command.stage_seeds
         expect(seeds.size).to eq 2
         expect(seeds.first.attributes[:name]).to eq 'test'
@@ -81,6 +89,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'returns stage seeds only assigned to master' do
+        run_chain
+
         seeds = command.stage_seeds
 
         expect(seeds.size).to eq 1
@@ -100,6 +110,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'returns stage seeds only assigned to schedules' do
+        run_chain
+
         seeds = command.stage_seeds
 
         expect(seeds.size).to eq 1
@@ -127,6 +139,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
           let(:pipeline) { build(:ci_pipeline, project: project) }
 
           it 'returns seeds for kubernetes dependent job' do
+            run_chain
+
             seeds = command.stage_seeds
 
             expect(seeds.size).to eq 2
@@ -138,6 +152,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
 
       context 'when kubernetes is not active' do
         it 'does not return seeds for kubernetes dependent job' do
+          run_chain
+
           seeds = command.stage_seeds
 
           expect(seeds.size).to eq 1
@@ -155,10 +171,38 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'returns stage seeds only when variables expression is truthy' do
+        run_chain
+
         seeds = command.stage_seeds
 
         expect(seeds.size).to eq 1
         expect(seeds.dig(0, 0, :name)).to eq 'unit'
+      end
+    end
+
+    context 'when there is seeds_block' do
+      let(:seeds_block) do
+        ->(pipeline) { pipeline.variables.build(key: 'VAR', value: '123') }
+      end
+
+      context 'when FF ci_seed_block_run_before_workflow_rules is enabled' do
+        it 'does not execute the block' do
+          run_chain
+
+          expect(pipeline.variables.size).to eq(0)
+        end
+      end
+
+      context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
+        before do
+          stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
+        end
+
+        it 'executes the block' do
+          run_chain
+
+          expect(pipeline.variables.size).to eq(1)
+        end
       end
     end
   end

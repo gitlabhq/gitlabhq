@@ -41,6 +41,9 @@ module Types
     field :assignees, Types::UserType.connection_type, null: true,
           description: 'Assignees of the issue'
 
+    field :updated_by, Types::UserType, null: true,
+          description: 'User that last updated the issue'
+
     field :labels, Types::LabelType.connection_type, null: true,
           description: 'Labels of the issue'
     field :milestone, Types::MilestoneType, null: true,
@@ -112,6 +115,10 @@ module Types
 
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
+    end
+
+    def updated_by
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.updated_by_id).find
     end
 
     def milestone

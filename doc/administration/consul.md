@@ -87,7 +87,7 @@ Consul nodes communicate using the raft protocol. If the current leader goes
 offline, there needs to be a leader election. A leader node must exist to facilitate
 synchronization across the cluster. If too many nodes go offline at the same time,
 the cluster will lose quorum and not elect a leader due to
-[broken consensus](https://www.consul.io/docs/internals/consensus.html).
+[broken consensus](https://www.consul.io/docs/architecture/consensus).
 
 Consult the [troubleshooting section](#troubleshooting-consul) if the cluster is not
 able to recover after the upgrade. The [outage recovery](#outage-recovery) may

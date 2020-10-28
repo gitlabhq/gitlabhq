@@ -220,11 +220,6 @@ msgid_plural "%d issues in this group"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d issue selected"
-msgid_plural "%d issues selected"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d issue successfully imported with the label"
 msgid_plural "%d issues successfully imported with the label"
 msgstr[0] ""
@@ -411,6 +406,16 @@ msgstr ""
 
 msgid "%{count} files touched"
 msgstr ""
+
+msgid "%{count} issue selected"
+msgid_plural "%{count} issues selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} merge request selected"
+msgid_plural "%{count} merge requests selected"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{count} more"
 msgstr ""
@@ -10868,6 +10873,9 @@ msgid "Export group"
 msgstr ""
 
 msgid "Export issues"
+msgstr ""
+
+msgid "Export merge requests"
 msgstr ""
 
 msgid "Export project"

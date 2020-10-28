@@ -47,6 +47,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
   collection do
     get :diff_for_path
     post :bulk_update
+    post :export_csv
   end
 
   resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do

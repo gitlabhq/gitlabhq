@@ -460,16 +460,12 @@ The LDAP sync process:
 
 ### Adjusting LDAP user sync schedule **(STARTER ONLY)**
 
-NOTE: **Note:**
-These are cron formatted values. You can use a crontab generator to create
-these values, for example <http://www.crontabgenerator.com/>.
-
 By default, GitLab runs a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
 
 You can manually configure LDAP user sync times by setting the
 following configuration values, in cron format. If needed, you can
-use a [crontab generator](http://crontabgenerator.com).
+use a [crontab generator](http://www.crontabgenerator.com).
 The example below shows how to set LDAP user
 sync to run once every 12 hours at the top of the hour.
 

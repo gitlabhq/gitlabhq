@@ -62,6 +62,10 @@ module Gitlab
       def self.manual_bridges_enabled?(project)
         ::Feature.enabled?(:ci_manual_bridges, project, default_enabled: true)
       end
+
+      def self.seed_block_run_before_workflow_rules_enabled?(project)
+        ::Feature.enabled?(:ci_seed_block_run_before_workflow_rules, project, default_enabled: false)
+      end
     end
   end
 end

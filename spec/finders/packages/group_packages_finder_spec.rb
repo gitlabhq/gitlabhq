@@ -2,13 +2,16 @@
 require 'spec_helper'
 
 RSpec.describe Packages::GroupPackagesFinder do
-  let_it_be(:user)     { create(:user) }
-  let_it_be(:group)    { create(:group) }
-  let_it_be(:project)  { create(:project, namespace: group) }
-  let(:another_group) { create(:group) }
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group, builds_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE) }
+
+  let(:add_user_to_group) { true }
 
   before do
-    group.add_developer(user)
+    group.add_developer(user) if add_user_to_group
   end
 
   describe '#execute' do
@@ -27,16 +30,16 @@ RSpec.describe Packages::GroupPackagesFinder do
     end
 
     context 'group has packages' do
-      let!(:package1) { create(:maven_package, project: project) }
-      let!(:package2) { create(:maven_package, project: project) }
-      let!(:package3) { create(:maven_package) }
+      let_it_be(:package1) { create(:maven_package, project: project) }
+      let_it_be(:package2) { create(:maven_package, project: project) }
+      let_it_be(:package3) { create(:maven_package) }
 
       it { is_expected.to match_array([package1, package2]) }
 
       context 'subgroup has packages' do
-        let(:subgroup) { create(:group, parent: group) }
-        let(:subproject) { create(:project, namespace: subgroup) }
-        let!(:package4) { create(:npm_package, project: subproject) }
+        let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+        let_it_be_with_reload(:subproject) { create(:project, namespace: subgroup, builds_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE) }
+        let_it_be(:package4) { create(:npm_package, project: subproject) }
 
         it { is_expected.to match_array([package1, package2, package4]) }
 
@@ -45,16 +48,87 @@ RSpec.describe Packages::GroupPackagesFinder do
 
           it { is_expected.to match_array([package1, package2]) }
         end
+
+        context 'permissions' do
+          let(:add_user_to_group) { false }
+
+          where(:role, :project_visibility, :repository_visibility, :packages_returned) do
+            :anonymous  | :public  | :enabled | :all
+            :guest      | :public  | :enabled | :all
+            :reporter   | :public  | :enabled | :all
+            :developer  | :public  | :enabled | :all
+            :maintainer | :public  | :enabled | :all
+            :anonymous  | :public  | :private | :none
+            :guest      | :public  | :private | :all
+            :reporter   | :public  | :private | :all
+            :developer  | :public  | :private | :all
+            :maintainer | :public  | :private | :all
+            :anonymous  | :private | :enabled | :none
+            :guest      | :private | :enabled | :none
+            :reporter   | :private | :enabled | :all
+            :developer  | :private | :enabled | :all
+            :maintainer | :private | :enabled | :all
+            :anonymous  | :private | :private | :none
+            :guest      | :private | :private | :none
+            :reporter   | :private | :private | :all
+            :developer  | :private | :private | :all
+            :maintainer | :private | :private | :all
+          end
+
+          with_them do
+            let(:expected_packages) do
+              case packages_returned
+              when :all
+                [package1, package2, package4]
+              when :none
+                []
+              end
+            end
+
+            before do
+              subgroup.update!(visibility: project_visibility.to_s)
+              group.update!(visibility: project_visibility.to_s)
+              project.update!(
+                visibility: project_visibility.to_s,
+                repository_access_level: repository_visibility.to_s
+              )
+              subproject.update!(
+                visibility: project_visibility.to_s,
+                repository_access_level: repository_visibility.to_s
+              )
+
+              unless role == :anonymous
+                project.add_user(user, role)
+                subproject.add_user(user, role)
+              end
+            end
+
+            it { is_expected.to match_array(expected_packages) }
+          end
+        end
+
+        context 'avoid N+1 query' do
+          it 'avoids N+1 database queries' do
+            count = ActiveRecord::QueryRecorder.new { subject }
+                                               .count
+
+            Packages::Package.package_types.keys.each do |package_type|
+              create("#{package_type}_package", project: create(:project, namespace: subgroup))
+            end
+
+            expect { described_class.new(user, group, params).execute }.not_to exceed_query_limit(count)
+          end
+        end
       end
 
       context 'when there are processing packages' do
-        let!(:package4) { create(:nuget_package, project: project, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
+        let_it_be(:package4) { create(:nuget_package, project: project, name: Packages::Nuget::CreatePackageService::TEMPORARY_PACKAGE_NAME) }
 
         it { is_expected.to match_array([package1, package2]) }
       end
 
       context 'does not include packages without version number' do
-        let!(:package_without_version) { create(:maven_package, project: project, version: nil) }
+        let_it_be(:package_without_version) { create(:maven_package, project: project, version: nil) }
 
         it { is_expected.not_to include(package_without_version) }
       end
@@ -80,7 +154,7 @@ RSpec.describe Packages::GroupPackagesFinder do
     end
 
     context 'group has package of all types' do
-      package_types.each { |pt| let!("package_#{pt}") { create("#{pt}_package", project: project) } }
+      package_types.each { |pt| let_it_be("package_#{pt}") { create("#{pt}_package", project: project) } }
 
       package_types.each do |package_type|
         it_behaves_like 'with package type', package_type
@@ -98,7 +172,7 @@ RSpec.describe Packages::GroupPackagesFinder do
     end
 
     context 'package type is nil' do
-      let!(:package1) { create(:maven_package, project: project) }
+      let_it_be(:package1) { create(:maven_package, project: project) }
 
       subject { described_class.new(user, group, package_type: nil).execute }
 
@@ -109,48 +183,6 @@ RSpec.describe Packages::GroupPackagesFinder do
       let(:params) { { package_type: 'invalid_type' } }
 
       it { expect { subject }.to raise_exception(described_class::InvalidPackageTypeError) }
-    end
-
-    context 'when project is public' do
-      let_it_be(:other_user) { create(:user) }
-      let(:finder) { described_class.new(other_user, group) }
-
-      before do
-        project.update!(visibility_level: ProjectFeature::ENABLED)
-      end
-
-      context 'when packages are public' do
-        before do
-          project.project_feature.update!(
-            builds_access_level: ProjectFeature::PRIVATE,
-            merge_requests_access_level: ProjectFeature::PRIVATE,
-            repository_access_level: ProjectFeature::ENABLED)
-        end
-
-        it 'returns group packages' do
-          package1 = create(:maven_package, project: project)
-          package2 = create(:maven_package, project: project)
-          create(:maven_package)
-
-          expect(finder.execute).to match_array([package1, package2])
-        end
-      end
-
-      context 'packages are members only' do
-        before do
-          project.project_feature.update!(
-            builds_access_level: ProjectFeature::PRIVATE,
-            merge_requests_access_level: ProjectFeature::PRIVATE,
-            repository_access_level: ProjectFeature::PRIVATE)
-
-          create(:maven_package, project: project)
-          create(:maven_package)
-        end
-
-        it 'filters out the project if the user doesn\'t have permission' do
-          expect(finder.execute).to be_empty
-        end
-      end
     end
   end
 end

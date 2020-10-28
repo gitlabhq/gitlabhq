@@ -1,5 +1,12 @@
+- if Feature.enabled?(:export_merge_requests_as_csv, @project)
+  .btn-group
+    = render 'shared/issuable/csv_export/button', issuable_type: 'merge-requests'
+
 - if @can_bulk_update
   = button_tag "Edit merge requests", class: "gl-button btn gl-mr-3 js-bulk-update-toggle"
 - if merge_project
   = link_to new_merge_request_path, class: "gl-button btn btn-success", title: "New merge request" do
     New merge request
+
+  - if Feature.enabled?(:export_merge_requests_as_csv, @project)
+    = render 'shared/issuable/csv_export/modal', issuable_type: 'merge_requests'

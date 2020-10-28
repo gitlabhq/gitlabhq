@@ -8,7 +8,7 @@
 
   .btn-group
     - if show_export_button
-      = render 'projects/issues/export_csv/button'
+      = render 'shared/issuable/csv_export/button', issuable_type: 'issues'
 
     - if show_import_button
       = render 'projects/issues/import_csv/button'
@@ -23,7 +23,7 @@
                                                   id: "new_issue_link"
 
 - if show_export_button
-  = render 'projects/issues/export_csv/modal'
+  = render 'shared/issuable/csv_export/modal', issuable_type: 'issues'
 
 - if show_import_button
   = render 'projects/issues/import_csv/modal'

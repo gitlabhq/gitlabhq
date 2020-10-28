@@ -2,7 +2,6 @@
 
 class AuditEvent < ApplicationRecord
   include CreatedAtFilterable
-  include IgnorableColumns
   include BulkInsertSafe
   include EachBatch
 
@@ -13,8 +12,6 @@ class AuditEvent < ApplicationRecord
     :target_type,
     :target_id
   ].freeze
-
-  ignore_column :type, remove_with: '13.6', remove_after: '2020-11-22'
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -36,14 +33,6 @@ class AuditEvent < ApplicationRecord
   # See further details in the epic:
   # https://gitlab.com/groups/gitlab-org/-/epics/2765
   after_validation :parallel_persist
-
-  # Note: After loading records, do not attempt to type cast objects it finds.
-  # We are in the process of deprecating STI (i.e. SecurityEvent) out of AuditEvent.
-  #
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/216845
-  def self.inheritance_column
-    :_type_disabled
-  end
 
   def self.order_by(method)
     case method.to_s

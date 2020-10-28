@@ -71,14 +71,15 @@ RSpec.describe 'Query.issue(id)' do
     end
 
     context 'selecting multiple fields' do
-      let(:issue_fields) { %w(title description) }
+      let(:issue_fields) { ['title', 'description', 'updatedBy { username }'] }
 
       it 'returns the Issue with the specified fields' do
         post_graphql(query, current_user: current_user)
 
-        expect(issue_data.keys).to eq( %w(title description) )
+        expect(issue_data.keys).to eq( %w(title description updatedBy) )
         expect(issue_data['title']).to eq(issue.title)
         expect(issue_data['description']).to eq(issue.description)
+        expect(issue_data['updatedBy']['username']).to eq(issue.author.username)
       end
     end
 

@@ -27,6 +27,7 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures do
   it 'blocks the requests' do
     requests = [
       '/autocomplete/users',
+      '/autocomplete/projects',
       '/search',
       '/admin',
       '/profile',

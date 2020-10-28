@@ -6231,10 +6231,9 @@ type Environment {
   name: String!
 
   """
-  The path to the environment. Will always return null if
-  `expose_environment_path_in_alert_details` feature flag is disabled
+  The path to the environment.
   """
-  path: String
+  path: String!
 
   """
   State of the environment, for example: available/stopped
@@ -7213,6 +7212,11 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   Timestamp of when the issue was last updated
   """
   updatedAt: Time!
+
+  """
+  User that last updated the issue
+  """
+  updatedBy: User
 
   """
   Number of upvotes the issue has received
@@ -9466,6 +9470,11 @@ type Issue implements CurrentUserTodos & Noteable {
   Timestamp of when the issue was last updated
   """
   updatedAt: Time!
+
+  """
+  User that last updated the issue
+  """
+  updatedBy: User
 
   """
   Number of upvotes the issue has received

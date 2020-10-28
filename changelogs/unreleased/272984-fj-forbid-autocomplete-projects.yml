@@ -1,0 +1,5 @@
+---
+title: Disallow /autocomplete/projects route in robots.txt
+merge_request: 46115
+author:
+type: changed

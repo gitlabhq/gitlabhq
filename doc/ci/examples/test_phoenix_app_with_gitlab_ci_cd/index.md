@@ -298,7 +298,7 @@ project.
     - mix ecto.migrate
    ```
 
-  This ensures that [rebar3](https://www.rebar3.org) and [hex](https://hex.pm) are both installed
+  This ensures that [rebar3](https://rebar3.org) and [hex](https://hex.pm) are both installed
   before attempting to fetch the dependencies that are required to run the tests. Next, the `postgres` db
   is created and migrated with `ecto`, to ensure it's up-to-date.
 

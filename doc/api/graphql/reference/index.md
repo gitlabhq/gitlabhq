@@ -1020,7 +1020,7 @@ Describes where code is deployed for a project.
 | `latestOpenedMostSevereAlert` | AlertManagementAlert | The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned |
 | `metricsDashboard` | MetricsDashboard | Metrics dashboard schema for the environment |
 | `name` | String! | Human-readable name of the environment |
-| `path` | String | The path to the environment. Will always return null if `expose_environment_path_in_alert_details` feature flag is disabled |
+| `path` | String! | The path to the environment. |
 | `state` | String! | State of the environment, for example: available/stopped |
 
 ### Epic
@@ -1149,6 +1149,7 @@ Relationship between an epic and an issue.
 | `totalTimeSpent` | Int! | Total time reported as spent on the issue |
 | `type` | IssueType | Type of the issue |
 | `updatedAt` | Time! | Timestamp of when the issue was last updated |
+| `updatedBy` | User | User that last updated the issue |
 | `upvotes` | Int! | Number of upvotes the issue has received |
 | `userNotesCount` | Int! | Number of user notes of the issue |
 | `userPermissions` | IssuePermissions! | Permissions for the current user on the resource |
@@ -1342,6 +1343,7 @@ Represents a recorded measurement (object count) for the Admins.
 | `totalTimeSpent` | Int! | Total time reported as spent on the issue |
 | `type` | IssueType | Type of the issue |
 | `updatedAt` | Time! | Timestamp of when the issue was last updated |
+| `updatedBy` | User | User that last updated the issue |
 | `upvotes` | Int! | Number of upvotes the issue has received |
 | `userNotesCount` | Int! | Number of user notes of the issue |
 | `userPermissions` | IssuePermissions! | Permissions for the current user on the resource |

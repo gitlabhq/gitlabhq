@@ -1994,4 +1994,37 @@ RSpec.describe Projects::MergeRequestsController do
       expect(assigns(:noteable)).not_to be_nil
     end
   end
+
+  describe 'POST export_csv' do
+    subject { post :export_csv, params: { namespace_id: project.namespace, project_id: project } }
+
+    before do
+      stub_feature_flags(export_merge_requests_as_csv: project)
+    end
+
+    it 'redirects to the merge request index' do
+      subject
+
+      expect(response).to redirect_to(project_merge_requests_path(project))
+      expect(response.flash[:notice]).to match(/\AYour CSV export has started/i)
+    end
+
+    it 'enqueues an IssuableExportCsvWorker worker' do
+      expect(IssuableExportCsvWorker).to receive(:perform_async).with(:merge_request, user.id, project.id, anything)
+
+      subject
+    end
+
+    context 'feature is disabled' do
+      before do
+        stub_feature_flags(export_merge_requests_as_csv: false)
+      end
+
+      it 'expects a 404 response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

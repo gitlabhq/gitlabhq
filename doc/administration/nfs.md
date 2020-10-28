@@ -323,7 +323,7 @@ Any `Operation not permitted` errors means you should investigate your NFS serve
 If the traffic between your NFS server and NFS client(s) is subject to port filtering
 by a firewall, then you will need to reconfigure that firewall to allow NFS communication.
 
-[This guide from TDLP](http://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
+[This guide from TDLP](https://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
 covers the basics of using NFS in a firewalled environment. Additionally, we encourage you to
 search for and review the specific documentation for your operating system or distribution and your firewall software.
 
