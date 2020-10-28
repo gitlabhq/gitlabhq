@@ -1746,6 +1746,21 @@ The voting strategy (in GitLab 13.4 and later) requires
 the primary and secondary voters to agree.
 ```
 
+#### End-of-life for features or products
+
+Whenever a feature or product enters the end-of-life process, indicate its
+status by using the `Danger` [alert](#alert-boxes) with the `**Important**`
+keyword directly below the feature or product's header (which can include H1
+page titles). Link to the deprecation and removal issues, if possible.
+
+For example:
+
+```markdown
+DANGER: **Important:**
+This feature is in its end-of-life process. It is [deprecated](link-to-issue)
+for use in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
+```
+
 ### Versions in the past or future
 
 When describing functionality available in past or future versions, use:

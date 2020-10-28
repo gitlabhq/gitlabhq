@@ -31,7 +31,7 @@ authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd), [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd), [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd), [Conan Packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd), [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages), and [generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd).
+Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd), [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd), [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd), [Conan Packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd), [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages), and [generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd).
 
 If you use CI/CD to build a package, extended activity
 information is displayed when you view the package details:

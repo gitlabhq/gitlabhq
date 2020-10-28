@@ -14,6 +14,7 @@ POST /import/github
 | `repo_id`   | integer | yes      | GitHub repository ID     |
 | `new_name`   | string | no      | New repository name     |
 | `target_namespace`   | string | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`.     |
+| `github_hostname`   | string  | no  | Custom GitHub enterprise hostname. Defaults to GitHub.com if `github_hostname` is not set. |
 
 ```shell
 curl --request POST \

@@ -31,6 +31,8 @@ module Gitlab
 
       # token - The GitHub API token to use.
       #
+      # host - The GitHub hostname. If nil, github.com will be used.
+      #
       # per_page - The number of objects that should be displayed per page.
       #
       # parallel - When set to true hitting the rate limit will result in a
@@ -39,11 +41,13 @@ module Gitlab
       #            this value to `true` for parallel importing is crucial as
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
-      def initialize(token, per_page: 100, parallel: true)
+      def initialize(token, host: nil, per_page: 100, parallel: true)
+        @host = host
         @octokit = ::Octokit::Client.new(
           access_token: token,
           per_page: per_page,
-          api_endpoint: api_endpoint
+          api_endpoint: api_endpoint,
+          web_endpoint: web_endpoint
         )
 
         @octokit.connection_options[:ssl] = { verify: verify_ssl }
@@ -181,7 +185,11 @@ module Gitlab
       end
 
       def api_endpoint
-        custom_api_endpoint || default_api_endpoint
+        @host || custom_api_endpoint || default_api_endpoint
+      end
+
+      def web_endpoint
+        @host || custom_api_endpoint || ::Octokit::Default.web_endpoint
       end
 
       def custom_api_endpoint

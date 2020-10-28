@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::SequentialImporter do
   describe '#execute' do
     it 'imports a project in sequence' do
       repository = double(:repository)
-      project = double(:project, id: 1, repository: repository)
+      project = double(:project, id: 1, repository: repository, import_url: 'http://t0ken@github.another-domain.com/repo-org/repo.git')
       importer = described_class.new(project, token: 'foo')
 
       expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
