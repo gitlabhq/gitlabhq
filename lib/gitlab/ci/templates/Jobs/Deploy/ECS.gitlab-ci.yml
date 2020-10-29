@@ -8,8 +8,11 @@
 #
 # More about including CI templates: https://docs.gitlab.com/ee/ci/yaml/#includetemplate
 
-.deploy_to_ecs:
+.ecs_image:
   image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest'
+
+.deploy_to_ecs:
+  extends: .ecs_image
   dependencies: []
   script:
     - ecs update-task-definition
@@ -17,8 +20,6 @@
 .review_ecs_base:
   stage: review
   extends: .deploy_to_ecs
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
 
 .production_ecs_base:
   stage: production
@@ -26,8 +27,18 @@
   environment:
     name: production
 
+.stop_review_ecs_base:
+  extends: .ecs_image
+  stage: cleanup
+  allow_failure: true
+  script:
+    - ecs stop-task
+
 review_ecs:
   extends: .review_ecs_base
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    on_stop: stop_review_ecs
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
       when: never
@@ -39,8 +50,30 @@ review_ecs:
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
+stop_review_ecs:
+  extends: .stop_review_ecs_base
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+      when: manual
+
 review_fargate:
   extends: .review_ecs_base
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    on_stop: stop_review_fargate
+  script:
+    - ecs update-task-definition
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
       when: never
@@ -51,6 +84,23 @@ review_fargate:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+stop_review_fargate:
+  extends: .stop_review_ecs_base
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+      when: manual
 
 production_ecs:
   extends: .production_ecs_base

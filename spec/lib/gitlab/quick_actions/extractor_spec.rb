@@ -264,6 +264,22 @@ RSpec.describe Gitlab::QuickActions::Extractor do
       expect(msg).to eq 'Fixes #123'
     end
 
+    it 'does not get confused if command comes before an inline code' do
+      msg = "/reopen\n`some inline code`\n/labels ~a\n`more inline code`"
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq([['reopen'], ['labels', '~a']])
+      expect(msg).to eq "`some inline code`\n`more inline code`"
+    end
+
+    it 'does not get confused if command comes before a blockcode' do
+      msg = "/reopen\n```\nsome blockcode\n```\n/labels ~a\n```\nmore blockcode\n```"
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq([['reopen'], ['labels', '~a']])
+      expect(msg).to eq "```\nsome blockcode\n```\n```\nmore blockcode\n```"
+    end
+
     it 'does not extract commands inside a blockcode' do
       msg = "Hello\r\n```\r\nThis is some text\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
       expected = msg.delete("\r")

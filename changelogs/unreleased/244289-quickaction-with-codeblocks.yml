@@ -1,0 +1,5 @@
+---
+title: Fix QuickActions not working if written before a codeblock
+merge_request: 46401
+author:
+type: fixed

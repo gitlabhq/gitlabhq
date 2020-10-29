@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Service do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
@@ -15,8 +17,6 @@ RSpec.describe Service do
   end
 
   describe 'validations' do
-    using RSpec::Parameterized::TableSyntax
-
     it { is_expected.to validate_presence_of(:type) }
 
     where(:project_id, :group_id, :template, :instance, :valid) do
@@ -860,6 +860,34 @@ RSpec.describe Service do
         expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
 
         service.log_info(test_message, additional_argument: 'some argument')
+      end
+    end
+  end
+
+  describe '#external_issue_tracker?' do
+    where(:category, :active, :result) do
+      :issue_tracker | true  | true
+      :issue_tracker | false | false
+      :common        | true  | false
+    end
+
+    with_them do
+      it 'returns the right result' do
+        expect(build(:service, category: category, active: active).external_issue_tracker?).to eq(result)
+      end
+    end
+  end
+
+  describe '#external_wiki?' do
+    where(:type, :active, :result) do
+      'ExternalWikiService' | true  | true
+      'ExternalWikiService' | false | false
+      'SlackService'        | true  | false
+    end
+
+    with_them do
+      it 'returns the right result' do
+        expect(build(:service, type: type, active: active).external_wiki?).to eq(result)
       end
     end
   end

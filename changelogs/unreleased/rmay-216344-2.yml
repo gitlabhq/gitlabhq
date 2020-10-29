@@ -1,0 +1,5 @@
+---
+title: Allow for return of scoped broadcast messages on shell
+merge_request: 46333
+author:
+type: changed

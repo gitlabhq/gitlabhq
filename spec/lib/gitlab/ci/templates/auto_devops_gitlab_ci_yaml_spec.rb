@@ -94,14 +94,14 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
         end
 
         it 'creates an ECS deployment job for review only' do
-          expect(review_prod_build_names).to contain_exactly('review_ecs')
+          expect(review_prod_build_names).to contain_exactly('review_ecs', 'stop_review_ecs')
         end
 
         context 'with FARGATE as a launch type' do
           let(:platform_value) { 'FARGATE' }
 
           it 'creates an FARGATE deployment job for review only' do
-            expect(review_prod_build_names).to contain_exactly('review_fargate')
+            expect(review_prod_build_names).to contain_exactly('review_fargate', 'stop_review_fargate')
           end
         end
       end

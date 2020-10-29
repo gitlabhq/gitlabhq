@@ -57,6 +57,7 @@ class Feature
       name
       introduced_by_url
       rollout_issue_url
+      milestone
       type
       group
       default_enabled
