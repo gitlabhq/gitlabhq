@@ -17,10 +17,10 @@
     = dropdown_content
     = dropdown_loading
 
-.dropdown.project-filter.form-group.mb-lg-0.mx-lg-1
+.dropdown.form-group.mb-lg-0.mx-lg-1{ data: { testid: "project-filter" } }
   %label.d-block{ for: "dashboard_search_project" }
     = _("Project")
-  %button.dropdown-menu-toggle.gl-display-inline-flex.js-search-project-dropdown.gl-mt-0{ type: "button", id: "dashboard_search_project", data: { toggle: "dropdown", target: '.project-filter' } }
+  %button.dropdown-menu-toggle.gl-display-inline-flex.js-search-project-dropdown.gl-mt-0{ type: "button", id: "dashboard_search_project", data: { toggle: "dropdown" } }
     %span.dropdown-toggle-text.gl-flex-grow-1.str-truncated-100
       = @project&.full_name || _("Any")
     - if @project.present?

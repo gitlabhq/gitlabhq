@@ -26,6 +26,17 @@ variables:
     FUZZAPI_IMAGE: registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${FUZZAPI_VERSION}-engine
     #
 
+apifuzzer_fuzz_unlicensed:
+    stage: fuzz
+    allow_failure: true
+    rules:
+        - if: '$GITLAB_FEATURES !~ /\bapi_fuzzing\b/ && $API_FUZZING_DISABLED == null'
+        - when: never
+    script:
+        - |
+            echo "Error: Your GitLab project is not licensed for API Fuzzing."
+        - exit 1
+
 apifuzzer_fuzz:
     stage: fuzz
     image:

@@ -16414,6 +16414,12 @@ msgstr ""
 msgid "Members|Remove group"
 msgstr ""
 
+msgid "Members|Revert to LDAP group sync settings"
+msgstr ""
+
+msgid "Members|Reverted to LDAP group sync settings."
+msgstr ""
+
 msgid "Members|Role updated successfully."
 msgstr ""
 

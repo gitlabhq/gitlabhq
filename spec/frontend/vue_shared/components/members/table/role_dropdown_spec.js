@@ -30,6 +30,7 @@ describe('RoleDropdown', () => {
     wrapper = mount(RoleDropdown, {
       propsData: {
         member,
+        permissions: {},
         ...propsData,
       },
       localVue,

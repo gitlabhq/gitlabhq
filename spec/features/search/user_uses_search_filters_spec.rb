@@ -28,7 +28,7 @@ RSpec.describe 'User uses search filters', :js do
 
       expect(find('.js-search-group-dropdown')).to have_content(group.name)
 
-      page.within('.project-filter') do
+      page.within('[data-testid="project-filter"]') do
         find('.js-search-project-dropdown').click
 
         wait_for_requests
@@ -57,7 +57,7 @@ RSpec.describe 'User uses search filters', :js do
     it 'shows a project' do
       visit search_path
 
-      page.within('.project-filter') do
+      page.within('[data-testid="project-filter"]') do
         find('.js-search-project-dropdown').click
 
         wait_for_requests
@@ -77,7 +77,7 @@ RSpec.describe 'User uses search filters', :js do
 
       describe 'clear filter button' do
         it 'removes Project filters' do
-          link = find('.project-filter .js-search-clear')
+          link = find('[data-testid="project-filter"] .js-search-clear')
           params = CGI.parse(URI.parse(link[:href]).query)
 
           expect(params).not_to include(:project_id)

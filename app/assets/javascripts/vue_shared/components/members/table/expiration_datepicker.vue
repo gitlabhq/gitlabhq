@@ -32,6 +32,13 @@ export default {
 
       return getDateInFuture(beginningOfToday, 1);
     },
+    disabled() {
+      return (
+        this.busy ||
+        !this.permissions.canUpdate ||
+        (this.permissions.canOverride && !this.member.isOverridden)
+      );
+    },
   },
   mounted() {
     if (this.member.expiresAt) {
@@ -85,7 +92,7 @@ export default {
     :container="null"
     :min-date="minDate"
     :placeholder="__('Expiration date')"
-    :disabled="!permissions.canUpdate || busy"
+    :disabled="disabled"
     @input="handleInput"
     @clear="handleClear"
   />

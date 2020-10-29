@@ -3,7 +3,15 @@
 module Gitlab
   module Metrics
     class RequestsRackMiddleware
-      HTTP_METHODS = %w(delete get head options patch post put).to_set.freeze
+      HTTP_METHODS = {
+        "delete" => %w(200 202 204 303 400 401 403 404 500 503),
+        "get" => %w(200 204 301 302 303 304 307 400 401 403 404 410 422 429 500 503),
+        "head" => %w(200 204 301 302 303 401 403 404 410 500),
+        "options" => %w(200 404),
+        "patch" => %w(200 202 204 400 403 404 409 416 500),
+        "post" => %w(200 201 202 204 301 302 303 304 400 401 403 404 406 409 410 412 422 429 500 503),
+        "put" => %w(200 202 204 400 401 403 404 405 406 409 410 422 500)
+      }.freeze
 
       HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
 
@@ -14,8 +22,8 @@ module Gitlab
         @app = app
       end
 
-      def self.http_request_total
-        @http_request_total ||= ::Gitlab::Metrics.counter(:http_requests_total, 'Request count')
+      def self.http_requests_total
+        @http_requests_total ||= ::Gitlab::Metrics.counter(:http_requests_total, 'Request count')
       end
 
       def self.rack_uncaught_errors_count
@@ -31,15 +39,31 @@ module Gitlab
         @http_health_requests_total ||= ::Gitlab::Metrics.counter(:http_health_requests_total, 'Health endpoint request count')
       end
 
-      def self.initialize_http_request_duration_seconds
-        HTTP_METHODS.each do |method|
+      def self.initialize_metrics
+        # This initialization is done to avoid gaps in scraped metrics after
+        # restarts. It makes sure all counters/histograms are available at
+        # process start.
+        #
+        # For example `rate(http_requests_total{status="500"}[1m])` would return
+        # no data until the first 500 error would occur.
+
+        # The list of feature categories is currently not needed by the application
+        # anywhere else. So no need to keep these in memory forever.
+        # Doing it here, means we're only reading the file on boot.
+        feature_categories = YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:strip).uniq << FEATURE_CATEGORY_DEFAULT
+
+        HTTP_METHODS.each do |method, statuses|
           http_request_duration_seconds.get({ method: method })
+
+          statuses.product(feature_categories) do |status, feature_category|
+            http_requests_total.get({ method: method, status: status, feature_category: feature_category })
+          end
         end
       end
 
       def call(env)
         method = env['REQUEST_METHOD'].downcase
-        method = 'INVALID' unless HTTP_METHODS.include?(method)
+        method = 'INVALID' unless HTTP_METHODS.key?(method)
         started = Time.now.to_f
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
@@ -61,9 +85,13 @@ module Gitlab
           raise
         ensure
           if health_endpoint
-            RequestsRackMiddleware.http_health_requests_total.increment(status: status, method: method)
+            RequestsRackMiddleware.http_health_requests_total.increment(status: status.to_s, method: method)
           else
-            RequestsRackMiddleware.http_request_total.increment(status: status, method: method, feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT)
+            RequestsRackMiddleware.http_requests_total.increment(
+              status: status.to_s,
+              method: method,
+              feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT
+            )
           end
         end
       end

@@ -70,7 +70,7 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION }, 1)
 
     unless Gitlab::Runtime.sidekiq?
-      Gitlab::Metrics::RequestsRackMiddleware.initialize_http_request_duration_seconds
+      Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
     end
   rescue IOError => e
     Gitlab::ErrorTracking.track_exception(e)
