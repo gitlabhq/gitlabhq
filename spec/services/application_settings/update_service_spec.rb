@@ -91,12 +91,12 @@ RSpec.describe ApplicationSettings::UpdateService do
       end
     end
 
-    context 'when param outbound_local_requests_whitelist_raw is passed' do
+    context 'when param outbound_local_requests_allowlist_raw is passed' do
       before do
         application_settings.outbound_local_requests_whitelist = ['127.0.0.1']
       end
 
-      let(:params) { { outbound_local_requests_whitelist_raw: 'example.com;gitlab.com' } }
+      let(:params) { { outbound_local_requests_allowlist_raw: 'example.com;gitlab.com' } }
 
       it 'overwrites the existing whitelist' do
         expect { subject.execute }.to change {

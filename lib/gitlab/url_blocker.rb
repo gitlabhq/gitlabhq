@@ -49,7 +49,7 @@ module Gitlab
         return [uri, nil] unless address_info
 
         ip_address = ip_address(address_info)
-        return [uri, nil] if domain_whitelisted?(uri) || ip_whitelisted?(ip_address, port: get_port(uri))
+        return [uri, nil] if domain_allowed?(uri) || ip_allowed?(ip_address, port: get_port(uri))
 
         protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
 
@@ -114,7 +114,7 @@ module Gitlab
       rescue SocketError
         # If the dns rebinding protection is not enabled or the domain
         # is whitelisted we avoid the dns rebinding checks
-        return if domain_whitelisted?(uri) || !dns_rebind_protection
+        return if domain_allowed?(uri) || !dns_rebind_protection
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories
@@ -253,12 +253,12 @@ module Gitlab
           (uri.port.blank? || uri.port == config.gitlab_shell.ssh_port)
       end
 
-      def domain_whitelisted?(uri)
-        Gitlab::UrlBlockers::UrlWhitelist.domain_whitelisted?(uri.normalized_host, port: get_port(uri))
+      def domain_allowed?(uri)
+        Gitlab::UrlBlockers::UrlAllowlist.domain_allowed?(uri.normalized_host, port: get_port(uri))
       end
 
-      def ip_whitelisted?(ip_address, port: nil)
-        Gitlab::UrlBlockers::UrlWhitelist.ip_whitelisted?(ip_address, port: port)
+      def ip_allowed?(ip_address, port: nil)
+        Gitlab::UrlBlockers::UrlAllowlist.ip_allowed?(ip_address, port: port)
       end
 
       def config

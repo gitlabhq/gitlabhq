@@ -2,7 +2,7 @@
 
 module Gitlab
   module UrlBlockers
-    class DomainWhitelistEntry
+    class DomainAllowlistEntry
       attr_reader :domain, :port
 
       def initialize(domain, port: nil)

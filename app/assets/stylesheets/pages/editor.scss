@@ -8,18 +8,18 @@
     background: $gray-normal;
   }
 
-  #editor {
-    border: 0;
-    border-radius: 0;
+  #editor,
+  .editor {
+    @include gl-border-0;
+    @include gl-m-0;
+    @include gl-p-0;
+    @include gl-relative;
+    @include gl-w-full;
     height: 500px;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    width: 100%;
 
     .editor-loading-content {
-      height: 100%;
-      border: 0;
+      @include gl-h-full;
+      @include gl-border-0;
     }
   }
 

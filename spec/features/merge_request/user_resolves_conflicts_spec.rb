@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User resolves conflicts', :js do
+  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 
@@ -64,15 +66,13 @@ RSpec.describe 'Merge request > User resolves conflicts', :js do
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Edit inline'
         wait_for_requests
-        find('.files-wrapper .diff-file pre')
-        execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
+        editor_set_value("One morning")
       end
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         click_button 'Edit inline'
         wait_for_requests
-        find('.files-wrapper .diff-file pre')
-        execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
+        editor_set_value("Gregor Samsa woke from troubled dreams")
       end
 
       find_button('Commit to source branch').send_keys(:return)

@@ -216,10 +216,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     remove_blank_params_for!(:elasticsearch_aws_secret_access_key, :eks_secret_access_key)
 
-    # TODO Remove domain_blacklist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
-    params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
-    params.delete(:domain_blacklist_raw) if params[:domain_blacklist]
-    params.delete(:domain_whitelist_raw) if params[:domain_whitelist]
+    # TODO Remove domain_denylist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
+    params.delete(:domain_denylist_raw) if params[:domain_denylist_file]
+    params.delete(:domain_denylist_raw) if params[:domain_blacklist]
+    params.delete(:domain_allowlist_raw) if params[:domain_whitelist]
 
     params.require(:application_setting).permit(
       visible_application_setting_attributes
@@ -240,7 +240,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       *ApplicationSetting.repository_storages_weighted_attributes,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
-      :domain_blacklist_file,
+      :domain_denylist_file,
       :raw_blob_request_limit,
       :issues_create_limit,
       :default_branch_name,

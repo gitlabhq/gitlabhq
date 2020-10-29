@@ -4,11 +4,11 @@ function retrieve_tests_metadata() {
   mkdir -p knapsack/ rspec_flaky/ rspec_profiling/
 
   if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
-    wget -O "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/raw/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}?job=retrieve-tests-metadata" || echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+    wget -O "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
   fi
 
   if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
-    wget -O "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/raw/${FLAKY_RSPEC_SUITE_REPORT_PATH}?job=retrieve-tests-metadata" || echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+    wget -O "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
   fi
 }
 
@@ -16,11 +16,29 @@ function update_tests_metadata() {
   echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
 
   scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" knapsack/rspec*.json
+  if [[ -n "${TESTS_METADATA_S3_BUCKET}" ]]; then
+    if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+      scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+    else
+      echo "Not uplaoding report to S3 as the pipeline is not a scheduled one."
+    fi
+  fi
+
   rm -f knapsack/rspec*.json
 
-  export FLAKY_RSPEC_GENERATE_REPORT="true"
   scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" rspec_flaky/all_*.json
+
+  export FLAKY_RSPEC_GENERATE_REPORT="true"
   scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+
+  if [[ -n ${TESTS_METADATA_S3_BUCKET} ]]; then
+    if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+      scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+    else
+      echo "Not uploading report to S3 as the pipeline is not a scheduled one."
+    fi
+  fi
+
   rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
 
   if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then

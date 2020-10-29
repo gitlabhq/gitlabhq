@@ -7,7 +7,4 @@
           %button.btn.btn-sm.btn-close{ "@click" => "acceptDiscardConfirmation(file)" } Discard changes
           %button.btn.btn-sm{ "@click" => "cancelDiscardConfirmation(file)" } Cancel
     .editor-wrap{ ":class" => "classObject" }
-      .loading
-        .spinner.spinner-md
-      .editor
-        %pre{ "style" => "height: 350px" }
+      .editor{ "style" => "height: 350px", data: { 'editor-loading': true } }

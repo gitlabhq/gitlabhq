@@ -2753,6 +2753,9 @@ msgstr ""
 msgid "Allowed Geo IP"
 msgstr ""
 
+msgid "Allowed domains for sign-ups"
+msgstr ""
+
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
@@ -8698,10 +8701,16 @@ msgstr ""
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
+msgid "Denied domains for sign-ups"
+msgstr ""
+
 msgid "Deny"
 msgstr ""
 
 msgid "Deny access request"
+msgstr ""
+
+msgid "Denylist file"
 msgstr ""
 
 msgid "Dependencies"
@@ -9460,6 +9469,9 @@ msgid "Domain"
 msgstr ""
 
 msgid "Domain cannot be deleted while associated to one or more clusters."
+msgstr ""
+
+msgid "Domain denylist"
 msgstr ""
 
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"

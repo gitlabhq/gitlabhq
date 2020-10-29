@@ -2,7 +2,7 @@
 
 module Gitlab
   module UrlBlockers
-    class IpWhitelistEntry
+    class IpAllowlistEntry
       attr_reader :ip, :port
 
       # Argument ip should be an IPAddr object
