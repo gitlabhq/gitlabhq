@@ -9,6 +9,8 @@ import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import DiffFileHeaderComponent from '~/diffs/components/diff_file_header.vue';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
 
+import eventHub from '~/diffs/event_hub';
+
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 
 function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed, name }) {
@@ -138,6 +140,30 @@ describe('DiffFile', () => {
   });
 
   describe('collapsing', () => {
+    describe('`mr:diffs:expandAllFiles` event', () => {
+      beforeEach(() => {
+        jest.spyOn(wrapper.vm, 'handleToggle').mockImplementation(() => {});
+      });
+
+      it('performs the normal file toggle when the file is collapsed', async () => {
+        makeFileAutomaticallyCollapsed(store);
+
+        await wrapper.vm.$nextTick();
+
+        eventHub.$emit('mr:diffs:expandAllFiles');
+
+        expect(wrapper.vm.handleToggle).toHaveBeenCalledTimes(1);
+      });
+
+      it('does nothing when the file is not collapsed', async () => {
+        eventHub.$emit('mr:diffs:expandAllFiles');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.handleToggle).not.toHaveBeenCalled();
+      });
+    });
+
     describe('user collapsed', () => {
       beforeEach(() => {
         makeFileManuallyCollapsed(store);

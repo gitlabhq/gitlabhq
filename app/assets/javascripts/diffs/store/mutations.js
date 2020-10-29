@@ -176,17 +176,6 @@ export default {
     Object.assign(selectedFile, { ...newFileData });
   },
 
-  [types.EXPAND_ALL_FILES](state) {
-    state.diffFiles.forEach(file => {
-      Object.assign(file, {
-        viewer: Object.assign(file.viewer, {
-          automaticallyCollapsed: false,
-          manuallyCollapsed: false,
-        }),
-      });
-    });
-  },
-
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {
     const { latestDiff } = state;
 

@@ -16856,19 +16856,44 @@ type ReleaseEvidenceEdge {
 
 type ReleaseLinks {
   """
+  HTTP URL of the issues page, filtered by this release and `state=closed`
+  """
+  closedIssuesUrl: String
+
+  """
+  HTTP URL of the merge request page , filtered by this release and `state=closed`
+  """
+  closedMergeRequestsUrl: String
+
+  """
   HTTP URL of the release's edit page
   """
   editUrl: String
 
   """
-  HTTP URL of the issues page filtered by this release
+  HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `open_issues_url`
   """
-  issuesUrl: String
+  issuesUrl: String @deprecated(reason: "Use `open_issues_url`. Deprecated in 13.6")
 
   """
-  HTTP URL of the merge request page filtered by this release
+  HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `open_merge_requests_url`
   """
-  mergeRequestsUrl: String
+  mergeRequestsUrl: String @deprecated(reason: "Use `open_merge_requests_url`. Deprecated in 13.6")
+
+  """
+  HTTP URL of the merge request page , filtered by this release and `state=merged`
+  """
+  mergedMergeRequestsUrl: String
+
+  """
+  HTTP URL of the issues page, filtered by this release and `state=open`
+  """
+  openIssuesUrl: String
+
+  """
+  HTTP URL of the merge request page, filtered by this release and `state=open`
+  """
+  openMergeRequestsUrl: String
 
   """
   HTTP URL of the release

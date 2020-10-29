@@ -8,6 +8,8 @@ module API
 
     helpers ::API::Helpers::BadgesHelpers
 
+    feature_category :continuous_integration
+
     helpers do
       def find_source_if_admin(source_type)
         source = find_source(source_type, params[:id])

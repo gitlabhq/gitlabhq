@@ -126,21 +126,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('EXPAND_ALL_FILES', () => {
-    it('should change the collapsed prop from diffFiles', () => {
-      const diffFile = {
-        viewer: {
-          automaticallyCollapsed: true,
-        },
-      };
-      const state = { expandAllFiles: true, diffFiles: [diffFile] };
-
-      mutations[types.EXPAND_ALL_FILES](state);
-
-      expect(state.diffFiles[0].viewer.automaticallyCollapsed).toEqual(false);
-    });
-  });
-
   describe('ADD_CONTEXT_LINES', () => {
     it('should call utils.addContextLines with proper params', () => {
       const options = {

@@ -12,6 +12,11 @@ RSpec.describe ReleasePresenter do
   let(:release) { create(:release, project: project) }
   let(:presenter) { described_class.new(release, current_user: user) }
 
+  let(:base_url_params) { { scope: 'all', release_tag: release.tag } }
+  let(:opened_url_params) { { state: 'opened', **base_url_params } }
+  let(:merged_url_params) { { state: 'merged', **base_url_params } }
+  let(:closed_url_params) { { state: 'closed', **base_url_params } }
+
   before do
     project.add_developer(developer)
     project.add_guest(guest)
@@ -55,15 +60,15 @@ RSpec.describe ReleasePresenter do
     subject { presenter.self_url }
 
     it 'returns its own url' do
-      is_expected.to match /#{project_release_url(project, release)}/
+      is_expected.to eq(project_release_url(project, release))
     end
   end
 
-  describe '#merge_requests_url' do
-    subject { presenter.merge_requests_url }
+  describe '#open_merge_requests_url' do
+    subject { presenter.open_merge_requests_url }
 
-    it 'returns merge requests url' do
-      is_expected.to match /#{project_merge_requests_url(project)}/
+    it 'returns merge requests url with state=open' do
+      is_expected.to eq(project_merge_requests_url(project, opened_url_params))
     end
 
     context 'when release_mr_issue_urls feature flag is disabled' do
@@ -75,11 +80,59 @@ RSpec.describe ReleasePresenter do
     end
   end
 
-  describe '#issues_url' do
-    subject { presenter.issues_url }
+  describe '#merged_merge_requests_url' do
+    subject { presenter.merged_merge_requests_url }
 
-    it 'returns merge requests url' do
-      is_expected.to match /#{project_issues_url(project)}/
+    it 'returns merge requests url with state=merged' do
+      is_expected.to eq(project_merge_requests_url(project, merged_url_params))
+    end
+
+    context 'when release_mr_issue_urls feature flag is disabled' do
+      before do
+        stub_feature_flags(release_mr_issue_urls: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#closed_merge_requests_url' do
+    subject { presenter.closed_merge_requests_url }
+
+    it 'returns merge requests url with state=closed' do
+      is_expected.to eq(project_merge_requests_url(project, closed_url_params))
+    end
+
+    context 'when release_mr_issue_urls feature flag is disabled' do
+      before do
+        stub_feature_flags(release_mr_issue_urls: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#open_issues_url' do
+    subject { presenter.open_issues_url }
+
+    it 'returns issues url with state=open' do
+      is_expected.to eq(project_issues_url(project, opened_url_params))
+    end
+
+    context 'when release_mr_issue_urls feature flag is disabled' do
+      before do
+        stub_feature_flags(release_mr_issue_urls: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#closed_issues_url' do
+    subject { presenter.closed_issues_url }
+
+    it 'returns issues url with state=closed' do
+      is_expected.to eq(project_issues_url(project, closed_url_params))
     end
 
     context 'when release_mr_issue_urls feature flag is disabled' do
@@ -95,7 +148,7 @@ RSpec.describe ReleasePresenter do
     subject { presenter.edit_url }
 
     it 'returns release edit url' do
-      is_expected.to match /#{edit_project_release_url(project, release)}/
+      is_expected.to eq(edit_project_release_url(project, release))
     end
 
     context 'when a user is not allowed to update a release' do

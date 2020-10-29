@@ -9,6 +9,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :boards
+
     helpers do
       def board_parent
         user_project

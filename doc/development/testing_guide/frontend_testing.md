@@ -198,47 +198,33 @@ Following you'll find some general common practices you will find as part of our
 When it comes to querying DOM elements in your tests, it is best to uniquely and semantically target
 the element.
 
-Preferentially, this is done by targeting text the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro).
+Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro).
 When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries#byrole)
 as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
 
-Sometimes this cannot be done feasibly. In these cases, adding test attributes to simplify the
-selectors might be the best option.
+When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
+rather than dealing with the complexity of a child component's behavior.
+
+Sometimes, neither of the above are feasible. In these cases, adding test attributes to simplify the selectors might be the best option. A list of
+possible selectors include:
 
 - A semantic attribute like `name` (also verifies that `name` was setup properly)
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
 - a Vue `ref` (if using `@vue/test-utils`)
 
 ```javascript
-import { mount, shallowMount } from '@vue/test-utils'
 import { getByRole, getByText } from '@testing-library/dom'
 
-let wrapper
-let el
-
-const createComponent = (mountFn = shallowMount) => {
-  wrapper = mountFn(Component)
-  el = wrapper.vm.$el // reference to the container element
-}
-
-beforeEach(() => {
-  createComponent()
-})
-
-
+// In this example, `wrapper` is a `@vue/test-utils` wrapper returned from `mount` or `shallowMount`.
 it('exists', () => {
-  // Best
+  // Best (especially for integration tests)
+  getByRole(wrapper.element, 'link', { name: /Click Me/i })
+  getByRole(wrapper.element, 'link', { name: 'Click Me' })
+  getByText(wrapper.element, 'Click Me')
+  getByText(wrapper.element, /Click Me/i)
 
-  // NOTE: both mount and shallowMount work as long as a DOM element is available
-  // Finds a properly formatted link with an accessible name of "Click Me"
-  getByRole(el, 'link', { name: /Click Me/i })
-  getByRole(el, 'link', { name: 'Click Me' })
-  // Finds any element with the text "Click Me"
-  getByText(el, 'Click Me')
-  // Regex is also available
-  getByText(el, /Click Me/i)
-
-  // Good
+  // Good (especially for unit tests)
+  wrapper.find(FooComponent);
   wrapper.find('input[name=foo]');
   wrapper.find('[data-testid="foo"]');
   wrapper.find({ ref: 'foo'});
@@ -248,14 +234,6 @@ it('exists', () => {
   wrapper.find('.btn-primary');
   wrapper.find('.qa-foo-component');
   wrapper.find('[data-qa-selector="foo"]');
-});
-
-// Good
-it('exists', () => {
-    wrapper.find(FooComponent);
-    wrapper.find('input[name=foo]');
-    wrapper.find('[data-testid="foo"]');
-    wrapper.find({ ref: 'foo'});
 });
 ```
 

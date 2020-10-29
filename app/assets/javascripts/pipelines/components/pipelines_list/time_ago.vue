@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import '~/lib/utils/datetime_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { formatTime } from '~/lib/utils/datetime_utility';
 
 export default {
   directives: {
@@ -27,24 +27,7 @@ export default {
       return this.finishedTime !== '';
     },
     durationFormatted() {
-      const date = new Date(this.duration * 1000);
-
-      let hh = date.getUTCHours();
-      let mm = date.getUTCMinutes();
-      let ss = date.getSeconds();
-
-      // left pad
-      if (hh < 10) {
-        hh = `0${hh}`;
-      }
-      if (mm < 10) {
-        mm = `0${mm}`;
-      }
-      if (ss < 10) {
-        ss = `0${ss}`;
-      }
-
-      return `${hh}:${mm}:${ss}`;
+      return formatTime(this.duration);
     },
   },
 };

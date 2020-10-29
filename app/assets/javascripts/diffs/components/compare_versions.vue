@@ -7,6 +7,7 @@ import CompareDropdownLayout from './compare_dropdown_layout.vue';
 import SettingsDropdown from './settings_dropdown.vue';
 import DiffStats from './diff_stats.vue';
 import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
+import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -67,9 +68,11 @@ export default {
     ...mapActions('diffs', [
       'setInlineDiffViewType',
       'setParallelDiffViewType',
-      'expandAllFiles',
       'toggleShowTreeList',
     ]),
+    expandAllFiles() {
+      eventHub.$emit('mr:diffs:expandAllFiles');
+    },
   },
 };
 </script>

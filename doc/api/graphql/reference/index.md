@@ -2230,9 +2230,14 @@ Evidence for a release.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `closedIssuesUrl` | String | HTTP URL of the issues page, filtered by this release and `state=closed` |
+| `closedMergeRequestsUrl` | String | HTTP URL of the merge request page , filtered by this release and `state=closed` |
 | `editUrl` | String | HTTP URL of the release's edit page |
-| `issuesUrl` | String | HTTP URL of the issues page filtered by this release |
-| `mergeRequestsUrl` | String | HTTP URL of the merge request page filtered by this release |
+| `issuesUrl` **{warning-solid}** | String | **Deprecated:** Use `open_issues_url`. Deprecated in 13.6 |
+| `mergeRequestsUrl` **{warning-solid}** | String | **Deprecated:** Use `open_merge_requests_url`. Deprecated in 13.6 |
+| `mergedMergeRequestsUrl` | String | HTTP URL of the merge request page , filtered by this release and `state=merged` |
+| `openIssuesUrl` | String | HTTP URL of the issues page, filtered by this release and `state=open` |
+| `openMergeRequestsUrl` | String | HTTP URL of the merge request page, filtered by this release and `state=open` |
 | `selfUrl` | String | HTTP URL of the release |
 
 ### ReleaseSource

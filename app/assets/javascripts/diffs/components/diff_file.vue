@@ -6,13 +6,14 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
-import eventHub from '../../notes/event_hub';
+import notesEventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
 import { collapsedType, isCollapsed } from '../diff_file';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '../constants';
 import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
+import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -151,7 +152,11 @@ export default {
     },
   },
   created() {
-    eventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
+    notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
+    eventHub.$on('mr:diffs:expandAllFiles', this.expandAllListener);
+  },
+  beforeDestroy() {
+    eventHub.$off('mr:diffs:expandAllFiles', this.expandAllListener);
   },
   methods: {
     ...mapActions('diffs', [
@@ -160,6 +165,11 @@ export default {
       'setRenderIt',
       'setFileCollapsedByUser',
     ]),
+    expandAllListener() {
+      if (this.isCollapsed) {
+        this.handleToggle();
+      }
+    },
     handleToggle() {
       const currentCollapsedFlag = this.isCollapsed;
 

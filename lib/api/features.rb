@@ -4,6 +4,8 @@ module API
   class Features < ::API::Base
     before { authenticated_as_admin! }
 
+    feature_category :feature_flags
+
     helpers do
       def gate_value(params)
         case params[:value]

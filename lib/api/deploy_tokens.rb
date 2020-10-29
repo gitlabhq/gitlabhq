@@ -4,6 +4,8 @@ module API
   class DeployTokens < ::API::Base
     include PaginationParams
 
+    feature_category :continuous_delivery
+
     helpers do
       def scope_params
         scopes = params.delete(:scopes)

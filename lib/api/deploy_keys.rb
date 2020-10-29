@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :continuous_delivery
+
     helpers do
       def add_deploy_keys_project(project, attrs = {})
         project.deploy_keys_projects.create(attrs)

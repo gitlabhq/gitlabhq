@@ -6,6 +6,8 @@ module API
   class Commits < ::API::Base
     include PaginationParams
 
+    feature_category :source_code_management
+
     before do
       require_repository_enabled!
       authorize! :download_code, user_project

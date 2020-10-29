@@ -23,16 +23,34 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
     project_release_url(project, release)
   end
 
-  def merge_requests_url
+  def open_merge_requests_url
     return unless release_mr_issue_urls_available?
 
     project_merge_requests_url(project, params_for_issues_and_mrs)
   end
 
-  def issues_url
+  def merged_merge_requests_url
+    return unless release_mr_issue_urls_available?
+
+    project_merge_requests_url(project, params_for_issues_and_mrs(state: 'merged'))
+  end
+
+  def closed_merge_requests_url
+    return unless release_mr_issue_urls_available?
+
+    project_merge_requests_url(project, params_for_issues_and_mrs(state: 'closed'))
+  end
+
+  def open_issues_url
     return unless release_mr_issue_urls_available?
 
     project_issues_url(project, params_for_issues_and_mrs)
+  end
+
+  def closed_issues_url
+    return unless release_mr_issue_urls_available?
+
+    project_issues_url(project, params_for_issues_and_mrs(state: 'closed'))
   end
 
   def edit_url
@@ -59,8 +77,8 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
     can?(current_user, :download_code, project)
   end
 
-  def params_for_issues_and_mrs
-    { scope: 'all', state: 'opened', release_tag: release.tag }
+  def params_for_issues_and_mrs(state: 'opened')
+    { scope: 'all', state: state, release_tag: release.tag }
   end
 
   def release_mr_issue_urls_available?

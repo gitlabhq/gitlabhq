@@ -3,6 +3,7 @@ export const counts = {
   success: 2,
   total: 4,
   successRatio: 50,
+  totalDuration: 116158,
 };
 
 export const timesChartData = {

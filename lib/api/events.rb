@@ -8,6 +8,8 @@ module API
 
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
+    feature_category :users
+
     resource :events do
       desc "List currently authenticated user's events" do
         detail 'This feature was introduced in GitLab 9.3.'

@@ -16,63 +16,53 @@ const frequentItemDropdowns = [
   },
 ];
 
-const initFrequentItemList = (namespace, key) => {
-  const el = document.getElementById(`js-${namespace}-dropdown`);
-
-  // Don't do anything if element doesn't exist (No groups dropdown)
-  // This is for when the user accesses GitLab without logging in
-  if (!el) {
-    return;
-  }
-
-  import('./components/app.vue')
-    .then(({ default: FrequentItems }) => {
-      // eslint-disable-next-line no-new
-      new Vue({
-        el,
-        data() {
-          const { dataset } = this.$options.el;
-          const item = {
-            id: Number(dataset[`${key}Id`]),
-            name: dataset[`${key}Name`],
-            namespace: dataset[`${key}Namespace`],
-            webUrl: dataset[`${key}WebUrl`],
-            avatarUrl: dataset[`${key}AvatarUrl`] || null,
-            lastAccessedOn: Date.now(),
-          };
-
-          return {
-            currentUserName: dataset.userName,
-            currentItem: item,
-          };
-        },
-        render(createElement) {
-          return createElement(FrequentItems, {
-            props: {
-              namespace,
-              currentUserName: this.currentUserName,
-              currentItem: this.currentItem,
-            },
-          });
-        },
-      });
-    })
-    .catch(() => {});
-};
-
 export default function initFrequentItemDropdowns() {
   frequentItemDropdowns.forEach(dropdown => {
     const { namespace, key } = dropdown;
+    const el = document.getElementById(`js-${namespace}-dropdown`);
     const navEl = document.getElementById(`nav-${namespace}-dropdown`);
 
     // Don't do anything if element doesn't exist (No groups dropdown)
     // This is for when the user accesses GitLab without logging in
-    if (!navEl) {
+    if (!el || !navEl) {
       return;
     }
 
+    import('./components/app.vue')
+      .then(({ default: FrequentItems }) => {
+        // eslint-disable-next-line no-new
+        new Vue({
+          el,
+          data() {
+            const { dataset } = this.$options.el;
+            const item = {
+              id: Number(dataset[`${key}Id`]),
+              name: dataset[`${key}Name`],
+              namespace: dataset[`${key}Namespace`],
+              webUrl: dataset[`${key}WebUrl`],
+              avatarUrl: dataset[`${key}AvatarUrl`] || null,
+              lastAccessedOn: Date.now(),
+            };
+
+            return {
+              currentUserName: dataset.userName,
+              currentItem: item,
+            };
+          },
+          render(createElement) {
+            return createElement(FrequentItems, {
+              props: {
+                namespace,
+                currentUserName: this.currentUserName,
+                currentItem: this.currentItem,
+              },
+            });
+          },
+        });
+      })
+      .catch(() => {});
+
     $(navEl).on('shown.bs.dropdown', () => {
-      initFrequentItemList(namespace, key);
       eventHub.$emit(`${namespace}-dropdownOpen`);
     });
   });

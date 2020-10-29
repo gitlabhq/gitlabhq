@@ -4,6 +4,8 @@ require 'mime/types'
 
 module API
   class CommitStatuses < ::API::Base
+    feature_category :continuous_integration
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

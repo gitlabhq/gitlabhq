@@ -294,7 +294,7 @@ RSpec.describe 'User interacts with awards' do
           end
         end
 
-        it 'toggles the smiley emoji on a note', :js do
+        it 'toggles the smiley emoji on a note', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/267525' do
           toggle_smiley_emoji(true)
 
           within('.note-body') do

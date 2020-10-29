@@ -8,6 +8,8 @@ module API
       message.is_a?(String) ? { message: message }.to_json : message.to_json
     }
 
+    feature_category :feature_flags
+
     before do
       authorize_admin_feature_flags_user_lists!
     end

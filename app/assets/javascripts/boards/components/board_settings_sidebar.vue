@@ -36,6 +36,9 @@ export default {
   computed: {
     ...mapGetters(['isSidebarOpen', 'shouldUseGraphQL']),
     ...mapState(['activeId', 'sidebarType', 'boardLists']),
+    isWipLimitsOn() {
+      return this.glFeatures.wipLimits;
+    },
     activeList() {
       /*
         Warning: Though a computed property it is not reactive because we are
@@ -105,7 +108,10 @@ export default {
         :active-list="activeList"
         :board-list-type="boardListType"
       />
-      <board-settings-sidebar-wip-limit :max-issue-count="activeList.maxIssueCount" />
+      <board-settings-sidebar-wip-limit
+        v-if="isWipLimitsOn"
+        :max-issue-count="activeList.maxIssueCount"
+      />
       <div v-if="canAdminList && !activeList.preset && activeList.id" class="gl-m-4">
         <gl-button
           variant="danger"

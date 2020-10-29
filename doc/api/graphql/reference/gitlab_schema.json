@@ -48542,6 +48542,34 @@
           "description": null,
           "fields": [
             {
+              "name": "closedIssuesUrl",
+              "description": "HTTP URL of the issues page, filtered by this release and `state=closed`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "closedMergeRequestsUrl",
+              "description": "HTTP URL of the merge request page , filtered by this release and `state=closed`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "editUrl",
               "description": "HTTP URL of the release's edit page",
               "args": [
@@ -48557,7 +48585,35 @@
             },
             {
               "name": "issuesUrl",
-              "description": "HTTP URL of the issues page filtered by this release",
+              "description": "HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `open_issues_url`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use `open_issues_url`. Deprecated in 13.6"
+            },
+            {
+              "name": "mergeRequestsUrl",
+              "description": "HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `open_merge_requests_url`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use `open_merge_requests_url`. Deprecated in 13.6"
+            },
+            {
+              "name": "mergedMergeRequestsUrl",
+              "description": "HTTP URL of the merge request page , filtered by this release and `state=merged`",
               "args": [
 
               ],
@@ -48570,8 +48626,22 @@
               "deprecationReason": null
             },
             {
-              "name": "mergeRequestsUrl",
-              "description": "HTTP URL of the merge request page filtered by this release",
+              "name": "openIssuesUrl",
+              "description": "HTTP URL of the issues page, filtered by this release and `state=open`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "openMergeRequestsUrl",
+              "description": "HTTP URL of the merge request page, filtered by this release and `state=open`",
               "args": [
 
               ],

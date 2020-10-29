@@ -103,8 +103,11 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
 
-.yaml-patterns: &yaml-patterns
-  - "**/*.yml"
+.yaml-lint-patterns: &yaml-lint-patterns
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*.yml"
+  - "lib/gitlab/ci/templates/**/*.yml"
+  - "{,ee/}changelogs/**/*.yml"
 
 .docs-patterns: &docs-patterns
   - ".gitlab/route-map.yml"
@@ -142,8 +145,8 @@
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/database{,_spec}.rb"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration{,_spec}.rb"
-  - "config/prometheus/common_metrics.yml" # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
-  - "{,ee/}app/models/project_statistics.rb" # Used to calculate sizes in migration specs
+  - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
+  - "{,ee/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"
@@ -771,7 +774,7 @@
 
 .review:rules:review-performance:
   rules:
-    - if: '$DAST_RUN == "true"' # Skip this job when DAST is run
+    - if: '$DAST_RUN == "true"'  # Skip this job when DAST is run
       when: never
     - <<: *if-not-ee
       when: never
@@ -905,10 +908,10 @@
     - <<: *if-dot-com-ee-schedule
       changes: *code-backstage-patterns
 
-##############
-# YAML rules #
-##############
-.yaml:rules:
+###################
+# yaml-lint rules #
+###################
+.yaml-lint:rules:
   rules:
     - <<: *if-default-refs
-      changes: *yaml-patterns
+      changes: *yaml-lint-patterns

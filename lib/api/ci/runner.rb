@@ -7,6 +7,8 @@ module API
 
       content_type :txt, 'text/plain'
 
+      feature_category :continuous_integration
+
       resource :runners do
         desc 'Registers a new Runner' do
           success Entities::RunnerRegistrationDetails

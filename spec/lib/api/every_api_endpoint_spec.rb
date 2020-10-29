@@ -22,7 +22,17 @@ RSpec.describe 'Every API endpoint' do
         completed_classes = [
           ::API::Users, ::API::Issues, ::API::AccessRequests, ::API::Admin::Ci::Variables,
           ::API::Admin::InstanceClusters, ::API::Admin::Sidekiq, ::API::Appearance,
-          ::API::Applications, ::API::Avatar, ::API::AwardEmoji
+          ::API::Applications, ::API::Avatar, ::API::AwardEmoji, API::Badges,
+          ::API::Boards, ::API::Branches, ::API::BroadcastMessages, ::API::Ci::Pipelines,
+          ::API::Ci::PipelineSchedules, ::API::Ci::Runners, ::API::Ci::Runner,
+          ::API::Commits, ::API::CommitStatuses, ::API::ContainerRegistryEvent,
+          ::API::DeployKeys, ::API::DeployTokens, ::API::Deployments, ::API::Environments,
+          ::API::ErrorTracking, ::API::Events, ::API::FeatureFlags, ::API::FeatureFlagScopes,
+          ::API::FeatureFlagsUserLists, ::API::Features, ::API::Files, ::API::FreezePeriods,
+          ::API::GroupBoards, ::API::GroupClusters, ::API::GroupExport, ::API::GroupImport,
+          ::API::GroupLabels, ::API::GroupMilestones, ::API::Groups,
+          ::API::GroupContainerRepositories, ::API::GroupVariables
+
         ]
         next unless completed_classes.include?(klass)
 

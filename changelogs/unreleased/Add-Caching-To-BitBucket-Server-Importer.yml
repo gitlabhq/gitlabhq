@@ -1,0 +1,5 @@
+---
+title: Add Caching to BitBucket Server Import for pull requests
+merge_request: 45790
+author: Simon Schrottner
+type: performance

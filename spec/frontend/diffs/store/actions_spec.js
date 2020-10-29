@@ -27,7 +27,6 @@ import {
   scrollToLineIfNeededInline,
   scrollToLineIfNeededParallel,
   loadCollapsedDiff,
-  expandAllFiles,
   toggleFileDiscussions,
   saveDiffDiscussion,
   setHighlightedRow,
@@ -655,23 +654,6 @@ describe('DiffsStoreActions', () => {
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
         params: { commit_id: '123', w: '0' },
       });
-    });
-  });
-
-  describe('expandAllFiles', () => {
-    it('should change the collapsed prop from the diffFiles', done => {
-      testAction(
-        expandAllFiles,
-        null,
-        {},
-        [
-          {
-            type: types.EXPAND_ALL_FILES,
-          },
-        ],
-        [],
-        done,
-      );
     });
   });
 

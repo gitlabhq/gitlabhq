@@ -9,6 +9,8 @@ module API
     # Prevents returning plain/text responses for files with .txt extension
     after_validation { content_type "application/json" }
 
+    feature_category :source_code_management
+
     helpers ::API::Helpers::HeadersHelpers
 
     helpers do

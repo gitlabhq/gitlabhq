@@ -287,7 +287,7 @@ db:migrate-from-v12.10.0:
     - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="v12.10.0"'
     - git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT
     - git checkout -f FETCH_HEAD
-    - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile # Update gRPC for Ruby 2.7
+    - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
     - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12.0'/" Gemfile
     - bundle update google-protobuf grpc bootsnap
     - bundle install $BUNDLE_INSTALL_FLAGS
@@ -563,7 +563,7 @@ rspec-ee system pg12 geo:
 # EE: Canonical MR pipelines
 rspec fail-fast:
   extends:
-    - .rspec-ee-base-pg11 # This job also runs EE spec which needs elasticsearch
+    - .rspec-ee-base-pg11  # This job also runs EE spec which needs elasticsearch
     - .rails:rules:rspec fail-fast
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]

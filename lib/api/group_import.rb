@@ -2,6 +2,8 @@
 
 module API
   class GroupImport < ::API::Base
+    feature_category :importers
+
     helpers Helpers::FileUploadHelpers
 
     helpers do
