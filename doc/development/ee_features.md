@@ -426,6 +426,38 @@ module EE
 end
 ```
 
+### Code in `app/graphql/`
+
+EE-specific mutations, resolvers, and types should be added to
+`ee/app/graphql/{mutations,resolvers,types}`.
+
+To override a CE mutation, resolver, or type, create the file in
+`ee/app/graphql/ee/{mutations,resolvers,types}` and add new code to a
+`prepended` block.
+
+For example, if CE has a mutation called `Mutations::Tanukis::Create` and you
+wanted to add a new argument, place the EE override in
+`ee/app/graphql/ee/mutations/tanukis/create.rb`:
+
+```ruby
+module EE
+  module Mutations
+    module Tanukis
+      module Create
+        extend ActiveSupport::Concern
+
+        prepended do
+          argument :name,
+                   GraphQL::STRING_TYPE,
+                   required: false,
+                   description: 'Tanuki name'
+        end
+      end
+    end
+  end
+end
+```
+
 #### Using `render_if_exists`
 
 Instead of using regular `render`, we should use `render_if_exists`, which

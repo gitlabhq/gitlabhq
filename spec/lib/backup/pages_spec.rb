@@ -23,7 +23,8 @@ RSpec.describe Backup::Pages do
       allow(Gitlab.config.pages).to receive(:path) { '/var/gitlab-pages' }
 
       expect(subject).to receive(:tar).and_return('blabla-tar')
-      expect(subject).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .), 'gzip -c -1'], any_args)
+      expect(subject).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
+      expect(subject).to receive(:pipeline_succeeded?).and_return(true)
       subject.dump
     end
   end

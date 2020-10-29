@@ -1273,6 +1273,11 @@ tested for within the unit test of `Types::MutationType`. The merge request
 can be referred to as an example of this, including the method of testing
 deprecated aliased mutations.
 
+#### Deprecating EE mutations
+
+EE mutations should follow the same process. For an example of the merge request
+process, read [merge request !42588](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42588).
+
 ## Pagination implementation
 
 To learn more, visit [GraphQL pagination](graphql_guide/pagination.md).

@@ -16,7 +16,6 @@ describe('Issuable Time Tracker', () => {
     humanTimeEstimate: '2h 46m',
     humanTimeSpent: '1h 23m',
     limitToHours: false,
-    rootPath: '/',
   };
 
   const mountComponent = ({ props = {} } = {}) =>
@@ -52,6 +51,24 @@ describe('Issuable Time Tracker', () => {
   });
 
   describe('Content panes', () => {
+    describe('Collapsed state', () => {
+      it('should render "time-tracking-collapsed-state" by default when "showCollapsed" prop is not specified', () => {
+        wrapper = mountComponent();
+
+        expect(findCollapsedState().exists()).toBe(true);
+      });
+
+      it('should not render "time-tracking-collapsed-state" when "showCollapsed" is false', () => {
+        wrapper = mountComponent({
+          props: {
+            showCollapsed: false,
+          },
+        });
+
+        expect(findCollapsedState().exists()).toBe(false);
+      });
+    });
+
     describe('Comparison pane', () => {
       beforeEach(() => {
         wrapper = mountComponent({

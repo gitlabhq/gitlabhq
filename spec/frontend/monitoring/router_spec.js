@@ -105,7 +105,8 @@ describe('Monitoring router', () => {
       path                                                     | currentDashboard
       ${'/panel/new'}                                          | ${undefined}
       ${'/dashboard.yml/panel/new'}                            | ${'dashboard.yml'}
-      ${'/config%2Fprometheus%2Fcommon_metrics.yml/panel/new'} | ${'config%2Fprometheus%2Fcommon_metrics.yml'}
+      ${'/config/prometheus/common_metrics.yml/panel/new'}     | ${'config/prometheus/common_metrics.yml'}
+      ${'/config%2Fprometheus%2Fcommon_metrics.yml/panel/new'} | ${'config/prometheus/common_metrics.yml'}
     `('"$path" renders page with dashboard "$currentDashboard"', ({ path, currentDashboard }) => {
       const wrapper = createWrapper(BASE_PATH, path);
 

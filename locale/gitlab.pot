@@ -5164,6 +5164,9 @@ msgstr ""
 msgid "Child epic doesn't exist."
 msgstr ""
 
+msgid "Chinese language support using"
+msgstr ""
+
 msgid "Choose %{strong_open}Create archive%{strong_close} and wait for archiving to complete."
 msgstr ""
 
@@ -7910,6 +7913,9 @@ msgstr ""
 msgid "Custom Git clone URL for HTTP(S)"
 msgstr ""
 
+msgid "Custom analyzers: language support"
+msgstr ""
+
 msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
@@ -9924,6 +9930,12 @@ msgstr ""
 msgid "Enable integration"
 msgstr ""
 
+msgid "Enable kuromoji custom analyzer: Indexing"
+msgstr ""
+
+msgid "Enable kuromoji custom analyzer: Search"
+msgstr ""
+
 msgid "Enable maintenance mode"
 msgstr ""
 
@@ -9958,6 +9970,12 @@ msgid "Enable shared runners for all projects and subgroups in this group."
 msgstr ""
 
 msgid "Enable shared runners for this group"
+msgstr ""
+
+msgid "Enable smartcn custom analyzer: Indexing"
+msgstr ""
+
+msgid "Enable smartcn custom analyzer: Search"
 msgstr ""
 
 msgid "Enable snowplow tracking"
@@ -14892,6 +14910,9 @@ msgstr ""
 msgid "January"
 msgstr ""
 
+msgid "Japanese language support using"
+msgstr ""
+
 msgid "Jira Issues"
 msgstr ""
 
@@ -19793,6 +19814,9 @@ msgid "Please migrate all existing projects to hashed storage to avoid security 
 msgstr ""
 
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
+msgstr ""
+
+msgid "Please only enable search after installing the plugin, enabling indexing and recreating the index"
 msgstr ""
 
 msgid "Please provide a name"
@@ -31139,9 +31163,6 @@ msgstr ""
 msgid "ciReport|Coverage Fuzzing"
 msgstr ""
 
-msgid "ciReport|Coverage Fuzzing Title"
-msgstr ""
-
 msgid "ciReport|Coverage fuzzing"
 msgstr ""
 
@@ -31587,6 +31608,9 @@ msgid "it is too large"
 msgstr ""
 
 msgid "jigsaw is not defined"
+msgstr ""
+
+msgid "kuromoji custom analyzer"
 msgstr ""
 
 msgid "last commit:"
@@ -32214,6 +32238,9 @@ msgid "show less"
 msgstr ""
 
 msgid "sign in"
+msgstr ""
+
+msgid "smartcn custom analyzer"
 msgstr ""
 
 msgid "sort:"
