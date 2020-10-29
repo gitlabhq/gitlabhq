@@ -14,16 +14,14 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { s__ } from '~/locale';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
-import IntegrationsList from './alerts_integrations_list.vue';
 import csrf from '~/lib/utils/csrf';
 import service from '../services';
 import {
   i18n,
-  serviceOptions,
+  integrationTypes,
   JSON_VALIDATE_DELAY,
   targetPrometheusUrlPlaceholder,
   targetOpsgenieUrlPlaceholder,
@@ -50,7 +48,6 @@ export default {
     GlSprintf,
     ClipboardButton,
     ToggleButton,
-    IntegrationsList,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -59,8 +56,8 @@ export default {
   data() {
     return {
       loading: false,
-      selectedEndpoint: serviceOptions[0].value,
-      options: serviceOptions,
+      selectedIntegration: integrationTypes[1].value,
+      options: integrationTypes,
       active: false,
       authKey: '',
       targetUrl: '',
@@ -91,13 +88,13 @@ export default {
       ];
     },
     isPrometheus() {
-      return this.selectedEndpoint === 'prometheus';
+      return this.selectedIntegration === 'prometheus';
     },
     isOpsgenie() {
-      return this.selectedEndpoint === 'opsgenie';
+      return this.selectedIntegration === 'opsgenie';
     },
-    selectedService() {
-      switch (this.selectedEndpoint) {
+    selectedIntegrationType() {
+      switch (this.selectedIntegration) {
         case 'generic': {
           return {
             url: this.generic.url,
@@ -152,27 +149,13 @@ export default {
         ? this.$options.targetOpsgenieUrlPlaceholder
         : this.$options.targetPrometheusUrlPlaceholder;
     },
-    integrations() {
-      return [
-        {
-          name: s__('AlertSettings|HTTP endpoint'),
-          type: s__('AlertsIntegrations|HTTP endpoint'),
-          activated: this.generic.activated,
-        },
-        {
-          name: s__('AlertSettings|External Prometheus'),
-          type: s__('AlertsIntegrations|Prometheus'),
-          activated: this.prometheus.activated,
-        },
-      ];
-    },
   },
   watch: {
     'testAlert.json': debounce(function debouncedJsonValidate() {
       this.validateJson();
     }, JSON_VALIDATE_DELAY),
     targetUrl(oldVal, newVal) {
-      if (newVal && oldVal !== this.selectedService.targetUrl) {
+      if (newVal && oldVal !== this.selectedIntegrationType.targetUrl) {
         this.canSaveForm = true;
       }
     },
@@ -187,8 +170,8 @@ export default {
     } else if (this.opsgenie.activated) {
       this.setOpsgenieAsDefault();
     }
-    this.active = this.selectedService.activated;
-    this.authKey = this.selectedService.authKey ?? '';
+    this.active = this.selectedIntegrationType.activated;
+    this.authKey = this.selectedIntegrationType.authKey ?? '';
   },
   methods: {
     createUserErrorMessage(errors = {}) {
@@ -205,9 +188,9 @@ export default {
         }
         return { ...el, disabled: false };
       });
-      this.selectedEndpoint = this.options.find(({ value }) => value === 'opsgenie').value;
+      this.selectedIntegration = this.options.find(({ value }) => value === 'opsgenie').value;
       if (this.targetUrl === null) {
-        this.targetUrl = this.selectedService.targetUrl;
+        this.targetUrl = this.selectedIntegrationType.targetUrl;
       }
     },
     removeOpsGenieOption() {
@@ -220,8 +203,8 @@ export default {
     },
     resetFormValues() {
       this.testAlert.json = null;
-      this.targetUrl = this.selectedService.targetUrl;
-      this.active = this.selectedService.activated;
+      this.targetUrl = this.selectedIntegrationType.targetUrl;
+      this.active = this.selectedIntegrationType.activated;
     },
     dismissFeedback() {
       this.serverError = null;
@@ -261,7 +244,7 @@ export default {
       this.loading = true;
       return service
         .updateGenericActive({
-          endpoint: this[this.selectedEndpoint].formPath,
+          endpoint: this[this.selectedIntegration].formPath,
           params: this.isOpsgenie
             ? { service: { opsgenie_mvc_target_url: this.targetUrl, opsgenie_mvc_enabled: value } }
             : { service: { active: value } },
@@ -331,9 +314,9 @@ export default {
       this.validateJson();
       return service
         .updateTestAlert({
-          endpoint: this.selectedService.url,
+          endpoint: this.selectedIntegrationType.url,
           data: this.testAlert.json,
-          authKey: this.selectedService.authKey,
+          authKey: this.selectedIntegrationType.authKey,
         })
         .then(() => {
           this.setFeedback({
@@ -358,11 +341,11 @@ export default {
     onReset() {
       this.testAlert.json = null;
       this.dismissFeedback();
-      this.targetUrl = this.selectedService.targetUrl;
+      this.targetUrl = this.selectedIntegrationType.targetUrl;
 
       if (this.canSaveForm) {
         this.canSaveForm = false;
-        this.active = this.selectedService.activated;
+        this.active = this.selectedIntegrationType.activated;
       }
     },
   },
@@ -370,153 +353,144 @@ export default {
 </script>
 
 <template>
-  <div>
-    <integrations-list :integrations="integrations" />
+  <gl-form @submit.prevent="onSubmit" @reset.prevent="onReset">
+    <h5 class="gl-font-lg gl-my-5">{{ $options.i18n.integrationsLabel }}</h5>
 
-    <gl-form @submit.prevent="onSubmit" @reset.prevent="onReset">
-      <h5 class="gl-font-lg gl-my-5">{{ $options.i18n.integrationsLabel }}</h5>
+    <gl-alert v-if="showFeedbackMsg" :variant="feedback.variant" @dismiss="dismissFeedback">
+      {{ feedback.feedbackMessage }}
+      <br />
+      <i v-if="serverError">{{ __('Error message:') }} {{ serverError }}</i>
+      <gl-button
+        v-if="showAlertSave"
+        variant="danger"
+        category="primary"
+        class="gl-display-block gl-mt-3"
+        @click="toggle(active)"
+      >
+        {{ __('Save anyway') }}
+      </gl-button>
+    </gl-alert>
 
-      <gl-alert v-if="showFeedbackMsg" :variant="feedback.variant" @dismiss="dismissFeedback">
-        {{ feedback.feedbackMessage }}
-        <br />
-        <i v-if="serverError">{{ __('Error message:') }} {{ serverError }}</i>
-        <gl-button
-          v-if="showAlertSave"
-          variant="danger"
-          category="primary"
-          class="gl-display-block gl-mt-3"
-          @click="toggle(active)"
-        >
-          {{ __('Save anyway') }}
-        </gl-button>
-      </gl-alert>
+    <div data-testid="alert-settings-description">
+      <p v-for="section in sections" :key="section.text">
+        <gl-sprintf :message="section.text">
+          <template #link="{ content }">
+            <gl-link :href="section.url" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
+    </div>
 
-      <div data-testid="alert-settings-description">
-        <p v-for="section in sections" :key="section.text">
-          <gl-sprintf :message="section.text">
-            <template #link="{ content }">
-              <gl-link :href="section.url" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-      </div>
-
-      <gl-form-group label-for="integration-type" :label="$options.i18n.integration">
-        <gl-form-select
-          id="integration-type"
-          v-model="selectedEndpoint"
-          :options="options"
-          data-testid="alert-settings-select"
-          @change="resetFormValues"
-        />
+    <gl-form-group label-for="integration-type" :label="$options.i18n.integration">
+      <gl-form-select
+        id="integration-type"
+        v-model="selectedIntegration"
+        :options="options"
+        data-testid="alert-settings-select"
+        @change="resetFormValues"
+      />
+      <span class="gl-text-gray-500">
+        <gl-sprintf :message="$options.i18n.integrationsInfo">
+          <template #link="{ content }">
+            <gl-link
+              class="gl-display-inline-block"
+              href="https://gitlab.com/groups/gitlab-org/-/epics/4390"
+              target="_blank"
+              >{{ content }}</gl-link
+            >
+          </template>
+        </gl-sprintf>
+      </span>
+    </gl-form-group>
+    <gl-form-group :label="$options.i18n.activeLabel" label-for="activated">
+      <toggle-button
+        id="activated"
+        :disabled-input="loading"
+        :is-loading="loading"
+        :value="active"
+        @change="toggleService"
+      />
+    </gl-form-group>
+    <gl-form-group
+      v-if="isOpsgenie || isPrometheus"
+      :label="$options.i18n.apiBaseUrlLabel"
+      label-for="api-url"
+    >
+      <gl-form-input
+        id="api-url"
+        v-model="targetUrl"
+        type="url"
+        :placeholder="baseUrlPlaceholder"
+        :disabled="!active"
+      />
+      <span class="gl-text-gray-500">
+        {{ $options.i18n.apiBaseUrlHelpText }}
+      </span>
+    </gl-form-group>
+    <template v-if="!isOpsgenie">
+      <gl-form-group :label="$options.i18n.urlLabel" label-for="url">
+        <gl-form-input-group id="url" readonly :value="selectedIntegrationType.url">
+          <template #append>
+            <clipboard-button
+              :text="selectedIntegrationType.url"
+              :title="$options.i18n.copyToClipboard"
+              class="gl-m-0!"
+            />
+          </template>
+        </gl-form-input-group>
         <span class="gl-text-gray-500">
-          <gl-sprintf :message="$options.i18n.integrationsInfo">
-            <template #link="{ content }">
-              <gl-link
-                class="gl-display-inline-block"
-                href="https://gitlab.com/groups/gitlab-org/-/epics/4390"
-                target="_blank"
-                >{{ content }}</gl-link
-              >
-            </template>
-          </gl-sprintf>
+          {{ prometheusInfo }}
         </span>
       </gl-form-group>
-      <gl-form-group :label="$options.i18n.activeLabel" label-for="activated">
-        <toggle-button
-          id="activated"
-          :disabled-input="loading"
-          :is-loading="loading"
-          :value="active"
-          @change="toggleService"
-        />
+      <gl-form-group :label="$options.i18n.authKeyLabel" label-for="authorization-key">
+        <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="authKey">
+          <template #append>
+            <clipboard-button
+              :text="authKey"
+              :title="$options.i18n.copyToClipboard"
+              class="gl-m-0!"
+            />
+          </template>
+        </gl-form-input-group>
+        <gl-button v-gl-modal.authKeyModal :disabled="!active" class="gl-mt-3">{{
+          $options.i18n.resetKey
+        }}</gl-button>
+        <gl-modal
+          modal-id="authKeyModal"
+          :title="$options.i18n.resetKey"
+          :ok-title="$options.i18n.resetKey"
+          ok-variant="danger"
+          @ok="selectedIntegrationType.resetKey"
+        >
+          {{ $options.i18n.restKeyInfo }}
+        </gl-modal>
       </gl-form-group>
       <gl-form-group
-        v-if="isOpsgenie || isPrometheus"
-        :label="$options.i18n.apiBaseUrlLabel"
-        label-for="api-url"
+        :label="$options.i18n.alertJson"
+        label-for="alert-json"
+        :invalid-feedback="testAlert.error"
       >
-        <gl-form-input
-          id="api-url"
-          v-model="targetUrl"
-          type="url"
-          :placeholder="baseUrlPlaceholder"
+        <gl-form-textarea
+          id="alert-json"
+          v-model.trim="testAlert.json"
           :disabled="!active"
+          :state="jsonIsValid"
+          :placeholder="$options.i18n.alertJsonPlaceholder"
+          rows="6"
+          max-rows="10"
         />
-        <span class="gl-text-gray-500">
-          {{ $options.i18n.apiBaseUrlHelpText }}
-        </span>
       </gl-form-group>
-      <template v-if="!isOpsgenie">
-        <gl-form-group :label="$options.i18n.urlLabel" label-for="url">
-          <gl-form-input-group id="url" readonly :value="selectedService.url">
-            <template #append>
-              <clipboard-button
-                :text="selectedService.url"
-                :title="$options.i18n.copyToClipboard"
-                class="gl-m-0!"
-              />
-            </template>
-          </gl-form-input-group>
-          <span class="gl-text-gray-500">
-            {{ prometheusInfo }}
-          </span>
-        </gl-form-group>
-        <gl-form-group :label="$options.i18n.authKeyLabel" label-for="authorization-key">
-          <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="authKey">
-            <template #append>
-              <clipboard-button
-                :text="authKey"
-                :title="$options.i18n.copyToClipboard"
-                class="gl-m-0!"
-              />
-            </template>
-          </gl-form-input-group>
-          <gl-button v-gl-modal.authKeyModal :disabled="!active" class="gl-mt-3">{{
-            $options.i18n.resetKey
-          }}</gl-button>
-          <gl-modal
-            modal-id="authKeyModal"
-            :title="$options.i18n.resetKey"
-            :ok-title="$options.i18n.resetKey"
-            ok-variant="danger"
-            @ok="selectedService.resetKey"
-          >
-            {{ $options.i18n.restKeyInfo }}
-          </gl-modal>
-        </gl-form-group>
-        <gl-form-group
-          :label="$options.i18n.alertJson"
-          label-for="alert-json"
-          :invalid-feedback="testAlert.error"
-        >
-          <gl-form-textarea
-            id="alert-json"
-            v-model.trim="testAlert.json"
-            :disabled="!active"
-            :state="jsonIsValid"
-            :placeholder="$options.i18n.alertJsonPlaceholder"
-            rows="6"
-            max-rows="10"
-          />
-        </gl-form-group>
-        <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
-          $options.i18n.testAlertInfo
-        }}</gl-button>
-      </template>
-      <div class="footer-block row-content-block gl-display-flex gl-justify-content-space-between">
-        <gl-button
-          variant="success"
-          category="primary"
-          :disabled="!canSaveConfig"
-          @click="onSubmit"
-        >
-          {{ __('Save changes') }}
-        </gl-button>
-        <gl-button category="primary" :disabled="!canSaveConfig" @click="onReset">
-          {{ __('Cancel') }}
-        </gl-button>
-      </div>
-    </gl-form>
-  </div>
+      <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
+        $options.i18n.testAlertInfo
+      }}</gl-button>
+    </template>
+    <div class="footer-block row-content-block gl-display-flex gl-justify-content-space-between">
+      <gl-button variant="success" category="primary" :disabled="!canSaveConfig" @click="onSubmit">
+        {{ __('Save changes') }}
+      </gl-button>
+      <gl-button category="primary" :disabled="!canSaveConfig" @click="onReset">
+        {{ __('Cancel') }}
+      </gl-button>
+    </div>
+  </gl-form>
 </template>

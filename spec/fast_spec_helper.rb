@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+# When running in CI environment, we need to load a full `spec_helper`
+if ENV['CI']
+  require_relative 'spec_helper'
+  return
+end
+
 require 'bundler/setup'
 
 ENV['GITLAB_ENV'] = 'test'

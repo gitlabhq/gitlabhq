@@ -2,6 +2,7 @@
 
 module AlertManagement
   class HttpIntegration < ApplicationRecord
+    include ::Gitlab::Routing
     LEGACY_IDENTIFIER = 'legacy'
     DEFAULT_NAME_SLUG = 'http-endpoint'
 
@@ -31,9 +32,9 @@ module AlertManagement
     scope :ordered_by_id, -> { order(:id) }
 
     def url
-      return ::Gitlab::Routing.url_helpers.project_alerts_notify_url(project, format: :json) if legacy?
+      return project_alerts_notify_url(project, format: :json) if legacy?
 
-      ::Gitlab::Routing.url_helpers.project_alert_http_integration_url(project, name_slug, endpoint_identifier, format: :json)
+      project_alert_http_integration_url(project, name_slug, endpoint_identifier, format: :json)
     end
 
     private

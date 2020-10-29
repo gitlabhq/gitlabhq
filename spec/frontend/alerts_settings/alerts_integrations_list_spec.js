@@ -4,7 +4,7 @@ import Tracking from '~/tracking';
 import AlertIntegrationsList, {
   i18n,
 } from '~/alerts_settings/components/alerts_integrations_list.vue';
-import { trackAlertIntergrationsViewsOptions } from '~/alerts_settings/constants';
+import { trackAlertIntegrationsViewsOptions } from '~/alerts_settings/constants';
 
 const mockIntegrations = [
   {
@@ -82,7 +82,7 @@ describe('AlertIntegrationsList', () => {
     });
 
     it('should track alert list page views', () => {
-      const { category, action } = trackAlertIntergrationsViewsOptions;
+      const { category, action } = trackAlertIntegrationsViewsOptions;
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
   });

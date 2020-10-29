@@ -1,0 +1,7 @@
+---
+name: http_integrations_list
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45993
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255502
+type: development
+group: group::health
+default_enabled: false

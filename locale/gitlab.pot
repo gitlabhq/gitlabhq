@@ -2486,6 +2486,12 @@ msgstr ""
 msgid "AlertService|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
 msgstr ""
 
+msgid "AlertSettings|1. Select integration type"
+msgstr ""
+
+msgid "AlertSettings|2. Name integration"
+msgstr ""
+
 msgid "AlertSettings|API URL"
 msgstr ""
 
@@ -2510,6 +2516,9 @@ msgstr ""
 msgid "AlertSettings|Copy"
 msgstr ""
 
+msgid "AlertSettings|Enter integration name"
+msgstr ""
+
 msgid "AlertSettings|Enter test alert JSON...."
 msgstr ""
 
@@ -2525,7 +2534,10 @@ msgstr ""
 msgid "AlertSettings|Integration"
 msgstr ""
 
-msgid "AlertSettings|Learn more about our improvements for %{linkStart}integrations%{linkEnd}"
+msgid "AlertSettings|Learn more about our our upcoming %{linkStart}integrations%{linkEnd}"
+msgstr ""
+
+msgid "AlertSettings|Learn more about our upcoming %{linkStart}integrations%{linkEnd}"
 msgstr ""
 
 msgid "AlertSettings|Opsgenie"
@@ -2538,6 +2550,12 @@ msgid "AlertSettings|Resetting the authorization key for this project will requi
 msgstr ""
 
 msgid "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgstr ""
+
+msgid "AlertSettings|Save integration"
+msgstr ""
+
+msgid "AlertSettings|Select integration type"
 msgstr ""
 
 msgid "AlertSettings|Test alert payload"
@@ -23038,6 +23056,9 @@ msgid "Save Changes"
 msgstr ""
 
 msgid "Save Push Rules"
+msgstr ""
+
+msgid "Save and test payload"
 msgstr ""
 
 msgid "Save anyway"

@@ -591,6 +591,173 @@ type AlertManagementAlertStatusCountsType {
 }
 
 """
+An endpoint and credentials used to accept alerts for a project
+"""
+type AlertManagementHttpIntegration implements AlertManagementIntegration {
+  """
+  Whether the endpoint is currently accepting alerts
+  """
+  active: Boolean
+
+  """
+  URL at which Prometheus metrics can be queried to populate the metrics dashboard
+  """
+  apiUrl: String
+
+  """
+  ID of the integration
+  """
+  id: ID!
+
+  """
+  Name of the integration
+  """
+  name: String
+
+  """
+  Token used to authenticate alert notification requests
+  """
+  token: String
+
+  """
+  Type of integration
+  """
+  type: AlertManagementIntegrationType!
+
+  """
+  Endpoint which accepts alert notifications
+  """
+  url: String
+}
+
+interface AlertManagementIntegration {
+  """
+  Whether the endpoint is currently accepting alerts
+  """
+  active: Boolean
+
+  """
+  URL at which Prometheus metrics can be queried to populate the metrics dashboard
+  """
+  apiUrl: String
+
+  """
+  ID of the integration
+  """
+  id: ID!
+
+  """
+  Name of the integration
+  """
+  name: String
+
+  """
+  Token used to authenticate alert notification requests
+  """
+  token: String
+
+  """
+  Type of integration
+  """
+  type: AlertManagementIntegrationType!
+
+  """
+  Endpoint which accepts alert notifications
+  """
+  url: String
+}
+
+"""
+The connection type for AlertManagementIntegration.
+"""
+type AlertManagementIntegrationConnection {
+  """
+  A list of edges.
+  """
+  edges: [AlertManagementIntegrationEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [AlertManagementIntegration]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type AlertManagementIntegrationEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: AlertManagementIntegration
+}
+
+"""
+Values of types of integrations
+"""
+enum AlertManagementIntegrationType {
+  """
+  Integration with any monitoring tool
+  """
+  HTTP
+
+  """
+  Prometheus integration
+  """
+  PROMETHEUS
+}
+
+"""
+An endpoint and credentials used to accept Prometheus alerts for a project
+"""
+type AlertManagementPrometheusIntegration implements AlertManagementIntegration {
+  """
+  Whether the endpoint is currently accepting alerts
+  """
+  active: Boolean
+
+  """
+  URL at which Prometheus metrics can be queried to populate the metrics dashboard
+  """
+  apiUrl: String
+
+  """
+  ID of the integration
+  """
+  id: ID!
+
+  """
+  Name of the integration
+  """
+  name: String
+
+  """
+  Token used to authenticate alert notification requests
+  """
+  token: String
+
+  """
+  Type of integration
+  """
+  type: AlertManagementIntegrationType!
+
+  """
+  Endpoint which accepts alert notifications
+  """
+  url: String
+}
+
+"""
 Alert severity values
 """
 enum AlertManagementSeverity {
@@ -13746,6 +13913,31 @@ type Project {
     """
     statuses: [AlertManagementStatus!]
   ): AlertManagementAlertConnection
+
+  """
+  Integrations which can receive alerts for the project
+  """
+  alertManagementIntegrations(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): AlertManagementIntegrationConnection
 
   """
   If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge

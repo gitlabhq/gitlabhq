@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import AlertSettingsForm from './components/alerts_settings_form.vue';
+import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
 
 export default el => {
   if (!el) {
@@ -26,16 +26,11 @@ export default el => {
     opsgenieMvcTargetUrl,
   } = el.dataset;
 
-  const genericActivated = parseBoolean(activatedStr);
-  const prometheusIsActivated = parseBoolean(prometheusActivated);
-  const opsgenieMvcActivated = parseBoolean(opsgenieMvcEnabled);
-  const opsgenieMvcIsAvailable = parseBoolean(opsgenieMvcAvailable);
-
   return new Vue({
     el,
     provide: {
       prometheus: {
-        activated: prometheusIsActivated,
+        activated: parseBoolean(prometheusActivated),
         prometheusUrl,
         authorizationKey: prometheusAuthorizationKey,
         prometheusFormPath,
@@ -45,23 +40,23 @@ export default el => {
       generic: {
         alertsSetupUrl,
         alertsUsageUrl,
-        activated: genericActivated,
+        activated: parseBoolean(activatedStr),
         formPath,
         authorizationKey,
         url,
       },
       opsgenie: {
         formPath: opsgenieMvcFormPath,
-        activated: opsgenieMvcActivated,
+        activated: parseBoolean(opsgenieMvcEnabled),
         opsgenieMvcTargetUrl,
-        opsgenieMvcIsAvailable,
+        opsgenieMvcIsAvailable: parseBoolean(opsgenieMvcAvailable),
       },
     },
     components: {
-      AlertSettingsForm,
+      AlertSettingsWrapper,
     },
     render(createElement) {
-      return createElement('alert-settings-form');
+      return createElement('alert-settings-wrapper');
     },
   });
 };

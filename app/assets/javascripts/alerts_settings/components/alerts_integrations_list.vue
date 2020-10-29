@@ -2,7 +2,7 @@
 import { GlTable, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
-import { trackAlertIntergrationsViewsOptions } from '../constants';
+import { trackAlertIntegrationsViewsOptions } from '../constants';
 
 export const i18n = {
   title: s__('AlertsIntegrations|Current integrations'),
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     trackPageViews() {
-      const { category, action } = trackAlertIntergrationsViewsOptions;
+      const { category, action } = trackAlertIntegrationsViewsOptions;
       Tracking.event(category, action);
     },
   },

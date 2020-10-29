@@ -66,7 +66,20 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures do
       '/foo/bar/uploads/foo',
       '/foo/bar/project_members',
       '/foo/bar/settings',
-      '/namespace/subnamespace/design.gitlab.com/settings'
+      '/namespace/subnamespace/design.gitlab.com/settings',
+      '/foo/bar/-/import',
+      '/foo/bar/-/environments',
+      '/foo/bar/-/jobs',
+      '/foo/bar/-/requirements_management',
+      '/foo/bar/-/pipelines',
+      '/foo/bar/-/pipeline_schedules',
+      '/foo/bar/-/dependencies',
+      '/foo/bar/-/licenses',
+      '/foo/bar/-/metrics',
+      '/foo/bar/-/incidents',
+      '/foo/bar/-/value_stream_analytics',
+      '/foo/bar/-/analytics',
+      '/foo/bar/insights'
     ]
 
     requests.each do |request|

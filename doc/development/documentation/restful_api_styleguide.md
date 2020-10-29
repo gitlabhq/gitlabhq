@@ -136,12 +136,24 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gi
 
 ### Post data using JSON content
 
-NOTE: **Note:**
-In this example we create a new group. Watch carefully the single and double
-quotes.
+This example creates a new group. Be aware of the use of single (`'`) and double
+(`"`) quotes.
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' "https://gitlab.example.com/api/v4/groups"
+```
+
+For readability, you can also set up the `--data` by using the following format:
+
+```shell
+curl --request POST \
+--url "https://gitlab.example.com/api/v4/groups" \
+--header "content-type: application/json" \
+--header "PRIVATE-TOKEN: <your_access_token>" \
+--data '{
+  "path": "my-group",
+  "name": "My group"
+}'
 ```
 
 ### Post data using form-data
