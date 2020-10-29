@@ -346,7 +346,8 @@ class Project < ApplicationRecord
   # GitLab Pages
   has_many :pages_domains
   has_one  :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
-  has_many :pages_deployments
+  # we need to clean up files, not only remove records
+  has_many :pages_deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Can be too many records. We need to implement delete_all in batches.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637
@@ -1801,6 +1802,8 @@ class Project < ApplicationRecord
 
     mark_pages_as_not_deployed unless destroyed?
 
+    DestroyPagesDeploymentsWorker.perform_async(id)
+
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force
@@ -1817,7 +1820,7 @@ class Project < ApplicationRecord
   end
 
   def mark_pages_as_not_deployed
-    ensure_pages_metadatum.update!(deployed: false, artifacts_archive: nil)
+    ensure_pages_metadatum.update!(deployed: false, artifacts_archive: nil, pages_deployment: nil)
   end
 
   def write_repository_config(gl_full_path: full_path)

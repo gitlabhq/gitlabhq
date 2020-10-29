@@ -12,6 +12,11 @@ module Projects
     # as it shares the namespace with groups
     TMP_EXTRACT_PATH = '@pages.tmp'
 
+    # old deployment can be cached by pages daemon
+    # so we need to give pages daemon some time update cache
+    # 10 minutes is enough, but 30 feels safer
+    OLD_DEPLOYMENTS_DESTRUCTION_DELAY = 30.minutes.freeze
+
     attr_reader :build
 
     def initialize(project, build)
@@ -128,6 +133,7 @@ module Projects
       entries_count = build.artifacts_metadata_entry("", recursive: true).entries.count
       sha256 = build.job_artifacts_archive.file_sha256
 
+      deployment = nil
       File.open(artifacts_path) do |file|
         deployment = project.pages_deployments.create!(file: file,
                                                        file_count: entries_count,
@@ -135,7 +141,11 @@ module Projects
         project.pages_metadatum.update!(pages_deployment: deployment)
       end
 
-      # TODO: schedule old deployment removal https://gitlab.com/gitlab-org/gitlab/-/issues/235730
+      DestroyPagesDeploymentsWorker.perform_in(
+        OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
+        project.id,
+        deployment.id
+      )
     rescue => e
       # we don't want to break current pages deployment process if something goes wrong
       # TODO: remove this rescue as part of https://gitlab.com/gitlab-org/gitlab/-/issues/245308

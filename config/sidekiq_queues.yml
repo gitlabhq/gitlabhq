@@ -86,6 +86,8 @@
   - 1
 - - design_management_new_version
   - 1
+- - destroy_pages_deployments
+  - 1
 - - detect_repository_languages
   - 1
 - - disallow_two_factor_for_group

@@ -168,6 +168,24 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
       end
     end
 
+    context 'project with no repositories' do
+      let(:project) { create(:project) }
+      let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: 'test_second_storage') }
+
+      it 'updates the database' do
+        allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+        allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
+
+        result = subject.execute
+        project.reload
+
+        expect(result).to be_success
+        expect(project).not_to be_repository_read_only
+        expect(project.repository_storage).to eq('test_second_storage')
+        expect(project.project_repository.shard_name).to eq('test_second_storage')
+      end
+    end
+
     context 'with wiki repository' do
       include_examples 'moves repository to another storage', 'wiki' do
         let(:project) { create(:project, :repository, wiki_enabled: true) }

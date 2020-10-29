@@ -21,7 +21,7 @@
           ":data-issuable-id" => "issue.iid",
           ":data-project-id" => "issue.project_id" }
           = _("Milestone")
-          = icon("chevron-down")
+          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           = dropdown_title(_("Assign milestone"))
           = dropdown_filter(_("Search milestones"))

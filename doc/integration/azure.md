@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Microsoft Azure OAuth2 OmniAuth Provider
 
 To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a client ID and secret key for you to use.

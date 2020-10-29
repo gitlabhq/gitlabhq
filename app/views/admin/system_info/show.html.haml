@@ -9,7 +9,7 @@
         - if @cpus
           %h2= _('%{cores} cores') % { cores: @cpus.length }
         - else
-          = icon('warning', class: 'text-warning')
+          = sprite_icon('warning-solid', css_class: 'text-warning')
           = _('Unable to collect CPU info')
     .bg-light.light-well.gl-mt-3
       %h4= _('Memory Usage')
@@ -17,7 +17,7 @@
         - if @memory
           %h2 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
         - else
-          = icon('warning', class: 'text-warning')
+          = sprite_icon('warning-solid', css_class: 'text-warning')
           = _('Unable to collect memory info')
     .bg-light.light-well.gl-mt-3
       %h4= _('Uptime')

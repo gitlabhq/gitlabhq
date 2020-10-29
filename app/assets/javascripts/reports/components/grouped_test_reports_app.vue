@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { once } from 'lodash';
 import { GlButton } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { componentNames } from './issue_body';
@@ -8,6 +9,7 @@ import SummaryRow from './summary_row.vue';
 import IssuesList from './issues_list.vue';
 import Modal from './modal.vue';
 import createStore from '../store';
+import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { summaryTextBuilder, reportTextBuilder, statusIcon } from '../store/utils';
 
@@ -21,7 +23,7 @@ export default {
     Modal,
     GlButton,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
   props: {
     endpoint: {
       type: String,
@@ -57,6 +59,11 @@ export default {
     },
     showViewFullReport() {
       return this.pipelinePath.length;
+    },
+    handleToggleEvent() {
+      return once(() => {
+        this.track(this.$options.expandEvent);
+      });
     },
   },
   created() {
@@ -102,6 +109,7 @@ export default {
       return report.resolved_failures.concat(report.resolved_errors);
     },
   },
+  expandEvent: 'expand_test_report_widget',
 };
 </script>
 <template>
@@ -111,7 +119,9 @@ export default {
     :loading-text="groupedSummaryText"
     :error-text="groupedSummaryText"
     :has-issues="reports.length > 0"
+    :should-emit-toggle-event="true"
     class="mr-widget-section grouped-security-reports mr-report"
+    @toggleEvent="handleToggleEvent"
   >
     <template v-if="showViewFullReport" #actionButtons>
       <gl-button

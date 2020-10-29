@@ -7,11 +7,14 @@ import { deprecatedCreateFlash as createFlash } from './flash';
 import FilesCommentButton from './files_comment_button';
 import initImageDiffHelper from './image_diff/helpers/init_image_diff';
 import syntaxHighlight from './syntax_highlight';
+import { spriteIcon } from '~/lib/utils/common_utils';
 
 const WRAPPER = '<div class="diff-content"></div>';
 const LOADING_HTML = '<span class="spinner"></span>';
-const ERROR_HTML =
-  '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
+const ERROR_HTML = `<div class="nothing-here-block">${spriteIcon(
+  'warning-solid',
+  's16',
+)} Could not load diff</div>`;
 const COLLAPSED_HTML =
   '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <button class="click-to-expand btn btn-link">Click to expand it.</button></div>';
 

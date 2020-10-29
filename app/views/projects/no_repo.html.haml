@@ -1,9 +1,10 @@
 - breadcrumb_title _("Details")
 - page_title _("Details")
 
-%h2
-  %i.fa.fa-warning
-  #{ _('No repository') }
+%h2.gl-display-flex
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('warning-solid', size: 24, css_class: 'gl-mr-2')
+  = _('No repository')
 
 %p.slead
   #{ _('The repository for this project does not exist.') }

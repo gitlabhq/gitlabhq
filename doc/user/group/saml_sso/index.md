@@ -88,8 +88,6 @@ We intend to add a similar SSO requirement for [Git and API activity](https://gi
 
 When SSO enforcement is enabled for a group, users cannot share a project in the group outside the top-level group, even if the project is forked.
 
-To disallow users to contribute outside of the top-level group, please see [Group Managed Accounts](group_managed_accounts.md).
-
 ## Providers
 
 NOTE: **Note:**

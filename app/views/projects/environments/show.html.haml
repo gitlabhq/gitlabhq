@@ -3,6 +3,7 @@
 - page_title _("Environments")
 - add_page_specific_style 'page_bundles/xterm'
 - add_page_specific_style 'page_bundles/environments'
+- add_page_specific_style 'page_bundles/ci_status'
 
 #environments-detail-view{ data: { name: @environment.name, id: @environment.id, delete_path: environment_delete_path(@environment)} }
   - if @environment.available? && can?(current_user, :stop_environment, @environment)

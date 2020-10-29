@@ -19,7 +19,7 @@
     - if ref
       - if generic_commit_status.ref
         .icon-container
-          = generic_commit_status.tags.any? ? icon('tag') : sprite_icon('fork', size: 10)
+          = generic_commit_status.tags.any? ? sprite_icon('tag', size: 10) : sprite_icon('fork', size: 10)
         = link_to generic_commit_status.ref, project_commits_path(generic_commit_status.project, generic_commit_status.ref)
       - else
         .light none
@@ -30,7 +30,8 @@
       = link_to generic_commit_status.short_sha, project_commit_path(generic_commit_status.project, generic_commit_status.sha), class: "commit-sha"
 
     - if retried
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Status was retried.')
+      %span.has-tooltip{ title: _('Status was retried.') }
+        = sprite_icon('warning-solid', class: 'text-warning')
 
     .label-container
       - if generic_commit_status.tags.any?

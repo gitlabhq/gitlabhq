@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Sign into GitLab with (almost) any OAuth2 provider
 
 The `omniauth-oauth2-generic` gem allows Single Sign On between GitLab and your own OAuth2 provider

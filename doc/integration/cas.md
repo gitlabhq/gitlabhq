@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # CAS OmniAuth Provider
 
 To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: `https://gitlab.example.com:443/users/auth/cas3/callback?url`. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.

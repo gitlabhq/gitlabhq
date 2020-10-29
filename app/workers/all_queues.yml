@@ -1425,6 +1425,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: destroy_pages_deployments
+  :feature_category: :pages
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: detect_repository_languages
   :feature_category: :source_code_management
   :has_external_dependencies:

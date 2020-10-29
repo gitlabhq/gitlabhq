@@ -4,6 +4,7 @@ module Ci
   class DailyBuildGroupReportResult < ApplicationRecord
     extend Gitlab::Ci::Model
 
+    REPORT_WINDOW = 90.days
     PARAM_TYPES = %w[coverage].freeze
 
     belongs_to :last_pipeline, class_name: 'Ci::Pipeline', foreign_key: :last_pipeline_id
@@ -15,6 +16,7 @@ module Ci
     scope :by_projects, -> (ids) { where(project_id: ids) }
     scope :with_coverage, -> { where("(data->'coverage') IS NOT NULL") }
     scope :with_default_branch, -> { where(default_branch: true) }
+    scope :by_date, -> (start_date) { where(date: report_window(start_date)..Date.current) }
 
     store_accessor :data, :coverage
 
@@ -25,6 +27,13 @@ module Ci
 
       def recent_results(attrs, limit: nil)
         where(attrs).order(date: :desc, group_name: :asc).limit(limit)
+      end
+
+      def report_window(start_date)
+        default_date = REPORT_WINDOW.ago.to_date
+        date = Date.parse(start_date) rescue default_date
+
+        [date, default_date].max
       end
     end
   end

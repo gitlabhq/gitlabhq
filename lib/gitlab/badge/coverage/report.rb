@@ -17,8 +17,6 @@ module Gitlab
             key_width: opts[:key_width].to_i,
             key_text: opts[:key_text]
           }
-
-          @pipeline = @project.ci_pipelines.latest_successful_for_ref(@ref)
         end
 
         def entity
@@ -42,14 +40,18 @@ module Gitlab
 
         private
 
+        def pipeline
+          @pipeline ||= @project.ci_pipelines.latest_successful_for_ref(@ref)
+        end
+
         # rubocop: disable CodeReuse/ActiveRecord
         def raw_coverage
-          return unless @pipeline
+          return unless pipeline
 
           if @job.blank?
-            @pipeline.coverage
+            pipeline.coverage
           else
-            @pipeline.builds
+            pipeline.builds
               .find_by(name: @job)
               .try(:coverage)
           end

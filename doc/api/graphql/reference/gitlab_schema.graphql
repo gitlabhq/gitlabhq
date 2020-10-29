@@ -2683,6 +2683,66 @@ Identifier of Clusters::Cluster
 scalar ClustersClusterID
 
 """
+Represents the code coverage activity for a group
+"""
+type CodeCoverageActivity {
+  """
+  Average percentage of the different code coverage results available for the group.
+  """
+  averageCoverage: Float
+
+  """
+  Number of different code coverage results available for the group.
+  """
+  coverageCount: Int
+
+  """
+  Date when the code coverage was created.
+  """
+  date: Date!
+
+  """
+  Number of projects with code coverage results for the group.
+  """
+  projectCount: Int
+}
+
+"""
+The connection type for CodeCoverageActivity.
+"""
+type CodeCoverageActivityConnection {
+  """
+  A list of edges.
+  """
+  edges: [CodeCoverageActivityEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CodeCoverageActivity]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CodeCoverageActivityEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CodeCoverageActivity
+}
+
+"""
 Represents the code coverage summary for a project
 """
 type CodeCoverageSummary {
@@ -7964,6 +8024,37 @@ type Group {
     """
     last: Int
   ): BoardConnection
+
+  """
+  Represents the code coverage activity for this group. Available only when
+  feature flag `group_coverage_data_report` is enabled
+  """
+  codeCoverageActivities(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    First day for which to fetch code coverage activity (maximum time window is set to 90 days)
+    """
+    startDate: Date!
+  ): CodeCoverageActivityConnection
 
   """
   Container repositories of the project

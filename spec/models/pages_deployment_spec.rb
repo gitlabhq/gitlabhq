@@ -42,4 +42,17 @@ RSpec.describe PagesDeployment do
     deployment = create(:pages_deployment)
     expect(deployment.size).to eq(deployment.file.size)
   end
+
+  describe '.older_than' do
+    it 'returns deployments with lower id' do
+      old_deployments = create_list(:pages_deployment, 2)
+
+      deployment = create(:pages_deployment)
+
+      # new deployment
+      create(:pages_deployment)
+
+      expect(PagesDeployment.older_than(deployment.id)).to eq(old_deployments)
+    end
+  end
 end

@@ -71,6 +71,29 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
       end
 
+      context 'when there is an old pages deployment' do
+        let!(:old_deployment_from_another_project) { create(:pages_deployment) }
+        let!(:old_deployment) { create(:pages_deployment, project: project) }
+
+        it 'schedules a destruction of older deployments' do
+          expect(DestroyPagesDeploymentsWorker).to(
+            receive(:perform_in).with(described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
+                                      project.id,
+                                      instance_of(Integer))
+          )
+
+          execute
+        end
+
+        it 'removes older deployments', :sidekiq_inline do
+          expect do
+            execute
+          end.not_to change { PagesDeployment.count } # it creates one and deletes one
+
+          expect(PagesDeployment.find_by_id(old_deployment.id)).to be_nil
+        end
+      end
+
       it 'does not create deployment when zip_pages_deployments feature flag is disabled' do
         stub_feature_flags(zip_pages_deployments: false)
 

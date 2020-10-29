@@ -123,5 +123,39 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
         end
       end
     end
+
+    describe '.by_date' do
+      subject(:coverages) { described_class.by_date(start_date) }
+
+      let!(:coverage_1) { create(:ci_daily_build_group_report_result, date: 1.week.ago) }
+
+      context 'when project has several coverage' do
+        let!(:coverage_2) { create(:ci_daily_build_group_report_result, date: 2.weeks.ago) }
+        let(:start_date) { 1.week.ago.to_date.to_s }
+
+        it 'returns the coverage from the start_date' do
+          expect(coverages).to contain_exactly(coverage_1)
+        end
+      end
+
+      context 'when start_date is over 90 days' do
+        let!(:coverage_2) { create(:ci_daily_build_group_report_result, date: 90.days.ago) }
+        let!(:coverage_3) { create(:ci_daily_build_group_report_result, date: 91.days.ago) }
+        let(:start_date) { 1.year.ago.to_date.to_s }
+
+        it 'returns the coverage in the last 90 days' do
+          expect(coverages).to contain_exactly(coverage_1, coverage_2)
+        end
+      end
+
+      context 'when start_date is not a string' do
+        let!(:coverage_2) { create(:ci_daily_build_group_report_result, date: 90.days.ago) }
+        let(:start_date) { 1.week.ago }
+
+        it 'returns the coverage in the last 90 days' do
+          expect(coverages).to contain_exactly(coverage_1, coverage_2)
+        end
+      end
+    end
   end
 end
