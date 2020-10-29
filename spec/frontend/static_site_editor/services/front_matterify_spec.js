@@ -11,6 +11,7 @@ describe('static_site_editor/services/front_matterify', () => {
   const frontMatterifiedContent = {
     source: content,
     matter: yamlFrontMatterObj,
+    hasMatter: true,
     spacing,
     content: body,
     delimiter: '---',
@@ -19,6 +20,7 @@ describe('static_site_editor/services/front_matterify', () => {
   const frontMatterifiedBody = {
     source: body,
     matter: null,
+    hasMatter: false,
     spacing: null,
     content: body,
     delimiter: null,
@@ -32,6 +34,12 @@ describe('static_site_editor/services/front_matterify', () => {
       ${frontMatterify(body)}    | ${frontMatterifiedBody}
     `('returns $target from $frontMatterified', ({ frontMatterified, target }) => {
       expect(frontMatterified).toEqual(target);
+    });
+
+    it('should throw when matter is invalid', () => {
+      const invalidContent = `---\nkey: val\nkeyNoVal\n---\n${body}`;
+
+      expect(() => frontMatterify(invalidContent)).toThrow();
     });
   });
 

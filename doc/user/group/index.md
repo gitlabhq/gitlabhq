@@ -414,8 +414,13 @@ There are a few limitations compared to project wikis:
 - Local Git access is not supported yet.
 - Group wikis are not included in global search, group exports, backups, and Geo replication.
 - Changes to group wikis don't show up in the group's activity feed.
+- Group wikis [can't be moved](../../api/project_repository_storage_moves.md#limitations) using the project
+  repository moves API.
 
-You can follow [this epic](https://gitlab.com/groups/gitlab-org/-/epics/2782) for updates.
+For updates, you can follow:
+
+- [The epic tracking feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
+- [The issue for adding the ability to move group wikis using the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
 
 ### Enable or disable group wikis **(CORE ONLY)**
 

@@ -29,7 +29,8 @@ module OperationsHelper
       'url' => alerts_service.url,
       'alerts_setup_url' => help_page_path('operations/incident_management/alert_integrations.md', anchor: 'generic-http-endpoint'),
       'alerts_usage_url' => project_alert_management_index_path(@project),
-      'disabled' => disabled.to_s
+      'disabled' => disabled.to_s,
+      'project_path' => project_path(@project)
     }
   end
 

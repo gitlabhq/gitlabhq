@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $(dirname $0)/..
+cd $(dirname $0)/.. || exit 1
 app_root=$(pwd)
 
 unicorn_pidfile="$app_root/tmp/pids/unicorn.pid"

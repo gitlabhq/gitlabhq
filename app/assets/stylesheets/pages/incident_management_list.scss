@@ -8,13 +8,12 @@
     @include gl-text-gray-500;
 
     tbody {
-      tr:not(.b-table-busy-slot) {
-        // TODO replace with gitlab/ui utilities: https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1791
+      tr:not(.b-table-busy-slot):not(.b-table-empty-row) {
         &:hover {
-          border-top-style: double;
+          @include gl-border-t-double;
 
           td {
-            border-bottom-style: initial;
+            @include gl-border-b-initial;
           }
         }
       }
@@ -22,7 +21,7 @@
 
     tr {
       &:focus {
-        outline: none;
+        @include gl-outline-none;
       }
 
       td,
@@ -118,22 +117,22 @@
   }
 
   .gl-tabs-nav {
-    border-bottom-width: 0;
+    @include gl-border-b-0;
 
     .gl-tab-nav-item {
-      color: $gray-500;
+      @include gl-text-gray-500;
 
       > .gl-tab-counter-badge {
-        color: inherit;
+        @include gl-reset-color;
         @include gl-font-sm;
-        background-color: $gray-50;
+        @include gl-bg-gray-50;
       }
     }
   }
 
   @include media-breakpoint-down(xs) {
     .list-header {
-      flex-direction: column-reverse;
+      @include gl-flex-direction-column-reverse;
     }
 
     .create-incident-button {

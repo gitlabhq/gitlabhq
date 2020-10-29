@@ -952,6 +952,7 @@ module API
       params do
         optional :emoji, type: String, desc: "The emoji to set on the status"
         optional :message, type: String, desc: "The status message to set"
+        optional :availability, type: String, desc: "The availability of user to set"
       end
       put "status", feature_category: :users do
         forbidden! unless can?(current_user, :update_user_status, current_user)

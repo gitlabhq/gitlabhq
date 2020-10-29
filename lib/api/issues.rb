@@ -6,9 +6,9 @@ module API
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter
 
-    feature_category :issue_tracking
-
     before { authenticate_non_get! }
+
+    feature_category :issue_tracking
 
     helpers do
       params :negatable_issue_filter_params do

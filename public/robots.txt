@@ -36,6 +36,7 @@ User-Agent: *
 Disallow: /*/new
 Disallow: /*/edit
 Disallow: /*/raw
+Disallow: /*/realtime_changes
 
 # Group details
 User-Agent: *

@@ -3,8 +3,6 @@ import { GlForm, GlFormSelect, GlCollapse, GlFormInput } from '@gitlab/ui';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form_new.vue';
 import { defaultAlertSettingsConfig } from './util';
 
-jest.mock('~/alerts_settings/services');
-
 describe('AlertsSettingsFormNew', () => {
   let wrapper;
 

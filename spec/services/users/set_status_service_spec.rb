@@ -9,13 +9,14 @@ RSpec.describe Users::SetStatusService do
 
   describe '#execute' do
     context 'when params are set' do
-      let(:params) { { emoji: 'taurus', message: 'a random status' } }
+      let(:params) { { emoji: 'taurus', message: 'a random status', availability: 'busy' } }
 
       it 'creates a status' do
         service.execute
 
         expect(current_user.status.emoji).to eq('taurus')
         expect(current_user.status.message).to eq('a random status')
+        expect(current_user.status.availability).to eq('busy')
       end
 
       it 'updates a status if it already existed' do
@@ -23,6 +24,26 @@ RSpec.describe Users::SetStatusService do
 
         expect { service.execute }.not_to change { UserStatus.count }
         expect(current_user.status.message).to eq('a random status')
+      end
+
+      it 'returns true' do
+        create(:user_status, user: current_user)
+        expect(service.execute).to be(true)
+      end
+
+      context 'when the given availability value is not valid' do
+        let(:params) { { availability: 'not a valid value' } }
+
+        it 'does not update the status' do
+          user_status = create(:user_status, user: current_user)
+
+          expect { service.execute }.not_to change { user_status.reload }
+        end
+
+        it 'returns false' do
+          create(:user_status, user: current_user)
+          expect(service.execute).to be(false)
+        end
       end
 
       context 'for another user' do

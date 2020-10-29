@@ -1,0 +1,5 @@
+---
+title: Execute `exit 1` when shell script `cd` fails
+merge_request: 46122
+author: Peter Dave Hello
+type: other

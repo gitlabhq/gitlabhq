@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $(dirname $0)/..
+cd $(dirname $0)/.. || exit 1
 app_root=$(pwd)
 
 mail_room_pidfile="$app_root/tmp/pids/mail_room.pid"

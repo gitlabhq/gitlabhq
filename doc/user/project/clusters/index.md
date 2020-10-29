@@ -47,7 +47,8 @@ version. The range of supported versions is based on the evaluation of:
 - The versions supported by major managed Kubernetes providers.
 - The versions [supported by the Kubernetes community](https://kubernetes.io/docs/setup/release/version-skew-policy/#supported-versions).
 
-Currently, GitLab supports the following Kubernetes versions:
+GitLab supports the following Kubernetes versions, and you can upgrade your
+Kubernetes version to any supported version at any time:
 
 - 1.17
 - 1.16

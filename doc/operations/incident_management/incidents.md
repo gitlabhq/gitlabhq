@@ -6,7 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Incidents
 
-Incidents are critical entities in incident management workflows. They represent a service disruption or outage that needs to be restored urgently. GitLab provides tools for the triage, response, and remediation of incidents.
+Incidents are critical entities in incident management workflows. They represent
+a service disruption or outage that needs to be restored urgently. GitLab provides
+tools for the triage, response, and remediation of incidents.
 
 ## Incident Creation
 
@@ -14,7 +16,8 @@ You can create an incident manually or automatically.
 
 ### Create incidents manually
 
-If you have at least Guest [permissions](../../user/permissions.md), to create an Incident, you have two options to do this manually.
+If you have at least Guest [permissions](../../user/permissions.md), to create an
+Incident, you have two options to do this manually.
 
 **From the Incidents List:**
 
@@ -43,17 +46,17 @@ If you have at least Guest [permissions](../../user/permissions.md), to create a
 With Maintainer or higher [permissions](../../user/permissions.md), you can enable
  GitLab to create incident automatically whenever an alert is triggered:
 
-1. Navigate to **Settings > Operations > Incidents** and expand
-   **Incidents**:
+1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**:
 
    ![Incident Management Settings](./img/incident_management_settings_v13_3.png)
 
-1. Check the **Create an incident**
-   checkbox.
-1. To customize the incident, select an [issue templates](../../user/project/description_templates.md#creating-issue-templates).
+1. Check the **Create an incident** checkbox.
+1. To customize the incident, select an
+   [issue template](../../user/project/description_templates.md#creating-issue-templates).
 1. To send [an email notification](alert_notifications.md#email-notifications) to users
    with [Developer permissions](../../user/permissions.md), select
-   **Send a separate email notification to Developers**. Email notifications will also be sent to users with **Maintainer** and **Owner** permissions.
+   **Send a separate email notification to Developers**. Email notifications are
+   also sent to users with **Maintainer** and **Owner** permissions.
 1. Click **Save changes**.
 
 ### Create incidents via the PagerDuty webhook
@@ -183,10 +186,22 @@ un-threaded and ordered chronologically, newest to oldest:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
 
-After enabling **Incident SLA** in the Incident Management configuration, newly-created
-incidents display a SLA (Service Level Agreement) timer showing the time remaining before
-the SLA period expires. If the incident is not closed before the SLA period ends, GitLab
-adds a `missed::SLA` label to the incident.
+You can enable the Service Level Agreement Countdown timer on incidents to track
+the Service Level Agreements (SLAs) you hold with your customers. The timer is
+automatically started when the incident is created, and shows the time
+remaining before the SLA period expires. To configure the timer:
+
+1. Navigate to **Settings > Operations**.
+1. Scroll to **Incidents** and click **Expand**, then select the
+   **Incident settings** tab.
+1. Select **Activate "time to SLA" countdown timer**.
+1. Set a time limit in increments of 15 minutes.
+1. Click **Save changes**.
+
+After you enable the SLA countdown timer, the **Time to SLA** attribute is displayed
+as a column in the Incidents List, and as a field on newly created Incidents. If
+the incident isn't closed before the SLA period ends, GitLab adds a `missed::SLA`
+label to the incident.
 
 ## Incident Actions
 
@@ -194,15 +209,18 @@ There are different actions available to help triage and respond to incidents.
 
 ### Assign incidents
 
-Assign incidents to users that are actively responding. Select **Edit** in the right-hand side bar to select or deselect assignees.
+Assign incidents to users that are actively responding. Select **Edit** in the
+right-hand side bar to select or deselect assignees.
 
 ### Change severity
 
-See [Incident List](#incident-list) for a full description of the severities available. Select **Edit** in the right-hand side bar to change the severity of an incident.
+See [Incident List](#incident-list) for a full description of the severity levels available.
+Select **Edit** in the right-hand side bar to change the severity of an incident.
 
 ### Add a to-do item
 
-Add a to-do for incidents that you want to track in your to-do list. Click the **Add a to do** button at the top of the right-hand side bar to add a to-do item.
+Add a to-do for incidents that you want to track in your to-do list. Click the
+**Add a to do** button at the top of the right-hand side bar to add a to-do item.
 
 ### Manage incidents from Slack
 

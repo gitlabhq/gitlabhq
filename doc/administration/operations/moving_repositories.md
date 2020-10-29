@@ -12,15 +12,19 @@ another file system or another server.
 
 ## Moving data within a GitLab instance
 
-The recommended way to move Git repositories between servers, between different storage, and
-from unclustered to clustered Gitaly (Praefect) is using the API.
+The GitLab API is the recommended way to move Git repositories:
 
-Read more:
+- Between servers.
+- Between different storage.
+- From single-node Gitaly to Gitaly Cluster.
 
-- [Configuring additional storage for Gitaly](../gitaly/index.md#network-architecture)
-  - Within this example, additional storage called `storage1` and `storage2` is configured.
-- [The API documentation](../../api/project_repository_storage_moves.md) details the endpoints for quering and scheduling repository moves.
-- [Migrate existing repositories to Gitaly Cluster](../gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster)
+For more information, see:
+
+- [Configuring additional storage for Gitaly](../gitaly/index.md#network-architecture). Within this
+  example, additional storage called `storage1` and `storage2` is configured.
+- [The API documentation](../../api/project_repository_storage_moves.md) details the endpoints for
+  querying and scheduling repository moves.
+- [Migrate existing repositories to Gitaly Cluster](../gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster).
 
 ### Limitations
 
@@ -28,12 +32,13 @@ Read more in the [API documentation](../../api/project_repository_storage_moves.
 
 ## Migrating to another GitLab instance
 
-Using the API isn't an option if you are migrating to a new GitLab environment, for example:
+[Using the API](#moving-data-within-a-gitlab-instance) isn't an option if you are migrating to a new
+GitLab environment, for example:
 
 - From a single-node GitLab to a scaled-out architecture.
 - From a GitLab instance in your private datacenter to a cloud provider.
 
-The rest of the document will look
+The rest of the document looks
 at some of the ways you can copy all your repositories from
 `/var/opt/gitlab/git-data/repositories` to `/mnt/gitlab/repositories`.
 
@@ -49,10 +54,14 @@ Each of the approaches we list can or does overwrite data in the target director
 
 ### Recommended approach in all cases
 
-GitLab's [backup and restore capability](../../raketasks/backup_restore.md) should be used. Git repositories are accessed, managed and stored on GitLab servers by the Gitaly component of the product as a database. Data loss can result from directly accessing and copying Gitaly's files using tools like `rsync`.
+GitLab's [backup and restore capability](../../raketasks/backup_restore.md) should be used. Git
+repositories are accessed, managed, and stored on GitLab servers by Gitaly as a database. Data loss
+can result from directly accessing and copying Gitaly's files using tools like `rsync`.
 
-- From GitLab 13.3, backup performance can be improved by [processing multiple repositories concurrently](../../raketasks/backup_restore.md#back-up-git-repositories-concurrently).
-- Backups can be created of just the repositories using the [skip feature](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup)
+- From GitLab 13.3, backup performance can be improved by
+  [processing multiple repositories concurrently](../../raketasks/backup_restore.md#back-up-git-repositories-concurrently).
+- Backups can be created of just the repositories using the
+  [skip feature](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
 
 ### Target directory is empty: use a `tar` pipe
 
@@ -86,8 +95,7 @@ If you want to compress the data before it goes over the network
 ### The target directory contains an outdated copy of the repositories: use `rsync`
 
 DANGER: **Warning:**
-Using `rsync` to migrate
-Git data can cause data loss and repository corruption.
+Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 If the target directory already contains a partial / outdated copy
@@ -108,8 +116,7 @@ If you want to see progress, replace `-a` with `-av`.
 #### Single `rsync` to another server
 
 DANGER: **Warning:**
-Using `rsync` to migrate
-Git data can cause data loss and repository corruption.
+Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 If the `git` user on your source system has SSH access to the target
@@ -123,8 +130,7 @@ sudo -u git sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
 ### Thousands of Git repositories: use one `rsync` per repository
 
 DANGER: **Warning:**
-Using `rsync` to migrate
-Git data can cause data loss and repository corruption.
+Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 Every time you start an `rsync` job it has to inspect all files in
@@ -145,8 +151,7 @@ longer exist at the source.**
 #### Parallel `rsync` for all repositories known to GitLab
 
 DANGER: **Warning:**
-Using `rsync` to migrate
-Git data can cause data loss and repository corruption.
+Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 This syncs repositories with 10 `rsync` processes at a time. We keep
@@ -207,8 +212,7 @@ cat /home/git/transfer-logs/* | sort | uniq -u |\
 #### Parallel `rsync` only for repositories with recent activity
 
 DANGER: **Warning:**
-Using `rsync` to migrate
-Git data can cause data loss and repository corruption.
+Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 Suppose you have already done one sync that started after 2015-10-1 12:00 UTC.

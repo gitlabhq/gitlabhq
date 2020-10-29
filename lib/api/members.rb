@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :authentication_and_authorization
+
     helpers ::API::Helpers::MembersHelpers
 
     %w[group project].each do |source_type|

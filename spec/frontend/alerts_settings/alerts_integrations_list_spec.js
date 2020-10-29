@@ -8,12 +8,12 @@ import { trackAlertIntegrationsViewsOptions } from '~/alerts_settings/constants'
 
 const mockIntegrations = [
   {
-    activated: true,
+    active: true,
     name: 'Integration 1',
     type: 'HTTP endpoint',
   },
   {
-    activated: false,
+    active: false,
     name: 'Integration 2',
     type: 'HTTP endpoint',
   },

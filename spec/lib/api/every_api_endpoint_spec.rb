@@ -31,8 +31,13 @@ RSpec.describe 'Every API endpoint' do
           ::API::FeatureFlagsUserLists, ::API::Features, ::API::Files, ::API::FreezePeriods,
           ::API::GroupBoards, ::API::GroupClusters, ::API::GroupExport, ::API::GroupImport,
           ::API::GroupLabels, ::API::GroupMilestones, ::API::Groups,
-          ::API::GroupContainerRepositories, ::API::GroupVariables
-
+          ::API::GroupContainerRepositories, ::API::GroupVariables,
+          ::API::ImportBitbucketServer, ::API::ImportGithub, ::API::IssueLinks,
+          ::API::Issues, ::API::JobArtifacts, ::API::Jobs, ::API::Keys, ::API::Labels,
+          ::API::Lint, ::API::Markdown, ::API::Members, ::API::MergeRequestDiffs,
+          ::API::MergeRequests, ::API::MergeRequestApprovals, ::API::Metrics::Dashboard::Annotations,
+          ::API::Metrics::UserStarredDashboards, ::API::Namespaces, ::API::Notes,
+          ::API::Discussions
         ]
         next unless completed_classes.include?(klass)
 

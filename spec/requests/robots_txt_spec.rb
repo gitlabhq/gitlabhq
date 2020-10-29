@@ -79,7 +79,9 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures do
       '/foo/bar/-/incidents',
       '/foo/bar/-/value_stream_analytics',
       '/foo/bar/-/analytics',
-      '/foo/bar/insights'
+      '/foo/bar/insights',
+      '/foo/bar/-/issues/123/realtime_changes',
+      '/groups/group/-/epics/123/realtime_changes'
     ]
 
     requests.each do |request|

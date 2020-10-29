@@ -1,0 +1,5 @@
+---
+title: 'Job dropdown: Hide tooltip explicitly on click'
+merge_request: 46465
+author:
+type: fixed

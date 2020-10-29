@@ -9,7 +9,9 @@
   = render partial: 'ci/runner/how_to_setup_runner',
            locals: { registration_token: @project.runners_token,
                      type: 'specific',
-                     reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path }
+                     reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path,
+                     project_path: @project.path_with_namespace,
+                     group_path: '' }
 
 - if @project_runners.any?
   %h4.underlined-title= _('Runners activated for this project')

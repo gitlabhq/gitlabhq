@@ -32,8 +32,8 @@ This API requires you to [authenticate yourself](README.md#authentication) as an
 
 ## Limitations
 
-- [The repositories associated with snippets can't currently be moved with the API](https://gitlab.com/groups/gitlab-org/-/epics/3393).
-- [Group level wikis can't currently be moved with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
+- The repositories associated with snippets [can't be moved with the API](https://gitlab.com/groups/gitlab-org/-/epics/3393).
+- Group-level wikis [can't be moved with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
 
 ## Retrieve all project repository storage moves
 

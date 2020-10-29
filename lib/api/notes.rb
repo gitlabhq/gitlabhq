@@ -7,7 +7,7 @@ module API
 
     before { authenticate! }
 
-    Helpers::NotesHelpers.noteable_types.each do |noteable_type|
+    Helpers::NotesHelpers.feature_category_per_noteable_type.each do |noteable_type, feature_category|
       parent_type = noteable_type.parent_class.to_s.underscore
       noteables_str = noteable_type.to_s.underscore.pluralize
 
@@ -29,7 +29,7 @@ module API
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        get ":id/#{noteables_str}/:noteable_id/notes" do
+        get ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           # We exclude notes that are cross-references and that cannot be viewed
@@ -57,7 +57,7 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
-        get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
+        get ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           get_note(noteable, params[:note_id])
         end
@@ -71,7 +71,7 @@ module API
           optional :confidential, type: Boolean, desc: 'Confidentiality note flag, default is false'
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
-        post ":id/#{noteables_str}/:noteable_id/notes" do
+        post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           opts = {
@@ -104,7 +104,7 @@ module API
           optional :body, type: String, allow_blank: false, desc: 'The content of a note'
           optional :confidential, type: Boolean, desc: 'Confidentiality note flag'
         end
-        put ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
+        put ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           update_note(noteable, params[:note_id])

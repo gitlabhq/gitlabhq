@@ -2,6 +2,8 @@
 
 module API
   class ImportGithub < ::API::Base
+    feature_category :importers
+
     rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
     before do

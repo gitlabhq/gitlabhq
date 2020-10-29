@@ -59,6 +59,7 @@ RSpec.describe 'getting user information' do
     let(:user_params) { { username: user.username } }
 
     before do
+      create(:user_status, user: user)
       post_graphql(query, current_user: current_user)
     end
 
@@ -76,8 +77,14 @@ RSpec.describe 'getting user information' do
             'username' => presenter.username,
             'webUrl' => presenter.web_url,
             'avatarUrl' => presenter.avatar_url,
-            'status' => presenter.status,
             'email' => presenter.email
+          ))
+
+        expect(graphql_data['user']['status']).to match(
+          a_hash_including(
+            'emoji' => presenter.status.emoji,
+            'message' => presenter.status.message,
+            'availability' => presenter.status.availability.upcase
           ))
       end
 

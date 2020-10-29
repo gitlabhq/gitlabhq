@@ -208,8 +208,8 @@ ask an administrator to execute the following commands:
 ```shell
 > sudo gitlab-rails console                         # Login to Rails console of GitLab instance.
 > Feature.enabled?(:disable_merge_trains)           # Check if it's disabled or not.
-> Feature.enable(:disable_merge_trains)             # Disable Merge Trains.
-> Feature.disable(:disable_merge_trains)            # Enable Merge Trains.
+> Feature.enable(:disable_merge_trains)             # Enable Merge Trains.
+> Feature.disable(:disable_merge_trains)            # Disable Merge Trains.
 ```
 
 When you disable this feature, all existing merge trains are cancelled and

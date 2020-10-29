@@ -1,0 +1,11 @@
+#import "../fragments/integration_item.fragment.graphql"
+
+query getIntegrations($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    alertManagementIntegrations {
+      nodes {
+        ...IntegrationItem
+      }
+    }
+  }
+}

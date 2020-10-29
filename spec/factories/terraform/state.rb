@@ -19,7 +19,7 @@ FactoryBot.define do
 
     trait :with_version do
       after(:create) do |state|
-        create(:terraform_state_version, :with_file, terraform_state: state)
+        create(:terraform_state_version, terraform_state: state)
       end
     end
 

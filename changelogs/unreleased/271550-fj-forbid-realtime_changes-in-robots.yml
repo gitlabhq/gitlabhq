@@ -1,0 +1,5 @@
+---
+title: Disallow realtime_changes route in robots.txt
+merge_request: 45986
+author:
+type: changed

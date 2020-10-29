@@ -1,6 +1,10 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
+
+Vue.use(VueApollo);
 
 export default el => {
   if (!el) {
@@ -24,7 +28,21 @@ export default el => {
     opsgenieMvcFormPath,
     opsgenieMvcEnabled,
     opsgenieMvcTargetUrl,
+    projectPath,
   } = el.dataset;
+
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(
+      {},
+      {
+        cacheConfig: {},
+      },
+    ),
+  });
+
+  apolloProvider.clients.defaultClient.cache.writeData({
+    data: {},
+  });
 
   return new Vue({
     el,
@@ -51,7 +69,9 @@ export default el => {
         opsgenieMvcTargetUrl,
         opsgenieMvcIsAvailable: parseBoolean(opsgenieMvcAvailable),
       },
+      projectPath,
     },
+    apolloProvider,
     components: {
       AlertSettingsWrapper,
     },

@@ -114,7 +114,7 @@
     "mock-apollo-client": "^0.4.0",
     "monaco-editor": "^0.20.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
-    "monaco-yaml": "^2.4.1",
+    "monaco-yaml": "^2.5.1",
     "mousetrap": "1.6.5",
     "pdfjs-dist": "^2.0.943",
     "pikaday": "^1.8.0",

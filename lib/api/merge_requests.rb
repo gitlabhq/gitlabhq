@@ -8,6 +8,8 @@ module API
 
     before { authenticate_non_get! }
 
+    feature_category :code_review
+
     helpers Helpers::MergeRequestsHelpers
 
     # EE::API::MergeRequests would override the following helpers

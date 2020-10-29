@@ -928,6 +928,21 @@ type AlertTodoCreatePayload {
 }
 
 """
+User availability status
+"""
+enum AvailabilityEnum {
+  """
+  Busy
+  """
+  BUSY
+
+  """
+  Not Set
+  """
+  NOT_SET
+}
+
+"""
 An emoji awarded by a user
 """
 type AwardEmoji {
@@ -19320,6 +19335,11 @@ type TerraformState {
   id: ID!
 
   """
+  The latest version of the Terraform state
+  """
+  latestVersion: TerraformStateVersion
+
+  """
   Timestamp the Terraform state was locked
   """
   lockedAt: Time
@@ -19473,6 +19493,28 @@ type TerraformStateUnlockPayload {
   Errors encountered during execution of the mutation.
   """
   errors: [String!]!
+}
+
+type TerraformStateVersion {
+  """
+  Timestamp the version was created
+  """
+  createdAt: Time!
+
+  """
+  The user that created this version
+  """
+  createdByUser: User
+
+  """
+  ID of the Terraform state version
+  """
+  id: ID!
+
+  """
+  Timestamp the version was updated
+  """
+  updatedAt: Time!
 }
 
 """
@@ -21450,6 +21492,11 @@ enum UserState {
 }
 
 type UserStatus {
+  """
+  User availability status
+  """
+  availability: AvailabilityEnum!
+
   """
   String representation of emoji
   """

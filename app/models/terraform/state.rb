@@ -17,8 +17,15 @@ module Terraform
     belongs_to :project
     belongs_to :locked_by_user, class_name: 'User'
 
-    has_many :versions, class_name: 'Terraform::StateVersion', foreign_key: :terraform_state_id
-    has_one :latest_version, -> { ordered_by_version_desc }, class_name: 'Terraform::StateVersion', foreign_key: :terraform_state_id
+    has_many :versions,
+      class_name: 'Terraform::StateVersion',
+      foreign_key: :terraform_state_id,
+      inverse_of: :terraform_state
+
+    has_one :latest_version, -> { ordered_by_version_desc },
+      class_name: 'Terraform::StateVersion',
+      foreign_key: :terraform_state_id,
+      inverse_of: :terraform_state
 
     scope :versioning_not_enabled, -> { where(versioning_enabled: false) }
     scope :ordered_by_name, -> { order(:name) }

@@ -2392,6 +2392,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AvailabilityEnum",
+          "description": "User availability status",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NOT_SET",
+              "description": "Not Set",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUSY",
+              "description": "Busy",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AwardEmoji",
           "description": "An emoji awarded by a user",
@@ -56012,6 +56035,20 @@
               "deprecationReason": null
             },
             {
+              "name": "latestVersion",
+              "description": "The latest version of the Terraform state",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TerraformStateVersion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "lockedAt",
               "description": "Timestamp the Terraform state was locked",
               "args": [
@@ -56474,6 +56511,87 @@
                       "ofType": null
                     }
                   }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TerraformStateVersion",
+          "description": null,
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp the version was created",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createdByUser",
+              "description": "The user that created this version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the Terraform state version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp the version was updated",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
                 }
               },
               "isDeprecated": false,
@@ -62028,6 +62146,24 @@
           "name": "UserStatus",
           "description": null,
           "fields": [
+            {
+              "name": "availability",
+              "description": "User availability status",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AvailabilityEnum",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "emoji",
               "description": "String representation of emoji",
