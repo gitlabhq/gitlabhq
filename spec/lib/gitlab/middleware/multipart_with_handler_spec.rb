@@ -139,6 +139,58 @@ RSpec.describe Gitlab::Middleware::Multipart do
           subject
         end
       end
+
+      context 'with invalid key in header' do
+        include_context 'with one temporary file for multipart'
+
+        RSpec.shared_examples 'rejecting the invalid key' do |key_in_header:, key_in_upload_params:, error_message:|
+          let(:rewritten_fields) { rewritten_fields_hash(key_in_header => uploaded_filepath) }
+          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: key_in_upload_params, filename: filename, remote_id: remote_id) }
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(RuntimeError, error_message)
+          end
+        end
+
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: 'user[avatar',
+                        key_in_upload_params: 'user[avatar]',
+                        error_message: 'invalid field: "user[avatar"'
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: '[user]avatar',
+                        key_in_upload_params: 'user[avatar]',
+                        error_message: 'invalid field: "[user]avatar"'
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: 'user[]avatar',
+                        key_in_upload_params: 'user[avatar]',
+                        error_message: 'invalid field: "user[]avatar"'
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: 'user[avatar[image[url]]]',
+                        key_in_upload_params: 'user[avatar]',
+                        error_message: 'invalid field: "user[avatar[image[url]]]"'
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: '[]',
+                        key_in_upload_params: 'user[avatar]',
+                        error_message: 'invalid field: "[]"'
+        it_behaves_like 'rejecting the invalid key',
+                        key_in_header: 'x' * 11000,
+                        key_in_upload_params: 'user[avatar]',
+                        error_message: "invalid field: \"#{'x' * 11000}\""
+      end
+
+      context 'with key with unbalanced brackets in header' do
+        include_context 'with one temporary file for multipart'
+
+        let(:invalid_key) { 'user[avatar' }
+        let(:rewritten_fields) { rewritten_fields_hash( invalid_key => uploaded_filepath) }
+        let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'user[avatar]', filename: filename, remote_id: remote_id) }
+
+        it 'builds no UploadedFile' do
+          expect(app).not_to receive(:call)
+
+          expect { subject }.to raise_error(RuntimeError, "invalid field: \"#{invalid_key}\"")
+        end
+      end
     end
   end
 end

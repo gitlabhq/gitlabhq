@@ -31,6 +31,7 @@ module Gitlab
       RACK_ENV_KEY = 'HTTP_GITLAB_WORKHORSE_MULTIPART_FIELDS'
       JWT_PARAM_SUFFIX = '.gitlab-workhorse-upload'
       JWT_PARAM_FIXED_KEY = 'upload'
+      REWRITTEN_FIELD_NAME_MAX_LENGTH = 10000.freeze
 
       class Handler
         def initialize(env, message)
@@ -41,6 +42,8 @@ module Gitlab
 
         def with_open_files
           @rewritten_fields.each do |field, tmp_path|
+            raise "invalid field: #{field.inspect}" unless valid_field_name?(field)
+
             parsed_field = Rack::Utils.parse_nested_query(field)
             raise "unexpected field: #{field.inspect}" unless parsed_field.count == 1
 
@@ -108,6 +111,17 @@ module Gitlab
 
         private
 
+        def valid_field_name?(name)
+          # length validation
+          return false if name.size >= REWRITTEN_FIELD_NAME_MAX_LENGTH
+
+          # brackets validation
+          return false if name.include?('[]') || name.start_with?('[', ']')
+          return false unless ::Gitlab::Utils.valid_brackets?(name, allow_nested: false)
+
+          true
+        end
+
         def package_allowed_paths
           packages_config = ::Gitlab.config.packages
           return [] unless allow_packages_storage_path?(packages_config)
@@ -140,6 +154,8 @@ module Gitlab
       class HandlerForJWTParams < Handler
         def with_open_files
           @rewritten_fields.keys.each do |field|
+            raise "invalid field: #{field.inspect}" unless valid_field_name?(field)
+
             parsed_field = Rack::Utils.parse_nested_query(field)
             raise "unexpected field: #{field.inspect}" unless parsed_field.count == 1
 
