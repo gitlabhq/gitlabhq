@@ -7,6 +7,8 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
+    feature_category :package_registry
+
     before do
       require_packages_enabled!
       authenticate!

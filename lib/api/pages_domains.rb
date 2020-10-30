@@ -4,6 +4,8 @@ module API
   class PagesDomains < ::API::Base
     include PaginationParams
 
+    feature_category :pages
+
     PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)
 
     before do

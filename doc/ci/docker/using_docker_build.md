@@ -302,6 +302,58 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
+#### Enable registry mirror for `docker:dind` service
+
+When the Docker daemon starts inside of the service container, it uses
+the default configuration. You may want to configure a [registry
+mirror](https://docs.docker.com/registry/recipes/mirror/) for
+performance improvements and ensuring you don't reach DockerHub rate limits.
+
+##### Inside `.gitlab-ci.yml`
+
+You can append extra CLI flags to the `dind` service to set the registry
+mirror:
+
+```yaml
+services:
+   - name: docker:19.03.13-dind
+     command: ["--registry-mirror", "https://registry-mirror.example.com"] # Specify the registry mirror to use.
+```
+
+##### Docker executor inside GitLab Runner configuration
+
+If you are an administrator of GitLab Runner and you always want to use
+the mirror for every `dind` service, update the
+[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+to specify a [volume
+mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+
+Given we have a file `/opt/docker/daemon.json` with the following
+content:
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry-mirror.example.com"
+  ]
+}
+```
+
+Update the `config.toml` for GitLab Runner to mount the file to
+`/etc/docker/daemon.json`. This would mount the file for **every**
+container that is created by GitLab Runner. The configuration will be
+picked up by the `dind` service.
+
+```toml
+[[runners]]
+  ...
+  executor = "docker"
+  [runners.docker]
+    image = "alpine:3.12"
+    privileged = true
+    volumes = ["/opt/docker/daemon.json:/etc/docker/daemon.json:ro"]
+```
+
 ### Use Docker socket binding
 
 The third approach is to bind-mount `/var/run/docker.sock` into the

@@ -120,7 +120,7 @@ export default {
             ? __('The snippet is visible only to project members.')
             : __('The snippet is visible only to me.');
         case 'internal':
-          return __('The snippet is visible to any logged in user.');
+          return __('The snippet is visible to any logged in user except external users.');
         default:
           return __('The snippet can be accessed without any authentication.');
       }

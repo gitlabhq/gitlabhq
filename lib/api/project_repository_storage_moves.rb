@@ -6,6 +6,8 @@ module API
 
     before { authenticated_as_admin! }
 
+    feature_category :gitaly
+
     resource :project_repository_storage_moves do
       desc 'Get a list of all project repository storage moves' do
         detail 'This feature was introduced in GitLab 13.0.'

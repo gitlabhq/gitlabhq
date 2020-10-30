@@ -90,7 +90,7 @@ function createComponent({ file }) {
 const findDiffHeader = wrapper => wrapper.find(DiffFileHeaderComponent);
 const findDiffContentArea = wrapper => wrapper.find('[data-testid="content-area"]');
 const findLoader = wrapper => wrapper.find('[data-testid="loader-icon"]');
-const findToggleLinks = wrapper => wrapper.findAll('[data-testid="toggle-link"]');
+const findToggleButton = wrapper => wrapper.find('[data-testid="expand-button"]');
 
 const toggleFile = wrapper => findDiffHeader(wrapper).vm.$emit('toggleFile');
 const isDisplayNone = element => element.style.display === 'none';
@@ -187,9 +187,11 @@ describe('DiffFile', () => {
         makeFileAutomaticallyCollapsed(store);
       });
 
-      it('should show the collapsed file warning with expansion link', () => {
-        expect(findDiffContentArea(wrapper).html()).toContain('This diff is collapsed');
-        expect(findToggleLinks(wrapper).length).toEqual(1);
+      it('should show the collapsed file warning with expansion button', () => {
+        expect(findDiffContentArea(wrapper).html()).toContain(
+          'Files with large changes are collapsed by default.',
+        );
+        expect(findToggleButton(wrapper).exists()).toBe(true);
       });
 
       it('should style the component so that it `.has-body` for layout purposes', () => {
@@ -292,8 +294,10 @@ describe('DiffFile', () => {
 
         await wrapper.vm.$nextTick();
 
-        expect(findDiffContentArea(wrapper).html()).toContain('This diff is collapsed');
-        expect(findToggleLinks(wrapper).length).toEqual(1);
+        expect(findDiffContentArea(wrapper).html()).toContain(
+          'Files with large changes are collapsed by default.',
+        );
+        expect(findToggleButton(wrapper).exists()).toBe(true);
       });
 
       it.each`

@@ -10884,6 +10884,9 @@ msgstr ""
 msgid "Expand approvers"
 msgstr ""
 
+msgid "Expand file"
+msgstr ""
+
 msgid "Expand milestones"
 msgstr ""
 
@@ -11585,6 +11588,9 @@ msgstr ""
 msgid "Files breadcrumb"
 msgstr ""
 
+msgid "Files with large changes are collapsed by default."
+msgstr ""
+
 msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
@@ -11783,7 +11789,7 @@ msgstr ""
 msgid "For help setting up the Service Desk for your instance, please contact an administrator."
 msgstr ""
 
-msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
+msgid "For internal projects, any logged in user except external users can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
 msgid "For more info, read the documentation."
@@ -14418,10 +14424,10 @@ msgstr ""
 msgid "Internal"
 msgstr ""
 
-msgid "Internal - The group and any internal projects can be viewed by any logged in user."
+msgid "Internal - The group and any internal projects can be viewed by any logged in user except external users."
 msgstr ""
 
-msgid "Internal - The project can be accessed by any logged in user."
+msgid "Internal - The project can be accessed by any logged in user except external users."
 msgstr ""
 
 msgid "Internal URL (optional)"
@@ -26477,7 +26483,7 @@ msgstr ""
 msgid "The global settings require you to enable Two-Factor Authentication for your account."
 msgstr ""
 
-msgid "The group and any internal projects can be viewed by any logged in user."
+msgid "The group and any internal projects can be viewed by any logged in user except external users."
 msgstr ""
 
 msgid "The group and any public projects can be viewed without any authentication."
@@ -26588,7 +26594,7 @@ msgstr ""
 msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
-msgid "The project can be accessed by any logged in user."
+msgid "The project can be accessed by any logged in user except external users."
 msgstr ""
 
 msgid "The project can be accessed by any user who is logged in."
@@ -26663,7 +26669,7 @@ msgstr ""
 msgid "The snippet is visible only to project members."
 msgstr ""
 
-msgid "The snippet is visible to any logged in user."
+msgid "The snippet is visible to any logged in user except external users."
 msgstr ""
 
 msgid "The specified tab is invalid, please select another"

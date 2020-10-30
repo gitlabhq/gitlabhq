@@ -6,6 +6,8 @@ module API
     include APIGuard
     helpers ::API::Helpers::EventsHelpers
 
+    feature_category :users
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

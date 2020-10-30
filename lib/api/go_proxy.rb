@@ -4,6 +4,8 @@ module API
     helpers Gitlab::Golang
     helpers ::API::Helpers::PackagesHelpers
 
+    feature_category :package_registry
+
     # basic semver, except case encoded (A => !a)
     MODULE_VERSION_REGEX = /v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([-.!a-z0-9]+))?(?:\+([-.!a-z0-9]+))?/.freeze
 

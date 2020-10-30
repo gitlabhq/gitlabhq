@@ -104,7 +104,7 @@ class FeatureFlagOptionParser
       end
 
       # Name is a first name
-      options.name = argv.first
+      options.name = argv.first.downcase.gsub(/-/, '_')
 
       options
     end

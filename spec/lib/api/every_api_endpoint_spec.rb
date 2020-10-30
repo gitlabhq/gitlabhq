@@ -37,7 +37,15 @@ RSpec.describe 'Every API endpoint' do
           ::API::Lint, ::API::Markdown, ::API::Members, ::API::MergeRequestDiffs,
           ::API::MergeRequests, ::API::MergeRequestApprovals, ::API::Metrics::Dashboard::Annotations,
           ::API::Metrics::UserStarredDashboards, ::API::Namespaces, ::API::Notes,
-          ::API::Discussions
+          ::API::Discussions, ::API::ResourceLabelEvents, ::API::ResourceMilestoneEvents,
+          ::API::ResourceStateEvents, ::API::NotificationSettings, ::API::ProjectPackages,
+          ::API::GroupPackages, ::API::PackageFiles, ::API::NugetPackages, ::API::PypiPackages,
+          ::API::ComposerPackages, ::API::ConanProjectPackages, ::API::ConanInstancePackages,
+          ::API::DebianGroupPackages, ::API::DebianProjectPackages, ::API::MavenPackages,
+          ::API::NpmPackages, ::API::GenericPackages, ::API::GoProxy, ::API::Pages,
+          ::API::PagesDomains, ::API::ProjectClusters, ::API::ProjectContainerRepositories,
+          ::API::ProjectEvents, ::API::ProjectExport, ::API::ProjectImport, ::API::ProjectHooks,
+          ::API::ProjectMilestones, ::API::ProjectRepositoryStorageMoves, ::API::Projects
         ]
         next unless completed_classes.include?(klass)
 

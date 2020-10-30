@@ -31,14 +31,16 @@ export const GROUP_VISIBILITY_TYPE = {
     'Public - The group and any public projects can be viewed without any authentication.',
   ),
   internal: __(
-    'Internal - The group and any internal projects can be viewed by any logged in user.',
+    'Internal - The group and any internal projects can be viewed by any logged in user except external users.',
   ),
   private: __('Private - The group and its projects can only be viewed by members.'),
 };
 
 export const PROJECT_VISIBILITY_TYPE = {
   public: __('Public - The project can be accessed without any authentication.'),
-  internal: __('Internal - The project can be accessed by any logged in user.'),
+  internal: __(
+    'Internal - The project can be accessed by any logged in user except external users.',
+  ),
   private: __(
     'Private - Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
   ),

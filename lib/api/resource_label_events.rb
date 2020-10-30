@@ -7,7 +7,7 @@ module API
 
     before { authenticate! }
 
-    Helpers::ResourceLabelEventsHelpers.eventable_types.each do |eventable_type|
+    Helpers::ResourceLabelEventsHelpers.feature_category_per_eventable_type.each do |eventable_type, feature_category|
       parent_type = eventable_type.parent_class.to_s.underscore
       eventables_str = eventable_type.to_s.underscore.pluralize
 
@@ -24,7 +24,7 @@ module API
           use :pagination
         end
 
-        get ":id/#{eventables_str}/:eventable_id/resource_label_events" do
+        get ":id/#{eventables_str}/:eventable_id/resource_label_events", feature_category: feature_category do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
           events = eventable.resource_label_events.inc_relations
@@ -40,7 +40,7 @@ module API
           requires :event_id, type: String, desc: 'The ID of a resource label event'
           requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
         end
-        get ":id/#{eventables_str}/:eventable_id/resource_label_events/:event_id" do
+        get ":id/#{eventables_str}/:eventable_id/resource_label_events/:event_id", feature_category: feature_category do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
           event = eventable.resource_label_events.find(params[:event_id])

@@ -8,6 +8,8 @@ module API
       authorize_packages_access!(user_group)
     end
 
+    feature_category :package_registry
+
     helpers ::API::Helpers::PackagesHelpers
 
     params do

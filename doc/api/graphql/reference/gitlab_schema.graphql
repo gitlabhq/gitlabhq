@@ -17273,14 +17273,14 @@ type ReleaseLinks {
   editUrl: String
 
   """
-  HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `open_issues_url`
+  HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `openedIssuesUrl`
   """
-  issuesUrl: String @deprecated(reason: "Use `open_issues_url`. Deprecated in 13.6")
+  issuesUrl: String @deprecated(reason: "Use `openedIssuesUrl`. Deprecated in 13.6")
 
   """
-  HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `open_merge_requests_url`
+  HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `openedMergeRequestsUrl`
   """
-  mergeRequestsUrl: String @deprecated(reason: "Use `open_merge_requests_url`. Deprecated in 13.6")
+  mergeRequestsUrl: String @deprecated(reason: "Use `openedMergeRequestsUrl`. Deprecated in 13.6")
 
   """
   HTTP URL of the merge request page , filtered by this release and `state=merged`
@@ -17290,12 +17290,12 @@ type ReleaseLinks {
   """
   HTTP URL of the issues page, filtered by this release and `state=open`
   """
-  openIssuesUrl: String
+  openedIssuesUrl: String
 
   """
   HTTP URL of the merge request page, filtered by this release and `state=open`
   """
-  openMergeRequestsUrl: String
+  openedMergeRequestsUrl: String
 
   """
   HTTP URL of the release

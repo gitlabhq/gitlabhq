@@ -101,3 +101,5 @@ apollo.config.js
 /tmp/matching_tests.txt
 ee/changelogs/unreleased-ee
 /sitespeed-result
+tags.lock
+tags.temp

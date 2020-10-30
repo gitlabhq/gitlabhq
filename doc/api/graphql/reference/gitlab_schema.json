@@ -49821,7 +49821,7 @@
             },
             {
               "name": "issuesUrl",
-              "description": "HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `open_issues_url`",
+              "description": "HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `openedIssuesUrl`",
               "args": [
 
               ],
@@ -49831,11 +49831,11 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `open_issues_url`. Deprecated in 13.6"
+              "deprecationReason": "Use `openedIssuesUrl`. Deprecated in 13.6"
             },
             {
               "name": "mergeRequestsUrl",
-              "description": "HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `open_merge_requests_url`",
+              "description": "HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `openedMergeRequestsUrl`",
               "args": [
 
               ],
@@ -49845,7 +49845,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `open_merge_requests_url`. Deprecated in 13.6"
+              "deprecationReason": "Use `openedMergeRequestsUrl`. Deprecated in 13.6"
             },
             {
               "name": "mergedMergeRequestsUrl",
@@ -49862,7 +49862,7 @@
               "deprecationReason": null
             },
             {
-              "name": "openIssuesUrl",
+              "name": "openedIssuesUrl",
               "description": "HTTP URL of the issues page, filtered by this release and `state=open`",
               "args": [
 
@@ -49876,7 +49876,7 @@
               "deprecationReason": null
             },
             {
-              "name": "openMergeRequestsUrl",
+              "name": "openedMergeRequestsUrl",
               "description": "HTTP URL of the merge request page, filtered by this release and `state=open`",
               "args": [
 

@@ -8,6 +8,8 @@ module API
     helpers Helpers::FileUploadHelpers
     helpers Helpers::RateLimiter
 
+    feature_category :importers
+
     helpers do
       def import_params
         declared_params(include_missing: false)

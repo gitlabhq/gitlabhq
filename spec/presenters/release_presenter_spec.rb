@@ -64,8 +64,8 @@ RSpec.describe ReleasePresenter do
     end
   end
 
-  describe '#open_merge_requests_url' do
-    subject { presenter.open_merge_requests_url }
+  describe '#opened_merge_requests_url' do
+    subject { presenter.opened_merge_requests_url }
 
     it 'returns merge requests url with state=open' do
       is_expected.to eq(project_merge_requests_url(project, opened_url_params))
@@ -112,8 +112,8 @@ RSpec.describe ReleasePresenter do
     end
   end
 
-  describe '#open_issues_url' do
-    subject { presenter.open_issues_url }
+  describe '#opened_issues_url' do
+    subject { presenter.opened_issues_url }
 
     it 'returns issues url with state=open' do
       is_expected.to eq(project_issues_url(project, opened_url_params))

@@ -5,6 +5,8 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
+    feature_category :package_registry
+
     content_type :md5, 'text/plain'
     content_type :sha1, 'text/plain'
     content_type :binary, 'application/octet-stream'

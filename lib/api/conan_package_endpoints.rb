@@ -29,6 +29,8 @@ module API
     CONAN_FILES = (Gitlab::Regex::Packages::CONAN_RECIPE_FILES + Gitlab::Regex::Packages::CONAN_PACKAGE_FILES).freeze
 
     included do
+      feature_category :package_registry
+
       helpers ::API::Helpers::PackagesManagerClientsHelpers
       helpers ::API::Helpers::Packages::Conan::ApiHelpers
       helpers ::API::Helpers::RelatedResourcesHelpers

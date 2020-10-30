@@ -9,9 +9,14 @@ RSpec.describe Ci::DeleteObjectsWorker do
 
   describe '#perform' do
     it 'executes a service' do
+      allow(worker).to receive(:max_running_jobs).and_return(25)
+
       expect_next_instance_of(Ci::DeleteObjectsService) do |instance|
         expect(instance).to receive(:execute)
-        expect(instance).to receive(:remaining_batches_count).once.and_call_original
+        expect(instance).to receive(:remaining_batches_count)
+          .with(max_batch_count: 25)
+          .once
+          .and_call_original
       end
 
       worker.perform

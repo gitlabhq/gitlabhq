@@ -10,6 +10,8 @@ module API
     helpers ::API::Helpers::PackagesManagerClientsHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
 
+    feature_category :package_registry
+
     POSITIVE_INTEGER_REGEX = %r{\A[1-9]\d*\z}.freeze
     NON_NEGATIVE_INTEGER_REGEX = %r{\A0|[1-9]\d*\z}.freeze
 

@@ -30,6 +30,8 @@ class GitlabSchema < GraphQL::Schema
 
   default_max_page_size 100
 
+  lazy_resolve ::Gitlab::Graphql::Lazy, :force
+
   class << self
     def multiplex(queries, **kwargs)
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])

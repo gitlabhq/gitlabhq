@@ -42,10 +42,10 @@ RSpec.describe 'Query.project(fullPath).releases()' do
           }
           links {
             selfUrl
-            openMergeRequestsUrl
+            openedMergeRequestsUrl
             mergedMergeRequestsUrl
             closedMergeRequestsUrl
-            openIssuesUrl
+            openedIssuesUrl
             closedIssuesUrl
             mergeRequestsUrl
             issuesUrl
@@ -111,10 +111,10 @@ RSpec.describe 'Query.project(fullPath).releases()' do
           },
           'links' => {
             'selfUrl' => project_release_url(project, release),
-            'openMergeRequestsUrl' => project_merge_requests_url(project, opened_url_params),
+            'openedMergeRequestsUrl' => project_merge_requests_url(project, opened_url_params),
             'mergedMergeRequestsUrl' => project_merge_requests_url(project, merged_url_params),
             'closedMergeRequestsUrl' => project_merge_requests_url(project, closed_url_params),
-            'openIssuesUrl' => project_issues_url(project, opened_url_params),
+            'openedIssuesUrl' => project_issues_url(project, opened_url_params),
             'closedIssuesUrl' => project_issues_url(project, closed_url_params),
             'mergeRequestsUrl' => project_merge_requests_url(project, opened_url_params),
             'issuesUrl' => project_issues_url(project, opened_url_params)

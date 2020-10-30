@@ -16,7 +16,7 @@ Values for the project visibility level are:
 - `private`:
   Project access must be granted explicitly for each user.
 - `internal`:
-  The project can be cloned by any logged in user.
+  The project can be cloned by any logged in user except [external users](../user/permissions.md#external-users).
 - `public`:
   The project can be accessed without any authentication.
 

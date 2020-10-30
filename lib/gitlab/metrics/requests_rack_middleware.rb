@@ -18,6 +18,15 @@ module Gitlab
       FEATURE_CATEGORY_HEADER = 'X-Gitlab-Feature-Category'
       FEATURE_CATEGORY_DEFAULT = 'unknown'
 
+      # These were the top 5 categories at a point in time, chosen as a
+      # reasonable default. If we initialize every category we'll end up
+      # with an explosion in unused metric combinations, but we want the
+      # most common ones to be always present.
+      FEATURE_CATEGORIES_TO_INITIALIZE = ['authentication_and_authorization',
+                                          'code_review', 'continuous_integration',
+                                          'not_owned', 'source_code_management',
+                                          FEATURE_CATEGORY_DEFAULT].freeze
+
       def initialize(app)
         @app = app
       end
@@ -46,16 +55,10 @@ module Gitlab
         #
         # For example `rate(http_requests_total{status="500"}[1m])` would return
         # no data until the first 500 error would occur.
-
-        # The list of feature categories is currently not needed by the application
-        # anywhere else. So no need to keep these in memory forever.
-        # Doing it here, means we're only reading the file on boot.
-        feature_categories = YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:strip).uniq << FEATURE_CATEGORY_DEFAULT
-
         HTTP_METHODS.each do |method, statuses|
           http_request_duration_seconds.get({ method: method })
 
-          statuses.product(feature_categories) do |status, feature_category|
+          statuses.product(FEATURE_CATEGORIES_TO_INITIALIZE) do |status, feature_category|
             http_requests_total.get({ method: method, status: status, feature_category: feature_category })
           end
         end

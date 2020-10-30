@@ -4,6 +4,8 @@ module API
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::DependencyProxyHelpers
 
+    feature_category :package_registry
+
     NPM_ENDPOINT_REQUIREMENTS = {
       package_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze

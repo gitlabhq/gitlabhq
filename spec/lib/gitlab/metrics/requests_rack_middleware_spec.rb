@@ -129,12 +129,11 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
     describe '.initialize_metrics', :prometheus do
       it "sets labels for http_requests_total" do
-        feature_categories = YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:strip) << described_class::FEATURE_CATEGORY_DEFAULT
         expected_labels = []
 
         described_class::HTTP_METHODS.each do |method, statuses|
           statuses.each do |status|
-            feature_categories.each do |feature_category|
+            described_class::FEATURE_CATEGORIES_TO_INITIALIZE.each do |feature_category|
               expected_labels << { method: method.to_s, status: status.to_s, feature_category: feature_category.to_s }
             end
           end
@@ -151,6 +150,13 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         described_class.initialize_metrics
 
         expect(described_class.http_request_duration_seconds.values.keys).to include(*expected_labels)
+      end
+
+      it 'has every label in config/feature_categories.yml' do
+        defaults = [described_class::FEATURE_CATEGORY_DEFAULT, 'not_owned']
+        feature_categories = YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:strip) + defaults
+
+        expect(described_class::FEATURE_CATEGORIES_TO_INITIALIZE).to all(be_in(feature_categories))
       end
     end
   end

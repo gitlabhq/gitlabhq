@@ -1,0 +1,7 @@
+---
+name: graphql_lazy_authorization
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45263
+rollout_issue_url: 
+type: development
+group: group::plan
+default_enabled: false

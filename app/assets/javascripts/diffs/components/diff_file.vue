@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
-import { GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
@@ -19,6 +19,7 @@ export default {
   components: {
     DiffFileHeader,
     DiffContent,
+    GlButton,
     GlLoadingIcon,
   },
   directives: {
@@ -267,16 +268,21 @@ export default {
           <div v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
-          <div v-show="showWarning" class="nothing-here-block diff-collapsed">
-            {{ $options.i18n.collapsed }}
-            <a
-              class="click-to-expand"
-              data-testid="toggle-link"
-              href="#"
+          <div
+            v-show="showWarning"
+            class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+          >
+            <p class="gl-mb-8">
+              {{ $options.i18n.autoCollapsed }}
+            </p>
+            <gl-button
+              data-testid="expand-button"
+              category="secondary"
+              variant="warning"
               @click.prevent="handleToggle"
             >
               {{ $options.i18n.expand }}
-            </a>
+            </gl-button>
           </div>
           <diff-content
             v-show="showContent"

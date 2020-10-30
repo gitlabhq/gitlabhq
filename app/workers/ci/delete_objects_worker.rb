@@ -14,7 +14,7 @@ module Ci
 
     def remaining_work_count(*args)
       @remaining_work_count ||= service
-        .remaining_batches_count(max_batch_count: remaining_capacity)
+        .remaining_batches_count(max_batch_count: max_running_jobs)
     end
 
     def max_running_jobs

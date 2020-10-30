@@ -21,12 +21,12 @@ on the repository.
 
 ### Internal projects
 
-Internal projects can be cloned by any logged in user.
+Internal projects can be cloned by any logged in user except [external users](../user/permissions.md#external-users).
 
 They will also be listed in the public access directory (`/public`), but only for logged
 in users.
 
-Any logged in user will have [Guest permissions](../user/permissions.md)
+Any logged in user except [external users](../user/permissions.md#external-users) will have [Guest permissions](../user/permissions.md)
 on the repository.
 
 NOTE: **Note:**
