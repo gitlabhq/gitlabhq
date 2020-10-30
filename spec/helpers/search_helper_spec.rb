@@ -143,6 +143,7 @@ RSpec.describe SearchHelper do
       context "with a current project" do
         before do
           @project = create(:project, :repository)
+          allow(self).to receive(:can?).with(user, :read_feature_flag, @project).and_return(false)
         end
 
         it "includes project-specific sections", :aggregate_failures do
@@ -162,6 +163,7 @@ RSpec.describe SearchHelper do
         context 'when user has project access' do
           before do
             @project = create(:project, :repository, namespace: user.namespace)
+            allow(self).to receive(:can?).with(user, :read_feature_flag, @project).and_return(true)
           end
 
           it 'includes issues by iid', :aggregate_failures do

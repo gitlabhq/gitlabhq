@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :requires_admin, :skip_live_env do
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env do
     describe '2FA' do
       let(:owner_user) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_2fa_owner_username_1, Runtime::Env.gitlab_qa_2fa_owner_password_1)

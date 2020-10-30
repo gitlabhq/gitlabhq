@@ -12,7 +12,7 @@
                                               qa_selector: 'search_term_field' },
                                             aria: { label: _('Search or jump to…') }
           %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-          .dropdown-menu.dropdown-select.js-dashboard-search-options
+          .dropdown-menu.dropdown-select{ data: { testid: 'dashboard-search-options' } }
             = dropdown_content do
               %ul
                 %li.dropdown-menu-empty-item

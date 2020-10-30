@@ -4,12 +4,13 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
 "<gl-form-stub class=\\"gl-mt-6\\">
   <h5 class=\\"gl-font-lg gl-my-5\\">Add new integrations</h5>
   <gl-form-group-stub id=\\"integration-type\\" label=\\"1. Select integration type\\" label-for=\\"integration-type\\">
-    <gl-form-select-stub id=\\"integration-type\\" options=\\"[object Object],[object Object],[object Object],[object Object]\\" value=\\"\\"></gl-form-select-stub> <span class=\\"gl-text-gray-500\\"><gl-sprintf-stub message=\\"Learn more about our upcoming %{linkStart}integrations%{linkEnd}\\"></gl-sprintf-stub></span>
+    <gl-form-select-stub options=\\"[object Object],[object Object],[object Object],[object Object]\\" value=\\"\\"></gl-form-select-stub> <span class=\\"gl-text-gray-500\\"><gl-sprintf-stub message=\\"Learn more about our upcoming %{linkStart}integrations%{linkEnd}\\"></gl-sprintf-stub></span>
   </gl-form-group-stub>
   <b-collapse-stub tag=\\"div\\" class=\\"gl-mt-3\\">
     <gl-form-group-stub id=\\"name-integration\\" label=\\"2. Name integration\\" label-for=\\"name-integration\\">
-      <b-form-input-stub id=\\"name-integration\\" value=\\"\\" placeholder=\\"Enter integration name\\" debounce=\\"0\\" type=\\"text\\" class=\\"gl-form-input\\"></b-form-input-stub>
+      <b-form-input-stub value=\\"\\" placeholder=\\"Enter integration name\\" debounce=\\"0\\" type=\\"text\\" class=\\"gl-form-input\\"></b-form-input-stub>
     </gl-form-group-stub>
+    <!---->
     <div class=\\"gl-display-flex gl-justify-content-end\\">
       <gl-button-stub category=\\"primary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" buttontextclasses=\\"\\" type=\\"reset\\" class=\\"gl-mr-3 js-no-auto-disable\\">Cancel</gl-button-stub>
       <gl-button-stub category=\\"secondary\\" variant=\\"success\\" size=\\"medium\\" icon=\\"\\" buttontextclasses=\\"\\" type=\\"submit\\" class=\\"gl-mr-1 js-no-auto-disable\\">Save and test payload</gl-button-stub>

@@ -3,6 +3,7 @@
 module SearchHelpers
   def fill_in_search(text)
     page.within('.search-input-wrap') do
+      find('#search').click
       fill_in('search', with: text)
     end
 

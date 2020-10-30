@@ -2498,6 +2498,9 @@ msgstr ""
 msgid "AlertSettings|2. Name integration"
 msgstr ""
 
+msgid "AlertSettings|5. Map fields (optional)"
+msgstr ""
+
 msgid "AlertSettings|API URL"
 msgstr ""
 
@@ -2571,6 +2574,9 @@ msgid "AlertSettings|Test alert sent successfully. If you have made other change
 msgstr ""
 
 msgid "AlertSettings|Test failed. Do you still want to save your changes anyway?"
+msgstr ""
+
+msgid "AlertSettings|The default GitLab alert keys are listed below. In the event an exact match could be found in the sample payload provided, that key will be mapped automatically. In all other cases, please define which payload key should map to the specified GitLab key. Any payload keys not shown in this list will not display in the alert list, but will display on the alert details page."
 msgstr ""
 
 msgid "AlertSettings|There was an error updating the alert settings."
@@ -17468,7 +17474,13 @@ msgstr ""
 msgid "Multi-project Runners cannot be removed"
 msgstr ""
 
+msgid "Multiple HTTP integrations are not supported for this project"
+msgstr ""
+
 msgid "Multiple IP address ranges are supported."
+msgstr ""
+
+msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
 msgid "Multiple domains are supported."
@@ -30562,6 +30574,12 @@ msgid "You have imported from this project %{numberOfPreviousImports} times befo
 msgstr ""
 
 msgid "You have insufficient permissions to create a Todo for this alert"
+msgstr ""
+
+msgid "You have insufficient permissions to create an HTTP integration for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to update this HTTP integration"
 msgstr ""
 
 msgid "You have no permissions"

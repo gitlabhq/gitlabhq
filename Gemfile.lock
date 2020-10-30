@@ -3,7 +3,6 @@ GEM
   specs:
     RedCloth (4.3.2)
     abstract_type (0.0.7)
-    ace-rails-ap (4.1.2)
     acme-client (2.0.6)
       faraday (>= 0.17, < 2.0.0)
     actioncable (6.0.3.3)
@@ -1253,7 +1252,6 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.3.2)
-  ace-rails-ap (~> 4.1.0)
   acme-client (~> 2.0, >= 2.0.6)
   activerecord-explain-analyze (~> 0.1)
   acts-as-taggable-on (~> 6.0)

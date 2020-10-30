@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  describe Service::DockerRun::K3s do
+  RSpec.describe Service::DockerRun::K3s do
     describe '#host_name' do
       context 'in CI' do
         let(:name) { 'k3s-12345' }

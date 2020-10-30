@@ -272,9 +272,6 @@ gem 'loofah', '~> 2.2'
 # Working with license
 gem 'licensee', '~> 8.9'
 
-# Ace editor
-gem 'ace-rails-ap', '~> 4.1.0'
-
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.7'
 

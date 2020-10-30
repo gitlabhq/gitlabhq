@@ -1,0 +1,5 @@
+---
+title: Fix CI artifacts not uploading with tracing enabled and without NGINX
+merge_request: 46513
+author:
+type: fixed

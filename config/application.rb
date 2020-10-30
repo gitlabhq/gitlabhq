@@ -201,7 +201,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "performance_bar.css"
-    config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "disable_animations.css"
     config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"

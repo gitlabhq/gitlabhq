@@ -6,12 +6,17 @@ import { defaultAlertSettingsConfig } from './util';
 describe('AlertsSettingsFormNew', () => {
   let wrapper;
 
-  const createComponent = ({ methods } = {}, data) => {
+  const createComponent = (
+    { methods } = {},
+    data,
+    multipleHttpIntegrationsCustomMapping = false,
+  ) => {
     wrapper = shallowMount(AlertsSettingsForm, {
       data() {
         return { ...data };
       },
       provide: {
+        glFeatures: { multipleHttpIntegrationsCustomMapping },
         ...defaultAlertSettingsConfig,
       },
       methods,
@@ -23,6 +28,7 @@ describe('AlertsSettingsFormNew', () => {
   const findSelect = () => wrapper.find(GlFormSelect);
   const findFormSteps = () => wrapper.find(GlCollapse);
   const findFormName = () => wrapper.find(GlFormInput);
+  const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
 
   afterEach(() => {
     if (wrapper) {
@@ -52,6 +58,21 @@ describe('AlertsSettingsFormNew', () => {
       await wrapper.vm.$nextTick();
 
       expect(findFormName().isVisible()).toBe(true);
+    });
+  });
+
+  describe('Mapping builder section', () => {
+    beforeEach(() => {
+      createComponent({}, {});
+    });
+
+    it('should NOT render when feature flag disabled', () => {
+      expect(findMappingBuilderSection().exists()).toBe(false);
+    });
+
+    it('should render when feature flag is enabled', () => {
+      createComponent({}, {}, true);
+      expect(findMappingBuilderSection().exists()).toBe(true);
     });
   });
 });
