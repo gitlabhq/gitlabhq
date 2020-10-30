@@ -46,6 +46,10 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def nuget_package_name_regex
+        @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 

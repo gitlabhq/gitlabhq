@@ -307,6 +307,21 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
+  describe '.nuget_package_name_regex' do
+    subject { described_class.nuget_package_name_regex }
+
+    it { is_expected.to match('My.Package') }
+    it { is_expected.to match('My.Package.Mvc') }
+    it { is_expected.to match('MyPackage') }
+    it { is_expected.to match('My.23.Package') }
+    it { is_expected.to match('My23Package') }
+    it { is_expected.to match('runtime.my-test64.runtime.package.Mvc') }
+    it { is_expected.to match('my_package') }
+    it { is_expected.not_to match('My/package') }
+    it { is_expected.not_to match('../../../my_package') }
+    it { is_expected.not_to match('%2e%2e%2fmy_package') }
+  end
+
   describe '.semver_regex' do
     subject { described_class.semver_regex }
 
