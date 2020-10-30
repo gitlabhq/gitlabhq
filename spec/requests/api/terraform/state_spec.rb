@@ -125,6 +125,7 @@ RSpec.describe API::Terraform::State do
           expect { request }.to change { Terraform::State.count }.by(0)
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(Gitlab::Json.parse(response.body)).to be_empty
         end
 
         context 'on Unicorn', :unicorn do
@@ -132,6 +133,7 @@ RSpec.describe API::Terraform::State do
             expect { request }.to change { Terraform::State.count }.by(0)
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(Gitlab::Json.parse(response.body)).to be_empty
           end
         end
       end
@@ -167,6 +169,7 @@ RSpec.describe API::Terraform::State do
           expect { request }.to change { Terraform::State.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(Gitlab::Json.parse(response.body)).to be_empty
         end
 
         context 'on Unicorn', :unicorn do
@@ -174,6 +177,7 @@ RSpec.describe API::Terraform::State do
             expect { request }.to change { Terraform::State.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(Gitlab::Json.parse(response.body)).to be_empty
           end
         end
       end
@@ -206,10 +210,11 @@ RSpec.describe API::Terraform::State do
     context 'with maintainer permissions' do
       let(:current_user) { maintainer }
 
-      it 'deletes the state' do
+      it 'deletes the state and returns empty body' do
         expect { request }.to change { Terraform::State.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Json.parse(response.body)).to be_empty
       end
     end
 
