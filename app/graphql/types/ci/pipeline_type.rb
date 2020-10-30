@@ -56,6 +56,12 @@ module Types
             description: 'Specifies if a pipeline can be canceled',
             method: :cancelable?,
             null: false
+
+      field :jobs,
+            ::Types::Ci::JobType.connection_type,
+            null: true,
+            description: 'Jobs belonging to the pipeline',
+            method: :statuses
     end
   end
 end

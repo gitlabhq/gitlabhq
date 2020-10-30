@@ -156,6 +156,13 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
 
+      context 'composer package' do
+        it_behaves_like 'validating version to be SemVer compliant for', :composer_package
+
+        it { is_expected.to allow_value('dev-master').for(:version) }
+        it { is_expected.to allow_value('2.x-dev').for(:version) }
+      end
+
       context 'maven package' do
         subject { build_stubbed(:maven_package) }
 

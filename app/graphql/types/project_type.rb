@@ -191,6 +191,7 @@ module Types
           Types::Ci::PipelineType.connection_type,
           null: true,
           description: 'Build pipelines of the project',
+          extras: [:lookahead],
           resolver: Resolvers::ProjectPipelinesResolver
 
     field :pipeline,

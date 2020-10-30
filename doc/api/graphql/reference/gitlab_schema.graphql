@@ -13676,6 +13676,36 @@ type Pipeline {
   iid: String!
 
   """
+  Jobs belonging to the pipeline
+  """
+  jobs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Filter jobs by the type of security report they produce
+    """
+    securityReportTypes: [SecurityReportTypeEnum!]
+  ): CiJobConnection
+
+  """
   Specifies if a pipeline can be retried
   """
   retryable: Boolean!
@@ -18179,6 +18209,43 @@ type SecurityReportSummarySection {
   Total number of vulnerabilities
   """
   vulnerabilitiesCount: Int
+}
+
+enum SecurityReportTypeEnum {
+  """
+  API FUZZING scan report
+  """
+  API_FUZZING
+
+  """
+  CONTAINER SCANNING scan report
+  """
+  CONTAINER_SCANNING
+
+  """
+  COVERAGE FUZZING scan report
+  """
+  COVERAGE_FUZZING
+
+  """
+  DAST scan report
+  """
+  DAST
+
+  """
+  DEPENDENCY SCANNING scan report
+  """
+  DEPENDENCY_SCANNING
+
+  """
+  SAST scan report
+  """
+  SAST
+
+  """
+  SECRET DETECTION scan report
+  """
+  SECRET_DETECTION
 }
 
 """

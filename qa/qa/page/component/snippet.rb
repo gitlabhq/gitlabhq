@@ -110,6 +110,18 @@ module QA
           end
         end
 
+        def has_no_file_name?(file_name, file_number = nil)
+          if file_number
+            within_element_by_index(:file_title_content, file_number - 1) do
+              has_no_text?(file_name)
+            end
+          else
+            within_element(:file_title_content) do
+              has_no_text?(file_name)
+            end
+          end
+        end
+
         def has_file_content?(file_content, file_number = nil)
           if file_number
             within_element_by_index(:file_content, file_number - 1) do

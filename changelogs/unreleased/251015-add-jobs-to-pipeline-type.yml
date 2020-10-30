@@ -1,0 +1,5 @@
+---
+title: Add jobs field with secureReportTypes argument to Ci::PipelineType
+merge_request: 45837
+author:
+type: added

@@ -243,6 +243,15 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('!!()()') }
   end
 
+  describe '.composer_dev_version_regex' do
+    subject { described_class.composer_dev_version_regex }
+
+    it { is_expected.to match('dev-master') }
+    it { is_expected.to match('1.x-dev') }
+    it { is_expected.not_to match('foobar') }
+    it { is_expected.not_to match('1.2.3') }
+  end
+
   describe '.conan_recipe_component_regex' do
     subject { described_class.conan_recipe_component_regex }
 

@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-# This is temporary while https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45733 gets rolled out.
-# TODO: clean this up once the MR has been merged.
+# As each associated, backwards-compatible experiment gets cleaned up and removed from the EXPERIMENTS list, its key will also get removed from this list. Once the list here is empty, we can remove the backwards compatibility code altogether.
+# Originally created as part of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45733 for https://gitlab.com/gitlab-org/gitlab/-/issues/270858.
 RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
   it 'temporarily ensures we know what experiments exist for backwards compatibility' do
-    known_experiments = [
+    expected_experiment_keys = [
       :signup_flow,
       :onboarding_issues,
       :ci_notification_dot,
@@ -23,7 +23,10 @@ RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
       :default_to_issues_board
     ]
 
-    expect(described_class.keys).to match(known_experiments)
+    backwards_compatible_experiment_keys = described_class.filter { |_, v| v[:use_backwards_compatible_subject_index] }.keys
+
+    expect(backwards_compatible_experiment_keys).not_to be_empty, "Oh, hey! Let's clean up that :use_backwards_compatible_subject_index stuff now :D"
+    expect(backwards_compatible_experiment_keys).to match(expected_experiment_keys)
   end
 end
 

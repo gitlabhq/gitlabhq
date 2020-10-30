@@ -27810,7 +27810,7 @@ msgstr ""
 msgid "To"
 msgstr ""
 
-msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."
+msgid "To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration."
 msgstr ""
 
 msgid "To Do"

@@ -56,6 +56,7 @@ eslint-report.html
 /doc/code/*
 /dump.rdb
 /jsconfig.json
+/lefthook-local.yml
 /log/*.log*
 /node_modules
 /nohup.out

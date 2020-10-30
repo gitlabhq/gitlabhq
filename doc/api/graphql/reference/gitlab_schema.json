@@ -40203,6 +40203,77 @@
               "deprecationReason": null
             },
             {
+              "name": "jobs",
+              "description": "Jobs belonging to the pipeline",
+              "args": [
+                {
+                  "name": "securityReportTypes",
+                  "description": "Filter jobs by the type of security report they produce",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "SecurityReportTypeEnum",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CiJobConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "retryable",
               "description": "Specifies if a pipeline can be retried",
               "args": [
@@ -52353,6 +52424,59 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SecurityReportTypeEnum",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SAST",
+              "description": "SAST scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DAST",
+              "description": "DAST scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEPENDENCY_SCANNING",
+              "description": "DEPENDENCY SCANNING scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CONTAINER_SCANNING",
+              "description": "CONTAINER SCANNING scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECRET_DETECTION",
+              "description": "SECRET DETECTION scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COVERAGE_FUZZING",
+              "description": "COVERAGE FUZZING scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "API_FUZZING",
+              "description": "API FUZZING scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

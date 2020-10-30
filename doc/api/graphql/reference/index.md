@@ -3806,6 +3806,18 @@ Size of UI component in SAST configuration page.
 | `MEDIUM` |  |
 | `SMALL` |  |
 
+### SecurityReportTypeEnum
+
+| Value | Description |
+| ----- | ----------- |
+| `API_FUZZING` | API FUZZING scan report |
+| `CONTAINER_SCANNING` | CONTAINER SCANNING scan report |
+| `COVERAGE_FUZZING` | COVERAGE FUZZING scan report |
+| `DAST` | DAST scan report |
+| `DEPENDENCY_SCANNING` | DEPENDENCY SCANNING scan report |
+| `SAST` | SAST scan report |
+| `SECRET_DETECTION` | SECRET DETECTION scan report |
+
 ### SecurityScannerType
 
 The type of the security scanner.

@@ -278,9 +278,9 @@ RSpec.describe Gitlab::Danger::Helper do
       'scripts/foo'                                           | [:engineering_productivity]
       'lib/gitlab/danger/foo'                                 | [:engineering_productivity]
       'ee/lib/gitlab/danger/foo'                              | [:engineering_productivity]
-      '.overcommit.yml.example'                               | [:engineering_productivity]
+      'lefthook.yml'                                          | [:engineering_productivity]
       '.editorconfig'                                         | [:engineering_productivity]
-      'tooling/overcommit/foo'                                | [:engineering_productivity]
+      'tooling/bin/find_foss_tests'                           | [:engineering_productivity]
       '.codeclimate.yml'                                      | [:engineering_productivity]
       '.gitlab/CODEOWNERS'                                    | [:engineering_productivity]
 

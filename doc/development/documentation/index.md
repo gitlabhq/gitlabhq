@@ -716,7 +716,7 @@ Sample configuration for `overcommit` is available in the
 file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 
 To set up `overcommit` for documentation linting, see
-[Pre-commit static analysis](../contributing/style_guides.md#pre-commit-static-analysis).
+[Pre-commit static analysis](../contributing/style_guides.md#pre-push-static-analysis).
 
 #### Disable Vale tests
 

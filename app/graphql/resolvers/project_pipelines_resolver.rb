@@ -2,12 +2,21 @@
 
 module Resolvers
   class ProjectPipelinesResolver < BaseResolver
+    include LooksAhead
     include ResolvesPipelines
 
     alias_method :project, :object
 
-    def resolve(**args)
-      resolve_pipelines(project, args)
+    def resolve_with_lookahead(**args)
+      apply_lookahead(resolve_pipelines(project, args))
+    end
+
+    private
+
+    def preloads
+      {
+        jobs: [:statuses]
+      }
     end
   end
 end

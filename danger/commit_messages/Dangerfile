@@ -37,7 +37,8 @@ def build_message(commit, message, more_info: true)
 end
 
 def squash_mr?
-  gitlab_danger.ci? ? gitlab.mr_json['squash'] : false
+  # Locally, we assume the MR is set to be squashed so that the user only sees warnings instead of errors.
+  gitlab_danger.ci? ? gitlab.mr_json['squash'] : true
 end
 
 def wip_mr?
@@ -112,7 +113,7 @@ def lint_commits(commits)
 
     if multi_line_commit_linter && multi_line_commit_linter.failed?
       warn_or_fail_commits(multi_line_commit_linter)
-    else
+    elsif gitlab_danger.ci? # We don't have access to the MR title locally
       title_linter = lint_mr_title(gitlab.mr_json['title'])
       if title_linter.failed?
         warn_or_fail_commits(title_linter)
