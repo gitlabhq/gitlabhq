@@ -52,7 +52,8 @@ RSpec.describe Emails::MergeRequests do
 
     it { expect(subject.subject).to eq("#{project.name} | Exported merge requests") }
     it { expect(subject.to).to contain_exactly(user.notification_email_for(project.group)) }
-    it { expect(subject).to have_content('Your CSV export of 10 merge requests from project')}
+    it { expect(subject.html_part).to have_content("Your CSV export of 10 merge requests from project") }
+    it { expect(subject.text_part).to have_content("Your CSV export of 10 merge requests from project") }
 
     context 'when truncated' do
       let(:export_status) do

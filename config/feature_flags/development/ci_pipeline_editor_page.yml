@@ -1,0 +1,7 @@
+---
+name: ci_pipeline_editor_page
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/270059
+type: development
+group: group::pipeline authoring
+default_enabled: false

@@ -737,7 +737,7 @@ msgstr[1] ""
 msgid "%{reportType} %{status} detected no vulnerabilities."
 msgstr ""
 
-msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
+msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
 msgid "%{seconds}s"
@@ -1045,6 +1045,9 @@ msgid "- of - weight completed"
 msgstr ""
 
 msgid "- show less"
+msgstr ""
+
+msgid "."
 msgstr ""
 
 msgid "0 bytes"
@@ -19537,6 +19540,9 @@ msgstr ""
 msgid "Pipelines|Edit"
 msgstr ""
 
+msgid "Pipelines|Editor"
+msgstr ""
+
 msgid "Pipelines|Get started with Pipelines"
 msgstr ""
 
@@ -19565,6 +19571,9 @@ msgid "Pipelines|No triggers have been created yet. Add one using the form above
 msgstr ""
 
 msgid "Pipelines|Owner"
+msgstr ""
+
+msgid "Pipelines|Pipeline Editor"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -19601,6 +19610,9 @@ msgid "Pipelines|Token"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Pipelines|We are beginning our work around building the foundation for our dedicated pipeline editor."
 msgstr ""
 
 msgid "Pipelines|invalid"

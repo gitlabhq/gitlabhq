@@ -58,8 +58,8 @@ RSpec.describe 'User uploads file to note' do
       error_text = 'File is too big (0.06MiB). Max filesize: 0.01MiB.'
 
       expect(page).to have_selector('.uploading-error-message', visible: true, text: error_text)
-      expect(page).to have_selector('.retry-uploading-link', visible: true, text: 'Try again')
-      expect(page).to have_selector('.attach-new-file', visible: true, text: 'attach a new file')
+      expect(page).to have_button('Try again', visible: true)
+      expect(page).to have_button('attach a new file', visible: true)
       expect(page).not_to have_button('Attach a file')
     end
   end

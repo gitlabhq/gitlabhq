@@ -1,0 +1,5 @@
+---
+title: Fix Vue Labels Select dropdown keyboard scroll
+merge_request: 43874
+author:
+type: fixed

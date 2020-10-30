@@ -8,6 +8,13 @@ RSpec.describe Resolvers::EchoResolver do
   let(:current_user) { create(:user) }
   let(:text) { 'Message test' }
 
+  specify do
+    expect(described_class.field_options).to include(
+      type: eq(::GraphQL::STRING_TYPE),
+      null: be_falsey
+    )
+  end
+
   describe '#resolve' do
     it 'echoes text and username' do
       expect(resolve_echo(text)).to eq %Q("#{current_user.username}" says: #{text})

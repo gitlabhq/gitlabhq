@@ -124,6 +124,48 @@ Example response:
 ]
 ```
 
+## Get details of a single repository
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209916) in GitLab 13.6.
+
+Get details of a registry repository.
+
+```plaintext
+GET /registry/repositories/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID of the registry repository accessible by the authenticated user. |
+| `tags`      | boolean | no | If the parameter is included as `true`, the response includes an array of `"tags"`. |
+| `tags_count` | boolean | no | If the parameter is included as `true`, the response includes `"tags_count"`. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true"
+```
+
+Example response:
+
+```json
+{
+  "id": 2,
+  "name": "",
+  "path": "group/project",
+  "project_id": 9,
+  "location": "gitlab.example.com:5000/group/project",
+  "created_at": "2019-01-10T13:38:57.391Z",
+  "cleanup_policy_started_at": "2020-08-17T03:12:35.489Z",
+  "tags_count": 1,
+  "tags": [
+    {
+      "name": "0.0.1",
+      "path": "group/project:0.0.1",
+      "location": "gitlab.example.com:5000/group/project:0.0.1"
+    }
+  ]
+}
+```
+
 ## Delete registry repository
 
 Delete a repository in registry.

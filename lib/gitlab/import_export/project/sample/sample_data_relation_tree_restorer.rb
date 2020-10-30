@@ -30,13 +30,12 @@ module Gitlab
             data_hash['due_date'] = date_calculator.calculate_by_closest_date_to_average(data_hash['due_date'].to_time) unless data_hash['due_date'].nil?
           end
 
-          # TODO: Move clear logic into main comsume_relation method (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41699#note_430465330)
           def dates
-            unless relation_reader.legacy?
-              DATE_MODELS.map do |tag|
-                relation_reader.consume_relation(@importable_path, tag).map { |model| model.first['due_date'] }.tap do
-                  relation_reader.clear_consumed_relations
-                end
+            return if relation_reader.legacy?
+
+            DATE_MODELS.flat_map do |tag|
+              relation_reader.consume_relation(@importable_path, tag, mark_as_consumed: false).map do |model|
+                model.first['due_date']
               end
             end
           end

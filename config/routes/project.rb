@@ -85,6 +85,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :ci do
           resource :lint, only: [:show, :create]
+          resource :pipeline_editor, only: [:show], controller: :pipeline_editor, path: 'editor'
           resources :daily_build_group_report_results, only: [:index], constraints: { format: /(csv|json)/ }
         end
 

@@ -1017,6 +1017,23 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     }
   }
 
+  li {
+    &:hover,
+    &.is-focused {
+      .label-item {
+        @include dropdown-item-hover;
+
+        text-decoration: none;
+      }
+    }
+  }
+
+  .labels-select-dropdown-button {
+    .gl-button-text {
+      width: 100%;
+    }
+  }
+
   .labels-select-dropdown-contents {
     min-height: $dropdown-min-height;
     max-height: 330px;
@@ -1050,13 +1067,6 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 
   .label-item {
     padding: 8px 20px;
-
-    &:hover,
-    &.is-focused {
-      @include dropdown-item-hover;
-
-      text-decoration: none;
-    }
   }
 
   .color-input-container {

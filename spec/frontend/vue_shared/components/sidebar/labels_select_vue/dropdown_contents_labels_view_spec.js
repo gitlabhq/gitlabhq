@@ -1,9 +1,14 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-import { GlButton, GlLoadingIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import {
+  GlIntersectionObserver,
+  GlButton,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+  GlLink,
+} from '@gitlab/ui';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
-import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue';
 import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
 
@@ -88,20 +93,25 @@ describe('DropdownContentsLabelsView', () => {
       });
     });
 
-    describe('showListContainer', () => {
+    describe('showNoMatchingResultsMessage', () => {
       it.each`
-        variant          | loading  | showList
-        ${'sidebar'}     | ${false} | ${true}
-        ${'sidebar'}     | ${true}  | ${false}
-        ${'not-sidebar'} | ${true}  | ${true}
-        ${'not-sidebar'} | ${false} | ${true}
+        searchKey | labels        | labelsDescription | returnValue
+        ${''}     | ${[]}         | ${'empty'}        | ${false}
+        ${'bug'}  | ${[]}         | ${'empty'}        | ${true}
+        ${''}     | ${mockLabels} | ${'not empty'}    | ${false}
+        ${'bug'}  | ${mockLabels} | ${'not empty'}    | ${false}
       `(
-        'returns $showList if `state.variant` is "$variant" and `labelsFetchInProgress` is $loading',
-        ({ variant, loading, showList }) => {
-          createComponent({ ...mockConfig, variant });
-          wrapper.vm.$store.state.labelsFetchInProgress = loading;
+        'returns $returnValue when searchKey is "$searchKey" and visibleLabels is $labelsDescription',
+        async ({ searchKey, labels, returnValue }) => {
+          wrapper.setData({
+            searchKey,
+          });
 
-          expect(wrapper.vm.showListContainer).toBe(showList);
+          wrapper.vm.$store.dispatch('receiveLabelsSuccess', labels);
+
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.vm.showNoMatchingResultsMessage).toBe(returnValue);
         },
       );
     });
@@ -115,6 +125,28 @@ describe('DropdownContentsLabelsView', () => {
 
       it('returns false when provided `label` param is not one of the selected labels', () => {
         expect(wrapper.vm.isLabelSelected(mockLabels[2])).toBe(false);
+      });
+    });
+
+    describe('handleComponentDisappear', () => {
+      it('calls action `receiveLabelsSuccess` with empty array', () => {
+        jest.spyOn(wrapper.vm, 'receiveLabelsSuccess');
+
+        wrapper.vm.handleComponentDisappear();
+
+        expect(wrapper.vm.receiveLabelsSuccess).toHaveBeenCalledWith([]);
+      });
+    });
+
+    describe('handleCreateLabelClick', () => {
+      it('calls actions `receiveLabelsSuccess` with empty array and `toggleDropdownContentsCreateView`', () => {
+        jest.spyOn(wrapper.vm, 'receiveLabelsSuccess');
+        jest.spyOn(wrapper.vm, 'toggleDropdownContentsCreateView');
+
+        wrapper.vm.handleCreateLabelClick();
+
+        expect(wrapper.vm.receiveLabelsSuccess).toHaveBeenCalledWith([]);
+        expect(wrapper.vm.toggleDropdownContentsCreateView).toHaveBeenCalled();
       });
     });
 
@@ -226,8 +258,8 @@ describe('DropdownContentsLabelsView', () => {
   });
 
   describe('template', () => {
-    it('renders component container element with class `labels-select-contents-list`', () => {
-      expect(wrapper.attributes('class')).toContain('labels-select-contents-list');
+    it('renders gl-intersection-observer as component root', () => {
+      expect(wrapper.find(GlIntersectionObserver).exists()).toBe(true);
     });
 
     it('renders gl-loading-icon component when `labelsFetchInProgress` prop is true', () => {
@@ -272,15 +304,11 @@ describe('DropdownContentsLabelsView', () => {
       expect(searchInputEl.attributes('autofocus')).toBe('true');
     });
 
-    it('renders smart-virtual-list element', () => {
-      expect(wrapper.find(SmartVirtualList).exists()).toBe(true);
-    });
-
     it('renders label elements for all labels', () => {
       expect(wrapper.findAll(LabelItem)).toHaveLength(mockLabels.length);
     });
 
-    it('renders label element with "is-focused" when value of `currentHighlightItem` is more than -1', () => {
+    it('renders label element with `highlight` set to true when value of `currentHighlightItem` is more than -1', () => {
       wrapper.setData({
         currentHighlightItem: 0,
       });
@@ -288,7 +316,7 @@ describe('DropdownContentsLabelsView', () => {
       return wrapper.vm.$nextTick(() => {
         const labelItemEl = findDropdownContent().find(LabelItem);
 
-        expect(labelItemEl.props('highlight')).toBe(true);
+        expect(labelItemEl.attributes('highlight')).toBe('true');
       });
     });
 
@@ -310,9 +338,12 @@ describe('DropdownContentsLabelsView', () => {
 
       return wrapper.vm.$nextTick(() => {
         const dropdownContent = findDropdownContent();
+        const loadingIcon = findLoadingIcon();
 
         expect(dropdownContent.exists()).toBe(true);
-        expect(dropdownContent.isVisible()).toBe(false);
+        expect(dropdownContent.isVisible()).toBe(true);
+        expect(loadingIcon.exists()).toBe(true);
+        expect(loadingIcon.isVisible()).toBe(true);
       });
     });
 

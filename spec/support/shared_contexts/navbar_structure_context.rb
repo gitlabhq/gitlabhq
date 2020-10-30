@@ -56,6 +56,7 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('CI / CD'),
         nav_sub_items: [
           _('Pipelines'),
+          s_('Pipelines|Editor'),
           _('Jobs'),
           _('Artifacts'),
           _('Schedules')

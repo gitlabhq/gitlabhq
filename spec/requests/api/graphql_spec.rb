@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe 'GraphQL' do
   include GraphqlHelpers
 
-  let(:query) { graphql_query_for('echo', 'text' => 'Hello world' ) }
+  let(:query) { graphql_query_for('echo', text: 'Hello world' ) }
 
   context 'logging' do
     shared_examples 'logging a graphql query' do

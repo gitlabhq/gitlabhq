@@ -450,31 +450,6 @@ table {
   margin-right: 5px;
 }
 
-.attach-new-file,
-.button-attach-file,
-.retry-uploading-link {
-  color: $blue-600;
-  padding: 0;
-  background: none;
-  border: 0;
-  font-size: 14px;
-  line-height: 16px;
-  vertical-align: initial;
-
-  &:hover,
-  &:focus {
-    text-decoration: none;
-
-    .text-attach-file {
-      text-decoration: underline;
-    }
-  }
-
-  .gl-icon:not(:last-child) {
-    margin-right: 0;
-  }
-}
-
 .markdown-selector {
   color: $blue-600;
 }

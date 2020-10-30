@@ -23,13 +23,20 @@
         = sprite_icon('media', css_class: 'gl-icon gl-vertical-align-text-bottom')
       %span.uploading-error-message
         -# Populated by app/assets/javascripts/dropzone_input.js
-      %button.retry-uploading-link{ type: 'button' }= _("Try again")
-      or
-      %button.attach-new-file.markdown-selector{ type: 'button' }= _("attach a new file")
+      %button.btn.gl-button.btn-link.gl-vertical-align-baseline.retry-uploading-link
+        %span.gl-button-text
+          = _("Try again")
+      = _("or")
+      %button.btn.gl-button.btn-link.attach-new-file.markdown-selector.gl-vertical-align-baseline
+        %span.gl-button-text
+          = _("attach a new file")
+      = _(".")
 
-    %button.btn.markdown-selector.button-attach-file.btn-link{ type: 'button' }
+    %button.btn.gl-button.btn-link.button-attach-file.markdown-selector.button-attach-file.gl-vertical-align-text-bottom
       = sprite_icon('media')
-      %span.text-attach-file<>
+      %span.gl-button-text
         = _("Attach a file")
 
-    %button.btn.btn-default.btn-sm.hide.button-cancel-uploading-files{ type: 'button' }= _("Cancel")
+    %button.btn.gl-button.btn-link.button-cancel-uploading-files.gl-vertical-align-baseline.hide
+      %span.gl-button-text
+        = _("Cancel")

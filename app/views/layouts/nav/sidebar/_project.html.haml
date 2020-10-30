@@ -167,7 +167,7 @@
       = render_if_exists "layouts/nav/requirements_link", project: @project
 
       - if project_nav_tab? :pipelines
-        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases], unless: -> { current_path?('projects/pipelines#charts') }) do
+        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases, :pipeline_editor], unless: -> { current_path?('projects/pipelines#charts') }) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines rspec-link-pipelines', data: { qa_selector: 'ci_cd_link' } do
             .nav-icon-container
               = sprite_icon('rocket')
@@ -175,7 +175,7 @@
               = _('CI / CD')
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases], html_options: { class: "fly-out-top-item" }) do
+            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases, :pipeline_editor], html_options: { class: "fly-out-top-item" }) do
               = link_to project_pipelines_path(@project) do
                 %strong.fly-out-top-item-name
                   =  _('CI / CD')
@@ -185,6 +185,12 @@
                 = link_to project_pipelines_path(@project), title: _('Pipelines'), class: 'shortcuts-pipelines' do
                   %span
                     = _('Pipelines')
+
+            - if can_view_pipeline_editor?(@project)
+              = nav_link(controller: :pipeline_editor, action: :show) do
+                = link_to project_ci_pipeline_editor_path(@project), title: s_('Pipelines|Editor') do
+                  %span
+                    = s_('Pipelines|Editor')
 
             - if project_nav_tab? :builds
               = nav_link(controller: :jobs) do
