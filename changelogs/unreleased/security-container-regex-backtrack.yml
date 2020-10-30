@@ -1,0 +1,5 @@
+---
+title: Update container_repository_name_regex to prevent catastrophic backtracking
+merge_request:
+author:
+type: security
