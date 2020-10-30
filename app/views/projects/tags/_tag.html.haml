@@ -1,5 +1,6 @@
 - commit = @repository.commit(tag.dereferenced_target)
 - release = @releases.find { |release| release.tag == tag.name }
+- commit_status = @tag_pipeline_statuses[tag.name] unless @tag_pipeline_statuses.nil?
 
 %li.flex-row.allow-wrap.js-tag-list
   .row-main-content
@@ -33,6 +34,12 @@
   .row-fixed-content.controls.flex-row
     - if tag.has_signature?
       = render partial: 'projects/commit/signature', object: tag.signature
+
+    - if commit_status
+      = render 'ci/status/icon', size: 24, status: commit_status, option_css_classes: 'gl-display-inline-flex gl-vertical-align-middle gl-mr-5'
+    - elsif @tag_pipeline_statuses && @tag_pipeline_statuses.any?
+      .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
+        %svg.s24
 
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 

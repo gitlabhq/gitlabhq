@@ -57,4 +57,29 @@ RSpec.describe 'projects/tags/index.html.haml' do
       expect(rendered).not_to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
     end
   end
+
+  context 'build stats' do
+    let(:tag) { 'v1.0.0' }
+    let(:page) { Capybara::Node::Simple.new(rendered) }
+
+    it 'shows build status or placeholder when pipelines present' do
+      create(:ci_pipeline,
+        project: project,
+        ref: tag,
+        sha: project.commit(tag).sha,
+        status: :success)
+      assign(:tag_pipeline_statuses, Ci::CommitStatusesFinder.new(project, project.repository, project.namespace.owner, tags).execute)
+
+      render
+
+      expect(page.find('.tags .content-list li', text: tag)).to have_css 'a.ci-status-icon-success'
+      expect(page.all('.tags .content-list li')).to all(have_css('svg.s24'))
+    end
+
+    it 'shows no build status or placeholder when no pipelines present' do
+      render
+
+      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s24'
+    end
+  end
 end

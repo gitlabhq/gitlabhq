@@ -24,6 +24,7 @@ class Projects::TagsController < Projects::ApplicationController
     tag_names = @tags.map(&:name)
     @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
     @releases = project.releases.where(tag: tag_names)
+    @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
 
     respond_to do |format|
       format.html

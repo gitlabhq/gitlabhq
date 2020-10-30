@@ -22,7 +22,7 @@ of `state` are:
 - `finished`
 - `failed`
 - `replicated`
-- `cleanup_failed`
+- `cleanup failed`
 
 To ensure data integrity, projects are put in a temporary read-only state for the
 duration of the move. During this time, users receive a `The repository is temporarily

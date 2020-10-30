@@ -285,7 +285,7 @@ you can use the `MAVEN_CLI_OPTS` environment variable.
 
 Read more on [how to use private Maven repositories](../index.md#using-private-maven-repos).
 
-#### Enabling Kubesec analyzer
+### Enabling Kubesec analyzer
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab Ultimate 12.6.
 
@@ -300,7 +300,7 @@ variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
 ```
 
-#### Pre-compilation
+### Pre-compilation
 
 If your project requires custom build configurations, it can be preferable to avoid
 compilation during your SAST execution and instead pass all job artifacts from an
