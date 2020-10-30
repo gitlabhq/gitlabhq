@@ -112,7 +112,8 @@ you list:
 
 ## Queue selector (experimental)
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> - [Sidekiq cluster including queue selector moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 12.10.
 
 CAUTION: **Caution:**
 As this is marked as **experimental**, it is subject to change at any
@@ -129,6 +130,9 @@ in a more general way using the following components:
 
 - Attributes that can be selected.
 - Operators used to construct a query.
+
+When `experimental_queue_selector` is set, all `queue_groups` must be in
+the queue selector syntax.
 
 ### Available attributes
 

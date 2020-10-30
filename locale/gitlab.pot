@@ -1914,6 +1914,9 @@ msgstr ""
 msgid "AdminArea|New user"
 msgstr ""
 
+msgid "AdminArea|Once the instance reaches the user cap, any user who is added or requests access will have to be approved by an admin. Leave the field empty for unlimited."
+msgstr ""
+
 msgid "AdminArea|Owner"
 msgstr ""
 
@@ -1936,6 +1939,9 @@ msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
 msgid "AdminArea|Total users"
+msgstr ""
+
+msgid "AdminArea|User cap"
 msgstr ""
 
 msgid "AdminArea|Users statistics"
@@ -2865,6 +2871,9 @@ msgid "An error occurred when removing the label."
 msgstr ""
 
 msgid "An error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "An error occurred when updating the issue due date"
 msgstr ""
 
 msgid "An error occurred when updating the issue weight"
@@ -26976,6 +26985,9 @@ msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
+msgstr ""
+
+msgid "These paths are protected for POST requests."
 msgstr ""
 
 msgid "These variables are configured in the parent group settings, and will be active in the current project in addition to the project variables."

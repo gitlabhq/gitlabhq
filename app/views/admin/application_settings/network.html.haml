@@ -43,6 +43,10 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure paths to be protected by Rack Attack.')
+      .help-block
+        = _('These paths are protected for POST requests.')
+        = link_to _('More information'), help_page_path('security/rack_attack', anchor: 'protected-paths-throttle'), target: '_blank'
+
   .settings-content
     = render 'protected_paths'
 

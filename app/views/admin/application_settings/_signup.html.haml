@@ -21,6 +21,9 @@
         = f.check_box :send_user_confirmation_email, class: 'form-check-input'
         = f.label :send_user_confirmation_email, class: 'form-check-label' do
           Send confirmation email on sign-up
+
+    = render_if_exists 'admin/application_settings/new_user_signups_cap', form: f
+
     .form-group
       = f.label :minimum_password_length, _('Minimum password length (number of characters)'), class: 'label-bold'
       = f.number_field :minimum_password_length, class: 'form-control', rows: 4, min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH, max: Devise.password_length.max

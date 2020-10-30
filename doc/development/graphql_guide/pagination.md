@@ -59,13 +59,13 @@ Some of the benefits and tradeoffs of keyset pagination are
 
 - Performance is much better.
 
-- Data stability is greater since you're not going to miss records due to
+- More data stability for end-users since records are not missing from lists due to
   deletions or insertions.
 
 - It's the best way to do infinite scrolling.
 
 - It's more difficult to program and maintain. Easy for `updated_at` and
-  `sort_order`, complicated (or impossible) for complex sorting scenarios.
+  `sort_order`, complicated (or impossible) for [complex sorting scenarios](#limitations-of-query-complexity).
 
 ## Implementation
 
@@ -80,7 +80,124 @@ However, there are some cases where we have to use the offset
 pagination connection, `OffsetActiveRecordRelationConnection`, such as when
 sorting by label priority in issues, due to the complexity of the sort.
 
-<!-- ### Keyset pagination -->
+### Keyset pagination
+
+The keyset pagination implementation is a subclass of `GraphQL::Pagination::ActiveRecordRelationConnection`,
+which is a part of the `graphql` gem. This is installed as the default for all `ActiveRecord::Relation`.
+However, instead of using a cursor based on an offset (which is the default), GitLab uses a more specialized cursor.
+
+The cursor is created by encoding a JSON object which contains the relevant ordering fields. For example:
+
+```ruby
+ordering = {"id"=>"72410125", "created_at"=>"2020-10-08 18:05:21.953398000 UTC"}
+json = ordering.to_json
+cursor = Base64Bp.urlsafe_encode64(json, padding: false)
+
+"eyJpZCI6IjcyNDEwMTI1IiwiY3JlYXRlZF9hdCI6IjIwMjAtMTAtMDggMTg6MDU6MjEuOTUzMzk4MDAwIFVUQyJ9"
+
+json = Base64Bp.urlsafe_decode64(cursor)
+Gitlab::Json.parse(json)
+
+{"id"=>"72410125", "created_at"=>"2020-10-08 18:05:21.953398000 UTC"}
+```
+
+The benefits of storing the order attribute values in the cursor:
+
+- If only the ID of the object were stored, the object and its attributes could be queried.
+  That would require an additional query, and if the object is no longer there, then the needed
+  attributes are not available.
+- If an attribute is `NULL`, then one SQL query can be used. If it's not `NULL`, then a
+  different SQL query can be used.
+
+Based on whether the main attribute field being sorted on is `NULL` in the cursor, the proper query
+condition is built. The last ordering field is considered to be unique (a primary key), meaning the
+column never contains `NULL` values.
+
+#### Limitations of query complexity
+
+We only support two ordering fields, and one of those fields needs to be the primary key.
+
+Here are two examples of pseudocode for the query:
+
+- **Two-condition query.** `X` represents the values from the cursor. `C` represents
+  the columns in the database, sorted in ascending order, using an `:after` cursor, and with `NULL`
+  values sorted last.
+
+  ```plaintext
+  X1 IS NOT NULL
+    AND
+      (C1 > X1)
+        OR
+      (C1 IS NULL)
+        OR
+      (C1 = X1
+        AND
+       C2 > X2)
+
+  X1 IS NULL
+    AND
+      (C1 IS NULL
+        AND
+       C2 > X2)
+  ```
+
+  Below is an example based on the relation `Issue.order(relative_position: :asc).order(id: :asc)`
+  with an after cursor of `relative_position: 1500, id: 500`:
+
+  ```plaintext
+  when cursor[relative_position] is not NULL
+
+      ("issues"."relative_position" > 1500)
+      OR (
+        "issues"."relative_position" = 1500
+        AND
+        "issues"."id" > 500
+      )
+      OR ("issues"."relative_position" IS NULL)
+
+  when cursor[relative_position] is NULL
+
+      "issues"."relative_position" IS NULL
+      AND
+      "issues"."id" > 500
+  ```
+
+- **Three-condition query.** The example below is not complete, but shows the
+  complexity of adding one more condition. `X` represents the values from the cursor. `C` represents
+  the columns in the database, sorted in ascending order, using an `:after` cursor, and with `NULL`
+  values sorted last.
+
+  ```plaintext
+  X1 IS NOT NULL
+    AND
+      (C1 > X1)
+        OR
+      (C1 IS NULL)
+        OR
+      (C1 = X1 AND C2 > X2)
+        OR
+      (C1 = X1
+        AND
+          X2 IS NOT NULL
+            AND
+              ((C2 > X2)
+                 OR
+               (C2 IS NULL)
+                 OR
+               (C2 = X2 AND C3 > X3)
+        OR
+          X2 IS NULL.....
+  ```
+
+By using
+[`Gitlab::Graphql::Pagination::Keyset::QueryBuilder`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/graphql/pagination/keyset/query_builder.rb),
+we're able to build the necessary SQL conditions and apply them to the Active Record relation.
+
+Complex queries can be difficult or impossible to use. For example,
+in [`issuable.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/issuable.rb),
+the `order_due_date_and_labels_priority` method creates a very complex query.
+
+These types of queries are not supported. In these instances, you can use offset pagination.
 
 <!-- ### Offset pagination -->
 

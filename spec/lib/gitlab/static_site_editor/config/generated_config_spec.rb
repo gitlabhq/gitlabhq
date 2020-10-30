@@ -58,25 +58,9 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
         )
       end
 
-      context 'when feature flag is enabled' do
-        let(:path) { 'FEATURE_ON.md.erb' }
+      let(:path) { 'README.md.erb' }
 
-        before do
-          stub_feature_flags(sse_erb_support: project)
-        end
-
-        it { is_expected.to include(is_supported_content: true) }
-      end
-
-      context 'when feature flag is disabled' do
-        let(:path) { 'FEATURE_OFF.md.erb' }
-
-        before do
-          stub_feature_flags(sse_erb_support: false)
-        end
-
-        it { is_expected.to include(is_supported_content: false) }
-      end
+      it { is_expected.to include(is_supported_content: true) }
     end
 
     context 'when file path is nested' do

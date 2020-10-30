@@ -1,7 +1,0 @@
----
-name: sse_erb_support
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235460
-group: group::static site editor
-type: development
-default_enabled: false
