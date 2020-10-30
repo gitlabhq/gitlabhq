@@ -46,6 +46,10 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def nuget_package_name_regex
+        @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}.freeze
+      end
+
       def pypi_version_regex
         # See the official regex: https://github.com/pypa/packaging/blob/16.7/packaging/version.py#L159
 
