@@ -1,0 +1,5 @@
+---
+title: Fix XSS vulnerability for job build dependencies
+merge_request:
+author:
+type: security
