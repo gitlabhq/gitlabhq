@@ -79,11 +79,7 @@ module Projects
         # Directories on disk
         move_project_folders(project)
 
-        # Move missing group labels to project
-        Labels::TransferService.new(current_user, @old_group, project).execute
-
-        # Move missing group milestones
-        Milestones::TransferService.new(current_user, @old_group, project).execute
+        transfer_missing_group_resources(@old_group)
 
         # Move uploads
         move_project_uploads(project)
@@ -105,6 +101,12 @@ module Projects
       raise
     ensure
       refresh_permissions
+    end
+
+    def transfer_missing_group_resources(group)
+      Labels::TransferService.new(current_user, group, project).execute
+
+      Milestones::TransferService.new(current_user, group, project).execute
     end
 
     def allowed_transfer?(current_user, project)
