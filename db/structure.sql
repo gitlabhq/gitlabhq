@@ -12713,10 +12713,12 @@ CREATE TABLE group_wiki_repositories (
 
 CREATE TABLE historical_data (
     id integer NOT NULL,
-    date date NOT NULL,
     active_user_count integer,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    date date,
+    recorded_at timestamp with time zone,
+    CONSTRAINT check_640e8cf66c CHECK ((recorded_at IS NOT NULL))
 );
 
 CREATE SEQUENCE historical_data_id_seq

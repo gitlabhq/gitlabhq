@@ -19528,6 +19528,9 @@ msgstr ""
 msgid "Pipelines|CI Lint"
 msgstr ""
 
+msgid "Pipelines|CI file could not be loaded: %{reason}"
+msgstr ""
+
 msgid "Pipelines|Child pipeline"
 msgstr ""
 
@@ -19616,9 +19619,6 @@ msgid "Pipelines|Token"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
-msgstr ""
-
-msgid "Pipelines|We are beginning our work around building the foundation for our dedicated pipeline editor."
 msgstr ""
 
 msgid "Pipelines|invalid"

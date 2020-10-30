@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Getting started with an offline GitLab Installation
 
 This is a step-by-step guide that helps you install, configure, and use a self-managed GitLab

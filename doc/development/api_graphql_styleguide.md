@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GraphQL API style guide
 
 This document outlines the style guide for GitLab's [GraphQL API](../api/graphql/index.md).

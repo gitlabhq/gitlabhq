@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # How Git object deduplication works in GitLab
 
 When a GitLab user [forks a project](../user/project/repository/forking_workflow.md),

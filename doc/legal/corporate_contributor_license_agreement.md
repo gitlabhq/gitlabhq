@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Corporate contributor license agreement
 
 You accept and agree to the following terms and conditions for Your present and future Contributions submitted to GitLab B.V.. Except for the license granted herein to GitLab B.V. and recipients of software distributed by GitLab B.V., You reserve all right, title, and interest in and to Your Contributions.

@@ -625,9 +625,12 @@ To install applications using GitLab CI/CD:
      - template: Managed-Cluster-Applications.gitlab-ci.yml
    ```
 
-   The job provided by this template connects to the cluster using tools provided
+   The job provided by this template connects to the `*` (default) cluster using tools provided
    in a custom Docker image. It requires that you have a runner registered with the Docker,
    Kubernetes, or Docker Machine executor.
+
+   To install to a specific cluster, read
+   [Use the template with a custom environment](#use-the-template-with-a-custom-environment).
 
 1. Add a `.gitlab/managed-apps/config.yaml` file to define which
   applications you would like to install. Define the `installed` key as
@@ -662,6 +665,30 @@ include:
 
 apply:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.34.1"
+```
+
+### Use the template with a custom environment
+
+If you only want apps to be installed on a specific cluster, or if your cluster's
+scope does not match `production`, you can override the environment name in your `.gitlab-ci.yml`
+file:
+
+```yaml
+include:
+  - template: Managed-Cluster-Applications.gitlab-ci.yml
+
+apply:
+  except:
+    variables:
+      - '$CI_JOB_NAME == "apply"'
+
+.managed-apps:
+  extends: apply
+
+example-install:
+  extends: .managed-apps
+  environment:
+    name: example/production
 ```
 
 ### Important notes

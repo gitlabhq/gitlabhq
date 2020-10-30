@@ -2,6 +2,7 @@
 import {
   GlFormGroup,
   GlFormInput,
+  GlFormInputGroup,
   GlModal,
   GlTooltipDirective,
   GlLoadingIcon,
@@ -17,6 +18,7 @@ export default {
   components: {
     GlFormGroup,
     GlFormInput,
+    GlFormInputGroup,
     GlModal,
     ModalCopyButton,
     GlIcon,
@@ -167,63 +169,47 @@ export default {
         </template>
       </gl-sprintf>
     </callout>
-    <div class="form-group">
-      <label for="api_url" class="label-bold">{{ $options.translations.apiUrlLabelText }}</label>
-      <div class="input-group">
-        <input
-          id="api_url"
-          :value="unleashApiUrl"
-          readonly
-          class="form-control"
-          type="text"
-          name="api_url"
-        />
-        <span class="input-group-append">
+    <gl-form-group :label="$options.translations.apiUrlLabelText" label-for="api-url">
+      <gl-form-input-group id="api-url" :value="unleashApiUrl" readonly type="text" name="api-url">
+        <template #append>
           <modal-copy-button
             :text="unleashApiUrl"
             :title="$options.translations.apiUrlCopyText"
             :modal-id="modalId"
-            class="input-group-text"
           />
-        </span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="instance_id" class="label-bold">{{
-        $options.translations.instanceIdLabelText
-      }}</label>
-      <div class="input-group">
-        <input
+        </template>
+      </gl-form-input-group>
+    </gl-form-group>
+    <gl-form-group :label="$options.translations.instanceIdLabelText" label-for="instance_id">
+      <gl-form-input-group>
+        <gl-form-input
           id="instance_id"
           :value="instanceId"
-          class="form-control"
           type="text"
           name="instance_id"
           readonly
           :disabled="isRotating"
         />
-
         <gl-loading-icon
           v-if="isRotating"
-          class="position-absolute align-self-center instance-id-loading-icon"
+          class="gl-absolute gl-align-self-center gl-right-5 gl-mr-7"
         />
 
-        <div class="input-group-append">
+        <template #append>
           <modal-copy-button
             :text="instanceId"
             :title="$options.translations.instanceIdCopyText"
             :modal-id="modalId"
             :disabled="isRotating"
-            class="input-group-text"
           />
-        </div>
-      </div>
-    </div>
+        </template>
+      </gl-form-input-group>
+    </gl-form-group>
     <div
       v-if="hasRotateError"
-      class="text-danger d-flex align-items-center font-weight-normal mb-2"
+      class="gl-text-red-500 gl-display-flex gl-align-items-center gl-font-weight-normal gl-mb-3"
     >
-      <gl-icon name="warning" class="mr-1" />
+      <gl-icon name="warning" class="gl-mr-2" />
       <span>{{ $options.translations.instanceIdRegenerateError }}</span>
     </div>
     <callout

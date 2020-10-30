@@ -87,18 +87,19 @@ gitlab_kas['enable'] = true
 
 1. [Reconfigure GitLab](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-When installing or upgrading the GitLab Helm chart, consider the following Helm 2 example.
-(If you're using Helm 3, you must modify this example.) You must set `global.kas.enabled=true`
-for the KAS to be properly installed and configured:
+When installing or upgrading the GitLab Helm chart, consider the following Helm v3 example.
+If you're using Helm v2, you must modify this example. See our [notes regarding deploy with Helm](https://docs.gitlab.com/charts/installation/deployment.html#deploy-using-helm).
+
+You must set `global.kas.enabled=true` for the KAS to be properly installed and configured:
 
 ```shell
+helm repo add gitlab https://charts.gitlab.io/
 helm repo update
-helm upgrade --force --install gitlab gitlab/gitlab \
-  --timeout 600 \
+helm upgrade --install gitlab gitlab/gitlab \
+  --timeout 600s \
   --set global.hosts.domain=<YOUR_DOMAIN> \
   --set global.hosts.externalIP=<YOUR_IP> \
   --set certmanager-issuer.email=<YOUR_EMAIL> \
-  --set name=gitlab-instance \
   --set global.kas.enabled=true
 ```
 

@@ -45,10 +45,10 @@ GET /issues_statistics?confidential=true
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
 | `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
 | `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
-| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
-| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
-| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
-| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 
 ```shell
@@ -101,10 +101,10 @@ GET /groups/:id/issues_statistics?confidential=true
 | `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE `assignee_username` array should only contain a single value or an invalid parameter error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
-| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
-| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
-| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
-| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```shell
@@ -157,10 +157,10 @@ GET /projects/:id/issues_statistics?confidential=true
 | `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE `assignee_username` array should only contain a single value or an invalid parameter error will be returned otherwise. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
-| `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
-| `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
-| `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
-| `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
+| `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```shell

@@ -3,6 +3,38 @@
  * Mixins with fixed values
  */
 
+@keyframes blinking-dot {
+  0% {
+    opacity: 1;
+  }
+
+  25% {
+    opacity: 0.4;
+  }
+
+  75% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes blinking-scroll-button {
+  0% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
+}
+
 @mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;

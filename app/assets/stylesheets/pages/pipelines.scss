@@ -86,3 +86,14 @@
     color: $gl-text-color;
   }
 }
+
+@include media-breakpoint-down(sm) {
+  .top-bar {
+    .truncated-info {
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 220px;
+      text-overflow: ellipsis;
+    }
+  }
+}

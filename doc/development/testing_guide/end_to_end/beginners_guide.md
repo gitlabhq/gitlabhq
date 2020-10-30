@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Beginner's guide to writing end-to-end tests
 
 In this tutorial, you will learn about the creation of end-to-end (_e2e_) tests

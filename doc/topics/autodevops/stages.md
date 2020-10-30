@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Stages of Auto DevOps
 
 The following sections describe the stages of [Auto DevOps](index.md).
@@ -680,4 +686,4 @@ for updates.
 
 This stage is enabled by default. You can disable it by adding the
 `CODE_INTELLIGENCE_DISABLED` environment variable. Read more about
-[disabling Auto DevOps jobs](../../topics/autodevops/customize.md#disable-jobs).  
+[disabling Auto DevOps jobs](../../topics/autodevops/customize.md#disable-jobs).

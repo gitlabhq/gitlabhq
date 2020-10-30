@@ -324,6 +324,14 @@ commands will detect it and remind you to do so if necessary.
 If you type `yes`, it copies your state from the old location to the new
 location. You can then go back to running it from within GitLab CI.
 
+## Removing a State file 
+
+You can only remove a state file by making a request to the API, like the following example:
+
+```shell
+curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id/terraform/state/<your_state_name>"
+```
+
 ## Output Terraform Plan information into a merge request
 
 Using the [GitLab Terraform Report artifact](../../ci/pipelines/job_artifacts.md#artifactsreportsterraform),

@@ -1,45 +1,4 @@
-@keyframes fade-out-status {
-  0%,
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes blinking-dot {
-  0% {
-    opacity: 1;
-  }
-
-  25% {
-    opacity: 0.4;
-  }
-
-  75% {
-    opacity: 0.4;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes blinking-scroll-button {
-  0% {
-    opacity: 0.2;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.2;
-  }
-}
+@import 'mixins_and_variables_and_functions';
 
 .build-page {
   .build-trace {
@@ -325,42 +284,11 @@
   }
 }
 
-.build-light-text {
-  color: $gl-text-color-secondary;
-  word-wrap: break-word;
-}
-
-.build-gutter-toggle {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  margin-top: -17px;
-}
-
-@include media-breakpoint-down(sm) {
-  .top-bar {
-    .truncated-info {
-      white-space: nowrap;
-      overflow: hidden;
-      max-width: 220px;
-      text-overflow: ellipsis;
-    }
-  }
-}
-
 @include media-breakpoint-down(md) {
   .content-list {
     &.builds-content-list {
       width: 100%;
       overflow: auto;
-    }
-  }
-}
-
-[data-page='admin:jobs:index'] {
-  .admin-builds-table {
-    td:last-child {
-      min-width: 120px;
     }
   }
 }
