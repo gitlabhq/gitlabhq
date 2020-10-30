@@ -36,7 +36,7 @@ module API
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
         end
         get ':id/pipeline_schedules/:pipeline_schedule_id' do
-          present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
+          present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails, user: current_user
         end
 
         desc 'Create a new pipeline schedule' do

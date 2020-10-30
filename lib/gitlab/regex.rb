@@ -46,6 +46,10 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def nuget_package_name_regex
+        @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}.freeze
+      end
+
       def nuget_version_regex
         @nuget_version_regex ||= /
           \A#{_semver_major_minor_patch_regex}(\.\d*)?#{_semver_prerelease_build_regex}\z
