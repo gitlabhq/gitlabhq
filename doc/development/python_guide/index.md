@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Python Development Guidelines
 
 GitLab requires Python as a dependency for [reStructuredText](https://docutils.sourceforge.io/rst.html)

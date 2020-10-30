@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # IBM Engineering Workflow Management (EWM) Integration **(CORE)**
 
 This service allows you to navigate from GitLab to EWM work items mentioned in merge request descriptions and commit messages. Each work item reference is automatically converted to a link back to the work item.

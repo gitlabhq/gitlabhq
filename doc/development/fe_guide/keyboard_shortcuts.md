@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Implementing keyboard shortcuts
 
 We use [Mousetrap](https://craig.is/killing/mice) to implement keyboard

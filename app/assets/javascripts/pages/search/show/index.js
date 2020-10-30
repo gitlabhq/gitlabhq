@@ -3,5 +3,5 @@ import initSearchApp from '~/search';
 
 document.addEventListener('DOMContentLoaded', () => {
   initSearchApp();
-  return new Search();
+  return new Search(); // Deprecated Dropdown (Projects)
 });

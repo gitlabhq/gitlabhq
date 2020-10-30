@@ -5,47 +5,21 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, queryToObject } from '~/lib/utils/url_utility';
 import refreshCounts from './refresh_counts';
 
 export default class Search {
   constructor() {
-    setHighlightClass();
-    const $groupDropdown = $('.js-search-group-dropdown');
+    setHighlightClass(); // Code Highlighting
     const $projectDropdown = $('.js-search-project-dropdown');
 
     this.searchInput = '.js-search-input';
     this.searchClear = '.js-search-clear';
 
-    this.groupId = $groupDropdown.data('groupId');
+    const query = queryToObject(window.location.search);
+    this.groupId = query?.group_id;
     this.eventListeners();
     refreshCounts();
-
-    initDeprecatedJQueryDropdown($groupDropdown, {
-      selectable: true,
-      filterable: true,
-      filterRemote: true,
-      fieldName: 'group_id',
-      search: {
-        fields: ['full_name'],
-      },
-      data(term, callback) {
-        return Api.groups(term, {}, data => {
-          data.unshift({
-            full_name: __('Any'),
-          });
-          data.splice(1, 0, { type: 'divider' });
-          return callback(data);
-        });
-      },
-      id(obj) {
-        return obj.id;
-      },
-      text(obj) {
-        return obj.full_name;
-      },
-      clicked: () => Search.submitSearch(),
-    });
 
     initDeprecatedJQueryDropdown($projectDropdown, {
       selectable: true,

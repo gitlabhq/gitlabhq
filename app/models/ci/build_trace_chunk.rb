@@ -80,7 +80,7 @@ module Ci
       end
 
       def fog_store_class
-        if Feature.enabled?(:ci_trace_new_fog_store)
+        if Feature.enabled?(:ci_trace_new_fog_store, default_enabled: true)
           Ci::BuildTraceChunks::Fog
         else
           Ci::BuildTraceChunks::LegacyFog

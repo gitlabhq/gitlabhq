@@ -63,6 +63,7 @@ module Types
     mount_mutation Mutations::Terraform::State::Delete
     mount_mutation Mutations::Terraform::State::Lock
     mount_mutation Mutations::Terraform::State::Unlock
+    mount_mutation Mutations::Todos::Create
     mount_mutation Mutations::Todos::MarkDone
     mount_mutation Mutations::Todos::Restore
     mount_mutation Mutations::Todos::MarkAllDone

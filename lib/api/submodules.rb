@@ -4,6 +4,8 @@ module API
   class Submodules < ::API::Base
     before { authenticate! }
 
+    feature_category :source_code_management
+
     helpers do
       def commit_params(attrs)
         {

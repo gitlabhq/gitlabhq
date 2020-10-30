@@ -2,6 +2,8 @@
 
 module API
   class UserCounts < ::API::Base
+    feature_category :navigation
+
     resource :user_counts do
       desc 'Return the user specific counts' do
         detail 'Open MR Count'

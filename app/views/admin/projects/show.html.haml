@@ -2,6 +2,7 @@
 - breadcrumb_title @project.full_name
 - page_title @project.full_name, _("Projects")
 - @content_class = "admin-projects"
+- current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
 .js-remove-member-modal
 %h3.page-title
@@ -183,11 +184,16 @@
               = sprite_icon('pencil-square', css_class: 'gl-icon')
               = _('Manage access')
         %ul.content-list.members-list
-          = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
+          = render partial: 'shared/members/member',
+                   collection: @group_members, as: :member,
+                   locals: { membership_source: @project,
+                             group: @group,
+                             show_controls: false,
+                             current_user_is_group_owner: current_user_is_group_owner }
         .card-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
-    = render 'shared/members/requests', membership_source: @project, requesters: @requesters, force_mobile_view: true
+    = render 'shared/members/requests', membership_source: @project, group: @group, requesters: @requesters, force_mobile_view: true
 
     .card
       .card-header
@@ -199,6 +205,11 @@
             = sprite_icon('pencil-square', css_class: 'gl-icon')
             = _('Manage access')
       %ul.content-list.project_members.members-list
-        = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
+        = render partial: 'shared/members/member',
+                 collection: @project_members, as: :member,
+                 locals: { membership_source: @project,
+                           group: @group,
+                           show_controls: false,
+                           current_user_is_group_owner: current_user_is_group_owner }
       .card-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

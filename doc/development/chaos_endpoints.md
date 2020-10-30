@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Generating chaos in a test GitLab instance
 
 As [Werner Vogels](https://twitter.com/Werner), the CTO at Amazon Web Services, famously put it, **Everything fails, all the time**.

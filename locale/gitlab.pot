@@ -22492,7 +22492,10 @@ msgstr ""
 msgid "RepositoriesAnalytics|Coverage"
 msgstr ""
 
-msgid "RepositoriesAnalytics|Download Historic Test Coverage Data"
+msgid "RepositoriesAnalytics|Coverage Jobs"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Download historic test coverage data"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Download historic test coverage data (.csv)"
@@ -22507,7 +22510,7 @@ msgstr ""
 msgid "RepositoriesAnalytics|Last Update"
 msgstr ""
 
-msgid "RepositoriesAnalytics|Number of Coverages"
+msgid "RepositoriesAnalytics|Latest test coverage results"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Please select a project or multiple projects to display their most recent test coverage data."
@@ -23326,9 +23329,6 @@ msgid "Search for this text"
 msgstr ""
 
 msgid "Search forks"
-msgstr ""
-
-msgid "Search groups"
 msgstr ""
 
 msgid "Search merge requests"

@@ -32,6 +32,10 @@ module Types
     field :group_memberships, Types::GroupMemberType.connection_type, null: true,
           description: 'Group memberships of the user',
           method: :group_members
+    field :group_count, GraphQL::INT_TYPE, null: true,
+          resolver: Resolvers::Users::GroupCountResolver,
+          description: 'Group count for the user',
+          feature_flag: :user_group_counts
     field :status, Types::UserStatusType, null: true,
            description: 'User status'
     field :project_memberships, Types::ProjectMemberType.connection_type, null: true,

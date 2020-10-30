@@ -98,6 +98,17 @@ class Group < Namespace
 
   scope :by_id, ->(groups) { where(id: groups) }
 
+  scope :for_authorized_group_members, -> (user_ids) do
+    joins(:group_members)
+      .where("members.user_id IN (?)", user_ids)
+      .where("access_level >= ?", Gitlab::Access::GUEST)
+  end
+
+  scope :for_authorized_project_members, -> (user_ids) do
+    joins(projects: :project_authorizations)
+      .where("project_authorizations.user_id IN (?)", user_ids)
+  end
+
   class << self
     def sort_by_attribute(method)
       if method == 'storage_size_desc'

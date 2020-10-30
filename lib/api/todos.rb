@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :issue_tracking
+
     ISSUABLE_TYPES = {
       'merge_requests' => ->(iid) { find_merge_request_with_access(iid) },
       'issues' => ->(iid) { find_project_issue(iid) }

@@ -21,6 +21,7 @@ class UserPolicy < BasePolicy
     enable :update_user
     enable :update_user_status
     enable :read_user_personal_access_tokens
+    enable :read_group_count
   end
 
   rule { default }.enable :read_user_profile

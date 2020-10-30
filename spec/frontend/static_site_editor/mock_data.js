@@ -27,6 +27,7 @@ export const sourceContentTitle = 'Handbook';
 
 export const username = 'gitlabuser';
 export const projectId = '123456';
+export const project = 'user1/project1';
 export const returnUrl = 'https://www.gitlab.com';
 export const sourcePath = 'foobar.md.html';
 export const mergeRequestMeta = {

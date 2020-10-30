@@ -21,6 +21,7 @@ class Issue < ApplicationRecord
   include IdInOrdered
   include Presentable
   include IssueAvailableFeatures
+  include Todoable
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze

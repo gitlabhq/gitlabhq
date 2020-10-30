@@ -1,0 +1,7 @@
+---
+name: user_group_counts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44069/
+rollout_issue_url:
+type: development
+group: group::compliance
+default_enabled: false

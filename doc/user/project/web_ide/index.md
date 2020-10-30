@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Web IDE
+# Web IDE **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Core in 10.7.
@@ -243,6 +243,8 @@ to transfer the contents of the project into a public CodeSandbox project to
 quickly share your project with others.
 
 ### Enabling Live Preview
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268288) in GitLab 12.9, third-party assets and libraries required for Live Preview are hosted at `https://sandbox-prod.gitlab-static.net` when it is enabled. However, some libraries are still served from other third-party services which may or may not be desirable in your environment.
 
 The Live Preview feature needs to be enabled in the GitLab instances
 admin settings. Live Preview is enabled for all projects on

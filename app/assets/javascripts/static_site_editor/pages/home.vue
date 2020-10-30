@@ -139,6 +139,7 @@ export default {
         :saving-changes="isSavingChanges"
         :return-url="appData.returnUrl"
         :mounts="appData.mounts"
+        :project="appData.project"
         @submit="onPrepareSubmit"
       />
       <edit-meta-modal

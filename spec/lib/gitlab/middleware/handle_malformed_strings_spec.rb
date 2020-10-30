@@ -5,7 +5,9 @@ require "rack/test"
 
 RSpec.describe Gitlab::Middleware::HandleMalformedStrings do
   let(:null_byte) { "\u0000" }
+  let(:escaped_null_byte) { "%00" }
   let(:invalid_string) { "mal\xC0formed" }
+  let(:escaped_invalid_string) { "mal%c0formed" }
   let(:error_400) { [400, { 'Content-Type' => 'text/plain' }, ['Bad Request']] }
   let(:app) { double(:app) }
 
@@ -30,10 +32,26 @@ RSpec.describe Gitlab::Middleware::HandleMalformedStrings do
       expect(subject.call(env)).to eq error_400
     end
 
+    it 'rejects escaped null bytes' do
+      # We have to create the env separately or Rack::MockRequest complains about invalid URI
+      env = env_for
+      env['PATH_INFO'] = "/someplace/withan#{escaped_null_byte}escaped nullbyte"
+
+      expect(subject.call(env)).to eq error_400
+    end
+
     it 'rejects malformed strings' do
       # We have to create the env separately or Rack::MockRequest complains about invalid URI
       env = env_for
       env['PATH_INFO'] = "/someplace/with_an/#{invalid_string}"
+
+      expect(subject.call(env)).to eq error_400
+    end
+
+    it 'rejects escaped malformed strings' do
+      # We have to create the env separately or Rack::MockRequest complains about invalid URI
+      env = env_for
+      env['PATH_INFO'] = "/someplace/with_an/#{escaped_invalid_string}"
 
       expect(subject.call(env)).to eq error_400
     end

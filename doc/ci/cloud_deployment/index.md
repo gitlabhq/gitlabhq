@@ -282,10 +282,10 @@ When running your project pipeline at this point:
   on the related JSON object's content. The deployment job finishes whenever the deployment to EC2
   is done or has failed.
 
-#### Deploy Amazon EKS 
+### Deploy to Amazon EKS 
 
 - [How to deploy your application to a GitLab-managed Amazon EKS cluster with Auto DevOps](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/)
 
-#### Deploy to Google Cloud
+## Deploy to Google Cloud
 
 - [Deploying with GitLab on Google Cloud](https://about.gitlab.com/solutions/google-cloud-platform/)

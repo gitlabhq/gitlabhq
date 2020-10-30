@@ -22,6 +22,7 @@ class MergeRequest < ApplicationRecord
   include StateEventable
   include ApprovableBase
   include IdInOrdered
+  include Todoable
 
   extend ::Gitlab::Utils::Override
 

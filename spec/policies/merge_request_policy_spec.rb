@@ -24,6 +24,7 @@ RSpec.describe MergeRequestPolicy do
   mr_perms = %i[create_merge_request_in
                 create_merge_request_from
                 read_merge_request
+                create_todo
                 approve_merge_request
                 create_note].freeze
 
@@ -43,6 +44,18 @@ RSpec.describe MergeRequestPolicy do
     mr_perms.each do |thing|
       it "can #{thing}" do
         expect(perms).to be_allowed(thing)
+      end
+    end
+  end
+
+  context 'when merge request is public' do
+    context 'and user is anonymous' do
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
+
+      subject { permissions(nil, merge_request) }
+
+      it do
+        is_expected.to be_disallowed(:create_todo)
       end
     end
   end

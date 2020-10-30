@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Vue.js style guide
 
 ## Linting
@@ -399,6 +405,199 @@ Useful links:
 
    $('span').tooltip('_fixTitle');
    ```
+
+## Vue testing
+
+Over time, a number of programming patterns and style preferences have emerged in our efforts to effectively test Vue components.
+The following guide describes some of these. **These are not strict guidelines**, but rather a collection of suggestions and 
+good practices that aim to provide insight into how we write Vue tests at GitLab.
+
+### Mounting a component
+
+Typically, when testing a Vue component, the component should be "re-mounted" in every test block.
+
+To achieve this:
+
+1. Create a mutable `wrapper` variable inside the top-level `describe` block.
+1. Mount the component using [`mount`](https://vue-test-utils.vuejs.org/api/#mount)/[`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount).
+1. Reassign the resulting [`Wrapper`](https://vue-test-utils.vuejs.org/api/wrapper/#wrapper) instance to our `wrapper` variable.
+
+Creating a global, mutable wrapper provides a number of advantages, including the ability to:
+
+- Define common functions for finding components/DOM elements:
+  
+  ```javascript
+  import MyComponent from '~/path/to/my_component.vue';
+  describe('MyComponent', () => {
+    let wrapper;
+
+    // this can now be reused across tests
+    const findMyComponent = wrapper.find(MyComponent);
+    // ...
+  })
+  ```
+
+- Use a `beforeEach` block to mount the component (see [the `createComponent` factory](#the-createcomponent-factory) for more information).
+- Use an `afterEach` block to destroy the component, for example, `wrapper.destroy()`.
+
+#### The `createComponent` factory
+
+To avoid duplicating our mounting logic, it's useful to define a `createComponent` factory function
+that we can reuse in each test block. This is a closure which should reassign our `wrapper` variable
+to the result of [`mount`](https://vue-test-utils.vuejs.org/api/#mount) and [`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount):
+
+```javascript
+import MyComponent from '~/path/to/my_component.vue';
+import { shallowMount } from '@vue/test-utils';
+
+describe('MyComponent', () => {
+  // Initiate the "global" wrapper variable. This will be used throughout our test:
+  let wrapper;
+
+  // Define our `createComponent` factory:
+  function createComponent() {
+    // Mount component and reassign `wrapper`:
+    wrapper = shallowMount(MyComponent);
+  }
+
+  it('mounts', () => {
+    createComponent();
+
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it('`isLoading` prop defaults to `false`', () => {
+    createComponent();
+
+    expect(wrapper.props('isLoading')).toBe(false);
+  });
+})
+```
+
+Similarly, we could further de-duplicate our test by calling `createComponent` in a `beforeEach` block:
+
+```javascript
+import MyComponent from '~/path/to/my_component.vue';
+import { shallowMount } from '@vue/test-utils';
+
+describe('MyComponent', () => {
+  // Initiate the "global" wrapper variable. This will be used throughout our test
+  let wrapper;
+
+  // define our `createComponent` factory
+  function createComponent() {
+    // mount component and reassign `wrapper`
+    wrapper = shallowMount(MyComponent);
+  }
+
+  beforeEach(() => {
+    createComponent();
+  });
+
+  it('mounts', () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it('`isLoading` prop defaults to `false`', () => {
+    expect(wrapper.props('isLoading')).toBe(false);
+  });
+})
+```
+
+#### `createComponent` best practices
+
+1. Consider using a single (or a limited number of) object arguments over many arguments.
+  Defining single parameters for common data like `props` is okay,
+  but keep in mind our [JavaScript style guide](javascript.md#limit-number-of-parameters) and stay within the parameter number limit:
+
+    ```javascript
+    // bad
+    function createComponent(data, props, methods, isLoading, mountFn) { }
+
+    // good
+    function createComponent({ data, props, methods, stubs, isLoading } = {}) { }
+
+    // good
+    function createComponent(props = {}, { data, methods, stubs, isLoading } = {}) { }
+    ```
+
+1. If you require both `mount` _and_ `shallowMount` within the same set of tests, it
+can be useful define a `mountFn` parameter for the `createComponent` factory that accepts
+the mounting function (`mount` or `shallowMount`) to be used to mount the component:
+
+    ```javascript
+    import { shallowMount } from '@vue/test-utils';
+
+    function createComponent({ mountFn = shallowMount } = {}) { }
+    ```
+
+### Setting component state
+
+1. Avoid using [`setProps`](https://vue-test-utils.vuejs.org/api/wrapper/#setprops) to set 
+component state wherever possible. Instead, set the component's 
+[`propsData`](https://vue-test-utils.vuejs.org/api/options.html#propsdata) when mounting the component:
+
+    ```javascript
+    // bad
+    wrapper = shallowMount(MyComponent);
+    wrapper.setProps({
+      myProp: 'my cool prop'
+    });
+
+    // good
+    wrapper = shallowMount({ propsData: { myProp: 'my cool prop' } });
+    ```
+
+    The exception here is when you wish to test component reactivity in some way.
+    For example, you may want to test the output of a component when after a particular watcher has executed.
+    Using `setProps` to test such behavior is okay.
+
+### Accessing component state
+
+1. When accessing props or attributes, prefer the `wrapper.props('myProp')` syntax over `wrapper.props().myProp`:
+
+    ```javascript
+    // good
+    expect(wrapper.props().myProp).toBe(true);
+    expect(wrapper.attributes().myAttr).toBe(true);
+
+    // better
+    expect(wrapper.props('myProp').toBe(true);
+    expect(wrapper.attributes('myAttr')).toBe(true);
+    ```
+
+1. When asserting multiple props, check the deep equality of the `props()` object with [`toEqual`](https://jestjs.io/docs/en/expect#toequalvalue):
+
+    ```javascript
+    // good
+    expect(wrapper.props('propA')).toBe('valueA');
+    expect(wrapper.props('propB')).toBe('valueB');
+    expect(wrapper.props('propC')).toBe('valueC');
+
+    // better
+    expect(wrapper.props()).toEqual({
+      propA: 'valueA',
+      propB: 'valueB',
+      propC: 'valueC',
+    });
+    ```
+
+1. If you are only interested in some of the props, you can use [`toMatchObject`](https://jestjs.io/docs/en/expect#tomatchobjectobject).
+Prefer `toMatchObject` over [`expect.objectContaining`](https://jestjs.io/docs/en/expect#expectobjectcontainingobject):
+
+    ```javascript
+    // good
+    expect(wrapper.props()).toEqual(expect.objectContaining({
+      propA: 'valueA',
+      propB: 'valueB',
+    }));
+
+    // better
+    expect(wrapper.props()).toMatchObject({
+      propA: 'valueA',
+      propB: 'valueB',
+    });
+    ```
 
 ## The JavaScript/Vue Accord
 

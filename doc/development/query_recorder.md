@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # QueryRecorder
 
 QueryRecorder is a tool for detecting the [N+1 queries problem](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) from tests.

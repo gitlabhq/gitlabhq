@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Updating to GitLab 13.2: Email confirmation issues
 
 In the [GitLab 13.0.1 security release](https://about.gitlab.com/releases/2020/05/27/security-release-13-0-1-released/),

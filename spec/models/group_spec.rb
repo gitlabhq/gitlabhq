@@ -308,8 +308,10 @@ RSpec.describe Group do
   end
 
   describe 'scopes' do
-    let!(:private_group)  { create(:group, :private)  }
-    let!(:internal_group) { create(:group, :internal) }
+    let_it_be(:private_group)  { create(:group, :private)  }
+    let_it_be(:internal_group) { create(:group, :internal) }
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
 
     describe 'public_only' do
       subject { described_class.public_only.to_a }
@@ -327,6 +329,27 @@ RSpec.describe Group do
       subject { described_class.non_public_only.to_a }
 
       it { is_expected.to match_array([private_group, internal_group]) }
+    end
+
+    describe 'for_authorized_group_members' do
+      let_it_be(:group_member1) { create(:group_member, source: private_group, user_id: user1.id, access_level: Gitlab::Access::OWNER) }
+
+      it do
+        result = described_class.for_authorized_group_members([user1.id, user2.id])
+
+        expect(result).to match_array([private_group])
+      end
+    end
+
+    describe 'for_authorized_project_members' do
+      let_it_be(:project) { create(:project, group: internal_group) }
+      let_it_be(:project_member1) { create(:project_member, source: project, user_id: user1.id, access_level: Gitlab::Access::DEVELOPER) }
+
+      it do
+        result = described_class.for_authorized_project_members([user1.id, user2.id])
+
+        expect(result).to match_array([internal_group])
+      end
     end
   end
 

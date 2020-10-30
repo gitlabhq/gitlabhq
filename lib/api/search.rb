@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :global_search
+
     helpers do
       SCOPE_ENTITY = {
         merge_requests: Entities::MergeRequestBasic,

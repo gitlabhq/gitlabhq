@@ -4,6 +4,8 @@ module API
   class SystemHooks < ::API::Base
     include PaginationParams
 
+    feature_category :integrations
+
     before do
       authenticate!
       authenticated_as_admin!

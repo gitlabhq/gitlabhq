@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # `DeclarativePolicy` framework
 
 The DeclarativePolicy framework is designed to assist in performance of policy checks, and to enable ease of extension for EE. The DSL code in `app/policies` is what `Ability.allowed?` uses to check whether a particular action is allowed on a subject.

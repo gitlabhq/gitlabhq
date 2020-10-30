@@ -270,7 +270,8 @@ input[type='checkbox']:hover {
     width: 100%;
   }
 
-  .dropdown-menu-toggle {
+  .dropdown-menu-toggle,
+  .gl-new-dropdown {
     @include media-breakpoint-up(lg) {
       width: 240px;
     }

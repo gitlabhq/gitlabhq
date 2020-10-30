@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Adding a new Service Component to GitLab
 
 The GitLab product is made up of several service components that run as independent system processes in communication with each other. These services can be run on the same instance, or spread across different instances. A list of the existing components can be found in the [GitLab architecture overview](architecture.md).

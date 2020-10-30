@@ -12,6 +12,8 @@ module API
 
     before { authorize! :download_code, user_project }
 
+    feature_category :source_code_management
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

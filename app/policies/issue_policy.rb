@@ -35,6 +35,10 @@ class IssuePolicy < IssuablePolicy
   rule { ~can?(:read_design) }.policy do
     prevent :move_design
   end
+
+  rule { ~anonymous & can?(:read_issue) }.policy do
+    enable :create_todo
+  end
 end
 
 IssuePolicy.prepend_if_ee('EE::IssuePolicy')

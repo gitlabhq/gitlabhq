@@ -10,6 +10,7 @@ import { DEFAULT_IMAGE_UPLOAD_PATH } from '../constants';
 import imageRepository from '../image_repository';
 import formatter from '../services/formatter';
 import templater from '../services/templater';
+import renderImage from '../services/renderers/render_image';
 
 export default {
   components: {
@@ -39,6 +40,10 @@ export default {
     },
     mounts: {
       type: Array,
+      required: true,
+    },
+    project: {
+      type: String,
       required: true,
     },
     imageRoot: {
@@ -71,6 +76,12 @@ export default {
     },
     isWysiwygMode() {
       return this.editorMode === EDITOR_TYPES.wysiwyg;
+    },
+    customRenderers() {
+      const imageRenderer = renderImage.build(this.mounts, this.project);
+      return {
+        image: [imageRenderer],
+      };
     },
   },
   created() {
@@ -140,6 +151,7 @@ export default {
       :content="editableContent"
       :initial-edit-type="editorMode"
       :image-root="imageRoot"
+      :options="{ customRenderers }"
       class="mb-9 pb-6 h-100"
       @modeChange="onModeChange"
       @input="onInputChange"

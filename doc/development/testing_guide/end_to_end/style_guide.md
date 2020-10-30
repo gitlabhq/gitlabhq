@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Style guide for writing end-to-end tests
 
 This document describes the conventions used at GitLab for writing End-to-end (E2E) tests using the GitLab QA project.

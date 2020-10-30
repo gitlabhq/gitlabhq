@@ -4,6 +4,8 @@ module API
   class Templates < ::API::Base
     include PaginationParams
 
+    feature_category :templates
+
     GLOBAL_TEMPLATE_TYPES = {
       gitignores: {
         gitlab_version: 8.8

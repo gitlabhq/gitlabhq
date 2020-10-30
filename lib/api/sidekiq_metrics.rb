@@ -6,6 +6,8 @@ module API
   class SidekiqMetrics < ::API::Base
     before { authenticated_as_admin! }
 
+    feature_category :not_owned
+
     helpers do
       def queue_metrics
         Sidekiq::Queue.all.each_with_object({}) do |queue, hash|

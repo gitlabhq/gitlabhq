@@ -4,6 +4,8 @@ module API
   class UsageData < ::API::Base
     before { authenticate! }
 
+    feature_category :collection
+
     namespace 'usage_data' do
       before do
         not_found! unless Feature.enabled?(:usage_data_api, default_enabled: true)

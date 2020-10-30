@@ -45,6 +45,61 @@ To protect an environment:
 
 The protected environment will now appear in the list of protected environments.
 
+### Use the API to protect an environment
+
+Alternatively, you can use the API to protect an environment:
+
+1. Use a project with a CI that creates an environment. For example:
+
+   ```yaml
+   stages:
+     - test
+     - deploy
+
+   test:
+     stage: test
+     script:
+       - 'echo "Testing Application: ${CI_PROJECT_NAME}"'
+
+   production:
+     stage: deploy
+     when: manual
+     script:
+       - 'echo "Deploying to ${CI_ENVIRONMENT_NAME}"'
+   environment:
+     name: ${CI_JOB_NAME}
+   ```
+
+1. Use the UI to [create a new group](../../user/group/index.md#create-a-new-group).
+   For example, this group is called `protected-access-group` and has the group ID `9899826`. Note
+   that the rest of the examples in these steps use this group.
+
+   ![Group Access](img/protected_access_group_v13_6.png)
+
+1. Use the API to add a user to the group as a reporter:
+
+   ```shell
+   $ curl --request POST --header "PRIVATE-TOKEN: xxxxxxxxxxxx" --data "user_id=3222377&access_level=20" "https://gitlab.com/api/v4/groups/9899826/members"
+
+   {"id":3222377,"name":"Sean Carroll","username":"sfcarroll","state":"active","avatar_url":"https://assets.gitlab-static.net/uploads/-/system/user/avatar/3222377/avatar.png","web_url":"https://gitlab.com/sfcarroll","access_level":20,"created_at":"2020-10-26T17:37:50.309Z","expires_at":null}
+   ```
+
+1. Use the API to add the group to the project as a reporter:
+
+   ```shell
+   $ curl --request POST --header "PRIVATE-TOKEN: xxxxxxxxxxxx" --request POST "https://gitlab.com/api/v4/projects/22034114/share?group_id=9899826&group_access=20"
+
+   {"id":1233335,"project_id":22034114,"group_id":9899826,"group_access":20,"expires_at":null}
+   ```
+
+1. Use the API to add the group with protected environment access:
+
+   ```shell
+   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: xxxxxxxxxxx" "https://gitlab.com/api/v4/projects/22034114/protected_environments"
+   ```
+
+The group now has access and can be seen in the UI.
+
 ## Environment access by group membership
 
 A user may be granted access to protected environments as part of

@@ -45,7 +45,16 @@ RSpec.describe 'Every API endpoint' do
           ::API::NpmPackages, ::API::GenericPackages, ::API::GoProxy, ::API::Pages,
           ::API::PagesDomains, ::API::ProjectClusters, ::API::ProjectContainerRepositories,
           ::API::ProjectEvents, ::API::ProjectExport, ::API::ProjectImport, ::API::ProjectHooks,
-          ::API::ProjectMilestones, ::API::ProjectRepositoryStorageMoves, ::API::Projects
+          ::API::ProjectMilestones, ::API::ProjectRepositoryStorageMoves, ::API::Projects,
+          ::API::ProjectSnapshots, ::API::ProjectSnippets, ::API::ProjectStatistics,
+          ::API::ProjectTemplates, ::API::Terraform::State, ::API::Terraform::StateVersion,
+          ::API::ProtectedBranches, ::API::ProtectedTags, ::API::Releases, ::API::Release::Links,
+          ::API::RemoteMirrors, ::API::Repositories, ::API::Search, ::API::Services,
+          ::API::Settings, ::API::SidekiqMetrics, ::API::Snippets, ::API::Statistics,
+          ::API::Submodules, ::API::Subscriptions, ::API::Suggestions, ::API::SystemHooks,
+          ::API::Tags, ::API::Templates, ::API::Todos, ::API::Triggers, ::API::Unleash,
+          ::API::UsageData, ::API::UserCounts, ::API::Variables, ::API::Version,
+          ::API::Wikis
         ]
         next unless completed_classes.include?(klass)
 

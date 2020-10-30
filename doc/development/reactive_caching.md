@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # `ReactiveCaching`
 
 > This doc refers to <https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/reactive_caching.rb>.

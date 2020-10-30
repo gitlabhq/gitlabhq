@@ -7,6 +7,8 @@ module API
     class State < ::API::Base
       include ::Gitlab::Utils::StrongMemoize
 
+      feature_category :infrastructure_as_code
+
       default_format :json
 
       before do

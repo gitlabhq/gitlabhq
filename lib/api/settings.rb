@@ -4,6 +4,8 @@ module API
   class Settings < ::API::Base
     before { authenticated_as_admin! }
 
+    feature_category :not_owned
+
     helpers Helpers::SettingsHelpers
 
     helpers do

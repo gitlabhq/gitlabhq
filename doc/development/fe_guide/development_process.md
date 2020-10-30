@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Frontend Development Process
 
 You can find more about the organization of the frontend team in the [handbook](https://about.gitlab.com/handbook/engineering/frontend/).

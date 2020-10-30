@@ -102,4 +102,22 @@ RSpec.describe UserPolicy do
       end
     end
   end
+
+  describe "reading a user's group count" do
+    context "when current_user is an admin", :enable_admin_mode do
+      let(:current_user) { create(:user, :admin) }
+
+      it { is_expected.to be_allowed(:read_group_count) }
+    end
+
+    context "for self users" do
+      let(:user) { current_user }
+
+      it { is_expected.to be_allowed(:read_group_count) }
+    end
+
+    context "when accessing a different user's group count" do
+      it { is_expected.not_to be_allowed(:read_group_count) }
+    end
+  end
 end
