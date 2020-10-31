@@ -35,7 +35,46 @@ RSpec.describe API::Boards do
 
   it_behaves_like 'group and project boards', "/projects/:id/boards"
 
-  describe "POST /projects/:id/boards/lists" do
+  describe "POST /projects/:id/boards" do
+    let(:url) { "/projects/#{board_parent.id}/boards" }
+
+    it 'creates a new issue board' do
+      post api(url, user), params: { name: 'foo' }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['name']).to eq('foo')
+    end
+
+    it 'fails to create a new board' do
+      post api(url, user), params: { some_name: 'foo' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('name is missing')
+    end
+  end
+
+  describe "PUT /projects/:id/boards/:board_id" do
+    let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}" }
+
+    it 'updates the issue board' do
+      put api(url, user), params: { name: 'changed board name' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['name']).to eq('changed board name')
+    end
+  end
+
+  describe "DELETE /projects/:id/boards/:board_id" do
+    let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}" }
+
+    it 'delete the issue board' do
+      delete api(url, user)
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+  end
+
+  describe "POST /projects/:id/boards/:board_id/lists" do
     let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}/lists" }
 
     it 'creates a new issue board list for group labels' do
@@ -65,7 +104,7 @@ RSpec.describe API::Boards do
     end
   end
 
-  describe "POST /groups/:id/boards/lists" do
+  describe "POST /groups/:id/boards/:board_id/lists" do
     let_it_be(:group) { create(:group) }
     let_it_be(:board_parent) { create(:group, parent: group ) }
     let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }

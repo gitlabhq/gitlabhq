@@ -395,7 +395,7 @@ class Environment < ApplicationRecord
 
   # Overrides ReactiveCaching default to activate limit checking behind a FF
   def reactive_cache_limit_enabled?
-    Feature.enabled?(:reactive_caching_limit_environment, project)
+    Feature.enabled?(:reactive_caching_limit_environment, project, default_enabled: true)
   end
 end
 

@@ -1,0 +1,6 @@
+---
+title: Limits the Deploy Boards data to 10 MB. This change is enabled by default behind
+  a feature flag
+merge_request: 46043
+author:
+type: changed

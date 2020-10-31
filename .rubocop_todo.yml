@@ -186,18 +186,12 @@ RSpec/ExpectChange:
 # Offense count: 47
 RSpec/ExpectGitlabTracking:
   Exclude:
-    - 'ee/spec/controllers/projects/settings/operations_controller_spec.rb'
-    - 'ee/spec/requests/api/visual_review_discussions_spec.rb'
-    - 'ee/spec/services/epics/issue_promote_service_spec.rb'
-    - 'spec/controllers/groups/registry/repositories_controller_spec.rb'
     - 'spec/controllers/projects/registry/repositories_controller_spec.rb'
     - 'spec/controllers/projects/registry/tags_controller_spec.rb'
     - 'spec/controllers/projects/settings/operations_controller_spec.rb'
-    - 'spec/controllers/registrations_controller_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/requests/api/project_container_repositories_spec.rb'
     - 'spec/support/shared_examples/controllers/trackable_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/container_repositories_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/discussions_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/tracking_shared_examples.rb'
