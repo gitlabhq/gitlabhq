@@ -1,7 +1,7 @@
 ---
 name: include_lfs_blobs_in_archive
-introduced_by_url: '44116'
-rollout_issue_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44116
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/268409
 type: development
 group: group::source code
-default_enabled: false
+default_enabled: true

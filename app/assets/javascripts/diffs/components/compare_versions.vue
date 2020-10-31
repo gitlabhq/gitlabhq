@@ -6,7 +6,7 @@ import { polyfillSticky } from '~/lib/utils/sticky';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 import SettingsDropdown from './settings_dropdown.vue';
 import DiffStats from './diff_stats.vue';
-import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
+import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -71,7 +71,7 @@ export default {
       'toggleShowTreeList',
     ]),
     expandAllFiles() {
-      eventHub.$emit('mr:diffs:expandAllFiles');
+      eventHub.$emit(EVT_EXPAND_ALL_FILES);
     },
   },
 };

@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlButton } from '@gitlab/ui';
 
-import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
+import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -40,7 +40,7 @@ export default {
       this.$emit('dismiss');
     },
     expand() {
-      eventHub.$emit('mr:diffs:expandAllFiles');
+      eventHub.$emit(EVT_EXPAND_ALL_FILES);
       this.dismiss();
     },
   },

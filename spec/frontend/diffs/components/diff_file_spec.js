@@ -12,6 +12,7 @@ import DiffContentComponent from '~/diffs/components/diff_content.vue';
 import eventHub from '~/diffs/event_hub';
 
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
+import { EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
 
 function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed, name }) {
   const file = store.state.diffs.diffFiles[index];
@@ -140,7 +141,7 @@ describe('DiffFile', () => {
   });
 
   describe('collapsing', () => {
-    describe('`mr:diffs:expandAllFiles` event', () => {
+    describe(`\`${EVT_EXPAND_ALL_FILES}\` event`, () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'handleToggle').mockImplementation(() => {});
       });
@@ -150,13 +151,13 @@ describe('DiffFile', () => {
 
         await wrapper.vm.$nextTick();
 
-        eventHub.$emit('mr:diffs:expandAllFiles');
+        eventHub.$emit(EVT_EXPAND_ALL_FILES);
 
         expect(wrapper.vm.handleToggle).toHaveBeenCalledTimes(1);
       });
 
       it('does nothing when the file is not collapsed', async () => {
-        eventHub.$emit('mr:diffs:expandAllFiles');
+        eventHub.$emit(EVT_EXPAND_ALL_FILES);
 
         await wrapper.vm.$nextTick();
 

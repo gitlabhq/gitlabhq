@@ -11,7 +11,11 @@ import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
 import { collapsedType, isCollapsed } from '../diff_file';
-import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '../constants';
+import {
+  DIFF_FILE_AUTOMATIC_COLLAPSE,
+  DIFF_FILE_MANUAL_COLLAPSE,
+  EVT_EXPAND_ALL_FILES,
+} from '../constants';
 import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
 import eventHub from '../event_hub';
 
@@ -154,10 +158,10 @@ export default {
   },
   created() {
     notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
-    eventHub.$on('mr:diffs:expandAllFiles', this.expandAllListener);
+    eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   beforeDestroy() {
-    eventHub.$off('mr:diffs:expandAllFiles', this.expandAllListener);
+    eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {
     ...mapActions('diffs', [

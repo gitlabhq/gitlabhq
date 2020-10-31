@@ -8,7 +8,7 @@ module Resolvers
           required: false,
           description: 'The full-path of the project the authored merge requests should be in. Incompatible with projectId.'
 
-    argument :project_id, GraphQL::ID_TYPE,
+    argument :project_id, ::Types::GlobalIDType[::Project],
           required: false,
           description: 'The global ID of the project the authored merge requests should be in. Incompatible with projectPath.'
 
@@ -50,8 +50,10 @@ module Resolvers
     end
 
     def load_project(project_path, project_id)
-      @project = resolve_project(full_path: project_path, project_id: project_id)
-      @project = @project.sync if @project.respond_to?(:sync)
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      project_id &&= ::Types::GlobalIDType[::Project].coerce_isolated_input(project_id)
+      @project = ::Gitlab::Graphql::Lazy.force(resolve_project(full_path: project_path, project_id: project_id))
     end
 
     def no_results_possible?(args)

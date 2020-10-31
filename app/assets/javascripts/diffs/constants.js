@@ -95,3 +95,6 @@ export const RENAMED_DIFF_TRANSITIONS = {
   [`${STATE_ERRORED}:${TRANSITION_LOAD_START}`]: STATE_LOADING,
   [`${STATE_ERRORED}:${TRANSITION_ACKNOWLEDGE_ERROR}`]: STATE_IDLING,
 };
+
+// MR Diffs known events
+export const EVT_EXPAND_ALL_FILES = 'mr:diffs:expandAllFiles';
