@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import { getByRole } from '@testing-library/dom';
 import PipelineSchedulesCallout from '~/pages/projects/pipeline_schedules/shared/components/pipeline_schedules_callout.vue';
 
 const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
@@ -80,7 +81,7 @@ describe('Pipeline Schedule Callout', () => {
     });
 
     it('updates calloutDismissed when close button is clicked', done => {
-      calloutComponent.$el.querySelector('#dismiss-callout-btn').click();
+      getByRole(calloutComponent.$el, 'button', /dismiss/i).click();
 
       Vue.nextTick(() => {
         expect(calloutComponent.calloutDismissed).toBe(true);
@@ -98,7 +99,7 @@ describe('Pipeline Schedule Callout', () => {
     });
 
     it('is hidden when close button is clicked', done => {
-      calloutComponent.$el.querySelector('#dismiss-callout-btn').click();
+      getByRole(calloutComponent.$el, 'button', /dismiss/i).click();
 
       Vue.nextTick(() => {
         expect(calloutComponent.$el.childNodes.length).toBe(0);
