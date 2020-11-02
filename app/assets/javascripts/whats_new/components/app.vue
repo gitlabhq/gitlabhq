@@ -1,8 +1,16 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlDrawer, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
+import {
+  GlDrawer,
+  GlBadge,
+  GlIcon,
+  GlLink,
+  GlInfiniteScroll,
+  GlResizeObserverDirective,
+} from '@gitlab/ui';
 import SkeletonLoader from './skeleton_loader.vue';
 import Tracking from '~/tracking';
+import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
 
 const trackingMixin = Tracking.mixin();
 
@@ -12,7 +20,11 @@ export default {
     GlBadge,
     GlIcon,
     GlLink,
+    GlInfiniteScroll,
     SkeletonLoader,
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [trackingMixin],
   props: {
@@ -23,7 +35,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['open', 'features']),
+    ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight']),
   },
   mounted() {
     this.openDrawer(this.storageKey);
@@ -35,20 +47,41 @@ export default {
     this.track('click_whats_new_drawer', { label: 'namespace_id', value: namespaceId });
   },
   methods: {
-    ...mapActions(['openDrawer', 'closeDrawer', 'fetchItems']),
+    ...mapActions(['openDrawer', 'closeDrawer', 'fetchItems', 'setDrawerBodyHeight']),
+    bottomReached() {
+      if (this.pageInfo.nextPage) {
+        this.fetchItems(this.pageInfo.nextPage);
+      }
+    },
+    handleResize() {
+      const height = getDrawerBodyHeight(this.$refs.drawer.$el);
+      this.setDrawerBodyHeight(height);
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <gl-drawer class="whats-new-drawer" :open="open" @close="closeDrawer">
+    <gl-drawer
+      ref="drawer"
+      v-gl-resize-observer="handleResize"
+      class="whats-new-drawer"
+      :open="open"
+      @close="closeDrawer"
+    >
       <template #header>
-        <h4 class="page-title my-2">{{ __("What's new at GitLab") }}</h4>
+        <h4 class="page-title gl-my-3">{{ __("What's new at GitLab") }}</h4>
       </template>
-      <div class="pb-6">
-        <template v-if="features">
-          <div v-for="feature in features" :key="feature.title" class="mb-6">
+      <gl-infinite-scroll
+        v-if="features.length"
+        :fetched-items="features.length"
+        :max-list-height="drawerBodyHeight"
+        class="gl-p-0"
+        @bottomReached="bottomReached"
+      >
+        <template #items>
+          <div v-for="feature in features" :key="feature.title" class="gl-mb-7 gl-px-5 gl-pt-5">
             <gl-link
               :href="feature.url"
               target="_blank"
@@ -60,11 +93,14 @@ export default {
               <h5 class="gl-font-base">{{ feature.title }}</h5>
             </gl-link>
             <div v-if="feature.packages" class="gl-mb-3">
-              <template v-for="package_name in feature.packages">
-                <gl-badge :key="package_name" size="sm" class="whats-new-item-badge gl-mr-2">
-                  <gl-icon name="license" />{{ package_name }}
-                </gl-badge>
-              </template>
+              <gl-badge
+                v-for="package_name in feature.packages"
+                :key="package_name"
+                size="sm"
+                class="whats-new-item-badge gl-mr-2"
+              >
+                <gl-icon name="license" />{{ package_name }}
+              </gl-badge>
             </div>
             <gl-link
               :href="feature.url"
@@ -76,7 +112,7 @@ export default {
               <img
                 :alt="feature.title"
                 :src="feature.image_url"
-                class="img-thumbnail px-6 gl-py-3 whats-new-item-image"
+                class="img-thumbnail gl-px-8 gl-py-3 whats-new-item-image"
               />
             </gl-link>
             <p class="gl-pt-3">{{ feature.body }}</p>
@@ -90,10 +126,10 @@ export default {
             >
           </div>
         </template>
-        <div v-else class="gl-mt-5">
-          <skeleton-loader />
-          <skeleton-loader />
-        </div>
+      </gl-infinite-scroll>
+      <div v-else class="gl-mt-5">
+        <skeleton-loader />
+        <skeleton-loader />
       </div>
     </gl-drawer>
     <div v-if="open" class="whats-new-modal-backdrop modal-backdrop"></div>

@@ -228,6 +228,10 @@ possible.
 
 ## Version specific upgrading instructions
 
+### 13.6.0
+
+The required Git version is Git v2.29 or higher.
+
 ### 13.3.0
 
 The recommended Git version is Git v2.28. The minimum required version of Git

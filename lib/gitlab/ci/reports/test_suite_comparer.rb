@@ -6,6 +6,9 @@ module Gitlab
       class TestSuiteComparer
         include Gitlab::Utils::StrongMemoize
 
+        DEFAULT_MAX_TESTS = 100
+        DEFAULT_MIN_TESTS = 10
+
         attr_reader :name, :base_suite, :head_suite
 
         def initialize(name, base_suite, head_suite)
@@ -80,6 +83,29 @@ module Gitlab
 
         def error_count
           new_errors.count + existing_errors.count
+        end
+
+        # This is used to limit the presented test cases but does not affect
+        # total count of tests in the summary
+        def limited_tests
+          strong_memoize(:limited_tests) do
+            # rubocop: disable CodeReuse/ActiveRecord
+            OpenStruct.new(
+              new_failures: new_failures.take(max_tests),
+              existing_failures: existing_failures.take(max_tests(new_failures)),
+              resolved_failures: resolved_failures.take(max_tests(new_failures, existing_failures)),
+              new_errors: new_errors.take(max_tests),
+              existing_errors: existing_errors.take(max_tests(new_errors)),
+              resolved_errors: resolved_errors.take(max_tests(new_errors, existing_errors))
+            )
+            # rubocop: enable CodeReuse/ActiveRecord
+          end
+        end
+
+        private
+
+        def max_tests(*used)
+          [DEFAULT_MAX_TESTS - used.map(&:count).sum, DEFAULT_MIN_TESTS].max
         end
       end
     end

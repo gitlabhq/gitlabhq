@@ -135,7 +135,7 @@ Make sure you have the right version of Git installed:
 # Install Git
 sudo apt-get install -y git-core
 
-# Make sure Git is version 2.24.0 or higher (recommended version is 2.28.0)
+# Make sure Git is version 2.29.0 or higher (recommended version is 2.29.0)
 git --version
 ```
 

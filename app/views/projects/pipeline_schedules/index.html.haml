@@ -2,7 +2,7 @@
 - page_title _("Pipeline Schedules")
 - add_page_specific_style 'page_bundles/pipeline_schedules'
 
-#pipeline-schedules-callout{ data: { docs_url: help_page_path('ci/pipelines/schedules'), image_url: image_path('illustrations/pipeline_schedule_callout.svg') } }
+#pipeline-schedules-callout{ data: { docs_url: help_page_path('ci/pipelines/schedules'), illustration_url: image_path('illustrations/pipeline_schedule_callout.svg') } }
 .top-area
   - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
   = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope

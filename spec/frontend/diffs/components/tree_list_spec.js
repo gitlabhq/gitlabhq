@@ -91,12 +91,12 @@ describe('Diffs tree list component', () => {
       expect(
         getFileRows()
           .at(0)
-          .text(),
+          .html(),
       ).toContain('index.js');
       expect(
         getFileRows()
           .at(1)
-          .text(),
+          .html(),
       ).toContain('app');
     });
 
@@ -138,7 +138,7 @@ describe('Diffs tree list component', () => {
       wrapper.vm.$store.state.diffs.renderTreeList = false;
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find('.file-row').text()).toContain('index.js');
+        expect(wrapper.find('.file-row').html()).toContain('index.js');
       });
     });
   });

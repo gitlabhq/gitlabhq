@@ -175,7 +175,7 @@ describe('BoardCard', () => {
       wrapper.trigger('mousedown');
       wrapper.trigger('mouseup');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', wrapper.vm.issue, undefined);
+      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', wrapper.vm.issue, false);
       expect(boardsStore.detail.list).toEqual(wrapper.vm.list);
     });
 
@@ -188,7 +188,7 @@ describe('BoardCard', () => {
       wrapper.trigger('mousedown');
       wrapper.trigger('mouseup');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue', undefined);
+      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue', false);
     });
   });
 

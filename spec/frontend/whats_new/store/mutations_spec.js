@@ -23,10 +23,37 @@ describe('whats new mutations', () => {
     });
   });
 
-  describe('setFeatures', () => {
-    it('sets features to data', () => {
-      mutations[types.SET_FEATURES](state, 'bells and whistles');
-      expect(state.features).toBe('bells and whistles');
+  describe('addFeatures', () => {
+    it('adds features from data', () => {
+      mutations[types.ADD_FEATURES](state, ['bells and whistles']);
+      expect(state.features).toEqual(['bells and whistles']);
+    });
+
+    it('when there are already items, it adds items', () => {
+      state.features = ['shiny things'];
+      mutations[types.ADD_FEATURES](state, ['bells and whistles']);
+      expect(state.features).toEqual(['shiny things', 'bells and whistles']);
+    });
+  });
+
+  describe('setPageInfo', () => {
+    it('sets page info', () => {
+      mutations[types.SET_PAGE_INFO](state, { nextPage: 8 });
+      expect(state.pageInfo).toEqual({ nextPage: 8 });
+    });
+  });
+
+  describe('setFetching', () => {
+    it('sets fetching', () => {
+      mutations[types.SET_FETCHING](state, true);
+      expect(state.fetching).toBe(true);
+    });
+  });
+
+  describe('setDrawerBodyHeight', () => {
+    it('sets drawerBodyHeight', () => {
+      mutations[types.SET_DRAWER_BODY_HEIGHT](state, 840);
+      expect(state.drawerBodyHeight).toBe(840);
     });
   });
 });

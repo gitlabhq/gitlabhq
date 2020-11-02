@@ -149,6 +149,16 @@ FactoryBot.define do
       end
     end
 
+    trait :junit_with_three_failures do
+      file_type { :junit }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_with_three_failures.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :accessibility do
       file_type { :accessibility }
       file_format { :raw }

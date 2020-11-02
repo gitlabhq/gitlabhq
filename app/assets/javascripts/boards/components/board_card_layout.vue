@@ -44,9 +44,6 @@ export default {
     multiSelectVisible() {
       return this.multiSelect.list.findIndex(issue => issue.id === this.issue.id) > -1;
     },
-    canMultiSelect() {
-      return gon.features && gon.features.multiSelectBoard;
-    },
   },
   methods: {
     mouseDown() {
@@ -59,7 +56,7 @@ export default {
       // Don't do anything if this happened on a no trigger element
       if (e.target.classList.contains('js-no-trigger')) return;
 
-      const isMultiSelect = this.canMultiSelect && (e.ctrlKey || e.metaKey);
+      const isMultiSelect = e.ctrlKey || e.metaKey;
 
       if (this.showDetail || isMultiSelect) {
         this.showDetail = false;

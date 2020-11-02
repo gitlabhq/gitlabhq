@@ -7,7 +7,6 @@ class Groups::BoardsController < Groups::ApplicationController
   before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
   before_action do
-    push_frontend_feature_flag(:multi_select_board, default_enabled: true)
     push_frontend_feature_flag(:graphql_board_lists, group, default_enabled: false)
     push_frontend_feature_flag(:boards_with_swimlanes, group, default_enabled: false)
   end

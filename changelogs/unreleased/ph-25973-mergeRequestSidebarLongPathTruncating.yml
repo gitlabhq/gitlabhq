@@ -1,0 +1,5 @@
+---
+title: Fixed long paths truncating in merge request sidebar incorrectly
+merge_request: 45994
+author:
+type: fixed

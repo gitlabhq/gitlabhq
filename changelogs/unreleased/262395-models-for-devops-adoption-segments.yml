@@ -1,0 +1,5 @@
+---
+title: Add `analytics_devops_adoption_segment_selections` and `analytics_devops_adoption_segments` database tables.
+merge_request: 45748
+author:
+type: other

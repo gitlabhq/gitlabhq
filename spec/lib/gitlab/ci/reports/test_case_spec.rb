@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::TestCase do
+RSpec.describe Gitlab::Ci::Reports::TestCase, :aggregate_failures do
   describe '#initialize' do
     let(:test_case) { described_class.new(params) }
 
@@ -80,6 +80,19 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
       it '#attachment_url' do
         expect(test_case.attachment_url).to be_nil
       end
+    end
+  end
+
+  describe '#set_recent_failures' do
+    it 'sets the recent_failures information' do
+      test_case = build(:report_test_case)
+
+      test_case.set_recent_failures(1, 'master')
+
+      expect(test_case.recent_failures).to eq(
+        count: 1,
+        base_branch: 'master'
+      )
     end
   end
 end

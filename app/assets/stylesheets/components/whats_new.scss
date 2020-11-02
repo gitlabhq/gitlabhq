@@ -1,6 +1,11 @@
 .whats-new-drawer {
   margin-top: $header-height;
   @include gl-shadow-none;
+  overflow-y: hidden;
+
+  .gl-infinite-scroll-legend {
+    @include gl-display-none;
+  }
 }
 
 .with-performance-bar .whats-new-drawer {

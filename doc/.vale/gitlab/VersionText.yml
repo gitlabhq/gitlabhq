@@ -1,21 +1,12 @@
 ---
 # Error: gitlab.VersionText
 #
-# Checks that version text is formatted correctly.
-#
-# Specifically looks for either of the following that is immediately followed on the next line
-# by content, which will break rendering:
-#
-# - `> Introduced` (version text without a link)
-# - `> [Introduced` (version text with a link)
-#
-# Because it excludes `-`, it doesn't look for multi-line version text, for which content
-# immediately on the next line is ok. However, this will often highlight where multi-line version
-# text is attempted without `-` characters.
+# Checks for use of some of the top misused terms at GitLab.
+# For substitutions only flagged as warnings, see SubstitutionWarning.yml
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
-message: '"%s" is not formatted correctly.'
+message: 'This introduced-in line is not formatted correctly.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-for-documentation-requiring-version-text
 level: error
 scope: raw

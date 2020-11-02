@@ -10,7 +10,7 @@ module Gitlab
         STATUS_ERROR = 'error'
         STATUS_TYPES = [STATUS_ERROR, STATUS_FAILED, STATUS_SUCCESS, STATUS_SKIPPED].freeze
 
-        attr_reader :suite_name, :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key, :attachment, :job
+        attr_reader :suite_name, :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key, :attachment, :job, :recent_failures
 
         def initialize(params)
           @suite_name = params.fetch(:suite_name)
@@ -24,7 +24,13 @@ module Gitlab
           @attachment = params.fetch(:attachment, nil)
           @job = params.fetch(:job, nil)
 
+          @recent_failures = nil
+
           @key = hash_key("#{suite_name}_#{classname}_#{name}")
+        end
+
+        def set_recent_failures(count, base_branch)
+          @recent_failures = { count: count, base_branch: base_branch }
         end
 
         def has_attachment?

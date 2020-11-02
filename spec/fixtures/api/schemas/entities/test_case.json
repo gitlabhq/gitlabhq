@@ -12,7 +12,13 @@
     "execution_time": { "type": "float" },
     "system_output": { "type": ["string", "null"] },
     "stack_trace":  { "type": ["string", "null"] },
-    "attachment_url":  { "type": ["string", "null"] }
+    "attachment_url":  { "type": ["string", "null"] },
+    "recent_failures": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "test_case/recent_failures.json" }
+      ]
+    }
   },
   "additionalProperties": false
 }
