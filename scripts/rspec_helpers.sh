@@ -90,7 +90,7 @@ function rspec_simple_job() {
 
   export NO_KNAPSACK="1"
 
-  bin/rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}
+  bin/rspec -Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}
 }
 
 function rspec_paralellized_job() {
@@ -143,7 +143,7 @@ function rspec_paralellized_job() {
 
   export MEMORY_TEST_PATH="tmp/memory_test/${report_name}_memory.csv"
 
-  knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
+  knapsack rspec "-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
 
   date
 }

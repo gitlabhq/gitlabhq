@@ -4,6 +4,8 @@ module API
   class PersonalAccessTokens < ::API::Base
     include ::API::PaginationParams
 
+    feature_category :authentication_and_authorization
+
     desc 'Get all Personal Access Tokens' do
       detail 'This feature was added in GitLab 13.3'
       success Entities::PersonalAccessToken

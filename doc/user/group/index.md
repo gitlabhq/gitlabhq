@@ -422,7 +422,7 @@ For updates, you can follow:
 - [The epic tracking feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
 - [The issue for adding the ability to move group wikis using the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
 
-### Enable or disable group wikis **(CORE ONLY)**
+### Enable or disable group wikis **(PREMIUM ONLY)**
 
 Group wikis are under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.

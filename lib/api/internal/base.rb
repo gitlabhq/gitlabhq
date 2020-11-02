@@ -128,13 +128,13 @@ module API
         #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
         #   check_ip - optional, only in EE version, may limit access to
         #     group resources based on its IP restrictions
-        post "/allowed" do
+        post "/allowed", feature_category: :source_code_management do
           # It was moved to a separate method so that EE can alter its behaviour more
           # easily.
           check_allowed(params)
         end
 
-        post "/lfs_authenticate" do
+        post "/lfs_authenticate", feature_category: :source_code_management do
           status 200
 
           unless actor.key_or_user
@@ -152,7 +152,7 @@ module API
         # Get a ssh key using the fingerprint
         #
         # rubocop: disable CodeReuse/ActiveRecord
-        get '/authorized_keys' do
+        get '/authorized_keys', feature_category: :source_code_management do
           fingerprint = params.fetch(:fingerprint) do
             Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
           end
@@ -165,11 +165,11 @@ module API
         #
         # Discover user by ssh key, user id or username
         #
-        get '/discover' do
+        get '/discover', feature_category: :authentication_and_authorization do
           present actor.user, with: Entities::UserSafe
         end
 
-        get '/check' do
+        get '/check', feature_category: :not_owned do
           {
             api_version: API.version,
             gitlab_version: Gitlab::VERSION,
@@ -178,7 +178,7 @@ module API
           }
         end
 
-        post '/two_factor_recovery_codes' do
+        post '/two_factor_recovery_codes', feature_category: :authentication_and_authorization do
           status 200
 
           actor.update_last_used_at!
@@ -207,7 +207,7 @@ module API
           { success: true, recovery_codes: codes }
         end
 
-        post '/personal_access_token' do
+        post '/personal_access_token', feature_category: :authentication_and_authorization do
           status 200
 
           actor.update_last_used_at!
@@ -257,7 +257,7 @@ module API
           { success: true, token: access_token.token, scopes: access_token.scopes, expires_at: access_token.expires_at }
         end
 
-        post '/pre_receive' do
+        post '/pre_receive', feature_category: :source_code_management do
           status 200
 
           reference_counter_increased = Gitlab::ReferenceCounter.new(params[:gl_repository]).increase
@@ -265,7 +265,7 @@ module API
           { reference_counter_increased: reference_counter_increased }
         end
 
-        post '/post_receive' do
+        post '/post_receive', feature_category: :source_code_management do
           status 200
 
           response = PostReceiveService.new(actor.user, repository, project, params).execute
@@ -273,7 +273,7 @@ module API
           present response, with: Entities::InternalPostReceive::Response
         end
 
-        post '/two_factor_config' do
+        post '/two_factor_config', feature_category: :authentication_and_authorization do
           status 200
 
           break { success: false } unless Feature.enabled?(:two_factor_for_cli)
@@ -295,7 +295,7 @@ module API
           end
         end
 
-        post '/two_factor_otp_check' do
+        post '/two_factor_otp_check', feature_category: :authentication_and_authorization do
           status 200
 
           break { success: false } unless Feature.enabled?(:two_factor_for_cli)

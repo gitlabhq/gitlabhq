@@ -7,6 +7,7 @@ RSpec.describe API::Members do
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }
   let(:stranger) { create(:user) }
+  let(:user_with_minimal_access) { create(:user) }
 
   let(:project) do
     create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
@@ -20,6 +21,7 @@ RSpec.describe API::Members do
     create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)
+      create(:group_member, :minimal_access, source: group, user: user_with_minimal_access)
       group.request_access(access_requester)
     end
   end

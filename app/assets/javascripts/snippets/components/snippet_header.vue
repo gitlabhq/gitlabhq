@@ -6,8 +6,8 @@ import {
   GlModal,
   GlAlert,
   GlLoadingIcon,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
+  GlDropdown,
+  GlDropdownItem,
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -28,8 +28,8 @@ export default {
     GlModal,
     GlAlert,
     GlLoadingIcon,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
     TimeAgoTooltip,
     GlButton,
   },
@@ -231,17 +231,17 @@ export default {
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
-        <gl-deprecated-dropdown :text="__('Options')" class="w-100" toggle-class="text-center">
-          <gl-deprecated-dropdown-item
+        <gl-dropdown :text="__('Options')" block>
+          <gl-dropdown-item
             v-for="(action, index) in personalSnippetActions"
             :key="index"
             :disabled="action.disabled"
             :title="action.title"
             :href="action.href"
             @click="action.click ? action.click() : undefined"
-            >{{ action.text }}</gl-deprecated-dropdown-item
+            >{{ action.text }}</gl-dropdown-item
           >
-        </gl-deprecated-dropdown>
+        </gl-dropdown>
       </div>
     </div>
 

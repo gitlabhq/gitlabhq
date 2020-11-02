@@ -20,6 +20,7 @@ class Route < ApplicationRecord
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
   scope :for_routable, -> (routable) { where(source: routable) }
+  scope :for_routable_type, -> (routable_type) { where(source_type: routable_type) }
   scope :sort_by_path_length, -> { order('LENGTH(routes.path)', :path) }
 
   def rename_descendants

@@ -147,42 +147,45 @@ RSpec.describe Namespace do
   end
 
   describe '.search' do
-    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:first_namespace) { build(:namespace, name: 'my first namespace', path: 'old-path').tap(&:save!) }
+    let_it_be(:parent_namespace) { build(:namespace, name: 'my parent namespace', path: 'parent-path').tap(&:save!) }
+    let_it_be(:second_namespace) { build(:namespace, name: 'my second namespace', path: 'new-path', parent: parent_namespace).tap(&:save!) }
+    let_it_be(:project_with_same_path) { create(:project, id: second_namespace.id, path: first_namespace.path) }
 
     it 'returns namespaces with a matching name' do
-      expect(described_class.search(namespace.name)).to eq([namespace])
+      expect(described_class.search('my first namespace')).to eq([first_namespace])
     end
 
     it 'returns namespaces with a partially matching name' do
-      expect(described_class.search(namespace.name[0..2])).to eq([namespace])
+      expect(described_class.search('first')).to eq([first_namespace])
     end
 
     it 'returns namespaces with a matching name regardless of the casing' do
-      expect(described_class.search(namespace.name.upcase)).to eq([namespace])
+      expect(described_class.search('MY FIRST NAMESPACE')).to eq([first_namespace])
     end
 
     it 'returns namespaces with a matching path' do
-      expect(described_class.search(namespace.path)).to eq([namespace])
+      expect(described_class.search('old-path')).to eq([first_namespace])
     end
 
     it 'returns namespaces with a partially matching path' do
-      expect(described_class.search(namespace.path[0..2])).to eq([namespace])
+      expect(described_class.search('old')).to eq([first_namespace])
     end
 
     it 'returns namespaces with a matching path regardless of the casing' do
-      expect(described_class.search(namespace.path.upcase)).to eq([namespace])
+      expect(described_class.search('OLD-PATH')).to eq([first_namespace])
     end
 
     it 'returns namespaces with a matching route path' do
-      expect(described_class.search(namespace.route.path, include_parents: true)).to eq([namespace])
+      expect(described_class.search('parent-path/new-path', include_parents: true)).to eq([second_namespace])
     end
 
     it 'returns namespaces with a partially matching route path' do
-      expect(described_class.search(namespace.route.path[0..2], include_parents: true)).to eq([namespace])
+      expect(described_class.search('parent-path/new', include_parents: true)).to eq([second_namespace])
     end
 
     it 'returns namespaces with a matching route path regardless of the casing' do
-      expect(described_class.search(namespace.route.path.upcase, include_parents: true)).to eq([namespace])
+      expect(described_class.search('PARENT-PATH/NEW-PATH', include_parents: true)).to eq([second_namespace])
     end
   end
 

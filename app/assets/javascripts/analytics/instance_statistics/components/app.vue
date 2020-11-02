@@ -5,6 +5,7 @@ import InstanceStatisticsCountChart from './instance_statistics_count_chart.vue'
 import UsersChart from './users_chart.vue';
 import pipelinesStatsQuery from '../graphql/queries/pipeline_stats.query.graphql';
 import issuesAndMergeRequestsQuery from '../graphql/queries/issues_and_merge_requests.query.graphql';
+import ProjectsAndGroupsChart from './projects_and_groups_chart.vue';
 import { TODAY, TOTAL_DAYS_TO_SHOW, START_DATE } from '../constants';
 
 const PIPELINES_KEY_TO_NAME_MAP = {
@@ -32,6 +33,7 @@ export default {
     InstanceCounts,
     InstanceStatisticsCountChart,
     UsersChart,
+    ProjectsAndGroupsChart,
   },
   TOTAL_DAYS_TO_SHOW,
   START_DATE,
@@ -65,6 +67,11 @@ export default {
   <div>
     <instance-counts />
     <users-chart
+      :start-date="$options.START_DATE"
+      :end-date="$options.TODAY"
+      :total-data-points="$options.TOTAL_DAYS_TO_SHOW"
+    />
+    <projects-and-groups-chart
       :start-date="$options.START_DATE"
       :end-date="$options.TODAY"
       :total-data-points="$options.TOTAL_DAYS_TO_SHOW"

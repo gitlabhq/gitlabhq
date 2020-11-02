@@ -3,6 +3,7 @@ import InstanceStatisticsApp from '~/analytics/instance_statistics/components/ap
 import InstanceCounts from '~/analytics/instance_statistics/components//instance_counts.vue';
 import InstanceStatisticsCountChart from '~/analytics/instance_statistics/components/instance_statistics_count_chart.vue';
 import UsersChart from '~/analytics/instance_statistics/components/users_chart.vue';
+import ProjectsAndGroupsChart from '~/analytics/instance_statistics/components/projects_and_groups_chart.vue';
 
 describe('InstanceStatisticsApp', () => {
   let wrapper;
@@ -33,5 +34,9 @@ describe('InstanceStatisticsApp', () => {
 
   it('displays the users chart component', () => {
     expect(wrapper.find(UsersChart).exists()).toBe(true);
+  });
+
+  it('displays the projects and groups chart component', () => {
+    expect(wrapper.find(ProjectsAndGroupsChart).exists()).toBe(true);
   });
 });

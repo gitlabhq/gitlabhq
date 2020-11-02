@@ -119,7 +119,7 @@ class Namespace < ApplicationRecord
     # Returns an ActiveRecord::Relation.
     def search(query, include_parents: false)
       if include_parents
-        where(id: Route.fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
+        where(id: Route.for_routable_type(Namespace.name).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
       else
         fuzzy_search(query, [:path, :name])
       end

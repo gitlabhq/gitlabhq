@@ -7,6 +7,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :container_registry
+
     namespace 'registry' do
       params do
         requires :id, type: String, desc: 'The ID of a project'

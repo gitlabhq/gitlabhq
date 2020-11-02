@@ -282,7 +282,7 @@ module API
       end
     end
 
-    route :any, '*path' do
+    route :any, '*path', feature_category: :not_owned do
       error!('404 Not Found', 404)
     end
   end

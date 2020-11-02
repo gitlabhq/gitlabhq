@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-# When running in CI environment, we need to load a full `spec_helper`
-if ENV['CI']
-  require_relative 'spec_helper'
+#  $" is $LOADED_FEATURES, but RuboCop didn't like it
+if $".include?(File.expand_path('spec_helper.rb', __dir__))
+  # There's no need to load anything here if spec_helper is already loaded
+  # because spec_helper is more extensive than fast_spec_helper
   return
 end
 

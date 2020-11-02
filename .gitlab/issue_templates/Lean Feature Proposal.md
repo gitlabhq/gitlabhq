@@ -8,7 +8,6 @@
 
 <!-- What is the user problem you are trying to solve with this issue? -->
 
-
 ### Proposal 
 
 <!-- Use this section to explain the feature and how it will work. It can be helpful to add technical details, design proposals, and links to related epics or issues. -->
@@ -46,14 +45,14 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 
 ### User experience goal
 
- What is the single user experience workflow this problem addresses? 
+What is the single user experience workflow this problem addresses? 
 For example, "The user should be able to use the UI/API/.gitlab-ci.yml with GitLab to <perform a specific task>"
 https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story-mapping/ 
 
 
 ### Further details
 
-nclude use cases, benefits, goals, or any other details that will help us understand the problem better. 
+Include use cases, benefits, goals, or any other details that will help us understand the problem better. 
 
 ### Permissions and Security
 
@@ -75,7 +74,7 @@ Consider adding checkboxes and expectations of users with certain levels of memb
 
 ### Availability & Testing
 
-his section needs to be retained and filled in during the workflow planning breakdown phase of this feature proposal, if not earlier.
+This section needs to be retained and filled in during the workflow planning breakdown phase of this feature proposal, if not earlier.
 
 What risks does this change pose to our availability? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing?
 
@@ -98,6 +97,3 @@ In which enterprise tier should this feature go? See https://about.gitlab.com/ha
 ### Is this a cross-stage feature?
 
 Communicate if this change will affect multiple Stage Groups or product areas. We recommend always start with the assumption that a feature request will have an impact into another Group. Loop in the most relevant PM and Product Designer from that Group to provide strategic support to help align the Group's broader plan and vision, as well as to avoid UX and technical debt. https://about.gitlab.com/handbook/product/#cross-stage-features -->
-
-
-
