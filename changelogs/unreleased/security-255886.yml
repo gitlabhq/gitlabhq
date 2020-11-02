@@ -1,5 +1,0 @@
----
-title: Path traversal to RCE via LFS upload
-merge_request:
-author:
-type: security

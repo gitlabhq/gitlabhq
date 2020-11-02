@@ -1,5 +1,0 @@
----
-title: Prevent private repo from being accessed via internal Kubernetes API
-merge_request:
-author:
-type: security

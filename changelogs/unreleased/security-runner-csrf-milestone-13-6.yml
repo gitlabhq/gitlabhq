@@ -1,5 +1,0 @@
----
-title: Add CSRF protection to runner pause and resume
-merge_request: 1021
-author:
-type: security
