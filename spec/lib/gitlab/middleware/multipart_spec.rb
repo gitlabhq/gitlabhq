@@ -122,7 +122,13 @@ RSpec.describe Gitlab::Middleware::Multipart do
       'file]',
       ';file]',
       'file]]',
-      'file;;'
+      'file;;',
+      'user[avatar',
+      '[user]avatar',
+      'user[]avatar',
+      'user[avatar[image[url]]]',
+      '[]',
+      'x' * 11000
     ]
 
     invalid_field_names.each do |invalid_field_name|

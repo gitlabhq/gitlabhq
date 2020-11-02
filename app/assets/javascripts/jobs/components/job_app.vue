@@ -1,7 +1,7 @@
 <script>
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { polyfillSticky } from '~/lib/utils/sticky';
@@ -35,6 +35,9 @@ export default {
     Sidebar,
     GlLoadingIcon,
     SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [delayedJobMixin],
   props: {
@@ -218,7 +221,7 @@ export default {
           </div>
 
           <callout v-if="shouldRenderHeaderCallout">
-            <div v-html="job.callout_message"></div>
+            <div v-safe-html="job.callout_message"></div>
           </callout>
         </header>
         <!-- EO Header Section -->

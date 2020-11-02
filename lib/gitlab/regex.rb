@@ -46,6 +46,10 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def nuget_package_name_regex
+        @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 
@@ -116,7 +120,7 @@ module Gitlab
     # See https://github.com/docker/distribution/blob/master/reference/regexp.go.
     #
     def container_repository_name_regex
-      @container_repository_regex ||= %r{\A[a-z0-9]+((?:[._/]|__|[-]{0,10})[a-z0-9]+)*\Z}
+      @container_repository_regex ||= %r{\A[a-z0-9]+(([._/]|__|-*)[a-z0-9])*\z}
     end
 
     ##

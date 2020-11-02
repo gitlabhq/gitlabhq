@@ -97,14 +97,50 @@ RSpec.describe API::Ci::PipelineSchedules do
       pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
     end
 
-    context 'authenticated user with valid permissions' do
-      it 'returns pipeline_schedule details' do
-        get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
-
+    matcher :return_pipeline_schedule_sucessfully do
+      match_unless_raises do |reponse|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
       end
+    end
 
+    shared_context 'request with project permissions' do
+      context 'authenticated user with project permisions' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns pipeline_schedule details' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+          expect(response).to return_pipeline_schedule_sucessfully
+          expect(json_response).to have_key('variables')
+        end
+      end
+    end
+
+    shared_examples 'request with schedule ownership' do
+      context 'authenticated user with pipeline schedule ownership' do
+        it 'returns pipeline_schedule details' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
+
+          expect(response).to return_pipeline_schedule_sucessfully
+          expect(json_response).to have_key('variables')
+        end
+      end
+    end
+
+    shared_examples 'request with unauthenticated user' do
+      context 'with unauthenticated user' do
+        it 'does not return pipeline_schedule' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}")
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    shared_examples 'request with non-existing pipeline_schedule' do
       it 'responds with 404 Not Found if requesting non-existing pipeline_schedule' do
         get api("/projects/#{project.id}/pipeline_schedules/-5", developer)
 
@@ -112,31 +148,61 @@ RSpec.describe API::Ci::PipelineSchedules do
       end
     end
 
-    context 'authenticated user with invalid permissions' do
-      it 'does not return pipeline_schedules list' do
-        get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+    context 'with private project' do
+      it_behaves_like 'request with schedule ownership'
+      it_behaves_like 'request with project permissions'
+      it_behaves_like 'request with unauthenticated user'
+      it_behaves_like 'request with non-existing pipeline_schedule'
 
-        expect(response).to have_gitlab_http_status(:not_found)
+      context 'authenticated user with no project permissions' do
+        it 'does not return pipeline_schedule' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'authenticated user with insufficient project permissions' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'does not return pipeline_schedule' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
-    context 'authenticated user with insufficient permissions' do
-      before do
-        project.add_guest(user)
+    context 'with public project' do
+      let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+
+      it_behaves_like 'request with schedule ownership'
+      it_behaves_like 'request with project permissions'
+      it_behaves_like 'request with unauthenticated user'
+      it_behaves_like 'request with non-existing pipeline_schedule'
+
+      context 'authenticated user with no project permissions' do
+        it 'returns pipeline_schedule with no variables' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+          expect(response).to return_pipeline_schedule_sucessfully
+          expect(json_response).not_to have_key('variables')
+        end
       end
 
-      it 'does not return pipeline_schedules list' do
-        get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+      context 'authenticated user with insufficient project permissions' do
+        before do
+          project.add_guest(user)
+        end
 
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
+        it 'returns pipeline_schedule with no variables' do
+          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
 
-    context 'unauthenticated user' do
-      it 'does not return pipeline_schedules list' do
-        get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}")
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response).to return_pipeline_schedule_sucessfully
+          expect(json_response).not_to have_key('variables')
+        end
       end
     end
   end

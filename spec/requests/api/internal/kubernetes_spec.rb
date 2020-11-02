@@ -120,6 +120,16 @@ RSpec.describe API::Internal::Kubernetes do
             )
           )
         end
+
+        context 'repository is for project members only' do
+          let(:project) { create(:project, :public, :repository_private) }
+
+          it 'returns 404' do
+            get api('/internal/kubernetes/project_info'), params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
       end
 
       context 'project is private' do
@@ -144,7 +154,7 @@ RSpec.describe API::Internal::Kubernetes do
 
       context 'project does not exist' do
         it 'returns 404' do
-          get api('/internal/kubernetes/project_info'), params: { id: 0 }, headers: { 'Authorization' => "Bearer #{agent_token.token}" }
+          get api('/internal/kubernetes/project_info'), params: { id: non_existing_record_id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

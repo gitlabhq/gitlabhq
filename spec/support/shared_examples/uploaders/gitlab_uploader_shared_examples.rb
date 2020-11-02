@@ -14,6 +14,7 @@ end
 
 RSpec.shared_examples "builds correct paths" do |**patterns|
   let(:patterns) { patterns }
+  let(:fixture) { File.join('spec', 'fixtures', 'rails_sample.jpg') }
 
   before do
     allow(subject).to receive(:filename).and_return('<filename>')
@@ -53,6 +54,17 @@ RSpec.shared_examples "builds correct paths" do |**patterns|
   describe ".base_dir" do
     it_behaves_like "matches the method pattern", :base_dir do
       let(:target) { subject.class }
+    end
+  end
+
+  describe "path traversal exploits" do
+    before do
+      allow(subject).to receive(:filename).and_return("3bc58d54542d6a5efffa9a87554faac0254f73f675b337899ea869f6d38b7371/122../../../../../../../../.ssh/authorized_keys")
+    end
+
+    it "throws an exception" do
+      expect { subject.cache!(fixture_file_upload(fixture)) }.to raise_error(Gitlab::Utils::PathTraversalAttackError)
+      expect { subject.store!(fixture_file_upload(fixture)) }.to raise_error(Gitlab::Utils::PathTraversalAttackError)
     end
   end
 end
