@@ -9,7 +9,7 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
 
-Project repositories can be moved between storages. This can be useful when
+Project repositories including wiki and design repositories can be moved between storages. This can be useful when
 [migrating to Gitaly Cluster](../administration/gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster),
 for example.
 
@@ -193,6 +193,14 @@ Example response:
 ```
 
 ## Schedule a repository storage move for a project
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34119) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2618) in GitLab 13.3, original repository is automatically removed after successful move and integrity check.
+
+CAUTION: **Caution:**
+Before GitLab 13.3, a repository move worked more like a repository copy as the
+original repository was not deleted from the original storage disk location and
+had to be manually cleaned up.
 
 ```plaintext
 POST /projects/:project_id/repository_storage_moves
