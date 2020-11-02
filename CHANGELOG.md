@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.4.5 (2020-11-02)
+
+### Security (9 changes)
+
+- Add CSRF protection to runner pause and resume. !1021
+- Do not expose Terraform state record in API.
+- Path traversal to RCE via LFS upload.
+- Update container_repository_name_regex to prevent catastrophic backtracking.
+- Validate nuget package names.
+- Prevent private repo from being accessed via internal Kubernetes API.
+- Validate each upload param key in multipart.rb.
+- Fix XSS vulnerability for job build dependencies.
+- Fix unauthorized user is able to access schedule pipeline variables and values.
+
+
 ## 13.4.4 (2020-10-15)
 
 ### Fixed (2 changes)
