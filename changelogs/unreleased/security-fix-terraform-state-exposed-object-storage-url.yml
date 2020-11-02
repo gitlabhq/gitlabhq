@@ -1,5 +1,0 @@
----
-title: Do not expose Terraform state record in API
-merge_request:
-author:
-type: security

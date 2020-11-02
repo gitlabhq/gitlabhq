@@ -1,5 +1,0 @@
----
-title: Fix unauthorized user is able to access schedule pipeline variables and values
-merge_request:
-author:
-type: security
