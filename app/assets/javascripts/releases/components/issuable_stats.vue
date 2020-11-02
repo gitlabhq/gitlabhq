@@ -54,9 +54,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-mr-6 gl-mb-5 js-issues-container"
-  >
+  <div class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-mr-6 gl-mb-5">
     <span class="gl-mb-2">
       {{ label }}
       <gl-badge variant="muted" size="sm">{{ total }}</gl-badge>

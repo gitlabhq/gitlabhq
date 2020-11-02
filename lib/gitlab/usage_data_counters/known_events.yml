@@ -315,3 +315,7 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
+- name: g_project_management_issue_health_status_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily

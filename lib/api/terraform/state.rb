@@ -41,7 +41,6 @@ module API
 
               env['api.format'] = :binary # this bypasses json serialization
               body state.latest_file.read
-              status :ok
             end
           end
 
@@ -55,8 +54,10 @@ module API
 
             remote_state_handler.handle_with_lock do |state|
               state.update_file!(CarrierWaveStringFile.new(data), version: params[:serial], build: current_authenticated_job)
-              status :ok
             end
+
+            body false
+            status :ok
           end
 
           desc 'Delete a terraform state of a certain name'
@@ -66,8 +67,10 @@ module API
 
             remote_state_handler.handle_with_lock do |state|
               state.destroy!
-              status :ok
             end
+
+            body false
+            status :ok
           end
 
           desc 'Lock a terraform state of a certain name'

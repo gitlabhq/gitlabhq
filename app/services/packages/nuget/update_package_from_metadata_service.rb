@@ -32,6 +32,8 @@ module Packages
             )
           end
         end
+      rescue ActiveRecord::RecordInvalid => e
+        raise InvalidMetadataError.new(e.message)
       end
 
       private

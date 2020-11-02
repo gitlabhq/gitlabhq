@@ -200,17 +200,23 @@ for more information.
 
 ### Merge Trains feature flag **(PREMIUM ONLY)**
 
-To enable and disable the Merge Trains feature, use the `:disable_merge_trains` feature flag.
+Merge trains are automatically enabled when [pipelines for merged results](../index.md#pipelines-for-merged-results)
+are enabled. To use pipelines for merged results without using merge trains, you must
+enable a [feature flag](../../../../user/feature_flags.md) that blocks the merge trains
+feature.
 
-To check if the feature flag is enabled on your GitLab instance,
-ask an administrator to execute the following commands:
+[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
+can enable the feature flag to disable merge trains:
 
-```shell
-> sudo gitlab-rails console                         # Login to Rails console of GitLab instance.
-> Feature.enabled?(:disable_merge_trains)           # Check if it's disabled or not.
-> Feature.enable(:disable_merge_trains)             # Enable Merge Trains.
-> Feature.disable(:disable_merge_trains)            # Disable Merge Trains.
+```ruby
+Feature.enable(:disable_merge_trains)
 ```
 
-When you disable this feature, all existing merge trains are cancelled and
+After you enable this feature flag, all existing merge trains are cancelled and
 the **Start/Add to Merge Train** button no longer appears in merge requests.
+
+To disable the feature flag, and enable merge trains again:
+
+```ruby
+Feature.disable(:disable_merge_trains)
+```

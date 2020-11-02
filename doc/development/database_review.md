@@ -27,7 +27,7 @@ A database review is required for:
   database review.
 - Changes in usage data metrics that use `count` and `distinct_count`.
   These metrics could have complex queries over large tables.
-  See the [Product Analytics Guide](product_analytics/usage_ping.md#implementing-usage-ping)
+  See the [Product Analytics Guide](https://about.gitlab.com/handbook/product/product-analytics-guide/)
   for implementation details.
 
 A database reviewer is expected to look out for obviously complex

@@ -10,7 +10,7 @@ This guide provides an overview of how Snowplow works, and implementation detail
 
 For more information about Product Analytics, see:
 
-- [Product Analytics Guide](index.md)
+- [Product Analytics Guide](https://about.gitlab.com/handbook/product/product-analytics-guide/)
 - [Usage Ping Guide](usage_ping.md)
 
 More useful links:

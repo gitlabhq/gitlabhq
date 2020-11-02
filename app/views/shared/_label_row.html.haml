@@ -5,9 +5,9 @@
 
 .label-name.gl-flex-shrink-0.gl-mt-2.gl-mr-3
   = render_label(label, tooltip: false)
-.label-description.gl-flex-grow-1.gl-overflow-hidden
-  .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-mt-2
-    .description-text.gl-flex-grow-1.gl-overflow-hidden
+.label-description.gl-overflow-hidden.gl-w-full
+  .gl-display-flex.gl-align-items-stretch.gl-flex-wrap.gl-mt-2
+    .gl-flex-basis-half.gl-flex-grow-1.gl-overflow-hidden.gl-mr-2
       - if label.description.present?
         = markdown_field(label, :description)
       - elsif show_labels_full_path?(@project, @group)

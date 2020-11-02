@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.5.2 (2020-11-02)
+
+### Security (9 changes)
+
+- Add CSRF protection to runner pause and resume. !1021
+- Do not expose Terraform state record in API.
+- Path traversal to RCE via LFS upload.
+- Update container_repository_name_regex to prevent catastrophic backtracking.
+- Validate nuget package names.
+- Prevent private repo from being accessed via internal Kubernetes API.
+- Validate each upload param key in multipart.rb.
+- Fix XSS vulnerability for job build dependencies.
+- Fix unauthorized user is able to access schedule pipeline variables and values.
+
+
 ## 13.5.1 (2020-10-22)
 
 ### Other (1 change)
@@ -581,6 +596,21 @@ entry.
 - Fix documentation link, spacing, and error handling in alert integrations list. !45304
 - Replace tooltip with GLTooltip in epic sidebar datepicker. !45392
 - Bump cluster applications CI template. !45472
+
+
+## 13.4.5 (2020-11-02)
+
+### Security (9 changes)
+
+- Add CSRF protection to runner pause and resume. !1021
+- Do not expose Terraform state record in API.
+- Path traversal to RCE via LFS upload.
+- Update container_repository_name_regex to prevent catastrophic backtracking.
+- Validate nuget package names.
+- Prevent private repo from being accessed via internal Kubernetes API.
+- Validate each upload param key in multipart.rb.
+- Fix XSS vulnerability for job build dependencies.
+- Fix unauthorized user is able to access schedule pipeline variables and values.
 
 
 ## 13.4.4 (2020-10-15)
@@ -1239,6 +1269,21 @@ entry.
 - Add instance statistics visits to usage data. !42211
 - Modify DevOps Score UI Text. !42256
 - Expand the visible highlight for collapsed diffs (re: !41393). !42343
+
+
+## 13.3.9 (2020-11-02)
+
+### Security (9 changes)
+
+- Add CSRF protection to runner pause and resume. !1021
+- Do not expose Terraform state record in API.
+- Path traversal to RCE via LFS upload.
+- Update container_repository_name_regex to prevent catastrophic backtracking.
+- Validate nuget package names.
+- Prevent private repo from being accessed via internal Kubernetes API.
+- Validate each upload param key in multipart.rb.
+- Fix XSS vulnerability for job build dependencies.
+- Fix unauthorized user is able to access schedule pipeline variables and values.
 
 
 ## 13.3.8 (2020-10-21)

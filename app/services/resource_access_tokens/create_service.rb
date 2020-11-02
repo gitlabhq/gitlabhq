@@ -15,13 +15,20 @@ module ResourceAccessTokens
       user = create_user
 
       return error(user.errors.full_messages.to_sentence) unless user.persisted?
-      return error("Failed to provide maintainer access") unless provision_access(resource, user)
+
+      member = create_membership(resource, user)
+
+      unless member.persisted?
+        delete_failed_user(user)
+        return error("Could not provision maintainer access to project access token")
+      end
 
       token_response = create_personal_access_token(user)
 
       if token_response.success?
         success(token_response.payload[:personal_access_token])
       else
+        delete_failed_user(user)
         error(token_response.message)
       end
     end
@@ -41,6 +48,10 @@ module ResourceAccessTokens
       # to create a new user in the system.
 
       Users::CreateService.new(current_user, default_user_params).execute(skip_authorization: true)
+    end
+
+    def delete_failed_user(user)
+      DeleteUserWorker.perform_async(current_user.id, user.id, hard_delete: true, skip_authorization: true)
     end
 
     def default_user_params
@@ -88,7 +99,7 @@ module ResourceAccessTokens
       Gitlab::Auth.resource_bot_scopes
     end
 
-    def provision_access(resource, user)
+    def create_membership(resource, user)
       resource.add_user(user, :maintainer, expires_at: params[:expires_at])
     end
 

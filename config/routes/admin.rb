@@ -148,8 +148,8 @@ namespace :admin do
 
   resources :runners, only: [:index, :show, :update, :destroy] do
     member do
-      get :resume
-      get :pause
+      post :resume
+      post :pause
     end
 
     collection do

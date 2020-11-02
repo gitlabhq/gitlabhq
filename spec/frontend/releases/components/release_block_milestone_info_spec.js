@@ -31,7 +31,8 @@ describe('Release block milestone info', () => {
 
   const milestoneProgressBarContainer = () => wrapper.find('.js-milestone-progress-bar-container');
   const milestoneListContainer = () => wrapper.find('.js-milestone-list-container');
-  const issuesContainer = () => wrapper.find('.js-issues-container');
+  const issuesContainer = () => wrapper.find('[data-testid="issue-stats"]');
+  const mergeRequestsContainer = () => wrapper.find('[data-testid="merge-request-stats"]');
 
   describe('with default props', () => {
     beforeEach(() => factory({ milestones }));
@@ -186,5 +187,34 @@ describe('Release block milestone info', () => {
     });
 
     expectAllZeros();
+  });
+
+  describe('if the API response is missing the "mr_stats" property', () => {
+    beforeEach(() => factory({ milestones }));
+
+    it('does not render merge request stats', () => {
+      expect(mergeRequestsContainer().exists()).toBe(false);
+    });
+  });
+
+  describe('if the API response includes the "mr_stats" property', () => {
+    beforeEach(() => {
+      milestones = milestones.map(m => ({
+        ...m,
+        mrStats: {
+          total: 15,
+          merged: 12,
+          closed: 1,
+        },
+      }));
+
+      return factory({ milestones });
+    });
+
+    it('renders merge request stats', () => {
+      expect(trimText(mergeRequestsContainer().text())).toBe(
+        'Merge Requests 30 Open: 4 • Merged: 24 • Closed: 2',
+      );
+    });
   });
 });

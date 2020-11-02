@@ -136,7 +136,7 @@ class BuildDetailsEntity < JobEntity
     docs_url = "https://docs.gitlab.com/ee/ci/yaml/README.html#dependencies"
 
     [
-      failure_message.html_safe,
+      failure_message,
       help_message(docs_url).html_safe
     ].join("<br />")
   end

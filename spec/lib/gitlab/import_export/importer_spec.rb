@@ -12,7 +12,7 @@ RSpec.describe Gitlab::ImportExport::Importer do
   subject(:importer) { described_class.new(project) }
 
   before do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(test_path)
+    allow(Gitlab::ImportExport).to receive(:storage_path).and_return(test_path)
     allow_any_instance_of(Gitlab::ImportExport::FileImporter).to receive(:remove_import_file)
     stub_uploads_object_storage(FileUploader)
 

@@ -26,7 +26,7 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
   let(:export_path) { "#{Dir.tmpdir}/project_export_spec" }
 
   before do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    allow(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     allow_next_instance_of(ProjectExportWorker) do |job|
       allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
     end

@@ -87,7 +87,7 @@ module API
 
             # TODO sort out authorization for real
             # https://gitlab.com/gitlab-org/gitlab/-/issues/220912
-            if !project || !project.public?
+            unless Ability.allowed?(nil, :download_code, project)
               not_found!
             end
 

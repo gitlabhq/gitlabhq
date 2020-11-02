@@ -137,11 +137,16 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.to match('my/awesome/image-1') }
     it { is_expected.to match('my/awesome/image.test') }
     it { is_expected.to match('my/awesome/image--test') }
-    # docker distribution allows for infinite `-`
-    # https://github.com/docker/distribution/blob/master/reference/regexp.go#L13
-    # but we have a range of 0,10 to add a reasonable limit.
-    it { is_expected.not_to match('my/image-----------test') }
+    it { is_expected.to match('my/image__test') }
+    # this example tests for catastrophic backtracking
+    it { is_expected.to match('user1/project/a_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb------------x') }
+    it { is_expected.not_to match('user1/project/a_bbbbb-------------') }
     it { is_expected.not_to match('my/image-.test') }
+    it { is_expected.not_to match('my/image___test') }
+    it { is_expected.not_to match('my/image_.test') }
+    it { is_expected.not_to match('my/image_-test') }
+    it { is_expected.not_to match('my/image..test') }
+    it { is_expected.not_to match('my/image\ntest') }
     it { is_expected.not_to match('.my/image') }
     it { is_expected.not_to match('my/image.') }
   end
@@ -370,6 +375,21 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('1./2.3') }
     it { is_expected.not_to match('../../../../../1.2.3') }
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+  end
+
+  describe '.nuget_package_name_regex' do
+    subject { described_class.nuget_package_name_regex }
+
+    it { is_expected.to match('My.Package') }
+    it { is_expected.to match('My.Package.Mvc') }
+    it { is_expected.to match('MyPackage') }
+    it { is_expected.to match('My.23.Package') }
+    it { is_expected.to match('My23Package') }
+    it { is_expected.to match('runtime.my-test64.runtime.package.Mvc') }
+    it { is_expected.to match('my_package') }
+    it { is_expected.not_to match('My/package') }
+    it { is_expected.not_to match('../../../my_package') }
+    it { is_expected.not_to match('%2e%2e%2fmy_package') }
   end
 
   describe '.pypi_version_regex' do

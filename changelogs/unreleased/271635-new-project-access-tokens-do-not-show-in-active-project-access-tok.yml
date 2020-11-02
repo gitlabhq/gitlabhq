@@ -1,0 +1,5 @@
+---
+title: Skip GMA and SSO validation when creating project access tokens for project bots
+merge_request: 46257
+author:
+type: fixed

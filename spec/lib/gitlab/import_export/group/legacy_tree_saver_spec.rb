@@ -12,7 +12,7 @@ RSpec.describe Gitlab::ImportExport::Group::LegacyTreeSaver do
 
     before do
       group.add_maintainer(user)
-      allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+      allow(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     end
 
     after do

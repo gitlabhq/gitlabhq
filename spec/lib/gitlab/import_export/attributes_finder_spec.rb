@@ -59,7 +59,7 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder do
     end
 
     before do
-      allow_any_instance_of(Gitlab::ImportExport).to receive(:config_file).and_return(test_config)
+      allow(Gitlab::ImportExport).to receive(:config_file).and_return(test_config)
     end
 
     it 'generates hash from project tree config' do

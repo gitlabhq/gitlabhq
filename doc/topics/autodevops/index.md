@@ -498,7 +498,29 @@ include:
 Keep in mind that this approach will eventually stop working when the stable repository is removed,
 so you must eventually fix your custom chart.
 
-You can find more information in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/263778).
+To fix your custom chart:
+
+1. In your chart directory, update the `repository` value in your `requirements.yaml` file from :
+
+   ```yaml
+   repository: "https://kubernetes-charts.storage.googleapis.com/"
+   ```
+
+   to:
+
+   ```yaml
+   repository: "https://charts.helm.sh/stable"
+   ```
+
+1. In your chart directory, run `helm dep update .` using the same Helm major version as Auto DevOps.
+1. Commit the changes for the `requirements.yaml` file.
+1. If you previously had a `requirements.lock` file, commit the changes to the file.
+   If you did not previously have a `requirements.lock` file in your chart,
+   you do not need to commit the new one. This file is optional, but when present,
+   it's used to verify the integrity of the downloaded dependencies.
+
+You can find more information in
+[issue #263778, "Migrate PostgreSQL from stable Helm repo"](https://gitlab.com/gitlab-org/gitlab/-/issues/263778).
 
 ## Development guides
 

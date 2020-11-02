@@ -15,7 +15,7 @@ This guide describes Usage Ping's purpose and how it's implemented.
 
 For more information about Product Analytics, see:
 
-- [Product Analytics Guide](index.md)
+- [Product Analytics Guide](https://about.gitlab.com/handbook/product/product-analytics-guide/)
 - [Snowplow Guide](snowplow.md)
 
 More useful links:
@@ -613,7 +613,7 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 
 ### 5. Add the metric definition
 
-When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](event_dictionary.md).
+When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary).
 
 ### 6. Add new metric to Versions Application
 

@@ -88,7 +88,7 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
         let(:options) { { retries: 0 } }
 
         it 'never sleeps' do
-          expect(class_instance).not_to receive(:sleep)
+          expect_any_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock).not_to receive(:sleep)
 
           expect { subject }.to raise_error('Failed to obtain a lock')
         end
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
         let(:options) { { retries: 1, sleep_sec: 0.05.seconds } }
 
         it 'receives the specified argument' do
-          expect_any_instance_of(Object).to receive(:sleep).with(0.05.seconds).once
+          expect_any_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock).to receive(:sleep).with(0.05.seconds).once
 
           expect { subject }.to raise_error('Failed to obtain a lock')
         end
@@ -108,8 +108,8 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
         let(:options) { { retries: 2, sleep_sec: ->(num) { 0.1 + num } } }
 
         it 'receives the specified argument' do
-          expect_any_instance_of(Object).to receive(:sleep).with(1.1.seconds).once
-          expect_any_instance_of(Object).to receive(:sleep).with(2.1.seconds).once
+          expect_any_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock).to receive(:sleep).with(1.1.seconds).once
+          expect_any_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock).to receive(:sleep).with(2.1.seconds).once
 
           expect { subject }.to raise_error('Failed to obtain a lock')
         end

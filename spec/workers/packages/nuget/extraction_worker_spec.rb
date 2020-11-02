@@ -13,6 +13,18 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
 
     subject { described_class.new.perform(package_file_id) }
 
+    shared_examples 'handling the metadata error' do |exception_class: ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError|
+      it 'removes the package and the package file' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+          instance_of(exception_class),
+          project_id: package.project_id
+        )
+        expect { subject }
+          .to change { Packages::Package.count }.by(-1)
+          .and change { Packages::PackageFile.count }.by(-1)
+      end
+    end
+
     context 'with valid package file' do
       it 'updates package and package file' do
         expect { subject }
@@ -48,46 +60,46 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
         allow_any_instance_of(Zip::File).to receive(:glob).and_return([])
       end
 
-      it 'removes the package and the package file' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-          instance_of(::Packages::Nuget::MetadataExtractionService::ExtractionError),
-          project_id: package.project_id
-        )
-        expect { subject }
-          .to change { Packages::Package.count }.by(-1)
-          .and change { Packages::PackageFile.count }.by(-1)
+      it_behaves_like 'handling the metadata error', exception_class: ::Packages::Nuget::MetadataExtractionService::ExtractionError
+    end
+
+    context 'with package with an invalid package name' do
+      invalid_names = [
+        '',
+        'My/package',
+        '../../../my_package',
+        '%2e%2e%2fmy_package'
+      ]
+
+      invalid_names.each do |invalid_name|
+        before do
+          allow_next_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService) do |service|
+            allow(service).to receive(:package_name).and_return(invalid_name)
+          end
+        end
+
+        it_behaves_like 'handling the metadata error'
       end
     end
 
-    context 'with package file with a blank package name' do
-      before do
-        allow_any_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService).to receive(:package_name).and_return('')
-      end
+    context 'with package with an invalid package version' do
+      invalid_versions = [
+        '',
+        '555',
+        '1.2',
+        '1./2.3',
+        '../../../../../1.2.3',
+        '%2e%2e%2f1.2.3'
+      ]
 
-      it 'removes the package and the package file' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-          instance_of(::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError),
-          project_id: package.project_id
-        )
-        expect { subject }
-          .to change { Packages::Package.count }.by(-1)
-          .and change { Packages::PackageFile.count }.by(-1)
-      end
-    end
+      invalid_versions.each do |invalid_version|
+        before do
+          allow_next_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService) do |service|
+            allow(service).to receive(:package_version).and_return(invalid_version)
+          end
+        end
 
-    context 'with package file with a blank package version' do
-      before do
-        allow_any_instance_of(::Packages::Nuget::UpdatePackageFromMetadataService).to receive(:package_version).and_return('')
-      end
-
-      it 'removes the package and the package file' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-          instance_of(::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError),
-          project_id: package.project_id
-        )
-        expect { subject }
-          .to change { Packages::Package.count }.by(-1)
-          .and change { Packages::PackageFile.count }.by(-1)
+        it_behaves_like 'handling the metadata error'
       end
     end
   end

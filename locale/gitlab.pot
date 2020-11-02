@@ -11072,6 +11072,9 @@ msgstr ""
 msgid "Failed to create import label for jira import."
 msgstr ""
 
+msgid "Failed to create new project access token: %{token_response_message}"
+msgstr ""
+
 msgid "Failed to create repository"
 msgstr ""
 

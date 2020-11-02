@@ -10,7 +10,7 @@ Please check the ~"product analytics" [guide](https://docs.gitlab.com/ee/develop
 MSG
 
 UPDATE_METRICS_DEFINITIONS_MESSAGE = <<~MSG
-  When adding, changing, or updating metrics, please update the [Event dictionary Usage Ping table](https://docs.gitlab.com/ee/development/product_analytics/event_dictionary.html#usage-ping).
+  When adding, changing, or updating metrics, please update the [Event dictionary Usage Ping table](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary).
 
 MSG
 
