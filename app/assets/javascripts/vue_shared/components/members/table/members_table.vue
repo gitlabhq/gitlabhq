@@ -48,6 +48,7 @@ export default {
   <div>
     <gl-table
       class="members-table"
+      data-testid="members-table"
       head-variant="white"
       stacked="lg"
       :fields="filteredFields"

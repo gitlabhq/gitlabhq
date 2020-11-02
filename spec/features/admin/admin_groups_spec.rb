@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin Groups' do
   include Select2Helper
+  include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
   let(:user) { create :user }
@@ -11,8 +12,6 @@ RSpec.describe 'Admin Groups' do
   let!(:current_user) { create(:admin) }
 
   before do
-    stub_feature_flags(vue_group_members_list: false)
-
     sign_in(current_user)
     stub_application_setting(default_group_visibility: internal)
   end
@@ -176,7 +175,7 @@ RSpec.describe 'Admin Groups' do
 
       click_button 'Invite'
 
-      page.within '[data-qa-selector="members_list"]' do
+      page.within members_table do
         expect(page).to have_content(current_user.name)
         expect(page).to have_content('Developer')
       end

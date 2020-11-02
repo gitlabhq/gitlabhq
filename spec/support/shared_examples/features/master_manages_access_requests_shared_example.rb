@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'Maintainer manages access requests' do
+  include Spec::Support::Helpers::Features::MembersHelpers
+
   let(:user) { create(:user) }
   let(:maintainer) { create(:user) }
 
@@ -26,7 +28,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
 
     expect_no_visible_access_request(entity, user)
 
-    page.within('[data-qa-selector="members_list"]') do
+    page.within(members_table) do
       expect(page).to have_content user.name
     end
   end
@@ -35,7 +37,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
     expect_visible_access_request(entity, user)
 
     # Open modal
-    click_on 'Deny access request'
+    click_on 'Deny access'
 
     expect(page).not_to have_field "Also unassign this user from related issues and merge requests"
 

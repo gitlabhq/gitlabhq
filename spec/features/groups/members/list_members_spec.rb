@@ -2,9 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > List members' do
-  include Select2Helper
-  include Spec::Support::Helpers::Features::ListRowsHelpers
+RSpec.describe 'Groups > Members > List members', :js do
+  include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
@@ -12,8 +11,6 @@ RSpec.describe 'Groups > Members > List members' do
   let(:nested_group) { create(:group, parent: group) }
 
   before do
-    stub_feature_flags(vue_group_members_list: false)
-
     sign_in(user1)
   end
 
@@ -42,10 +39,12 @@ RSpec.describe 'Groups > Members > List members' do
       group.add_developer(user2)
     end
 
-    subject { visit group_group_members_path(group) }
+    it 'shows the status' do
+      create(:user_status, user: user2, emoji: 'smirk', message: 'Authoring this object')
 
-    it_behaves_like 'showing user status' do
-      let(:user_with_status) { user2 }
+      visit group_group_members_path(nested_group)
+
+      expect(first_row).to have_selector('gl-emoji[data-name="smirk"]')
     end
   end
 end

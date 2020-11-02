@@ -4,15 +4,13 @@ require 'spec_helper'
 
 RSpec.describe 'Groups > Members > Manage members' do
   include Select2Helper
-  include Spec::Support::Helpers::Features::ListRowsHelpers
+  include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
   let(:group) { create(:group) }
 
   before do
-    stub_feature_flags(vue_group_members_list: false)
-
     sign_in(user1)
   end
 
@@ -24,7 +22,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     page.within(second_row) do
       click_button('Developer')
-      click_link('Owner')
+      click_button('Owner')
 
       expect(page).to have_button('Owner')
     end
@@ -71,11 +69,14 @@ RSpec.describe 'Groups > Members > Manage members' do
     visit group_group_members_path(group)
 
     # Open modal
-    find(:css, '.project-members-page li', text: user2.name).find(:css, 'button.btn-danger').click
+    page.within(second_row) do
+      click_button 'Remove member'
+    end
 
-    expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
-
-    click_on('Remove member')
+    page.within('[role="dialog"]') do
+      expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
+      click_button('Remove member')
+    end
 
     wait_for_requests
 
@@ -103,16 +104,17 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     add_user('test@example.com', 'Reporter')
 
-    click_link('Invited')
+    expect(page).to have_link 'Invited'
+    click_link 'Invited'
 
-    page.within('.content-list.members-list') do
+    page.within(members_table) do
       expect(page).to have_content('test@example.com')
       expect(page).to have_content('Invited')
       expect(page).to have_button('Reporter')
     end
   end
 
-  it 'guest can not manage other users' do
+  it 'guest can not manage other users', :js do
     group.add_guest(user1)
     group.add_developer(user2)
 
@@ -126,7 +128,7 @@ RSpec.describe 'Groups > Members > Manage members' do
       expect(page).not_to have_button 'Developer'
 
       # Can not remove user2
-      expect(page).not_to have_css('a.btn-danger')
+      expect(page).not_to have_selector 'button[title="Remove member"]'
     end
   end
 

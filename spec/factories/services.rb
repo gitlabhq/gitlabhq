@@ -56,6 +56,10 @@ FactoryBot.define do
     trait :inactive do
       active { false }
     end
+
+    before(:create) do |service|
+      service.data = build(:alerts_service_data, service: service)
+    end
   end
 
   factory :drone_ci_service do

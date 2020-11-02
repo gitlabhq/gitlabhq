@@ -5,7 +5,7 @@
 - import_path = local_assigns[:import_path]
 .row
   .col-sm-12
-    = form_tag submit_url, class: 'invite-users-form', method: :post do
+    = form_tag submit_url, class: 'invite-users-form', data: { testid: 'invite-users-form' }, method: :post do
       .form-group
         = label_tag :user_ids, _("GitLab member or Email address"), class: "label-bold"
         = users_select_tag(:user_ids, multiple: true, class: 'input-clamp qa-member-select-field', scope: :all, email_user: true, placeholder: 'Search for members to update or invite')
