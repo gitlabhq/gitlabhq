@@ -1,5 +1,0 @@
----
-title: Validate each upload param key in multipart.rb
-merge_request:
-author:
-type: security
