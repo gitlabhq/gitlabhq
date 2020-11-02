@@ -23,6 +23,8 @@ module Terraform
 
         state.save! unless state.destroyed?
       end
+
+      nil
     end
 
     def lock!

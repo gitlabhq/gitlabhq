@@ -5,6 +5,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   class_attribute :options
 
+  PROTECTED_METHODS = %i(filename cache_dir work_dir store_dir).freeze
+
+  ObjectNotReadyError = Class.new(StandardError)
+
   class << self
     # DSL setter
     def storage_options(options)
@@ -32,6 +36,8 @@ class GitlabUploader < CarrierWave::Uploader::Base
   storage_options Gitlab.config.uploads
 
   delegate :base_dir, :file_storage?, to: :class
+
+  before :cache, :protect_from_path_traversal!
 
   def initialize(model, mounted_as = nil, **uploader_context)
     super(model, mounted_as)
@@ -121,6 +127,9 @@ class GitlabUploader < CarrierWave::Uploader::Base
   # For example, `FileUploader` builds the storage path based on the associated
   # project model's `path_with_namespace` value, which can change when the
   # project or its containing namespace is moved or renamed.
+  #
+  # When implementing this method, raise `ObjectNotReadyError` if the model
+  # does not yet exist, as it will be tested in `#protect_from_path_traversal!`
   def dynamic_segment
     raise(NotImplementedError)
   end
@@ -137,5 +146,22 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   def pathname
     @pathname ||= Pathname.new(path)
+  end
+
+  # Protect against path traversal attacks
+  # This takes a list of methods to test for path traversal, e.g. ../../
+  # and checks each of them. This uses `.send` so that any potential errors
+  # don't block the entire set from being tested.
+  #
+  # @param [CarrierWave::SanitizedFile]
+  # @return [Nil]
+  # @raise [Gitlab::Utils::PathTraversalAttackError]
+  def protect_from_path_traversal!(file)
+    PROTECTED_METHODS.each do |method|
+      Gitlab::Utils.check_path_traversal!(self.send(method)) # rubocop: disable GitlabSecurity/PublicSend
+
+    rescue ObjectNotReadyError
+      # Do nothing. This test was attempted before the file was ready for that method
+    end
   end
 end

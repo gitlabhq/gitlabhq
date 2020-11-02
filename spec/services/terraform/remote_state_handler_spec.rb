@@ -42,17 +42,17 @@ RSpec.describe Terraform::RemoteStateHandler do
 
     describe '#handle_with_lock' do
       it 'allows to modify a state using database locking' do
-        state = subject.handle_with_lock do |state|
+        record = nil
+        subject.handle_with_lock do |state|
+          record = state
           state.name = 'updated-name'
         end
 
-        expect(state.name).to eq 'updated-name'
+        expect(record.reload.name).to eq 'updated-name'
       end
 
-      it 'returns the state object itself' do
-        state = subject.handle_with_lock
-
-        expect(state.name).to eq 'my-state'
+      it 'returns nil' do
+        expect(subject.handle_with_lock).to be_nil
       end
     end
 
@@ -70,11 +70,13 @@ RSpec.describe Terraform::RemoteStateHandler do
       it 'handles a locked state using exclusive read lock' do
         handler.lock!
 
-        state = handler.handle_with_lock do |state|
+        record = nil
+        handler.handle_with_lock do |state|
+          record = state
           state.name = 'new-name'
         end
 
-        expect(state.name).to eq 'new-name'
+        expect(record.reload.name).to eq 'new-name'
       end
 
       it 'raises exception if lock has not been acquired before' do
