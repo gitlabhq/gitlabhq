@@ -6,7 +6,7 @@
   gitlab-com: true
   packages: [Ultimate]
   url: https://www.youtube.com/watch?v=3wdWMDRLdp4
-  image_url: http://i3.ytimg.com/vi/3wdWMDRLdp4/hqdefault.jpg
+  image_url: https://img.youtube.com/vi/3wdWMDRLdp4/hqdefault.jpg
   published_at: 2020-08-22
   release: 13.3
 - title: Create a matrix of jobs using a simple syntax

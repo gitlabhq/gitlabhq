@@ -261,6 +261,24 @@ describe('IssuableItem', () => {
       expect(authorEl.text()).toBe(mockAuthor.name);
     });
 
+    it('renders issuable author info via slot', () => {
+      const wrapperWithAuthorSlot = createComponent({
+        issuableSymbol: '#',
+        issuable: mockIssuable,
+        slots: {
+          reference: `
+            <span class="js-author">${mockAuthor.name}</span>
+          `,
+        },
+      });
+      const authorEl = wrapperWithAuthorSlot.find('.js-author');
+
+      expect(authorEl.exists()).toBe(true);
+      expect(authorEl.text()).toBe(mockAuthor.name);
+
+      wrapperWithAuthorSlot.destroy();
+    });
+
     it('renders gl-label component for each label present within `issuable` prop', () => {
       const labelsEl = wrapper.findAll(GlLabel);
 

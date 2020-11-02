@@ -60,8 +60,7 @@ class RegistrationsController < Devise::RegistrationsController
   def update_registration
     return redirect_to new_user_registration_path unless current_user
 
-    user_params = params.require(:user).permit(:role, :setup_for_company)
-    result = ::Users::SignupService.new(current_user, user_params).execute
+    result = ::Users::SignupService.new(current_user, update_registration_params).execute
 
     if result[:status] == :success
       if ::Gitlab.com? && show_onboarding_issues_experiment?
@@ -162,6 +161,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def sign_up_params
     params.require(:user).permit(:username, :email, :name, :first_name, :last_name, :password)
+  end
+
+  def update_registration_params
+    params.require(:user).permit(:role, :setup_for_company)
   end
 
   def resource_name

@@ -7,7 +7,7 @@ import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
 import { createRouter } from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
-import { file } from '../../helpers';
+import { file, createTriggerRenameAction } from '../../helpers';
 
 const ORIGINAL_CONTENT = 'original content';
 const RELATIVE_URL_ROOT = '/gitlab';
@@ -785,13 +785,19 @@ describe('IDE store file actions', () => {
   });
 
   describe('triggerFilesChange', () => {
+    const { payload: renamePayload } = createTriggerRenameAction('test', '123');
+
     beforeEach(() => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('emits event that files have changed', () => {
-      return store.dispatch('triggerFilesChange').then(() => {
-        expect(eventHub.$emit).toHaveBeenCalledWith('ide.files.change');
+    it.each`
+      args               | payload
+      ${[]}              | ${{}}
+      ${[renamePayload]} | ${renamePayload}
+    `('emits event that files have changed (args=$args)', ({ args, payload }) => {
+      return store.dispatch('triggerFilesChange', ...args).then(() => {
+        expect(eventHub.$emit).toHaveBeenCalledWith('ide.files.change', payload);
       });
     });
   });

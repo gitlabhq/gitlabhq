@@ -61,10 +61,16 @@ apifuzzer_fuzz:
         - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
                 $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
           when: never
-        - if: $FUZZAPI_HAR == null && $FUZZAPI_OPENAPI == null
-          when: never
         - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     script:
+        #
+        # Validate options
+        - |
+            if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI$FUZZAPI_POSTMAN_COLLECTION" == "" ]; then \
+                echo "Error: One of FUZZAPI_HAR, FUZZAPI_OPENAPI, or FUZZAPI_POSTMAN_COLLECTION must be provided."; \
+                echo "See https://docs.gitlab.com/ee/user/application_security/api_fuzzing/ for information on how to configure API Fuzzing."; \
+                exit 1; \
+            fi
         #
         # Run user provided pre-script
         - sh -c "$FUZZAPI_PRE_SCRIPT"
@@ -95,8 +101,6 @@ apifuzzer_fuzz_dnd:
           when: never
         - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
                 $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
-          when: never
-        - if: $FUZZAPI_HAR == null && $FUZZAPI_OPENAPI == null
           when: never
         - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     services:
@@ -142,7 +146,7 @@ apifuzzer_fuzz_dnd:
         # Start worker container if provided
         - |
             if [ "$FUZZAPI_D_WORKER_IMAGE" != "" ]; then \
-                echo "Starting worker image $FUZZAPI_D_WORKER_IMAGE" \
+                echo "Starting worker image $FUZZAPI_D_WORKER_IMAGE"; \
                 docker run \
                     --name worker \
                     --network $FUZZAPI_D_NETWORK \
@@ -153,6 +157,7 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_REPORT \
                     -e FUZZAPI_HAR \
                     -e FUZZAPI_OPENAPI \
+                    -e FUZZAPI_POSTMAN_COLLECTION \
                     -e FUZZAPI_TARGET_URL \
                     -e FUZZAPI_OVERRIDES_FILE \
                     -e FUZZAPI_OVERRIDES_ENV \
@@ -174,6 +179,11 @@ apifuzzer_fuzz_dnd:
         # Start API Fuzzing provided worker if no other worker present
         - |
             if [ "$FUZZAPI_D_WORKER_IMAGE" == "" ]; then \
+                if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI$FUZZAPI_POSTMAN_COLLECTION" == "" ]; then \
+                    echo "Error: One of FUZZAPI_HAR, FUZZAPI_OPENAPI, or FUZZAPI_POSTMAN_COLLECTION must be provided."; \
+                    echo "See https://docs.gitlab.com/ee/user/application_security/api_fuzzing/ for information on how to configure API Fuzzing."; \
+                    exit 1; \
+                fi; \
                 docker run \
                     --name worker \
                     --network $FUZZAPI_D_NETWORK \
@@ -185,6 +195,7 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_REPORT \
                     -e FUZZAPI_HAR \
                     -e FUZZAPI_OPENAPI \
+                    -e FUZZAPI_POSTMAN_COLLECTION \
                     -e FUZZAPI_TARGET_URL \
                     -e FUZZAPI_OVERRIDES_FILE \
                     -e FUZZAPI_OVERRIDES_ENV \

@@ -23,7 +23,10 @@ you can run fuzz tests as part your CI/CD workflow.
   - SOAP
   - GraphQL
   - Form bodies, JSON, or XML
-- An OpenAPI definition, or HTTP Archive (HAR) of requests to test
+- One of the following assets to provide APIs to test:
+  - OpenAPI v2 API definition
+  - HTTP Archive (HAR) of API requests to test
+  - Postman Collection v2.0 or v2.1
 
 ## When fuzzing scans run
 
@@ -48,15 +51,17 @@ changes, other pipelines, or other scanners) during a scan could cause inaccurat
 
 ## Configuration
 
-There are two ways to perform scans. See the configuration section for the one you wish to use:
+There are three ways to perform scans. See the configuration section for the one you wish to use:
 
 - [OpenAPI v2 specification](#openapi-specification)
 - [HTTP Archive (HAR)](#http-archive-har)
+- [Postman Collection v2.0 or v2.1](#postman-collection)
 
 Examples of both configurations can be found here:
 
 - [Example OpenAPI v2 specification project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/openapi)
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/har)
+- [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/postman-collection/)
 
 ### OpenAPI Specification
 
@@ -215,6 +220,97 @@ target API to test:
    variables:
      FUZZAPI_PROFILE: Quick-10
      FUZZAPI_HAR: test-api-recording.har
+     FUZZAPI_TARGET_URL: http://test-deployment/
+   ```
+
+This is a minimal configuration for API Fuzzing. From here you can:
+
+- [Run your first scan](#running-your-first-scan).
+- [Add authentication](#authentication).
+- Learn how to [handle false positives](#handling-false-positives).
+
+DANGER: **Warning:**
+**NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
+the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+data. Only run fuzzing against a test server.
+
+### Postman Collection
+
+The [Postman API Client](https://www.postman.com/product/api-client/) is a popular tool that
+developers and testers use to call various types of APIs. The API definitions
+[can be exported as a Postman Collection file](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-postman-data)
+for use with API Fuzzing. When exporting, make sure to select a supported version of Postman
+Collection: v2.0 or v2.1.
+
+When used with GitLab's API fuzzer, Postman Collections must contain definitions of the web API to
+test with valid data. The API fuzzer extracts all the API definitions and uses them to perform
+testing.
+
+DANGER: **Warning:**
+Postman Collection files may contain sensitive information such as authentication tokens, API keys,
+and session cookies. We recommend that you review the Postman Collection file contents before adding
+them to a repository.
+
+Follow these steps to configure API fuzzing to use a Postman Collection file that provides
+information about the target API to test:
+
+1. To use API fuzzing, you must [include](../../../ci/yaml/README.md#includetemplate)
+   the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
+   that's provided as part of your GitLab installation. To do so, add the following to your
+   `.gitlab-ci.yml` file:
+
+   ```yaml
+   include:
+     - template: API-Fuzzing.gitlab-ci.yml
+   ```
+
+1. Add the configuration file [`gitlab-api-fuzzing-config.yml`](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing/-/blob/master/gitlab-api-fuzzing-config.yml)
+   to your repository's root as `.gitlab-api-fuzzing.yml`.
+
+1. The [configuration file](#configuration-files) has several testing profiles defined with varying
+   amounts of fuzzing. We recommend that you start with the `Quick-10` profile. Testing with this
+   profile completes quickly, allowing for easier configuration validation.
+
+   Provide the profile by adding the `FUZZAPI_PROFILE` variable to your `.gitlab-ci.yml` file,
+   substituting `Quick-10` for the profile you choose:
+
+   ```yaml
+   include:
+     - template: API-Fuzzing.gitlab-ci.yml
+
+   variables:
+     FUZZAPI_PROFILE: Quick-10
+   ```
+
+1. Add the `FUZZAPI_POSTMAN_COLLECTION` variable and set it to the Postman Collection's location:
+
+   ```yaml
+   include:
+     - template: API-Fuzzing.gitlab-ci.yml
+
+   variables:
+     FUZZAPI_PROFILE: Quick-10
+     FUZZAPI_POSTMAN_COLLECTION: postman-collection_serviceA.json
+   ```
+
+1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. To run API fuzzing against an app dynamically created during a GitLab CI/CD
+   pipeline, have the app persist its domain in an `environment_url.txt` file. API fuzzing
+   automatically parses that file to find its scan target. You can see an
+   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+
+   Here's an example of using `FUZZAPI_TARGET_URL`:
+
+   ```yaml
+   include:
+     - template: API-Fuzzing.gitlab-ci.yml
+
+   variables:
+     FUZZAPI_PROFILE: Quick-10
+     FUZZAPI_POSTMAN_COLLECTION: postman-collection_serviceA.json
      FUZZAPI_TARGET_URL: http://test-deployment/
    ```
 
@@ -398,6 +494,7 @@ increases as the numbers go up. To use a configuration file, add it to your repo
 | `FUZZAPI_REPORT`            |Scan report filename. Defaults to `gl-api_fuzzing-report.xml`. |
 |[`FUZZAPI_OPENAPI`](#openapi-specification)|OpenAPI specification file or URL. |
 |[`FUZZAPI_HAR`](#http-archive-har)|HTTP Archive (HAR) file. |
+|[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)|Postman Collection file. |
 |[`FUZZAPI_OVERRIDES_FILE`](#overrides)     |Path to a JSON file containing overrides. |
 |[`FUZZAPI_OVERRIDES_ENV`](#overrides)      |JSON string containing headers to override. |
 |[`FUZZAPI_OVERRIDES_CMD`](#overrides)      |Overrides command. |

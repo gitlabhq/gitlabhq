@@ -153,10 +153,8 @@ class IssuableFinder
   end
 
   def row_count
-    fast_fail = Feature.enabled?(:soft_fail_count_by_state, params.group || params.project)
-
     Gitlab::IssuablesCountForState
-      .new(self, nil, fast_fail: fast_fail)
+      .new(self, nil, fast_fail: true)
       .for_state_or_opened(params[:state])
   end
 

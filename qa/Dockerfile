@@ -65,7 +65,7 @@ COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
 COPY ./lib/gitlab.rb /home/gitlab/lib/
 COPY ./lib/gitlab/utils.rb /home/gitlab/lib/gitlab/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
-RUN cd /home/gitlab/qa/ && gem install bundler:1.17.3 && bundle install --jobs=$(nproc) --retry=3 --without=development --quiet
+RUN cd /home/gitlab/qa/ && bundle install --jobs=$(nproc) --retry=3 --without=development --quiet
 COPY ./qa /home/gitlab/qa
 
 ENTRYPOINT ["bin/test"]

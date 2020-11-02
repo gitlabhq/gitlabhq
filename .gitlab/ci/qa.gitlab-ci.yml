@@ -7,7 +7,6 @@
   before_script:
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - cd qa/
-    - gem install bundler -v 1.17.3
     - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --without=development --quiet
     - bundle check
 

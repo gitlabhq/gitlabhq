@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import { GlSkeletonLoading, GlPagination } from '@gitlab/ui';
 
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -7,9 +7,11 @@ import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filte
 import IssuableTabs from './issuable_tabs.vue';
 import IssuableItem from './issuable_item.vue';
 
+import { DEFAULT_SKELETON_COUNT } from '../constants';
+
 export default {
   components: {
-    GlLoadingIcon,
+    GlSkeletonLoading,
     IssuableTabs,
     FilteredSearchBar,
     IssuableItem,
@@ -88,7 +90,7 @@ export default {
       required: false,
       default: 20,
     },
-    totalPages: {
+    totalItems: {
       type: Number,
       required: false,
       default: 0,
@@ -112,6 +114,19 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+  },
+  computed: {
+    skeletonItemCount() {
+      const { totalItems, defaultPageSize, currentPage } = this;
+      const totalPages = Math.ceil(totalItems / defaultPageSize);
+
+      if (totalPages) {
+        return currentPage < totalPages
+          ? defaultPageSize
+          : totalItems % defaultPageSize || defaultPageSize;
+      }
+      return DEFAULT_SKELETON_COUNT;
     },
   },
   watch: {
@@ -157,7 +172,11 @@ export default {
       @onSort="$emit('sort', $event)"
     />
     <div class="issuables-holder">
-      <gl-loading-icon v-if="issuablesLoading" size="md" class="gl-mt-5" />
+      <ul v-if="issuablesLoading" class="content-list">
+        <li v-for="n in skeletonItemCount" :key="n" class="issue gl-px-5! gl-py-5!">
+          <gl-skeleton-loading />
+        </li>
+      </ul>
       <ul
         v-if="!issuablesLoading && issuables.length"
         class="content-list issuable-list issues-list"
@@ -172,6 +191,9 @@ export default {
           <template #reference>
             <slot name="reference" :issuable="issuable"></slot>
           </template>
+          <template #author>
+            <slot name="author" :author="issuable.author"></slot>
+          </template>
           <template #status>
             <slot name="status" :issuable="issuable"></slot>
           </template>
@@ -181,7 +203,7 @@ export default {
       <gl-pagination
         v-if="showPaginationControls"
         :per-page="defaultPageSize"
-        :total-items="totalPages"
+        :total-items="totalItems"
         :value="currentPage"
         :prev-page="previousPage"
         :next-page="nextPage"

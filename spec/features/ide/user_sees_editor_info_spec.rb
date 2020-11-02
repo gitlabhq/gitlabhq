@@ -46,6 +46,20 @@ RSpec.describe 'IDE user sees editor info', :js do
     end
   end
 
+  it 'persists position after rename' do
+    ide_open_file('README.md')
+    ide_set_editor_position(4, 10)
+
+    ide_open_file('files/js/application.js')
+    ide_rename_file('README.md', 'READING_RAINBOW.md')
+
+    ide_open_file('READING_RAINBOW.md')
+
+    within find('.ide-status-bar') do
+      expect(page).to have_content('4:10')
+    end
+  end
+
   it 'persists position' do
     ide_open_file('README.md')
     ide_set_editor_position(4, 10)

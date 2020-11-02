@@ -28,7 +28,6 @@
         = f.label :password, class: 'label-bold'
         = f.password_field :password, class: "form-control bottom", data: { qa_selector: 'new_user_password_field' }, required: true, pattern: ".{#{@minimum_password_length},}", title: _("Minimum length is %{minimum_password_length} characters.") % { minimum_password_length: @minimum_password_length }
         %p.gl-field-hint.text-secondary= _('Minimum length is %{minimum_password_length} characters') % { minimum_password_length: @minimum_password_length }
-      = render_if_exists 'devise/shared/email_opted_in', f: f
       %div
       - if show_recaptcha_sign_up?
         = recaptcha_tags

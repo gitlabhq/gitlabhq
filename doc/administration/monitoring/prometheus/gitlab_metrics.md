@@ -124,8 +124,6 @@ The following metrics can be controlled by feature flags:
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
-| `gitlab_issuable_fast_count_by_state_total`                    | `soft_fail_count_by_state` |
-| `gitlab_issuable_fast_count_by_state_failures_total`           | `soft_fail_count_by_state` |
 
 ## Sidekiq metrics
 

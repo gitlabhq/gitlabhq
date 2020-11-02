@@ -48,6 +48,10 @@ export const savedContentMeta = {
     url: 'foobar/-/merge_requests/123',
   },
 };
+export const mergeRequestTemplates = [
+  { key: 'Template1', name: 'Template 1', content: 'This is template 1!' },
+  { key: 'Template2', name: 'Template 2', content: 'This is template 2!' },
+];
 
 export const submitChangesError = 'Could not save changes';
 export const commitBranchResponse = {

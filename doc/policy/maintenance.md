@@ -151,6 +151,15 @@ dnf install gitlab-ee-12.0.12-ee.0.el8
 zypper install gitlab-ee=12.0.12-ee.0
 ```
 
+To identify the GitLab version number in your package manager, run the following commands:
+
+```shell
+# apt-cache (Ubuntu/Debian)
+sudo apt-cache madison gitlab-ee
+# yum (RHEL/CentOS 6 and 7)
+yum --showduplicates list gitlab-ee
+```
+
 ## Patch releases
 
 Patch releases **only include bug fixes** for the current stable released version of

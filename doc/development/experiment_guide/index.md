@@ -38,7 +38,7 @@ addressed.
 
 ## How to create an A/B test
 
-### Implementation
+### Implement the experiment
 
 1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
 
@@ -50,7 +50,7 @@ addressed.
      # Add your experiment here:
      signup_flow: {
        environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
-       tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
+       tracking_category: 'Growth::Activation::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
      }
    }.freeze
    ```
@@ -111,8 +111,131 @@ addressed.
       end
       ```
 
-1. Track necessary events. See the [product analytics guide](../product_analytics/index.md) for details.
-1. After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
+### Implement the tracking events
+
+To determine whether the experiment is a success or not, we must implement tracking events
+to acquire data for analyzing. We can send events to Snowplow via either the backend or frontend.
+Read the [product analytics guide](../product_analytics/index.md) for more details.
+
+#### Track backend events
+
+The framework provides the following helper method that is available in controllers:
+
+```ruby
+before_action do
+  track_experiment_event(:signup_flow, 'action', 'value')
+end
+```
+
+Which can be tested as follows:
+
+```ruby
+context 'when the experiment is active and the user is in the experimental group' do
+  before do
+    stub_experiment(signup_flow: true)
+    stub_experiment_for_user(signup_flow: true)
+  end
+
+  it 'tracks an event', :snowplow do
+    subject
+
+    expect_snowplow_event(
+      category: 'Growth::Activation::Experiment::SignUpFlow',
+      action: 'action',
+      label: 'value',
+      label: 'experimentation_subject_id',
+      property: 'experimental_group'
+    )
+  end
+end
+```
+
+#### Track frontend events
+
+The framework provides the following helper method that is available in controllers:
+
+```ruby
+before_action do
+  push_frontend_experiment(:signup_flow)
+  frontend_experimentation_tracking_data(:signup_flow, 'action', 'value')
+end
+```
+
+This pushes tracking data to `gon.experiments` and `gon.tracking_data`.
+
+```ruby
+expect(Gon.experiments['signupFlow']).to eq(true)
+
+expect(Gon.tracking_data).to eq(
+  {
+    category: 'Growth::Activation::Experiment::SignUpFlow',
+    action: 'action',
+    value: 'value',
+    label: 'experimentation_subject_id',
+    property: 'experimental_group'
+  }
+)
+```
+
+Which can then be used for tracking as follows:
+
+```javascript
+import { isExperimentEnabled } from '~/lib/utils/experimentation';
+import Tracking from '~/tracking';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const signupFlowExperimentEnabled = isExperimentEnabled('signupFlow');
+
+  if (signupFlowExperimentEnabled && gon.tracking_data) {
+    const { category, action, ...data } = gon.tracking_data;
+
+    Tracking.event(category, action, data);
+  }
+}
+```
+
+Which can be tested in Jest as follows:
+
+```javascript
+import { withGonExperiment } from 'helpers/experimentation_helper';
+import Tracking from '~/tracking';
+
+describe('event tracking', () => {
+  describe('with tracking data', () => {
+    withGonExperiment('signupFlow');
+
+    beforeEach(() => {
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      gon.tracking_data = {
+        category: 'Growth::Activation::Experiment::SignUpFlow',
+        action: 'action',
+        value: 'value',
+        label: 'experimentation_subject_id',
+        property: 'experimental_group'
+      };
+    });
+
+    it('should track data', () => {
+      performAction()
+
+      expect(Tracking.event).toHaveBeenCalledWith(
+        'Growth::Activation::Experiment::SignUpFlow',
+        'action',
+        {
+          value: 'value',
+          label: 'experimentation_subject_id',
+          property: 'experimental_group'
+        },
+      );
+    });
+  });
+});
+```
+
+### Enable the experiment
+
+After all merge requests have been merged, use [`chatops`](../../ci/chatops/README.md) in the
 [appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
 The feature flag should have the name of the experiment with the `_experiment_percentage` suffix appended.
 For visibility, please also share any commands run against production in the `#s_growth` channel:
@@ -127,9 +250,39 @@ For visibility, please also share any commands run against production in the `#s
   /chatops run feature delete signup_flow_experiment_percentage
   ```
 
-### Tests and test helpers
+### Testing and test helpers
 
-Use the following in Jest to test the experiment is enabled.
+#### RSpec
+
+Use the folowing in RSpec to mock the experiment:
+
+```ruby
+context 'when the experiment is active' do
+  before do
+    stub_experiment(signup_flow: true)
+  end
+
+  context 'when the user is in the experimental group' do
+    before do
+      stub_experiment_for_user(signup_flow: true)
+    end
+
+    it { is_expected.to do_experimental_thing }
+  end
+
+  context 'when the user is in the control group' do
+    before do
+      stub_experiment_for_user(signup_flow: false)
+    end
+
+    it { is_expected.to do_control_thing }
+  end
+end
+```
+
+#### Jest
+
+Use the following in Jest to mock the experiment:
 
 ```javascript
 import { withGonExperiment } from 'helpers/experimentation_helper';

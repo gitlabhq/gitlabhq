@@ -55,7 +55,6 @@ describe('RepoEditor', () => {
   beforeEach(() => {
     const f = {
       ...file('file.txt'),
-      viewMode: FILE_VIEW_MODE_EDITOR,
       content: 'hello world',
     };
 
@@ -92,6 +91,8 @@ describe('RepoEditor', () => {
   });
 
   const findEditor = () => vm.$el.querySelector('.multi-file-editor-holder');
+  const changeViewMode = viewMode =>
+    store.dispatch('editor/updateFileEditor', { path: vm.file.path, data: { viewMode } });
 
   describe('default', () => {
     beforeEach(() => {
@@ -409,7 +410,7 @@ describe('RepoEditor', () => {
     describe('when files view mode is preview', () => {
       beforeEach(done => {
         jest.spyOn(vm.editor, 'updateDimensions').mockImplementation();
-        vm.file.viewMode = FILE_VIEW_MODE_PREVIEW;
+        changeViewMode(FILE_VIEW_MODE_PREVIEW);
         vm.file.name = 'myfile.md';
         vm.file.content = 'hello world';
 
@@ -423,7 +424,7 @@ describe('RepoEditor', () => {
 
       describe('when file view mode changes to editor', () => {
         it('should update dimensions', () => {
-          vm.file.viewMode = FILE_VIEW_MODE_EDITOR;
+          changeViewMode(FILE_VIEW_MODE_EDITOR);
 
           return vm.$nextTick().then(() => {
             expect(vm.editor.updateDimensions).toHaveBeenCalled();

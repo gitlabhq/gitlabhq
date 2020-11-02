@@ -1057,6 +1057,13 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 ## Configure Gitaly
 
+NOTE: **Note:**
+[Gitaly Cluster](../gitaly/praefect.md) support
+for the Reference Architectures is being
+worked on as a [collaborative effort](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/1) between the Quality Engineering and Gitaly teams. When this component has been verified
+some Architecture specs will likely change as a result to support the new
+and improved designed.
+
 [Gitaly](../gitaly/index.md) server node requirements are dependent on data,
 specifically the number of projects and those projects' sizes. It's recommended
 that a Gitaly server node stores no more than 5 TB of data. Although this

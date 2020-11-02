@@ -1,5 +1,6 @@
 import * as pathUtils from 'path';
 import { decorateData } from '~/ide/stores/utils';
+import { commitActionTypes } from '~/ide/constants';
 
 export const file = (name = 'name', id = name, type = '', parent = null) =>
   decorateData({
@@ -28,3 +29,17 @@ export const createEntriesFromPaths = paths =>
         ...entries,
       };
     }, {});
+
+export const createTriggerChangeAction = payload => ({
+  type: 'triggerFilesChange',
+  ...(payload ? { payload } : {}),
+});
+
+export const createTriggerRenamePayload = (path, newPath) => ({
+  type: commitActionTypes.move,
+  path,
+  newPath,
+});
+
+export const createTriggerRenameAction = (path, newPath) =>
+  createTriggerChangeAction(createTriggerRenamePayload(path, newPath));

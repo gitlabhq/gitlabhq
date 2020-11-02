@@ -369,11 +369,12 @@ GEM
       excon (~> 0.58)
       formatador (~> 0.2)
       mime-types
-    fog-google (1.10.0)
+    fog-google (1.11.0)
       fog-core (<= 2.1.0)
       fog-json (~> 1.2)
       fog-xml (~> 0.1.0)
       google-api-client (>= 0.32, < 0.34)
+      google-cloud-env (~> 1.2)
     fog-json (1.2.0)
       fog-core
       multi_json (~> 1.10)
@@ -475,6 +476,8 @@ GEM
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
       signet (~> 0.12)
+    google-cloud-env (1.4.0)
+      faraday (>= 0.17.3, < 2.0)
     google-protobuf (3.12.4)
     googleapis-common-protos-types (1.0.5)
       google-protobuf (~> 3.11)
@@ -1325,7 +1328,7 @@ DEPENDENCIES
   fog-aliyun (~> 0.3)
   fog-aws (~> 3.5)
   fog-core (= 2.1.0)
-  fog-google (~> 1.10)
+  fog-google (~> 1.11)
   fog-local (~> 0.6)
   fog-openstack (~> 1.0)
   fog-rackspace (~> 0.1.1)
@@ -1521,4 +1524,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.1)
 
 BUNDLED WITH
-   1.17.3
+   2.1.4

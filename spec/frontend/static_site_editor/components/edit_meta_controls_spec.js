@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 
-import { GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 
 import EditMetaControls from '~/static_site_editor/components/edit_meta_controls.vue';
 
-import { mergeRequestMeta } from '../mock_data';
+import { mergeRequestMeta, mergeRequestTemplates } from '../mock_data';
 
 describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
   let wrapper;
@@ -19,6 +19,8 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
       propsData: {
         title,
         description,
+        templates: mergeRequestTemplates,
+        currentTemplate: null,
         ...propsData,
       },
     });
@@ -31,6 +33,10 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
   };
 
   const findGlFormInputTitle = () => wrapper.find(GlFormInput);
+  const findGlDropdownDescriptionTemplate = () => wrapper.find(GlDropdown);
+  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownItemByIndex = index => findAllDropdownItems().at(index);
+
   const findGlFormTextAreaDescription = () => wrapper.find(GlFormTextarea);
 
   beforeEach(() => {
@@ -49,6 +55,10 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
     expect(findGlFormInputTitle().exists()).toBe(true);
   });
 
+  it('renders the description template dropdown', () => {
+    expect(findGlDropdownDescriptionTemplate().exists()).toBe(true);
+  });
+
   it('renders the description input', () => {
     expect(findGlFormTextAreaDescription().exists()).toBe(true);
   });
@@ -63,6 +73,11 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
 
   it('calls select on the title input when mounted', () => {
     expect(mockGlFormInputTitleInstance.$el.select).toHaveBeenCalled();
+  });
+
+  it('renders a GlDropdownItem per template plus one (for the starting none option)', () => {
+    expect(findDropdownItemByIndex(0).text()).toBe('None');
+    expect(findAllDropdownItems().length).toBe(mergeRequestTemplates.length + 1);
   });
 
   describe('when inputs change', () => {
@@ -82,6 +97,19 @@ describe('~/static_site_editor/components/edit_meta_controls.vue', () => {
       const newSettings = { ...mergeRequestMeta, [key]: value };
 
       expect(wrapper.emitted('updateSettings')[0][0]).toMatchObject(newSettings);
+    });
+  });
+
+  describe('when templates change', () => {
+    it.each`
+      index | value
+      ${0}  | ${null}
+      ${1}  | ${mergeRequestTemplates[0]}
+      ${2}  | ${mergeRequestTemplates[1]}
+    `('emits a change template event when $index is clicked', ({ index, value }) => {
+      findDropdownItemByIndex(index).vm.$emit('click');
+
+      expect(wrapper.emitted('changeTemplate')[0][0]).toBe(value);
     });
   });
 });

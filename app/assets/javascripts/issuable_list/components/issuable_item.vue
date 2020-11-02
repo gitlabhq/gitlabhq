@@ -116,7 +116,8 @@ export default {
           <div data-testid="issuable-title" class="issue-title title">
             <span class="issue-title-text" dir="auto">
               <gl-link :href="issuable.webUrl" v-bind="issuableTitleProps"
-                >{{ issuable.title }}<gl-icon v-if="isIssuableUrlExternal" name="external-link"
+                >{{ issuable.title
+                }}<gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2"
               /></gl-link>
             </span>
           </div>
@@ -134,7 +135,9 @@ export default {
                 >{{ createdAt }}</span
               >
               {{ __('by') }}
+              <slot v-if="hasSlotContents('author')" name="author"></slot>
               <gl-link
+                v-else
                 :data-user-id="authorId"
                 :data-username="author.username"
                 :data-name="author.name"

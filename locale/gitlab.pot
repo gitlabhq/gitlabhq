@@ -1062,16 +1062,6 @@ msgstr ""
 msgid "0t1DgySidms"
 msgstr ""
 
-msgid "1 %{type} addition"
-msgid_plural "%{count} %{type} additions"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "1 %{type} modification"
-msgid_plural "%{count} %{type} modifications"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "1 Day"
 msgid_plural "%d Days"
 msgstr[0] ""
@@ -9109,6 +9099,9 @@ msgstr ""
 msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}"
 msgstr ""
 
+msgid "Description template"
+msgstr ""
+
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
 msgstr ""
 
@@ -9823,6 +9816,9 @@ msgid "Email sent"
 msgstr ""
 
 msgid "Email the pipelines status to a list of recipients."
+msgstr ""
+
+msgid "Email updates (optional)"
 msgstr ""
 
 msgid "EmailError|It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."
@@ -13638,7 +13634,7 @@ msgstr ""
 msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)"
 msgstr ""
 
-msgid "I'd like to receive updates via email about GitLab"
+msgid "I'd like to receive updates about GitLab via email"
 msgstr ""
 
 msgid "ID"
@@ -14403,6 +14399,9 @@ msgstr ""
 msgid "Integrations|Connection successful."
 msgstr ""
 
+msgid "Integrations|Create new issue in Jira"
+msgstr ""
+
 msgid "Integrations|Default settings are inherited from the group level."
 msgstr ""
 
@@ -14418,6 +14417,9 @@ msgstr ""
 msgid "Integrations|Includes commit title and branch"
 msgstr ""
 
+msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
+msgstr ""
+
 msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use instance-level defaults."
 msgstr ""
 
@@ -14430,7 +14432,13 @@ msgstr ""
 msgid "Integrations|Saving will update the default settings for all projects that are not using custom settings."
 msgstr ""
 
+msgid "Integrations|Search Jira issues"
+msgstr ""
+
 msgid "Integrations|Standard"
+msgstr ""
+
+msgid "Integrations|To keep this project going, create a new issue."
 msgstr ""
 
 msgid "Integrations|Update your projects on Packagist, the main Composer repository"
@@ -23308,6 +23316,9 @@ msgid "Search"
 msgstr ""
 
 msgid "Search Jira issues"
+msgstr ""
+
+msgid "Search a group"
 msgstr ""
 
 msgid "Search an environment spec"

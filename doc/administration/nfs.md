@@ -307,8 +307,12 @@ by testing the following commands:
 ```shell
 sudo mkdir /gitlab-nfs/test-dir
 sudo chown git /gitlab-nfs/test-dir
-sudo chgrp gitlab-www /gitlab-nfs/test-dir
 sudo chgrp root /gitlab-nfs/test-dir
+sudo chmod 0700 /gitlab-nfs/test-dir
+sudo chgrp gitlab-www /gitlab-nfs/test-dir
+sudo chmod 0751 /gitlab-nfs/test-dir
+sudo chgrp git /gitlab-nfs/test-dir
+sudo chmod 2770 /gitlab-nfs/test-dir
 sudo chmod 2755 /gitlab-nfs/test-dir
 sudo -u git mkdir /gitlab-nfs/test-dir/test2
 sudo -u git chmod 2755 /gitlab-nfs/test-dir/test2
