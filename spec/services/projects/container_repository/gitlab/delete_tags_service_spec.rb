@@ -67,7 +67,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService do
               stub_delete_reference_requests('A' => 200)
             end
 
-            it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
+            it { is_expected.to eq(status: :error, message: 'timeout while deleting tags', deleted: ['A']) }
 
             it 'tracks the exception' do
               expect(::Gitlab::ErrorTracking)

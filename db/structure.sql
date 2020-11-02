@@ -9207,7 +9207,7 @@ CREATE TABLE application_settings (
     custom_project_templates_group_id integer,
     usage_stats_set_by_user_id integer,
     receive_max_input_size integer,
-    diff_max_patch_bytes integer DEFAULT 102400 NOT NULL,
+    diff_max_patch_bytes integer DEFAULT 204800 NOT NULL,
     archive_builds_in_seconds integer,
     commit_email_hostname character varying,
     protected_ci_variables boolean DEFAULT true NOT NULL,
@@ -12749,10 +12749,10 @@ CREATE TABLE group_wiki_repositories (
 
 CREATE TABLE historical_data (
     id integer NOT NULL,
+    date date,
     active_user_count integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    date date,
     recorded_at timestamp with time zone,
     CONSTRAINT check_640e8cf66c CHECK ((recorded_at IS NOT NULL))
 );

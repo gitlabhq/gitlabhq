@@ -11139,6 +11139,9 @@ msgstr ""
 msgid "Failed to load milestones. Please try again."
 msgstr ""
 
+msgid "Failed to load projects"
+msgstr ""
+
 msgid "Failed to load related branches"
 msgstr ""
 

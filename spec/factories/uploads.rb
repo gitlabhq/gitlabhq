@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :upload do
-    model { create(:project) }
+    model { association(:project) }
     size { 100.kilobytes }
     uploader { "AvatarUploader" }
     mount_point { :avatar }
@@ -20,7 +20,7 @@ FactoryBot.define do
     end
 
     trait :personal_snippet_upload do
-      model { create(:personal_snippet) }
+      model { association(:personal_snippet) }
       path { File.join(secret, filename) }
       uploader { "PersonalFileUploader" }
       secret { SecureRandom.hex }
@@ -46,7 +46,7 @@ FactoryBot.define do
     end
 
     trait :namespace_upload do
-      model { create(:group) }
+      model { association(:group) }
       path { File.join(secret, filename) }
       uploader { "NamespaceFileUploader" }
       secret { SecureRandom.hex }
@@ -54,7 +54,7 @@ FactoryBot.define do
     end
 
     trait :favicon_upload do
-      model { create(:appearance) }
+      model { association(:appearance) }
       uploader { "FaviconUploader" }
       secret { SecureRandom.hex }
       mount_point { :favicon }
@@ -62,13 +62,13 @@ FactoryBot.define do
 
     trait :attachment_upload do
       mount_point { :attachment }
-      model { create(:note) }
+      model { association(:note) }
       uploader { "AttachmentUploader" }
     end
 
     trait :design_action_image_v432x230_upload do
       mount_point { :image_v432x230 }
-      model { create(:design_action) }
+      model { association(:design_action) }
       uploader { ::DesignManagement::DesignV432x230Uploader.name }
     end
   end

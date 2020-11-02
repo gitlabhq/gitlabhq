@@ -8,6 +8,8 @@ RSpec.describe 'User expands diff', :js do
 
   before do
     stub_feature_flags(increased_diff_limits: false)
+    allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(100.kilobytes)
+
     visit(diffs_project_merge_request_path(project, merge_request))
 
     wait_for_requests

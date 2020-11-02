@@ -114,7 +114,7 @@ exports[`WebIDE runs 1`] = `
                 >
                   <span
                     aria-label="Loading"
-                    class="align-text-bottom gl-spinner gl-spinner-orange gl-spinner-md"
+                    class="align-text-bottom gl-spinner gl-spinner-dark gl-spinner-md"
                   />
                 </div>
               </div>

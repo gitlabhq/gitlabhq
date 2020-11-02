@@ -25,7 +25,7 @@ module Gitlab
       #
       # If this value ever changes, make sure to create a migration to update
       # current records, and default of `ApplicationSettings#diff_max_patch_bytes`.
-      DEFAULT_MAX_PATCH_BYTES = 100.kilobytes
+      DEFAULT_MAX_PATCH_BYTES = 200.kilobytes
 
       # This is a limitation applied on the source (Gitaly), therefore we don't allow
       # persisting limits over that.

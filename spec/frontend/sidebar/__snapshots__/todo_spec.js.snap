@@ -27,7 +27,7 @@ exports[`SidebarTodo template renders component container element with proper da
   </span>
    
   <gl-loading-icon-stub
-    color="orange"
+    color="dark"
     inline="true"
     label="Loading"
     size="sm"

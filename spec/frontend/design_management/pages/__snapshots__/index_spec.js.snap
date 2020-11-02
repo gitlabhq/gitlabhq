@@ -277,7 +277,7 @@ exports[`Design management index page designs renders loading icon 1`] = `
     class="gl-mt-6"
   >
     <gl-loading-icon-stub
-      color="orange"
+      color="dark"
       label="Loading"
       size="md"
     />

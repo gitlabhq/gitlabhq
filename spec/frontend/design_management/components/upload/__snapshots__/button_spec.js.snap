@@ -44,7 +44,7 @@ exports[`Design management upload button component renders loading icon 1`] = `
     
     <gl-loading-icon-stub
       class="ml-1"
-      color="orange"
+      color="dark"
       inline="true"
       label="Loading"
       size="sm"

@@ -27,13 +27,17 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
-  RSpec.shared_examples 'logging an error response' do |message: 'could not delete tags'|
+  RSpec.shared_examples 'logging an error response' do |message: 'could not delete tags', extra_log: {}|
     it 'logs an error message' do
-      expect(service).to receive(:log_error).with(
-        service_class: 'Projects::ContainerRepository::DeleteTagsService',
-        message: message,
-        container_repository_id: repository.id
-      )
+      log_data = {
+          service_class: 'Projects::ContainerRepository::DeleteTagsService',
+          message: message,
+          container_repository_id: repository.id
+      }
+
+      log_data.merge!(extra_log) if extra_log.any?
+
+      expect(service).to receive(:log_error).with(log_data)
 
       subject
     end
@@ -115,7 +119,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
 
         it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
 
-        it_behaves_like 'logging an error response', message: 'timeout while deleting tags'
+        it_behaves_like 'logging an error response', message: 'timeout while deleting tags', extra_log: { deleted_tags_count: 0 }
       end
     end
   end

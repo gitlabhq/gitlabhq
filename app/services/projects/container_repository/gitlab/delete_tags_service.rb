@@ -14,6 +14,7 @@ module Projects
         def initialize(container_repository, tag_names)
           @container_repository = container_repository
           @tag_names = tag_names
+          @deleted_tags = []
         end
 
         # Delete tags by name with a single DELETE request. This is only supported
@@ -25,7 +26,7 @@ module Projects
           delete_tags
         rescue TimeoutError => e
           ::Gitlab::ErrorTracking.track_exception(e, tags_count: @tag_names&.size, container_repository_id: @container_repository&.id)
-          error('timeout while deleting tags')
+          error('timeout while deleting tags', nil, pass_back: { deleted: @deleted_tags })
         end
 
         private
@@ -33,13 +34,15 @@ module Projects
         def delete_tags
           start_time = Time.zone.now
 
-          deleted_tags = @tag_names.select do |name|
+          @tag_names.each do |name|
             raise TimeoutError if timeout?(start_time)
 
-            @container_repository.delete_tag_by_name(name)
+            if @container_repository.delete_tag_by_name(name)
+              @deleted_tags.append(name)
+            end
           end
 
-          deleted_tags.any? ? success(deleted: deleted_tags) : error('could not delete tags')
+          @deleted_tags.any? ? success(deleted: @deleted_tags) : error('could not delete tags')
         end
 
         def timeout?(start_time)

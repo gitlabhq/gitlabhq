@@ -36,11 +36,11 @@ module Projects
       def log_response(response)
         log_data = LOG_DATA_BASE.merge(
           container_repository_id: @container_repository.id,
-          message: 'deleted tags'
-        )
+          message: 'deleted tags',
+          deleted_tags_count: response[:deleted]&.size
+        ).compact
 
         if response[:status] == :success
-          log_data[:deleted_tags_count] = response[:deleted].size
           log_info(log_data)
         else
           log_data[:message] = response[:message]

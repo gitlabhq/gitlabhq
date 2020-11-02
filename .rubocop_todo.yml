@@ -1275,5 +1275,3 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/packages.rb'
     - 'spec/factories/packages/package_file.rb'
     - 'spec/factories/sent_notifications.rb'
-    - 'spec/factories/uploads.rb'
-    - 'spec/factories/wiki_pages.rb'
