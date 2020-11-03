@@ -9,6 +9,8 @@ RSpec.describe 'bin/sidekiq-cluster' do
   context 'when selecting some queues and excluding others' do
     where(:args, :included, :excluded) do
       %w[--negate cronjob] | '-qdefault,1' | '-qcronjob,1'
+      %w[--queue-selector resource_boundary=cpu] | '-qupdate_merge_requests,1' | '-qdefault,1'
+      # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
       %w[--experimental-queue-selector resource_boundary=cpu] | '-qupdate_merge_requests,1' | '-qdefault,1'
     end
 
@@ -29,6 +31,8 @@ RSpec.describe 'bin/sidekiq-cluster' do
   context 'when selecting all queues' do
     [
       %w[*],
+      %w[--queue-selector *],
+      # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
       %w[--experimental-queue-selector *]
     ].each do |args|
       it "runs successfully with `#{args}`", :aggregate_failures do

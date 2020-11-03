@@ -47,16 +47,24 @@ module Gitlab
 
         option_parser.parse!(argv)
 
+        # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
+        if @queue_selector && @experimental_queue_selector
+          raise CommandError,
+            'You cannot specify --queue-selector and --experimental-queue-selector together'
+        end
+
         all_queues = SidekiqConfig::CliMethods.all_queues(@rails_path)
         queue_names = SidekiqConfig::CliMethods.worker_queues(@rails_path)
 
         queue_groups = argv.map do |queues|
           next queue_names if queues == '*'
 
-          # When using the experimental queue query syntax, we treat
-          # each queue group as a worker attribute query, and resolve
-          # the queues for the queue group using this query.
-          if @experimental_queue_selector
+          # When using the queue query syntax, we treat each queue group
+          # as a worker attribute query, and resolve the queues for the
+          # queue group using this query.
+
+          # Simplify with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
+          if @queue_selector || @experimental_queue_selector
             SidekiqConfig::CliMethods.query_workers(queues, all_queues)
           else
             SidekiqConfig::CliMethods.expand_queues(queues.split(','), queue_names)
@@ -182,7 +190,12 @@ module Gitlab
             @rails_path = path
           end
 
-          opt.on('--experimental-queue-selector', 'EXPERIMENTAL: Run workers based on the provided selector') do |experimental_queue_selector|
+          opt.on('--queue-selector', 'Run workers based on the provided selector') do |queue_selector|
+            @queue_selector = queue_selector
+          end
+
+          # Remove with https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/646
+          opt.on('--experimental-queue-selector', 'DEPRECATED: use --queue-selector-instead') do |experimental_queue_selector|
             @experimental_queue_selector = experimental_queue_selector
           end
 

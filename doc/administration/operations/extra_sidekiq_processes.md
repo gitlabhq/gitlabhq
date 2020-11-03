@@ -110,29 +110,21 @@ you list:
    sudo gitlab-ctl reconfigure
    ```
 
-## Queue selector (experimental)
+## Queue selector
 
 > - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
 > - [Sidekiq cluster including queue selector moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 12.10.
+> - [Marked as supported](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 13.6. Renamed from `experimental_queue_selector` to `queue_selector`.
 
-CAUTION: **Caution:**
-As this is marked as **experimental**, it is subject to change at any
-time, including **breaking backwards compatibility**. This is so that we
-can react to changes we need for our GitLab.com deployment. We have a
-tracking issue open to [remove the experimental
-designation](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147)
-from this feature; please comment there if you are interested in using
-this in your own deployment.
-
-In addition to selecting queues by name, as above, the
-`experimental_queue_selector` option allows queue groups to be selected
-in a more general way using the following components:
+In addition to selecting queues by name, as above, the `queue_selector`
+option allows queue groups to be selected in a more general way using
+the following components:
 
 - Attributes that can be selected.
 - Operators used to construct a query.
 
-When `experimental_queue_selector` is set, all `queue_groups` must be in
-the queue selector syntax.
+When `queue_selector` is set, all `queue_groups` must be in the queue
+selector syntax.
 
 ### Available attributes
 
@@ -140,8 +132,7 @@ the queue selector syntax.
 
 From the [list of all available
 attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml),
-`experimental_queue_selector` allows selecting of queues by the
-following attributes:
+`queue_selector` allows selecting of queues by the following attributes:
 
 - `feature_category` - the [GitLab feature
   category](https://about.gitlab.com/direction/maturity/#category-maturity) the
@@ -173,8 +164,8 @@ neither of those tags.
 
 ### Available operators
 
-`experimental_queue_selector` supports the following operators, listed
-from highest to lowest precedence:
+`queue_selector` supports the following operators, listed from highest
+to lowest precedence:
 
 - `|` - the logical OR operator. For example, `query_a|query_b` (where `query_a`
   and `query_b` are queries made up of the other operators here) will include
@@ -205,7 +196,7 @@ In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 sidekiq['enable'] = true
-sidekiq['experimental_queue_selector'] = true
+sidekiq['queue_selector'] = true
 sidekiq['queue_groups'] = [
   # Run all non-CPU-bound queues that are high urgency
   'resource_boundary!=cpu&urgency=high',
@@ -234,7 +225,7 @@ All of the aforementioned configuration options for `sidekiq`
 are available. By default, they will be configured as follows:
 
 ```ruby
-sidekiq['experimental_queue_selector'] = false
+sidekiq['queue_selector'] = false
 sidekiq['interval'] = nil
 sidekiq['max_concurrency'] = 50
 sidekiq['min_concurrency'] = nil
