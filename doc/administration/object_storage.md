@@ -106,7 +106,7 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
     # OPTIONAL: The following lines are only needed if server side encryption is required
     gitlab_rails['object_store']['storage_options'] = {
       'server_side_encryption' => '<AES256 or aws:kms>',
-      'server_side_encryption_kms_key_id' => '<arn:s3:aws:xxx>'
+      'server_side_encryption_kms_key_id' => '<arn:aws:kms:xxx>'
     }
     gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<artifacts>'
     gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = '<external-diffs>'
@@ -145,7 +145,7 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
        region: <eu-central-1>
      storage_options:
        server_side_encryption: <AES256 or aws:kms>
-       server_side_encryption_key_kms_id: <arn:s3:aws:xxx>
+       server_side_encryption_key_kms_id: <arn:aws:kms:xxx>
      objects:
        artifacts:
          bucket: <artifacts>

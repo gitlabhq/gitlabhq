@@ -2,23 +2,19 @@
 
 module Ci
   module BuildTraceChunks
-    class Fog
+    class LegacyFog
       def available?
         object_store.enabled
       end
 
       def data(model)
-        files.get(key(model))&.body
+        connection.get_object(bucket_name, key(model))[:body]
       rescue Excon::Error::NotFound
         # If the object does not exist in the object storage, this method returns nil.
       end
 
       def set_data(model, new_data)
-        # TODO: Support AWS S3 server side encryption
-        files.create({
-          key: key(model),
-          body: new_data
-        })
+        connection.put_object(bucket_name, key(model), new_data)
       end
 
       def append_data(model, new_data, offset)
@@ -47,7 +43,7 @@ module Ci
 
       def delete_keys(keys)
         keys.each do |key|
-          files.destroy(key_raw(*key))
+          connection.delete_object(bucket_name, key_raw(*key))
         end
       end
 
@@ -71,14 +67,6 @@ module Ci
         return unless available?
 
         @connection ||= ::Fog::Storage.new(object_store.connection.to_hash.deep_symbolize_keys)
-      end
-
-      def fog_directory
-        @fog_directory ||= connection.directories.new(key: bucket_name)
-      end
-
-      def files
-        @files ||= fog_directory.files
       end
 
       def object_store

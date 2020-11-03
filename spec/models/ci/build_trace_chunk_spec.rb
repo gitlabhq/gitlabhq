@@ -135,11 +135,31 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     context 'when data_store is fog' do
       let(:data_store) { :fog }
 
-      before do
-        build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
+      context 'when legacy Fog is enabled' do
+        before do
+          stub_feature_flags(ci_trace_new_fog_store: false)
+          build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
+        end
+
+        it { is_expected.to eq('Sample data in fog') }
+
+        it 'returns a LegacyFog store' do
+          expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::LegacyFog)
+        end
       end
 
-      it { is_expected.to eq('Sample data in fog') }
+      context 'when new Fog is enabled' do
+        before do
+          stub_feature_flags(ci_trace_new_fog_store: true)
+          build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
+        end
+
+        it { is_expected.to eq('Sample data in fog') }
+
+        it 'returns a new Fog store' do
+          expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::Fog)
+        end
+      end
     end
   end
 

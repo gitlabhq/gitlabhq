@@ -658,6 +658,24 @@ export const secondsToMilliseconds = seconds => seconds * 1000;
 export const secondsToDays = seconds => Math.round(seconds / 86400);
 
 /**
+ * Converts a numeric utc offset in seconds to +/- hours
+ * ie -32400 => -9 hours
+ * ie -12600 => -3.5 hours
+ *
+ * @param {Number} offset UTC offset in seconds as a integer
+ *
+ * @return {String} the + or - offset in hours
+ */
+export const secondsToHours = offset => {
+  const parsed = parseInt(offset, 10);
+  if (Number.isNaN(parsed) || parsed === 0) {
+    return `0`;
+  }
+  const num = offset / 3600;
+  return parseInt(num, 10) !== num ? num.toFixed(1) : num;
+};
+
+/**
  * Returns the date n days after the date provided
  *
  * @param {Date} date the initial date

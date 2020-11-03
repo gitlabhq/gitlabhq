@@ -6,7 +6,7 @@ beforeEach(() => {
     relative_url_root: '',
   };
 
-  setTestTimeout(5000);
+  setTestTimeout(7000);
   jest.useRealTimers();
 });
 

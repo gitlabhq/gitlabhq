@@ -48,5 +48,26 @@ RSpec.describe Backup::Database do
         expect(output).to include(visible_error)
       end
     end
+
+    context 'with PostgreSQL settings defined in the environment' do
+      let(:cmd) { %W[#{Gem.ruby} -e] + ["$stderr.puts ENV.to_h.select { |k, _| k.start_with?('PG') }"] }
+      let(:config) { YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))['test'] }
+
+      before do
+        stub_const 'ENV', ENV.to_h.merge({
+          'GITLAB_BACKUP_PGHOST' => 'test.example.com',
+          'PGPASSWORD' => 'donotchange'
+        })
+      end
+
+      it 'overrides default config values' do
+        subject.restore
+
+        expect(output).to include(%("PGHOST"=>"test.example.com"))
+        expect(output).to include(%("PGPASSWORD"=>"donotchange"))
+        expect(output).to include(%("PGPORT"=>"#{config['port']}")) if config['port']
+        expect(output).to include(%("PGUSER"=>"#{config['username']}")) if config['username']
+      end
+    end
   end
 end

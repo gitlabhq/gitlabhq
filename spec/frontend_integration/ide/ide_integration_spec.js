@@ -1,5 +1,6 @@
 import { TEST_HOST } from 'helpers/test_constants';
 import { waitForText } from 'helpers/wait_for_text';
+import waitForPromises from 'helpers/wait_for_promises';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import { createCommitId } from 'test_helpers/factories/commit_id';
 import { initIde } from '~/ide';
@@ -85,5 +86,19 @@ describe('WebIDE', () => {
         },
       ],
     });
+  });
+
+  it('user adds file that starts with +', async () => {
+    createComponent();
+
+    await ideHelper.createFile('+test', 'Hello world!');
+    await ideHelper.openFile('+test');
+
+    // Wait for monaco things
+    await waitForPromises();
+
+    // Assert that +test is the only open tab
+    const tabs = Array.from(document.querySelectorAll('.multi-file-tab'));
+    expect(tabs.map(x => x.textContent.trim())).toEqual(['+test']);
   });
 });

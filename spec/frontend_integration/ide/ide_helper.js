@@ -1,6 +1,6 @@
 import { findAllByText, fireEvent, getByLabelText, screen } from '@testing-library/dom';
 
-const isFileRowOpen = row => row.matches('.is-open');
+const isFolderRowOpen = row => row.matches('.folder.is-open');
 
 const getLeftSidebar = () => screen.getByTestId('left-sidebar');
 
@@ -24,6 +24,8 @@ const findAndSetEditorValue = async value => {
 
 const findTreeBody = () => screen.findByTestId('ide-tree-body', {}, { timeout: 5000 });
 
+const findRootActions = () => screen.findByTestId('ide-root-actions', {}, { timeout: 7000 });
+
 const findFileRowContainer = (row = null) =>
   row ? Promise.resolve(row.parentElement) : findTreeBody();
 
@@ -35,7 +37,7 @@ const findFileChild = async (row, name, index = 0) => {
 };
 
 const openFileRow = row => {
-  if (!row || isFileRowOpen(row)) {
+  if (!row || isFolderRowOpen(row)) {
     return;
   }
 
@@ -74,6 +76,19 @@ const findAndSetFileName = async value => {
   createButton.click();
 };
 
+const findAndClickRootAction = async name => {
+  const container = await findRootActions();
+  const button = getByLabelText(container, name);
+
+  button.click();
+};
+
+export const openFile = async path => {
+  const row = await findAndTraverseToPath(path);
+
+  openFileRow(row);
+};
+
 export const createFile = async (path, content) => {
   const parentPath = path
     .split('/')
@@ -81,7 +96,12 @@ export const createFile = async (path, content) => {
     .join('/');
 
   const parentRow = await findAndTraverseToPath(parentPath);
-  clickFileRowAction(parentRow, 'New file');
+
+  if (parentRow) {
+    clickFileRowAction(parentRow, 'New file');
+  } else {
+    await findAndClickRootAction('New file');
+  }
 
   await findAndSetFileName(path);
   await findAndSetEditorValue(content);
