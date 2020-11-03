@@ -1,7 +1,11 @@
+import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import CiLint from '~/ci_lint/components/ci_lint.vue';
+import CiLintResults from '~/ci_lint/components/ci_lint_results.vue';
 import lintCIMutation from '~/ci_lint/graphql/mutations/lint_ci.mutation.graphql';
+import { mockLintDataValid } from '../mock_data';
 
 describe('CI Lint', () => {
   let wrapper;
@@ -9,6 +13,7 @@ describe('CI Lint', () => {
   const endpoint = '/namespace/project/-/ci/lint';
   const content =
     "test_job:\n  stage: build\n  script: echo 'Building'\n  only:\n    - web\n    - chat\n    - pushes\n  allow_failure: true  ";
+  const mockMutate = jest.fn().mockResolvedValue(mockLintDataValid);
 
   const createComponent = () => {
     wrapper = shallowMount(CiLint, {
@@ -23,13 +28,15 @@ describe('CI Lint', () => {
       },
       mocks: {
         $apollo: {
-          mutate: jest.fn(),
+          mutate: mockMutate,
         },
       },
     });
   };
 
   const findEditor = () => wrapper.find(EditorLite);
+  const findAlert = () => wrapper.find(GlAlert);
+  const findCiLintResults = () => wrapper.find(CiLintResults);
   const findValidateBtn = () => wrapper.find('[data-testid="ci-lint-validate"]');
   const findClearBtn = () => wrapper.find('[data-testid="ci-lint-clear"]');
 
@@ -38,6 +45,7 @@ describe('CI Lint', () => {
   });
 
   afterEach(() => {
+    mockMutate.mockClear();
     wrapper.destroy();
   });
 
@@ -65,6 +73,35 @@ describe('CI Lint', () => {
       mutation: lintCIMutation,
       variables: { content, dry: dryRunEnabled, endpoint },
     });
+  });
+
+  it('validation displays results', async () => {
+    findValidateBtn().vm.$emit('click');
+
+    await wrapper.vm.$nextTick();
+
+    expect(findValidateBtn().props('loading')).toBe(true);
+
+    await waitForPromises();
+
+    expect(findCiLintResults().exists()).toBe(true);
+    expect(findValidateBtn().props('loading')).toBe(false);
+  });
+
+  it('validation displays error', async () => {
+    mockMutate.mockRejectedValue('Error!');
+
+    findValidateBtn().vm.$emit('click');
+
+    await wrapper.vm.$nextTick();
+
+    expect(findValidateBtn().props('loading')).toBe(true);
+
+    await waitForPromises();
+
+    expect(findCiLintResults().exists()).toBe(false);
+    expect(findAlert().text()).toBe('Error!');
+    expect(findValidateBtn().props('loading')).toBe(false);
   });
 
   it('content is cleared on clear action', async () => {

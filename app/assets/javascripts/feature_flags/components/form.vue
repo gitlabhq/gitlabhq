@@ -11,10 +11,8 @@ import {
   GlSprintf,
   GlIcon,
 } from '@gitlab/ui';
-import Api from '~/api';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import { s__ } from '~/locale';
-import { deprecatedCreateFlash as flash, FLASH_TYPES } from '~/flash';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import EnvironmentsDropdown from './environments_dropdown.vue';
@@ -89,7 +87,6 @@ export default {
     },
   },
   inject: {
-    projectId: {},
     featureFlagIssuesEndpoint: {
       default: '',
     },
@@ -124,7 +121,6 @@ export default {
       formStrategies: cloneDeep(this.strategies),
 
       newScope: '',
-      userLists: [],
     };
   },
   computed: {
@@ -154,17 +150,6 @@ export default {
         this.version === LEGACY_FLAG
       );
     },
-  },
-  mounted() {
-    if (this.supportsStrategies) {
-      Api.fetchFeatureFlagUserLists(this.projectId)
-        .then(({ data }) => {
-          this.userLists = data;
-        })
-        .catch(() => {
-          flash(s__('FeatureFlags|There was an error retrieving user lists'), FLASH_TYPES.WARNING);
-        });
-    }
   },
   methods: {
     keyFor(strategy) {
@@ -346,7 +331,6 @@ export default {
             :key="keyFor(strategy)"
             :strategy="strategy"
             :index="index"
-            :user-lists="userLists"
             @change="onFormStrategyChange($event, index)"
             @delete="deleteStrategy(strategy)"
           />

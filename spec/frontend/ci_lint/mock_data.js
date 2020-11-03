@@ -81,3 +81,14 @@ export const mockErrors = [
 export const mockWarnings = [
   '"jobs:multi_project_job may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - read more: https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings"',
 ];
+
+export const mockLintDataValid = {
+  data: {
+    lintCI: {
+      errors: [],
+      warnings: [],
+      valid: true,
+      jobs: mockJobs,
+    },
+  },
+};

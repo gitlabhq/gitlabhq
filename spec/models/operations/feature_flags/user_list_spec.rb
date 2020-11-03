@@ -92,6 +92,25 @@ RSpec.describe Operations::FeatureFlags::UserList do
     end
   end
 
+  describe '.for_name_like' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user_list_one) { create(:operations_feature_flag_user_list, project: project, name: 'one') }
+    let_it_be(:user_list_two) { create(:operations_feature_flag_user_list, project: project, name: 'list_two') }
+    let_it_be(:user_list_three) { create(:operations_feature_flag_user_list, project: project, name: 'list_three') }
+
+    it 'returns a found name' do
+      lists = project.operations_feature_flags_user_lists.for_name_like('list')
+
+      expect(lists).to contain_exactly(user_list_two, user_list_three)
+    end
+
+    it 'returns an empty array when no lists match the query' do
+      lists = project.operations_feature_flags_user_lists.for_name_like('no match')
+
+      expect(lists).to be_empty
+    end
+  end
+
   it_behaves_like 'AtomicInternalId' do
     let(:internal_id_attribute) { :iid }
     let(:instance) { build(:operations_feature_flag_user_list) }

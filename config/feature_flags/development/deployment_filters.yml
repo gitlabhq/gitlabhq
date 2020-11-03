@@ -1,7 +1,0 @@
----
-name: deployment_filters
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267561
-type: development
-group: group::source code
-default_enabled: false

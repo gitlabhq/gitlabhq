@@ -30,7 +30,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:vue_issuables_list, @group)
-    push_frontend_feature_flag(:deployment_filters)
   end
 
   before_action do
@@ -181,8 +180,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   def unfoldered_environment_names
-    return render_404 unless Feature.enabled?(:deployment_filters)
-
     respond_to do |format|
       format.json do
         render json: EnvironmentNamesFinder.new(@group, current_user).execute

@@ -105,12 +105,16 @@ upgraded to. This is to ensure [compatibility with GitLab versions](https://docs
 From version 12 onward, an additional step is required. More significant migrations
 may occur during major release upgrades.
 
+NOTE: **Note:**
+If you are planning to upgrade from `12.0.x` to `12.10.x`, it is necessary to perform an intermediary upgrade to `12.1.x`
+before upgrading to `12.10.x` to avoid [#215141](https://gitlab.com/gitlab-org/gitlab/-/issues/215141).
+
 To ensure these are successful:
 
 1. Increment to the first minor version (`x.0.x`) during the major version jump.
 1. Proceed with upgrading to a newer release.
 
-**For example: `11.5.x` -> `11.11.x` -> `12.0.x` -> `12.10.x` -> `13.0.x`**
+**For example: `11.5.x` -> `11.11.x` -> `12.0.x` -> `12.1.x` -> `12.10.x` -> `13.0.x`**
 
 ### Example upgrade paths
 
@@ -119,10 +123,10 @@ Please see the table below for some examples:
 | Target version | Your version | Recommended upgrade path | Note |
 | --------------------- | ------------ | ------------------------ | ---- |
 | `13.4.3`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14` -> `13.4.3` | Two intermediate versions are required: the final `12.10` release, plus `13.0`. |
-| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.10.14` -> `13.0.14` -> `13.2.10` | Four intermediate versions are required: the final `11.11`, `12.0`, and `12.10` releases, plus `13.0`. |
-| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.10.14`             |  Two intermediate versions are required: the final `11.11` release and `12.0.12` |
-| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.9.5`   | Three intermediate versions are required: `10.8`, `11.11`, and `12.0`, then `12.9.5` |
-| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.2.5` | Four intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, then `12.2`. |
+| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.2.10` | Five intermediate versions are required: the final `11.11`, `12.0`, `12.1` and `12.10` releases, plus `13.0`. |
+| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: the final `11.11` and `12.0` releases, plus `12.1` |
+| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5` |
+| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2`. |
 | `11.3.4`              | `8.13.4`       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ### Upgrades from versions earlier than 8.12

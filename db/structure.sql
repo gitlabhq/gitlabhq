@@ -8977,7 +8977,8 @@ CREATE TABLE analytics_devops_adoption_segments (
     name text NOT NULL,
     last_recorded_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_4be7a006fd CHECK ((char_length(name) <= 255))
 );
 
 CREATE SEQUENCE analytics_devops_adoption_segments_id_seq

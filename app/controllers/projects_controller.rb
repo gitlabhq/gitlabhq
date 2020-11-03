@@ -317,8 +317,6 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def unfoldered_environment_names
-    return render_404 unless Feature.enabled?(:deployment_filters)
-
     respond_to do |format|
       format.json do
         render json: EnvironmentNamesFinder.new(@project, current_user).execute

@@ -22,7 +22,7 @@ export default () => {
 
   return new Vue({
     el,
-    store: createStore({ endpoint, path: featureFlagsPath }),
+    store: createStore({ endpoint, projectId, path: featureFlagsPath }),
     provide: {
       environmentsScopeDocsPath,
       strategyTypeDocsPagePath,

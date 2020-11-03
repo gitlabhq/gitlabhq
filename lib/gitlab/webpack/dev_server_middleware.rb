@@ -19,6 +19,7 @@ module Gitlab
       # disable SSL check since any cert used here will likely be self-signed
       def rewrite_env(env)
         env["rack.ssl_verify_none"] = true
+        env["HTTP_HOST"] = @proxy_host
         env
       end
 

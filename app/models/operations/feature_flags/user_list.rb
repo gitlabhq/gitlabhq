@@ -5,6 +5,7 @@ module Operations
     class UserList < ApplicationRecord
       include AtomicInternalId
       include IidRoutes
+      include ::Gitlab::SQL::Pattern
 
       self.table_name = 'operations_user_lists'
 
@@ -22,6 +23,10 @@ module Operations
       validates :user_xids, feature_flag_user_xids: true
 
       before_destroy :ensure_no_associated_strategies
+
+      scope :for_name_like, -> (query) do
+        fuzzy_search(query, [:name], use_minimum_char_limit: false)
+      end
 
       private
 

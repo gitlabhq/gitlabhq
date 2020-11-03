@@ -1,47 +1,93 @@
-import { mount } from '@vue/test-utils';
-import { GlFormSelect } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import Api from '~/api';
+import createStore from '~/feature_flags/store/new';
 import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
 import { userListStrategy, userList } from '../../mock_data';
 
+jest.mock('~/api');
+
 const DEFAULT_PROPS = {
   strategy: userListStrategy,
-  userLists: [userList],
 };
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
   let wrapper;
 
   const factory = (props = {}) =>
-    mount(GitlabUserList, { propsData: { ...DEFAULT_PROPS, ...props } });
+    mount(GitlabUserList, {
+      localVue,
+      store: createStore({ projectId: '1' }),
+      propsData: { ...DEFAULT_PROPS, ...props },
+    });
 
   describe('with user lists', () => {
+    const findDropdownItem = () => wrapper.find(GlDropdownItem);
+
     beforeEach(() => {
+      Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [userList] });
       wrapper = factory();
     });
 
     it('should show the input for userListId with the correct value', () => {
-      const inputWrapper = wrapper.find(GlFormSelect);
-      expect(inputWrapper.exists()).toBe(true);
-      expect(inputWrapper.element.value).toBe('2');
+      const dropdownWrapper = wrapper.find(GlDropdown);
+      expect(dropdownWrapper.exists()).toBe(true);
+      expect(dropdownWrapper.props('text')).toBe(userList.name);
+    });
+
+    it('should show a check for the selected list', () => {
+      const itemWrapper = findDropdownItem();
+      expect(itemWrapper.props('isChecked')).toBe(true);
+    });
+
+    it('should display the name of the list in the drop;down', () => {
+      const itemWrapper = findDropdownItem();
+      expect(itemWrapper.text()).toBe(userList.name);
     });
 
     it('should emit a change event when altering the userListId', () => {
-      const inputWrapper = wrapper.find(GitlabUserList);
-      inputWrapper.vm.$emit('change', {
-        userListId: '3',
-      });
+      const inputWrapper = findDropdownItem();
+      inputWrapper.vm.$emit('click');
       expect(wrapper.emitted('change')).toEqual([
         [
           {
-            userListId: '3',
+            userList,
           },
         ],
       ]);
     });
+
+    it('should search when the filter changes', async () => {
+      let r;
+      Api.searchFeatureFlagUserLists.mockReturnValue(
+        new Promise(resolve => {
+          r = resolve;
+        }),
+      );
+      const searchWrapper = wrapper.find(GlSearchBoxByType);
+      searchWrapper.vm.$emit('input', 'new');
+      await wrapper.vm.$nextTick();
+      const loadingIcon = wrapper.find(GlLoadingIcon);
+
+      expect(loadingIcon.exists()).toBe(true);
+      expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'new');
+
+      r({ data: [userList] });
+
+      await wrapper.vm.$nextTick();
+
+      expect(loadingIcon.exists()).toBe(false);
+    });
   });
+
   describe('without user lists', () => {
     beforeEach(() => {
-      wrapper = factory({ userLists: [] });
+      Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [] });
+      wrapper = factory();
     });
 
     it('should display a message that there are no user lists', () => {

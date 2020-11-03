@@ -22,7 +22,7 @@ export default () => {
   } = el.dataset;
 
   return new Vue({
-    store: createStore({ endpoint, path: featureFlagsPath }),
+    store: createStore({ endpoint, projectId, path: featureFlagsPath }),
     el,
     provide: {
       environmentsScopeDocsPath,

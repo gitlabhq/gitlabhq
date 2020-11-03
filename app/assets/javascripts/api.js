@@ -737,6 +737,12 @@ const Api = {
     return axios.get(url, { params: { page } });
   },
 
+  searchFeatureFlagUserLists(id, search) {
+    const url = Api.buildUrl(this.featureFlagUserLists).replace(':id', id);
+
+    return axios.get(url, { params: { search } });
+  },
+
   createFeatureFlagUserList(id, list) {
     const url = Api.buildUrl(this.featureFlagUserLists).replace(':id', id);
 

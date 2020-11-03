@@ -11473,6 +11473,9 @@ msgstr ""
 msgid "FeatureFlags|Rollout Strategy"
 msgstr ""
 
+msgid "FeatureFlags|Select a user list"
+msgstr ""
+
 msgid "FeatureFlags|Set the Unleash client application name to the name of the environment your application runs in. This value is used to match environment scopes. See the %{linkStart}example client configuration%{linkEnd}."
 msgstr ""
 
@@ -11491,9 +11494,6 @@ msgstr ""
 msgid "FeatureFlags|There was an error fetching the user lists."
 msgstr ""
 
-msgid "FeatureFlags|There was an error retrieving user lists"
-msgstr ""
-
 msgid "FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this modal to cancel."
 msgstr ""
 
@@ -11507,9 +11507,6 @@ msgid "FeatureFlags|User List"
 msgstr ""
 
 msgid "FeatureFlags|User Lists"
-msgstr ""
-
-msgid "FeatureFlag|List"
 msgstr ""
 
 msgid "FeatureFlag|Percentage"
@@ -11528,6 +11525,9 @@ msgid "FeatureFlag|Type"
 msgstr ""
 
 msgid "FeatureFlag|User IDs"
+msgstr ""
+
+msgid "FeatureFlag|User List"
 msgstr ""
 
 msgid "Feb"

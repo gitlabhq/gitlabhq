@@ -1,6 +1,9 @@
-import { mount } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { last } from 'lodash';
 import { GlAlert, GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
+import Api from '~/api';
+import createStore from '~/feature_flags/store/new';
 import {
   PERCENT_ROLLOUT_GROUP_ID,
   ROLLOUT_STRATEGY_ALL_USERS,
@@ -15,11 +18,16 @@ import StrategyParameters from '~/feature_flags/components/strategy_parameters.v
 
 import { userList } from '../mock_data';
 
+jest.mock('~/api');
+
 const provide = {
   strategyTypeDocsPagePath: 'link-to-strategy-docs',
   environmentsScopeDocsPath: 'link-scope-docs',
   environmentsEndpoint: '',
 };
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('Feature flags strategy', () => {
   let wrapper;
@@ -32,7 +40,6 @@ describe('Feature flags strategy', () => {
       propsData: {
         strategy: {},
         index: 0,
-        userLists: [userList],
       },
       provide,
     },
@@ -41,8 +48,12 @@ describe('Feature flags strategy', () => {
       wrapper.destroy();
       wrapper = null;
     }
-    wrapper = mount(Strategy, opts);
+    wrapper = mount(Strategy, { localVue, store: createStore({ projectId: '1' }), ...opts });
   };
+
+  beforeEach(() => {
+    Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [userList] });
+  });
 
   afterEach(() => {
     if (wrapper) {
