@@ -1,5 +1,0 @@
----
-title: Add environment variables to override backup/restore DB settings
-merge_request: 45855
-author:
-type: added
