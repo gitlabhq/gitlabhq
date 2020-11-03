@@ -1234,6 +1234,32 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
+  describe 'aggregated_metrics' do
+    subject(:aggregated_metrics) { described_class.aggregated_metrics }
+
+    context 'with product_analytics_aggregated_metrics feature flag on' do
+      before do
+        stub_feature_flags(product_analytics_aggregated_metrics: true)
+      end
+
+      it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:aggregated_metrics_data).and_return(global_search_gmau: 123)
+        expect(aggregated_metrics).to eq(aggregated_metrics: { global_search_gmau: 123 })
+      end
+    end
+
+    context 'with product_analytics_aggregated_metrics feature flag off' do
+      before do
+        stub_feature_flags(product_analytics_aggregated_metrics: false)
+      end
+
+      it 'returns empty hash', :aggregate_failures do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:aggregated_metrics_data)
+        expect(aggregated_metrics).to be {}
+      end
+    end
+  end
+
   describe '.service_desk_counts' do
     subject { described_class.send(:service_desk_counts) }
 

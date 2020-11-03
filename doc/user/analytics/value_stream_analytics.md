@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Analytics
+group: Value Stream Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -379,7 +379,7 @@ The current permissions on the Project Value Stream Analytics dashboard are:
 
 You can [read more about permissions](../../user/permissions.md) in general.
 
-For Value Stream Analytics functionality introduced in GitLab 12.3 and later, 
+For Value Stream Analytics functionality introduced in GitLab 12.3 and later,
 users must have Reporter access or above.
 
 ## More resources

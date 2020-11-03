@@ -36,8 +36,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     let(:custom_daily_event) { 'g_analytics_custom' }
 
     let(:global_category) { 'global' }
-    let(:compliance_category) {'compliance' }
-    let(:productivity_category) {'productivity' }
+    let(:compliance_category) { 'compliance' }
+    let(:productivity_category) { 'productivity' }
     let(:analytics_category) { 'analytics' }
 
     let(:known_events) do
@@ -84,11 +84,11 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
 
         it "raise error if metrics don't have same aggregation" do
-          expect { described_class.track_event(entity1, different_aggregation, Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
+          expect { described_class.track_event(entity1, different_aggregation, Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
         end
 
         it 'raise error if metrics of unknown aggregation' do
-          expect { described_class.track_event(entity1, 'unknown', Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+          expect { described_class.track_event(entity1, 'unknown', Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
         end
 
         context 'for weekly events' do
@@ -184,41 +184,47 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       end
 
       it 'raise error if metrics are not in the same slot' do
-        expect { described_class.unique_events(event_names: [compliance_slot_event, analytics_slot_event], start_date: 4.weeks.ago, end_date: Date.current) }.to raise_error('Events should be in same slot')
+        expect do
+          described_class.unique_events(event_names: [compliance_slot_event, analytics_slot_event], start_date: 4.weeks.ago, end_date: Date.current)
+        end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::SlotMismatch)
       end
 
       it 'raise error if metrics are not in the same category' do
-        expect { described_class.unique_events(event_names: [category_analytics_event, category_productivity_event], start_date: 4.weeks.ago, end_date: Date.current) }.to raise_error('Events should be in same category')
+        expect do
+          described_class.unique_events(event_names: [category_analytics_event, category_productivity_event], start_date: 4.weeks.ago, end_date: Date.current)
+        end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::CategoryMismatch)
       end
 
       it "raise error if metrics don't have same aggregation" do
-        expect { described_class.unique_events(event_names: [daily_event, weekly_event], start_date: 4.weeks.ago, end_date: Date.current) }.to raise_error('Events should have same aggregation level')
+        expect do
+          described_class.unique_events(event_names: [daily_event, weekly_event], start_date: 4.weeks.ago, end_date: Date.current)
+        end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::AggregationMismatch)
       end
 
       context 'when data for the last complete week' do
-        it { expect(described_class.unique_events(event_names: weekly_event, start_date: 1.week.ago, end_date: Date.current)).to eq(1) }
+        it { expect(described_class.unique_events(event_names: [weekly_event], start_date: 1.week.ago, end_date: Date.current)).to eq(1) }
       end
 
       context 'when data for the last 4 complete weeks' do
-        it { expect(described_class.unique_events(event_names: weekly_event, start_date: 4.weeks.ago, end_date: Date.current)).to eq(2) }
+        it { expect(described_class.unique_events(event_names: [weekly_event], start_date: 4.weeks.ago, end_date: Date.current)).to eq(2) }
       end
 
       context 'when data for the week 4 weeks ago' do
-        it { expect(described_class.unique_events(event_names: weekly_event, start_date: 4.weeks.ago, end_date: 3.weeks.ago)).to eq(1) }
+        it { expect(described_class.unique_events(event_names: [weekly_event], start_date: 4.weeks.ago, end_date: 3.weeks.ago)).to eq(1) }
       end
 
       context 'when using symbol as parameter' do
-        it { expect(described_class.unique_events(event_names: weekly_event.to_sym, start_date: 4.weeks.ago, end_date: 3.weeks.ago)).to eq(1) }
+        it { expect(described_class.unique_events(event_names: [weekly_event.to_sym], start_date: 4.weeks.ago, end_date: 3.weeks.ago)).to eq(1) }
       end
 
       context 'when using daily aggregation' do
-        it { expect(described_class.unique_events(event_names: daily_event, start_date: 7.days.ago, end_date: Date.current)).to eq(2) }
-        it { expect(described_class.unique_events(event_names: daily_event, start_date: 28.days.ago, end_date: Date.current)).to eq(3) }
-        it { expect(described_class.unique_events(event_names: daily_event, start_date: 28.days.ago, end_date: 21.days.ago)).to eq(1) }
+        it { expect(described_class.unique_events(event_names: [daily_event], start_date: 7.days.ago, end_date: Date.current)).to eq(2) }
+        it { expect(described_class.unique_events(event_names: [daily_event], start_date: 28.days.ago, end_date: Date.current)).to eq(3) }
+        it { expect(described_class.unique_events(event_names: [daily_event], start_date: 28.days.ago, end_date: 21.days.ago)).to eq(1) }
       end
 
       context 'when no slot is set' do
-        it { expect(described_class.unique_events(event_names: no_slot, start_date: 7.days.ago, end_date: Date.current)).to eq(1) }
+        it { expect(described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)).to eq(1) }
       end
     end
   end
@@ -265,6 +271,56 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       }
 
       expect(subject.unique_events_data).to eq(results)
+    end
+  end
+
+  describe '.aggregated_metrics_data' do
+    context 'no combination is tracked' do
+      it 'returns empty hash' do
+        allow(described_class).to receive(:aggregated_metrics).and_return([])
+
+        expect(subject.aggregated_metrics_data).to eq({})
+      end
+    end
+
+    context 'there are some combinations defined' do
+      let(:known_events) do
+        [
+          { name: 'event1_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
+          { name: 'event2_slot', redis_slot: "slot", category: 'category2', aggregation: "weekly" },
+          { name: 'event3', category: 'category2', aggregation: "weekly" }
+        ].map(&:with_indifferent_access)
+      end
+
+      let(:aggregated_metrics) do
+        [
+          { name: 'gmau_1', events: %w[event1_slot event2_slot], operator: "ANY" },
+          { name: 'gmau_2', events: %w[event3], operator: "ANY" }
+        ].map(&:with_indifferent_access)
+      end
+
+      before do
+        allow(described_class).to receive(:known_events).and_return(known_events)
+        allow(described_class).to receive(:aggregated_metrics).and_return(aggregated_metrics)
+
+        described_class.track_event(entity1, 'event1_slot', 2.days.ago)
+        described_class.track_event(entity1, 'event2_slot', 2.days.ago)
+        described_class.track_event(entity3, 'event2_slot', 3.days.ago)
+
+        # events in different slots
+        described_class.track_event(entity1, 'event3', 2.days.ago)
+        described_class.track_event(entity2, 'event3', 2.days.ago)
+        described_class.track_event(entity4, 'event3', 2.days.ago)
+      end
+
+      it 'returns the number of unique events for all known events' do
+        results = {
+          'gmau_1' => 2,
+          'gmau_2' => 3
+        }
+
+        expect(subject.aggregated_metrics_data).to eq(results)
+      end
     end
   end
 end

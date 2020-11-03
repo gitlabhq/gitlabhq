@@ -858,3 +858,19 @@ ProjectSecuritySetting:
 IssuableSla:
   - issue_id
   - due_at
+PushRule:
+  - force_push_regex
+  - delete_branch_regex
+  - commit_message_regex
+  - author_email_regex
+  - file_name_regex
+  - branch_name_regex
+  - commit_message_negative_regex
+  - max_file_size
+  - deny_delete_tag
+  - member_check
+  - is_sample
+  - prevent_secrets
+  - reject_unsigned_commits
+  - commit_committer_check
+  - regexp_uses_re2

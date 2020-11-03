@@ -21,11 +21,13 @@ We strongly recommend installing
 [Lefthook](https://github.com/Arkweid/lefthook) to automatically check for
 static analysis offenses before pushing your changes.
 
-After installing `overcommit`, run the following in your GitLab source directory:
+To install `lefthook`, run the following in your GitLab source directory:
 
 ```shell
 # Make sure to uninstall Overcommit first
 overcommit --uninstall
+
+# If using rbenv, at this point you may need to do: rbenv rehash
 
 # Install lefthook
 gem install lefthook && lefthook install -f

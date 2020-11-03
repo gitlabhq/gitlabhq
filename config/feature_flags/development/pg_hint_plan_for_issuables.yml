@@ -1,0 +1,7 @@
+---
+name: pg_hint_plan_for_issuables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46289
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/273528
+type: development
+group: group::project planning
+default_enabled: false

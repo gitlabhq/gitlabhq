@@ -339,6 +339,15 @@ class IssuableFinder
       cte << items
 
       items = klass.with(cte.to_arel).from(klass.table_name)
+    elsif Feature.enabled?(:pg_hint_plan_for_issuables, params.project)
+      items = items.optimizer_hints(<<~HINTS)
+        BitmapScan(
+          issues idx_issues_on_project_id_and_created_at_and_id_and_state_id
+            idx_issues_on_project_id_and_due_date_and_id_and_state_id
+            idx_issues_on_project_id_and_updated_at_and_id_and_state_id
+            index_issues_on_project_id_and_iid
+        )
+      HINTS
     end
 
     items.full_search(search, matched_columns: params[:in], use_minimum_char_limit: !use_cte_for_search?)
