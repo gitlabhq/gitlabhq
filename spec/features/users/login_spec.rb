@@ -26,7 +26,6 @@ RSpec.describe 'Login' do
       user.reload
       expect(user.reset_password_token).not_to be_nil
 
-      find('a[href="#login-pane"]').click
       gitlab_sign_in(user)
       expect(current_path).to eq root_path
 
@@ -593,10 +592,16 @@ RSpec.describe 'Login' do
 
   describe 'UI tabs and panes' do
     context 'when no defaults are changed' do
-      it 'correctly renders tabs and panes' do
+      it 'does not render any tabs' do
         visit new_user_session_path
 
-        ensure_tab_pane_correctness(['Sign in', 'Register'])
+        ensure_no_tabs
+      end
+
+      it 'renders link to sign up path' do
+        visit new_user_session_path
+
+        expect(page.body).to have_link('Register now', href: new_user_registration_path)
       end
     end
 
@@ -607,8 +612,14 @@ RSpec.describe 'Login' do
         visit new_user_session_path
       end
 
-      it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness(['Sign in'])
+      it 'does not render any tabs' do
+        ensure_no_tabs
+      end
+
+      it 'does not render link to sign up path' do
+        visit new_user_session_path
+
+        expect(page.body).not_to have_link('Register now', href: new_user_registration_path)
       end
     end
 
@@ -644,7 +655,11 @@ RSpec.describe 'Login' do
       end
 
       it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness(['Main LDAP', 'Standard', 'Register'])
+        ensure_tab_pane_correctness(['Main LDAP', 'Standard'])
+      end
+
+      it 'renders link to sign up path' do
+        expect(page.body).to have_link('Register now', href: new_user_registration_path)
       end
     end
 
@@ -665,7 +680,7 @@ RSpec.describe 'Login' do
       end
 
       it 'correctly renders tabs and panes' do
-        ensure_tab_pane_correctness(%w(Crowd Standard Register))
+        ensure_tab_pane_correctness(%w(Crowd Standard))
       end
     end
   end

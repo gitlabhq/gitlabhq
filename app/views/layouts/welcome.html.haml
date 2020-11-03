@@ -1,0 +1,8 @@
+!!! 5
+%html.subscriptions-layout-html{ lang: 'en' }
+  = render 'layouts/head'
+  %body.ui-indigo.d-flex.vh-100.gl-bg-gray-10
+    = render "layouts/header/logo_with_title"
+    = render "layouts/broadcast"
+    .container.d-flex.flex-grow-1.m-0
+      = yield

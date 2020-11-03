@@ -7,7 +7,7 @@ export const notesDataMock = {
   newSessionPath: '/users/sign_in?redirect_to_referer=yes',
   notesPath: '/gitlab-org/gitlab-foss/noteable/issue/98/notes',
   quickActionsDocsPath: '/help/user/project/quick_actions',
-  registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
+  registerPath: '/users/sign_up?redirect_to_referer=yes',
   prerenderedNotesCount: 1,
   closePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=close',
   reopenPath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=reopen',

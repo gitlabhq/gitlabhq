@@ -58,6 +58,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
 
     it 'pre-fills the Email field on the sign up box  with the invite_email from the invite' do
+      click_link 'Register now'
+
       expect(find_field('Email').value).to eq(group_invite.invite_email)
     end
 
@@ -92,6 +94,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       before do
         stub_application_setting(send_user_confirmation_email: send_email_confirmation)
         visit invite_path(group_invite.raw_invite_token)
+        click_link 'Register now'
       end
 
       context 'email confirmation disabled' do

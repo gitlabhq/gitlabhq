@@ -15,13 +15,13 @@ module Atlassian
         end
 
         expose :commits do |project, options|
-          JiraConnect::Serializers::CommitEntity.represent options[:commits], project: project
+          JiraConnect::Serializers::CommitEntity.represent options[:commits], project: project, update_sequence_id: options[:update_sequence_id]
         end
         expose :branches do |project, options|
-          JiraConnect::Serializers::BranchEntity.represent options[:branches], project: project
+          JiraConnect::Serializers::BranchEntity.represent options[:branches], project: project, update_sequence_id: options[:update_sequence_id]
         end
         expose :pullRequests do |project, options|
-          JiraConnect::Serializers::PullRequestEntity.represent options[:merge_requests], project: project
+          JiraConnect::Serializers::PullRequestEntity.represent options[:merge_requests], project: project, update_sequence_id: options[:update_sequence_id]
         end
       end
     end

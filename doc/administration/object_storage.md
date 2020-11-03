@@ -262,6 +262,7 @@ Here are the valid connection parameters for GCS:
 | `google_project` | GCP project name | `gcp-project-12345` |
 | `google_client_email` | The email address of the service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
 | `google_json_key_location` | The JSON key path | `/path/to/gcp-project-12345-abcde.json` |
+| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. |
 
 NOTE: **Note:**
 The service account must have permission to access the bucket.
@@ -279,6 +280,33 @@ gitlab_rails['object_store']['connection'] = {
   'google_json_key_location' => '<FILENAME>'
 }
 ```
+
+##### Google example with ADC (consolidated form)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275979) in GitLab 13.6.
+
+Google Cloud Application Default Credentials (ADC) are typically
+used with GitLab to use the default service account. This eliminates the
+need to supply credentials for the instance. For example:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'Google',
+  'google_project' => '<GOOGLE PROJECT>',
+  'google_application_default' => true
+}
+```
+
+If you use ADC, be sure that:
+
+- The service account that you use has the
+[`iam.serviceAccounts.signBlob` permission](https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob).
+  Typically this is done by granting the `Service Account Token Creator` role to the service account.
+- Your virtual machines have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
+
+  ```markdown
+  Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
+  ```
 
 #### Azure Blob storage
 

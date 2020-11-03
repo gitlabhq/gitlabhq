@@ -57,7 +57,7 @@ To subscribe to GitLab.com:
 
 - **For individuals**:
   1. Create a user account for yourself using our
-     [sign up page](https://gitlab.com/users/sign_in#register-pane).
+     [sign up page](https://gitlab.com/users/sign_up).
   1. Visit the [billing page](https://gitlab.com/profile/billings)
      under your profile.
   1. Select the **Bronze**, **Silver**, or **Gold** GitLab.com plan through the
@@ -70,7 +70,7 @@ To subscribe to GitLab.com:
   1. Proceed to checkout.
 - **For groups**:
   1. Create a user account for yourself using our
-     [sign up page](https://gitlab.com/users/sign_in#register-pane).
+     [sign up page](https://gitlab.com/users/sign_up).
   1. Create a [group](../../user/group/index.md). GitLab groups help assemble related
      projects together allowing you to grant members access to several projects
      at once. A group is not required if you plan on having projects inside a personal

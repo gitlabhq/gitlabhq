@@ -8,6 +8,10 @@ module UserLoginHelper
     ensure_one_active_pane
   end
 
+  def ensure_no_tabs
+    expect(page.all('[role="tab"]').size).to eq(0)
+  end
+
   def ensure_tab_labels(tab_names)
     tab_labels = page.all('[role="tab"]').map(&:text)
 

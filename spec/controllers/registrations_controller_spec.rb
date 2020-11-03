@@ -12,30 +12,10 @@ RSpec.describe RegistrationsController do
   describe '#new' do
     subject { get :new }
 
-    context 'with the experimental signup flow enabled and the user is part of the experimental group' do
-      before do
-        stub_experiment(signup_flow: true)
-        stub_experiment_for_user(signup_flow: true)
-      end
-
-      it 'renders new template and sets the resource variable' do
-        expect(subject).to render_template(:new)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:resource)).to be_a(User)
-      end
-    end
-
-    context 'with the experimental signup flow enabled and the user is part of the control group' do
-      before do
-        stub_experiment(signup_flow: true)
-        stub_experiment_for_user(signup_flow: false)
-      end
-
-      it 'renders new template and sets the resource variable' do
-        subject
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
-      end
+    it 'renders new template and sets the resource variable' do
+      expect(subject).to render_template(:new)
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(assigns(:resource)).to be_a(User)
     end
   end
 
@@ -426,12 +406,10 @@ RSpec.describe RegistrationsController do
   describe '#welcome' do
     subject { get :welcome }
 
-    it 'renders the devise_experimental_separate_sign_up_flow layout' do
+    it 'renders the welcome layout' do
       sign_in(create(:user))
 
-      expected_layout = Gitlab.ee? ? :checkout : :devise_experimental_separate_sign_up_flow
-
-      expect(subject).to render_template(expected_layout)
+      expect(subject).to render_template(:welcome)
     end
 
     context '2FA is required from group' do

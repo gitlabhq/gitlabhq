@@ -11,6 +11,14 @@ RSpec.describe Atlassian::JiraConnect::Client do
     Timecop.freeze { example.run }
   end
 
+  describe '.generate_update_sequence_id' do
+    it 'returns monotonic_time converted it to integer' do
+      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1.0)
+
+      expect(described_class.generate_update_sequence_id).to eq(1)
+    end
+  end
+
   describe '#store_dev_info' do
     it "calls the API with auth headers" do
       expected_jwt = Atlassian::Jwt.encode(

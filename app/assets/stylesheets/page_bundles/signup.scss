@@ -1,27 +1,6 @@
 @import 'mixins_and_variables_and_functions';
 
 .signup-page {
-  .page-wrap {
-    background-color: var(--gray-10, $gray-10);
-  }
-
-  .signup-box-container {
-    max-width: 960px;
-  }
-
-  .signup-box {
-    background-color: var(--white, $white);
-    box-shadow: 0 0 0 1px var(--border-color, $border-color);
-    border-radius: $border-radius;
-  }
-
-  .form-control {
-    &:active,
-    &:focus {
-      background-color: var(--white, $white);
-    }
-  }
-
   .devise-errors {
     h2 {
       font-size: $gl-font-size;

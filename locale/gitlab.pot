@@ -22016,9 +22016,6 @@ msgstr ""
 msgid "Register device"
 msgstr ""
 
-msgid "Register for GitLab"
-msgstr ""
-
 msgid "Register now"
 msgstr ""
 
@@ -25303,9 +25300,6 @@ msgid "Specify an e-mail address regex pattern to identify default internal user
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
-msgstr ""
-
-msgid "Speed up your DevOps%{br_tag}with GitLab"
 msgstr ""
 
 msgid "Squash commit message"
@@ -29244,9 +29238,6 @@ msgid "Username is already taken."
 msgstr ""
 
 msgid "Username is available."
-msgstr ""
-
-msgid "Username is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "Username or email"
