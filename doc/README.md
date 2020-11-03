@@ -452,7 +452,7 @@ Learn more about using Git, and using Git with GitLab:
 
 ## Coming to GitLab from another platform
 
-If you are coming to GitLab from another platform, you'll find the following information useful:
+If you are coming to GitLab from another platform, the following information is useful:
 
 | Topic                                                          | Description                                                                            |
 |:---------------------------------------------------------------|:---------------------------------------------------------------------------------------|

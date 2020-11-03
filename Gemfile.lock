@@ -548,8 +548,9 @@ GEM
     haml (5.1.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.34.0)
-      haml (>= 4.0, < 5.2)
+    haml_lint (0.36.0)
+      haml (>= 4.0, < 5.3)
+      parallel (~> 1.10)
       rainbow
       rubocop (>= 0.50.0)
       sysexits (~> 1.1)
@@ -1370,7 +1371,7 @@ DEPENDENCIES
   grpc (~> 1.30.2)
   gssapi
   guard-rspec
-  haml_lint (~> 0.34.0)
+  haml_lint (~> 0.36.0)
   hamlit (~> 2.11.0)
   hangouts-chat (~> 0.0.5)
   hashie

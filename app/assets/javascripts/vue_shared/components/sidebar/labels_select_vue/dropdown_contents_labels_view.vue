@@ -92,6 +92,13 @@ export default {
         }
       }
     },
+    handleComponentAppear() {
+      // We can avoid putting `catch` block here
+      // as failure is handled within actions.js already.
+      return this.fetchLabels().then(() => {
+        this.$refs.searchInput.focusInput();
+      });
+    },
     /**
      * We want to remove loaded labels to ensure component
      * fetches fresh set of labels every time when shown.
@@ -139,7 +146,7 @@ export default {
 </script>
 
 <template>
-  <gl-intersection-observer @appear="fetchLabels" @disappear="handleComponentDisappear">
+  <gl-intersection-observer @appear="handleComponentAppear" @disappear="handleComponentDisappear">
     <div class="labels-select-contents-list js-labels-list" @keydown="handleKeyDown">
       <div
         v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
@@ -158,8 +165,8 @@ export default {
       </div>
       <div class="dropdown-input" @click.stop="() => {}">
         <gl-search-box-by-type
+          ref="searchInput"
           v-model="searchKey"
-          :autofocus="true"
           :disabled="labelsFetchInProgress"
           data-qa-selector="dropdown_input_field"
         />

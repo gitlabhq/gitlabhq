@@ -1,0 +1,5 @@
+---
+title: 'Auto Deploy: fixes issues for fetching other charts from stable repo'
+merge_request: 46531
+author:
+type: fixed

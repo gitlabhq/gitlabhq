@@ -13,6 +13,11 @@ pre-push:
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: "*.html.haml"
       run: bundle exec haml-lint --config .haml-lint.yml {files}
+    markdownlint:
+      tags: documentation style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.md"
+      run: yarn markdownlint {files}
     scss-lint:
       tags: stylesheet css style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
@@ -24,3 +29,8 @@ pre-push:
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: "*.rb"
       run: bundle exec rubocop --parallel --force-exclusion {files}
+    vale:  # Requires Vale: https://docs.gitlab.com/ee/development/documentation/#install-linters
+      tags: documentation style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.md"
+      run: if command -v vale 2> /dev/null; then vale --config .vale.ini --minAlertLevel error {files}; else echo "Vale not found. Install Vale"; fi

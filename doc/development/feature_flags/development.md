@@ -104,7 +104,7 @@ a YAML definition in `config/feature_flags` or `ee/config/feature_flags`.
 Only feature flags that have a YAML definition file can be used when running the development or testing environments.
 
 ```shell
-$ bin/feature-flag my-feature-flag
+$ bin/feature-flag my_feature_flag
 >> Specify the group introducing the feature flag, like `group::apm`:
 ?> group::memory
 
@@ -116,9 +116,9 @@ https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Btitle%5D=%5BFeature+fl
 
 >> URL of the rollout issue (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-create config/feature_flags/development/test-flag.yml
+create config/feature_flags/development/my_feature_flag.yml
 ---
-name: test-flag
+name: my_feature_flag
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
 group: group::memory

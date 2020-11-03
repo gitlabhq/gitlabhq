@@ -373,7 +373,7 @@ As the final step, you must update Gitaly clients to switch from using local Git
 the Gitaly servers you just configured.
 
 This can be risky because anything that prevents your Gitaly clients from reaching the Gitaly
-servers will cause all Gitaly requests to fail. For example, any sort of network, firewall, or name
+servers causes all Gitaly requests to fail. For example, any sort of network, firewall, or name
 resolution problems.
 
 Additionally, you must [disable Rugged](../nfs.md#improving-nfs-performance-with-gitlab)

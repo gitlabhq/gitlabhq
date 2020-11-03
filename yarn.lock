@@ -4181,10 +4181,10 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-dompurify@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.0.tgz#51d34e76faa38b5d6b4e83a0678530f27fe3965c"
-  integrity sha512-bqFOQ7XRmmozp0VsKdIEe8UwZYxj0yttz7l80GBtBqdVRY48cOpXH2J/CVO7AEkV51qY0EBVXfilec18mdmQ/w==
+dompurify@^2.2.0, dompurify@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.2.tgz#cb8c2b1a2f3c8a0b565127504ae4eedec176a972"
+  integrity sha512-BsGR4nDLaC5CNBnyT5I+d5pOeaoWvgVeg6Gq/aqmKYWMPR07131u60I80BvExLAJ0FQEIBQ1BTicw+C5+jOyrg==
 
 domutils@^1.5.1:
   version "1.6.2"

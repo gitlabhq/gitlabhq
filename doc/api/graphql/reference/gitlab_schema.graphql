@@ -8047,7 +8047,7 @@ type Group {
 
   """
   Represents the code coverage activity for this group. Available only when
-  feature flag `group_coverage_data_report` is enabled
+  feature flag `group_coverage_data_report_graph` is enabled
   """
   codeCoverageActivities(
     """

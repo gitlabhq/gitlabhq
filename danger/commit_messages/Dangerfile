@@ -101,25 +101,27 @@ end
 
 def lint_commits(commits)
   commit_linters = commits.map { |commit| lint_commit(commit) }
-  failed_commit_linters = commit_linters.select { |commit_linter| commit_linter.failed? }
-  warn_or_fail_commits(failed_commit_linters, default_to_fail: !squash_mr?)
-
-  if count_non_fixup_commits(commit_linters) > MAX_COMMITS_COUNT
-    self.warn(format(MAX_COMMITS_COUNT_EXCEEDED_MESSAGE, max_commits_count: MAX_COMMITS_COUNT))
-  end
 
   if squash_mr?
     multi_line_commit_linter = commit_linters.detect { |commit_linter| !commit_linter.merge? && commit_linter.multi_line? }
 
     if multi_line_commit_linter && multi_line_commit_linter.failed?
       warn_or_fail_commits(multi_line_commit_linter)
+      commit_linters.delete(multi_line_commit_linter) # Don't show an error (here) and a warning (below)
     elsif gitlab_danger.ci? # We don't have access to the MR title locally
       title_linter = lint_mr_title(gitlab.mr_json['title'])
       if title_linter.failed?
         warn_or_fail_commits(title_linter)
       end
     end
+  else
+    if count_non_fixup_commits(commit_linters) > MAX_COMMITS_COUNT
+      self.warn(format(MAX_COMMITS_COUNT_EXCEEDED_MESSAGE, max_commits_count: MAX_COMMITS_COUNT))
+    end
   end
+
+  failed_commit_linters = commit_linters.select { |commit_linter| commit_linter.failed? }
+  warn_or_fail_commits(failed_commit_linters, default_to_fail: !squash_mr?)
 end
 
 def warn_or_fail_commits(failed_linters, default_to_fail: true)
