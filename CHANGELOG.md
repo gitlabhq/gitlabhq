@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.4.6 (2020-11-03)
+
+### Fixed (1 change)
+
+- Auto Deploy: fixes issues for fetching other charts from stable repo. !46531
+
+### Other (1 change)
+
+- GitLab-managed apps: Use GitLab's repo as replacement for the Helm stable repo. !44875
+
+
 ## 13.4.5 (2020-11-02)
 
 ### Security (9 changes)
