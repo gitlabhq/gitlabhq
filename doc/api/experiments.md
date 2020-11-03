@@ -8,13 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262725) in GitLab 13.5.
 
-This API is for listing Experiments [experiment use in development of GitLab](../development/experiment_guide/index.md).
+This API is for listing A/B experiments [defined in GitLab](../development/experiment_guide/index.md).
 
-All methods require user be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members) for authorization.
+The user must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members) to access the API.
 
 ## List all experiments
 
-Get a list of all experiments, with its enabled status.
+Get a list of all experiments. Each experiment has an `enabled` status that indicates whether the experiment is enabled globally, or only in specific contexts.
 
 ```plaintext
 GET /experiments

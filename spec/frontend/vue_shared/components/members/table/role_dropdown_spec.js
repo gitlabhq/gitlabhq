@@ -116,11 +116,11 @@ describe('RoleDropdown', () => {
 
         await nextTick();
 
-        expect(findDropdown().attributes('disabled')).toBe('disabled');
+        expect(findDropdown().props('disabled')).toBe(true);
 
         await waitForPromises();
 
-        expect(findDropdown().attributes('disabled')).toBeUndefined();
+        expect(findDropdown().props('disabled')).toBe(false);
       });
     });
   });

@@ -24,9 +24,11 @@ tasks in a secure and cloud-native way. It enables:
 
 Many more features are planned. Please [review our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329).
 
-## Architecture
+## GitLab Agent GitOps workflow
 
-### GitLab Agent GitOps workflow
+The GitLab Agent uses multiple GitLab projects to provide a flexible workflow
+that can suit various needs. This diagram shows these repositories and the main
+actors involved in a deployment:
 
 ```mermaid
 sequenceDiagram
@@ -44,11 +46,6 @@ sequenceDiagram
   end
 ```
 
-Please refer to our [full architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md#high-level-architecture)
-in the Agent project.
-
-## Get started with GitOps and the GitLab Agent
-
 There are several components that work in concert for the Agent to accomplish GitOps deployments:
 
 - A properly-configured Kubernetes cluster.
@@ -57,14 +54,42 @@ There are several components that work in concert for the Agent to accomplish Gi
 - A manifest repository that contains a `manifest.yaml`, which is tracked by the
   Agent and can be auto-generated. Any changes to `manifest.yaml` are applied to the cluster.
 
+These repositories might be the same GitLab project or separate projects.
+
+For more details, please refer to our [full architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md#high-level-architecture) in the Agent project.
+
+## Get started with GitOps and the GitLab Agent
+
 The setup process involves a few steps to enable GitOps deployments:
 
-1. Installing the Agent server.
+1. Installing the Agent server. This must be done one time for every GitLab installation.
 1. Defining a configuration directory.
 1. Creating an Agent record in GitLab.
 1. Generating and copying a Secret token used to connect to the Agent.
 1. Installing the Agent into the cluster.
 1. Creating a `manifest.yaml`.
+
+### Upgrades and version compatibility
+
+As the GitLab Kubernetes Agent is a new product, we are constantly adding new features
+to it. As a result, while shipped features are production ready, its internal API is
+neither stable nor versioned yet. For this reason, GitLab only guarantees compatibility
+between corresponding major.minor (X.Y) versions of GitLab and its cluster side
+component, `agentk`.
+
+Upgrade your agent installations together with GitLab upgrades: if you install
+GitLab version 13.6, use version 13.6.x versions of `agentk`.
+
+The available `agentk` versions can be found in
+[its container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/eyJuYW1lIjoiZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9hZ2VudGsiLCJ0YWdzX3BhdGgiOiIvZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9yZWdpc3RyeS9yZXBvc2l0b3J5LzEyMjMyMDUvdGFncz9mb3JtYXQ9anNvbiIsImlkIjoxMjIzMjA1LCJjbGVhbnVwX3BvbGljeV9zdGFydGVkX2F0IjpudWxsfQ==).
+
+### Upgrades and Version compatibility
+
+As the GitLab Kubernetes Agent is a new product, we are constantly adding new features to it. As a result, while shipped features are production ready, it's internal API is not stable nor versioned yet. For this reason, we only guarantee compatibility between corresponding major.minor versions of GitLab and its cluster side component, `agentk`. Please, upgrade your agent installations together with GitLab upgrades.
+
+Example: having GitLab 13.6 installed, please use version 13.6.x versions of `agentk`.
+
+The available `agentk` versions can be found in [its container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/eyJuYW1lIjoiZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9hZ2VudGsiLCJ0YWdzX3BhdGgiOiIvZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9yZWdpc3RyeS9yZXBvc2l0b3J5LzEyMjMyMDUvdGFncz9mb3JtYXQ9anNvbiIsImlkIjoxMjIzMjA1LCJjbGVhbnVwX3BvbGljeV9zdGFydGVkX2F0IjpudWxsfQ==).
 
 ### Install the Kubernetes Agent Server
 
@@ -77,6 +102,8 @@ documentation](https://docs.gitlab.com/ee/install/README.html).
 NOTE: **Note:**
 GitLab plans to include the KAS on [GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3834).
 
+#### Install with Omnibus
+
 When using the [Omnibus GitLab](https://docs.gitlab.com/omnibus/) package:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -86,6 +113,8 @@ gitlab_kas['enable'] = true
 ```
 
 1. [Reconfigure GitLab](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+#### Install with the Helm chart
 
 When installing or upgrading the GitLab Helm chart, consider the following Helm v3 example.
 If you're using Helm v2, you must modify this example. See our [notes regarding deploy with Helm](https://docs.gitlab.com/charts/installation/deployment.html#deploy-using-helm).

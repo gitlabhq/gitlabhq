@@ -12,7 +12,7 @@ exports[`Code navigation popover component renders popover 1`] = `
    
   <gl-tabs-stub
     contentclass="gl-py-0"
-    nav-class="gl-hidden"
+    navclass="gl-hidden"
     theme="indigo"
   >
     <gl-tab-stub

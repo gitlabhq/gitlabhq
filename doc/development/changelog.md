@@ -56,6 +56,7 @@ the `author` field. GitLab team members **should not**.
 - Any change behind a disabled feature flag **should not** have a changelog entry.
 - Any change behind an enabled feature flag **should** have a changelog entry.
 - Any change that adds new usage data metrics and changes that needs to be documented in Product Analytics [Event Dictionary](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary) **should** have a changelog entry.
+- A change that adds snowplow events **should** have a changelog entry -
 - A change that [removes a feature flag](feature_flags/development.md) **should** have a changelog entry -
   only if the feature flag did not default to true already.
 - A fix for a regression introduced and then fixed in the same release (i.e.,

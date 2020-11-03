@@ -999,3 +999,19 @@ project = Project.find_by_full_path('<group/project>')
 
 Geo::RepositorySyncService.new(project).execute
 ```
+
+### Generate usage ping
+
+#### Generate or get the cached usage ping
+
+```ruby
+Gitlab::UsageData.to_json
+```
+
+#### Generate a fresh new usage ping
+
+This will also refresh the cached usage ping displayed in the admin area
+
+```ruby
+Gitlab::UsageData.to_json(force_refresh: true)
+```

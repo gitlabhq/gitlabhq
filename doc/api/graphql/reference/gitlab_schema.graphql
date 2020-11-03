@@ -2779,7 +2779,7 @@ type CodeCoverageSummary {
   """
   Latest date when the code coverage was created for the project.
   """
-  lastUpdatedAt: Time
+  lastUpdatedOn: Date
 }
 
 type Commit {

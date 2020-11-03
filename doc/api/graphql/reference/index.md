@@ -437,7 +437,7 @@ Represents the code coverage summary for a project.
 | ----- | ---- | ----------- |
 | `averageCoverage` | Float | Average percentage of the different code coverage results available for the project. |
 | `coverageCount` | Int | Number of different code coverage results available. |
-| `lastUpdatedAt` | Time | Latest date when the code coverage was created for the project. |
+| `lastUpdatedOn` | Date | Latest date when the code coverage was created for the project. |
 
 ### Commit
 

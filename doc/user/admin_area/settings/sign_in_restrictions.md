@@ -50,8 +50,21 @@ All users that are not logged-in will be redirected to the page represented by t
 All users will be redirect to the page represented by the configured "After sign out path"
 after sign out if value is not empty.
 
-If a "Sign in text" in Markdown format is provided, then every user will be presented with
-this message after logging-in.
+In the Sign-in restrictions section, scroll to the "Sign-in text" text box. You can add a
+custom message for your users in Markdown format. 
+
+For example, if you include the following information in the noted text box:
+
+```markdown
+# Custom sign-in text
+
+To access this text box, navigate to Admin Area > Settings > General, and expand the "Sign-in restrictions" section.
+```
+
+Your users will see the "Custom sign-in text" when they navigate to the sign-in screen for your
+GitLab instance:
+
+![Sign-in page](img/custom_sign_in_page_v13_6.png)
 
 <!-- ## Troubleshooting
 

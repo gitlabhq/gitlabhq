@@ -91,6 +91,8 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           >
             <!---->
              
+            <!---->
+             
             <span
               class="gl-new-dropdown-button-text"
             >
@@ -201,6 +203,8 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
             type="button"
           >
+            <!---->
+             
             <!---->
              
             <span

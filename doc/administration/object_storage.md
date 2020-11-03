@@ -61,18 +61,17 @@ must be enabled, only the following providers can be used:
 - [Google Cloud Storage](#google-cloud-storage-gcs)
 - [Azure Blob storage](#azure-blob-storage)
 
-Background upload is not supported with the consolidated object storage
-configuration. We recommend enabling direct upload mode because it does
-not require a shared folder, and [this setting may become the
+Background upload isn't supported with the consolidated object storage
+configuration. We recommend enabling direct upload mode because it doesn't
+require a shared folder, and [this setting may become the
 default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331).
 
-NOTE: **Note:**
-Consolidated object storage configuration cannot be used for
-backups or Mattermost. See [the full table for a complete list](#storage-specific-configuration).
+Consolidated object storage configuration can't be used for backups or
+Mattermost. See the [full table for a complete list](#storage-specific-configuration).
 
-NOTE: **Note:**
-Enabling consolidated object storage will enable object storage for all object types.
-If you wish to use local storage for specific object types, you can [selectively disable object storages](#selectively-disabling-object-storage).
+Enabling consolidated object storage enables object storage for all object
+types. If you want to use local storage for specific object types, you can
+[selectively disable object storages](#selectively-disabling-object-storage).
 
 Most types of objects, such as CI artifacts, LFS files, upload
 attachments, and so on can be saved in object storage by specifying a single
@@ -347,10 +346,9 @@ gitlab_rails['object_store']['connection'] = {
 
 ###### Azure Workhorse settings (source installs only)
 
-NOTE: **Note:**
-For source installations, Workhorse needs to be configured with the
-Azure credentials as well. This is not needed in Omnibus installs because
-the Workhorse settings are populated from the settings above.
+For source installations, Workhorse also needs to be configured with Azure
+credentials. This isn't needed in Omnibus installs, because the Workhorse
+settings are populated from the previous settings.
 
 1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
 
@@ -370,14 +368,14 @@ GitLab Rails and Workhorse.
 
 #### OpenStack-compatible connection settings
 
-NOTE: **Note:**
-This is not compatible with the consolidated object storage form.
-OpenStack Swift is only supported with the storage-specific form. See the
-[S3 settings](#s3-compatible-connection-settings) if you want to use the consolidated form.
+Although OpenStack Swift provides S3 compatibility, some users may want to use
+the [Swift API](https://docs.openstack.org/swift/latest/api/object_api_v1_overview.html).
 
-While OpenStack Swift provides S3 compatibility, some users may want to use the
-[Swift API](https://docs.openstack.org/swift/latest/api/object_api_v1_overview.html).
-Here are the valid connection settings below for the Swift API, provided by
+This isn't compatible with the consolidated object storage form. OpenStack Swift
+is supported only with the storage-specific form. If you want to use the
+consolidated form, see the [S3 settings](#s3-compatible-connection-settings).
+
+Here are the valid connection settings for the Swift API, provided by
 [fog-openstack](https://github.com/fog/fog-openstack):
 
 | Setting | Description | Default |
@@ -392,12 +390,11 @@ Here are the valid connection settings below for the Swift API, provided by
 
 #### Rackspace Cloud Files
 
-NOTE: **Note:**
-This is not compatible with the consolidated object
-storage form. Rackspace Cloud is only supported with the storage-specific form.
+The following table describes the valid connection parameters for
+Rackspace Cloud, provided by [fog-rackspace](https://github.com/fog/fog-rackspace/).
 
-Here are the valid connection parameters for Rackspace Cloud, provided by
-[fog-rackspace](https://github.com/fog/fog-rackspace/):
+This isn't compatible with the consolidated object storage form.
+Rackspace Cloud is supported only with the storage-specific form.
 
 | Setting | Description | example |
 |---------|-------------|---------|
@@ -407,13 +404,13 @@ Here are the valid connection parameters for Rackspace Cloud, provided by
 | `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
 | `rackspace_temp_url_key` | The private key you have set in the Rackspace API for [temporary URLs](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl). | `ABC123DEF456ABC123DEF456ABC123DE` |
 
-NOTE: **Note:**
-Regardless of whether the container has public access enabled or disabled, Fog will
-use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
-instantiating storage with a `temp-url-key`, ensure that you have set the key properly
-on the Rackspace API and in `gitlab.rb`. You can verify the value of the key Rackspace
-has set by sending a GET request with token header to the service access endpoint URL
-and comparing the output of the returned headers.
+Regardless of whether the container has public access enabled or disabled, Fog
+uses the TempURL method to grant access to LFS objects. If you see error
+messages in logs that refer to instantiating storage with a `temp-url-key`,
+be sure you have set the key properly both in the Rackspace API and in
+`gitlab.rb`. You can verify the value of the key Rackspace has set by sending a
+GET request with token header to the service access endpoint URL and comparing
+the output of the returned headers.
 
 ### Object-specific configuration
 
@@ -521,15 +518,16 @@ gitlab_rails['uploads_object_store_remote_directory'] = 'uploads'
 gitlab_rails['uploads_object_store_connection'] = { 'provider' => 'AWS', 'aws_access_key_id' => 'access_key', 'aws_secret_access_key' => 'secret' }
 ```
 
-While this provides flexibility in that it makes it possible for GitLab
+Although this provides flexibility in that it makes it possible for GitLab
 to store objects across different cloud providers, it also creates
 additional complexity and unnecessary redundancy. Since both GitLab
 Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 
-NOTE: **Note:**
-The consolidated object storage configuration is **only** used if all
-lines from the original form is omitted. To move to the consolidated form, remove the original configuration (for example, `artifacts_object_store_enabled`, `uploads_object_store_connection`, and so on.)
+The consolidated object storage configuration is used _only_ if all lines from
+the original form is omitted. To move to the consolidated form, remove the
+original configuration (for example, `artifacts_object_store_enabled`, or
+`uploads_object_store_connection`)
 
 ## Storage-specific configuration
 

@@ -7580,14 +7580,14 @@
               "deprecationReason": null
             },
             {
-              "name": "lastUpdatedAt",
+              "name": "lastUpdatedOn",
               "description": "Latest date when the code coverage was created for the project.",
               "args": [
 
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
