@@ -1,10 +1,10 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
+import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import DesignNavigation from './design_navigation.vue';
 import DeleteButton from '../delete_button.vue';
-import permissionsQuery from '../../graphql/queries/design_permissions.query.graphql';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 
 export default {

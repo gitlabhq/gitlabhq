@@ -13,10 +13,20 @@ module Resolvers
                     required: true,
                     description: 'The type of measurement/statistics to retrieve'
 
-          def resolve(identifier:)
+          argument :recorded_after, Types::TimeType,
+                    required: false,
+                    description: 'Measurement recorded after this date'
+
+          argument :recorded_before, Types::TimeType,
+                    required: false,
+                    description: 'Measurement recorded before this date'
+
+          def resolve(identifier:, recorded_before: nil, recorded_after: nil)
             authorize!
 
             ::Analytics::InstanceStatistics::Measurement
+              .recorded_after(recorded_after)
+              .recorded_before(recorded_before)
               .with_identifier(identifier)
               .order_by_latest
           end

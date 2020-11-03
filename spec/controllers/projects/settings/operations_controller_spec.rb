@@ -166,23 +166,22 @@ RSpec.describe Projects::Settings::OperationsController do
       context 'updating each incident management setting' do
         let(:new_incident_management_settings) { {} }
 
-        shared_examples 'a gitlab tracking event' do |params, event_key|
-          it "creates a gitlab tracking event #{event_key}" do
+        shared_examples 'a gitlab tracking event' do |params, event_key, **args|
+          it "creates a gitlab tracking event #{event_key}", :snowplow do
             new_incident_management_settings = params
-
-            expect(Gitlab::Tracking).to receive(:event)
-              .with('IncidentManagement::Settings', event_key, any_args)
 
             patch :update, params: project_params(project, incident_management_setting_attributes: new_incident_management_settings)
 
             project.reload
+
+            expect_snowplow_event(category: 'IncidentManagement::Settings', action: event_key, **args)
           end
         end
 
         it_behaves_like 'a gitlab tracking event', { create_issue: '1' }, 'enabled_issue_auto_creation_on_alerts'
         it_behaves_like 'a gitlab tracking event', { create_issue: '0' }, 'disabled_issue_auto_creation_on_alerts'
-        it_behaves_like 'a gitlab tracking event', { issue_template_key: 'template' }, 'enabled_issue_template_on_alerts'
-        it_behaves_like 'a gitlab tracking event', { issue_template_key: nil }, 'disabled_issue_template_on_alerts'
+        it_behaves_like 'a gitlab tracking event', { issue_template_key: 'template' }, 'enabled_issue_template_on_alerts', label: "Template name", property: "template"
+        it_behaves_like 'a gitlab tracking event', { issue_template_key: nil }, 'disabled_issue_template_on_alerts', label: "Template name", property: ""
         it_behaves_like 'a gitlab tracking event', { send_email: '1' }, 'enabled_sending_emails'
         it_behaves_like 'a gitlab tracking event', { send_email: '0' }, 'disabled_sending_emails'
         it_behaves_like 'a gitlab tracking event', { pagerduty_active: '1' }, 'enabled_pagerduty_webhook'

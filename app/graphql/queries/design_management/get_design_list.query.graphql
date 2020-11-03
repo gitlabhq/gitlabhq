@@ -1,0 +1,40 @@
+query getDesignList($fullPath: ID!, $iid: String!, $atVersion: ID) {
+  project(fullPath: $fullPath) {
+    __typename
+    id
+    issue(iid: $iid) {
+      __typename
+      designCollection {
+        __typename
+        copyState
+        designs(atVersion: $atVersion) {
+          __typename
+          nodes {
+            __typename
+            id
+            event
+            filename
+            notesCount
+            image
+            imageV432x230
+            currentUserTodos(state: pending) {
+              __typename
+              nodes {
+                __typename
+                id
+              }
+            }
+          }
+        }
+        versions {
+          __typename
+          nodes {
+            __typename
+            id
+            sha
+          }
+        }
+      }
+    }
+  }
+}

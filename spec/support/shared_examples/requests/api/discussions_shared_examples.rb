@@ -128,10 +128,10 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
         stub_feature_flags(notes_create_service_tracking: false)
       end
 
-      it 'does not track any events' do
-        expect(Gitlab::Tracking).not_to receive(:event)
-
+      it 'does not track any events', :snowplow do
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions"), params: { body: 'hi!' }
+
+        expect_no_snowplow_event
       end
     end
 

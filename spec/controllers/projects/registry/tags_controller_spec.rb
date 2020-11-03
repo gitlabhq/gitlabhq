@@ -39,10 +39,10 @@ RSpec.describe Projects::Registry::TagsController do
         expect(response).to include_pagination_headers
       end
 
-      it 'tracks the event' do
-        expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_tags')
-
+      it 'tracks the event', :snowplow do
         get_tags
+
+        expect_snowplow_event(category: anything, action: 'list_tags')
       end
     end
 
@@ -148,11 +148,11 @@ RSpec.describe Projects::Registry::TagsController do
           bulk_destroy_tags(tags)
         end
 
-        it 'tracks the event' do
+        it 'tracks the event', :snowplow do
           expect_delete_tags(tags)
-          expect(Gitlab::Tracking).to receive(:event).with(anything, 'delete_tag_bulk')
-
           bulk_destroy_tags(tags)
+
+          expect_snowplow_event(category: anything, action: 'delete_tag_bulk')
         end
       end
     end

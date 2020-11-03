@@ -176,10 +176,10 @@ RSpec.describe API::Helpers do
   end
 
   describe '#track_event' do
-    it "creates a gitlab tracking event" do
-      expect(Gitlab::Tracking).to receive(:event).with('foo', 'my_event')
-
+    it "creates a gitlab tracking event", :snowplow do
       subject.track_event('my_event', category: 'foo')
+
+      expect_snowplow_event(category: 'foo', action: 'my_event')
     end
 
     it "logs an exception" do

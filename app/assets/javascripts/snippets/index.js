@@ -24,17 +24,14 @@ export default function appFactory(el, Component) {
     ...restDataset
   } = el.dataset;
 
-  apolloProvider.clients.defaultClient.cache.writeData({
-    data: {
+  return new Vue({
+    el,
+    apolloProvider,
+    provide: {
       visibilityLevels: JSON.parse(visibilityLevels),
       selectedLevel: SNIPPET_LEVELS_MAP[selectedLevel] ?? SNIPPET_VISIBILITY_PRIVATE,
       multipleLevelsRestricted: 'multipleLevelsRestricted' in el.dataset,
     },
-  });
-
-  return new Vue({
-    el,
-    apolloProvider,
     render(createElement) {
       return createElement(Component, {
         props: {

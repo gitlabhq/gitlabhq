@@ -18,5 +18,10 @@ export const IssuableType = {
   MergeRequest: 'merge_request',
 };
 
+export const IssueStateEvent = {
+  Close: 'CLOSE',
+  Reopen: 'REOPEN',
+};
+
 export const STATUS_PAGE_PUBLISHED = __('Published on status page');
 export const JOIN_ZOOM_MEETING = __('Join Zoom meeting');

@@ -21,9 +21,9 @@ export const getSnippetMixin = {
       },
       result(res) {
         this.blobs = res.data.snippets.nodes[0]?.blobs || blobsDefault;
-        if (this.onSnippetFetch) {
-          this.onSnippetFetch(res);
-        }
+      },
+      skip() {
+        return this.newSnippet;
       },
     },
   },
@@ -36,7 +36,7 @@ export const getSnippetMixin = {
   data() {
     return {
       snippet: {},
-      newSnippet: false,
+      newSnippet: !this.snippetGid,
       blobs: blobsDefault,
     };
   },

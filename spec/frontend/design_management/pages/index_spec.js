@@ -5,6 +5,8 @@ import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import Index from '~/design_management/pages/index.vue';
 import uploadDesignQuery from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
@@ -28,8 +30,6 @@ import {
   reorderedDesigns,
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
-import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
-import permissionsQuery from '~/design_management/graphql/queries/design_permissions.query.graphql';
 import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
 import { DESIGN_TRACKING_PAGE_NAME } from '~/design_management/utils/tracking';
 

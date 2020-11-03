@@ -2009,12 +2009,16 @@ Information about pagination in a connection..
 | `finishedAt` | Time | Timestamp of the pipeline's completion |
 | `id` | ID! | ID of the pipeline |
 | `iid` | String! | Internal ID of the pipeline |
+| `path` | String | Relative path to the pipeline's page |
+| `project` | Project | Project the pipeline belongs to |
 | `retryable` | Boolean! | Specifies if a pipeline can be retried |
 | `securityReportSummary` | SecurityReportSummary | Vulnerability and scanned resource counts for each security scanner of the pipeline |
 | `sha` | String! | SHA of the pipeline's commit |
+| `sourceJob` | CiJob | Job where pipeline was triggered from |
 | `startedAt` | Time | Timestamp when the pipeline was started |
 | `status` | PipelineStatusEnum! | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, SCHEDULED) |
 | `updatedAt` | Time! | Timestamp of the pipeline's last activity |
+| `upstream` | Pipeline | Pipeline that triggered the pipeline |
 | `user` | User | Pipeline user |
 | `userPermissions` | PipelinePermissions! | Permissions for the current user on the resource |
 

@@ -13,6 +13,8 @@ RSpec.describe "User views incident" do
   end
 
   before do
+    stub_feature_flags(vue_issue_header: false)
+
     sign_in(user)
 
     visit(project_issues_incident_path(project, incident))

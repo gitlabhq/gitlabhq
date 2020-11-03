@@ -13798,6 +13798,31 @@ type Pipeline {
   detailedStatus: DetailedStatus!
 
   """
+  Pipelines this pipeline will trigger
+  """
+  downstream(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PipelineConnection
+
+  """
   Duration of the pipeline in seconds
   """
   duration: Int
@@ -13848,6 +13873,16 @@ type Pipeline {
   ): CiJobConnection
 
   """
+  Relative path to the pipeline's page
+  """
+  path: String
+
+  """
+  Project the pipeline belongs to
+  """
+  project: Project
+
+  """
   Specifies if a pipeline can be retried
   """
   retryable: Boolean!
@@ -13861,6 +13896,11 @@ type Pipeline {
   SHA of the pipeline's commit
   """
   sha: String!
+
+  """
+  Job where pipeline was triggered from
+  """
+  sourceJob: CiJob
 
   """
   Stages of the pipeline
@@ -13902,6 +13942,11 @@ type Pipeline {
   Timestamp of the pipeline's last activity
   """
   updatedAt: Time!
+
+  """
+  Pipeline that triggered the pipeline
+  """
+  upstream: Pipeline
 
   """
   Pipeline user
@@ -16452,6 +16497,16 @@ type Query {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Measurement recorded after this date
+    """
+    recordedAfter: Time
+
+    """
+    Measurement recorded before this date
+    """
+    recordedBefore: Time
   ): InstanceStatisticsMeasurementConnection
 
   """

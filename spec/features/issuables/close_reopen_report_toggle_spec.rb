@@ -7,6 +7,10 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
 
   let(:user) { create(:user) }
 
+  before do
+    stub_feature_flags(vue_issue_header: false)
+  end
+
   shared_examples 'an issuable close/reopen/report toggle' do
     let(:container) { find('.issuable-close-dropdown') }
     let(:human_model_name) { issuable.model_name.human.downcase }

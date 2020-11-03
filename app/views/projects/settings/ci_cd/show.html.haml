@@ -75,6 +75,8 @@
     .settings-content
       = render 'projects/registry/settings/index'
 
+= render_if_exists 'projects/settings/ci_cd/auto_rollback', expanded: expanded
+
 - if can?(current_user, :create_freeze_period, @project)
   %section.settings.no-animate#js-deploy-freeze-settings{ class: ('expanded' if expanded) }
     .settings-header

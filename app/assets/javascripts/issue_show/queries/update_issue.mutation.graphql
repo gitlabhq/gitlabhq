@@ -1,0 +1,5 @@
+mutation updateIssue($input: UpdateIssueInput!) {
+  updateIssue(input: $input) {
+    errors
+  }
+}

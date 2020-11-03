@@ -32,4 +32,10 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
     expect(findEditor().props('editorOptions')).toEqual({ readOnly: true });
     expect(findEditor().props('fileName')).toBe('*.yml');
   });
+
+  it('bubbles up editor-ready event', () => {
+    findEditor().vm.$emit('editor-ready');
+
+    expect(wrapper.emitted('editor-ready')).toHaveLength(1);
+  });
 });

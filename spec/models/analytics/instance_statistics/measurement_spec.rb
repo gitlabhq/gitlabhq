@@ -45,6 +45,34 @@ RSpec.describe Analytics::InstanceStatistics::Measurement, type: :model do
 
       it { is_expected.to match_array([measurement_1, measurement_2]) }
     end
+
+    describe '.recorded_after' do
+      subject { described_class.recorded_after(8.days.ago) }
+
+      it { is_expected.to match_array([measurement_2, measurement_3]) }
+
+      context 'when nil is given' do
+        subject { described_class.recorded_after(nil) }
+
+        it 'does not apply filtering' do
+          expect(subject).to match_array([measurement_1, measurement_2, measurement_3])
+        end
+      end
+    end
+
+    describe '.recorded_before' do
+      subject { described_class.recorded_before(4.days.ago) }
+
+      it { is_expected.to match_array([measurement_1, measurement_3]) }
+
+      context 'when nil is given' do
+        subject { described_class.recorded_after(nil) }
+
+        it 'does not apply filtering' do
+          expect(subject).to match_array([measurement_1, measurement_2, measurement_3])
+        end
+      end
+    end
   end
 
   describe '#measurement_identifier_values' do

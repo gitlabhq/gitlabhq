@@ -56,12 +56,24 @@ module Types
             description: 'Specifies if a pipeline can be canceled',
             method: :cancelable?,
             null: false
-
       field :jobs,
             ::Types::Ci::JobType.connection_type,
             null: true,
             description: 'Jobs belonging to the pipeline',
             method: :statuses
+      field :source_job, Types::Ci::JobType, null: true,
+            description: 'Job where pipeline was triggered from'
+      field :downstream, Types::Ci::PipelineType.connection_type, null: true,
+            description: 'Pipelines this pipeline will trigger',
+            method: :triggered_pipelines_with_preloads
+      field :upstream, Types::Ci::PipelineType, null: true,
+            description: 'Pipeline that triggered the pipeline',
+            method: :triggered_by_pipeline
+      field :path, GraphQL::STRING_TYPE, null: true,
+            description: "Relative path to the pipeline's page",
+            resolve: -> (obj, _args, _ctx) { ::Gitlab::Routing.url_helpers.project_pipeline_path(obj.project, obj) }
+      field :project, Types::ProjectType, null: true,
+            description: 'Project the pipeline belongs to'
     end
   end
 end

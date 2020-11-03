@@ -16,12 +16,7 @@ import { performanceMarkAndMeasure } from '~/performance_utils';
 import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
 import { getSnippetMixin } from '../mixins/snippets';
-import {
-  SNIPPET_CREATE_MUTATION_ERROR,
-  SNIPPET_UPDATE_MUTATION_ERROR,
-  SNIPPET_VISIBILITY_PRIVATE,
-} from '../constants';
-import defaultVisibilityQuery from '../queries/snippet_visibility.query.graphql';
+import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
 import { markBlobPerformance } from '../utils/blob';
 
 import SnippetBlobActionsEdit from './snippet_blob_actions_edit.vue';
@@ -41,15 +36,7 @@ export default {
     GlLoadingIcon,
   },
   mixins: [getSnippetMixin],
-  apollo: {
-    defaultVisibility: {
-      query: defaultVisibilityQuery,
-      manual: true,
-      result({ data: { selectedLevel } }) {
-        this.selectedLevelDefault = selectedLevel;
-      },
-    },
-  },
+  inject: ['selectedLevel'],
   props: {
     markdownPreviewPath: {
       type: String,
@@ -73,9 +60,12 @@ export default {
   data() {
     return {
       isUpdating: false,
-      newSnippet: false,
       actions: [],
-      selectedLevelDefault: SNIPPET_VISIBILITY_PRIVATE,
+      snippet: {
+        title: '',
+        description: '',
+        visibilityLevel: this.selectedLevel,
+      },
     };
   },
   computed: {
@@ -112,13 +102,6 @@ export default {
       }
       return this.snippet.webUrl;
     },
-    newSnippetSchema() {
-      return {
-        title: '',
-        description: '',
-        visibilityLevel: this.selectedLevelDefault,
-      };
-    },
   },
   beforeCreate() {
     performanceMarkAndMeasure({ mark: SNIPPET_MARK_EDIT_APP_START });
@@ -144,20 +127,6 @@ export default {
         : SNIPPET_UPDATE_MUTATION_ERROR;
       Flash(sprintf(defaultErrorMsg, { err }));
       this.isUpdating = false;
-    },
-    onNewSnippetFetched() {
-      this.newSnippet = true;
-      this.snippet = this.newSnippetSchema;
-    },
-    onExistingSnippetFetched() {
-      this.newSnippet = false;
-    },
-    onSnippetFetch(snippetRes) {
-      if (snippetRes.data.snippets.nodes.length === 0) {
-        this.onNewSnippetFetched();
-      } else {
-        this.onExistingSnippetFetched();
-      }
     },
     getAttachedFiles() {
       const fileInputs = Array.from(this.$el.querySelectorAll('[name="files[]"]'));
@@ -209,7 +178,7 @@ export default {
 </script>
 <template>
   <form
-    class="snippet-form js-requires-input js-quick-submit common-note-form"
+    class="snippet-form js-quick-submit common-note-form"
     :data-snippet-type="isProjectSnippet ? 'project' : 'personal'"
     data-testid="snippet-edit-form"
     @submit.prevent="handleFormSubmit"

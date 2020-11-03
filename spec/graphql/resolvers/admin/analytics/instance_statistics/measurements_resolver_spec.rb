@@ -14,7 +14,9 @@ RSpec.describe Resolvers::Admin::Analytics::InstanceStatistics::MeasurementsReso
     let_it_be(:project_measurement_new) { create(:instance_statistics_measurement, :project_count, recorded_at: 2.days.ago) }
     let_it_be(:project_measurement_old) { create(:instance_statistics_measurement, :project_count, recorded_at: 10.days.ago) }
 
-    subject { resolve_measurements({ identifier: 'projects' }, { current_user: current_user }) }
+    let(:arguments) { { identifier: 'projects' } }
+
+    subject { resolve_measurements(arguments, { current_user: current_user }) }
 
     context 'when requesting project count measurements' do
       context 'as an admin user' do
@@ -38,6 +40,24 @@ RSpec.describe Resolvers::Admin::Analytics::InstanceStatistics::MeasurementsReso
 
         it 'raises ResourceNotAvailable error' do
           expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+
+      context 'when filtering by recorded_after and recorded_before' do
+        before do
+          arguments[:recorded_after] = 4.days.ago
+          arguments[:recorded_before] = 1.day.ago
+        end
+
+        it { is_expected.to match_array([project_measurement_new]) }
+
+        context 'when "incorrect" values are passed' do
+          before do
+            arguments[:recorded_after] = 1.day.ago
+            arguments[:recorded_before] = 4.days.ago
+          end
+
+          it { is_expected.to be_empty }
         end
       end
     end

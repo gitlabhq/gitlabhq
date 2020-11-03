@@ -1,6 +1,8 @@
 <script>
 import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { getFilename } from '~/lib/utils/file_upload';
@@ -12,8 +14,6 @@ import DesignVersionDropdown from '../components/upload/design_version_dropdown.
 import DesignDropzone from '../components/upload/design_dropzone.vue';
 import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
 import moveDesignMutation from '../graphql/mutations/move_design.mutation.graphql';
-import permissionsQuery from '../graphql/queries/design_permissions.query.graphql';
-import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
 import allDesignsMixin from '../mixins/all_designs';
 import {
   UPLOAD_DESIGN_ERROR,

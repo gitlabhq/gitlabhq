@@ -17,7 +17,7 @@ module QA
           members.add_member(user.username)
         end
 
-        expect(page).to have_content(/@#{user.username}(\n| )?Given access/)
+        expect(page).to have_content(/@#{user.username}( Is using seat)?(\n| )?Given access/)
       end
     end
   end

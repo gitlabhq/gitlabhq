@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
-import defaultVisibilityQuery from '../queries/snippet_visibility.query.graphql';
 import { defaultSnippetVisibilityLevels } from '../utils/blob';
 import { SNIPPET_LEVELS_RESTRICTED, SNIPPET_LEVELS_DISABLED } from '~/snippets/constants';
 
@@ -12,16 +11,7 @@ export default {
     GlFormRadioGroup,
     GlLink,
   },
-  apollo: {
-    defaultVisibility: {
-      query: defaultVisibilityQuery,
-      manual: true,
-      result({ data: { visibilityLevels, multipleLevelsRestricted } }) {
-        this.visibilityLevels = defaultSnippetVisibilityLevels(visibilityLevels);
-        this.multipleLevelsRestricted = multipleLevelsRestricted;
-      },
-    },
-  },
+  inject: ['visibilityLevels', 'multipleLevelsRestricted'],
   props: {
     helpLink: {
       type: String,
@@ -38,11 +28,10 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      visibilityLevels: [],
-      multipleLevelsRestricted: false,
-    };
+  computed: {
+    defaultVisibilityLevels() {
+      return defaultSnippetVisibilityLevels(this.visibilityLevels);
+    },
   },
   SNIPPET_LEVELS_DISABLED,
   SNIPPET_LEVELS_RESTRICTED,
@@ -59,7 +48,7 @@ export default {
     <gl-form-group id="visibility-level-setting" class="gl-mb-0">
       <gl-form-radio-group :checked="value" stacked v-bind="$attrs" v-on="$listeners">
         <gl-form-radio
-          v-for="option in visibilityLevels"
+          v-for="option in defaultVisibilityLevels"
           :key="option.value"
           :value="option.value"
           class="mb-3"
@@ -78,7 +67,9 @@ export default {
     </gl-form-group>
 
     <div class="text-muted" data-testid="restricted-levels-info">
-      <template v-if="!visibilityLevels.length">{{ $options.SNIPPET_LEVELS_DISABLED }}</template>
+      <template v-if="!defaultVisibilityLevels.length">{{
+        $options.SNIPPET_LEVELS_DISABLED
+      }}</template>
       <template v-else-if="multipleLevelsRestricted">{{
         $options.SNIPPET_LEVELS_RESTRICTED
       }}</template>

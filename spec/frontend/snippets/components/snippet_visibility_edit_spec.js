@@ -1,7 +1,6 @@
 import { GlFormRadio, GlIcon, GlFormRadioGroup, GlLink } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
-import { defaultSnippetVisibilityLevels } from '~/snippets/utils/blob';
 import {
   SNIPPET_VISIBILITY,
   SNIPPET_VISIBILITY_PRIVATE,
@@ -15,36 +14,25 @@ describe('Snippet Visibility Edit component', () => {
   let wrapper;
   const defaultHelpLink = '/foo/bar';
   const defaultVisibilityLevel = 'private';
-  const defaultVisibility = defaultSnippetVisibilityLevels([0, 10, 20]);
 
   function createComponent({
     propsData = {},
-    visibilityLevels = defaultVisibility,
+    visibilityLevels = [0, 10, 20],
     multipleLevelsRestricted = false,
     deep = false,
   } = {}) {
     const method = deep ? mount : shallowMount;
-    const $apollo = {
-      queries: {
-        defaultVisibility: {
-          loading: false,
-        },
-      },
-    };
 
     wrapper = method.call(this, SnippetVisibilityEdit, {
-      mock: { $apollo },
       propsData: {
         helpLink: defaultHelpLink,
         isProjectSnippet: false,
         value: defaultVisibilityLevel,
         ...propsData,
       },
-      data() {
-        return {
-          visibilityLevels,
-          multipleLevelsRestricted,
-        };
+      provide: {
+        visibilityLevels,
+        multipleLevelsRestricted,
       },
     });
   }
@@ -108,7 +96,6 @@ describe('Snippet Visibility Edit component', () => {
 
       it.each`
         levels         | resultOptions
-        ${undefined}   | ${[]}
         ${''}          | ${[]}
         ${[]}          | ${[]}
         ${[0]}         | ${[RESULTING_OPTIONS[0]]}
@@ -117,7 +104,7 @@ describe('Snippet Visibility Edit component', () => {
         ${[0, 20]}     | ${[RESULTING_OPTIONS[0], RESULTING_OPTIONS[20]]}
         ${[10, 20]}    | ${[RESULTING_OPTIONS[10], RESULTING_OPTIONS[20]]}
       `('renders correct visibility options for $levels', ({ levels, resultOptions }) => {
-        createComponent({ visibilityLevels: defaultSnippetVisibilityLevels(levels), deep: true });
+        createComponent({ visibilityLevels: levels, deep: true });
         expect(findRadiosData()).toEqual(resultOptions);
       });
 
@@ -132,7 +119,7 @@ describe('Snippet Visibility Edit component', () => {
         'renders correct information about restricted visibility levels for $levels',
         ({ levels, levelsRestricted, resultText }) => {
           createComponent({
-            visibilityLevels: defaultSnippetVisibilityLevels(levels),
+            visibilityLevels: levels,
             multipleLevelsRestricted: levelsRestricted,
           });
           expect(findRestrictedInfo().text()).toBe(resultText);

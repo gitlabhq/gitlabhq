@@ -15,7 +15,9 @@ module Resolvers
 
     def preloads
       {
-        jobs: [:statuses]
+        jobs: [:statuses],
+        upstream: [:triggered_by_pipeline],
+        downstream: [:triggered_pipelines]
       }
     end
   end
