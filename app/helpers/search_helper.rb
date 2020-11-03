@@ -92,11 +92,27 @@ module SearchHelper
     end
   end
 
-  def search_entries_empty_message(scope, term)
-    (s_("SearchResults|We couldn't find any %{scope} matching %{term}") % {
+  def search_entries_empty_message(scope, term, group, project)
+    options = {
       scope: search_entries_scope_label(scope, 0),
-      term: "<code>#{h(term)}</code>"
-    }).html_safe
+      term: "<code>#{h(term)}</code>".html_safe
+    }
+
+    # We check project first because we have 3 possible combinations here:
+    # - group && project
+    # - group
+    # - group: nil, project: nil
+    if project
+      html_escape(_("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
+        project: link_to(project.full_name, project_path(project), target: '_blank', rel: 'noopener noreferrer').html_safe
+      )
+    elsif group
+      html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
+        group: link_to(group.full_name, group_path(group), target: '_blank', rel: 'noopener noreferrer').html_safe
+      )
+    else
+      html_escape(_("We couldn't find any %{scope} matching %{term}")) % options
+    end
   end
 
   def repository_ref(project)

@@ -4,4 +4,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45130
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267129
 type: development
 group: group::compliance
-default_enabled: false
+default_enabled: true

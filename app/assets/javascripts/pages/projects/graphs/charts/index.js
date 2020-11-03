@@ -5,6 +5,8 @@ import { __ } from '~/locale';
 import CodeCoverage from '../components/code_coverage.vue';
 import SeriesDataMixin from './series_data_mixin';
 
+const seriesDataToBarData = raw => Object.entries(raw).map(([name, data]) => ({ name, data }));
+
 document.addEventListener('DOMContentLoaded', () => {
   waitForCSSLoaded(() => {
     const languagesContainer = document.getElementById('js-languages-chart');
@@ -41,13 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       computed: {
         seriesData() {
-          return { full: this.chartData.map(d => [d.label, d.value]) };
+          return [{ name: 'full', data: this.chartData.map(d => [d.label, d.value]) }];
         },
       },
       render(h) {
         return h(GlColumnChart, {
           props: {
-            data: this.seriesData,
+            bars: this.seriesData,
             xAxisTitle: __('Used programming language'),
             yAxisTitle: __('Percentage'),
             xAxisType: 'category',
@@ -86,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render(h) {
         return h(GlColumnChart, {
           props: {
-            data: this.seriesData,
+            bars: seriesDataToBarData(this.seriesData),
             xAxisTitle: __('Day of month'),
             yAxisTitle: __('No. of commits'),
             xAxisType: 'category',
@@ -113,13 +115,13 @@ document.addEventListener('DOMContentLoaded', () => {
             acc.push([key, weekDays[key]]);
             return acc;
           }, []);
-          return { full: data };
+          return [{ name: 'full', data }];
         },
       },
       render(h) {
         return h(GlColumnChart, {
           props: {
-            data: this.seriesData,
+            bars: this.seriesData,
             xAxisTitle: __('Weekday'),
             yAxisTitle: __('No. of commits'),
             xAxisType: 'category',
@@ -143,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render(h) {
         return h(GlColumnChart, {
           props: {
-            data: this.seriesData,
+            bars: seriesDataToBarData(this.seriesData),
             xAxisTitle: __('Hour (UTC)'),
             yAxisTitle: __('No. of commits'),
             xAxisType: 'category',

@@ -21,20 +21,20 @@ TIP: **Tip:**
 When you enable 2FA, don't forget to back up your [recovery codes](#recovery-codes)!
 
 In addition to time-based one time passwords (TOTP), GitLab supports U2F
-(universal 2nd factor) devices as the second factor of authentication. Once
+(universal 2nd factor) and WebAuthn (experimental) devices as the second factor of authentication. Once
 enabled, in addition to supplying your username and password to log in, you'll
-be prompted to activate your U2F device (usually by pressing a button on it),
+be prompted to activate your U2F / WebAuthn device (usually by pressing a button on it),
 and it will perform secure authentication on your behalf.
 
 It is highly recommended that you set up 2FA with both a
 [one-time password authenticator](#one-time-password) or use [FortiAuthenticator](#one-time-password-via-fortiauthenticator)
-and a [U2F device](#u2f-device), so you can still access your account if you
-lose your U2F device.
+and a [U2F device](#u2f-device) or a [WebAuthn device](#webauthn-device), so you can still access your account
+if you lose your U2F / WebAuthn device.
 
 ## Enabling 2FA
 
-There are two ways to enable two-factor authentication: via a one time password authenticator
-or a U2F device.
+There are multiple ways to enable two-factor authentication: via a one time password authenticator
+or a U2F / WebAuthn device.
 
 ### One-time password
 
@@ -174,10 +174,46 @@ To set up 2FA with a U2F device:
 You will see a message indicating that your device was successfully set up.
 Click on **Register U2F Device** to complete the process.
 
+### WebAuthn device
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-webauthn). **(CORE ONLY)**
+
+The WebAuthn workflow is [supported by](https://caniuse.com/#search=webauthn) the
+following desktop browsers:
+
+- Chrome
+- Edge
+- Firefox
+- Opera
+- Safari
+
+and the following mobile browsers:
+
+- Chrome for Android
+- Firefox for Android
+- iOS Safari (since iOS 13.3)
+
+To set up 2FA with a WebAuthn compatible device:
+
+1. Sign in to your GitLab account.
+1. Go to your [**Profile settings**](../index.md#profile-settings).
+1. Go to **Account**.
+1. Select **Enable Two-Factor Authentication**.
+1. Plug in your WebAuthn device.
+1. Select **Set up New WebAuthn Device**.
+1. Depending on your device, you might need to press a button or touch a sensor.
+
+You will see a message indicating that your device was successfully set up.
+Recovery codes are not generated for WebAuthn devices.
+
 ## Recovery codes
 
 NOTE: **Note:**
-Recovery codes are not generated for U2F devices.
+Recovery codes are not generated for U2F / WebAuthn devices.
 
 CAUTION: **Caution:**
 Each code can be used only once to log in to your account.
@@ -215,6 +251,14 @@ To log in via a U2F device:
 You will see a message indicating that your device responded to the authentication
 request and you will be automatically logged in.
 
+### Log in via WebAuthn device
+
+In supported browsers you should be automatically prompted to activate your WebAuthn device
+(e.g. by touching/pressing its button) after entering your credentials.
+
+You will see a message indicating that your device responded to the authentication
+request and you will be automatically logged in.
+
 ## Disabling 2FA
 
 If you ever need to disable 2FA:
@@ -225,7 +269,7 @@ If you ever need to disable 2FA:
 1. Click **Disable**, under **Two-Factor Authentication**.
 
 This will clear all your two-factor authentication registrations, including mobile
-applications and U2F devices.
+applications and U2F / WebAuthn devices.
 
 ## Personal access tokens
 
@@ -331,7 +375,8 @@ Sign in and re-enable two-factor authentication as soon as possible.
   you may have cases where authorization always fails because of time differences.
 - The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from
   multiple hostnames, or FQDNs. Each U2F registration is linked to the _current hostname_ at
-  the time of registration, and cannot be used for other hostnames/FQDNs.
+  the time of registration, and cannot be used for other hostnames/FQDNs. The same applies to 
+  WebAuthn registrations.
 
   For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
 
@@ -341,6 +386,25 @@ Sign in and re-enable two-factor authentication as soon as possible.
     the U2F key has only been registered on `first.host.xyz`.
 
 - To enforce 2FA at the system or group levels see [Enforce Two-factor Authentication](../../../security/two_factor_authentication.md).
+
+## Enable or disable WebAuthn **(CORE ONLY)**
+
+Support for WebAuthn is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:webauthn)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:webauthn)
+```
 
 ## Troubleshooting
 

@@ -3,14 +3,84 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CleanupService do
-  let(:project) { create(:project, :repository, bfg_object_map: fixture_file_upload('spec/fixtures/bfg_object_map.txt')) }
-  let(:object_map) { project.bfg_object_map }
-
-  let(:cleaner) { service.__send__(:repository_cleaner) }
-
   subject(:service) { described_class.new(project) }
 
+  describe '.enqueue' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
+
+    let(:object_map_file) { fixture_file_upload('spec/fixtures/bfg_object_map.txt') }
+
+    subject(:enqueue) { described_class.enqueue(project, user, object_map_file) }
+
+    it 'makes the repository read-only' do
+      expect { enqueue }
+        .to change(project, :repository_read_only?)
+        .from(false)
+        .to(true)
+    end
+
+    it 'sets the bfg_object_map of the project' do
+      enqueue
+
+      expect(project.bfg_object_map.read).to eq(object_map_file.read)
+    end
+
+    it 'enqueues a RepositoryCleanupWorker' do
+      enqueue
+
+      expect(RepositoryCleanupWorker.jobs.count).to eq(1)
+    end
+
+    it 'returns success' do
+      expect(enqueue[:status]).to eq(:success)
+    end
+
+    it 'returns an error if making the repository read-only fails' do
+      project.set_repository_read_only!
+
+      expect(enqueue[:status]).to eq(:error)
+    end
+
+    it 'returns an error if updating the project fails' do
+      expect_next_instance_of(Projects::UpdateService) do |service|
+        expect(service).to receive(:execute).and_return(status: :error)
+      end
+
+      expect(enqueue[:status]).to eq(:error)
+      expect(project.reload.repository_read_only?).to be_falsy
+    end
+  end
+
+  describe '.cleanup_after' do
+    let(:project) { create(:project, :repository, bfg_object_map: fixture_file_upload('spec/fixtures/bfg_object_map.txt')) }
+
+    subject(:cleanup_after) { described_class.cleanup_after(project) }
+
+    before do
+      project.set_repository_read_only!
+    end
+
+    it 'sets the repository read-write' do
+      expect { cleanup_after }.to change(project, :repository_read_only?).from(true).to(false)
+    end
+
+    it 'removes the BFG object map' do
+      cleanup_after
+
+      expect(project.bfg_object_map).not_to be_exist
+    end
+  end
+
   describe '#execute' do
+    let(:project) { create(:project, :repository, bfg_object_map: fixture_file_upload('spec/fixtures/bfg_object_map.txt')) }
+    let(:object_map) { project.bfg_object_map }
+    let(:cleaner) { service.__send__(:repository_cleaner) }
+
+    before do
+      project.set_repository_read_only!
+    end
+
     it 'runs the apply_bfg_object_map_stream gitaly RPC' do
       expect(cleaner).to receive(:apply_bfg_object_map_stream).with(kind_of(IO))
 
@@ -35,6 +105,13 @@ RSpec.describe Projects::CleanupService do
       service.execute
 
       expect(object_map.exists?).to be_falsy
+    end
+
+    it 'makes the repository read-write again' do
+      expect { service.execute }
+        .to change(project, :repository_read_only?)
+        .from(true)
+        .to(false)
     end
 
     context 'with a tainted merge request diff' do

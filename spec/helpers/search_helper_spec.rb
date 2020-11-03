@@ -236,11 +236,34 @@ RSpec.describe SearchHelper do
   end
 
   describe 'search_entries_empty_message' do
-    it 'returns the formatted entry message' do
-      message = search_entries_empty_message('projects', '<h1>foo</h1>')
+    let!(:group) { build(:group) }
+    let!(:project) { build(:project, group: group) }
 
-      expect(message).to eq("We couldn't find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
-      expect(message).to be_html_safe
+    context 'global search' do
+      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', nil, nil) }
+
+      it 'returns the formatted entry message' do
+        expect(message).to eq("We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
+        expect(message).to be_html_safe
+      end
+    end
+
+    context 'group search' do
+      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, nil) }
+
+      it 'returns the formatted entry message' do
+        expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in group <a')
+        expect(message).to be_html_safe
+      end
+    end
+
+    context 'project search' do
+      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, project) }
+
+      it 'returns the formatted entry message' do
+        expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in project <a')
+        expect(message).to be_html_safe
+      end
     end
   end
 

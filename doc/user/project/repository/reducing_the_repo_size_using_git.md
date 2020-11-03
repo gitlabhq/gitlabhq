@@ -202,6 +202,12 @@ To purge files from GitLab storage:
 
 ## Repository cleanup
 
+NOTE: **Note:**
+Safely cleaning the repository requires it to be made read-only for the duration
+of the operation. This happens automatically, but submitting the cleanup request
+will fail if any writes are ongoing, so cancel any outstanding `git push`
+operations before continuing.
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19376) in GitLab 11.6.
 
 Repository cleanup allows you to upload a text file of objects and GitLab will remove internal Git

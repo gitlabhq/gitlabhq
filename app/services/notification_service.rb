@@ -601,7 +601,7 @@ class NotificationService
     return if project.emails_disabled?
 
     owners_and_maintainers_without_invites(project).to_a.product(alerts).each do |recipient, alert|
-      mailer.prometheus_alert_fired_email(project.id, recipient.user.id, alert).deliver_later
+      mailer.prometheus_alert_fired_email(project, recipient.user, alert).deliver_later
     end
   end
 

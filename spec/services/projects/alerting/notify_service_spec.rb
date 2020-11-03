@@ -129,6 +129,12 @@ RSpec.describe Projects::Alerting::NotifyService do
                   it { expect { subject }.to change { issue.reload.state }.from('opened').to('closed') }
                   it { expect { subject }.to change(ResourceStateEvent, :count).by(1) }
                 end
+
+                context 'with issue enabled' do
+                  let(:issue_enabled) { true }
+
+                  it_behaves_like 'does not process incident issues'
+                end
               end
             end
 

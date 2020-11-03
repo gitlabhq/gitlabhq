@@ -50,11 +50,11 @@
       = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
       %span.form-text.text-muted#home_help_block We will redirect non-logged in users to this page
     .form-group
-      = f.label :after_sign_out_path, class: 'label-bold'
+      = f.label :after_sign_out_path, _('After sign-out path'), class: 'label-bold'
       = f.text_field :after_sign_out_path, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
       %span.form-text.text-muted#after_sign_out_path_help_block We will redirect users to this page after they sign out
     .form-group
-      = f.label :sign_in_text, class: 'label-bold'
+      = f.label :sign_in_text, _('Sign-in text'), class: 'label-bold'
       = f.text_area :sign_in_text, class: 'form-control', rows: 4
       .form-text.text-muted Markdown enabled
   = f.submit 'Save changes', class: "gl-button btn btn-success"

@@ -202,7 +202,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
-    "markdownlint-cli": "0.23.2",
+    "markdownlint-cli": "0.24.0",
     "md5": "^2.2.1",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.4",

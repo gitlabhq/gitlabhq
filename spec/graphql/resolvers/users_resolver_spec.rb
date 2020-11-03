@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Resolvers::UsersResolver do
   include GraphqlHelpers
 
-  let_it_be(:user1) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user1) { create(:user, name: "SomePerson") }
+  let_it_be(:user2) { create(:user, username: "someone123784") }
 
   describe '#resolve' do
     it 'raises an error when read_users_list is not authorized' do
@@ -41,6 +41,14 @@ RSpec.describe Resolvers::UsersResolver do
         expect(
           resolve_users(usernames: [user1.username, user2.username])
         ).to contain_exactly(user1, user2)
+      end
+    end
+
+    context 'when a search term is passed' do
+      it 'returns all users who match', :aggregate_failures do
+        expect(resolve_users(search: "some")).to contain_exactly(user1, user2)
+        expect(resolve_users(search: "123784")).to contain_exactly(user2)
+        expect(resolve_users(search: "someperson")).to contain_exactly(user1)
       end
     end
   end

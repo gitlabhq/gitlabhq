@@ -118,8 +118,7 @@ module Types
           resolver: Resolvers::MergeRequestPipelinesResolver
 
     field :milestone, Types::MilestoneType, null: true,
-          description: 'The milestone of the merge request',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Milestone, obj.milestone_id).find }
+          description: 'The milestone of the merge request'
     field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'Assignees of the merge request'
     field :author, Types::UserType, null: true,

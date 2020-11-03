@@ -16,7 +16,6 @@ if Gitlab.ee? && Gitlab.dev_or_test_env?
   IGNORED_FEATURE_FLAGS = %i[
     ci_secrets_management
     feature_flags_related_issues
-    group_coverage_reports
     group_wikis
     incident_sla
     swimlanes

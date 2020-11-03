@@ -1,5 +1,5 @@
-.search_box
+.search_box.gl-my-8
   .search_glyph
   %h4
     = sprite_icon('search', size: 24, css_class: 'gl-vertical-align-text-bottom')
-    = search_entries_empty_message(@scope, @search_term)
+    = search_entries_empty_message(@scope, @search_term, @group, @project)

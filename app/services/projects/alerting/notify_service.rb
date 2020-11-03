@@ -73,7 +73,7 @@ module Projects
       end
 
       def process_incident_issues
-        return if alert.issue
+        return if alert.issue || alert.resolved?
 
         ::IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, alert.id)
       end
@@ -81,7 +81,7 @@ module Projects
       def send_alert_email
         notification_service
           .async
-          .prometheus_alerts_fired(project, [alert.attributes])
+          .prometheus_alerts_fired(project, [alert])
       end
 
       def alert

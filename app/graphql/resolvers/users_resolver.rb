@@ -18,10 +18,14 @@ module Resolvers
              required: false,
              default_value: 'created_desc'
 
-    def resolve(ids: nil, usernames: nil, sort: nil)
+    argument :search, GraphQL::STRING_TYPE,
+             required: false,
+             description: "Query to search users by name, username, or primary email."
+
+    def resolve(ids: nil, usernames: nil, sort: nil, search: nil)
       authorize!
 
-      ::UsersFinder.new(context[:current_user], finder_params(ids, usernames, sort)).execute
+      ::UsersFinder.new(context[:current_user], finder_params(ids, usernames, sort, search)).execute
     end
 
     def ready?(**args)
@@ -42,11 +46,12 @@ module Resolvers
 
     private
 
-    def finder_params(ids, usernames, sort)
+    def finder_params(ids, usernames, sort, search)
       params = {}
       params[:sort] = sort if sort
       params[:username] = usernames if usernames
       params[:id] = parse_gids(ids) if ids
+      params[:search] = search if search
       params
     end
 

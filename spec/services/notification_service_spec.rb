@@ -3100,26 +3100,26 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe '#prometheus_alerts_fired' do
-    let!(:project) { create(:project) }
-    let!(:master) { create(:user) }
-    let!(:developer) { create(:user) }
-    let(:alert_attributes) { build(:alert_management_alert, project: project).attributes }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:master) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:alert) { create(:alert_management_alert, project: project) }
 
     before do
       project.add_maintainer(master)
     end
 
     it 'sends the email to owners and masters' do
-      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, master.id, alert_attributes).and_call_original
-      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, project.owner.id, alert_attributes).and_call_original
-      expect(Notify).not_to receive(:prometheus_alert_fired_email).with(project.id, developer.id, alert_attributes)
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project, master, alert).and_call_original
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project, project.owner, alert).and_call_original
+      expect(Notify).not_to receive(:prometheus_alert_fired_email).with(project, developer, alert)
 
-      subject.prometheus_alerts_fired(project, [alert_attributes])
+      subject.prometheus_alerts_fired(project, [alert])
     end
 
     it_behaves_like 'project emails are disabled' do
       let(:notification_target)  { project }
-      let(:notification_trigger) { subject.prometheus_alerts_fired(project, [alert_attributes]) }
+      let(:notification_trigger) { subject.prometheus_alerts_fired(project, [alert]) }
 
       around do |example|
         perform_enqueued_jobs { example.run }

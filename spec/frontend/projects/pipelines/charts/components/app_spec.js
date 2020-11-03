@@ -45,7 +45,7 @@ describe('ProjectsPipelinesChartsApp', () => {
       expect(chart.exists()).toBeTruthy();
       expect(chart.props('yAxisTitle')).toBe('Minutes');
       expect(chart.props('xAxisTitle')).toBe('Commit');
-      expect(chart.props('data')).toBe(wrapper.vm.timesChartTransformedData);
+      expect(chart.props('bars')).toBe(wrapper.vm.timesChartTransformedData);
       expect(chart.props('option')).toBe(wrapper.vm.$options.timesChartOptions);
     });
   });

@@ -32,19 +32,13 @@ RSpec.describe Emails::Projects do
   describe '#prometheus_alert_fired_email' do
     let(:default_title) { Gitlab::AlertManagement::Payload::Generic::DEFAULT_TITLE }
     let(:payload) { { 'startsAt' => Time.now.rfc3339 } }
-    let(:alert_attributes) { build(:alert_management_alert, :from_payload, payload: payload, project: project).attributes }
+    let(:alert) { create(:alert_management_alert, :from_payload, payload: payload, project: project) }
 
     subject do
-      Notify.prometheus_alert_fired_email(project.id, user.id, alert_attributes)
+      Notify.prometheus_alert_fired_email(project, user, alert)
     end
 
-    context 'missing required attributes' do
-      let(:alert_attributes) { build(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project).attributes }
-
-      it_behaves_like 'no email'
-    end
-
-    context 'with minimum required attributes' do
+    context 'with empty payload' do
       let(:payload) { {} }
 
       it_behaves_like 'an email sent from GitLab'
@@ -58,6 +52,7 @@ RSpec.describe Emails::Projects do
       it 'has expected content' do
         is_expected.to have_body_text('An alert has been triggered')
         is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text(alert.details_url)
         is_expected.not_to have_body_text('Description:')
         is_expected.not_to have_body_text('Environment:')
         is_expected.not_to have_body_text('Metric:')
@@ -78,6 +73,7 @@ RSpec.describe Emails::Projects do
       it 'has expected content' do
         is_expected.to have_body_text('An alert has been triggered')
         is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text(alert.details_url)
         is_expected.to have_body_text('Description:')
         is_expected.to have_body_text('alert description')
         is_expected.not_to have_body_text('Environment:')
@@ -101,6 +97,7 @@ RSpec.describe Emails::Projects do
       it 'has expected content' do
         is_expected.to have_body_text('An alert has been triggered')
         is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text(alert.details_url)
         is_expected.to have_body_text('Environment:')
         is_expected.to have_body_text(environment.name)
         is_expected.not_to have_body_text('Description:')
@@ -112,7 +109,7 @@ RSpec.describe Emails::Projects do
       let_it_be(:prometheus_alert) { create(:prometheus_alert, project: project) }
       let_it_be(:environment) { prometheus_alert.environment }
 
-      let(:alert_attributes) { build(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project).attributes }
+      let(:alert) { create(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project) }
       let(:title) { "#{prometheus_alert.title} #{prometheus_alert.computed_operator} #{prometheus_alert.threshold}" }
       let(:metrics_url) { metrics_project_environment_url(project, environment) }
 
@@ -135,12 +132,31 @@ RSpec.describe Emails::Projects do
       it 'has expected content' do
         is_expected.to have_body_text('An alert has been triggered')
         is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text(alert.details_url)
         is_expected.to have_body_text('Environment:')
         is_expected.to have_body_text(environment.name)
         is_expected.to have_body_text('Metric:')
         is_expected.to have_body_text(prometheus_alert.full_query)
         is_expected.to have_body_text(metrics_url)
         is_expected.not_to have_body_text('Description:')
+      end
+    end
+
+    context 'resolved' do
+      let_it_be(:alert) { create(:alert_management_alert, :resolved, project: project) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'has expected subject' do
+        is_expected.to have_subject("#{project.name} | Alert: #{alert.title}")
+      end
+
+      it 'has expected content' do
+        is_expected.to have_body_text('An alert has been resolved')
+        is_expected.to have_body_text(project.full_path)
+        is_expected.to have_body_text(alert.details_url)
       end
     end
   end

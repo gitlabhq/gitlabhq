@@ -142,7 +142,7 @@ context 'when the experiment is active and the user is in the experimental group
     expect_snowplow_event(
       category: 'Growth::Activation::Experiment::SignUpFlow',
       action: 'action',
-      label: 'value',
+      value: 'value',
       label: 'experimentation_subject_id',
       property: 'experimental_group'
     )
@@ -254,7 +254,7 @@ For visibility, please also share any commands run against production in the `#s
 
 #### RSpec
 
-Use the folowing in RSpec to mock the experiment:
+Use the following in RSpec to mock the experiment:
 
 ```ruby
 context 'when the experiment is active' do

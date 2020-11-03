@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import {
   getByText as getByTextHelper,
   getByTestId as getByTestIdHelper,
+  within,
 } from '@testing-library/dom';
 import { GlBadge } from '@gitlab/ui';
 import MembersTable from '~/vue_shared/components/members/table/members_table.vue';
@@ -28,6 +29,7 @@ describe('MemberList', () => {
         members: [],
         tableFields: [],
         sourceId: 1,
+        currentUserId: 1,
         ...state,
       },
     });
@@ -62,10 +64,14 @@ describe('MemberList', () => {
   });
 
   describe('fields', () => {
-    const memberCanUpdate = {
+    const directMember = {
       ...memberMock,
-      canUpdate: true,
       source: { ...memberMock.source, id: 1 },
+    };
+
+    const memberCanUpdate = {
+      ...directMember,
+      canUpdate: true,
     };
 
     it.each`
@@ -96,19 +102,60 @@ describe('MemberList', () => {
       }
     });
 
-    it('renders "Actions" field for screen readers', () => {
-      createComponent({ members: [memberMock], tableFields: ['actions'] });
+    describe('"Actions" field', () => {
+      it('renders "Actions" field for screen readers', () => {
+        createComponent({ members: [memberCanUpdate], tableFields: ['actions'] });
 
-      const actionField = getByTestId('col-actions');
+        const actionField = getByTestId('col-actions');
 
-      expect(actionField.exists()).toBe(true);
-      expect(actionField.classes('gl-sr-only')).toBe(true);
-      expect(
-        wrapper
-          .find(`[data-label="Actions"][role="cell"]`)
-          .find(MemberActionButtons)
-          .exists(),
-      ).toBe(true);
+        expect(actionField.exists()).toBe(true);
+        expect(actionField.classes('gl-sr-only')).toBe(true);
+        expect(
+          wrapper
+            .find(`[data-label="Actions"][role="cell"]`)
+            .find(MemberActionButtons)
+            .exists(),
+        ).toBe(true);
+      });
+
+      describe('when user is not logged in', () => {
+        it('does not render the "Actions" field', () => {
+          createComponent({ currentUserId: null, tableFields: ['actions'] });
+
+          expect(within(wrapper.element).queryByTestId('col-actions')).toBe(null);
+        });
+      });
+
+      const memberCanRemove = {
+        ...directMember,
+        canRemove: true,
+      };
+
+      describe.each`
+        permission     | members
+        ${'canUpdate'} | ${[memberCanUpdate]}
+        ${'canRemove'} | ${[memberCanRemove]}
+        ${'canResend'} | ${[invite]}
+      `('when one of the members has $permission permissions', ({ members }) => {
+        it('renders the "Actions" field', () => {
+          createComponent({ members, tableFields: ['actions'] });
+
+          expect(getByTestId('col-actions').exists()).toBe(true);
+        });
+      });
+
+      describe.each`
+        permission     | members
+        ${'canUpdate'} | ${[memberMock]}
+        ${'canRemove'} | ${[memberMock]}
+        ${'canResend'} | ${[{ ...invite, invite: { ...invite.invite, canResend: false } }]}
+      `('when none of the members have $permission permissions', ({ members }) => {
+        it('does not render the "Actions" field', () => {
+          createComponent({ members, tableFields: ['actions'] });
+
+          expect(within(wrapper.element).queryByTestId('col-actions')).toBe(null);
+        });
+      });
     });
   });
 

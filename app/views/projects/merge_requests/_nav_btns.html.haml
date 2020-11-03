@@ -1,4 +1,4 @@
-- if Feature.enabled?(:export_merge_requests_as_csv, @project)
+- if Feature.enabled?(:export_merge_requests_as_csv, @project, default_enabled: true)
   .btn-group
     = render 'shared/issuable/csv_export/button', issuable_type: 'merge-requests'
 
@@ -8,5 +8,5 @@
   = link_to new_merge_request_path, class: "gl-button btn btn-success", title: "New merge request" do
     New merge request
 
-  - if Feature.enabled?(:export_merge_requests_as_csv, @project)
+  - if Feature.enabled?(:export_merge_requests_as_csv, @project, default_enabled: true)
     = render 'shared/issuable/csv_export/modal', issuable_type: 'merge_requests'

@@ -3,9 +3,8 @@
 
 import $ from 'jquery';
 import 'vendor/jquery.scrollTo';
-import { GlLoadingIcon } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
+import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -16,8 +15,8 @@ import groupsComponent from './groups.vue';
 
 export default {
   components: {
-    DeprecatedModal,
     groupsComponent,
+    GlModal,
     GlLoadingIcon,
   },
   props: {
@@ -49,13 +48,30 @@ export default {
       isLoading: true,
       isSearchEmpty: false,
       searchEmptyMessage: '',
-      showModal: false,
-      groupLeaveConfirmationMessage: '',
       targetGroup: null,
       targetParentGroup: null,
     };
   },
   computed: {
+    primaryProps() {
+      return {
+        text: __('Leave group'),
+        attributes: [{ variant: 'warning' }, { category: 'primary' }],
+      };
+    },
+    cancelProps() {
+      return {
+        text: __('Cancel'),
+      };
+    },
+    groupLeaveConfirmationMessage() {
+      if (!this.targetGroup) {
+        return '';
+      }
+      return sprintf(s__('GroupsTree|Are you sure you want to leave the "%{fullName}" group?'), {
+        fullName: this.targetGroup.fullName,
+      });
+    },
     groups() {
       return this.store.getGroups();
     },
@@ -171,27 +187,17 @@ export default {
       }
     },
     showLeaveGroupModal(group, parentGroup) {
-      const { fullName } = group;
       this.targetGroup = group;
       this.targetParentGroup = parentGroup;
-      this.showModal = true;
-      this.groupLeaveConfirmationMessage = sprintf(
-        s__('GroupsTree|Are you sure you want to leave the "%{fullName}" group?'),
-        { fullName },
-      );
-    },
-    hideLeaveGroupModal() {
-      this.showModal = false;
     },
     leaveGroup() {
-      this.showModal = false;
       this.targetGroup.isBeingRemoved = true;
       this.service
         .leaveGroup(this.targetGroup.leavePath)
         .then(res => {
           $.scrollTo(0);
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
-          Flash(res.data.notice, 'notice');
+          this.$toast.show(res.data.notice);
         })
         .catch(err => {
           let message = COMMON_STR.FAILURE;
@@ -245,21 +251,21 @@ export default {
       class="loading-animation prepend-top-20"
     />
     <groups-component
-      v-if="!isLoading"
+      v-else
       :groups="groups"
       :search-empty="isSearchEmpty"
       :search-empty-message="searchEmptyMessage"
       :page-info="pageInfo"
       :action="action"
     />
-    <deprecated-modal
-      v-show="showModal"
-      :primary-button-label="__('Leave')"
+    <gl-modal
+      modal-id="leave-group-modal"
       :title="__('Are you sure?')"
-      :text="groupLeaveConfirmationMessage"
-      kind="warning"
-      @cancel="hideLeaveGroupModal"
-      @submit="leaveGroup"
-    />
+      :action-primary="primaryProps"
+      :action-cancel="cancelProps"
+      @primary="leaveGroup"
+    >
+      {{ groupLeaveConfirmationMessage }}
+    </gl-modal>
   </div>
 </template>
