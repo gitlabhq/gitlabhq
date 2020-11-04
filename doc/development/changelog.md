@@ -125,7 +125,6 @@ the `--ee` option:
 bin/changelog --ee 'Hey DZ, I added a feature to GitLab!'
 ```
 
-NOTE: **Note:**
 All entries in the `CHANGELOG.md` file apply to all editions of GitLab.
 Changelog updates are based on a common [GitLab codebase](https://gitlab.com/gitlab-org/gitlab/),
 and are mirrored without proprietary code to [GitLab FOSS](https://gitlab.com/gitlab-org/gitlab-foss/) (also known as GitLab Community Edition).

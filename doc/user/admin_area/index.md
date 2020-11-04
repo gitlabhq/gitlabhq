@@ -146,22 +146,16 @@ you must provide the complete email address.
 
 #### Users statistics
 
-The **Users statistics** page provides an overview of user accounts by role, such as _Users with
-highest role Maintainer_.
+The **Users statistics** page provides an overview of user accounts by role. These statistics are
+calculated daily, so user changes made since the last update are not reflected.
 
 The following totals are also included:
 
-- Active users
+- Billable users
 - Blocked users
 - Total users
 
-GitLab billing is based on the number of **Active users**, calculated as **Total users** -
-**Blocked users**. For details of active users, see
-[Choosing the number of users](../../subscriptions/self_managed/index.md#choose-the-number-of-users).
-
-NOTE: **Note:**
-Users statistics are calculated daily, so user changes made since the last update won't be
-reflected in the statistics.
+GitLab billing is based on the number of [**Billable users**](../../subscriptions/self_managed/index.md#billable-users).
 
 ### Administering Groups
 

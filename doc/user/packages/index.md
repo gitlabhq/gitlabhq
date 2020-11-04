@@ -39,7 +39,6 @@ guide you through the process.
 | ------ | ------ |
 | Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
 | CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
-| CocoaPods | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
 | Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
 | CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
 | Debian    | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44746) |

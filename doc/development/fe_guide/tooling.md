@@ -20,7 +20,7 @@ To check all currently staged files (based on `git diff`) with ESLint, run the f
 yarn eslint-staged
 ```
 
-_A list of problems found will be logged to the console._
+A list of problems found will be logged to the console.
 
 To apply automatic ESLint fixes to all currently staged files (based on `git diff`), run the following script:
 
@@ -28,7 +28,7 @@ To apply automatic ESLint fixes to all currently staged files (based on `git dif
 yarn eslint-staged-fix
 ```
 
-_If manual changes are required, a list of changes will be sent to the console._
+If manual changes are required, a list of changes will be sent to the console.
 
 To check **all** files in the repository with ESLint, run the following script:
 
@@ -36,7 +36,7 @@ To check **all** files in the repository with ESLint, run the following script:
 yarn eslint
 ```
 
-_A list of problems found will be logged to the console._
+A list of problems found will be logged to the console.
 
 To apply automatic ESLint fixes to **all** files in the repository, run the following script:
 
@@ -44,7 +44,7 @@ To apply automatic ESLint fixes to **all** files in the repository, run the foll
 yarn eslint-fix
 ```
 
-_If manual changes are required, a list of changes will be sent to the console._
+If manual changes are required, a list of changes will be sent to the console.
 
 CAUTION: **Caution:**
 Limit use to global rule updates. Otherwise, the changes can lead to huge Merge Requests.
@@ -60,9 +60,8 @@ rules only if you are invoking/instantiating existing code modules.
 - [`no-new`](https://eslint.org/docs/rules/no-new)
 - [`class-method-use-this`](https://eslint.org/docs/rules/class-methods-use-this)
 
-NOTE: **Note:**
-Disable these rules on a per-line basis. This makes it easier to refactor
-in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`.
+Disable these rules on a per-line basis. This makes it easier to refactor in the
+future. For example, use `eslint-disable-next-line` or `eslint-disable-line`.
 
 ### Disabling ESLint for a single violation
 

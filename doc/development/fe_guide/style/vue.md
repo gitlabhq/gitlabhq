@@ -190,7 +190,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
    ```
 
 1. Default key should be provided if the prop is not required.
-   _Note:_ There are some scenarios where we need to check for the existence of the property.
+   There are some scenarios where we need to check for the existence of the property.
    On those a default key should not be provided.
 
    ```javascript
@@ -409,7 +409,7 @@ Useful links:
 ## Vue testing
 
 Over time, a number of programming patterns and style preferences have emerged in our efforts to effectively test Vue components.
-The following guide describes some of these. **These are not strict guidelines**, but rather a collection of suggestions and 
+The following guide describes some of these. **These are not strict guidelines**, but rather a collection of suggestions and
 good practices that aim to provide insight into how we write Vue tests at GitLab.
 
 ### Mounting a component
@@ -425,7 +425,7 @@ To achieve this:
 Creating a global, mutable wrapper provides a number of advantages, including the ability to:
 
 - Define common functions for finding components/DOM elements:
-  
+
   ```javascript
   import MyComponent from '~/path/to/my_component.vue';
   describe('MyComponent', () => {
@@ -533,8 +533,8 @@ the mounting function (`mount` or `shallowMount`) to be used to mount the compon
 
 ### Setting component state
 
-1. Avoid using [`setProps`](https://vue-test-utils.vuejs.org/api/wrapper/#setprops) to set 
-component state wherever possible. Instead, set the component's 
+1. Avoid using [`setProps`](https://vue-test-utils.vuejs.org/api/wrapper/#setprops) to set
+component state wherever possible. Instead, set the component's
 [`propsData`](https://vue-test-utils.vuejs.org/api/options.html#propsdata) when mounting the component:
 
     ```javascript

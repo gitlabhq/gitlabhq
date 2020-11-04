@@ -219,11 +219,11 @@ the mitigations for a new feature.
 
 - [More details](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2530/diffs)
 
-#### Feature-specific Mitigations
+#### Feature-specific mitigations
 
 For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
 
-**Important Note:** There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
+There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 
 - Block connections to all localhost addresses
   - `127.0.0.1/8` (IPv4 - note the subnet mask)
@@ -429,9 +429,8 @@ The Path Traversal check can also be used to forbid any absolute path:
 requires :file_path, type: String, file_path: true
 ```
 
-NOTE: **Note:**
 Absolute paths are not allowed by default. If allowing an absolute path is required, you
-need to provide an array of paths to the parameter `allowlist`.  
+need to provide an array of paths to the parameter `allowlist`.
 
 ## OS command injection guidelines
 

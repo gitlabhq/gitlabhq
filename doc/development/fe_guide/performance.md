@@ -77,9 +77,8 @@ controller with the `index` action. If a corresponding file exists at
 `pages/projects/issues/index/index.js`, it will be compiled into a webpack
 bundle and included on the page.
 
-NOTE: **Note:**
-Previously we had encouraged the use of
-`content_for :page_specific_javascripts` within haml files, along with
+Previously, GitLab encouraged the use of
+`content_for :page_specific_javascripts` within HAML files, along with
 manually generated webpack bundles. However under this new system you should
 not ever need to manually add an entry point to the `webpack.config.js` file.
 
@@ -97,16 +96,26 @@ browser's developer console while on any page within GitLab.
   modules outside of the entry point script. Just import, read the DOM,
   instantiate, and nothing else.
 
-- **Entry Points May Be Asynchronous:**
-  _DO NOT ASSUME_ that the DOM has been fully loaded and available when an
-  entry point script is run. If you require that some code be run after the
-  DOM has loaded, you should attach an event handler to the `DOMContentLoaded`
-  event with:
+- **`DOMContentLoaded` should not be used:**
+  All of GitLab's JavaScript files are added with the `defer` attribute.
+  According to the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer),
+  this implies that "the script is meant to be executed after the document has
+  been parsed, but before firing `DOMContentLoaded`". Since the document is already
+  parsed, `DOMContentLoaded` is not needed to bootstrap applications because all
+  the DOM nodes are already at our disposal.
+
+- **JavaScript that relies on CSS for calculations should use [`waitForCSSLoaded()`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/helpers/startup_css_helper.js#L34):**
+  GitLab uses [Startup.css](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38052)
+  to improve page performance. This can cause issues if JavaScript relies on CSS
+  for calculations. To fix this the JavaScript can be wrapped in the 
+  [`waitForCSSLoaded()`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/helpers/startup_css_helper.js#L34)
+  helper function.
 
   ```javascript
   import initMyWidget from './my_widget';
+  import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  waitForCSSLoaded(() => {
     initMyWidget();
   });
   ```

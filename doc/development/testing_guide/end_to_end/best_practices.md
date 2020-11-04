@@ -6,7 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # End-to-end testing Best Practices
 
-NOTE: **Note:**
 This is a tailored extension of the Best Practices [found in the testing guide](../best_practices.md).
 
 ## Link a test to its test-case issue
@@ -269,7 +268,7 @@ We don't run tests that require Administrator access against our Production envi
 
 When you add a new test that requires Administrator access, apply the RSpec metadata `:requires_admin` so that the test will not be included in the test suites executed against Production and other environments on which we don't want to run those tests.
 
-Note: When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
+When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
 
 ## Prefer `Commit` resource over `ProjectPush`
 
@@ -294,7 +293,6 @@ Resource::Repository::ProjectPush.fabricate! do |push|
 end
 ```
 
-NOTE: **Note:**
 A few exceptions for using a `ProjectPush` would be when your test calls for testing SSH integration or
 using the Git CLI.
 

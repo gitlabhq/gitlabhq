@@ -39,6 +39,23 @@ RSpec.describe Gitlab::Database::PostgresPartitionedTable, type: :model do
 
   it_behaves_like 'a postgres model'
 
+  describe '.find_by_name_in_current_schema' do
+    it 'finds the partitioned tables in the current schema by name', :aggregate_failures do
+      partitioned_table = described_class.find_by_name_in_current_schema(name)
+
+      expect(partitioned_table).not_to be_nil
+      expect(partitioned_table.identifier).to eq(identifier)
+    end
+
+    it 'does not find partitioned tables in a different schema' do
+      ActiveRecord::Base.connection.execute(<<~SQL)
+        ALTER TABLE #{identifier} SET SCHEMA gitlab_partitions_dynamic
+      SQL
+
+      expect(described_class.find_by_name_in_current_schema(name)).to be_nil
+    end
+  end
+
   describe '#dynamic?' do
     it 'returns true for tables partitioned by range' do
       expect(find('public.foo_range')).to be_dynamic

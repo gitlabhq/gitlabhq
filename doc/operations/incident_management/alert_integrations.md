@@ -141,6 +141,12 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ## Link to your Opsgenie Alerts
 
+DANGER: **Deprecated:**
+We are building deeper integration with Opsgenie and other alerting tools through
+[HTTP endpoint integrations](#generic-http-endpoint) so you can see alerts within
+the GitLab interface. As a result, the previous direct link to Opsgenie Alerts from
+the GitLab alerts list will be deprecated following the 13.7 release on December 22, 2020.
+
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).

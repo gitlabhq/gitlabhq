@@ -20,7 +20,7 @@ feature to work.
 
 NOTE: **Note:**
 This is a living document and should be updated accordingly when parts
-of the codebase touched in this document changed/removed or when new components
+of the codebase touched in this document are changed or removed, or when new components
 are added.
 
 ## Data Model

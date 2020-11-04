@@ -687,7 +687,6 @@ Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue 
 
 #### Puma
 
-NOTE: **Note:**
 Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
 disabled by default.
 
@@ -705,7 +704,6 @@ disabled by default.
 
 #### Unicorn
 
-NOTE: **Note:**
 Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
 disabled by default.
 
@@ -1021,9 +1019,9 @@ PostgreSQL:
 GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced
 configuration files include:
 
-- `gitlab.yml` - GitLab configuration
-- `puma.rb` - Puma web server settings
-- `database.yml` - Database connection settings
+- `gitlab.yml`: GitLab configuration
+- `puma.rb`: Puma web server settings
+- `database.yml`: Database connection settings
 
 GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
@@ -1039,9 +1037,12 @@ bundle exec rake gitlab:env:info RAILS_ENV=production
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While
-the `sudo` commands provided by GitLab work in Ubuntu they do not always work in RHEL.
+It's recommended to sign in to the `git` user using either `sudo -i -u git` or
+`sudo su - git`. Although the `sudo` commands provided by GitLab work in Ubuntu,
+they don't always work in RHEL.
 
 ## GitLab.com
 
-We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/) but this is probably over the top unless you have millions of users.
+The [GitLab.com architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
+is detailed for your reference, but this architecture is only useful if you have
+millions of users.

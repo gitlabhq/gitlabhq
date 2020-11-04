@@ -65,8 +65,24 @@ RSpec.describe Resolvers::DesignManagement::DesignsResolver do
         let(:second_version) { create(:design_version) }
         let(:second_design) { create(:design, issue: issue, versions: [second_version]) }
 
+        context 'ids is provided but null' do
+          let(:args) { { ids: nil } }
+
+          it 'behaves as if unfiltered' do
+            expect(resolve_designs).to contain_exactly(first_design, second_design)
+          end
+        end
+
+        context 'ids is provided but empty' do
+          let(:args) { { ids: [] } }
+
+          it 'eliminates all values' do
+            expect(resolve_designs).to be_empty
+          end
+        end
+
         context 'the ID is on the current issue' do
-          let(:args) { { ids: [GitlabSchema.id_from_object(second_design).to_s] } }
+          let(:args) { { ids: [GitlabSchema.id_from_object(second_design)] } }
 
           it 'resolves to just the relevant design' do
             expect(resolve_designs).to contain_exactly(second_design)
@@ -77,7 +93,7 @@ RSpec.describe Resolvers::DesignManagement::DesignsResolver do
           let(:third_version) { create(:design_version) }
           let(:third_design) { create(:design, issue: create(:issue, project: project), versions: [third_version]) }
 
-          let(:args) { { ids: [GitlabSchema.id_from_object(third_design).to_s] } }
+          let(:args) { { ids: [GitlabSchema.id_from_object(third_design)] } }
 
           it 'ignores it' do
             expect(resolve_designs).to be_empty

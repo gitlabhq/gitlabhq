@@ -43,6 +43,45 @@ To change the location where the job logs will be stored, follow the steps below
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
    changes to take effect.
 
+Alternatively, if you have existing job logs you can follow
+these steps to move the logs to a new location without losing any data.
+
+1. Pause continuous integration data processing by updating this setting in `/etc/gitlab/gitlab.rb`.
+   Jobs in progress are not affected, based on how [data flow](#data-flow) works.
+
+   ```ruby
+   sidekiq['experimental_queue_selector'] = true
+   sidekiq['queue_groups'] = [
+     "feature_category!=continuous_integration"
+   ]
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
+1. Set the new storage location in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_ci['builds_directory'] = '/mnt/to/gitlab-ci/builds'
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
+1. Use `rsync` to move job logs from the current location to the new location:
+
+   ```shell
+   sudo rsync -avzh --remove-source-files --ignore-existing --progress /var/opt/gitlab/gitlab-ci/builds/ /mnt/to/gitlab-ci/builds`
+   ```
+
+   Use `--ignore-existing` so you don't override new job logs with older versions of the same log.
+1. Unpause continuous integration data processing by editing `/etc/gitlab/gitlab.rb` and removing the `sidekiq` setting you updated earlier.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
+1. Remove the old job logs storage location:
+
+   ```shell
+   sudo rm -rf /var/opt/gitlab/gitlab-ci/builds`
+   ```
+
 **In installations from source:**
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:

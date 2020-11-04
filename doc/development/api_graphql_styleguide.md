@@ -689,7 +689,7 @@ end
 ```
 
 Fields can also be authorized against multiple abilities, in which case
-all of ability checks must pass. **Note:** This requires explicitly
+all of ability checks must pass. This requires explicitly
 passing a block to `field`:
 
 ```ruby
@@ -702,7 +702,6 @@ module Types
 end
 ```
 
-NOTE: **Note:**
 If the field's type already [has a particular
 authorization](#type-authorization) then there is no need to add that
 same authorization to the field.

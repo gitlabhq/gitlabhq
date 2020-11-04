@@ -30,7 +30,6 @@ See how to document them below, according to the state of the flag:
 - [Features that can be enabled or disabled for a single project](#features-enabled-by-project).
 - [Features with the feature flag removed](#features-with-flag-removed).
 
-NOTE: **Note:**
 The [`**(CORE ONLY)**`](styleguide.md#product-badges) badge or equivalent for
 the feature's tier should be added to the line and heading that refers to
 enabling/disabling feature flags as Admin access is required to do so,

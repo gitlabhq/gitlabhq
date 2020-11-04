@@ -106,13 +106,12 @@ class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration[4.2]
 end
 ```
 
-This will take care of renaming the column, ensuring data stays in sync, copying
-over indexes and foreign keys, etc.
+This will take care of renaming the column, ensuring data stays in sync, and
+copying over indexes and foreign keys.
 
-NOTE: **Note:**
-If a column contains 1 or more indexes that do not contain the name of
-the original column, the above procedure will fail. In this case you will first
-need to rename these indexes.
+If a column contains one or more indexes that don't contain the name of the
+original column, the previously described procedure will fail. In that case,
+you'll first need to rename these indexes.
 
 ### Step 2: Add A Post-Deployment Migration
 
@@ -137,7 +136,6 @@ class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
 end
 ```
 
-NOTE: **Note:**
 If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
 With [Canary](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
@@ -148,7 +146,7 @@ done without requiring downtime. However, this does require that any application
 changes are deployed _first_. Thus, changing the constraints of a column should
 happen in a post-deployment migration.
 
-NOTE: Avoid using `change_column` as it produces an inefficient query because it re-defines
+Avoid using `change_column` as it produces an inefficient query because it re-defines
 the whole column type.
 
 You can check the following guides for each specific use case:

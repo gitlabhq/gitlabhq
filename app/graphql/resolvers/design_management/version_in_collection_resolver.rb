@@ -11,20 +11,25 @@ module Resolvers
 
       alias_method :collection, :object
 
+      VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
+
       argument :sha, GraphQL::STRING_TYPE,
                required: false,
                description: "The SHA256 of a specific version"
-      argument :id, GraphQL::ID_TYPE,
+      argument :id, VersionID,
+               as: :version_id,
                required: false,
                description: 'The Global ID of the version'
 
-      def resolve(id: nil, sha: nil)
-        check_args(id, sha)
+      def resolve(version_id: nil, sha: nil)
+        # TODO: remove this line when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        version_id &&= VersionID.coerce_isolated_input(version_id)
 
-        gid = GitlabSchema.parse_gid(id, expected_type: ::DesignManagement::Version) if id
+        check_args(version_id, sha)
 
         ::DesignManagement::VersionsFinder
-          .new(collection, current_user, sha: sha, version_id: gid&.model_id)
+          .new(collection, current_user, sha: sha, version_id: version_id&.model_id)
           .execute
           .first
       end

@@ -82,7 +82,6 @@ const FunctionalComp = (props, slots) => {
 }
 ```
 
-NOTE: **Note:**
 It is not recommended to replace stateful components with functional components unless you absolutely need a performance improvement right now. In Vue 3, performance gains for functional components will be negligible.
 
 ## Old slots syntax with `slot` attribute

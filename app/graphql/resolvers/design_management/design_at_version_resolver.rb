@@ -9,7 +9,7 @@ module Resolvers
 
       authorize :read_design
 
-      argument :id, GraphQL::ID_TYPE,
+      argument :id, ::Types::GlobalIDType[::DesignManagement::DesignAtVersion],
                required: true,
                description: 'The Global ID of the design at this version'
 
@@ -18,7 +18,10 @@ module Resolvers
       end
 
       def find_object(id:)
-        dav = GitlabSchema.object_from_id(id, expected_type: ::DesignManagement::DesignAtVersion)
+        # TODO: remove this line when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        id = ::Types::GlobalIDType[::DesignManagement::DesignAtVersion].coerce_isolated_input(id)
+        dav = GitlabSchema.find_by_gid(id)
         return unless consistent?(dav)
 
         dav

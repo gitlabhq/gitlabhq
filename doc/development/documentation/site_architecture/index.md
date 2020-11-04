@@ -230,8 +230,9 @@ for its search function. This is how it works:
    there's a JavaScript snippet which initiates DocSearch by using an API key
    and an index name (`gitlab`) that are needed for Algolia to show the results.
 
-NOTE: **For GitLab Team Members:**
-If you’re a GitLab Team Member, find credentials for the Algolia dashboard
+### Algolia notes for GitLab team members
+
+If you’re a GitLab team member, find credentials for the Algolia dashboard
 in the shared [GitLab 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
 To receive weekly reports of the search usage, search the Google doc with
 title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,

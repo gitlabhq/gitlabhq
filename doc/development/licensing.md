@@ -18,7 +18,8 @@ Some gems may not include their license information in their `gemspec` file, and
 
 ### License Finder commands
 
-> Note: License Finder currently uses GitLab misused terms of `whitelist` and `blacklist`. As a result, the commands below reference those terms. We've created an [issue on their project](https://github.com/pivotal/LicenseFinder/issues/745) to propose that they rename their commands.
+NOTE: **Note:**
+License Finder currently uses GitLab misused terms of `whitelist` and `blacklist`. As a result, the commands below reference those terms. We've created an [issue on their project](https://github.com/pivotal/LicenseFinder/issues/745) to propose that they rename their commands.
 
 There are a few basic commands License Finder provides that you'll need in order to manage license detection.
 

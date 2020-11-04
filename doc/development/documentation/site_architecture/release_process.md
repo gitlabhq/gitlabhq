@@ -15,7 +15,6 @@ Since the charts use a different version number than all the other GitLab
 products, we need to add a
 [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html):
 
-NOTE: **Note:**
 The charts stable branch is not created automatically like the other products.
 There's an [issue to track this](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1442).
 It is usually created on the 21st or the 22nd.
@@ -164,7 +163,7 @@ Releasing a new version is a long process that involves many moving parts.
 
 ### `test_internal_links_and_anchors` failing on dropdown merge requests
 
-NOTE: **Note:**
+DANGER: **Deprecated:**
 We now pin versions in the `.gitlab-ci.yml` of the respective branch,
 so the steps below are deprecated.
 

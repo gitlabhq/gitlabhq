@@ -18,7 +18,7 @@ A user pending approval:
 - Will not be able to sign in.
 - Cannot access Git repositories or the API.
 - Will not receive any notifications from GitLab.
-- Does not consume a [seat](../../subscriptions/self_managed/index.md#choose-the-number-of-users).
+- Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 ## Approving a user
 
@@ -33,4 +33,4 @@ Approving a user:
 
 1. Activates their account.
 1. Changes the user's state to active and it consumes a
-[seat](../../subscriptions/self_managed/index.md#choose-the-number-of-users).
+[seat](../../subscriptions/self_managed/index.md#billable-users).

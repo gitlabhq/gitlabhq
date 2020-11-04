@@ -121,10 +121,8 @@ are very appreciative of the work done by translators and proofreaders!
 
 ## Become a proofreader
 
-NOTE: **Note:**
-Before requesting Proofreader permissions in CrowdIn please make
-sure that you have a history of contributing translations to the GitLab
-project.
+Before requesting Proofreader permissions in CrowdIn, be sure you have a history
+of contributing translations to the GitLab project.
 
 1. Contribute translations to GitLab. See instructions for
    [translating GitLab](translation.md).
@@ -146,8 +144,8 @@ project.
    - link to your GitLab profile
    - link to your CrowdIn profile
 
-   In the merge request description, please include links to any projects you
-   have previously translated.
+   In the merge request description, include links to any projects you have
+   previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
    your previous translations by [GitLab team members](https://about.gitlab.com/company/team/)

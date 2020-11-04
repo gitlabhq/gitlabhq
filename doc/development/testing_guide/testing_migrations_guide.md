@@ -239,6 +239,5 @@ describe Gitlab::BackgroundMigration::ArchiveLegacyTraces, schema: 2018052915262
 end
 ```
 
-NOTE: **Note:**
 These tests do not run within a database transaction, as we use a deletion database
 cleanup strategy. Do not depend on a transaction being present.

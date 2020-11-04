@@ -15,6 +15,10 @@ module Gitlab
         find(identifier)
       end
 
+      def self.find_by_name_in_current_schema(name)
+        find_by("identifier = concat(current_schema(), '.', ?)", name)
+      end
+
       def dynamic?
         DYNAMIC_PARTITION_STRATEGIES.include?(strategy)
       end

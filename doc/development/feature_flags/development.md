@@ -35,7 +35,6 @@ used so that unfinished code can be deployed in production.
 A `development` feature flag should have a rollout issue,
 ideally created using the [Feature Flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
 
-NOTE: **Note:**
 This is the default type used when calling `Feature.enabled?`.
 
 ### `ops` type
@@ -356,7 +355,6 @@ Introducing a feature flag into the codebase creates an additional code path tha
 It is strongly advised to test all code affected by a feature flag, both when **enabled** and **disabled**
 to ensure the feature works properly.
 
-NOTE: **Note:**
 When using the testing environment, all feature flags are enabled by default.
 
 To disable a feature flag in a test, use the `stub_feature_flags`

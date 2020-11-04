@@ -22,7 +22,6 @@ The measuring module is a tool that allows to measure a service's execution, and
 The measuring module will log these measurements into a structured log called [`service_measurement.log`](../administration/logs.md#service_measurementlog),
 as a single entry for each service execution.
 
-NOTE: **Note:**
 For GitLab.com, `service_measurement.log` is ingested in Elasticsearch and Kibana as part of our monitoring solution.
 
 ## How to use it
@@ -70,9 +69,8 @@ def extra_attributes_for_measurement
 end
 ```
 
-NOTE: **Note:**
-Once the measurement module is injected in the service, it will be behind generic feature flag.
-In order to actually use it, you need to enable measuring for the desired service by enabling the feature flag.
+After the measurement module is injected in the service, it will be behind a generic feature flag.
+To actually use it, you need to enable measuring for the desired service by enabling the feature flag.
 
 ### Enabling measurement using feature flags
 

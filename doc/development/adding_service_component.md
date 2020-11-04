@@ -59,10 +59,8 @@ TIP: **Tip:**
 
 ## Bundling a service with GitLab
 
-NOTE: **Note:**
 Code shipped with GitLab needs to use a license approved by the Legal team. See the list of [existing approved licenses](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries).
 
-NOTE: **Note:**
 Notify the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/) when adding a new dependency that must be compiled. We must be able to compile the dependency on all supported platforms.
 
 New services to be bundled with GitLab need to be available in the following environments.

@@ -3,7 +3,7 @@
 module Resolvers
   module DesignManagement
     class DesignResolver < BaseResolver
-      argument :id, GraphQL::ID_TYPE,
+      argument :id, ::Types::GlobalIDType[::DesignManagement::Design],
                required: false,
                description: 'Find a design by its ID'
 
@@ -50,7 +50,11 @@ module Resolvers
       end
 
       def parse_gid(gid)
-        GitlabSchema.parse_gid(gid, expected_type: ::DesignManagement::Design).model_id
+        # TODO: remove this line when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        gid = ::Types::GlobalIDType[::DesignManagement::Design].coerce_isolated_input(gid)
+
+        gid.model_id
       end
     end
   end

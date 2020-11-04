@@ -141,7 +141,7 @@ module.exports = SomeClass;
 export default SomeClass;
 ```
 
-_Note:_ We still use `require` in `scripts/` and `config/` files.
+We still use `require` in `scripts/` and `config/` files.
 
 ## Absolute vs relative paths for modules
 

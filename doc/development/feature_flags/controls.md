@@ -213,7 +213,6 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
-NOTE: **Note:**
 **Percentage of time** rollout is not a good idea if what you want is to make sure a feature
 is always on or off to the users. In that case, **Percentage of actors** rollout is a better method.
 

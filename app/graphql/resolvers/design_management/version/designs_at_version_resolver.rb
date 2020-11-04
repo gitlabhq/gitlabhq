@@ -11,8 +11,9 @@ module Resolvers
 
         authorize :read_design
 
-        argument :ids,
-                 [GraphQL::ID_TYPE],
+        DesignID = ::Types::GlobalIDType[::DesignManagement::Design]
+
+        argument :ids, [DesignID],
                  required: false,
                  description: 'Filters designs by their ID'
         argument :filenames,
@@ -31,16 +32,19 @@ module Resolvers
         private
 
         def find(ids, filenames)
-          ids = ids&.map { |id| parse_design_id(id).model_id }
-
           ::DesignManagement::DesignsFinder.new(issue, current_user,
-                                                ids: ids,
+                                                ids: design_ids(ids),
                                                 filenames: filenames,
                                                 visible_at_version: version)
         end
 
-        def parse_design_id(id)
-          GitlabSchema.parse_gid(id, expected_type: ::DesignManagement::Design)
+        def design_ids(gids)
+          return if gids.nil?
+
+          # TODO: remove this line when the compatibility layer is removed
+          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+          gids = gids.map { |id| DesignID.coerce_isolated_input(id) }
+          gids.map(&:model_id)
         end
 
         def issue

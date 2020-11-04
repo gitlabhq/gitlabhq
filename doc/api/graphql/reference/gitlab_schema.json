@@ -13948,7 +13948,7 @@
                   "description": "The Global ID of the most recent acceptable version",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementVersionID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -14397,7 +14397,7 @@
                   "description": "Find a design by its ID",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementDesignID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -14433,7 +14433,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "DesignManagementDesignAtVersionID",
                       "ofType": null
                     }
                   },
@@ -14463,7 +14463,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "SCALAR",
-                        "name": "ID",
+                        "name": "DesignManagementDesignID",
                         "ofType": null
                       }
                     }
@@ -14493,7 +14493,7 @@
                   "description": "Filters designs to only those that existed at the version. If argument is omitted or nil then all designs will reflect the latest version",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementVersionID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -14606,7 +14606,7 @@
                   "description": "The Global ID of the version",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementVersionID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -14639,7 +14639,7 @@
                   "description": "The Global ID of the most recent acceptable version",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementVersionID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15061,7 +15061,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "DesignManagementDesignAtVersionID",
                       "ofType": null
                     }
                   },
@@ -15088,7 +15088,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "DesignManagementVersionID",
                       "ofType": null
                     }
                   },
@@ -15246,6 +15246,16 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "DesignManagementDesignAtVersionID",
+          "description": "Identifier of DesignManagement::DesignAtVersion",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -15558,6 +15568,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "DesignManagementVersionID",
+          "description": "Identifier of DesignManagement::Version",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "DesignVersion",
           "description": "A specific version in which designs were added, modified or deleted",
@@ -15571,7 +15591,7 @@
                   "description": "The ID of the DesignAtVersion",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementDesignAtVersionID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15581,7 +15601,7 @@
                   "description": "The ID of a specific design",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID",
+                    "name": "DesignManagementDesignID",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15681,7 +15701,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "SCALAR",
-                        "name": "ID",
+                        "name": "DesignManagementDesignID",
                         "ofType": null
                       }
                     }

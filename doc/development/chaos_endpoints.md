@@ -50,8 +50,7 @@ each endpoint can be set to `true`. This will run the chaos process in a Sidekiq
 
 To simulate a memory leak in your application, use the `/-/chaos/leakmem` endpoint.
 
-NOTE: **Note:**
-The memory is not retained after the request finishes. Once the request has completed, the Ruby garbage collector will attempt to recover the memory.
+The memory is not retained after the request finishes. After the request has completed, the Ruby garbage collector will attempt to recover the memory.
 
 ```plaintext
 GET /-/chaos/leakmem
@@ -145,8 +144,8 @@ curl http://localhost:3000/-/chaos/sleep?duration_s=60&token=secret
 
 This endpoint will simulate the unexpected death of a worker process using a `kill` signal.
 
-NOTE: **Note:**
-Since this endpoint uses the `KILL` signal, the worker is not given a chance to cleanup or shutdown.
+Because this endpoint uses the `KILL` signal, the worker isn't given an
+opportunity to cleanup or shutdown.
 
 ```plaintext
 GET /-/chaos/kill

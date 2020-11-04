@@ -58,7 +58,7 @@ The editor follows the same public API as [provided by Monaco editor](https://mi
 | Function | Arguments | Description
 | ----- | ----- | ----- |
 | `updateModelLanguage` | `path`: String | Updates the instance's syntax highlighting to follow the extension of the passed `path`. Available only on _instance_ level|
-| `use` | Array of objects | Array of **extensions** to apply to the instance. Note: `use` accepts only the array of _objects_, which means that the extensions' ES6 modules should be fetched and resolved in your views/components before being passed to `use`. This prop is available on _instance_ (applies extension to this particular instance) and _global edtor_ (applies the same extension to all instances) levels. |
+| `use` | Array of objects | Array of **extensions** to apply to the instance. Accepts only the array of _objects_, which means that the extensions' ES6 modules should be fetched and resolved in your views/components before being passed to `use`. This prop is available on _instance_ (applies extension to this particular instance) and _global edtor_ (applies the same extension to all instances) levels. |
 | Monaco Editor options | See [documentation](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html) | Default Monaco editor options |
 
 ## Tips

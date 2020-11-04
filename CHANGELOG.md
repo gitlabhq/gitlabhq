@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.5.3 (2020-11-03)
+
+### Fixed (3 changes)
+
+- Fix IDE issues with special characters. !46398
+- Ensure that copy to clipboard button is visible. !46466
+- Auto Deploy: fixes issues for fetching other charts from stable repo. !46531
+
+### Added (1 change)
+
+- Add environment variables to override backup/restore DB settings. !45855
+
+
 ## 13.5.2 (2020-11-02)
 
 ### Security (9 changes)
@@ -596,6 +609,17 @@ entry.
 - Fix documentation link, spacing, and error handling in alert integrations list. !45304
 - Replace tooltip with GLTooltip in epic sidebar datepicker. !45392
 - Bump cluster applications CI template. !45472
+
+
+## 13.4.6 (2020-11-03)
+
+### Fixed (1 change)
+
+- Auto Deploy: fixes issues for fetching other charts from stable repo. !46531
+
+### Other (1 change)
+
+- GitLab-managed apps: Use GitLab's repo as replacement for the Helm stable repo. !44875
 
 
 ## 13.4.5 (2020-11-02)

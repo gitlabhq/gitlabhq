@@ -741,8 +741,8 @@ describe('Some component with Apollo mock', () => {
 })
 ```
 
-NOTE: **Note:**
-When mocking resolved values, make sure the structure of the response is the same as actual API response: i.e. root property should be `data` for example
+When mocking resolved values, ensure the structure of the response is the same
+as the actual API response. For example, root property should be `data`.
 
 When testing queries, please keep in mind they are promises, so they need to be _resolved_ to render a result. Without resolving, we can check the `loading` state of the query:
 

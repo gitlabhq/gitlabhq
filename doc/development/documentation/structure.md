@@ -230,7 +230,6 @@ Consider the following guidelines when offering examples:
 - Better and best cases can be considered part of the good case(s) code block.
   In the same code block, precede each with comments: `# Better` and `# Best`.
 
-NOTE: **Note:**
 Although the bad-then-good approach is acceptable for the GitLab development
 guidelines, do not use it for user documentation. For user documentation, use
 *Do* and *Don't*. For examples, see the [Pajamas Design System](https://design.gitlab.com/content/punctuation/).

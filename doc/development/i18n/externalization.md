@@ -21,7 +21,7 @@ All `rake` commands described on this page must be run on a GitLab instance, usu
 In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
 project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
 
-Once you have the GitLab project ready, you can start working on the translation.
+After you have the GitLab project ready, you can start working on the translation.
 
 ## Tools
 
@@ -104,9 +104,8 @@ Active Record's `:message` option accepts a `Proc`, so we can do this instead:
 validates :group_id, uniqueness: { scope: [:project_id], message: -> (object, data) { _("already shared with this group") } }
 ```
 
-NOTE: **Note:**
 Messages in the API (`lib/api/` or `app/graphql`) do
-not need to be externalised.
+not need to be externalized.
 
 ### HAML files
 
@@ -385,8 +384,8 @@ Namespaces should be PascalCase.
   s__('OpenedNDaysAgo|Opened')
   ```
 
-Note: The namespace should be removed from the translation. See the [translation
-guidelines for more details](translation.md#namespaced-strings).
+The namespace should be removed from the translation. See the
+[translation guidelines for more details](translation.md#namespaced-strings).
 
 ### HTML
 

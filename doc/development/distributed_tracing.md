@@ -186,7 +186,7 @@ variables for all GitLab processes, including Workhorse, Gitaly, Rails, and Side
 
 ### 3. Start the GitLab application
 
-Once the `GITLAB_TRACING` environment variable is exported to all GitLab services, start the
+After the `GITLAB_TRACING` environment variable is exported to all GitLab services, start the
 application.
 
 When `GITLAB_TRACING` is configured properly, the application will log this on startup:
