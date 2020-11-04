@@ -70,8 +70,7 @@ and they will assist you with any issues you are having.
   kubectl logs <pod-name> --previous
   ```
 
-  NOTE: **Note:**
-  No logs are kept in the containers/pods themselves, everything is written to stdout.
+  No logs are kept in the containers/pods themselves. Everything is written to stdout.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 

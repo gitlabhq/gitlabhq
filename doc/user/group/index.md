@@ -130,7 +130,7 @@ give a user access to all projects in the group with one action.
 
 Add members to a group by navigating to the group's dashboard and clicking **Members**.
 
-![add members to group](img/add_new_members.png)
+![add members to group](img/add_new_members_v13_6.png)
 
 Select the [permission level](../permissions.md#permissions), and add the new member. You can also set the expiring date for that user; this is the date on which they will no longer have access to your group.
 
@@ -375,9 +375,9 @@ In GitLab [8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) and 
 
 1. Go to your group's **Members** page.
 1. Select the pencil icon in the row for the user you are editing.
-1. Select the orange `Change permissions` button.
+1. Select the brown `Edit permissions` button in the modal.
 
-![Setting manual permissions](img/manual_permissions_v13_1.png)
+![Setting manual permissions](img/manual_permissions_v13_6.png)
 
 Now you will be able to edit the user's permissions from the **Members** page.
 

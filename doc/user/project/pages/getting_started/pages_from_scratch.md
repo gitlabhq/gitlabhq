@@ -158,9 +158,8 @@ When it succeeds, go to **Settings > Pages** to view the URL where your site
 is now available.
 
 If you want to do more advanced tasks, you can update your `.gitlab-ci.yml` file
-with [any of the available settings](../../../../ci/yaml/README.md). See
-[Validate the `.gitlab-ci.yml`](../../../../ci/yaml/README.md#validate-the-gitlab-ciyml)
-for instructions on validating your YAML file with the Lint tool included with GitLab.
+with [any of the available settings](../../../../ci/yaml/README.md). You can validate
+your `.gitlab-ci.yml` file with the [CI Lint](../../../../ci/lint.md) tool that's included with GitLab.
 
 After successful execution of this `pages` job, a special `pages:deploy` job appears in the
 pipeline view. It prepares the content of the website for GitLab Pages daemon. GitLab executes it in

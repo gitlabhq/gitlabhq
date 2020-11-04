@@ -7,91 +7,15 @@ type: reference
 
 # GitLab CI/CD pipeline configuration reference
 
-GitLab CI/CD [pipelines](../pipelines/index.md) are configured using a YAML file called `.gitlab-ci.yml` within each project.
+This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
-The `.gitlab-ci.yml` file defines the structure and order of the pipelines and determines:
-
-- What to execute using [GitLab Runner](https://docs.gitlab.com/runner/).
-- What decisions to make when specific conditions are encountered. For example, when a process succeeds or fails.
-
-This topic covers CI/CD pipeline configuration. For other CI/CD configuration information, see:
-
-- [GitLab CI/CD Variables](../variables/README.md), for configuring the environment the pipelines run in.
-- [GitLab Runner advanced configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html), for configuring GitLab Runner.
-
-We have complete examples of configuring pipelines:
-
-- For a quick introduction to GitLab CI/CD, follow our [quick start guide](../quick_start/README.md).
+- For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/README.md).
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
-- To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
+- To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
-> For some additional information about GitLab CI/CD:
->
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [CI/CD Ease of configuration](https://www.youtube.com/embed/opdLqwz6tcE) video.
-> - Watch the [Making the case for CI/CD in your organization](https://about.gitlab.com/compare/github-actions-alternative/)
->   webcast to learn the benefits of CI/CD and how to measure the results of CI/CD automation.
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
->   from 30 days to under 8 hours with GitLab.
-
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
-you may need to enable pipeline triggering. Go to your project's **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
-
-## Introduction
-
-Pipeline configuration begins with jobs. Jobs are the most fundamental element of a `.gitlab-ci.yml` file.
-
-Jobs are:
-
-- Defined with constraints stating under what conditions they should be executed.
-- Top-level elements with an arbitrary name and must contain at least the [`script`](#script) clause.
-- Not limited in how many can be defined.
-
-For example:
-
-```yaml
-job1:
-  script: "execute-script-for-job1"
-
-job2:
-  script: "execute-script-for-job2"
-```
-
-The above example is the simplest possible CI/CD configuration with two separate
-jobs, where each of the jobs executes a different command.
-Of course a command can execute code directly (`./configure;make;make install`)
-or run a script (`test.sh`) in the repository.
-
-Jobs are picked up by [runners](../runners/README.md) and executed within the
-environment of the runner. What is important is that each job is run
-independently from each other.
-
-### Validate the `.gitlab-ci.yml`
-
-Each instance of GitLab CI/CD has an embedded debug tool called Lint, which validates the
-content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
+While you are authoring your `.gitlab-ci.yml` file, you can validate it
+by using the [CI Lint](../lint.md) tool.
 project namespace. For example, `https://gitlab.example.com/gitlab-org/project-123/-/ci/lint`.
-
-### Unavailable names for jobs
-
-Each job must have a unique name, but there are a few **reserved `keywords` that
-can't be used as job names**:
-
-- `image`
-- `services`
-- `stages`
-- `types`
-- `before_script`
-- `after_script`
-- `variables`
-- `cache`
-- `include`
-
-### Using reserved keywords
-
-If you get validation error when using specific values (for example, `true` or `false`), try to:
-
-- Quote them.
-- Change them to a different form. For example, `/bin/true`.
 
 ## Job keywords
 
@@ -130,9 +54,31 @@ The following table lists available keywords for jobs:
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                |
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                  |
 
+### Unavailable names for jobs
+
+Each job must have a unique name, but there are a few **reserved `keywords` that
+can't be used as job names**:
+
+- `image`
+- `services`
+- `stages`
+- `types`
+- `before_script`
+- `after_script`
+- `variables`
+- `cache`
+- `include`
+
 ## Global keywords
 
 Some keywords must be defined at a global level, affecting all jobs in the pipeline.
+
+### Using reserved keywords
+
+If you get validation error when using specific values (for example, `true` or `false`), try to:
+
+- Quote them.
+- Change them to a different form. For example, `/bin/true`.
 
 ### Global defaults
 

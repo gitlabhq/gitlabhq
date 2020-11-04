@@ -148,4 +148,4 @@ It may take a little while to respond.
 ```
 
 NOTE: **Note:**
-These are Omnibus settings. If an external database, such as a customer's PostgreSQL installation or Amazon RDS is being used, these values don't get set, and would have to be set externally.
+These are Omnibus GitLab settings. If an external database, such as a customer's PostgreSQL installation or Amazon RDS is being used, these values don't get set, and would have to be set externally.

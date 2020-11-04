@@ -48,7 +48,7 @@ An instance of Editor Lite accepts the following configuration options:
 | `blobPath` | `false` | `String`: the name of a file to render in the editor. It is used to identify the correct syntax highlighter to use with that or another file type. Can accept wildcard as in `*.js` when the actual filename isn't known or doesn't play any role |
 | `blobContent` | `false` | `String`: the initial content to be rendered in the editor |
 | `extensions` | `false` | `Array`: extensions to use in this instance |
-| `blobGlobalId` | `false` | `String`: auto-generated property.</br>**Note:** this prop might go away in the future. Do not pass `blobGlobalId` unless you know what you're doing.|
+| `blobGlobalId` | `false` | `String`: auto-generated property.<br>**Note:** this prop might go away in the future. Do not pass `blobGlobalId` unless you know what you're doing.|
 | [Editor Options](https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.editoroption.html) | `false` | `Object(s)`: any prop outside of the list above is treated as an Editor Option for this particular instance. This way, one can override global Editor Options on the instance level. |
 
 ## API

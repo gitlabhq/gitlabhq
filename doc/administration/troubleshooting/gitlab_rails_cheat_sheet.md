@@ -308,10 +308,10 @@ pp p.statistics  # compare with earlier values
 
 ### Recreate
 
-A Projects Wiki can be recreated by
-
-NOTE: **Note:**
+CAUTION: **Caution:**
 This is a destructive operation, the Wiki will be empty.
+
+A Projects Wiki can be recreated by this command:
 
 ```ruby
 p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path

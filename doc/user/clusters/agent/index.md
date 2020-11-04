@@ -83,14 +83,6 @@ GitLab version 13.6, use version 13.6.x versions of `agentk`.
 The available `agentk` versions can be found in
 [its container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/eyJuYW1lIjoiZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9hZ2VudGsiLCJ0YWdzX3BhdGgiOiIvZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9yZWdpc3RyeS9yZXBvc2l0b3J5LzEyMjMyMDUvdGFncz9mb3JtYXQ9anNvbiIsImlkIjoxMjIzMjA1LCJjbGVhbnVwX3BvbGljeV9zdGFydGVkX2F0IjpudWxsfQ==).
 
-### Upgrades and Version compatibility
-
-As the GitLab Kubernetes Agent is a new product, we are constantly adding new features to it. As a result, while shipped features are production ready, it's internal API is not stable nor versioned yet. For this reason, we only guarantee compatibility between corresponding major.minor versions of GitLab and its cluster side component, `agentk`. Please, upgrade your agent installations together with GitLab upgrades.
-
-Example: having GitLab 13.6 installed, please use version 13.6.x versions of `agentk`.
-
-The available `agentk` versions can be found in [its container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/eyJuYW1lIjoiZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9hZ2VudGsiLCJ0YWdzX3BhdGgiOiIvZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9yZWdpc3RyeS9yZXBvc2l0b3J5LzEyMjMyMDUvdGFncz9mb3JtYXQ9anNvbiIsImlkIjoxMjIzMjA1LCJjbGVhbnVwX3BvbGljeV9zdGFydGVkX2F0IjpudWxsfQ==).
-
 ### Install the Kubernetes Agent Server
 
 The GitLab Kubernetes Agent Server (KAS) can be deployed using [Omnibus

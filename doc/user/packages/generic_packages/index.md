@@ -137,3 +137,9 @@ Feature.disable(:generic_packages)
 # For a single project
 Feature.disable(:generic_packages, Project.find(<project id>))
 ```
+
+### Generic package sample project
+
+The [Write CI-CD Variables in Pipeline](https://gitlab.com/guided-explorations/cfg-data/write-ci-cd-variables-in-pipeline) project contains a working example you can use to create, upload, and download generic packages in GitLab CI/CD.
+
+It also demonstrates how to manage a semantic version for the generic package: storing it in a CI/CD variable, retrieving it, incrementing it, and writing it back to the CI/CD variable when tests for the download work correctly.

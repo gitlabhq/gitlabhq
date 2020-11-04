@@ -11,7 +11,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The [PgBouncer exporter](https://github.com/prometheus-community/pgbouncer_exporter) enables
 you to measure various [PgBouncer](https://www.pgbouncer.org/) metrics.
 
-NOTE: **Note:**
 For installations from source you must install and configure it yourself.
 
 To enable the PgBouncer exporter:

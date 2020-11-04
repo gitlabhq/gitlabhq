@@ -58,9 +58,13 @@ module Gitlab
     # args - Any additional arguments to pass to `Feature.enabled?`. This allows
     #        you to check if a flag is enabled for a particular user.
     def push_frontend_feature_flag(name, *args, **kwargs)
-      var_name = name.to_s.camelize(:lower)
       enabled = Feature.enabled?(name, *args, **kwargs)
 
+      push_to_gon_features(name, enabled)
+    end
+
+    def push_to_gon_features(name, enabled)
+      var_name = name.to_s.camelize(:lower)
       # Here the `true` argument signals gon that the value should be merged
       # into any existing ones, instead of overwriting them. This allows you to
       # use this method to push multiple feature flags.

@@ -34,8 +34,7 @@ currently being deployed or has been deployed on your servers.
 It's important to know that:
 
 - Environments are like tags for your CI jobs, describing where code gets deployed.
-- Deployments are created when [jobs](../yaml/README.md#introduction) deploy versions of code to environments,
-  so every environment can have one or more deployments.
+- Deployments are created when [GitLab CI/CD](../yaml/README.md) is used to deploy versions of code to environments.
 
 GitLab:
 

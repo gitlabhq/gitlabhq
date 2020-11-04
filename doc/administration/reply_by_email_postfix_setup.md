@@ -91,9 +91,10 @@ The instructions make the assumption that you will be using the email address `i
    quit
    ```
 
-   _**Note:** The `.` is a literal period on its own line._
+   NOTE: **Note:**
+   The `.` is a literal period on its own line.
 
-   _**Note:** If you receive an error after entering `rcpt to: incoming@localhost`
+   If you receive an error after entering `rcpt to: incoming@localhost`
    then your Postfix `my_network` configuration is not correct. The error will
    say 'Temporary lookup failure'. See
    [Configure Postfix to receive email from the Internet](#configure-postfix-to-receive-email-from-the-internet)._
@@ -164,11 +165,11 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
       q
       ```
 
-   _**Note:** If `mail` returns an error `Maildir: Is a directory` then your
+   If `mail` returns an error `Maildir: Is a directory` then your
    version of `mail` doesn't support Maildir style mailboxes. Install
    `heirloom-mailx` by running `sudo apt-get install heirloom-mailx`. Then,
    try the above steps again, substituting `heirloom-mailx` for the `mail`
-   command._
+   command.
 
 1. Sign out of the `incoming` account, and go back to being `root`:
 
@@ -271,7 +272,8 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
       quit
       ```
 
-      (Note: The `.` is a literal period on its own line)
+      NOTE: **Note:**
+      The `.` is a literal period on its own line.
 
    1. Check if the `incoming` user received the email:
 

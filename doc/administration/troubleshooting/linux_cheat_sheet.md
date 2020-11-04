@@ -18,7 +18,6 @@ If you are administering GitLab you are expected to know these commands for your
 of choice. If you are a GitLab Support Engineer, consider this a cross-reference to
 translate `yum` -> `apt-get` and the like.
 
-Note: **Note:**
 Most of the commands below have not been labeled as to which distribution they work
 on. Contributions are welcome to help add them.
 

@@ -385,7 +385,7 @@ User.find_by(username: 'root')
 User.find_by_any_email('user@example.com')
 ```
 
-Note: `find_by_any_email` is a custom method added by GitLab developers rather
+The `find_by_any_email` method is a custom method added by GitLab developers rather
 than a Rails-provided default method.
 
 **Get a collection of admin users:**
@@ -394,7 +394,7 @@ than a Rails-provided default method.
 User.admins
 ```
 
-Note: `admins` is a [scope convenience method](https://guides.rubyonrails.org/active_record_querying.html#scopes)
+`admins` is a [scope convenience method](https://guides.rubyonrails.org/active_record_querying.html#scopes)
 which does `where(admin: true)` under the hood.
 
 **Get a project by its path:**
@@ -403,7 +403,7 @@ which does `where(admin: true)` under the hood.
 Project.find_by_full_path('group/subgroup/project')
 ```
 
-Note: `find_by_full_path` is a custom method added by GitLab developers rather
+`find_by_full_path` is a custom method added by GitLab developers rather
 than a Rails-provided default method.
 
 **Get a project's issue or merge request by its numeric ID:**
@@ -414,7 +414,7 @@ project.issues.find_by(iid: 42)
 project.merge_requests.find_by(iid: 42)
 ```
 
-Note: `iid` means "internal ID" and is how we keep issue and merge request IDs
+`iid` means "internal ID" and is how we keep issue and merge request IDs
 scoped to each GitLab project.
 
 **Get a group by its path:**
@@ -454,7 +454,7 @@ Ci::Pipeline.find(4151)
 Ci::Build.find(66124)
 ```
 
-Note: The pipeline and job #ID numbers increment globally across your GitLab
+The pipeline and job ID numbers increment globally across your GitLab
 instance, so there's no need to use an internal ID attribute to look them up,
 unlike with issues or merge requests.
 

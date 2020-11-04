@@ -16,10 +16,9 @@ There is a Rake task for migrating uploads between different storage types.
 After [configuring the object storage](../../uploads.md#using-object-storage) for GitLab's
 uploads, use this task to migrate existing uploads from the local storage to the remote storage.
 
-Read more about using [object storage with GitLab](../../object_storage.md).
-
-NOTE: **Note:**
 All of the processing will be done in a background worker and requires **no downtime**.
+
+Read more about using [object storage with GitLab](../../object_storage.md).
 
 ### All-in-one Rake task
 
@@ -99,7 +98,6 @@ gitlab-rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, De
 
 **Source Installation**
 
-NOTE: **Note:**
 Use `RAILS_ENV=production` for every task.
 
 ```shell

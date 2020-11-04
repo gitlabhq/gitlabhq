@@ -68,7 +68,7 @@ Pipelines can be configured in many different ways:
 
 Pipelines and their component jobs and stages are defined in the CI/CD pipeline configuration file for each project.
 
-- Jobs are the [basic configuration](../yaml/README.md#introduction) component.
+- Jobs are the [basic configuration](#about-jobs) component.
 - Stages are defined by using the [`stages`](../yaml/README.md#stages) keyword.
 
 For a list of configuration options in the CI pipeline file, see the [GitLab CI/CD Pipeline Configuration Reference](../yaml/README.md).
@@ -287,7 +287,36 @@ preserving deployment keys and other credentials from being unintentionally
 accessed. In order to ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
 
-## View jobs in a pipeline
+## About jobs
+
+Pipeline configuration begins with jobs. Jobs are the most fundamental element of a `.gitlab-ci.yml` file.
+
+Jobs are:
+
+- Defined with constraints stating under what conditions they should be executed.
+- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/README.md#script) clause.
+- Not limited in how many can be defined.
+
+For example:
+
+```yaml
+job1:
+  script: "execute-script-for-job1"
+
+job2:
+  script: "execute-script-for-job2"
+```
+
+The above example is the simplest possible CI/CD configuration with two separate
+jobs, where each of the jobs executes a different command.
+Of course a command can execute code directly (`./configure;make;make install`)
+or run a script (`test.sh`) in the repository.
+
+Jobs are picked up by [runners](../runners/README.md) and executed within the
+environment of the runner. What is important is that each job is run
+independently from each other.
+
+### View jobs in a pipeline
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 

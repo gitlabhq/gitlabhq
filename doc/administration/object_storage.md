@@ -116,7 +116,7 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
     gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = '<terraform-state>'
     ```
 
-   NOTE: For GitLab 9.4 or later, if you're using AWS IAM profiles, be sure to omit the
+   For GitLab 9.4 or later, if you're using AWS IAM profiles, be sure to omit the
    AWS access key and secret access key/value pairs. For example:
 
    ```ruby
@@ -263,9 +263,9 @@ Here are the valid connection parameters for GCS:
 | `google_json_key_location` | The JSON key path | `/path/to/gcp-project-12345-abcde.json` |
 | `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. |
 
-NOTE: **Note:**
-The service account must have permission to access the bucket.
-[See more](https://cloud.google.com/storage/docs/authentication)
+The service account must have permission to access the bucket. Learn more
+in Google's
+[Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
 ##### Google example (consolidated form)
 

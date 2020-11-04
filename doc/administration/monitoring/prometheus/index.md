@@ -31,7 +31,6 @@ dashboard tool like [Grafana](https://grafana.com).
 
 ## Configuring Prometheus
 
-NOTE: **Note:**
 For installations from source, you must install and configure it yourself.
 
 Prometheus and its exporters are on by default, starting with GitLab 9.0.
@@ -54,7 +53,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 
 ### Changing the port and address Prometheus listens on
 
-NOTE: **Note:**
+CAUTION: **Caution:**
 The following change was added in [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
 it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
@@ -178,7 +177,6 @@ The next step is to tell all the other nodes where the monitoring node is:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
 
-NOTE: **Note:**
 After monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
 ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`. Setting both
 `consul['monitoring_service_discovery'] = true` and `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
@@ -186,7 +184,7 @@ will result in errors.
 
 ### Using an external Prometheus server
 
-NOTE: **Note:**
+CAUTION: **Caution:**
 Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
 
 A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for [GitLab deployments with multiple nodes](../../reference_architectures/index.md).

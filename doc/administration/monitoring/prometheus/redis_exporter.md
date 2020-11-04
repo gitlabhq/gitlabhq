@@ -10,7 +10,6 @@ The [Redis exporter](https://github.com/oliver006/redis_exporter) enables you to
 various [Redis](https://redis.io) metrics. For more information on what is exported,
 [read the upstream documentation](https://github.com/oliver006/redis_exporter/blob/master/README.md#whats-exported).
 
-NOTE: **Note:**
 For installations from source you must install and configure it yourself.
 
 To enable the Redis exporter:
