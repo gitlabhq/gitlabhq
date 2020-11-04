@@ -188,6 +188,12 @@ ul.related-merge-requests > li {
       border-width: 1px;
       line-height: $line-height-base;
       width: auto;
+
+      &.disabled {
+        background-color: $gray-light;
+        border-color: $gray-100;
+        color: $gl-text-color-disabled;
+      }
     }
   }
 

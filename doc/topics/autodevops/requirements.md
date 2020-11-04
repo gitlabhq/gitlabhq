@@ -126,11 +126,9 @@ When you trigger a pipeline, if you have Auto DevOps enabled and if you have cor
 [entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),
 your application will be deployed to AWS ECS.
 
-NOTE: **Note:**
 [GitLab Managed Apps](../../user/clusters/applications.md) are not available when deploying to AWS ECS.
 You must manually configure your application (such as Ingress or Help) on AWS ECS.
 
-NOTE: **Note:**
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
 only the deployment to Kubernetes will run.
 

@@ -245,14 +245,6 @@ class Import::GithubController < Import::BaseController
   def extra_import_params
     {}
   end
-
-  def sanitized_filter_param
-    @filter ||= sanitize(params[:filter])
-  end
-
-  def filter_attribute
-    :name
-  end
 end
 
 Import::GithubController.prepend_if_ee('EE::Import::GithubController')

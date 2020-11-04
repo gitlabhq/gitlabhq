@@ -36,13 +36,10 @@ RSpec.describe NamespaceSetting, type: :model do
 
       context "when an empty string" do
         before do
-          namespace_settings.default_branch_name = ''
+          namespace_settings.default_branch_name = ""
         end
 
-        it "returns an error" do
-          expect(namespace_settings.valid?).to be_falsey
-          expect(namespace_settings.errors.full_messages).not_to be_empty
-        end
+        it_behaves_like "doesn't return an error"
       end
     end
 

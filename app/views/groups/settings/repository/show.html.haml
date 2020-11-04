@@ -4,3 +4,4 @@
 - deploy_token_description = s_('DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group.')
 
 = render "shared/deploy_tokens/index", group_or_project: @group, description: deploy_token_description
+= render "initial_branch_name", group: @group

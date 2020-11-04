@@ -90,18 +90,24 @@ module Gitlab
           event_for(event_name).present?
         end
 
-        def aggregated_metrics_data
+        def aggregated_metrics_monthly_data
           aggregated_metrics.to_h do |aggregation|
-            [aggregation[:name], calculate_count_for_aggregation(aggregation)]
+            [aggregation[:name], calculate_count_for_aggregation(aggregation, start_date: 4.weeks.ago.to_date, end_date: Date.current)]
+          end
+        end
+
+        def aggregated_metrics_weekly_data
+          aggregated_metrics.to_h do |aggregation|
+            [aggregation[:name], calculate_count_for_aggregation(aggregation, start_date: 7.days.ago.to_date, end_date: Date.current)]
           end
         end
 
         private
 
-        def calculate_count_for_aggregation(aggregation)
+        def calculate_count_for_aggregation(aggregation, start_date:, end_date:)
           validate_aggregation_operator!(aggregation[:operator])
 
-          count_unique_events(event_names: aggregation[:events], start_date: 4.weeks.ago.to_date, end_date: Date.current) do |events|
+          count_unique_events(event_names: aggregation[:events], start_date: start_date, end_date: end_date) do |events|
             raise SlotMismatch, events unless events_in_same_slot?(events)
             raise AggregationMismatch, events unless events_same_aggregation?(events)
           end

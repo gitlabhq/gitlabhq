@@ -123,11 +123,9 @@ module Clusters
       end
 
       def role_binding_resource
-        role_name = Feature.enabled?(:kubernetes_cluster_namespace_role_admin) ? 'admin' : Clusters::Kubernetes::PROJECT_CLUSTER_ROLE_NAME
-
         Gitlab::Kubernetes::RoleBinding.new(
           name: role_binding_name,
-          role_name: role_name,
+          role_name: Clusters::Kubernetes::PROJECT_CLUSTER_ROLE_NAME,
           role_kind: :ClusterRole,
           namespace: service_account_namespace,
           service_account_name: service_account_name

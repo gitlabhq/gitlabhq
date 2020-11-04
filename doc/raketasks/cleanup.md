@@ -207,6 +207,10 @@ sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
 bundle exec rake gitlab:cleanup:sessions:active_sessions_lookup_keys RAILS_ENV=production
 ```
 
+## Cleaning up stale Redis sessions
+
+[Clean up stale sessions](../administration/operations/cleaning_up_redis_sessions.md) to compact the Redis database after you upgrade to GitLab 7.3.
+
 ## Container Registry garbage collection
 
 Container Registry can use considerable amounts of disk space. To clear up

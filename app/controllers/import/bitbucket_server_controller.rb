@@ -170,10 +170,6 @@ class Import::BitbucketServerController < Import::BaseController
     BitbucketServer::Paginator::PAGE_LENGTH
   end
 
-  def sanitized_filter_param
-    sanitize(params[:filter])
-  end
-
   def bitbucket_connection_error(error)
     flash[:alert] = _("Unable to connect to server: %{error}") % { error: error }
     clear_session_data

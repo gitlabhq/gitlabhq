@@ -967,23 +967,72 @@ RSpec.describe Group do
       context 'expanded group members' do
         let(:indirect_user) { create(:user) }
 
-        it 'enables two_factor_requirement for subgroup member' do
-          subgroup = create(:group, :nested, parent: group)
-          subgroup.add_user(indirect_user, GroupMember::OWNER)
+        context 'two_factor_requirement is enabled' do
+          context 'two_factor_requirement is also enabled for ancestor group' do
+            it 'enables two_factor_requirement for subgroup member' do
+              subgroup = create(:group, :nested, parent: group)
+              subgroup.add_user(indirect_user, GroupMember::OWNER)
 
-          group.update!(require_two_factor_authentication: true)
+              group.update!(require_two_factor_authentication: true)
 
-          expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
+              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
+            end
+          end
+
+          context 'two_factor_requirement is disabled for ancestor group' do
+            it 'enables two_factor_requirement for subgroup member' do
+              subgroup = create(:group, :nested, parent: group, require_two_factor_authentication: true)
+              subgroup.add_user(indirect_user, GroupMember::OWNER)
+
+              group.update!(require_two_factor_authentication: false)
+
+              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
+            end
+
+            it 'enable two_factor_requirement for ancestor group member' do
+              ancestor_group = create(:group)
+              ancestor_group.add_user(indirect_user, GroupMember::OWNER)
+              group.update!(parent: ancestor_group)
+
+              group.update!(require_two_factor_authentication: true)
+
+              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
+            end
+          end
         end
 
-        it 'does not enable two_factor_requirement for ancestor group member' do
-          ancestor_group = create(:group)
-          ancestor_group.add_user(indirect_user, GroupMember::OWNER)
-          group.update!(parent: ancestor_group)
+        context 'two_factor_requirement is disabled' do
+          context 'two_factor_requirement is enabled for ancestor group' do
+            it 'enables two_factor_requirement for subgroup member' do
+              subgroup = create(:group, :nested, parent: group)
+              subgroup.add_user(indirect_user, GroupMember::OWNER)
 
-          group.update!(require_two_factor_authentication: true)
+              group.update!(require_two_factor_authentication: true)
 
-          expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
+              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
+            end
+          end
+
+          context 'two_factor_requirement is also disabled for ancestor group' do
+            it 'disables two_factor_requirement for subgroup member' do
+              subgroup = create(:group, :nested, parent: group)
+              subgroup.add_user(indirect_user, GroupMember::OWNER)
+
+              group.update!(require_two_factor_authentication: false)
+
+              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
+            end
+
+            it 'disables two_factor_requirement for ancestor group member' do
+              ancestor_group = create(:group, require_two_factor_authentication: false)
+              indirect_user.update!(require_two_factor_authentication_from_group: true)
+              ancestor_group.add_user(indirect_user, GroupMember::OWNER)
+
+              group.update!(require_two_factor_authentication: false)
+
+              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
+            end
+          end
         end
       end
 

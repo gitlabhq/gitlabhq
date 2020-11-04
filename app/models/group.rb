@@ -109,6 +109,8 @@ class Group < Namespace
       .where("project_authorizations.user_id IN (?)", user_ids)
   end
 
+  delegate :default_branch_name, to: :namespace_settings
+
   class << self
     def sort_by_attribute(method)
       if method == 'storage_size_desc'
@@ -587,7 +589,7 @@ class Group < Namespace
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
-    members_with_descendants.find_each(&:update_two_factor_requirement)
+    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
   end
 
   def path_changed_hook

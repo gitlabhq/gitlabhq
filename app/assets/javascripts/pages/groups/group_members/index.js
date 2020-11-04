@@ -21,35 +21,32 @@ function mountRemoveMemberModal() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  groupsSelect();
-  memberExpirationDate();
-  memberExpirationDate('.js-access-expiration-date-groups');
-  mountRemoveMemberModal();
+const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];
+initGroupMembersApp(
+  document.querySelector('.js-group-members-list'),
+  SHARED_FIELDS.concat(['source', 'granted']),
+  memberRequestFormatter,
+);
+initGroupMembersApp(
+  document.querySelector('.js-group-linked-list'),
+  SHARED_FIELDS.concat('granted'),
+  groupLinkRequestFormatter,
+);
+initGroupMembersApp(
+  document.querySelector('.js-group-invited-members-list'),
+  SHARED_FIELDS.concat('invited'),
+  memberRequestFormatter,
+);
+initGroupMembersApp(
+  document.querySelector('.js-group-access-requests-list'),
+  SHARED_FIELDS.concat('requested'),
+  memberRequestFormatter,
+);
 
-  const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];
+groupsSelect();
+memberExpirationDate();
+memberExpirationDate('.js-access-expiration-date-groups');
+mountRemoveMemberModal();
 
-  initGroupMembersApp(
-    document.querySelector('.js-group-members-list'),
-    SHARED_FIELDS.concat(['source', 'granted']),
-    memberRequestFormatter,
-  );
-  initGroupMembersApp(
-    document.querySelector('.js-group-linked-list'),
-    SHARED_FIELDS.concat('granted'),
-    groupLinkRequestFormatter,
-  );
-  initGroupMembersApp(
-    document.querySelector('.js-group-invited-members-list'),
-    SHARED_FIELDS.concat('invited'),
-    memberRequestFormatter,
-  );
-  initGroupMembersApp(
-    document.querySelector('.js-group-access-requests-list'),
-    SHARED_FIELDS.concat('requested'),
-    memberRequestFormatter,
-  );
-
-  new Members(); // eslint-disable-line no-new
-  new UsersSelect(); // eslint-disable-line no-new
-});
+new Members(); // eslint-disable-line no-new
+new UsersSelect(); // eslint-disable-line no-new

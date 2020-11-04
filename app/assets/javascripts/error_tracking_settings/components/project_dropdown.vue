@@ -1,11 +1,11 @@
 <script>
-import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { getDisplayName } from '../utils';
 
 export default {
   components: {
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
   },
   props: {
     dropdownLabel: {
@@ -52,22 +52,22 @@ export default {
   <div :class="{ 'gl-show-field-errors': isProjectInvalid }">
     <label class="label-bold" for="project-dropdown">{{ __('Project') }}</label>
     <div class="row">
-      <gl-deprecated-dropdown
+      <gl-dropdown
         id="project-dropdown"
         class="col-8 col-md-9 gl-pr-0"
         :disabled="!hasProjects"
         menu-class="w-100 mw-100"
-        toggle-class="dropdown-menu-toggle w-100 gl-field-error-outline"
+        toggle-class="dropdown-menu-toggle gl-field-error-outline"
         :text="dropdownLabel"
       >
-        <gl-deprecated-dropdown-item
+        <gl-dropdown-item
           v-for="project in projects"
           :key="`${project.organizationSlug}.${project.slug}`"
           class="w-100"
           @click="$emit('select-project', project)"
-          >{{ getDisplayName(project) }}</gl-deprecated-dropdown-item
+          >{{ getDisplayName(project) }}</gl-dropdown-item
         >
-      </gl-deprecated-dropdown>
+      </gl-dropdown>
     </div>
     <p v-if="isProjectInvalid" class="js-project-dropdown-error gl-field-error">
       {{ invalidProjectLabel }}

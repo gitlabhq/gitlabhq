@@ -48,6 +48,8 @@ class ApplicationRecord < ActiveRecord::Base
 
   def self.safe_find_or_create_by!(*args, &block)
     safe_find_or_create_by(*args, &block).tap do |record|
+      raise ActiveRecord::RecordNotFound unless record.present?
+
       record.validate! unless record.persisted?
     end
   end

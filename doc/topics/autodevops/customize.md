@@ -74,7 +74,6 @@ Docker image based on based on the `ruby:alpine` instead of the default `ruby:la
    # ... put your stuff here
    ```
 
-NOTE: **Note:**
 Use Base64 encoding if you need to pass complex values, such as newlines and
 spaces. Left unencoded, complex values like these can cause escaping issues
 due to how Auto DevOps uses the arguments.
@@ -123,7 +122,6 @@ to `CI_COMMIT_SHA,CI_ENVIRONMENT_NAME`.
      RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && $COMMAND
      ```
 
-NOTE: **Note:**
 When `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` is set, Auto DevOps
 enables the experimental [Docker BuildKit](https://docs.docker.com/develop/develop-images/build_enhancements/)
 feature to use the `--secret` flag.
@@ -453,7 +451,6 @@ the updated secrets. To update the secrets, either:
 - Manually delete running pods to cause Kubernetes to create new pods with updated
   secrets.
 
-NOTE: **Note:**
 Variables with multi-line values are not currently supported due to
 limitations with the current Auto DevOps scripting environment.
 

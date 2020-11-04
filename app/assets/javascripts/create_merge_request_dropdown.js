@@ -168,9 +168,6 @@ export default class CreateMergeRequestDropdown {
 
   disable() {
     this.disableCreateAction();
-
-    this.dropdownToggle.classList.add('disabled');
-    this.dropdownToggle.setAttribute('disabled', 'disabled');
   }
 
   disableCreateAction() {
@@ -189,9 +186,6 @@ export default class CreateMergeRequestDropdown {
 
     this.createTargetButton.classList.remove('disabled');
     this.createTargetButton.removeAttribute('disabled');
-
-    this.dropdownToggle.classList.remove('disabled');
-    this.dropdownToggle.removeAttribute('disabled');
   }
 
   static findByValue(objects, ref, returnFirstMatch = false) {

@@ -1,7 +1,7 @@
 import { pick, clone } from 'lodash';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import ProjectDropdown from '~/error_tracking_settings/components/project_dropdown.vue';
 import { defaultProps, projectList, staleProject } from '../mock';
 
@@ -43,7 +43,7 @@ describe('error tracking settings project dropdown', () => {
   describe('empty project list', () => {
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBeTruthy();
-      expect(wrapper.find(GlDeprecatedDropdown).exists()).toBeTruthy();
+      expect(wrapper.find(GlDropdown).exists()).toBeTruthy();
     });
 
     it('shows helper text', () => {
@@ -58,8 +58,8 @@ describe('error tracking settings project dropdown', () => {
     });
 
     it('does not contain any dropdown items', () => {
-      expect(wrapper.find(GlDeprecatedDropdownItem).exists()).toBeFalsy();
-      expect(wrapper.find(GlDeprecatedDropdown).props('text')).toBe('No projects available');
+      expect(wrapper.find(GlDropdownItem).exists()).toBeFalsy();
+      expect(wrapper.find(GlDropdown).props('text')).toBe('No projects available');
     });
   });
 
@@ -72,12 +72,12 @@ describe('error tracking settings project dropdown', () => {
 
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBeTruthy();
-      expect(wrapper.find(GlDeprecatedDropdown).exists()).toBeTruthy();
+      expect(wrapper.find(GlDropdown).exists()).toBeTruthy();
     });
 
     it('contains a number of dropdown items', () => {
-      expect(wrapper.find(GlDeprecatedDropdownItem).exists()).toBeTruthy();
-      expect(wrapper.findAll(GlDeprecatedDropdownItem).length).toBe(2);
+      expect(wrapper.find(GlDropdownItem).exists()).toBeTruthy();
+      expect(wrapper.findAll(GlDropdownItem).length).toBe(2);
     });
   });
 

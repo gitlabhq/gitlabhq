@@ -132,10 +132,20 @@ class GroupsController < Groups::ApplicationController
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
-      redirect_to edit_group_path(@group, anchor: params[:update_section]), notice: "Group '#{@group.name}' was successfully updated."
+      notice = "Group '#{@group.name}' was successfully updated."
+
+      redirect_to edit_group_origin_location, notice: notice
     else
       @group.reset
       render action: "edit"
+    end
+  end
+
+  def edit_group_origin_location
+    if params.dig(:group, :redirect_target) == 'repository_settings'
+      group_settings_repository_path(@group, anchor: 'js-default-branch-name')
+    else
+      edit_group_path(@group, anchor: params[:update_section])
     end
   end
 

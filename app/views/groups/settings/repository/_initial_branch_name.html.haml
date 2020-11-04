@@ -1,0 +1,22 @@
+%section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Default initial branch name')
+    %button.gl-button.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Set the default name of the initial branch when creating new repositories through the user interface.')
+  .settings-content
+    = form_for @group, url: group_path(@group, anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@group)
+      - fallback_branch_name = '<code>master</code>'
+
+      %fieldset
+        .form-group
+          = f.label :default_branch_name, _('Default initial branch name'), class: 'label-light'
+          = f.text_field :default_branch_name, value: group.namespace_settings&.default_branch_name, placeholder: 'master', class: 'form-control'
+          %span.form-text.text-muted
+            = (_("Changes affect new repositories only. If not specified, either the configured application-wide default or Git's default name %{branch_name_default} will be used.") % { branch_name_default: fallback_branch_name }).html_safe
+
+      = f.hidden_field :redirect_target, value: "repository_settings"
+      = f.submit _('Save changes'), class: 'gl-button btn-success'

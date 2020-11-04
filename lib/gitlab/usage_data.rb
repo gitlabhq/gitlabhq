@@ -217,7 +217,8 @@ module Gitlab
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
           }.merge(
-            snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp))
+            snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp)),
+            aggregated_metrics_monthly
           ).tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end
@@ -239,7 +240,10 @@ module Gitlab
 
       def system_usage_data_weekly
         {
-          counts_weekly: {}
+          counts_weekly: {
+          }.merge(
+            aggregated_metrics_weekly
+          )
         }
       end
 
@@ -691,11 +695,19 @@ module Gitlab
         { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
       end
 
-      def aggregated_metrics
+      def aggregated_metrics_monthly
         return {} unless Feature.enabled?(:product_analytics_aggregated_metrics)
 
         {
-          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_data
+          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_monthly_data
+        }
+      end
+
+      def aggregated_metrics_weekly
+        return {} unless Feature.enabled?(:product_analytics_aggregated_metrics)
+
+        {
+          aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_weekly_data
         }
       end
 

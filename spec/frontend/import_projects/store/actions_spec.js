@@ -16,6 +16,7 @@ import {
   RECEIVE_NAMESPACES_SUCCESS,
   RECEIVE_NAMESPACES_ERROR,
   SET_PAGE,
+  SET_FILTER,
 } from '~/import_projects/store/mutation_types';
 import actionsFactory from '~/import_projects/store/actions';
 import { getImportTarget } from '~/import_projects/store/getters';
@@ -40,7 +41,7 @@ const {
   fetchImport,
   fetchJobs,
   fetchNamespaces,
-  setPage,
+  setFilter,
 } = actionsFactory({
   endpoints,
 });
@@ -359,21 +360,17 @@ describe('import_projects store actions', () => {
         ],
       );
     });
+  });
 
-    describe('setPage', () => {
-      it('dispatches fetchRepos and commits setPage when page number differs from current one', async () => {
-        await testAction(
-          setPage,
-          2,
-          { ...localState, pageInfo: { page: 1 } },
-          [{ type: SET_PAGE, payload: 2 }],
-          [{ type: 'fetchRepos' }],
-        );
-      });
-
-      it('does not perform any action if page equals to current one', async () => {
-        await testAction(setPage, 2, { ...localState, pageInfo: { page: 2 } }, [], []);
-      });
+  describe('setFilter', () => {
+    it('dispatches sets the filter value and dispatches fetchRepos', async () => {
+      await testAction(
+        setFilter,
+        'filteredRepo',
+        localState,
+        [{ type: SET_FILTER, payload: 'filteredRepo' }],
+        [{ type: 'fetchRepos' }],
+      );
     });
   });
 });

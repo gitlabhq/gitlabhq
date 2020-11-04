@@ -114,7 +114,6 @@ In this guide, we will install Ingress and Prometheus:
 - Prometheus - An open-source monitoring and alerting system used to supervise the
   deployed application.
 
-NOTE: **Note:**
 We won't install GitLab Runner in this quick start guide, as this guide uses the
 shared runners provided by GitLab.com.
 
@@ -161,7 +160,8 @@ The jobs are separated into stages:
 
 - **Build** - The application builds a Docker image and uploads it to your project's
   [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](stages.md#auto-build)).
-- **Test** - GitLab runs various checks on the application:
+- **Test** - GitLab runs various checks on the application, but all jobs except `test`
+  are allowed to fail in the test stage:
 
   - The `test` job runs unit and integration tests by detecting the language and
     framework ([Auto Test](stages.md#auto-test))
@@ -178,9 +178,6 @@ The jobs are separated into stages:
   - The `license_management` job searches the application's dependencies to determine each of their
     licenses and is allowed to fail
     ([Auto License Compliance](stages.md#auto-license-compliance)) **(ULTIMATE)**
-
-   NOTE: **Note:**
-   All jobs except `test` are allowed to fail in the test stage.
 
 - **Review** - Pipelines on `master` include this stage with a `dast_environment_deploy` job.
   To learn more, see [Dynamic Application Security Testing (DAST)](../../user/application_security/dast/index.md).

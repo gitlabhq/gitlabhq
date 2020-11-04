@@ -163,16 +163,18 @@ module Ci
     end
 
     def ensure_pending_state
-      Ci::BuildPendingState.create_or_find_by!(
+      build_state = Ci::BuildPendingState.safe_find_or_create_by(
         build_id: build.id,
         state: params.fetch(:state),
         trace_checksum: params.fetch(:checksum),
         failure_reason: params.dig(:failure_reason)
       )
-    rescue ActiveRecord::RecordNotFound
-      metrics.increment_trace_operation(operation: :conflict)
 
-      build.pending_state
+      unless build_state.present?
+        metrics.increment_trace_operation(operation: :conflict)
+      end
+
+      build_state || build.pending_state
     end
 
     ##

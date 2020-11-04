@@ -33,7 +33,6 @@ describe('ImportProjectsTable', () => {
 
   const importAllFn = jest.fn();
   const importAllModalShowFn = jest.fn();
-  const setPageFn = jest.fn();
   const fetchReposFn = jest.fn();
 
   function createComponent({
@@ -60,7 +59,6 @@ describe('ImportProjectsTable', () => {
         stopJobsPolling: jest.fn(),
         clearJobsEtagPoll: jest.fn(),
         setFilter: jest.fn(),
-        setPage: setPageFn,
       },
     });
 
