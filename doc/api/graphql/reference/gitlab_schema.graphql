@@ -7496,6 +7496,11 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   upvotes: Int!
 
   """
+  Number of user discussions in the issue
+  """
+  userDiscussionsCount: Int!
+
+  """
   Number of user notes of the issue
   """
   userNotesCount: Int!
@@ -9960,6 +9965,11 @@ type Issue implements CurrentUserTodos & Noteable {
   upvotes: Int!
 
   """
+  Number of user discussions in the issue
+  """
+  userDiscussionsCount: Int!
+
+  """
   Number of user notes of the issue
   """
   userNotesCount: Int!
@@ -11999,6 +12009,11 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   Number of upvotes for the merge request
   """
   upvotes: Int!
+
+  """
+  Number of user discussions in the merge request
+  """
+  userDiscussionsCount: Int
 
   """
   User notes count of the merge request

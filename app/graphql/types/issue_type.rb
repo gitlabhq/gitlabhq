@@ -62,6 +62,8 @@ module Types
           description: 'Number of downvotes the issue has received'
     field :user_notes_count, GraphQL::INT_TYPE, null: false,
           description: 'Number of user notes of the issue'
+    field :user_discussions_count, GraphQL::INT_TYPE, null: false,
+          description: 'Number of user discussions in the issue'
     field :web_path, GraphQL::STRING_TYPE, null: false, method: :issue_path,
           description: 'Web path of the issue'
     field :web_url, GraphQL::STRING_TYPE, null: false,
@@ -112,6 +114,26 @@ module Types
 
     field :severity, Types::IssuableSeverityEnum, null: true,
           description: 'Severity level of the incident'
+
+    def user_notes_count
+      BatchLoader::GraphQL.for(object.id).batch(key: :issue_user_notes_count) do |ids, loader, args|
+        counts = Note.count_for_collection(ids, 'Issue').index_by(&:noteable_id)
+
+        ids.each do |id|
+          loader.call(id, counts[id]&.count || 0)
+        end
+      end
+    end
+
+    def user_discussions_count
+      BatchLoader::GraphQL.for(object.id).batch(key: :issue_user_discussions_count) do |ids, loader, args|
+        counts = Note.count_for_collection(ids, 'Issue', 'COUNT(DISTINCT discussion_id) as count').index_by(&:noteable_id)
+
+        ids.each do |id|
+          loader.call(id, counts[id]&.count || 0)
+        end
+      end
+    end
 
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find

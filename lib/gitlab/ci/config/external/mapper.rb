@@ -33,6 +33,7 @@ module Gitlab
             locations
               .compact
               .map(&method(:normalize_location))
+              .flat_map(&method(:expand_project_files))
               .each(&method(:verify_duplicates!))
               .map(&method(:select_first_matching))
           end
@@ -49,6 +50,15 @@ module Gitlab
               normalize_location_string(location)
             else
               location.deep_symbolize_keys
+            end
+          end
+
+          def expand_project_files(location)
+            return location unless ::Feature.enabled?(:ci_include_multiple_files_from_project, context.project, default_enabled: false)
+            return location unless location[:project]
+
+            Array.wrap(location[:file]).map do |file|
+              location.merge(file: file)
             end
           end
 

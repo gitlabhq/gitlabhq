@@ -100,6 +100,42 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect { subject }.to raise_error(described_class::AmbigiousSpecificationError)
         end
       end
+
+      context "when the key is a project's file" do
+        let(:values) do
+          { include: { project: project.full_path, file: local_file },
+            image: 'ruby:2.7' }
+        end
+
+        it 'returns File instances' do
+          expect(subject).to contain_exactly(
+            an_instance_of(Gitlab::Ci::Config::External::File::Project))
+        end
+      end
+
+      context "when the key is project's files" do
+        let(:values) do
+          { include: { project: project.full_path, file: [local_file, 'another_file_path.yml'] },
+            image: 'ruby:2.7' }
+        end
+
+        it 'returns two File instances' do
+          expect(subject).to contain_exactly(
+            an_instance_of(Gitlab::Ci::Config::External::File::Project),
+            an_instance_of(Gitlab::Ci::Config::External::File::Project))
+        end
+
+        context 'when FF ci_include_multiple_files_from_project is disabled' do
+          before do
+            stub_feature_flags(ci_include_multiple_files_from_project: false)
+          end
+
+          it 'returns a File instance' do
+            expect(subject).to contain_exactly(
+              an_instance_of(Gitlab::Ci::Config::External::File::Project))
+          end
+        end
+      end
     end
 
     context "when 'include' is defined as an array" do
@@ -161,6 +197,16 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
       it 'raises an exception' do
         expect { subject }.to raise_error(described_class::DuplicateIncludesError)
       end
+
+      context 'when including multiple files from a project' do
+        let(:values) do
+          { include: { project: project.full_path, file: [local_file, local_file] } }
+        end
+
+        it 'raises an exception' do
+          expect { subject }.to raise_error(described_class::DuplicateIncludesError)
+        end
+      end
     end
 
     context "when too many 'includes' are defined" do
@@ -178,6 +224,16 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
       it 'raises an exception' do
         expect { subject }.to raise_error(described_class::TooManyIncludesError)
+      end
+
+      context 'when including multiple files from a project' do
+        let(:values) do
+          { include: { project: project.full_path, file: [local_file, 'another_file_path.yml'] } }
+        end
+
+        it 'raises an exception' do
+          expect { subject }.to raise_error(described_class::TooManyIncludesError)
+        end
       end
     end
   end

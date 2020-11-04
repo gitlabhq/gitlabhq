@@ -144,6 +144,8 @@
   - 1
 - - group_import
   - 1
+- - group_saml_group_sync
+  - 1
 - - hashed_storage
   - 1
 - - import_issues_csv

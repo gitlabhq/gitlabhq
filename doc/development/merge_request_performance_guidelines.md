@@ -125,10 +125,10 @@ read this section on [how to prepare the merge request for a database review](da
 
 ## Query Counts
 
-**Summary:** a merge request **should not** increase the number of executed SQL
+**Summary:** a merge request **should not** increase the total number of executed SQL
 queries unless absolutely necessary.
 
-The number of queries executed by the code modified or added by a merge request
+The total number of queries executed by the code modified or added by a merge request
 must not increase unless absolutely necessary. When building features it's
 entirely possible you will need some extra queries, but you should try to keep
 this at a minimum.
@@ -147,7 +147,7 @@ end
 This will end up running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecoder](query_recorder.md) to detect this and prevent regressions.
+["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -157,6 +157,82 @@ objects_to_update.update_all(some_field: some_value)
 
 This uses ActiveRecord's `update_all` method to update all rows in a single
 query. This in turn makes it much harder for this code to overload a database.
+
+## Cached Queries
+
+**Summary:** a merge request **should not** execute duplicated cached queries.
+
+Rails provides an [SQL query cache](https://guides.rubyonrails.org/caching_with_rails.html#sql-caching), 
+used to cache the results of database queries for the duration of the request. 
+If Rails encounters the same query again for that request,
+it will use the cached result set as opposed to running the query against the database again.
+The query results are only cached for the duration of that single request, it does not persist across multiple requests.
+
+The cached queries help with reducing DB load, but they still:
+
+- Consume memory.
+- Require as to re-instantiate each `ActiveRecord` object.
+- Require as to re-instantiate each relation of the object.
+- Make us spend additional CPU-cycles to look into a list of cached queries.
+
+They are cheaper, but they are not cheap at all from `memory` perspective.
+ 
+Cached SQL queries, could mask [N+1 query problem](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations).
+If those N queries are executing the same query, it will not hit the database N times, it will return the cached results instead,
+which is still expensive since we need to re-initialize objects each time, and this is CPU/Memory expensive.
+Instead, you should use the same in-memory objects, if possible. 
+
+When building features, you could use [Performance bar](../administration/monitoring/performance/performance_bar.md)
+in order to list Database queries, which will include cached queries as well. If you see a lot of similar queries,
+this often indicates an N+1 query issue (or a similar kind of query batching problem).
+If you see same cached query executed multiple times, this often indicates a masked N+1 query problem.
+
+The code introduced by a merge request, should not execute multiple duplicated cached queries.
+
+The total number of the queries (including cached ones) executed by the code modified or added by a merge request
+should not increase unless absolutely necessary.
+The number of executed queries (including cached queries) should not depend on 
+collection size.
+You can write a test by passing the `skip_cached` variable to [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
+
+As an example, say you have a CI pipeline. All pipeline builds belong to the same pipeline,
+thus they also belong to the same project (`pipeline.project`):
+
+```ruby
+pipeline_project = pipeline.project
+# Project Load (0.6ms)  SELECT "projects".* FROM "projects" WHERE "projects"."id" = $1 LIMIT $2
+build = pipeline.builds.first
+
+build.project == pipeline_project
+# CACHE Project Load (0.0ms)  SELECT "projects".* FROM "projects" WHERE "projects"."id" = $1 LIMIT $2
+# => true
+```
+
+When we call `build.project`, it will not hit the database, it will use the cached result, but it will re-instantiate
+same pipeline project object. It turns out that associated objects do not point to the same in-memory object.
+
+If we try to serialize each build:
+
+```ruby
+pipeline.builds.each do |build|
+  build.to_json(only: [:name], include: [project: { only: [:name]}])
+end
+```
+
+It will re-instantiate project object for each build, instead of using the same in-memory object.
+
+In this particular case the workaround is fairly easy:
+
+```ruby
+pipeline.builds.each do |build|                               
+  build.project = pipeline.project
+  build.to_json(only: [:name], include: [project: { only: [:name]}])
+end
+```
+
+We can assign `pipeline.project` to each `build.project`, since we know it should point to the same project.
+This will allow us that each build point to the same in-memory project,
+avoiding the cached SQL query and re-instantiation of the project object for each build.
 
 ## Executing Queries in Loops
 

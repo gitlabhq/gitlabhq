@@ -1,6 +1,6 @@
 - milestone_url = @milestone.project_milestone? ? project_milestone_path(@project, @milestone) : group_milestone_path(@group, @milestone)
 
-%button.js-delete-milestone-button.btn.btn-grouped.btn-danger{ data: { milestone_id: @milestone.id,
+%button.js-delete-milestone-button.btn.gl-button.btn-grouped.btn-danger{ data: { milestone_id: @milestone.id,
   milestone_title: markdown_field(@milestone, :title),
   milestone_url: milestone_url,
   milestone_issue_count: @milestone.issues.count,

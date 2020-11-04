@@ -438,6 +438,42 @@ All [nested includes](#nested-includes) are executed in the scope of the target 
 This means you can use local (relative to target project), project, remote,
 or template includes.
 
+##### Multiple files from a project
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it. **(CORE ONLY)**
+
+You can include multiple files from the same project:
+
+```yaml
+include:
+  - project: 'my-group/my-project'
+    ref: master
+    file:
+      - '/templates/.builds.yml'
+      - '/templates/.tests.yml'
+```
+
+Including multiple files from the same project is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_include_multiple_files_from_project)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_include_multiple_files_from_project)
+```
+
 #### `include:remote`
 
 `include:remote` can be used to include a file from a different location,

@@ -320,6 +320,46 @@ services:
      command: ["--registry-mirror", "https://registry-mirror.example.com"] # Specify the registry mirror to use.
 ```
 
+#### DinD service defined inside of GitLab Runner configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
+
+If you are an administrator of GitLab Runner and you have the `dind`
+service defined for the [Docker
+executor](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section),
+or the [Kubernetes
+executor](https://docs.gitlab.com/runner/executors/kubernetes.html#using-services)
+you can specify the `command` to configure the registry mirror for the
+Docker daemon.
+
+Docker:
+
+```toml
+[[runners]]
+  ...
+  executor = "docker"
+  [runners.docker]
+    ...
+    privileged = true
+    [[runners.docker.services]]
+      name = "docker:19.03.13-dind"
+      command = ["--registry-mirror", "https://registry-mirror.example.com"]
+```
+
+Kubernetes:
+
+```toml
+[[runners]]
+  ...
+  name = "kubernetes"
+  [runners.kubernetes]
+    ...
+    privileged = true
+    [[runners.kubernetes.services]]
+      name = "docker:19.03.13-dind"
+      command = ["--registry-mirror", "https://registry-mirror.example.com"]
+```
+
 ##### Docker executor inside GitLab Runner configuration
 
 If you are an administrator of GitLab Runner and you always want to use

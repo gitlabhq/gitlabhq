@@ -243,6 +243,17 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
       include_examples 'N+1 query check'
     end
+
+    context 'when requesting `user_discussions_count`' do
+      let(:requested_fields) { [:user_discussions_count] }
+
+      before do
+        create_list(:note_on_merge_request, 2, noteable: merge_request_a, project: project)
+        create(:note_on_merge_request, noteable: merge_request_c, project: project)
+      end
+
+      include_examples 'N+1 query check'
+    end
   end
 
   describe 'sorting and pagination' do
