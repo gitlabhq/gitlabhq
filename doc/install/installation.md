@@ -90,6 +90,8 @@ The GitLab installation consists of setting up the following components:
 
 ## 1. Packages and dependencies
 
+### sudo
+
 `sudo` is not installed on Debian by default. Make sure your system is
 up-to-date and install it.
 
@@ -110,6 +112,8 @@ sudo apt-get install -y vim
 sudo update-alternatives --set editor /usr/bin/vim.basic
 ```
 
+### Build dependencies
+
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
 ```shell
@@ -128,6 +132,8 @@ If you want to use Kerberos for user authentication, install `libkrb5-dev`
 ```shell
 sudo apt-get install libkrb5-dev
 ```
+
+### Git
 
 Make sure you have the right version of Git installed:
 
@@ -168,18 +174,9 @@ On Debian, use the following compilation instructions:
 
 ```shell
 # Install dependencies
-sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
+sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev libpcre2-dev build-essential
 
-# Download and compile pcre2 from source
-curl --silent --show-error --location https://ftp.pcre.org/pub/pcre/pcre2-10.33.tar.gz --output pcre2.tar.gz
-tar -xzf pcre2.tar.gz
-cd pcre2-10.33
-chmod +x configure
-./configure --prefix=/usr --enable-jit
-make
-sudo make install
-
-# Download and compile from source
+# Download and compile Git from source
 cd /tmp
 curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.29.0.tar.gz
 echo 'fa08dc8424ef80c0f9bf307877f9e2e49f1a6049e873530d6747c2be770742ff  git-2.29.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.29.0.tar.gz
@@ -193,12 +190,16 @@ sudo make prefix=/usr/local install
 # When editing config/gitlab.yml later, change the git -> bin_path to /usr/local/bin/git
 ```
 
+### GraphicsMagick
+
 For the [Custom Favicon](../user/admin_area/appearance.md#favicon) to work, GraphicsMagick
 needs to be installed.
 
 ```shell
 sudo apt-get install -y graphicsmagick
 ```
+
+### Mail server
 
 In order to receive mail notifications, make sure to install a mail server.
 By default, Debian is shipped with `exim4` but this
@@ -211,6 +212,8 @@ sudo apt-get install -y postfix
 ```
 
 Then select 'Internet Site' and press enter to confirm the hostname.
+
+### Exiftool
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse#dependencies)
 requires `exiftool` to remove EXIF data from uploaded images.

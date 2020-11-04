@@ -116,7 +116,7 @@ export default {
   <gl-dropdown
     v-if="displayFilters"
     id="discussion-filter-dropdown"
-    class="gl-mr-3 full-width-mobile discussion-filter-container js-discussion-filter-container qa-discussion-filter"
+    class="gl-mr-3 full-width-mobile discussion-filter-container js-discussion-filter-container"
     data-qa-selector="discussion_filter_dropdown"
     :text="currentFilter.title"
   >

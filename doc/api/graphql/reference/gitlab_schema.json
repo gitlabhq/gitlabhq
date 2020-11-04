@@ -3868,6 +3868,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "includeDescendantGroups",
+                  "description": "Include epics from descendant groups",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "true"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -18289,6 +18299,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "includeDescendantGroups",
+                  "description": "Include epics from descendant groups",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "true"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -22575,6 +22595,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "includeDescendantGroups",
+                  "description": "Include epics from descendant groups",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "true"
                 }
               ],
               "type": {
@@ -22724,6 +22754,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "includeDescendantGroups",
+                  "description": "Include epics from descendant groups",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "true"
                 },
                 {
                   "name": "after",

@@ -125,7 +125,8 @@ RSpec.describe 'Rack Attack global throttles' do
           env: :throttle,
           remote_ip: '127.0.0.1',
           request_method: 'GET',
-          path: '/users/sign_in'
+          path: '/users/sign_in',
+          matched: 'throttle_unauthenticated'
         }
 
         expect(Gitlab::AuthLogger).to receive(:error).with(arguments)

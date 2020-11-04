@@ -16,11 +16,11 @@ module QA
 
           show.comment(first_version_of_comment)
 
-          expect(show).to have_content(first_version_of_comment)
+          expect(show).to have_comment(first_version_of_comment)
 
           show.edit_comment(second_version_of_comment)
 
-          expect(show).to have_content(second_version_of_comment)
+          expect(show).to have_comment(second_version_of_comment)
           expect(show).not_to have_content(first_version_of_comment)
         end
       end

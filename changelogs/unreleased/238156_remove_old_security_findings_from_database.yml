@@ -1,0 +1,5 @@
+---
+title: Remove all records from `security_findings` table
+merge_request: 44312
+author:
+type: fixed
