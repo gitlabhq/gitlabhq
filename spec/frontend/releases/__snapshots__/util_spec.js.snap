@@ -5,9 +5,12 @@ Object {
   "data": Array [
     Object {
       "_links": Object {
+        "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=closed",
+        "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=closed",
         "editUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/edit",
-        "issuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=opened",
-        "mergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=opened",
+        "mergedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=merged",
+        "openedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=opened",
+        "openedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=opened",
         "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
         "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
       },
@@ -130,9 +133,12 @@ exports[`releases/util.js convertOneReleaseGraphQLResponse matches snapshot 1`] 
 Object {
   "data": Object {
     "_links": Object {
+      "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=closed",
+      "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=closed",
       "editUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/edit",
-      "issuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=opened",
-      "mergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=opened",
+      "mergedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=merged",
+      "openedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=opened",
+      "openedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=opened",
       "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
       "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
     },

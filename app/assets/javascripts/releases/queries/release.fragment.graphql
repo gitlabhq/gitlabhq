@@ -33,9 +33,12 @@ fragment Release on Release {
   }
   links {
     editUrl
-    issuesUrl
-    mergeRequestsUrl
     selfUrl
+    openedIssuesUrl
+    closedIssuesUrl
+    openedMergeRequestsUrl
+    mergedMergeRequestsUrl
+    closedMergeRequestsUrl
   }
   commit {
     sha

@@ -19,9 +19,11 @@ RSpec.describe Packages::Composer::VersionParserService do
       nil             | '1.7.x'      | '1.7.x-dev'
       'v1.0.0'        | nil          | '1.0.0'
       'v1.0'          | nil          | '1.0'
+      'v1.0.1+meta'   | nil          | '1.0.1+meta'
       '1.0'           | nil          | '1.0'
       '1.0.2'         | nil          | '1.0.2'
       '1.0.2-beta2'   | nil          | '1.0.2-beta2'
+      '1.0.1+meta'    | nil          | '1.0.1+meta'
     end
 
     with_them do

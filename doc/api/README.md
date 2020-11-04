@@ -6,11 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # API Docs
 
-Automate GitLab via a simple and powerful API.
+Automate GitLab by using a simple and powerful API.
 
-The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
+The main GitLab API is a [REST](http://spec.openapis.org/oas/v3.0.3)
+API. Because of this, the documentation in this section assumes that you're
+familiar with REST concepts.
 
-There is also a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/api/openapi/openapi.yaml), which allows you to test the API directly from the GitLab user interface. Contributions are welcome.
+There's also a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/api/openapi/openapi.yaml),
+which allows you to test the API directly from the GitLab user interface.
+Contributions are welcome.
 
 ## Available API resources
 
@@ -19,21 +23,22 @@ For a list of the available resources and their endpoints, see
 
 ## SCIM **(SILVER ONLY)**
 
-[GitLab.com Silver and above](https://about.gitlab.com/pricing/) provides an [SCIM API](scim.md) that implements [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides
-the `/Users` endpoint. The base URL is: `/api/scim/v2/groups/:group_path/Users/`.
+[GitLab.com Silver and higher](https://about.gitlab.com/pricing/) provides an
+[SCIM API](scim.md) that both implements [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644)
+and provides the `/Users` endpoint. The base URL is: `/api/scim/v2/groups/:group_path/Users/`.
 
 ## Road to GraphQL
 
-[GraphQL](graphql/index.md) is available in GitLab, which will
-allow deprecation of controller-specific endpoints.
+[GraphQL](graphql/index.md) is available in GitLab, which allows for the
+deprecation of controller-specific endpoints.
 
-GraphQL has a number of benefits:
+GraphQL has several benefits, including:
 
-1. We avoid having to maintain two different APIs.
-1. Callers of the API can request only what they need.
-1. It is versioned by default.
+- We avoid having to maintain two different APIs.
+- Callers of the API can request only what they need.
+- It's versioned by default.
 
-It will co-exist with the current v4 REST API. If we have a v5 API, this should
+GraphQL co-exists with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
 
 Although there were some patenting and licensing concerns with GraphQL, these
@@ -43,31 +48,31 @@ specification.
 
 ## Compatibility guidelines
 
-The HTTP API is versioned using a single number, the current one being 4. This
-number symbolizes the same as the major version number as described by
-[SemVer](https://semver.org/). This mean that backward incompatible changes
-will require this version number to change. However, the minor version is
-not explicit. This allows for a stable API endpoint, but also means new
-features can be added to the API in the same version number.
+The HTTP API is versioned using a single number, (currently _4_). This number
+symbolizes the major version number, as described by [SemVer](https://semver.org/).
+Because of this, backwards-incompatible changes require this version number to
+change. However, the minor version isn't explicit, allowing for a stable API
+endpoint. This also means that new features can be added to the API in the same
+version number.
 
 New features and bug fixes are released in tandem with a new GitLab, and apart
 from incidental patch and security releases, are released on the 22nd of each
-month. Backward incompatible changes (e.g. endpoints removal, parameters
-removal etc.), as well as removal of entire API versions are done in tandem
-with a major point release of GitLab itself. All deprecations and changes
-between two versions should be listed in the documentation. For the changes
-between v3 and v4; please read the [v3 to v4 documentation](v3_to_v4.md)
+month. Backward incompatible changes (for example, endpoints removal and
+parameters removal), and removal of entire API versions are done in tandem with
+a major point release of GitLab itself. All deprecations and changes between two
+versions should be listed in the documentation. For the changes between v3 and
+v4, see the [v3 to v4 documentation](v3_to_v4.md).
 
 ### Current status
 
-Currently only API version v4 is available. Version v3 was removed in
+Only API version v4 is available. Version v3 was removed in
 [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819).
 
 ## Basic usage
 
-API requests should be prefixed with `api` and the API version. The API version
-is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/api/api.rb). For example, the root of the v4 API
-is at `/api/v4`.
+API requests should be prefixed with both `api` and the API version. The API
+version is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/api/api.rb).
+For example, the root of the v4 API is at `/api/v4`.
 
 Example of a valid API request using cURL:
 
@@ -80,30 +85,31 @@ end of an API URL.
 
 ## Authentication
 
-Most API requests require authentication, or will only return public data when
-authentication is not provided. For
-those cases where it is not required, this will be mentioned in the documentation
-for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md#get-single-project).
+Most API requests require authentication, or will return public data only when
+authentication isn't provided. For cases where it isn't required, this will be
+mentioned in the documentation for each individual endpoint (for example, the
+[`/projects/:id` endpoint](projects.md#get-single-project)).
 
-There are several ways to authenticate with the GitLab API:
+There are several methods you can use to authenticate with the GitLab API:
 
-1. [OAuth2 tokens](#oauth2-tokens)
-1. [Personal access tokens](../user/profile/personal_access_tokens.md)
-1. [Project access tokens](../user/project/settings/project_access_tokens.md)
+- [OAuth2 tokens](#oauth2-tokens)
+- [Personal access tokens](../user/profile/personal_access_tokens.md)
+- [Project access tokens](../user/project/settings/project_access_tokens.md)
+- [Session cookie](#session-cookie)
+- [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
 NOTE: **Note:**
-Project access tokens are supported for self-managed instances on Core and above. They are also supported on GitLab.com Bronze and above.
+Project access tokens are supported for self-managed instances on Core and
+higher. They're also supported on GitLab.com Bronze and higher.
 
-1. [Session cookie](#session-cookie)
-1. [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
+For administrators who want to authenticate with the API as a specific user, or who want
+to build applications or scripts that do so, the following options are available:
 
-For admins who want to authenticate with the API as a specific user, or who want to build applications or scripts that do so, two options are available:
+- [Impersonation tokens](#impersonation-tokens)
+- [Sudo](#sudo)
 
-1. [Impersonation tokens](#impersonation-tokens)
-1. [Sudo](#sudo)
-
-If authentication information is invalid or omitted, an error message will be
-returned with status code `401`:
+If authentication information is invalid or omitted, GitLab will return an error
+message with a status code of `401`:
 
 ```json
 {
@@ -113,8 +119,8 @@ returned with status code `401`:
 
 ### OAuth2 tokens
 
-You can use an [OAuth2 token](oauth2.md) to authenticate with the API by passing it in either the
-`access_token` parameter or the `Authorization` header.
+You can use an [OAuth2 token](oauth2.md) to authenticate with the API by passing
+it in either the `access_token` parameter or the `Authorization` header.
 
 Example of using the OAuth2 token in a parameter:
 
@@ -132,22 +138,22 @@ Read more about [GitLab as an OAuth2 provider](oauth2.md).
 
 ### Personal/project access tokens
 
-Access tokens can be used to authenticate with the API by passing it in either the `private_token` parameter
-or the `PRIVATE-TOKEN` header.
+You can use access tokens to authenticate with the API by passing it in either
+the `private_token` parameter or the `PRIVATE-TOKEN` header.
 
-Example of using the personal/project access token in a parameter:
+Example of using the personal or project access token in a parameter:
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>"
 ```
 
-Example of using the personal/project access token in a header:
+Example of using the personal or project access token in a header:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
-You can also use personal/project access tokens with OAuth-compliant headers:
+You can also use personal or project access tokens with OAuth-compliant headers:
 
 ```shell
 curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects"
@@ -156,12 +162,12 @@ curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.exampl
 ### Session cookie
 
 When signing in to the main GitLab application, a `_gitlab_session` cookie is
-set. The API will use this cookie for authentication if it is present, but using
-the API to generate a new session cookie is currently not supported.
+set. The API uses this cookie for authentication if it's present. Using the
+API to generate a new session cookie isn't supported.
 
-The primary user of this authentication method is the web frontend of GitLab itself,
-which can use the API as the authenticated user to get a list of their projects,
-for example, without needing to explicitly pass an access token.
+The primary user of this authentication method is the web frontend of GitLab
+itself, which can, for example, use the API as the authenticated user to get a
+list of their projects without needing to explicitly pass an access token.
 
 ### GitLab CI job token
 
@@ -171,15 +177,17 @@ to authenticate with the API:
 - Packages:
   - [Composer Repository](../user/packages/composer_repository/index.md)
   - [Conan Repository](../user/packages/conan_repository/index.md)
-  - [Container Registry](../user/packages/container_registry/index.md) (`$CI_REGISTRY_PASSWORD` is actually `$CI_JOB_TOKEN`, but this may change in the future)
+  - [Container Registry](../user/packages/container_registry/index.md)
+    (`$CI_REGISTRY_PASSWORD` is actually `$CI_JOB_TOKEN`, but this may change in
+    the future)
   - [Go Proxy](../user/packages/go_proxy/index.md)
   - [Maven Repository](../user/packages/maven_repository/index.md#authenticate-with-a-ci-job-token-in-maven)
-  - [NPM Repository](../user/packages/npm_registry/index.md#authenticating-with-a-ci-job-token)
+  - [NPM Repository](../user/packages/npm_registry/index.md#authenticate-with-a-ci-job-token)
   - [Nuget Repository](../user/packages/nuget_repository/index.md)
   - [PyPI Repository](../user/packages/pypi_repository/index.md#using-gitlab-ci-with-pypi-packages)
   - [Generic packages](../user/packages/generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
-- [Pipeline triggers](pipeline_triggers.md) (via `token=` parameter)
+- [Pipeline triggers](pipeline_triggers.md) (using the `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)
 - [Terraform plan](../user/infrastructure/index.md)
 
@@ -187,21 +195,22 @@ The token is valid as long as the job is running.
 
 ### Impersonation tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9099) in GitLab 9.0. Needs admin permissions.
-
 Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md)
 that can only be created by an admin for a specific user. They are a great fit
-if you want to build applications or scripts that authenticate with the API as a specific user.
+if you want to build applications or scripts that authenticate with the API as a
+specific user.
 
-They are an alternative to directly using the user's password or one of their
-personal access tokens, and to using the [Sudo](#sudo) feature, since the user's (or admin's, in the case of Sudo)
-password/token may not be known or may change over time.
+They're an alternative to directly using the user's password or one of their
+personal access tokens, and to using the [Sudo](#sudo) feature, as the user's
+(or admin's, in the case of Sudo) password or token may not be known, or may
+change over time.
 
-For more information, refer to the
-[users API](users.md#create-an-impersonation-token) docs.
+For more information, see the [users API](users.md#create-an-impersonation-token)
+documentation.
 
-Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
-`private_token` parameter or the `PRIVATE-TOKEN` header.
+Impersonation tokens are used exactly like regular personal access tokens, and
+can be passed in either the `private_token` parameter or the `PRIVATE-TOKEN`
+header.
 
 #### Disable impersonation
 
@@ -220,7 +229,8 @@ By default, impersonation is enabled. To disable impersonation:
 1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
 
-To re-enable impersonation, remove this configuration and reconfigure GitLab.
+To re-enable impersonation, remove this configuration, and then reconfigure
+GitLab.
 
 **For installations from source**
 
@@ -234,26 +244,22 @@ To re-enable impersonation, remove this configuration and reconfigure GitLab.
 1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
 
-To re-enable impersonation, remove this configuration and restart GitLab.
+To re-enable impersonation, remove this configuration, and then restart GitLab.
 
 ### Sudo
 
-NOTE: **Note:**
-Only available to [administrators](../user/permissions.md).
-
 All API requests support performing an API call as if you were another user,
-provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
-The API requests are executed with the permissions of the impersonated user.
+provided you're authenticated as an administrator with an OAuth or personal
+access token that has the `sudo` scope. The API requests are executed with the
+permissions of the impersonated user.
 
-You need to pass the `sudo` parameter either via query string or a header with an ID/username of
-the user you want to perform the operation as. If passed as a header, the
-header name must be `Sudo`.
+As an [administrator](../user/permissions.md), pass the `sudo` parameter either
+by using query string or a header with an ID or username (case insensitive) of
+the user you want to perform the operation as. If passed as a header, the header
+name must be `Sudo`.
 
-NOTE: **Note:**
-Usernames are case insensitive.
-
-If a non administrative access token is provided, an error message will
-be returned with status code `403`:
+If a non administrative access token is provided, GitLab returns an error
+message with a status code of `403`:
 
 ```json
 {
@@ -262,7 +268,7 @@ be returned with status code `403`:
 ```
 
 If an access token without the `sudo` scope is provided, an error message will
-be returned with status code `403`:
+be returned with a status code of `403`:
 
 ```json
 {
@@ -273,7 +279,7 @@ be returned with status code `403`:
 ```
 
 If the sudo user ID or username cannot be found, an error message will be
-returned with status code `404`:
+returned with a status code of `404`:
 
 ```json
 {
@@ -311,27 +317,27 @@ insight into what went wrong.
 
 The following table gives an overview of how the API functions generally behave.
 
-| Request type | Description |
-| ------------ | ----------- |
-| `GET`   | Access one or more resources and return the result as JSON. |
-| `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
+| Request type  | Description |
+|---------------|-------------|
+| `GET`         | Access one or more resources and return the result as JSON. |
+| `POST`        | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Returns `204 No Content` if the resource was deleted successfully. |
+| `DELETE`      | Returns `204 No Content` if the resource was deleted successfully. |
 
 The following table shows the possible return codes for API requests.
 
 | Return values            | Description |
-| ------------------------ | ----------- |
+|--------------------------|-------------|
 | `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
 | `204 No Content`         | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
 | `201 Created`            | The `POST` request was successful and the resource is returned as JSON. |
 | `304 Not Modified`       | Indicates that the resource has not been modified since the last request. |
 | `400 Bad Request`        | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
 | `401 Unauthorized`       | The user is not authenticated, a valid [user token](#authentication) is necessary. |
-| `403 Forbidden`          | The request is not allowed, e.g., the user is not allowed to delete a project. |
-| `404 Not Found`          | A resource could not be accessed, e.g., an ID for a resource could not be found. |
+| `403 Forbidden`          | The request is not allowed. For example, the user is not allowed to delete a project. |
+| `404 Not Found`          | A resource could not be accessed. For example, an ID for a resource could not be found. |
 | `405 Method Not Allowed` | The request is not supported. |
-| `409 Conflict`           | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
+| `409 Conflict`           | A conflicting resource already exists. For example, creating a project with a name that already exists. |
 | `412`                    | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
 | `422 Unprocessable`      | The entity could not be processed. |
 | `429 Too Many Requests`  | The user exceeded the [application rate limits](../administration/instance_limits.md#rate-limits). |
@@ -339,26 +345,26 @@ The following table shows the possible return codes for API requests.
 
 ## Pagination
 
-We support two kinds of pagination methods:
+GitLab supports the following pagination methods:
 
 - Offset-based pagination. This is the default method and available on all endpoints.
 - Keyset-based pagination. Added to selected endpoints but being
   [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
-For large collections, we recommend keyset pagination (when available) over offset
-pagination for performance reasons.
+For large collections, we recommend keyset pagination (when available) instead
+of offset pagination for performance reasons.
 
 ### Offset-based pagination
 
-Sometimes the returned result will span across many pages. When listing
-resources you can pass the following parameters:
+Sometimes, the returned result spans many pages. When listing resources, you can
+pass the following parameters:
 
 | Parameter | Description |
-| --------- | ----------- |
-| `page`    | Page number (default: `1`) |
-| `per_page`| Number of items to list per page (default: `20`, max: `100`) |
+|-----------|-------------|
+| `page`    | Page number (default: `1`). |
+| `per_page`| Number of items to list per page (default: `20`, max: `100`). |
 
-In the example below, we list 50 [namespaces](namespaces.md) per page.
+In the following example, we list 50 [namespaces](namespaces.md) per page:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
@@ -367,15 +373,14 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 #### Pagination `Link` header
 
 [`Link` headers](https://www.w3.org/wiki/LinkHeader) are returned with each
-response. They have `rel` set to `prev`/`next`/`first`/`last` and contain the
-relevant URL. Be sure to use these links instead of generating your own URLs.
+response. They have `rel` set to `prev`, `next`, `first`, or `last` and contain
+the relevant URL. Be sure to use these links instead of generating your own URLs.
 
-NOTE: **Note:**
 For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
-In the cURL example below, we limit the output to 3 items per page (`per_page=3`)
-and we request the second page (`page=2`) of [comments](notes.md) of the issue
-with ID `8` which belongs to the project with ID `9`:
+In the following cURL example, we limit the output to three items per page
+(`per_page=3`) and we request the second page (`page=2`) of [comments](notes.md)
+of the issue with ID `8` which belongs to the project with ID `9`:
 
 ```shell
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
@@ -406,31 +411,32 @@ x-total-pages: 3
 
 GitLab also returns the following additional pagination headers:
 
-| Header          | Description                                   |
-| --------------- | --------------------------------------------- |
-| `x-total`       | The total number of items                     |
-| `x-total-pages` | The total number of pages                     |
-| `x-per-page`    | The number of items per page                  |
-| `x-page`        | The index of the current page (starting at 1) |
-| `x-next-page`   | The index of the next page                    |
-| `X-prev-page`   | The index of the previous page                |
+| Header          | Description |
+|-----------------|-------------|
+| `x-next-page`   | The index of the next page. |
+| `x-page`        | The index of the current page (starting at 1). |
+| `x-per-page`    | The number of items per page. |
+| `X-prev-page`   | The index of the previous page. |
+| `x-total`       | The total number of items. |
+| `x-total-pages` | The total number of pages. |
 
-NOTE: **Note:**
 For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
 ### Keyset-based pagination
 
-Keyset-pagination allows for more efficient retrieval of pages and - in contrast to offset-based pagination - runtime
-is independent of the size of the collection.
+Keyset-pagination allows for more efficient retrieval of pages and - in contrast
+to offset-based pagination - runtime is independent of the size of the
+collection.
 
 This method is controlled by the following parameters:
 
-| Parameter    | Description                            |
-| ------------ | -------------------------------------- |
-| `pagination` | `keyset` (to enable keyset pagination) |
-| `per_page`   | Number of items to list per page (default: `20`, max: `100`) |
+| Parameter    | Description |
+|--------------| ------------|
+| `pagination` | `keyset` (to enable keyset pagination). |
+| `per_page`   | Number of items to list per page (default: `20`, max: `100`). |
 
-In the example below, we list 50 [projects](projects.md) per page, ordered by `id` ascending.
+In the following example, we list 50 [projects](projects.md) per page, ordered
+by `id` ascending.
 
 ```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
@@ -448,27 +454,34 @@ Status: 200 OK
 ```
 
 CAUTION: **Deprecation:**
-The `Links` header will be removed in GitLab 14.0 to be aligned with the [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader).
-The `Link` header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
+The `Links` header will be removed in GitLab 14.0 to be aligned with the
+[W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
+header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
 and should be used instead.
 
-The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
-Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
+The link to the next page contains an additional filter `id_after=42` that
+excludes already-retrieved records. Note the type of filter depends on the
+`order_by` option used, and we may have more than one additional filter.
 
-When the end of the collection has been reached and there are no additional records to retrieve, the `Link` header is absent and the resulting array is empty.
+When the end of the collection has been reached and there are no additional
+records to retrieve, the `Link` header is absent and the resulting array is
+empty.
 
-We recommend using only the given link to retrieve the next page instead of building your own URL. Apart from the headers shown,
-we don't expose additional pagination headers.
+We recommend using only the given link to retrieve the next page instead of
+building your own URL. Apart from the headers shown, we don't expose additional
+pagination headers.
 
-Keyset-based pagination is only supported for selected resources and ordering options:
+Keyset-based pagination is supported only for selected resources and ordering
+options:
 
-| Resource                  | Order                      |
-| ------------------------- | -------------------------- |
-| [Projects](projects.md)   | `order_by=id` only         |
+| Resource                | Order |
+|-------------------------|-------|
+| [Projects](projects.md) | `order_by=id` only. |
 
 ## Path parameters
 
-If an endpoint has path parameters, the documentation shows them with a preceding colon.
+If an endpoint has path parameters, the documentation displays them with a
+preceding colon.
 
 For example:
 
@@ -476,7 +489,9 @@ For example:
 DELETE /projects/:id/share/:group_id
 ```
 
-The `:id` path parameter needs to be replaced with the project ID, and the `:group_id` needs to be replaced with the ID of the group. The colons `:` should not be included.
+The `:id` path parameter needs to be replaced with the project ID, and the
+`:group_id` needs to be replaced with the ID of the group. The colons `:`
+shouldn't be included.
 
 The resulting cURL call for a project with ID `5` and a group ID of `17` is then:
 
@@ -484,11 +499,10 @@ The resulting cURL call for a project with ID `5` and a group ID of `17` is then
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
-NOTE: **Note:**
 Path parameters that are required to be URL-encoded must be followed. If not,
-it will not match an API endpoint and respond with a 404. If there's something
-in front of the API (for example, Apache), ensure that it won't decode the URL-encoded
-path parameters.
+it won't match an API endpoint, and will respond with a 404. If there's
+something in front of the API (for example, Apache), ensure that it won't decode
+the URL-encoded path parameters.
 
 ## Namespaced path encoding
 
@@ -501,10 +515,9 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
-NOTE: **Note:**
-A project's **path** is not necessarily the same as its **name**. A
-project's path can be found in the project's URL or in the project's settings
-under **General > Advanced > Change path**.
+A project's _path_ isn't necessarily the same as its _name_. A project's path is
+found in the project's URL or in the project's settings, under
+**General > Advanced > Change path**.
 
 ## File path, branches, and tags name encoding
 
@@ -522,7 +535,8 @@ GET /api/v4/projects/1/repository/tags/my%2Ftag
 
 API Requests can use parameters sent as [query strings](https://en.wikipedia.org/wiki/Query_string)
 or as a [payload body](https://tools.ietf.org/html/draft-ietf-httpbis-p3-payload-14#section-3.2).
-GET requests usually send a query string, while PUT/POST requests usually send the payload body:
+GET requests usually send a query string, while PUT or POST requests usually
+send the payload body:
 
 - Query string:
 
@@ -536,13 +550,13 @@ GET requests usually send a query string, while PUT/POST requests usually send t
   curl --request POST --header "Content-Type: application/json" --data '{"name":"<example-name>", "description":"<example-description"}' "https://gitlab/api/v4/projects"
   ```
 
-URL encoded query strings have a length limitation. Requests that are too large will
-result in a `414 Request-URI Too Large` error message. This can be resolved by using
-a payload body instead.
+URL encoded query strings have a length limitation. Requests that are too large
+result in a `414 Request-URI Too Large` error message. This can be resolved by
+using a payload body instead.
 
 ## Encoding API parameters of `array` and `hash` types
 
-We can call the API with `array` and `hash` types parameters as shown below:
+We can call the API with `array` and `hash` types parameters as follows:
 
 ### `array`
 
@@ -571,7 +585,8 @@ https://gitlab.example.com/api/v4/projects/import
 
 ### Array of hashes
 
-`variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key': 'UPLOAD_TO_S3', 'value': 'true' }]`:
+`variables` is a parameter of type `array` containing hash key/value pairs
+`[{ 'key': 'UPLOAD_TO_S3', 'value': 'true' }]`:
 
 ```shell
 curl --globoff --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -585,34 +600,37 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## `id` vs `iid`
 
- Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](merge_requests.md). The fields are:
+Some resources have two similarly-named fields. For example, [issues](issues.md),
+[merge requests](merge_requests.md), and [project milestones](merge_requests.md).
+The fields are:
 
 - `id`: ID that is unique across all projects.
-- `iid`: additional, internal ID that is unique in the scope of a single project.
+- `iid`: Additional, internal ID (displayed in the web UI) that's unique in the
+  scope of a single project.
 
-NOTE: **Note:**
-The `iid` is displayed in the web UI.
+If a resource has both the `iid` field and the `id` field, the `iid` field is
+usually used instead of `id` to fetch the resource.
 
-If a resource has the `iid` field and the `id` field, the `iid` field is usually used instead of `id` to fetch the resource.
+For example, suppose a project with `id: 42` has an issue with `id: 46` and
+`iid: 5`. In this case:
 
-For example, suppose a project with `id: 42` has an issue with `id: 46` and `iid: 5`. In this case:
-
-- A valid API call to retrieve the issue is  `GET /projects/42/issues/5`
+- A valid API call to retrieve the issue is `GET /projects/42/issues/5`.
 - An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
 
-NOTE: **Note:**
-Not all resources with the `iid` field are fetched by `iid`. For guidance on which field to use, see the documentation for the specific resource.
+Not all resources with the `iid` field are fetched by `iid`. For guidance
+regarding which field to use, see the documentation for the specific resource.
 
 ## Data validation and error reporting
 
 When working with the API you may encounter validation errors, in which case
-the API will answer with an HTTP `400` status.
+the API returns an HTTP `400` error.
 
-Such errors appear in two cases:
+Such errors appear in the following cases:
 
-- A required attribute of the API request is missing, e.g., the title of an
-  issue is not given
-- An attribute did not pass the validation, e.g., the user bio is too long
+- A required attribute of the API request is missing (for example, the title of
+  an issue isn't given).
+- An attribute did not pass the validation (for example, the user bio is too
+  long).
 
 When an attribute is missing, you will get something like:
 
@@ -624,8 +642,8 @@ Content-Type: application/json
 }
 ```
 
-When a validation error occurs, error messages will be different. They will
-hold all details of validation errors:
+When a validation error occurs, error messages will be different. They will hold
+all details of validation errors:
 
 ```http
 HTTP/1.1 400 Bad Request
@@ -663,7 +681,8 @@ follows:
 
 ## Unknown route
 
-When you try to access an API URL that does not exist, you will receive 404 Not Found.
+When you attempt to access an API URL that doesn't exist, you will receive
+404 Not Found message.
 
 ```http
 HTTP/1.1 404 Not Found
@@ -675,10 +694,10 @@ Content-Type: application/json
 
 ## Encoding `+` in ISO 8601 dates
 
-If you need to include a `+` in a query parameter, you may need to use `%2B` instead due
-to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
-causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
-a time in Mountain Standard Time, such as:
+If you need to include a `+` in a query parameter, you may need to use `%2B`
+instead, due to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html)
+that causes a `+` to be interpreted as a space. For example, in an ISO 8601 date,
+you may want to include a specific time in ISO 8601 format, such as:
 
 ```plaintext
 2017-10-17T23:11:13.000+05:30
@@ -692,8 +711,8 @@ The correct encoding for the query parameter would be:
 
 ## Clients
 
-There are many unofficial GitLab API Clients for most of the popular
-programming languages. Visit the [GitLab website](https://about.gitlab.com/partners/#api-clients) for a complete list.
+There are many unofficial GitLab API Clients for most of the popular programming
+languages. For a complete list, visit the [GitLab website](https://about.gitlab.com/partners/#api-clients).
 
 ## Rate limits
 

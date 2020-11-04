@@ -218,6 +218,11 @@ module QA
           raise "Merge did not appear to be successful" unless merged?
         end
 
+        def merge_immediately!
+          click_element(:merge_moment_dropdown)
+          click_element(:merge_immediately_option)
+        end
+
         def merged?
           has_element?(:merged_status_content, text: 'The changes were merged into', wait: 60)
         end

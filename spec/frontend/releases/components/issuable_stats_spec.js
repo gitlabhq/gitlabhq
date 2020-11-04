@@ -26,7 +26,7 @@ describe('~/releases/components/issuable_stats.vue', () => {
       total: 10,
       closed: 2,
       merged: 7,
-      openPath: 'path/to/open/items',
+      openedPath: 'path/to/opened/items',
       closedPath: 'path/to/closed/items',
       mergedPath: 'path/to/merged/items',
     };
@@ -72,7 +72,7 @@ describe('~/releases/components/issuable_stats.vue', () => {
       const link = findOpenStatLink();
 
       expect(link.exists()).toBe(true);
-      expect(link.attributes('href')).toBe(defaultProps.openPath);
+      expect(link.attributes('href')).toBe(defaultProps.openedPath);
     });
 
     it('renders the "merged" stat as a link', () => {
@@ -93,7 +93,7 @@ describe('~/releases/components/issuable_stats.vue', () => {
   describe('when path parameters are not provided', () => {
     beforeEach(() => {
       createComponent({
-        openPath: undefined,
+        openedPath: undefined,
         closedPath: undefined,
         mergedPath: undefined,
       });

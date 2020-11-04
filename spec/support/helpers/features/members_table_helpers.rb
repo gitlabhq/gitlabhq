@@ -23,6 +23,10 @@ module Spec
             all_rows[1]
           end
 
+          def third_row
+            all_rows[2]
+          end
+
           def invite_users_form
             page.find('[data-testid="invite-users-form"]')
           end

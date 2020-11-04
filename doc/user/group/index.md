@@ -633,6 +633,8 @@ To enable this feature:
 1. Expand the **Permissions, LFS, 2FA** section, and enter IP address ranges into **Allow access to the following IP addresses** field.
 1. Click **Save changes**.
 
+![Domain restriction by IP address](img/restrict-by-ip.gif)
+
 #### Allowed domain restriction **(PREMIUM)**
 
 >- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
@@ -660,6 +662,8 @@ To enable this feature:
 1. Navigate to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section, and enter the domain names into **Restrict membership by email** field.
 1. Click **Save changes**.
+
+![Domain restriction by email](img/restrict-by-email.gif)
 
 This will enable the domain-checking for all new users added to the group from this moment on.
 

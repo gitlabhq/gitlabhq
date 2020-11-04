@@ -20,7 +20,7 @@ export default {
       type: Array,
       required: true,
     },
-    openIssuesPath: {
+    openedIssuesPath: {
       type: String,
       required: false,
       default: '',
@@ -30,7 +30,7 @@ export default {
       required: false,
       default: '',
     },
-    openMergeRequestsPath: {
+    openedMergeRequestsPath: {
       type: String,
       required: false,
       default: '',
@@ -173,7 +173,7 @@ export default {
       :label="__('Issues')"
       :total="issueCounts.total"
       :closed="issueCounts.closed"
-      :open-path="openIssuesPath"
+      :opened-path="openedIssuesPath"
       :closed-path="closedIssuesPath"
       data-testid="issue-stats"
     />
@@ -183,7 +183,7 @@ export default {
       :total="mergeRequestCounts.total"
       :merged="mergeRequestCounts.merged"
       :closed="mergeRequestCounts.closed"
-      :open-path="openMergeRequestsPath"
+      :opened-path="openedMergeRequestsPath"
       :merged-path="mergedMergeRequestsPath"
       :closed-path="closedMergeRequestsPath"
       data-testid="merge-request-stats"
