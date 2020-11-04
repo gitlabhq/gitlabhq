@@ -133,6 +133,7 @@ from:
 - [Approval Rules](approval_rules.md)
 - [Feature categorization](feature_categorization/index.md)
 - [Wikis development guide](wikis.md)
+- [Newlines style guide](newlines_styleguide.md)
 
 ## Performance guides
 

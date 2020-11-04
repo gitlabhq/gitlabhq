@@ -122,6 +122,15 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
           end
         end
       end
+
+      context 'when the platform target is EC2' do
+        let(:platform_value) { 'EC2' }
+
+        it 'contains the build_artifact job, not the build job' do
+          expect(build_names).to include('build_artifact')
+          expect(build_names).not_to include('build')
+        end
+      end
     end
 
     context 'when the project has no active cluster' do

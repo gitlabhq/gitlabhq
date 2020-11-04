@@ -1,10 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/registry/explorer/stores/actions';
 import * as types from '~/registry/explorer/stores/mutation_types';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { reposServerResponse, registryServerResponse } from '../mock_data';
 
 jest.mock('~/flash.js');
@@ -224,6 +225,47 @@ describe('Actions RegistryExplorer Store', () => {
         ],
         [],
       ).catch(() => done());
+    });
+  });
+
+  describe('requestImageDetailsAndTagsList', () => {
+    it('sets the imageDetails and dispatch requestTagsList', done => {
+      const resolvedValue = { foo: 'bar' };
+      jest.spyOn(Api, 'containerRegistryDetails').mockResolvedValue({ data: resolvedValue });
+
+      testAction(
+        actions.requestImageDetailsAndTagsList,
+        1,
+        {},
+        [
+          { type: types.SET_MAIN_LOADING, payload: true },
+          { type: types.SET_IMAGE_DETAILS, payload: resolvedValue },
+        ],
+        [
+          {
+            type: 'requestTagsList',
+          },
+        ],
+        done,
+      );
+    });
+
+    it('should create flash on error', done => {
+      jest.spyOn(Api, 'containerRegistryDetails').mockRejectedValue();
+      testAction(
+        actions.requestImageDetailsAndTagsList,
+        1,
+        {},
+        [
+          { type: types.SET_MAIN_LOADING, payload: true },
+          { type: types.SET_MAIN_LOADING, payload: false },
+        ],
+        [],
+        () => {
+          expect(createFlash).toHaveBeenCalled();
+          done();
+        },
+      );
     });
   });
 

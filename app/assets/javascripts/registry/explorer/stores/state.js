@@ -3,6 +3,7 @@ export default () => ({
   showGarbageCollectionTip: false,
   config: {},
   images: [],
+  imageDetails: {},
   tags: [],
   pagination: {},
   tagsPagination: {},

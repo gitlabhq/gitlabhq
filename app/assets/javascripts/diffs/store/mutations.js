@@ -378,8 +378,13 @@ export default {
   },
   [types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
     const file = state.diffFiles.find(f => f.file_path === filePath);
-    const currentDiffLinesKey =
-      state.diffViewType === 'inline' ? 'highlighted_diff_lines' : 'parallel_diff_lines';
+    let currentDiffLinesKey;
+
+    if (window.gon?.features?.unifiedDiffLines || state.diffViewType === 'inline') {
+      currentDiffLinesKey = 'highlighted_diff_lines';
+    } else {
+      currentDiffLinesKey = 'parallel_diff_lines';
+    }
 
     file[currentDiffLinesKey] = lines;
   },

@@ -530,7 +530,10 @@ To remove a group and its contents:
 This action either:
 
 - Removes the group, and also queues a background job to delete all projects in that group.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+
+Since [GitLab 13.6](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion leaves or is otherwise removed from the group before the
+actual deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
 ### Restore a group **(PREMIUM)**
 

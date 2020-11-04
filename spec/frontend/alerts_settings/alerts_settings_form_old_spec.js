@@ -8,7 +8,7 @@ import { defaultAlertSettingsConfig } from './util';
 
 jest.mock('~/alerts_settings/services');
 
-describe('AlertsSettingsForm', () => {
+describe('AlertsSettingsFormOld', () => {
   let wrapper;
 
   const createComponent = ({ methods } = {}, data) => {
@@ -113,7 +113,7 @@ describe('AlertsSettingsForm', () => {
       createComponent(
         {},
         {
-          selectedIntegration: 'prometheus',
+          selectedIntegration: 'PROMETHEUS',
         },
       );
     });
@@ -127,9 +127,7 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('shows the correct default API URL', () => {
-      expect(findUrl().attributes('value')).toBe(
-        defaultAlertSettingsConfig.prometheus.prometheusUrl,
-      );
+      expect(findUrl().attributes('value')).toBe(defaultAlertSettingsConfig.prometheus.url);
     });
   });
 
@@ -138,7 +136,7 @@ describe('AlertsSettingsForm', () => {
       createComponent(
         {},
         {
-          selectedIntegration: 'opsgenie',
+          selectedIntegration: 'OPSGENIE',
         },
       );
     });

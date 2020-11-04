@@ -1,34 +1,38 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlForm, GlFormSelect, GlCollapse, GlFormInput } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import { GlForm, GlFormSelect, GlCollapse, GlFormInput, GlToggle } from '@gitlab/ui';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form_new.vue';
 import { defaultAlertSettingsConfig } from './util';
+import { typeSet } from '~/alerts_settings/constants';
 
 describe('AlertsSettingsFormNew', () => {
   let wrapper;
 
-  const createComponent = (
-    { methods } = {},
-    data,
+  const createComponent = ({
+    data = {},
+    props = { loading: false },
     multipleHttpIntegrationsCustomMapping = false,
-  ) => {
-    wrapper = shallowMount(AlertsSettingsForm, {
+  } = {}) => {
+    wrapper = mount(AlertsSettingsForm, {
       data() {
         return { ...data };
+      },
+      propsData: {
+        ...props,
       },
       provide: {
         glFeatures: { multipleHttpIntegrationsCustomMapping },
         ...defaultAlertSettingsConfig,
       },
-      methods,
-      stubs: { GlCollapse, GlFormInput },
     });
   };
 
   const findForm = () => wrapper.find(GlForm);
   const findSelect = () => wrapper.find(GlFormSelect);
   const findFormSteps = () => wrapper.find(GlCollapse);
-  const findFormName = () => wrapper.find(GlFormInput);
+  const findFormFields = () => wrapper.findAll(GlFormInput);
+  const findFormToggle = () => wrapper.find(GlToggle);
   const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
+  const findSubmitButton = () => wrapper.find(`[type = "submit"]`);
 
   afterEach(() => {
     if (wrapper) {
@@ -53,17 +57,83 @@ describe('AlertsSettingsFormNew', () => {
     });
 
     it('shows the rest of the form when the dropdown is used', async () => {
-      findSelect().vm.$emit('change', 'prometheus');
+      const options = findSelect().findAll('option');
+      await options.at(1).setSelected();
 
       await wrapper.vm.$nextTick();
 
-      expect(findFormName().isVisible()).toBe(true);
+      expect(
+        findFormFields()
+          .at(0)
+          .isVisible(),
+      ).toBe(true);
+    });
+  });
+
+  describe('when form is invalid', () => {
+    // TODO, implement specs for when form is invalid
+  });
+
+  describe('when form is valid', () => {
+    beforeEach(() => {
+      createComponent({});
+    });
+
+    it('allows for on-create-new-integration with the correct form values for HTTP', async () => {
+      const options = findSelect().findAll('option');
+      await options.at(1).setSelected();
+
+      await findFormFields()
+        .at(0)
+        .setValue('Test integration');
+      await findFormToggle().trigger('click');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findSubmitButton().exists()).toBe(true);
+      expect(findSubmitButton().text()).toBe('Save integration');
+
+      findForm().trigger('submit');
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted('on-create-new-integration')).toBeTruthy();
+      expect(wrapper.emitted('on-create-new-integration')[0]).toEqual([
+        { type: typeSet.http, variables: { name: 'Test integration', active: true } },
+      ]);
+    });
+
+    it('allows for on-create-new-integration with the correct form values for PROMETHEUS', async () => {
+      const options = findSelect().findAll('option');
+      await options.at(2).setSelected();
+
+      await findFormFields()
+        .at(0)
+        .setValue('Test integration');
+      await findFormFields()
+        .at(1)
+        .setValue('https://test.com');
+      await findFormToggle().trigger('click');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findSubmitButton().exists()).toBe(true);
+      expect(findSubmitButton().text()).toBe('Save integration');
+
+      findForm().trigger('submit');
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted('on-create-new-integration')).toBeTruthy();
+      expect(wrapper.emitted('on-create-new-integration')[0]).toEqual([
+        { type: typeSet.prometheus, variables: { apiUrl: 'https://test.com', active: true } },
+      ]);
     });
   });
 
   describe('Mapping builder section', () => {
     beforeEach(() => {
-      createComponent({}, {});
+      createComponent({});
     });
 
     it('should NOT render when feature flag disabled', () => {
@@ -71,7 +141,7 @@ describe('AlertsSettingsFormNew', () => {
     });
 
     it('should render when feature flag is enabled', () => {
-      createComponent({}, {}, true);
+      createComponent({ multipleHttpIntegrationsCustomMapping: true });
       expect(findMappingBuilderSection().exists()).toBe(true);
     });
   });

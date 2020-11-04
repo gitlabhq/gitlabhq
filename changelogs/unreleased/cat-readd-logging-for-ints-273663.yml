@@ -1,0 +1,5 @@
+---
+title: Fix logging handling for API integer params
+merge_request: 46551
+author:
+type: fixed

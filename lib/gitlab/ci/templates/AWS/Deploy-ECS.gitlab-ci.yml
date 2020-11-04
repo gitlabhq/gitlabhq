@@ -4,6 +4,7 @@ stages:
   - review
   - deploy
   - production
+  - cleanup
 
 variables:
   AUTO_DEVOPS_PLATFORM_TARGET: ECS

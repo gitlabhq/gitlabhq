@@ -1149,7 +1149,11 @@ describe('DiffsStoreActions', () => {
       file_hash: 'testhash',
       alternate_viewer: { name: updatedViewerName },
     };
-    const updatedViewer = { name: updatedViewerName, automaticallyCollapsed: false };
+    const updatedViewer = {
+      name: updatedViewerName,
+      automaticallyCollapsed: false,
+      manuallyCollapsed: false,
+    };
     const testData = [{ rich_text: 'test' }, { rich_text: 'file2' }];
     let renamedFile;
     let mock;

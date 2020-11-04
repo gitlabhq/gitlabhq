@@ -4,17 +4,7 @@
 .container
   .gl-mt-3
     - if Feature.enabled?(:devops_adoption)
-      %h2
-        = _('DevOps Report')
-      %ul.nav-links.nav-tabs.nav.js-devops-tabs{ role: 'tablist' }
-        = render 'tab', active: true, title: _('DevOps Score'), target: '#devops_score_pane'
-        = render 'tab', active: false, title: _('Adoption'), target: '#devops_adoption_pane'
-
-      .tab-content
-        .tab-pane.active#devops_score_pane
-          = render 'report'
-        .tab-pane#devops_adoption_pane
-          .js-devops-adoption{ data: { empty_state_svg_path: image_path('illustrations/monitoring/getting_started.svg') } }
+      = render_if_exists 'admin/dev_ops_report/devops_tabs'
     - else
       = render 'report'
 

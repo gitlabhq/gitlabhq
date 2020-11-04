@@ -1,7 +1,0 @@
----
-name: incident_sla
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43648
-rollout_issue_url:
-group: group::health
-type: licensed
-default_enabled: true

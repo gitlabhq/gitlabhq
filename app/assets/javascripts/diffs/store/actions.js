@@ -626,7 +626,7 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
     .then(({ data }) => {
       const lines = data.map((line, index) =>
         prepareLineForRenamedFile({
-          diffViewType: state.diffViewType,
+          diffViewType: window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType,
           line,
           diffFile,
           index,
@@ -638,6 +638,7 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
         viewer: {
           ...diffFile.alternate_viewer,
           automaticallyCollapsed: false,
+          manuallyCollapsed: false,
         },
       });
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });

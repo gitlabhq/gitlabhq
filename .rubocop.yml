@@ -16,7 +16,7 @@ inherit_mode:
     - Include
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   TargetRailsVersion: 6.0
   Exclude:
     - 'vendor/**/*'

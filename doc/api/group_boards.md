@@ -265,44 +265,17 @@ Example response:
   {
     "id": 1,
     "name": "newboard",
+    "project": null,
+    "lists" : [],
     "group": {
       "id": 5,
       "name": "Documentcloud",
       "web_url": "http://example.com/groups/documentcloud"
     },
-    "milestone":   {
-      "id": 12
-      "title": "10.0"
-    },
-    "lists" : [
-      {
-        "id" : 1,
-        "label" : {
-          "name" : "Testing",
-          "color" : "#F0AD4E",
-          "description" : null
-        },
-        "position" : 1
-      },
-      {
-        "id" : 2,
-        "label" : {
-          "name" : "Ready",
-          "color" : "#FF0000",
-          "description" : null
-        },
-        "position" : 2
-      },
-      {
-        "id" : 3,
-        "label" : {
-          "name" : "Production",
-          "color" : "#FF5F00",
-          "description" : null
-        },
-        "position" : 3
-      }
-    ]
+    "milestone": null,
+    "assignee" : null,
+    "labels" : [],
+    "weight" : null
   }
 ```
 

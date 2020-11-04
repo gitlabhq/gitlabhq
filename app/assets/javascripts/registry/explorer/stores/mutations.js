@@ -47,4 +47,8 @@ export default {
     const normalizedHeaders = normalizeHeaders(headers);
     state.tagsPagination = parseIntPagination(normalizedHeaders);
   },
+
+  [types.SET_IMAGE_DETAILS](state, details) {
+    state.imageDetails = details;
+  },
 };

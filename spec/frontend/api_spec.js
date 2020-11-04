@@ -118,6 +118,24 @@ describe('Api', () => {
     });
   });
 
+  describe('container registry', () => {
+    describe('containerRegistryDetails', () => {
+      it('fetch container registry  details', async () => {
+        const expectedUrl = `foo`;
+        const apiResponse = {};
+
+        jest.spyOn(axios, 'get');
+        jest.spyOn(Api, 'buildUrl').mockReturnValueOnce(expectedUrl);
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+
+        const { data } = await Api.containerRegistryDetails(1);
+
+        expect(data).toEqual(apiResponse);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, {});
+      });
+    });
+  });
+
   describe('group', () => {
     it('fetches a group', done => {
       const groupId = '123456';

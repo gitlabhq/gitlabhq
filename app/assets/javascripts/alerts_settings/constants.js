@@ -1,5 +1,6 @@
 import { s__ } from '~/locale';
 
+// TODO: Remove this as part of the form old removal
 export const i18n = {
   usageSection: s__(
     'AlertSettings|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page.',
@@ -39,12 +40,22 @@ export const i18n = {
   integration: s__('AlertSettings|Integration'),
 };
 
+// TODO: Delete as part of old form removal in 13.6
 export const integrationTypes = [
-  { value: '', text: s__('AlertSettings|Select integration type') },
-  { value: 'generic', text: s__('AlertSettings|HTTP Endpoint') },
-  { value: 'prometheus', text: s__('AlertSettings|External Prometheus') },
-  { value: 'opsgenie', text: s__('AlertSettings|Opsgenie') },
+  { value: 'HTTP', text: s__('AlertSettings|HTTP Endpoint') },
+  { value: 'PROMETHEUS', text: s__('AlertSettings|External Prometheus') },
+  { value: 'OPSGENIE', text: s__('AlertSettings|Opsgenie') },
 ];
+
+export const integrationTypesNew = [
+  { value: '', text: s__('AlertSettings|Select integration type') },
+  ...integrationTypes,
+];
+
+export const typeSet = {
+  http: 'HTTP',
+  prometheus: 'PROMETHEUS',
+};
 
 export const JSON_VALIDATE_DELAY = 250;
 

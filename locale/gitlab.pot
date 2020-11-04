@@ -2494,6 +2494,12 @@ msgstr ""
 msgid "AlertSettings|2. Name integration"
 msgstr ""
 
+msgid "AlertSettings|3. Set up webhook"
+msgstr ""
+
+msgid "AlertSettings|4. Test integration(optional)"
+msgstr ""
+
 msgid "AlertSettings|5. Map fields (optional)"
 msgstr ""
 
@@ -2548,6 +2554,15 @@ msgstr ""
 msgid "AlertSettings|Opsgenie"
 msgstr ""
 
+msgid "AlertSettings|Prometheus API base URL"
+msgstr ""
+
+msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with to send a test alert to the %{linkStart}alerts page%{linkEnd}. This payload can be used to test the integration using the \"save and test payload\" button."
+msgstr ""
+
+msgid "AlertSettings|Reset Key"
+msgstr ""
+
 msgid "AlertSettings|Reset key"
 msgstr ""
 
@@ -2555,6 +2570,9 @@ msgid "AlertSettings|Resetting the authorization key for this project will requi
 msgstr ""
 
 msgid "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgstr ""
+
+msgid "AlertSettings|Save and test payload"
 msgstr ""
 
 msgid "AlertSettings|Save integration"
@@ -2582,6 +2600,9 @@ msgid "AlertSettings|There was an error while trying to reset the key. Please re
 msgstr ""
 
 msgid "AlertSettings|URL cannot be blank and must start with http or https"
+msgstr ""
+
+msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send Alerts to GitLab. Review your chosen services documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
 msgid "AlertSettings|Webhook URL"
@@ -2621,6 +2642,9 @@ msgid "AlertsIntegrations|No integrations have been added yet"
 msgstr ""
 
 msgid "AlertsIntegrations|Prometheus"
+msgstr ""
+
+msgid "AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list."
 msgstr ""
 
 msgid "Algorithm"
@@ -7214,6 +7238,9 @@ msgstr ""
 msgid "ContainerRegistry|Something went wrong while fetching the cleanup policy."
 msgstr ""
 
+msgid "ContainerRegistry|Something went wrong while fetching the image details."
+msgstr ""
+
 msgid "ContainerRegistry|Something went wrong while fetching the repository list."
 msgstr ""
 
@@ -11473,6 +11500,9 @@ msgstr ""
 msgid "FeatureFlags|New user list"
 msgstr ""
 
+msgid "FeatureFlags|No user list selected"
+msgstr ""
+
 msgid "FeatureFlags|Percent of users"
 msgstr ""
 
@@ -11495,9 +11525,6 @@ msgid "FeatureFlags|Rollout Percentage"
 msgstr ""
 
 msgid "FeatureFlags|Rollout Strategy"
-msgstr ""
-
-msgid "FeatureFlags|Select a user list"
 msgstr ""
 
 msgid "FeatureFlags|Set the Unleash client application name to the name of the environment your application runs in. This value is used to match environment scopes. See the %{linkStart}example client configuration%{linkEnd}."
@@ -23247,9 +23274,6 @@ msgid "Save Changes"
 msgstr ""
 
 msgid "Save Push Rules"
-msgstr ""
-
-msgid "Save and test payload"
 msgstr ""
 
 msgid "Save anyway"

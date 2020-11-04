@@ -27,7 +27,7 @@ export default {
     rolloutUserListLabel: s__('FeatureFlag|User List'),
     rolloutUserListDescription: s__('FeatureFlag|Select a user list'),
     rolloutUserListNoListError: s__('FeatureFlag|There are no configured user lists'),
-    defaultDropdownText: s__('FeatureFlags|Select a user list'),
+    defaultDropdownText: s__('FeatureFlags|No user list selected'),
   },
   computed: {
     ...mapGetters(['hasUserLists', 'isLoading', 'hasError', 'userListOptions']),
@@ -36,7 +36,7 @@ export default {
       return this.strategy?.userList?.id ?? '';
     },
     dropdownText() {
-      return this.strategy?.userList?.name ?? this.$options.defaultDropdownText;
+      return this.strategy?.userList?.name ?? this.$options.translations.defaultDropdownText;
     },
   },
   mounted() {

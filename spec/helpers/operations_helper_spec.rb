@@ -44,7 +44,7 @@ RSpec.describe OperationsHelper do
           'prometheus_activated' => 'false',
           'prometheus_url' => notify_project_prometheus_alerts_url(project, format: :json),
           'disabled' => 'false',
-          'project_path' => project_path(project)
+          'project_path' => project.full_path
         )
       end
     end

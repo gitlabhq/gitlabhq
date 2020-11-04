@@ -41,6 +41,8 @@ module Gitlab
             data.map! { |v| utf8_encode_values(v) }
           when String
             encode_utf8(data)
+          when Integer
+            data
           end
         end
       end

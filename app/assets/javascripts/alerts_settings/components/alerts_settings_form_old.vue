@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       loading: false,
-      selectedIntegration: integrationTypes[1].value,
+      selectedIntegration: integrationTypes[0].value,
       options: integrationTypes,
       active: false,
       authKey: '',
@@ -88,34 +88,34 @@ export default {
       ];
     },
     isPrometheus() {
-      return this.selectedIntegration === 'prometheus';
+      return this.selectedIntegration === 'PROMETHEUS';
     },
     isOpsgenie() {
-      return this.selectedIntegration === 'opsgenie';
+      return this.selectedIntegration === 'OPSGENIE';
     },
     selectedIntegrationType() {
       switch (this.selectedIntegration) {
-        case 'generic': {
+        case 'HTTP': {
           return {
             url: this.generic.url,
-            authKey: this.generic.authorizationKey,
-            activated: this.generic.activated,
+            authKey: this.generic.authKey,
+            active: this.generic.active,
             resetKey: this.resetKey.bind(this),
           };
         }
-        case 'prometheus': {
+        case 'PROMETHEUS': {
           return {
-            url: this.prometheus.prometheusUrl,
-            authKey: this.prometheus.authorizationKey,
-            activated: this.prometheus.activated,
-            resetKey: this.resetKey.bind(this, 'prometheus'),
+            url: this.prometheus.url,
+            authKey: this.prometheus.authKey,
+            active: this.prometheus.active,
+            resetKey: this.resetKey.bind(this, 'PROMETHEUS'),
             targetUrl: this.prometheus.prometheusApiUrl,
           };
         }
-        case 'opsgenie': {
+        case 'OPSGENIE': {
           return {
             targetUrl: this.opsgenie.opsgenieMvcTargetUrl,
-            activated: this.opsgenie.activated,
+            active: this.opsgenie.active,
           };
         }
         default: {
@@ -161,16 +161,12 @@ export default {
     },
   },
   mounted() {
-    if (
-      this.prometheus.activated ||
-      this.generic.activated ||
-      !this.opsgenie.opsgenieMvcIsAvailable
-    ) {
+    if (this.prometheus.active || this.generic.active || !this.opsgenie.opsgenieMvcIsAvailable) {
       this.removeOpsGenieOption();
-    } else if (this.opsgenie.activated) {
+    } else if (this.opsgenie.active) {
       this.setOpsgenieAsDefault();
     }
-    this.active = this.selectedIntegrationType.activated;
+    this.active = this.selectedIntegrationType.active;
     this.authKey = this.selectedIntegrationType.authKey ?? '';
   },
   methods: {
@@ -183,19 +179,19 @@ export default {
     },
     setOpsgenieAsDefault() {
       this.options = this.options.map(el => {
-        if (el.value !== 'opsgenie') {
+        if (el.value !== 'OPSGENIE') {
           return { ...el, disabled: true };
         }
         return { ...el, disabled: false };
       });
-      this.selectedIntegration = this.options.find(({ value }) => value === 'opsgenie').value;
+      this.selectedIntegration = this.options.find(({ value }) => value === 'OPSGENIE').value;
       if (this.targetUrl === null) {
         this.targetUrl = this.selectedIntegrationType.targetUrl;
       }
     },
     removeOpsGenieOption() {
       this.options = this.options.map(el => {
-        if (el.value !== 'opsgenie') {
+        if (el.value !== 'OPSGENIE') {
           return { ...el, disabled: false };
         }
         return { ...el, disabled: true };
@@ -204,7 +200,7 @@ export default {
     resetFormValues() {
       this.testAlert.json = null;
       this.targetUrl = this.selectedIntegrationType.targetUrl;
-      this.active = this.selectedIntegrationType.activated;
+      this.active = this.selectedIntegrationType.active;
     },
     dismissFeedback() {
       this.serverError = null;
@@ -212,7 +208,7 @@ export default {
       this.isFeedbackDismissed = false;
     },
     resetKey(key) {
-      const fn = key === 'prometheus' ? this.resetPrometheusKey() : this.resetGenericKey();
+      const fn = key === 'PROMETHEUS' ? this.resetPrometheusKey() : this.resetGenericKey();
 
       return fn
         .then(({ data: { token } }) => {
@@ -242,9 +238,10 @@ export default {
     },
     toggleActivated(value) {
       this.loading = true;
+      const path = this.isOpsgenie ? this.opsgenie.formPath : this.generic.formPath;
       return service
         .updateGenericActive({
-          endpoint: this[this.selectedIntegration].formPath,
+          endpoint: path,
           params: this.isOpsgenie
             ? { service: { opsgenie_mvc_target_url: this.targetUrl, opsgenie_mvc_enabled: value } }
             : { service: { active: value } },
@@ -345,7 +342,7 @@ export default {
 
       if (this.canSaveForm) {
         this.canSaveForm = false;
-        this.active = this.selectedIntegrationType.activated;
+        this.active = this.selectedIntegrationType.active;
       }
     },
   },
@@ -402,9 +399,9 @@ export default {
         </gl-sprintf>
       </span>
     </gl-form-group>
-    <gl-form-group :label="$options.i18n.activeLabel" label-for="activated">
+    <gl-form-group :label="$options.i18n.activeLabel" label-for="active">
       <toggle-button
-        id="activated"
+        id="active"
         :disabled-input="loading"
         :is-loading="loading"
         :value="active"

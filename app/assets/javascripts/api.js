@@ -70,6 +70,7 @@ const Api = {
   featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
   featureFlagUserList: '/api/:version/projects/:id/feature_flags_user_lists/:list_iid',
   billableGroupMembersPath: '/api/:version/groups/:id/billable_members',
+  containerRegistryDetailsPath: '/api/:version/registry/repositories/:id/',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -104,6 +105,11 @@ const Api = {
   deleteProjectPackage(projectId, packageId) {
     const url = this.buildProjectPackageUrl(projectId, packageId);
     return axios.delete(url);
+  },
+
+  containerRegistryDetails(registryId, options = {}) {
+    const url = Api.buildUrl(this.containerRegistryDetailsPath).replace(':id', registryId);
+    return axios.get(url, options);
   },
 
   groupMembers(id, options) {

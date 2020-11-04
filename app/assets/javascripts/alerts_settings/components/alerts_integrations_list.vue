@@ -81,7 +81,6 @@ export default {
   <div class="incident-management-list">
     <h5 class="gl-font-lg">{{ $options.i18n.title }}</h5>
     <gl-table
-      :empty-text="$options.i18n.emptyState"
       :items="integrations"
       :fields="$options.fields"
       :busy="loading"
@@ -114,6 +113,14 @@ export default {
 
       <template #table-busy>
         <gl-loading-icon size="lg" color="dark" class="mt-3" />
+      </template>
+
+      <template #empty>
+        <div
+          class="gl-border-t-solid gl-border-b-solid gl-border-1 gl-border gl-border-gray-100 mt-n3"
+        >
+          <p class="gl-text-gray-400 gl-py-3 gl-my-3">{{ $options.i18n.emptyState }}</p>
+        </div>
       </template>
     </gl-table>
   </div>

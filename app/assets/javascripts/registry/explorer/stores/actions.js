@@ -1,11 +1,13 @@
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import Api from '~/api';
 import * as types from './mutation_types';
 import {
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   FETCH_TAGS_LIST_ERROR_MESSAGE,
+  FETCH_IMAGE_DETAILS_ERROR_MESSAGE,
 } from '../constants/index';
 import { decodeAndParse } from '../utils';
 
@@ -57,6 +59,19 @@ export const requestTagsList = ({ commit, dispatch }, { pagination = {}, params 
       createFlash(FETCH_TAGS_LIST_ERROR_MESSAGE);
     })
     .finally(() => {
+      commit(types.SET_MAIN_LOADING, false);
+    });
+};
+
+export const requestImageDetailsAndTagsList = ({ dispatch, commit }, id) => {
+  commit(types.SET_MAIN_LOADING, true);
+  return Api.containerRegistryDetails(id)
+    .then(({ data }) => {
+      commit(types.SET_IMAGE_DETAILS, data);
+      dispatch('requestTagsList');
+    })
+    .catch(() => {
+      createFlash(FETCH_IMAGE_DETAILS_ERROR_MESSAGE);
       commit(types.SET_MAIN_LOADING, false);
     });
 };

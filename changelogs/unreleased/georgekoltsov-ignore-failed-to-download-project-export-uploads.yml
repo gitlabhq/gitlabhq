@@ -1,0 +1,6 @@
+---
+title: Fix 'File name too long' error happening during Project Export when exporting
+  project uploads
+merge_request: 46674
+author:
+type: fixed

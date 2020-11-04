@@ -25,6 +25,8 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
       propsData: { ...DEFAULT_PROPS, ...props },
     });
 
+  const findDropdown = () => wrapper.find(GlDropdown);
+
   describe('with user lists', () => {
     const findDropdownItem = () => wrapper.find(GlDropdownItem);
 
@@ -34,7 +36,7 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
     });
 
     it('should show the input for userListId with the correct value', () => {
-      const dropdownWrapper = wrapper.find(GlDropdown);
+      const dropdownWrapper = findDropdown();
       expect(dropdownWrapper.exists()).toBe(true);
       expect(dropdownWrapper.props('text')).toBe(userList.name);
     });
@@ -87,11 +89,15 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
   describe('without user lists', () => {
     beforeEach(() => {
       Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [] });
-      wrapper = factory();
+      wrapper = factory({ strategy: { ...userListStrategy, userList: null } });
     });
 
     it('should display a message that there are no user lists', () => {
       expect(wrapper.text()).toContain('There are no configured user lists');
+    });
+
+    it('should dispaly a message that no list has been selected', () => {
+      expect(findDropdown().text()).toContain('No user list selected');
     });
   });
 });

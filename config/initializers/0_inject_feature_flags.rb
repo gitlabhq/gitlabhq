@@ -14,10 +14,8 @@ if Gitlab.ee? && Gitlab.dev_or_test_env?
   # being unique to licensed names. These feature flags should be reworked to
   # be "development" with explicit check
   IGNORED_FEATURE_FLAGS = %i[
-    ci_secrets_management
     feature_flags_related_issues
     group_wikis
-    incident_sla
     swimlanes
     minimal_access_role
   ].to_set
