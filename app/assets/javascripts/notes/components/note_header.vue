@@ -65,8 +65,8 @@ export default {
     };
   },
   computed: {
-    toggleChevronClass() {
-      return this.expanded ? 'fa-chevron-up' : 'fa-chevron-down';
+    toggleChevronIconName() {
+      return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     noteTimestampLink() {
       return this.noteId ? `#note_${this.noteId}` : undefined;
@@ -133,7 +133,7 @@ export default {
         type="button"
         @click="handleToggle"
       >
-        <i ref="chevronIcon" :class="toggleChevronClass" class="fa" aria-hidden="true"></i>
+        <gl-icon ref="chevronIcon" :name="toggleChevronIconName" aria-hidden="true" />
         {{ __('Toggle thread') }}
       </button>
     </div>

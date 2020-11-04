@@ -589,6 +589,7 @@ module Gitlab
             gitlab: distinct_count(::BulkImport.where(time_period, source_type: :gitlab), :user_id)
           },
           projects_imported: {
+            total: count(Project.where(time_period).where.not(import_type: nil)),
             gitlab_project: projects_imported_count('gitlab_project', time_period),
             gitlab: projects_imported_count('gitlab', time_period),
             github: projects_imported_count('github', time_period),

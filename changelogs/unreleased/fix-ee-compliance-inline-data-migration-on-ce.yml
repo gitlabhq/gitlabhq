@@ -1,0 +1,5 @@
+---
+title: Fix compliance framework database migration on CE instances
+merge_request: 46761
+author:
+type: fixed

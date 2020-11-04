@@ -78,7 +78,7 @@ describe('NoteHeader component', () => {
         expanded: true,
       });
 
-      expect(findChevronIcon().classes()).toContain('fa-chevron-up');
+      expect(findChevronIcon().props('name')).toBe('chevron-up');
     });
 
     it('has chevron-down icon if expanded prop is false', () => {
@@ -87,7 +87,7 @@ describe('NoteHeader component', () => {
         expanded: false,
       });
 
-      expect(findChevronIcon().classes()).toContain('fa-chevron-down');
+      expect(findChevronIcon().props('name')).toBe('chevron-down');
     });
   });
 
