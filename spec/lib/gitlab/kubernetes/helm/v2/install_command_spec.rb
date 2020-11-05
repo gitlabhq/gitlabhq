@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::Helm::InstallCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::V2::InstallCommand do
   subject(:install_command) do
     described_class.new(
       name: 'app-name',
@@ -142,37 +142,6 @@ RSpec.describe Gitlab::Kubernetes::Helm::InstallCommand do
           --set rbac.create\\=false,rbac.enabled\\=false
           --namespace gitlab-managed-apps
           -f /data/helm/app-name/config/values.yaml
-        EOS
-      end
-    end
-  end
-
-  context 'when there is no ca.pem file' do
-    let(:files) { { 'file.txt': 'some content' } }
-
-    it_behaves_like 'helm command generator' do
-      let(:commands) do
-        <<~EOS
-        export HELM_HOST="localhost:44134"
-        tiller -listen ${HELM_HOST} -alsologtostderr &
-        helm init --client-only
-        helm repo add app-name https://repository.example.com
-        helm repo update
-        #{helm_install_command}
-        EOS
-      end
-
-      let(:helm_install_command) do
-        <<~EOS.squish
-        helm upgrade app-name chart-name
-           --install
-           --atomic
-           --cleanup-on-fail
-           --reset-values
-           --version 1.2.3
-           --set rbac.create\\=false,rbac.enabled\\=false
-           --namespace gitlab-managed-apps
-           -f /data/helm/app-name/config/values.yaml
         EOS
       end
     end

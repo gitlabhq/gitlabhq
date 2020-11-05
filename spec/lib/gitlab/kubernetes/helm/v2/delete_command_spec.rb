@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::Helm::DeleteCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::V2::DeleteCommand do
   subject(:delete_command) { described_class.new(name: app_name, rbac: rbac, files: files) }
 
   let(:app_name) { 'app-name' }

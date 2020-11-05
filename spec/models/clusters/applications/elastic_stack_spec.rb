@@ -15,7 +15,7 @@ RSpec.describe Clusters::Applications::ElasticStack do
 
     subject { elastic_stack.install_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::InstallCommand) }
 
     it 'is initialized with elastic stack arguments' do
       expect(subject.name).to eq('elastic-stack')
@@ -57,7 +57,7 @@ RSpec.describe Clusters::Applications::ElasticStack do
 
       it 'includes a preinstall script' do
         expect(subject.preinstall).not_to be_empty
-        expect(subject.preinstall.first).to include("delete")
+        expect(subject.preinstall.first).to include("helm uninstall")
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe Clusters::Applications::ElasticStack do
 
       it 'includes a preinstall script' do
         expect(subject.preinstall).not_to be_empty
-        expect(subject.preinstall.first).to include("delete")
+        expect(subject.preinstall.first).to include("helm uninstall")
       end
     end
 
@@ -123,7 +123,7 @@ RSpec.describe Clusters::Applications::ElasticStack do
 
     subject { elastic_stack.uninstall_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::DeleteCommand) }
 
     it 'is initialized with elastic stack arguments' do
       expect(subject.name).to eq('elastic-stack')

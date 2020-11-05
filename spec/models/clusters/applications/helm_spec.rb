@@ -56,7 +56,7 @@ RSpec.describe Clusters::Applications::Helm do
     subject { application.issue_client_cert }
 
     it 'returns a new cert' do
-      is_expected.to be_kind_of(Gitlab::Kubernetes::Helm::Certificate)
+      is_expected.to be_kind_of(Gitlab::Kubernetes::Helm::V2::Certificate)
       expect(subject.cert_string).not_to eq(application.ca_cert)
       expect(subject.key_string).not_to eq(application.ca_key)
     end
@@ -67,7 +67,7 @@ RSpec.describe Clusters::Applications::Helm do
 
     subject { helm.install_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InitCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V2::InitCommand) }
 
     it 'is initialized with 1 arguments' do
       expect(subject.name).to eq('helm')
@@ -104,7 +104,7 @@ RSpec.describe Clusters::Applications::Helm do
 
     subject { helm.uninstall_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::ResetCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V2::ResetCommand) }
 
     it 'has name' do
       expect(subject.name).to eq('helm')

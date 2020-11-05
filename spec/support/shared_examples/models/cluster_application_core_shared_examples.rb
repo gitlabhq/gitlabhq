@@ -25,4 +25,21 @@ RSpec.shared_examples 'cluster application core specs' do |application_name|
   describe '.association_name' do
     it { expect(described_class.association_name).to eq(:"application_#{subject.name}") }
   end
+
+  describe '#helm_command_module' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:helm_major_version, :expected_helm_command_module) do
+      2 | Gitlab::Kubernetes::Helm::V2
+      3 | Gitlab::Kubernetes::Helm::V3
+    end
+
+    with_them do
+      subject { described_class.new(cluster: cluster).helm_command_module }
+
+      let(:cluster) { build(:cluster, helm_major_version: helm_major_version)}
+
+      it { is_expected.to eq(expected_helm_command_module) }
+    end
+  end
 end

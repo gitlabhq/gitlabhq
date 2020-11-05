@@ -119,7 +119,7 @@ RSpec.describe Clusters::Applications::Knative do
 
   shared_examples 'a command' do
     it 'is an instance of Helm::InstallCommand' do
-      expect(subject).to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand)
+      expect(subject).to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::InstallCommand)
     end
 
     it 'is initialized with knative arguments' do
@@ -171,7 +171,7 @@ RSpec.describe Clusters::Applications::Knative do
   describe '#uninstall_command' do
     subject { knative.uninstall_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::DeleteCommand) }
 
     it "removes knative deployed services before uninstallation" do
       2.times do |i|

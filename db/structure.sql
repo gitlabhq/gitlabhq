@@ -10967,7 +10967,8 @@ CREATE TABLE clusters (
     namespace_per_environment boolean DEFAULT true NOT NULL,
     management_project_id integer,
     cleanup_status smallint DEFAULT 1 NOT NULL,
-    cleanup_status_reason text
+    cleanup_status_reason text,
+    helm_major_version integer DEFAULT 2 NOT NULL
 );
 
 CREATE TABLE clusters_applications_cert_managers (

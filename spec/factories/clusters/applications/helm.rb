@@ -5,7 +5,7 @@ FactoryBot.define do
     cluster factory: %i(cluster provided_by_gcp)
 
     before(:create) do
-      allow(Gitlab::Kubernetes::Helm::Certificate).to receive(:generate_root)
+      allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root)
         .and_return(
           double(
             key_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')),
@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     after(:create) do
-      allow(Gitlab::Kubernetes::Helm::Certificate).to receive(:generate_root).and_call_original
+      allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root).and_call_original
     end
 
     trait :not_installable do

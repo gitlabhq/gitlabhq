@@ -540,6 +540,27 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
         end
       end
     end
+
+    describe 'helm_major_version can only be 2 or 3' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:helm_major_version, :expect_valid) do
+        2  | true
+        3  | true
+        4  | false
+        -1 | false
+      end
+
+      with_them do
+        let(:cluster) { build(:cluster, helm_major_version: helm_major_version) }
+
+        it { is_expected.to eq(expect_valid) }
+      end
+    end
+  end
+
+  it 'has default helm_major_version 3' do
+    expect(create(:cluster).helm_major_version).to eq(3)
   end
 
   describe '.ancestor_clusters_for_clusterable' do

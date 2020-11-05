@@ -62,7 +62,7 @@ module Clusters
       end
 
       def install_command
-        Gitlab::Kubernetes::Helm::InstallCommand.new(
+        helm_command_module::InstallCommand.new(
           name: name,
           repository: repository,
           version: VERSION,

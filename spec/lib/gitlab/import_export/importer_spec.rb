@@ -65,10 +65,22 @@ RSpec.describe Gitlab::ImportExport::Importer do
         end
       end
 
-      it 'restores the ProjectTree' do
-        expect(Gitlab::ImportExport::Project::TreeRestorer).to receive(:new).and_call_original
+      context 'with sample_data_template' do
+        it 'initializes the Sample::TreeRestorer' do
+          project.create_or_update_import_data(data: { sample_data: true })
 
-        importer.execute
+          expect(Gitlab::ImportExport::Project::Sample::TreeRestorer).to receive(:new).and_call_original
+
+          importer.execute
+        end
+      end
+
+      context 'without sample_data_template' do
+        it 'initializes the ProjectTree' do
+          expect(Gitlab::ImportExport::Project::TreeRestorer).to receive(:new).and_call_original
+
+          importer.execute
+        end
       end
 
       it 'removes the import file' do

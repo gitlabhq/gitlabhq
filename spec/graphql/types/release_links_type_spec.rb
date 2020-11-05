@@ -14,8 +14,6 @@ RSpec.describe GitlabSchema.types['ReleaseLinks'] do
       openedIssuesUrl
       closedIssuesUrl
       editUrl
-      mergeRequestsUrl
-      issuesUrl
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

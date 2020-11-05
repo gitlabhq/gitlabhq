@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::Helm::ResetCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::V2::ResetCommand do
   subject(:reset_command) { described_class.new(name: name, rbac: rbac, files: files) }
 
   let(:rbac) { true }

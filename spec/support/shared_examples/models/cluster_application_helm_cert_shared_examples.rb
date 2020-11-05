@@ -6,7 +6,7 @@ RSpec.shared_examples 'cluster application helm specs' do |application_name|
   describe '#uninstall_command' do
     subject { application.uninstall_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::DeleteCommand) }
 
     it 'has files' do
       expect(subject.files).to eq(application.files)

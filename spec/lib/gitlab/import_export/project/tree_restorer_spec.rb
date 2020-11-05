@@ -1040,41 +1040,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
     it_behaves_like 'project tree restorer work properly', :legacy_reader, true
 
     it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
-
-    context 'Sample Data JSON' do
-      let(:user) { create(:user) }
-      let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
-      let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
-
-      before do
-        setup_import_export_config('sample_data')
-        setup_reader(:ndjson_reader)
-      end
-
-      context 'with sample_data_template' do
-        before do
-          allow(project).to receive_message_chain(:import_data, :data, :dig).with('sample_data') { true }
-        end
-
-        it 'initialize SampleDataRelationTreeRestorer' do
-          expect_next_instance_of(Gitlab::ImportExport::Project::Sample::SampleDataRelationTreeRestorer) do |restorer|
-            expect(restorer).to receive(:restore).and_return(true)
-          end
-
-          expect(project_tree_restorer.restore).to eq(true)
-        end
-      end
-
-      context 'without sample_data_template' do
-        it 'initialize RelationTreeRestorer' do
-          expect_next_instance_of(Gitlab::ImportExport::RelationTreeRestorer) do |restorer|
-            expect(restorer).to receive(:restore).and_return(true)
-          end
-
-          expect(project_tree_restorer.restore).to eq(true)
-        end
-      end
-    end
   end
 
   context 'disable ndjson import' do

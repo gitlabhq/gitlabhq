@@ -286,7 +286,7 @@ class PagesDomain < ApplicationRecord
     return unless domain
 
     if domain.downcase.ends_with?(Settings.pages.host.downcase)
-      self.errors.add(:domain, "*.#{Settings.pages.host} is restricted")
+      self.errors.add(:domain, "*.#{Settings.pages.host} is restricted. Please compare our documentation at https://docs.gitlab.com/ee/administration/pages/#advanced-configuration against your configuration.")
     end
   end
 

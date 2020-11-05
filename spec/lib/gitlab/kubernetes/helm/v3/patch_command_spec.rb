@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::V3::PatchCommand do
   let(:files) { { 'ca.pem': 'some file content' } }
   let(:repository) { 'https://repository.example.com' }
   let(:rbac) { false }
@@ -22,9 +22,6 @@ RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
   it_behaves_like 'helm command generator' do
     let(:commands) do
       <<~EOS
-      export HELM_HOST="localhost:44134"
-      tiller -listen ${HELM_HOST} -alsologtostderr &
-      helm init --client-only
       helm repo add app-name https://repository.example.com
       helm repo update
       #{helm_upgrade_comand}
@@ -48,9 +45,6 @@ RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
     it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS
-        export HELM_HOST="localhost:44134"
-        tiller -listen ${HELM_HOST} -alsologtostderr &
-        helm init --client-only
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_upgrade_command}
@@ -64,33 +58,6 @@ RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
           --version 1.2.3
           --namespace gitlab-managed-apps
           -f /data/helm/app-name/config/values.yaml
-        EOS
-      end
-    end
-  end
-
-  context 'when there is no ca.pem file' do
-    let(:files) { { 'file.txt': 'some content' } }
-
-    it_behaves_like 'helm command generator' do
-      let(:commands) do
-        <<~EOS
-        export HELM_HOST="localhost:44134"
-        tiller -listen ${HELM_HOST} -alsologtostderr &
-        helm init --client-only
-        helm repo add app-name https://repository.example.com
-        helm repo update
-        #{helm_upgrade_command}
-        EOS
-      end
-
-      let(:helm_upgrade_command) do
-        <<~EOS.squish
-        helm upgrade app-name chart-name
-           --reuse-values
-           --version 1.2.3
-           --namespace gitlab-managed-apps
-           -f /data/helm/app-name/config/values.yaml
         EOS
       end
     end

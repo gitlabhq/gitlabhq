@@ -50231,34 +50231,6 @@
               "deprecationReason": null
             },
             {
-              "name": "issuesUrl",
-              "description": "HTTP URL of the issues page filtered by this release. Deprecated in 13.6: Use `openedIssuesUrl`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `openedIssuesUrl`. Deprecated in 13.6"
-            },
-            {
-              "name": "mergeRequestsUrl",
-              "description": "HTTP URL of the merge request page filtered by this release. Deprecated in 13.6: Use `openedMergeRequestsUrl`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `openedMergeRequestsUrl`. Deprecated in 13.6"
-            },
-            {
               "name": "mergedMergeRequestsUrl",
               "description": "HTTP URL of the merge request page , filtered by this release and `state=merged`",
               "args": [

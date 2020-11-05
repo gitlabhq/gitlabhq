@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::Helm::BaseCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::V2::BaseCommand do
   subject(:base_command) do
     test_class.new(rbac)
   end
@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Kubernetes::Helm::BaseCommand do
   let(:rbac) { false }
 
   let(:test_class) do
-    Class.new(Gitlab::Kubernetes::Helm::BaseCommand) do
+    Class.new(described_class) do
       def initialize(rbac)
         super(
           name: 'test-class-name',
@@ -20,6 +20,18 @@ RSpec.describe Gitlab::Kubernetes::Helm::BaseCommand do
         )
       end
     end
+  end
+
+  describe 'HELM_VERSION' do
+    subject { described_class::HELM_VERSION }
+
+    it { is_expected.to match /^2\.\d+\.\d+$/ }
+  end
+
+  describe '#env' do
+    subject { base_command.env }
+
+    it { is_expected.to include(TILLER_NAMESPACE: 'gitlab-managed-apps') }
   end
 
   it_behaves_like 'helm command generator' do

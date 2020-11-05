@@ -2435,8 +2435,6 @@ Evidence for a release.
 | `closedIssuesUrl` | String | HTTP URL of the issues page, filtered by this release and `state=closed` |
 | `closedMergeRequestsUrl` | String | HTTP URL of the merge request page , filtered by this release and `state=closed` |
 | `editUrl` | String | HTTP URL of the release's edit page |
-| `issuesUrl` **{warning-solid}** | String | **Deprecated:** Use `openedIssuesUrl`. Deprecated in 13.6 |
-| `mergeRequestsUrl` **{warning-solid}** | String | **Deprecated:** Use `openedMergeRequestsUrl`. Deprecated in 13.6 |
 | `mergedMergeRequestsUrl` | String | HTTP URL of the merge request page , filtered by this release and `state=merged` |
 | `openedIssuesUrl` | String | HTTP URL of the issues page, filtered by this release and `state=open` |
 | `openedMergeRequestsUrl` | String | HTTP URL of the merge request page, filtered by this release and `state=open` |

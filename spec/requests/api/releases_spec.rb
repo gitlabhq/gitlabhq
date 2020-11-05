@@ -110,22 +110,6 @@ RSpec.describe API::Releases do
         expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/-/commit/#{release_1.commit.id}")
         expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
       end
-
-      it 'returns the merge requests and issues links, with correct query' do
-        get api("/projects/#{project.id}/releases", maintainer)
-
-        links = json_response.first['_links']
-        release = json_response.first['tag_name']
-        expected_query = "release_tag=#{release}&scope=all&state=opened"
-        path_base = "/#{project.namespace.path}/#{project.path}"
-        mr_uri = URI.parse(links['merge_requests_url'])
-        issue_uri = URI.parse(links['issues_url'])
-
-        expect(mr_uri.path).to eq("#{path_base}/-/merge_requests")
-        expect(issue_uri.path).to eq("#{path_base}/-/issues")
-        expect(mr_uri.query).to eq(expected_query)
-        expect(issue_uri.query).to eq(expected_query)
-      end
     end
 
     it 'returns an upcoming_release status for a future release' do

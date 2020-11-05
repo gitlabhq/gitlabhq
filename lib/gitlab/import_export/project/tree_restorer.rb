@@ -85,11 +85,7 @@ module Gitlab
         end
 
         def relation_tree_restorer_class
-          sample_data_template? ? Sample::SampleDataRelationTreeRestorer : RelationTreeRestorer
-        end
-
-        def sample_data_template?
-          @project&.import_data&.data&.dig('sample_data')
+          RelationTreeRestorer
         end
 
         def members_mapper

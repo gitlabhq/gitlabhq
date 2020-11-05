@@ -1,0 +1,5 @@
+---
+title: Replace v-html with GlSprintf in notes/.../discussion_filter_note.vue
+merge_request: 41482
+author: Takuya Noguchi
+type: other

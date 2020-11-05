@@ -29,7 +29,7 @@ module Clusters
       end
 
       def install_command
-        Gitlab::Kubernetes::Helm::InstallCommand.new(
+        helm_command_module::InstallCommand.new(
           name: 'crossplane',
           repository: repository,
           version: VERSION,
