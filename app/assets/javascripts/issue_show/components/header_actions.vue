@@ -81,7 +81,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.updateIssue.errors.length) {
-            createFlash(data.updateIssue.errors.join('. '));
+            createFlash({ message: data.updateIssue.errors.join('. ') });
             return;
           }
 
@@ -95,7 +95,7 @@ export default {
           // Dispatch event which updates open/close state, shared among the issue show page
           document.dispatchEvent(new CustomEvent('issuable_vue_app:change', payload));
         })
-        .catch(() => createFlash(__('Update failed. Please try again.')))
+        .catch(() => createFlash({ message: __('Update failed. Please try again.') }))
         .finally(() => {
           this.isUpdatingState = false;
         });

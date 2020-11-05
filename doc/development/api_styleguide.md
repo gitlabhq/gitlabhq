@@ -207,6 +207,12 @@ guide on how you can add a new custom validator.
   checks if the value of the given parameter is either an `Array`, `None`, or `Any`.
   It allows only either of these mentioned values to move forward in the request.
 
+- `EmailOrEmailList`:
+
+  The [`EmailOrEmailList` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/email_or_email_list.rb)
+  checks if the value of a string or a list of strings contains only valid
+  email addresses. It allows only lists with all valid email addresses to move forward in the request.
+
 ### Adding a new custom validator
 
 Custom validators are a great way to validate parameters before sending

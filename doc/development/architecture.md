@@ -258,6 +258,7 @@ Table description links:
 | [NGINX](#nginx)                                       | Routes requests to appropriate components, terminates SSL            |       ✅        |      ✅       |        ⚙         |     ✅      |   ⤓    |  ❌  | CE & EE |
 | [Node Exporter](#node-exporter)                       | Prometheus endpoint with system metrics                              |       ✅        |     N/A      |       N/A        |     ✅      |   ❌    |  ❌  | CE & EE |
 | [Outbound email (SMTP)](#outbound-email)              | Send email messages to users                                         |       ⤓        |      ⚙       |        ⤓         |     ✅      |   ⤓    |  ⤓  | CE & EE |
+| [Patroni](#patroni)                                   | Manage PostgreSQL HA cluster leader selection and replication        |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [PgBouncer Exporter](#pgbouncer-exporter)             | Prometheus endpoint with PgBouncer metrics                           |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [PgBouncer](#pgbouncer)                               | Database connection pooling, failover                                |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [PostgreSQL Exporter](#postgresql-exporter)           | Prometheus endpoint with PostgreSQL metrics                          |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -544,6 +545,15 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
 [Node Exporter](https://github.com/prometheus/node_exporter) is a Prometheus tool that gives us metrics on the underlying machine (think CPU/Disk/Load). It's just a packaged version of the common open source offering from the Prometheus project.
+
+#### Patroni
+
+- [Project Page](https://github.com/zalando/patroni)
+- Configuration:
+  - [Omnibus](../administration/postgresql/replication_and_failover.md#patroni)
+- Layer: Core Service (Data)
+- Process: `patroni`
+- GitLab.com: [Database Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)
 
 #### PgBouncer
 

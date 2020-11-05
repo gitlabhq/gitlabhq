@@ -161,6 +161,12 @@ headers whose values you want masked. For details on how to mask headers, see
 
 It's also possible to authenticate the user before performing the DAST checks.
 
+**Important:** It is highly recommended that you configure the scanner to authenticate to the application,
+or it will not be able to check most of the application for security risks, as most
+of your application is likely not accessible without authentication. It is also recommended
+that you periodically confirm the scanner's authentication is still working as this tends to break over
+time due to authentication changes to the application.
+
 Create masked variables to pass the credentials that DAST uses.
 To create masked variables for the username and password, see [Create a custom variable in the UI](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
 Note that the key of the username variable must be `DAST_USERNAME`

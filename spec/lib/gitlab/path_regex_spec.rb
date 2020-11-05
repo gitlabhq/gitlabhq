@@ -107,7 +107,7 @@ RSpec.describe Gitlab::PathRegex do
   end
 
   let(:sitemap_words) do
-    %w(sitemap.xml sitemap.xml.gz)
+    %w(sitemap sitemap.xml sitemap.xml.gz)
   end
 
   let(:ee_top_level_words) do
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::PathRegex do
 
     # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
     it 'does not allow expansion' do
-      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(43)
+      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(44)
     end
   end
 

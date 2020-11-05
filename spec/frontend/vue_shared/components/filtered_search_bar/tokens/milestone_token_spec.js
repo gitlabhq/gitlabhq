@@ -120,7 +120,9 @@ describe('MilestoneToken', () => {
         wrapper.vm.fetchMilestoneBySearchTerm('foo');
 
         return waitForPromises().then(() => {
-          expect(createFlash).toHaveBeenCalledWith('There was a problem fetching milestones.');
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'There was a problem fetching milestones.',
+          });
         });
       });
 

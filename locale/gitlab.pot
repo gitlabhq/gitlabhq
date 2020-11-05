@@ -9866,6 +9866,9 @@ msgstr ""
 msgid "Email Notification"
 msgstr ""
 
+msgid "Email cannot be blank"
+msgstr ""
+
 msgid "Email could not be sent"
 msgstr ""
 
@@ -28200,6 +28203,9 @@ msgid "Too many namespaces enabled. You will need to manage them via the console
 msgstr ""
 
 msgid "Too many projects enabled. You will need to manage them via the console or the API."
+msgstr ""
+
+msgid "Too many users specified (limit is %{user_limit})"
 msgstr ""
 
 msgid "Too much data"

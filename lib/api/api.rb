@@ -186,6 +186,7 @@ module API
       mount ::API::ImportBitbucketServer
       mount ::API::ImportGithub
       mount ::API::IssueLinks
+      mount ::API::Invitations
       mount ::API::Issues
       mount ::API::JobArtifacts
       mount ::API::Jobs

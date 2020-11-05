@@ -17,6 +17,7 @@ module Search
                                        params[:search],
                                        project: project,
                                        repository_ref: params[:repository_ref],
+                                       order_by: params[:order_by],
                                        sort: params[:sort],
                                        filters: { confidential: params[:confidential], state: params[:state] }
                                       )

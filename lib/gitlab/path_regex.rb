@@ -49,6 +49,7 @@ module Gitlab
       s
       search
       sent_notifications
+      sitemap
       sitemap.xml
       sitemap.xml.gz
       slash-command-logo.png

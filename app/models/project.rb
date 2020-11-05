@@ -1195,7 +1195,6 @@ class Project < ApplicationRecord
   end
 
   def changing_shared_runners_enabled_is_allowed
-    return unless Feature.enabled?(:disable_shared_runners_on_group, default_enabled: true)
     return unless new_record? || changes.has_key?(:shared_runners_enabled)
 
     if shared_runners_enabled && group && group.shared_runners_setting == 'disabled_and_unoverridable'

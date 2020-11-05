@@ -1,7 +1,0 @@
----
-name: disable_shared_runners_on_group
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36080
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258991
-type: development
-group: group::runner
-default_enabled: true

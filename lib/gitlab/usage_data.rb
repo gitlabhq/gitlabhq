@@ -160,6 +160,7 @@ module Gitlab
             projects_with_tracing_enabled: count(ProjectTracingSetting),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
             projects_with_alerts_service_enabled: count(AlertsService.active),
+            projects_with_alerts_created: distinct_count(::AlertManagement::Alert, :project_id),
             projects_with_prometheus_alerts: distinct_count(PrometheusAlert, :project_id),
             projects_with_terraform_reports: distinct_count(::Ci::JobArtifact.terraform_reports, :project_id),
             projects_with_terraform_states: distinct_count(::Terraform::State, :project_id),
@@ -215,7 +216,8 @@ module Gitlab
             # rubocop: enable UsageData/LargeTable:
             packages: count(::Packages::Package.where(last_28_days_time_period)),
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
-            project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
+            project_snippets: count(ProjectSnippet.where(last_28_days_time_period)),
+            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(last_28_days_time_period), :project_id)
           }.merge(
             snowplow_event_counts(last_28_days_time_period(column: :collector_tstamp)),
             aggregated_metrics_monthly

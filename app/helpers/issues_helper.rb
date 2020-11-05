@@ -160,7 +160,7 @@ module IssuesHelper
       can_report_spam: issue.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issue).to_s,
       iid: issue.iid,
-      is_issue_author: issue.author == current_user,
+      is_issue_author: (issue.author == current_user).to_s,
       new_issue_path: new_project_issue_path(project),
       project_path: project.full_path,
       report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),

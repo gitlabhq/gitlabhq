@@ -45,7 +45,8 @@ That is, `LEFTHOOK=0 git push`.
 You can also:
 
 - Define [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
-- Skip [checks per tag on the fly](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
+- Skip [checks per tag on the fly](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly), e.g. `LEFTHOOK_EXCLUDE=frontend git push origin`.
+- Run [hooks manually](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly), e.g. `lefthook run pre-push`.
 
 ## Ruby, Rails, RSpec
 

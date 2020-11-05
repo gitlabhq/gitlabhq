@@ -39,7 +39,9 @@ module API
           snippets: snippets?,
           basic_search: params[:basic_search],
           page: params[:page],
-          per_page: params[:per_page]
+          per_page: params[:per_page],
+          order_by: params[:order_by],
+          sort: params[:sort]
         }.merge(additional_params)
 
         results = SearchService.new(current_user, search_params).search_objects(preload_method)

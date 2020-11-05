@@ -308,6 +308,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_with_tracing_enabled: 2,
         projects_with_error_tracking_enabled: 2
       )
+
       expect(described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)).to include(
         clusters: 1,
         clusters_applications_prometheus: 1,
@@ -470,6 +471,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
+      expect(count_data[:projects_with_alerts_created]).to eq(1)
       expect(count_data[:protected_branches]).to eq(2)
       expect(count_data[:protected_branches_except_default]).to eq(1)
       expect(count_data[:terraform_reports]).to eq(6)
@@ -611,6 +613,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:deployment, :success, deployment_options)
         create(:project_snippet, project: project, created_at: n.days.ago)
         create(:personal_snippet, created_at: n.days.ago)
+        create(:alert_management_alert, project: project, created_at: n.days.ago)
       end
 
       stub_application_setting(self_monitoring_project: project)
@@ -631,6 +634,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:snippets]).to eq(2)
       expect(counts_monthly[:personal_snippets]).to eq(1)
       expect(counts_monthly[:project_snippets]).to eq(1)
+      expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
       expect(counts_monthly[:promoted_issues]).to eq(1)
     end
