@@ -50,3 +50,4 @@ UsageData/DistinctCountByLargeForeignKey:
     - 'owner_id'
     - 'project_id'
     - 'user_id'
+    - 'resource_owner_id'

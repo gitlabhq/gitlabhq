@@ -21257,6 +21257,8 @@ CREATE INDEX index_notification_settings_on_user_id ON notification_settings USI
 
 CREATE UNIQUE INDEX index_notifications_on_user_id_and_source_id_and_source_type ON notification_settings USING btree (user_id, source_id, source_type);
 
+CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON oauth_access_grants USING btree (resource_owner_id, application_id, created_at);
+
 CREATE UNIQUE INDEX index_oauth_access_grants_on_token ON oauth_access_grants USING btree (token);
 
 CREATE INDEX index_oauth_access_tokens_on_application_id ON oauth_access_tokens USING btree (application_id);

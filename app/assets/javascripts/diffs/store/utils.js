@@ -664,6 +664,7 @@ export const generateTreeList = files => {
               addedLines: file.added_lines,
               removedLines: file.removed_lines,
               parentPath: parent ? `${parent.path}/` : '/',
+              submodule: file.submodule,
             });
           } else {
             Object.assign(entry, {

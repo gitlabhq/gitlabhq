@@ -71,6 +71,17 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
       end
 
+      it 'does not fail if pages_metadata is absent' do
+        project.pages_metadatum.destroy!
+        project.reload
+
+        expect do
+          expect(execute).to eq(:success)
+        end.to change { project.pages_deployments.count }.by(1)
+
+        expect(project.pages_metadatum.reload.pages_deployment).to eq(project.pages_deployments.last)
+      end
+
       context 'when there is an old pages deployment' do
         let!(:old_deployment_from_another_project) { create(:pages_deployment) }
         let!(:old_deployment) { create(:pages_deployment, project: project) }

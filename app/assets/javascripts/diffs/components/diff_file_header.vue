@@ -230,7 +230,13 @@ export default {
         :href="titleLink"
         @click="handleFileNameClick"
       >
-        <file-icon :file-name="filePath" :size="18" aria-hidden="true" css-classes="gl-mr-2" />
+        <file-icon
+          :file-name="filePath"
+          :size="18"
+          aria-hidden="true"
+          css-classes="gl-mr-2"
+          :submodule="diffFile.submodule"
+        />
         <span v-if="isFileRenamed">
           <strong
             v-gl-tooltip

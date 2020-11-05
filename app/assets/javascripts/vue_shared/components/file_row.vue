@@ -153,6 +153,7 @@ export default {
           :folder="isTree"
           :opened="file.opened"
           :size="16"
+          :submodule="file.submodule"
         />
         <gl-truncate v-if="truncateMiddle" :text="file.name" position="middle" class="gl-pr-7" />
         <template v-else>{{ file.name }}</template>

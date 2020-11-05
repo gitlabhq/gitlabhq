@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::AppendBuildTraceService do
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)

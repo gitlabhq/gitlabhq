@@ -143,7 +143,7 @@ export default {
     <div class="media-body">
       <div class="gl-ml-3 float-left">
         <span class="gl-font-weight-bold">
-          {{ __('This merge request is still a work in progress.') }}
+          {{ __('This merge request is still a draft.') }}
         </span>
         <span class="gl-display-block text-muted">{{
           __("Draft merge requests can't be merged.")

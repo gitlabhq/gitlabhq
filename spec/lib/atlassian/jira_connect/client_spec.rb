@@ -20,8 +20,11 @@ RSpec.describe Atlassian::JiraConnect::Client do
   end
 
   describe '#store_dev_info' do
-    it "calls the API with auth headers" do
-      expected_jwt = Atlassian::Jwt.encode(
+    let_it_be(:project) { create_default(:project, :repository) }
+    let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches) }
+
+    let(:expected_jwt) do
+      Atlassian::Jwt.encode(
         Atlassian::Jwt.build_claims(
           Atlassian::JiraConnect.app_key,
           '/rest/devinfo/0.10/bulk',
@@ -29,7 +32,9 @@ RSpec.describe Atlassian::JiraConnect::Client do
         ),
         'sample_secret'
       )
+    end
 
+    before do
       stub_full_request('https://gitlab-test.atlassian.net/rest/devinfo/0.10/bulk', method: :post)
         .with(
           headers: {
@@ -37,8 +42,18 @@ RSpec.describe Atlassian::JiraConnect::Client do
             'Content-Type' => 'application/json'
           }
         )
+    end
 
-      subject.store_dev_info(project: create(:project))
+    it "calls the API with auth headers" do
+      subject.store_dev_info(project: project)
+    end
+
+    it 'avoids N+1 database queries' do
+      control_count = ActiveRecord::QueryRecorder.new { subject.store_dev_info(project: project, merge_requests: merge_requests) }.count
+
+      merge_requests << create(:merge_request, :unique_branches)
+
+      expect { subject.store_dev_info(project: project, merge_requests: merge_requests) }.not_to exceed_query_limit(control_count)
     end
   end
 end

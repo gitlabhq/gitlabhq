@@ -10451,6 +10451,9 @@ msgstr ""
 msgid "Environments|Stopping"
 msgstr ""
 
+msgid "Environments|Stopping %{environmentName}"
+msgstr ""
+
 msgid "Environments|There was an error fetching the logs. Please try again."
 msgstr ""
 
@@ -16305,7 +16308,7 @@ msgstr ""
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
-msgid "Marked this %{noun} as Work In Progress."
+msgid "Marked this %{noun} as a draft."
 msgstr ""
 
 msgid "Marked this issue as a duplicate of %{duplicate_param}."
@@ -16317,7 +16320,7 @@ msgstr ""
 msgid "Marked to do as done."
 msgstr ""
 
-msgid "Marks this %{noun} as Work In Progress."
+msgid "Marks this %{noun} as a draft."
 msgstr ""
 
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
@@ -27514,7 +27517,7 @@ msgstr ""
 msgid "This merge request is locked."
 msgstr ""
 
-msgid "This merge request is still a work in progress."
+msgid "This merge request is still a draft."
 msgstr ""
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."
@@ -28694,10 +28697,10 @@ msgstr ""
 msgid "Unlocks the discussion."
 msgstr ""
 
-msgid "Unmarked this %{noun} as Work In Progress."
+msgid "Unmarked this %{noun} as a draft."
 msgstr ""
 
-msgid "Unmarks this %{noun} as Work In Progress."
+msgid "Unmarks this %{noun} as a draft."
 msgstr ""
 
 msgid "Unreachable"

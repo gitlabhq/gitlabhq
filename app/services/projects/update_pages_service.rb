@@ -138,7 +138,7 @@ module Projects
         deployment = project.pages_deployments.create!(file: file,
                                                        file_count: entries_count,
                                                        file_sha256: sha256)
-        project.pages_metadatum.update!(pages_deployment: deployment)
+        project.update_pages_deployment!(deployment)
       end
 
       DestroyPagesDeploymentsWorker.perform_in(

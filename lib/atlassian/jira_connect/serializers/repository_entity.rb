@@ -21,7 +21,11 @@ module Atlassian
           JiraConnect::Serializers::BranchEntity.represent options[:branches], project: project, update_sequence_id: options[:update_sequence_id]
         end
         expose :pullRequests do |project, options|
-          JiraConnect::Serializers::PullRequestEntity.represent options[:merge_requests], project: project, update_sequence_id: options[:update_sequence_id]
+          JiraConnect::Serializers::PullRequestEntity.represent(
+            options[:merge_requests],
+            update_sequence_id: options[:update_sequence_id],
+            user_notes_count: options[:user_notes_count]
+          )
         end
       end
     end

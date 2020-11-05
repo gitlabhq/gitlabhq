@@ -5927,6 +5927,26 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#update_pages_deployment!' do
+    let(:project) { create(:project) }
+    let(:deployment) { create(:pages_deployment, project: project) }
+
+    it "creates new metadata record if none exists yet and sets deployment" do
+      project.pages_metadatum.destroy!
+      project.reload
+
+      project.update_pages_deployment!(deployment)
+
+      expect(project.pages_metadatum.pages_deployment).to eq(deployment)
+    end
+
+    it "updates the existing metadara record with deployment" do
+      expect do
+        project.update_pages_deployment!(deployment)
+      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
+    end
+  end
+
   describe '#has_pool_repsitory?' do
     it 'returns false when it does not have a pool repository' do
       subject = create(:project, :repository)

@@ -72,6 +72,17 @@ With GitLab Enterprise Edition, you can also:
 
 You can also [integrate](project/integrations/overview.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, Jira, and a lot more.
 
+## User types
+
+There are several types of users in GitLab:
+
+- Regular users and GitLab.com users. <!-- Note: further description TBA -->
+- [Groups](group/index.md) of users.
+- GitLab [admin area](admin_area/index.md) user.
+- [GitLab Administrator](../administration/index.md) with full access to
+  self-managed instances' features and settings.
+- [Internal users](../development/internal_users.md).
+
 ## Projects
 
 In GitLab, you can create [projects](project/index.md) to host

@@ -1823,6 +1823,10 @@ class Project < ApplicationRecord
     ensure_pages_metadatum.update!(deployed: false, artifacts_archive: nil, pages_deployment: nil)
   end
 
+  def update_pages_deployment!(deployment)
+    ensure_pages_metadatum.update!(pages_deployment: deployment)
+  end
+
   def write_repository_config(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
