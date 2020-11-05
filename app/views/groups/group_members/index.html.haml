@@ -70,6 +70,8 @@
               = render 'shared/members/sort_dropdown'
         - if vue_members_list_enabled
           .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
+            .loading
+              .spinner.spinner-md
         - else
           %ul.content-list.members-list{ data: { qa_selector: 'members_list' } }
             = render partial: 'shared/members/member',
@@ -86,6 +88,8 @@
               = html_escape(_('Groups with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           - if vue_members_list_enabled
             .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
+              .loading
+                .spinner.spinner-md
           - else
             %ul.content-list.members-list{ data: { qa_selector: 'groups_list' } }
               - @group.shared_with_group_links.each do |group_link|
@@ -100,6 +104,8 @@
               = render 'shared/members/search_field', name: 'search_invited'
           - if vue_members_list_enabled
             .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
+              .loading
+                .spinner.spinner-md
           - else
             %ul.content-list.members-list
               = render partial: 'shared/members/member',
@@ -116,6 +122,8 @@
               = html_escape(_('Users requesting access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           - if vue_members_list_enabled
             .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
+              .loading
+                .spinner.spinner-md
           - else
             %ul.content-list.members-list
               = render partial: 'shared/members/member',

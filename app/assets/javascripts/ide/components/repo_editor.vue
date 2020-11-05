@@ -9,8 +9,8 @@ import {
   WEBIDE_MARK_FILE_START,
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
   WEBIDE_MEASURE_FILE_FROM_REQUEST,
-} from '~/performance_constants';
-import { performanceMarkAndMeasure } from '~/performance_utils';
+} from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import eventHub from '../eventhub';
 import {
   leftSidebarViews,

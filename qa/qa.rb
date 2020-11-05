@@ -19,6 +19,7 @@ module QA
     autoload :Saml, 'qa/flow/saml'
     autoload :User, 'qa/flow/user'
     autoload :MergeRequest, 'qa/flow/merge_request'
+    autoload :Pipeline, 'qa/flow/pipeline'
   end
 
   ##

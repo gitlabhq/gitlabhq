@@ -6025,6 +6025,81 @@ type DetailedStatus {
   tooltip: String
 }
 
+"""
+Segment
+"""
+type DevopsAdoptionSegment {
+  """
+  Assigned groups
+  """
+  groups(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): GroupConnection
+
+  """
+  ID of the segment
+  """
+  id: ID!
+
+  """
+  Name of the segment
+  """
+  name: String!
+}
+
+"""
+The connection type for DevopsAdoptionSegment.
+"""
+type DevopsAdoptionSegmentConnection {
+  """
+  A list of edges.
+  """
+  edges: [DevopsAdoptionSegmentEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DevopsAdoptionSegment]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type DevopsAdoptionSegmentEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DevopsAdoptionSegment
+}
+
 input DiffImagePositionInput {
   """
   Merge base of the branch the comment was made on
@@ -9163,6 +9238,41 @@ type Group {
   Web URL of the group
   """
   webUrl: String!
+}
+
+"""
+The connection type for Group.
+"""
+type GroupConnection {
+  """
+  A list of edges.
+  """
+  edges: [GroupEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Group]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type GroupEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Group
 }
 
 """
@@ -16539,6 +16649,31 @@ type Query {
   Fields related to design management
   """
   designManagement: DesignManagement!
+
+  """
+  Get configured DevOps adoption segments on the instance
+  """
+  devopsAdoptionSegments(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DevopsAdoptionSegmentConnection
 
   """
   Text to echo back

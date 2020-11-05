@@ -7,8 +7,8 @@ import {
   SNIPPET_LEVELS_MAP,
   SNIPPET_VISIBILITY,
 } from '../constants';
-import { performanceMarkAndMeasure } from '~/performance_utils';
-import { SNIPPET_MARK_BLOBS_CONTENT, SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance_constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import { SNIPPET_MARK_BLOBS_CONTENT, SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
 
 const createLocalId = () => uniqueId('blob_local_');
 

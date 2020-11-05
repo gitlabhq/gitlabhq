@@ -4,9 +4,15 @@ class Analytics::DevopsAdoption::Segment < ApplicationRecord
   ALLOWED_SEGMENT_COUNT = 20
 
   has_many :segment_selections
+  has_many :groups, through: :segment_selections
 
   validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
   validate :validate_segment_count
+
+  accepts_nested_attributes_for :segment_selections, allow_destroy: true
+
+  scope :ordered_by_name, -> { order(:name) }
+  scope :with_groups, -> { preload(:groups) }
 
   private
 

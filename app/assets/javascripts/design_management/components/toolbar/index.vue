@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -13,6 +13,9 @@ export default {
     GlIcon,
     DesignNavigation,
     DeleteButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -112,14 +115,21 @@ export default {
       </div>
     </div>
     <design-navigation :id="id" class="gl-ml-auto gl-flex-shrink-0" />
-    <gl-button :href="image" icon="download" />
+    <gl-button
+      v-gl-tooltip.bottom
+      :href="image"
+      icon="download"
+      :title="s__('DesignManagement|Download design')"
+    />
     <delete-button
       v-if="isLatestVersion && canDeleteDesign"
+      v-gl-tooltip.bottom
       class="gl-ml-3"
       :is-deleting="isDeleting"
       button-variant="warning"
       button-icon="archive"
       button-category="secondary"
+      :title="s__('DesignManagement|Archive design')"
       @deleteSelectedDesigns="$emit('delete')"
     />
   </header>

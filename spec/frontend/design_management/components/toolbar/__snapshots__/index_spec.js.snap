@@ -46,6 +46,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
     icon="download"
     size="medium"
+    title="Download design"
     variant="default"
   />
    
@@ -57,6 +58,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     buttonvariant="warning"
     class="gl-ml-3"
     hasselecteddesigns="true"
+    title="Archive design"
   />
 </header>
 `;

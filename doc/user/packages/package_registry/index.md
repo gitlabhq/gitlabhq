@@ -31,23 +31,31 @@ authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd), [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd), [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd), [Conan Packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd), [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages), and [generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd).
+Learn more about using CI/CD to build:
 
-If you use CI/CD to build a package, extended activity
-information is displayed when you view the package details:
+- [Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
+- [NPM packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
+- [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd)
+- [NuGet packages](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
+- [Conan packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
+- [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages)
+- [Generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
+
+If you use CI/CD to build a package, extended activity information is displayed
+when you view the package details:
 
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
-When using Maven and NPM, you can view which pipeline published the package, as well as the commit and
-user who triggered it.
+When using Maven and NPM, you can view which pipeline published the package, and
+the commit and user who triggered it.
 
 ## Download a package
 
 To download a package:
 
 1. Go to **Packages & Registries > Package Registry**.
-1. Click the name of the package you want to download.
-1. In the **Activity** section, click the name of the package you want to download.
+1. Select the name of the package you want to download.
+1. In the **Activity** section, select the name of the package you want to download.
 
 ## Delete a package
 

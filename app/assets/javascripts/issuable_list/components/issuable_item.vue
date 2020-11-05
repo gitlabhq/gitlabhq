@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlIcon, GlLabel, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 
 import { __, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -14,6 +14,7 @@ export default {
     GlLink,
     GlIcon,
     GlLabel,
+    GlFormCheckbox,
     IssuableAssignees,
   },
   directives: {
@@ -32,6 +33,15 @@ export default {
     enableLabelPermalinks: {
       type: Boolean,
       required: true,
+    },
+    showCheckbox: {
+      type: Boolean,
+      required: true,
+    },
+    checked: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -109,8 +119,15 @@ export default {
 </script>
 
 <template>
-  <li class="issue px-3">
+  <li class="issue gl-px-5!">
     <div class="issue-box">
+      <div v-if="showCheckbox" class="issue-check">
+        <gl-form-checkbox
+          class="gl-mr-0"
+          :checked="checked"
+          @input="$emit('checked-input', $event)"
+        />
+      </div>
       <div class="issuable-info-container">
         <div class="issuable-main-info">
           <div data-testid="issuable-title" class="issue-title title">

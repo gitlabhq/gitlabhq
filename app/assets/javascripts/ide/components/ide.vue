@@ -10,8 +10,8 @@ import {
   WEBIDE_MEASURE_TREE_FROM_REQUEST,
   WEBIDE_MEASURE_FILE_FROM_REQUEST,
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
-} from '~/performance_constants';
-import { performanceMarkAndMeasure } from '~/performance_utils';
+} from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { modalTypes } from '../constants';
 import eventHub from '../eventhub';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';

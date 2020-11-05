@@ -9,9 +9,9 @@ import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.
 import {
   SNIPPET_MARK_EDIT_APP_START,
   SNIPPET_MEASURE_BLOBS_CONTENT,
-} from '~/performance_constants';
+} from '~/performance/constants';
 import eventHub from '~/blob/components/eventhub';
-import { performanceMarkAndMeasure } from '~/performance_utils';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 
 import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';

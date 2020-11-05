@@ -5,6 +5,7 @@ import {
   GlButton,
   GlDropdown,
   GlDropdownItem,
+  GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
 
@@ -25,6 +26,7 @@ export default {
     GlButton,
     GlDropdown,
     GlDropdownItem,
+    GlFormCheckbox,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -58,6 +60,16 @@ export default {
       required: false,
       default: '',
       validator: value => value === '' || /(_desc)|(_asc)/g.test(value),
+    },
+    showCheckbox: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    checkboxChecked: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     searchInputPlaceholder: {
       type: String,
@@ -291,6 +303,12 @@ export default {
 
 <template>
   <div class="vue-filtered-search-bar-container d-md-flex">
+    <gl-form-checkbox
+      v-if="showCheckbox"
+      class="gl-align-self-center"
+      :checked="checkboxChecked"
+      @input="$emit('checked-input', $event)"
+    />
     <gl-filtered-search
       ref="filteredSearchInput"
       v-model="filterValue"

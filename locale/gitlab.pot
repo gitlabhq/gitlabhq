@@ -9219,6 +9219,9 @@ msgstr ""
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
+msgid "DesignManagement|Archive design"
+msgstr ""
+
 msgid "DesignManagement|Archive designs"
 msgstr ""
 
@@ -9274,6 +9277,9 @@ msgid "DesignManagement|Designs"
 msgstr ""
 
 msgid "DesignManagement|Discard comment"
+msgstr ""
+
+msgid "DesignManagement|Download design"
 msgstr ""
 
 msgid "DesignManagement|Error uploading a new design. Please try again."

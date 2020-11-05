@@ -6,8 +6,8 @@ import {
   WEBIDE_MARK_TREE_START,
   WEBIDE_MEASURE_TREE_FROM_REQUEST,
   WEBIDE_MARK_FILE_CLICKED,
-} from '~/performance_constants';
-import { performanceMarkAndMeasure } from '~/performance_utils';
+} from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import eventHub from '../eventhub';
 import IdeFileRow from './ide_file_row.vue';
 import NavDropdown from './nav_dropdown.vue';

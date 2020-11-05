@@ -8,11 +8,14 @@ import IssuableTabs from '~/issuable_list/components/issuable_tabs.vue';
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
-import { mockIssuableListProps } from '../mock_data';
+import { mockIssuableListProps, mockIssuables } from '../mock_data';
 
-const createComponent = (propsData = mockIssuableListProps) =>
+const createComponent = ({ props = mockIssuableListProps, data = {} } = {}) =>
   mount(IssuableListRoot, {
-    propsData,
+    propsData: props,
+    data() {
+      return data;
+    },
     slots: {
       'nav-actions': `
       <button class="js-new-issuable">New issuable</button>
@@ -35,6 +38,14 @@ describe('IssuableListRoot', () => {
   });
 
   describe('computed', () => {
+    const mockCheckedIssuables = {
+      [mockIssuables[0].iid]: { checked: true, issuable: mockIssuables[0] },
+      [mockIssuables[1].iid]: { checked: true, issuable: mockIssuables[1] },
+      [mockIssuables[2].iid]: { checked: true, issuable: mockIssuables[2] },
+    };
+
+    const mIssuables = [mockIssuables[0], mockIssuables[1], mockIssuables[2]];
+
     describe('skeletonItemCount', () => {
       it.each`
         totalItems | defaultPageSize | currentPage | returnValue
@@ -57,9 +68,62 @@ describe('IssuableListRoot', () => {
         },
       );
     });
+
+    describe('allIssuablesChecked', () => {
+      it.each`
+        checkedIssuables        | issuables     | specTitle        | returnValue
+        ${mockCheckedIssuables} | ${mIssuables} | ${'same as'}     | ${true}
+        ${{}}                   | ${mIssuables} | ${'not same as'} | ${false}
+      `(
+        'returns $returnValue when bulkEditIssuables count is $specTitle issuables count',
+        async ({ checkedIssuables, issuables, returnValue }) => {
+          wrapper.setProps({
+            issuables,
+          });
+
+          await wrapper.vm.$nextTick();
+
+          wrapper.setData({
+            checkedIssuables,
+          });
+
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.vm.allIssuablesChecked).toBe(returnValue);
+        },
+      );
+    });
+
+    describe('bulkEditIssuables', () => {
+      it('returns array of issuables which have `checked` set to true within checkedIssuables map', async () => {
+        wrapper.setData({
+          checkedIssuables: mockCheckedIssuables,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.bulkEditIssuables).toHaveLength(mIssuables.length);
+      });
+    });
   });
 
   describe('watch', () => {
+    describe('issuables', () => {
+      it('populates `checkedIssuables` prop with all issuables', async () => {
+        wrapper.setProps({
+          issuables: [mockIssuables[0]],
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(Object.keys(wrapper.vm.checkedIssuables)).toHaveLength(1);
+        expect(wrapper.vm.checkedIssuables[mockIssuables[0].iid]).toEqual({
+          checked: false,
+          issuable: mockIssuables[0],
+        });
+      });
+    });
+
     describe('urlParams', () => {
       it('updates window URL reflecting props within `urlParams`', async () => {
         const urlParams = {
@@ -78,6 +142,30 @@ describe('IssuableListRoot', () => {
         expect(global.window.location.href).toBe(
           `${TEST_HOST}/?state=${urlParams.state}&sort=${urlParams.sort}&page=${urlParams.page}&search=${urlParams.search}`,
         );
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('issuableId', () => {
+      it('returns id value from provided issuable object', () => {
+        expect(wrapper.vm.issuableId({ id: 1 })).toBe(1);
+        expect(wrapper.vm.issuableId({ iid: 1 })).toBe(1);
+        expect(wrapper.vm.issuableId({})).toBeDefined();
+      });
+    });
+
+    describe('issuableChecked', () => {
+      it('returns boolean value representing checked status of issuable item', async () => {
+        wrapper.setData({
+          checkedIssuables: {
+            [mockIssuables[0].iid]: { checked: true, issuable: mockIssuables[0] },
+          },
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.issuableChecked(mockIssuables[0])).toBe(true);
       });
     });
   });
@@ -183,10 +271,42 @@ describe('IssuableListRoot', () => {
   });
 
   describe('events', () => {
+    let wrapperChecked;
+
+    beforeEach(() => {
+      wrapperChecked = createComponent({
+        data: {
+          checkedIssuables: {
+            [mockIssuables[0].iid]: { checked: true, issuable: mockIssuables[0] },
+          },
+        },
+      });
+    });
+
+    afterEach(() => {
+      wrapperChecked.destroy();
+    });
+
     it('issuable-tabs component emits `click-tab` event on `click-tab` event', () => {
       wrapper.find(IssuableTabs).vm.$emit('click');
 
       expect(wrapper.emitted('click-tab')).toBeTruthy();
+    });
+
+    it('sets all issuables as checked when filtered-search-bar component emits `checked-input` event', async () => {
+      const searchEl = wrapperChecked.find(FilteredSearchBar);
+
+      searchEl.vm.$emit('checked-input', true);
+
+      await wrapperChecked.vm.$nextTick();
+
+      expect(searchEl.emitted('checked-input')).toBeTruthy();
+      expect(searchEl.emitted('checked-input').length).toBe(1);
+
+      expect(wrapperChecked.vm.checkedIssuables[mockIssuables[0].iid]).toEqual({
+        checked: true,
+        issuable: mockIssuables[0],
+      });
     });
 
     it('filtered-search-bar component emits `filter` event on `onFilter` & `sort` event on `onSort` events', () => {
@@ -196,6 +316,22 @@ describe('IssuableListRoot', () => {
       expect(wrapper.emitted('filter')).toBeTruthy();
       searchEl.vm.$emit('onSort');
       expect(wrapper.emitted('sort')).toBeTruthy();
+    });
+
+    it('sets an issuable as checked when issuable-item component emits `checked-input` event', async () => {
+      const issuableItem = wrapperChecked.findAll(IssuableItem).at(0);
+
+      issuableItem.vm.$emit('checked-input', true);
+
+      await wrapperChecked.vm.$nextTick();
+
+      expect(issuableItem.emitted('checked-input')).toBeTruthy();
+      expect(issuableItem.emitted('checked-input').length).toBe(1);
+
+      expect(wrapperChecked.vm.checkedIssuables[mockIssuables[0].iid]).toEqual({
+        checked: true,
+        issuable: mockIssuables[0],
+      });
     });
 
     it('gl-pagination component emits `page-change` event on `input` event', async () => {

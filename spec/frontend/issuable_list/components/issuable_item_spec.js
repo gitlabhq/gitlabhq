@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink, GlLabel } from '@gitlab/ui';
+import { GlLink, GlLabel, GlFormCheckbox } from '@gitlab/ui';
 
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
 import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
@@ -12,6 +12,7 @@ const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable, slots 
       issuableSymbol,
       issuable,
       enableLabelPermalinks: true,
+      showCheckbox: false,
     },
     slots,
   });
@@ -194,6 +195,25 @@ describe('IssuableItem', () => {
       expect(titleEl.find(GlLink).attributes('href')).toBe(mockIssuable.webUrl);
       expect(titleEl.find(GlLink).attributes('target')).not.toBeDefined();
       expect(titleEl.find(GlLink).text()).toBe(mockIssuable.title);
+    });
+
+    it('renders checkbox when `showCheckbox` prop is true', async () => {
+      wrapper.setProps({
+        showCheckbox: true,
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(GlFormCheckbox).exists()).toBe(true);
+      expect(wrapper.find(GlFormCheckbox).attributes('checked')).not.toBeDefined();
+
+      wrapper.setProps({
+        checked: true,
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(GlFormCheckbox).attributes('checked')).toBe('true');
     });
 
     it('renders issuable title with `target` set as "_blank" when issuable.webUrl is external', async () => {
