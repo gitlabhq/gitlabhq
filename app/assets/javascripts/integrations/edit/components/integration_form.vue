@@ -38,8 +38,11 @@ export default {
     isJira() {
       return this.propsSource.type === 'jira';
     },
-    isInstanceLevel() {
-      return this.propsSource.integrationLevel === integrationLevels.INSTANCE;
+    isInstanceOrGroupLevel() {
+      return (
+        this.propsSource.integrationLevel === integrationLevels.INSTANCE ||
+        this.propsSource.integrationLevel === integrationLevels.GROUP
+      );
     },
     showJiraIssuesFields() {
       return this.isJira && this.glFeatures.jiraIssuesIntegration;
@@ -91,7 +94,7 @@ export default {
       v-bind="propsSource.jiraIssuesProps"
     />
     <div v-if="isEditable" class="footer-block row-content-block">
-      <template v-if="isInstanceLevel">
+      <template v-if="isInstanceOrGroupLevel">
         <gl-button
           v-gl-modal.confirmSaveIntegration
           category="primary"

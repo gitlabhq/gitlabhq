@@ -329,6 +329,7 @@ References:
 
 - When updating the content of an HTML element using JavaScript, mark user-controlled values as `textContent` or `nodeValue` instead of `innerHTML`.
 - Avoid using `v-html` with user-controlled data, use [`v-safe-html`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-html-directive--default) instead.
+- Render unsafe or unsanitized content using [`dompurify`](fe_guide/security.md#sanitize-html-output).
 - Consider using [`gl-sprintf`](../../ee/development/i18n/externalization.md#interpolation) to interpolate translated strings securely.
 - Avoid `__()` with translations that contain user-controlled values.
 - When working with `postMessage`, ensure the `origin` of the message is allowlisted.

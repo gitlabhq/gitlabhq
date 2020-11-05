@@ -1,0 +1,10 @@
+#import "../fragments/integration_item.fragment.graphql"
+
+mutation updatePrometheusIntegration($id: ID!, $apiUrl: String!, $active: Boolean!) {
+  prometheusIntegrationUpdate(input: { id: $id, apiUrl: $apiUrl, active: $active }) {
+    errors
+    integration {
+      ...IntegrationItem
+    }
+  }
+}

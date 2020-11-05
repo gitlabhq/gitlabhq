@@ -59,7 +59,7 @@ export default {
       selectedIntegration: integrationTypes[0].value,
       options: integrationTypes,
       active: false,
-      authKey: '',
+      token: '',
       targetUrl: '',
       feedback: {
         variant: 'danger',
@@ -98,7 +98,7 @@ export default {
         case 'HTTP': {
           return {
             url: this.generic.url,
-            authKey: this.generic.authKey,
+            token: this.generic.token,
             active: this.generic.active,
             resetKey: this.resetKey.bind(this),
           };
@@ -106,7 +106,7 @@ export default {
         case 'PROMETHEUS': {
           return {
             url: this.prometheus.url,
-            authKey: this.prometheus.authKey,
+            token: this.prometheus.token,
             active: this.prometheus.active,
             resetKey: this.resetKey.bind(this, 'PROMETHEUS'),
             targetUrl: this.prometheus.prometheusApiUrl,
@@ -167,7 +167,7 @@ export default {
       this.setOpsgenieAsDefault();
     }
     this.active = this.selectedIntegrationType.active;
-    this.authKey = this.selectedIntegrationType.authKey ?? '';
+    this.token = this.selectedIntegrationType.token ?? '';
   },
   methods: {
     createUserErrorMessage(errors = {}) {
@@ -212,8 +212,8 @@ export default {
 
       return fn
         .then(({ data: { token } }) => {
-          this.authKey = token;
-          this.setFeedback({ feedbackMessage: this.$options.i18n.authKeyRest, variant: 'success' });
+          this.token = token;
+          this.setFeedback({ feedbackMessage: this.$options.i18n.tokenRest, variant: 'success' });
         })
         .catch(() => {
           this.setFeedback({ feedbackMessage: this.$options.i18n.errorKeyMsg, variant: 'danger' });
@@ -313,7 +313,7 @@ export default {
         .updateTestAlert({
           endpoint: this.selectedIntegrationType.url,
           data: this.testAlert.json,
-          authKey: this.selectedIntegrationType.authKey,
+          token: this.selectedIntegrationType.token,
         })
         .then(() => {
           this.setFeedback({
@@ -439,21 +439,21 @@ export default {
           {{ prometheusInfo }}
         </span>
       </gl-form-group>
-      <gl-form-group :label="$options.i18n.authKeyLabel" label-for="authorization-key">
-        <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="authKey">
+      <gl-form-group :label="$options.i18n.tokenLabel" label-for="authorization-key">
+        <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="token">
           <template #append>
             <clipboard-button
-              :text="authKey"
+              :text="token"
               :title="$options.i18n.copyToClipboard"
               class="gl-m-0!"
             />
           </template>
         </gl-form-input-group>
-        <gl-button v-gl-modal.authKeyModal :disabled="!active" class="gl-mt-3">{{
+        <gl-button v-gl-modal.tokenModal :disabled="!active" class="gl-mt-3">{{
           $options.i18n.resetKey
         }}</gl-button>
         <gl-modal
-          modal-id="authKeyModal"
+          modal-id="tokenModal"
           :title="$options.i18n.resetKey"
           :ok-title="$options.i18n.resetKey"
           ok-variant="danger"

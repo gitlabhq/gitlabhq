@@ -115,14 +115,10 @@ code {
   background-color: $gray-50;
   border-radius: $border-radius-default;
 
-  .code > & {
-    background-color: inherit;
-    padding: unset;
-  }
-
+  .code > &,
   .build-trace & {
     background-color: inherit;
-    padding: inherit;
+    padding: unset;
   }
 }
 

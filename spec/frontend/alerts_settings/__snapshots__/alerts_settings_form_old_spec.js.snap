@@ -24,10 +24,10 @@ exports[`AlertsSettingsFormOld with default values renders the initial template 
 
       </span>
   </gl-form-group-stub>
-  <gl-form-group-stub label=\\"Authorization key\\" label-for=\\"authorization-key\\">
+  <gl-form-group-stub label-for=\\"authorization-key\\">
     <gl-form-input-group-stub value=\\"\\" predefinedoptions=\\"[object Object]\\" id=\\"authorization-key\\" readonly=\\"\\" class=\\"gl-mb-2\\"></gl-form-input-group-stub>
     <gl-button-stub category=\\"primary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" buttontextclasses=\\"\\" disabled=\\"true\\" class=\\"gl-mt-3\\" role=\\"button\\" tabindex=\\"0\\">Reset key</gl-button-stub>
-    <gl-modal-stub modalid=\\"authKeyModal\\" titletag=\\"h4\\" modalclass=\\"\\" size=\\"md\\" title=\\"Reset key\\" ok-title=\\"Reset key\\" ok-variant=\\"danger\\">
+    <gl-modal-stub modalid=\\"tokenModal\\" titletag=\\"h4\\" modalclass=\\"\\" size=\\"md\\" title=\\"Reset key\\" ok-title=\\"Reset key\\" ok-variant=\\"danger\\">
       Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.
     </gl-modal-stub>
   </gl-form-group-stub>

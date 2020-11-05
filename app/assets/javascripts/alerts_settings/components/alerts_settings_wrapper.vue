@@ -7,6 +7,10 @@ import createFlash, { FLASH_TYPES } from '~/flash';
 import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
 import createHttpIntegrationMutation from '../graphql/mutations/create_http_integration.mutation.graphql';
 import createPrometheusIntegrationMutation from '../graphql/mutations/create_prometheus_integration.mutation.graphql';
+import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
+import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
+import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
+import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
 import IntegrationsList from './alerts_integrations_list.vue';
 import SettingsFormOld from './alerts_settings_form_old.vue';
 import SettingsFormNew from './alerts_settings_form_new.vue';
@@ -52,16 +56,16 @@ export default {
           list,
         };
       },
-      error() {
-        this.errored = true;
+      error(err) {
+        createFlash({ message: err });
       },
     },
   },
   data() {
     return {
-      errored: false,
       isUpdating: false,
       integrations: {},
+      currentIntegration: null,
     };
   },
   computed: {
@@ -84,7 +88,7 @@ export default {
     },
   },
   methods: {
-    onCreateNewIntegration({ type, variables }) {
+    createNewIntegration({ type, variables }) {
       this.isUpdating = true;
       this.$apollo
         .mutate({
@@ -109,7 +113,6 @@ export default {
           });
         })
         .catch(err => {
-          this.errored = true;
           createFlash({ message: err });
         })
         .finally(() => {
@@ -151,6 +154,72 @@ export default {
         data,
       });
     },
+    updateIntegration({ type, variables }) {
+      this.isUpdating = true;
+      this.$apollo
+        .mutate({
+          mutation:
+            type === this.$options.typeSet.http
+              ? updateHttpIntegrationMutation
+              : updatePrometheusIntegrationMutation,
+          variables: {
+            ...variables,
+            id: this.currentIntegration.id,
+          },
+        })
+        .then(({ data: { httpIntegrationUpdate, prometheusIntegrationUpdate } = {} } = {}) => {
+          const error = httpIntegrationUpdate?.errors[0] || prometheusIntegrationUpdate?.errors[0];
+          if (error) {
+            return createFlash({ message: error });
+          }
+          return createFlash({
+            message: this.$options.i18n.changesSaved,
+            type: FLASH_TYPES.SUCCESS,
+          });
+        })
+        .catch(err => {
+          createFlash({ message: err });
+        })
+        .finally(() => {
+          this.isUpdating = false;
+        });
+    },
+    resetToken({ type, variables }) {
+      this.isUpdating = true;
+      this.$apollo
+        .mutate({
+          mutation:
+            type === this.$options.typeSet.http
+              ? resetHttpTokenMutation
+              : resetPrometheusTokenMutation,
+          variables,
+        })
+        .then(
+          ({ data: { httpIntegrationResetToken, prometheusIntegrationResetToken } = {} } = {}) => {
+            const error =
+              httpIntegrationResetToken?.errors[0] || prometheusIntegrationResetToken?.errors[0];
+            if (error) {
+              return createFlash({ message: error });
+            }
+            return createFlash({
+              message: this.$options.i18n.changesSaved,
+              type: FLASH_TYPES.SUCCESS,
+            });
+          },
+        )
+        .catch(err => {
+          createFlash({ message: err });
+        })
+        .finally(() => {
+          this.isUpdating = false;
+        });
+    },
+    editIntegration({ id }) {
+      this.currentIntegration = this.integrations.list.find(integration => integration.id === id);
+    },
+    deleteIntegration() {
+      // TODO, handle delete via GraphQL
+    },
   },
 };
 </script>
@@ -160,11 +229,16 @@ export default {
     <integrations-list
       :integrations="glFeatures.httpIntegrationsList ? integrations.list : intergrationsOptionsOld"
       :loading="loading"
+      @edit-integration="editIntegration"
+      @delete-integration="deleteIntegration"
     />
     <settings-form-new
       v-if="glFeatures.httpIntegrationsList"
-      :loading="loading"
-      @on-create-new-integration="onCreateNewIntegration"
+      :loading="isUpdating"
+      :current-integration="currentIntegration"
+      @create-new-integration="createNewIntegration"
+      @update-integration="updateIntegration"
+      @reset-token="resetToken"
     />
     <settings-form-old v-else />
   </div>

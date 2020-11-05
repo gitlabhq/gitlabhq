@@ -69,7 +69,7 @@ describe('AlertsSettingsFormOld', () => {
       createComponent(
         {},
         {
-          authKey: 'newToken',
+          token: 'newToken',
         },
       );
 

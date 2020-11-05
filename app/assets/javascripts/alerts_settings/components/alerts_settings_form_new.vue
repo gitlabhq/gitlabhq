@@ -21,12 +21,14 @@ import {
   JSON_VALIDATE_DELAY,
   targetPrometheusUrlPlaceholder,
   typeSet,
+  defaultFormState,
 } from '../constants';
 
 export default {
   targetPrometheusUrlPlaceholder,
   JSON_VALIDATE_DELAY,
   typeSet,
+  defaultFormState,
   i18n: {
     integrationFormSteps: {
       step1: {
@@ -62,6 +64,11 @@ export default {
         label: s__('AlertSettings|Prometheus API base URL'),
         help: s__('AlertSettings|URL cannot be blank and must start with http or https'),
       },
+      restKeyInfo: {
+        label: s__(
+          'AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.',
+        ),
+      },
     },
   },
   components: {
@@ -95,23 +102,18 @@ export default {
       type: Boolean,
       required: true,
     },
+    currentIntegration: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       selectedIntegration: integrationTypesNew[0].value,
+      active: false,
       options: integrationTypesNew,
       formVisible: false,
-      integrationForm: {
-        name: '',
-        integrationTestPayload: {
-          json: null,
-          error: null,
-        },
-        active: false,
-        authKey: '',
-        url: '',
-        apiUrl: '',
-      },
     };
   },
   computed: {
@@ -125,8 +127,28 @@ export default {
         case this.$options.typeSet.prometheus:
           return this.prometheus;
         default:
-          return {};
+          return this.defaultFormState;
       }
+    },
+    integrationForm() {
+      return {
+        name: this.currentIntegration?.name || '',
+        integrationTestPayload: {
+          json: null,
+          error: null,
+        },
+        active: this.currentIntegration?.active || false,
+        token: this.currentIntegration?.token || '',
+        url: this.currentIntegration?.url || '',
+        apiUrl: this.currentIntegration?.apiUrl || '',
+      };
+    },
+  },
+  watch: {
+    currentIntegration(val) {
+      this.selectedIntegration = val.type;
+      this.active = val.active;
+      this.onIntegrationTypeSelect();
     },
   },
   methods: {
@@ -142,18 +164,29 @@ export default {
       this.onSubmit();
     },
     onSubmit() {
-      const { name, apiUrl, active } = this.integrationForm;
+      const { name, apiUrl } = this.integrationForm;
       const variables =
         this.selectedIntegration === this.$options.typeSet.http
-          ? { name, active }
-          : { apiUrl, active };
-      this.$emit('on-create-new-integration', { type: this.selectedIntegration, variables });
+          ? { name, active: this.active }
+          : { apiUrl, active: this.active };
+      const integrationPayload = { type: this.selectedIntegration, variables };
+
+      if (this.currentIntegration) {
+        return this.$emit('update-integration', integrationPayload);
+      }
+
+      return this.$emit('create-new-integration', integrationPayload);
     },
     onReset() {
-      // TODO: Reset form values
+      this.integrationForm = this.defaultFormState;
+      this.selectedIntegration = integrationTypesNew[0].value;
+      this.onIntegrationTypeSelect();
     },
     onResetAuthKey() {
-      // TODO: Handle reset auth key via GraphQL
+      this.$emit('reset-token', {
+        type: this.selectedIntegration,
+        variables: { id: this.currentIntegration.id },
+      });
     },
     validateJson() {
       this.integrationForm.integrationTestPayload.error = null;
@@ -214,7 +247,7 @@ export default {
         />
 
         <gl-toggle
-          v-model="integrationForm.active"
+          v-model="active"
           :is-loading="loading"
           :label="__('Active')"
           class="gl-my-4 gl-font-weight-normal"
@@ -242,13 +275,9 @@ export default {
             {{ s__('AlertSettings|Webhook URL') }}
           </span>
 
-          <gl-form-input-group id="url" readonly :value="selectedIntegrationType.url">
+          <gl-form-input-group id="url" readonly :value="integrationForm.url">
             <template #append>
-              <clipboard-button
-                :text="selectedIntegrationType.url || ''"
-                :title="__('Copy')"
-                class="gl-m-0!"
-              />
+              <clipboard-button :text="integrationForm.url" :title="__('Copy')" class="gl-m-0!" />
             </template>
           </gl-form-input-group>
         </div>
@@ -262,14 +291,10 @@ export default {
             id="authorization-key"
             class="gl-mb-2"
             readonly
-            :value="selectedIntegrationType.authKey"
+            :value="integrationForm.token"
           >
             <template #append>
-              <clipboard-button
-                :text="selectedIntegrationType.authKey || ''"
-                :title="__('Copy')"
-                class="gl-m-0!"
-              />
+              <clipboard-button :text="integrationForm.token" :title="__('Copy')" class="gl-m-0!" />
             </template>
           </gl-form-input-group>
 
@@ -281,9 +306,9 @@ export default {
             :title="$options.i18n.integrationFormSteps.step3.reset"
             :ok-title="$options.i18n.integrationFormSteps.step3.reset"
             ok-variant="danger"
-            @ok="() => {}"
+            @ok="onResetAuthKey"
           >
-            {{ $options.i18n.integrationFormSteps.step3.reset }}
+            {{ $options.i18n.integrationFormSteps.restKeyInfo.label }}
           </gl-modal>
         </div>
       </gl-form-group>

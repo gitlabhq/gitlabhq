@@ -4,6 +4,7 @@
 - page_title       @user.blocked? ? s_('UserProfile|Blocked user') : @user.name
 - page_description @user.bio_html
 - header_title     @user.name, user_path(@user)
+- page_itemtype    'http://schema.org/Person'
 - link_classes = "flex-grow-1 mx-1 "
 
 = content_for :meta_tags do
@@ -35,7 +36,7 @@
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: ''
+          = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: '', itemprop: 'image'
 
       - if @user.blocked?
         .user-info
@@ -44,7 +45,7 @@
         = render "users/profile_basic_info"
       - else
         .user-info
-          .cover-title
+          .cover-title{ itemprop: 'name' }
             = @user.name
 
           - if @user.status
@@ -54,15 +55,15 @@
           = render "users/profile_basic_info"
           .cover-desc.cgray.mb-1.mb-sm-2
             - unless @user.location.blank?
-              .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mb-1.mb-sm-0
+              .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mb-1.mb-sm-0{ itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' }
                 = sprite_icon('location', css_class: 'vertical-align-sub fgray')
-                %span.vertical-align-middle
+                %span.vertical-align-middle{ itemprop: 'addressLocality' }
                   = @user.location
             - unless work_information(@user).blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline
                 = sprite_icon('work', css_class: 'vertical-align-middle fgray')
                 %span.vertical-align-middle
-                  = work_information(@user)
+                  = work_information(@user, with_schema_markup: true)
           .cover-desc.cgray.mb-1.mb-sm-2
             - unless @user.skype.blank?
               .profile-link-holder.middle-dot-divider
@@ -80,10 +81,10 @@
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
                 - if Feature.enabled?(:security_auto_fix) && @user.bot?
                   = sprite_icon('question', css_class: 'gl-text-blue-600')
-                = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
+                = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
             - unless @user.public_email.blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
-                = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
+                = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link', itemprop: 'email'
         - if @user.bio.present?
           .cover-desc.cgray
             .profile-user-bio

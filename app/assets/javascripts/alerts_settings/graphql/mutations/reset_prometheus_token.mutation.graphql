@@ -1,0 +1,10 @@
+#import "../fragments/integration_item.fragment.graphql"
+
+mutation resetPrometheusIntegrationToken($id: ID!) {
+  prometheusIntegrationResetToken(input: { id: $id }) {
+    errors
+    integration {
+      ...IntegrationItem
+    }
+  }
+}

@@ -50,7 +50,7 @@ export default el => {
       prometheus: {
         active: parseBoolean(prometheusActivated),
         url: prometheusUrl,
-        authKey: prometheusAuthorizationKey,
+        token: prometheusAuthorizationKey,
         prometheusFormPath,
         prometheusResetKeyPath,
         prometheusApiUrl,
@@ -60,7 +60,7 @@ export default el => {
         alertsUsageUrl,
         active: parseBoolean(activatedStr),
         formPath,
-        authKey: authorizationKey,
+        token: authorizationKey,
         url,
       },
       opsgenie: {

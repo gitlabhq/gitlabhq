@@ -9,7 +9,7 @@ const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, O
 const defaultAccessLevel = '10';
 const helpLink = 'https://example.com';
 
-const createComponent = () => {
+const createComponent = (data = {}) => {
   return shallowMount(InviteMembersModal, {
     propsData: {
       groupId,
@@ -18,9 +18,14 @@ const createComponent = () => {
       defaultAccessLevel,
       helpLink,
     },
+    data() {
+      return data;
+    },
     stubs: {
-      GlSprintf,
       'gl-modal': '<div><slot name="modal-footer"></slot><slot></slot></div>',
+      'gl-dropdown': true,
+      'gl-dropdown-item': true,
+      GlSprintf,
     },
   });
 };
@@ -34,7 +39,7 @@ describe('InviteMembersModal', () => {
   });
 
   const findDropdown = () => wrapper.find(GlDropdown);
-  const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownItems = () => findDropdown().findAll(GlDropdownItem);
   const findDatepicker = () => wrapper.find(GlDatepicker);
   const findLink = () => wrapper.find(GlLink);
   const findCancelButton = () => wrapper.find({ ref: 'cancelButton' });
@@ -88,25 +93,69 @@ describe('InviteMembersModal', () => {
       format: 'json',
     };
 
-    beforeEach(() => {
-      wrapper = createComponent();
-
-      jest.spyOn(Api, 'inviteGroupMember').mockResolvedValue({ data: postData });
-      wrapper.vm.$toast = { show: jest.fn() };
-
-      wrapper.vm.submitForm(postData);
-    });
-
-    it('calls Api inviteGroupMember with the correct params', () => {
-      expect(Api.inviteGroupMember).toHaveBeenCalledWith(groupId, postData);
-    });
-
     describe('when the invite was sent successfully', () => {
-      const toastMessageSuccessful = 'Users were succesfully added';
+      beforeEach(() => {
+        wrapper = createComponent();
+
+        wrapper.vm.$toast = { show: jest.fn() };
+        jest.spyOn(Api, 'inviteGroupMember').mockResolvedValue({ data: postData });
+
+        wrapper.vm.submitForm(postData);
+      });
 
       it('displays the successful toastMessage', () => {
+        const toastMessageSuccessful = 'Members were successfully added';
+
         expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(
           toastMessageSuccessful,
+          wrapper.vm.toastOptions,
+        );
+      });
+
+      it('calls Api inviteGroupMember with the correct params', () => {
+        expect(Api.inviteGroupMember).toHaveBeenCalledWith(groupId, postData);
+      });
+    });
+
+    describe('when sending the invite for a single member returned an api error', () => {
+      const apiErrorMessage = 'Members already exists';
+
+      beforeEach(() => {
+        wrapper = createComponent({ newUsersToInvite: '123' });
+
+        wrapper.vm.$toast = { show: jest.fn() };
+        jest
+          .spyOn(Api, 'inviteGroupMember')
+          .mockRejectedValue({ response: { data: { message: apiErrorMessage } } });
+
+        findInviteButton().vm.$emit('click');
+      });
+
+      it('displays the api error message for the toastMessage', () => {
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(
+          apiErrorMessage,
+          wrapper.vm.toastOptions,
+        );
+      });
+    });
+
+    describe('when sending the invite for multiple members returned any error', () => {
+      const genericErrorMessage = 'Some of the members could not be added';
+
+      beforeEach(() => {
+        wrapper = createComponent({ newUsersToInvite: '123' });
+
+        wrapper.vm.$toast = { show: jest.fn() };
+        jest
+          .spyOn(Api, 'inviteGroupMember')
+          .mockRejectedValue({ response: { data: { success: false } } });
+
+        findInviteButton().vm.$emit('click');
+      });
+
+      it('displays the expected toastMessage', () => {
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(
+          genericErrorMessage,
           wrapper.vm.toastOptions,
         );
       });

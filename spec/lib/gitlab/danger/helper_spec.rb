@@ -236,13 +236,16 @@ RSpec.describe Gitlab::Danger::Helper do
 
       '.gitlab/ci/frontend.gitlab-ci.yml' | %i[frontend engineering_productivity]
 
-      'app/models/foo' | [:backend]
-      'bin/foo'        | [:backend]
-      'config/foo'     | [:backend]
-      'lib/foo'        | [:backend]
-      'rubocop/foo'    | [:backend]
-      'spec/foo'       | [:backend]
-      'spec/foo/bar'   | [:backend]
+      'app/models/foo'             | [:backend]
+      'bin/foo'                    | [:backend]
+      'config/foo'                 | [:backend]
+      'lib/foo'                    | [:backend]
+      'rubocop/foo'                | [:backend]
+      '.rubocop.yml'               | [:backend]
+      '.rubocop_todo.yml'          | [:backend]
+      '.rubocop_manual_todo.yml'   | [:backend]
+      'spec/foo'                   | [:backend]
+      'spec/foo/bar'               | [:backend]
 
       'ee/app/foo'      | [:backend]
       'ee/bin/foo'      | [:backend]

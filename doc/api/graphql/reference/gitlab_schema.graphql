@@ -10818,7 +10818,7 @@ enum IssueType {
 """
 Represents an iteration object
 """
-type Iteration implements TimeboxBurnupTimeSeriesInterface {
+type Iteration implements TimeboxReportInterface {
   """
   Daily scope and completed totals for burnup charts
   """
@@ -10853,6 +10853,11 @@ type Iteration implements TimeboxBurnupTimeSeriesInterface {
   Internal ID of the iteration
   """
   iid: ID!
+
+  """
+  Historically accurate report about the timebox
+  """
+  report: TimeboxReport
 
   """
   Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts
@@ -12831,7 +12836,7 @@ type MetricsDashboardAnnotationEdge {
 """
 Represents a milestone
 """
-type Milestone implements TimeboxBurnupTimeSeriesInterface {
+type Milestone implements TimeboxReportInterface {
   """
   Daily scope and completed totals for burnup charts
   """
@@ -12866,6 +12871,11 @@ type Milestone implements TimeboxBurnupTimeSeriesInterface {
   Indicates if milestone is at project level
   """
   projectMilestone: Boolean!
+
+  """
+  Historically accurate report about the timebox
+  """
+  report: TimeboxReport
 
   """
   Timestamp of the milestone start date
@@ -20155,11 +20165,26 @@ Time represented in ISO 8601
 """
 scalar Time
 
-interface TimeboxBurnupTimeSeriesInterface {
+"""
+Represents a historically accurate report about the timebox
+"""
+type TimeboxReport {
   """
   Daily scope and completed totals for burnup charts
   """
   burnupTimeSeries: [BurnupChartDailyTotals!]
+}
+
+interface TimeboxReportInterface {
+  """
+  Daily scope and completed totals for burnup charts
+  """
+  burnupTimeSeries: [BurnupChartDailyTotals!]
+
+  """
+  Historically accurate report about the timebox
+  """
+  report: TimeboxReport
 }
 
 """

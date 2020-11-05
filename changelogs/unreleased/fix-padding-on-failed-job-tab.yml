@@ -1,0 +1,5 @@
+---
+title: Fix code lines being cut-off on failed job tab
+merge_request: 46885
+author:
+type: fixed

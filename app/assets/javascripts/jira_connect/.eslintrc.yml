@@ -1,0 +1,5 @@
+globals:
+  AP: readonly
+rules:
+  '@gitlab/require-i18n-strings': off
+  '@gitlab/vue-require-i18n-strings': off

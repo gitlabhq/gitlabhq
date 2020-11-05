@@ -138,13 +138,14 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - The merge request should not contain more than 10 commit messages.
 - The commit subject should contain at least 3 words.
 
-CAUTION: **Caution:**
-If the guidelines are not met, the MR may not pass the
-[Danger checks](https://gitlab.com/gitlab-org/gitlab/blob/master/danger/commit_messages/Dangerfile).
+**Important notes:**
 
-TIP: **Tip:**
-Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md#squash-and-merge) if your merge
-request includes "Applied suggestion to X files" commits, so that Danger can ignore those.
+- If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/gitlab/blob/master/danger/commit_messages/Dangerfile).
+- Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
+  if your merge request includes "Applied suggestion to X files" commits, so that Danger can ignore those.
+- The prefixes in the form of `[prefix]` and `prefix:` are allowed (they can be all lowercase, as long
+  as the message itself is capitalized). For instance, `danger: Improve Danger behavior` and
+  `[API] Improve the labels endpoint` are valid commit messages.
 
 #### Why these standards matter
 

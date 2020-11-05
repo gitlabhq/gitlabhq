@@ -370,11 +370,7 @@ group :development, :test do
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 4.3.0', require: false
-  # Pin these dependencies, otherwise a new rule could break the CI pipelines
-  gem 'rubocop', '~> 0.82.0'
-  gem 'rubocop-performance', '~> 1.5.2'
-  gem 'rubocop-rspec', '~> 1.37.0'
+  gem 'gitlab-styles', '~> 5.0.0', require: false
 
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.36.0', require: false

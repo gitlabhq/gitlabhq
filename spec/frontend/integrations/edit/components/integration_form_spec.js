@@ -9,6 +9,7 @@ import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_field
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
+import { integrationLevels } from '~/integrations/edit/constants';
 
 describe('IntegrationForm', () => {
   let wrapper;
@@ -69,14 +70,24 @@ describe('IntegrationForm', () => {
     describe('integrationLevel is instance', () => {
       it('renders ConfirmationModal', () => {
         createComponent({
-          integrationLevel: 'instance',
+          integrationLevel: integrationLevels.INSTANCE,
         });
 
         expect(findConfirmationModal().exists()).toBe(true);
       });
     });
 
-    describe('integrationLevel is not instance', () => {
+    describe('integrationLevel is group', () => {
+      it('renders ConfirmationModal', () => {
+        createComponent({
+          integrationLevel: integrationLevels.GROUP,
+        });
+
+        expect(findConfirmationModal().exists()).toBe(true);
+      });
+    });
+
+    describe('integrationLevel is project', () => {
       it('does not render ConfirmationModal', () => {
         createComponent({
           integrationLevel: 'project',

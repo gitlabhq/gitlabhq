@@ -21,6 +21,8 @@
     .gl-mt-5
       %p Note: this integration only works with accounts on GitLab.com (SaaS).
   - else
+    .js-jira-connect-app
+
     %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
       .ak-field-group
         %label
@@ -56,6 +58,9 @@
     %a{ href: 'https://www.google.com/chrome/index.html', target: '_blank', rel: 'noopener noreferrer' } Google Chrome
     or enable cross-site cookies in your browser when adding a namespace.
     %a{ href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/263509', target: '_blank', rel: 'noopener noreferrer' } Learn more
+
+= webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
+= webpack_bundle_tag 'jira_connect_app'
 
 = page_specific_javascript_tag('jira_connect.js')
 - add_page_specific_style 'page_bundles/jira_connect'

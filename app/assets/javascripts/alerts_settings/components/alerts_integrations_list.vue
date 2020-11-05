@@ -1,5 +1,12 @@
 <script>
-import { GlTable, GlIcon, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlButtonGroup,
+  GlButton,
+  GlIcon,
+  GlLoadingIcon,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { trackAlertIntegrationsViewsOptions } from '../constants';
@@ -25,9 +32,11 @@ const bodyTrClass =
 export default {
   i18n,
   components: {
-    GlTable,
+    GlButtonGroup,
+    GlButton,
     GlIcon,
     GlLoadingIcon,
+    GlTable,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -56,6 +65,10 @@ export default {
     {
       key: 'type',
       label: __('Type'),
+    },
+    {
+      key: 'actions',
+      label: __('Actions'),
     },
   ],
   computed: {
@@ -109,6 +122,13 @@ export default {
           />
           {{ $options.i18n.status.disabled.name }}
         </span>
+      </template>
+
+      <template #cell(actions)="{ item }">
+        <gl-button-group>
+          <gl-button icon="pencil" @click="$emit('edit-integration', { id: item.id })" />
+          <gl-button icon="remove" @click="$emit('delete-integration', { id: item.id })" />
+        </gl-button-group>
       </template>
 
       <template #table-busy>

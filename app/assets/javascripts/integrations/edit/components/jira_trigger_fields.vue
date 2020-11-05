@@ -108,12 +108,7 @@ export default {
       :label="s__('Integrations|Comment detail:')"
       data-testid="comment-detail"
     >
-      <input
-        v-if="isInheriting"
-        name="service[comment_detail]"
-        type="hidden"
-        :value="commentDetail"
-      />
+      <input name="service[comment_detail]" type="hidden" :value="commentDetail" />
       <gl-form-radio
         v-for="commentDetailOption in commentDetailOptions"
         :key="commentDetailOption.value"

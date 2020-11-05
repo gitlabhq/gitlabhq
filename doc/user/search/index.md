@@ -117,6 +117,28 @@ the dropdown) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v13_0.png)
 
+### Filtering merge requests by environment or deployment date **(CORE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
+
+To filter merge requests by deployment data, such as the environment or a date,
+you can type (or select from the dropdown) the following:
+
+- Environment
+- Deployed-before
+- Deployed-after
+
+When filtering by an environment, a dropdown presents all environments that
+you can choose from:
+
+![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v13_6.png)
+
+When filtering by a deploy date, you must enter the date manually. Deploy dates
+use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
+both a date and time (`"YYYY-MM-DD HH:MM"`):
+
+![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v13_6.png)
+
 ## Filters autocomplete
 
 GitLab provides many filters across many pages (issues, merge requests, epics,

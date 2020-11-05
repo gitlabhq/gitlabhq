@@ -208,4 +208,27 @@ RSpec.describe PageLayoutHelper do
       end
     end
   end
+
+  describe '#page_itemtype' do
+    subject { helper.page_itemtype(itemtype) }
+
+    context 'when itemtype is passed' do
+      let(:itemtype) { 'http://schema.org/Person' }
+
+      it 'stores and returns the itemtype value' do
+        attrs = { itemscope: true, itemtype: itemtype }
+
+        expect(subject).to eq attrs
+        expect(helper.page_itemtype(nil)).to eq attrs
+      end
+    end
+
+    context 'when no itemtype is provided' do
+      let(:itemtype) { nil }
+
+      it 'returns an empty hash' do
+        expect(subject).to eq({})
+      end
+    end
+  end
 end

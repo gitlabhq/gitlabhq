@@ -8319,6 +8319,9 @@ msgstr ""
 msgid "DastProfiles|Authentication URL"
 msgstr ""
 
+msgid "DastProfiles|Copy HTTP header to clipboard"
+msgstr ""
+
 msgid "DastProfiles|Could not create site validation token. Please refresh the page, or try again later."
 msgstr ""
 
@@ -8383,6 +8386,9 @@ msgid "DastProfiles|Enable Authentication"
 msgstr ""
 
 msgid "DastProfiles|Error Details"
+msgstr ""
+
+msgid "DastProfiles|Header validation"
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"
@@ -8469,7 +8475,13 @@ msgstr ""
 msgid "DastProfiles|Step 1 - Choose site validation method"
 msgstr ""
 
+msgid "DastProfiles|Step 2 - Add following HTTP header to your site"
+msgstr ""
+
 msgid "DastProfiles|Step 2 - Add following text to the target site"
+msgstr ""
+
+msgid "DastProfiles|Step 3 - Confirm header location and validate"
 msgstr ""
 
 msgid "DastProfiles|Step 3 - Confirm text file location and validate"
@@ -8508,7 +8520,7 @@ msgstr ""
 msgid "DastProfiles|Validating..."
 msgstr ""
 
-msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the choosen method."
+msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the chosen method."
 msgstr ""
 
 msgid "DastProfiles|Validation failed. Please try again."
@@ -14507,7 +14519,7 @@ msgstr ""
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr ""
 
-msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use instance-level defaults."
+msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use parent level defaults."
 msgstr ""
 
 msgid "Integrations|Return to GitLab for Jira"
@@ -14732,6 +14744,9 @@ msgstr ""
 msgid "InviteMembersModal|Choose a role permission"
 msgstr ""
 
+msgid "InviteMembersModal|Close invite team members"
+msgstr ""
+
 msgid "InviteMembersModal|GitLab member or Email address"
 msgstr ""
 
@@ -14741,13 +14756,13 @@ msgstr ""
 msgid "InviteMembersModal|Invite team members"
 msgstr ""
 
+msgid "InviteMembersModal|Members were successfully added"
+msgstr ""
+
 msgid "InviteMembersModal|Search for members to invite"
 msgstr ""
 
-msgid "InviteMembersModal|User not invited. Feature coming soon!"
-msgstr ""
-
-msgid "InviteMembersModal|Users were succesfully added"
+msgid "InviteMembersModal|Some of the members could not be added"
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting members to the %{group_name} group"

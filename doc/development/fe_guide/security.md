@@ -83,3 +83,25 @@ inject scripts into the web app.
 Inline styles should be avoided in almost all cases, they should only be used
 when no alternatives can be found. This allows reusability of styles as well as
 readability.
+
+### Sanitize HTML output
+
+If you need to output raw HTML, you should sanitize it.
+
+If you are using Vue, you can use the[`v-safe-html` directive](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-html-directive--default) from GitLab UI.
+
+For other use cases, wrap a preconfigured version of [`dompurify`](https://www.npmjs.com/package/dompurify)
+that also allows the icons to be rendered:
+
+```javascript
+import { sanitize } from '~/lib/dompurify';
+
+const unsafeHtml = '<some unsafe content ... >';
+
+// ...
+
+element.appendChild(sanitize(unsafeHtml));
+```
+
+This `sanitize` function takes the same configuration as the
+original.

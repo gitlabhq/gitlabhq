@@ -190,7 +190,7 @@ module Gitlab
         %r{\A(ee/)?vendor/} => :backend,
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
-        %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
+        %r{\A\.rubocop((_manual)?_todo)?\.yml\z} => :backend,
         %r{\Afile_hooks/} => :backend,
 
         %r{\A(ee/)?qa/} => :qa,

@@ -1,10 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import UploadButton from '~/design_management/components/upload/button.vue';
 
 describe('Design management upload button component', () => {
   let wrapper;
 
-  function createComponent(isSaving = false, isInverted = false) {
+  function createComponent({ isSaving = false, isInverted = false } = {}) {
     wrapper = shallowMount(UploadButton, {
       propsData: {
         isSaving,
@@ -24,15 +25,19 @@ describe('Design management upload button component', () => {
   });
 
   it('renders inverted upload design button', () => {
-    createComponent(false, true);
+    createComponent({ isInverted: true });
 
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders loading icon', () => {
-    createComponent(true);
+  describe('when `isSaving` prop is `true`', () => {
+    it('Button `loading` prop is `true`', () => {
+      createComponent({ isSaving: true });
 
-    expect(wrapper.element).toMatchSnapshot();
+      const button = wrapper.find(GlButton);
+      expect(button.exists()).toBe(true);
+      expect(button.props('loading')).toBe(true);
+    });
   });
 
   describe('onFileUploadChange', () => {

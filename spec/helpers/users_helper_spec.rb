@@ -204,31 +204,9 @@ RSpec.describe UsersHelper do
   end
 
   describe '#work_information' do
-    subject { helper.work_information(user) }
+    let(:with_schema_markup) { false }
 
-    context 'when both job_title and organization are present' do
-      let(:user) { build(:user, organization: 'GitLab', job_title: 'Frontend Engineer') }
-
-      it 'returns job title concatenated with organization' do
-        is_expected.to eq('Frontend Engineer at GitLab')
-      end
-    end
-
-    context 'when only organization is present' do
-      let(:user) { build(:user, organization: 'GitLab') }
-
-      it "returns organization" do
-        is_expected.to eq('GitLab')
-      end
-    end
-
-    context 'when only job_title is present' do
-      let(:user) { build(:user, job_title: 'Frontend Engineer') }
-
-      it 'returns job title' do
-        is_expected.to eq('Frontend Engineer')
-      end
-    end
+    subject { helper.work_information(user, with_schema_markup: with_schema_markup) }
 
     context 'when neither organization nor job_title are present' do
       it { is_expected.to be_nil }
@@ -238,6 +216,60 @@ RSpec.describe UsersHelper do
       let(:user) { nil }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'without schema markup' do
+      context 'when both job_title and organization are present' do
+        let(:user) { build(:user, organization: 'GitLab', job_title: 'Frontend Engineer') }
+
+        it 'returns job title concatenated with organization' do
+          is_expected.to eq('Frontend Engineer at GitLab')
+        end
+      end
+
+      context 'when only organization is present' do
+        let(:user) { build(:user, organization: 'GitLab') }
+
+        it "returns organization" do
+          is_expected.to eq('GitLab')
+        end
+      end
+
+      context 'when only job_title is present' do
+        let(:user) { build(:user, job_title: 'Frontend Engineer') }
+
+        it 'returns job title' do
+          is_expected.to eq('Frontend Engineer')
+        end
+      end
+    end
+
+    context 'with schema markup' do
+      let(:with_schema_markup) { true }
+
+      context 'when both job_title and organization are present' do
+        let(:user) { build(:user, organization: 'GitLab', job_title: 'Frontend Engineer') }
+
+        it 'returns job title concatenated with organization' do
+          is_expected.to eq('<span itemprop="jobTitle">Frontend Engineer</span> at <span itemprop="worksFor">GitLab</span>')
+        end
+      end
+
+      context 'when only organization is present' do
+        let(:user) { build(:user, organization: 'GitLab') }
+
+        it "returns organization" do
+          is_expected.to eq('<span itemprop="worksFor">GitLab</span>')
+        end
+      end
+
+      context 'when only job_title is present' do
+        let(:user) { build(:user, job_title: 'Frontend Engineer') }
+
+        it 'returns job title' do
+          is_expected.to eq('<span itemprop="jobTitle">Frontend Engineer</span>')
+        end
+      end
     end
   end
 end

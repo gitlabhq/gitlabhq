@@ -1652,6 +1652,7 @@ Represents an iteration object.
 | `dueDate` | Time | Timestamp of the iteration due date |
 | `id` | ID! | ID of the iteration |
 | `iid` | ID! | Internal ID of the iteration |
+| `report` | TimeboxReport | Historically accurate report about the timebox |
 | `scopedPath` | String | Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts |
 | `scopedUrl` | String | Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts |
 | `startDate` | Time | Timestamp of the iteration start date |
@@ -1964,6 +1965,7 @@ Represents a milestone.
 | `groupMilestone` | Boolean! | Indicates if milestone is at group level |
 | `id` | ID! | ID of the milestone |
 | `projectMilestone` | Boolean! | Indicates if milestone is at project level |
+| `report` | TimeboxReport | Historically accurate report about the timebox |
 | `startDate` | Time | Timestamp of the milestone start date |
 | `state` | MilestoneStateEnum! | State of the milestone |
 | `stats` | MilestoneStats | Milestone statistics |
@@ -2957,6 +2959,14 @@ Represents a requirement test report.
 | `createdAt` | Time! | Timestamp of when the test report was created |
 | `id` | ID! | ID of the test report |
 | `state` | TestReportState! | State of the test report |
+
+### TimeboxReport
+
+Represents a historically accurate report about the timebox.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `burnupTimeSeries` | BurnupChartDailyTotals! => Array | Daily scope and completed totals for burnup charts |
 
 ### Timelog
 

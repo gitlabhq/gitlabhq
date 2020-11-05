@@ -7,9 +7,11 @@ require:
   - rubocop-rspec
 
 inherit_from:
+  - .rubocop_manual_todo.yml
   - .rubocop_todo.yml
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
+  - ./rubocop/rubocop-code_reuse.yml
 
 inherit_mode:
   merge:
