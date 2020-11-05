@@ -708,15 +708,14 @@ Git [pre-commit hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 run tests or other processes before committing to a branch, with the ability to not commit to the branch if
 failures occur with these tests.
 
-[`overcommit`](https://github.com/sds/overcommit) is a Git hooks manager, making configuring,
+[`lefthook`](https://github.com/Arkweid/lefthook) is a Git hooks manager, making configuring,
 installing, and removing Git hooks easy.
 
-Sample configuration for `overcommit` is available in the
-[`.overcommit.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.overcommit.yml.example)
+Configuration for `left` is available in the [`lefthook.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lefthook.yml)
 file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 
-To set up `overcommit` for documentation linting, see
-[Pre-commit static analysis](../contributing/style_guides.md#pre-push-static-analysis).
+To set up `lefthook` for documentation linting, see
+[Pre-push static analysis](../contributing/style_guides.md#pre-push-static-analysis).
 
 #### Disable Vale tests
 

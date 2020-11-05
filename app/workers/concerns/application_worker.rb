@@ -19,7 +19,7 @@ module ApplicationWorker
 
     def structured_payload(payload = {})
       context = Labkit::Context.current.to_h.merge(
-        'class' => self.class,
+        'class' => self.class.name,
         'job_status' => 'running',
         'queue' => self.class.queue,
         'jid' => jid

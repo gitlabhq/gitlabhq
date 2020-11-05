@@ -17,9 +17,8 @@ we suggest investigating to see if a plugin exists. For instance here is the
 
 ## Pre-push static analysis
 
-We strongly recommend installing
-[Lefthook](https://github.com/Arkweid/lefthook) to automatically check for
-static analysis offenses before pushing your changes.
+We strongly recommend installing [Lefthook](https://github.com/Arkweid/lefthook) to automatically check
+for static analysis offenses before pushing your changes.
 
 To install `lefthook`, run the following in your GitLab source directory:
 
@@ -33,10 +32,9 @@ overcommit --uninstall
 gem install lefthook && lefthook install -f
 ```
 
-Before you push your changes, Lefthook will then automatically run Danger checks, as well
-as RuboCop, ES Lint, HAML Lint, and SCSS Lint for the changed files.
-
-This saves you time as you don't have to wait for the same errors to be detected by CI/CD.
+Before you push your changes, Lefthook then automatically run Danger checks, and other checks
+for changed files. This saves you time as you don't have to wait for the same errors to be detected
+by CI/CD.
 
 Lefthook relies on a pre-push hook to prevent commits that violate its ruleset.
 If you wish to override this behavior, pass the environment variable `LEFTHOOK=0`.

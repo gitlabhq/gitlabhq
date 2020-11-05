@@ -45,7 +45,7 @@ RSpec.describe ApplicationWorker do
       instance.jid = 'a jid'
 
       expect(result).to include(
-        'class' => worker.class,
+        'class' => instance.class.name,
         'job_status' => 'running',
         'queue' => worker.queue,
         'jid' => instance.jid
@@ -69,7 +69,7 @@ RSpec.describe ApplicationWorker do
     it 'does not override predefined context keys with custom payload' do
       payload['class'] = 'custom value'
 
-      expect(result).to include('class' => worker.class)
+      expect(result).to include('class' => instance.class.name)
     end
   end
 

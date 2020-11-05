@@ -216,7 +216,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE_TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
 --data '{"destination_storage_name":"storage2"}' "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
 ```
 
