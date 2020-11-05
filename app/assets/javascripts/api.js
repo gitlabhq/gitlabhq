@@ -616,12 +616,12 @@ const Api = {
     return axios.get(url);
   },
 
-  pipelineJobs(projectId, pipelineId) {
+  pipelineJobs(projectId, pipelineId, params) {
     const url = Api.buildUrl(this.pipelineJobsPath)
       .replace(':id', encodeURIComponent(projectId))
       .replace(':pipeline_id', encodeURIComponent(pipelineId));
 
-    return axios.get(url);
+    return axios.get(url, { params });
   },
 
   // Return all pipelines for a project or filter by query params

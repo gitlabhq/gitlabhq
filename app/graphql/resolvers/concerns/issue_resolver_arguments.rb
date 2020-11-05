@@ -29,7 +29,7 @@ module IssueResolverArguments
               description: 'Usernames of users assigned to the issue'
     argument :assignee_id, GraphQL::STRING_TYPE,
               required: false,
-              description: 'ID of a user assigned to the issues, "none" and "any" values supported'
+              description: 'ID of a user assigned to the issues, "none" and "any" values are supported'
     argument :created_before, Types::TimeType,
               required: false,
               description: 'Issues created before this date'

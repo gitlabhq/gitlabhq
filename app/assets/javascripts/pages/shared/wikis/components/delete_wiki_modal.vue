@@ -41,7 +41,11 @@ export default {
     primaryProps() {
       return {
         text: this.$options.i18n.deletePageText,
-        attributes: { variant: 'danger', 'data-qa-selector': 'confirm_deletion_button' },
+        attributes: {
+          variant: 'danger',
+          'data-qa-selector': 'confirm_deletion_button',
+          'data-testid': 'confirm_deletion_button',
+        },
       };
     },
     cancelProps() {

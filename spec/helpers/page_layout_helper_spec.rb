@@ -137,4 +137,75 @@ RSpec.describe PageLayoutHelper do
       end
     end
   end
+
+  describe '#page_canonical_link' do
+    let(:user) { build(:user) }
+
+    subject { helper.page_canonical_link(link) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'when link is passed' do
+      let(:link) { 'https://gitlab.com' }
+
+      it 'stores and returns the link value' do
+        expect(subject).to eq link
+        expect(helper.page_canonical_link(nil)).to eq link
+      end
+    end
+
+    context 'when no link is provided' do
+      let(:link) { nil }
+      let(:request) { ActionDispatch::Request.new(env) }
+      let(:env) do
+        {
+          'ORIGINAL_FULLPATH' => '/foo/',
+          'PATH_INFO' => '/foo',
+          'HTTP_HOST' => 'test.host',
+          'REQUEST_METHOD' => method,
+          'rack.url_scheme' => 'http'
+        }
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      shared_examples 'generates the canonical url using the params in the context' do
+        specify { expect(subject).to eq 'http://test.host/foo' }
+      end
+
+      shared_examples 'does not return a canonical url' do
+        specify { expect(subject).to be_nil }
+      end
+
+      it_behaves_like 'generates the canonical url using the params in the context' do
+        let(:method) { 'GET' }
+      end
+
+      it_behaves_like 'generates the canonical url using the params in the context' do
+        let(:method) { 'HEAD' }
+      end
+
+      it_behaves_like 'does not return a canonical url' do
+        let(:method) { 'POST' }
+      end
+
+      it_behaves_like 'does not return a canonical url' do
+        let(:method) { 'PUT' }
+      end
+
+      context 'when feature flag generic_canonical is disabled' do
+        let(:method) { 'GET' }
+
+        before do
+          stub_feature_flags(generic_canonical: false)
+        end
+
+        it_behaves_like 'does not return a canonical url'
+      end
+    end
+  end
 end

@@ -275,6 +275,10 @@ Rails.application.routes.draw do
     draw :profile
   end
 
+  Gitlab.ee do
+    get '/sitemap' => 'sitemap#show', format: :xml
+  end
+
   root to: "root#index"
 
   get '*unmatched_route', to: 'application#route_not_found'

@@ -88,3 +88,5 @@ module ProjectFeaturesCompatibility
     project_feature.__send__(:write_attribute, field, value) # rubocop:disable GitlabSecurity/PublicSend
   end
 end
+
+ProjectFeaturesCompatibility.prepend_if_ee('EE::ProjectFeaturesCompatibility')

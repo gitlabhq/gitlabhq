@@ -1,0 +1,7 @@
+---
+name: generic_canonical
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46435
+rollout_issue_url:
+type: development
+group: group::editor
+default_enabled: false

@@ -710,24 +710,23 @@ describe('Api', () => {
   });
 
   describe('pipelineJobs', () => {
-    it('fetches the jobs for a given pipeline', done => {
-      const projectId = 123;
-      const pipelineId = 456;
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
-      const payload = [
-        {
-          name: 'test',
-        },
-      ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, payload);
+    it.each([undefined, {}, { foo: true }])(
+      'fetches the jobs for a given pipeline given %p params',
+      async params => {
+        const projectId = 123;
+        const pipelineId = 456;
+        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
+        const payload = [
+          {
+            name: 'test',
+          },
+        ];
+        mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, payload);
 
-      Api.pipelineJobs(projectId, pipelineId)
-        .then(({ data }) => {
-          expect(data).toEqual(payload);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
+        const { data } = await Api.pipelineJobs(projectId, pipelineId, params);
+        expect(data).toEqual(payload);
+      },
+    );
   });
 
   describe('createBranch', () => {

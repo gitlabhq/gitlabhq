@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module PageLayoutHelper
+  include Gitlab::Utils::StrongMemoize
+
   def page_title(*titles)
     @page_title ||= []
 
@@ -44,7 +46,7 @@ module PageLayoutHelper
     if link
       @page_canonical_link = link
     else
-      @page_canonical_link
+      @page_canonical_link ||= generic_canonical_url
     end
   end
 
@@ -146,5 +148,32 @@ module PageLayoutHelper
     end
 
     css_class.join(' ')
+  end
+
+  private
+
+  def generic_canonical_url
+    strong_memoize(:generic_canonical_url) do
+      next unless request.get? || request.head?
+      next unless generate_generic_canonical_url?
+      next unless Feature.enabled?(:generic_canonical, current_user)
+
+      # Request#url builds the url without the trailing slash
+      request.url
+    end
+  end
+
+  def generate_generic_canonical_url?
+    # For the main domain it doesn't matter whether there is
+    # a trailing slash or not, they're not considered different
+    # pages
+    return false if request.path == '/'
+
+    # We only need to generate the canonical url when the request has a trailing
+    # slash. In the request object, only the `original_fullpath` and
+    # `original_url` keep the slash if it's present. Both `path` and
+    # `fullpath` would return the path without the slash.
+    # Therefore, we need to process `original_fullpath`
+    request.original_fullpath.sub(request.path, '')[0] == '/'
   end
 end

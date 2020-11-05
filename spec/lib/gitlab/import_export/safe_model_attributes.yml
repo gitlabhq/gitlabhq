@@ -575,6 +575,7 @@ ProjectFeature:
 - repository_access_level
 - pages_access_level
 - metrics_dashboard_access_level
+- requirements_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

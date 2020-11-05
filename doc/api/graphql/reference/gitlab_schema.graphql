@@ -8387,7 +8387,7 @@ type Group {
     after: String
 
     """
-    ID of a user assigned to the issues, "none" and "any" values supported
+    ID of a user assigned to the issues, "none" and "any" values are supported
     """
     assigneeId: String
 
@@ -8430,6 +8430,11 @@ type Group {
     Issues created before this date
     """
     createdBefore: Time
+
+    """
+    ID of an epic associated with the issues, "none" and "any" values are supported
+    """
+    epicId: String
 
     """
     Returns the first _n_ elements from the list.
@@ -14695,7 +14700,7 @@ type Project {
   """
   issue(
     """
-    ID of a user assigned to the issues, "none" and "any" values supported
+    ID of a user assigned to the issues, "none" and "any" values are supported
     """
     assigneeId: String
 
@@ -14733,6 +14738,11 @@ type Project {
     Issues created before this date
     """
     createdBefore: Time
+
+    """
+    ID of an epic associated with the issues, "none" and "any" values are supported
+    """
+    epicId: String
 
     """
     IID of the issue. For example, "1"
@@ -14795,7 +14805,7 @@ type Project {
   """
   issueStatusCounts(
     """
-    ID of a user assigned to the issues, "none" and "any" values supported
+    ID of a user assigned to the issues, "none" and "any" values are supported
     """
     assigneeId: String
 
@@ -14885,7 +14895,7 @@ type Project {
     after: String
 
     """
-    ID of a user assigned to the issues, "none" and "any" values supported
+    ID of a user assigned to the issues, "none" and "any" values are supported
     """
     assigneeId: String
 
@@ -14928,6 +14938,11 @@ type Project {
     Issues created before this date
     """
     createdBefore: Time
+
+    """
+    ID of an epic associated with the issues, "none" and "any" values are supported
+    """
+    epicId: String
 
     """
     Returns the first _n_ elements from the list.

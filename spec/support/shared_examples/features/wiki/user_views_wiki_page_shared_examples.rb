@@ -33,7 +33,7 @@ RSpec.shared_examples 'User views a wiki page' do
         click_on('Create page')
       end
 
-      expect(page).to have_content('Wiki was successfully updated.')
+      expect(page).to have_content('Wiki page was successfully created.')
     end
 
     it 'shows the history of a page that has a path' do
@@ -49,7 +49,7 @@ RSpec.shared_examples 'User views a wiki page' do
       end
     end
 
-    it 'shows an old version of a page' do
+    it 'shows an old version of a page', :js do
       expect(current_path).to include('one/two/three-test')
       expect(find('.wiki-pages')).to have_content('three')
 
@@ -65,7 +65,7 @@ RSpec.shared_examples 'User views a wiki page' do
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
 
-      expect(page).to have_content('Wiki was successfully updated.')
+      expect(page).to have_content('Wiki page was successfully updated.')
 
       click_on('Page history')
 

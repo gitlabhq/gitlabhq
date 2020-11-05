@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
     let(:type_instance) { type_class.authorized_new(presented_object, context) }
     let(:field) { type_class.fields['testField'].to_graphql }
 
-    subject(:resolved) { resolve&.force }
+    subject(:resolved) { ::Gitlab::Graphql::Lazy.force(resolve) }
 
     context 'reading the field of a lazy value' do
       let(:ability) { :read_field }
@@ -240,16 +240,6 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
     end
 
     it_behaves_like 'authorizing fields'
-
-    context 'the graphql_lazy_authorization feature flag is disabled' do
-      before do
-        stub_feature_flags(graphql_lazy_authorization: false)
-      end
-
-      subject(:resolved) { resolve }
-
-      it_behaves_like 'authorizing fields'
-    end
   end
 
   private

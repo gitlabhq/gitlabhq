@@ -36,11 +36,7 @@ module Gitlab
       end
 
       def self.with_value(unforced, &block)
-        if Feature.enabled?(:graphql_lazy_authorization)
-          self.new { unforced }.then(&block)
-        else
-          block.call(unforced)
-        end
+        self.new { unforced }.then(&block)
       end
     end
   end

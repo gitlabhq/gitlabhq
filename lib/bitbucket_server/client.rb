@@ -8,9 +8,9 @@ module BitbucketServer
       @connection = Connection.new(options)
     end
 
-    def pull_requests(project_key, repo)
+    def pull_requests(project_key, repo, page_offset: 0, limit: nil)
       path = "/projects/#{project_key}/repos/#{repo}/pull-requests?state=ALL"
-      get_collection(path, :pull_request)
+      get_collection(path, :pull_request, page_offset: page_offset, limit: limit)
     end
 
     def activities(project_key, repo, pull_request_id)

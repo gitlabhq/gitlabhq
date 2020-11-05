@@ -112,7 +112,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       allow(subject).to receive(:delete_temp_branches)
       allow(subject).to receive(:restore_branches)
 
-      allow(subject.client).to receive(:pull_requests).and_return([pull_request])
+      allow(subject.client).to receive(:pull_requests).and_return([pull_request], [])
     end
 
     # As we are using Caching with redis, it is best to clean the cache after each test run, else we need to wait for
@@ -499,7 +499,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
 
       before do
         Gitlab::Cache::Import::Caching.set_add(subject.already_imported_cache_key, pull_request_already_imported.iid)
-        allow(subject.client).to receive(:pull_requests).and_return([pull_request_to_be_imported, pull_request_already_imported])
+        allow(subject.client).to receive(:pull_requests).and_return([pull_request_to_be_imported, pull_request_already_imported], [])
       end
 
       it 'only imports one Merge Request, as the other on is in the cache' do
@@ -535,7 +535,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
         updated_at: Time.now,
         merged?: true)
 
-      expect(subject.client).to receive(:pull_requests).and_return([pull_request])
+      expect(subject.client).to receive(:pull_requests).and_return([pull_request], [])
       expect(subject.client).to receive(:activities).and_return([])
       expect(subject).to receive(:import_repository).twice
     end

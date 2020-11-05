@@ -72,6 +72,7 @@ Use the switches to enable or disable the following features:
 | **Snippets**                      | ✓                         | Enables [sharing of code and text](../../snippets.md)                                                                                                                                          |
 | **Pages**                         | ✓                         | Allows you to [publish static websites](../pages/)                                                                                                                                             |
 | **Metrics Dashboard**             | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md)
+| **Requirements**                  | ✓                         | Control access to [Requirements Management](../requirements/index.md)
 
 Some features depend on others:
 

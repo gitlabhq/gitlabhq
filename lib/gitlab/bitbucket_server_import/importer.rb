@@ -177,16 +177,24 @@ module Gitlab
       # on the remote server. Then we have to issue a `git fetch` to download these
       # branches.
       def import_pull_requests
-        log_info(stage: 'import_pull_requests', message: 'starting')
-        pull_requests = client.pull_requests(project_key, repository_slug).to_a
+        page = 0
 
-        # Creating branches on the server and fetching the newly-created branches
-        # may take a number of network round-trips. Do this in batches so that we can
-        # avoid doing a git fetch for every new branch.
-        pull_requests.each_slice(BATCH_SIZE) do |batch|
-          restore_branches(batch) if recover_missing_commits
+        log_info(stage: 'import_pull_requests', message: "starting")
 
-          batch.each do |pull_request|
+        loop do
+          log_debug(stage: 'import_pull_requests', message: "importing page #{page} and batch-size #{BATCH_SIZE} from #{page * BATCH_SIZE} to #{(page + 1) * BATCH_SIZE}")
+
+          pull_requests = client.pull_requests(project_key, repository_slug, page_offset: page, limit: BATCH_SIZE).to_a
+
+          break if pull_requests.empty?
+
+          # Creating branches on the server and fetching the newly-created branches
+          # may take a number of network round-trips. This used to be done in batches to
+          # avoid doing a git fetch for every new branch, as the whole process is now
+          # batched, we do not need to separately do this in batches.
+          restore_branches(pull_requests) if recover_missing_commits
+
+          pull_requests.each do |pull_request|
             if already_imported?(pull_request)
               log_info(stage: 'import_pull_requests', message: 'already imported', iid: pull_request.iid)
             else
@@ -201,6 +209,9 @@ module Gitlab
             backtrace = Gitlab::BacktraceCleaner.clean_backtrace(e.backtrace)
             errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, backtrace: backtrace.join("\n"), raw_response: pull_request.raw }
           end
+
+          log_debug(stage: 'import_pull_requests', message: "finished page #{page} and batch-size #{BATCH_SIZE}")
+          page += 1
         end
       end
 
@@ -414,6 +425,10 @@ module Gitlab
           created_at: comment.created_at,
           updated_at: comment.updated_at
         }
+      end
+
+      def log_debug(details)
+        logger.debug(log_base_data.merge(details))
       end
 
       def log_info(details)

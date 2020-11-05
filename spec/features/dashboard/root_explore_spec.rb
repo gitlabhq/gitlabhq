@@ -30,12 +30,4 @@ RSpec.describe 'Root explore' do
 
     include_examples 'shows public projects'
   end
-
-  it 'includes canonical link to explore projects url' do
-    visit explore_root_path
-
-    canonial_link = page.find("head link[rel='canonical']", visible: false)
-
-    expect(canonial_link[:href]).to eq explore_projects_url
-  end
 end

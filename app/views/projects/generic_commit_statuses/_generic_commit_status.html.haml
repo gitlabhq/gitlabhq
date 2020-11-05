@@ -31,7 +31,7 @@
 
     - if retried
       %span.has-tooltip{ title: _('Status was retried.') }
-        = sprite_icon('warning-solid', class: 'text-warning')
+        = sprite_icon('warning-solid', css_class: 'text-warning')
 
     .label-container
       - if generic_commit_status.tags.any?

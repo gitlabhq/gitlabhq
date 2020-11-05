@@ -213,11 +213,11 @@ RSpec.shared_examples 'User updates wiki page' do
       visit wiki_page_path(wiki_page.wiki, wiki_page, action: :edit)
     end
 
-    it 'allows changing the title if the content does not change' do
+    it 'allows changing the title if the content does not change', :js do
       fill_in 'Title', with: 'new title'
       click_on 'Save changes'
 
-      expect(page).to have_content('Wiki was successfully updated.')
+      expect(page).to have_content('Wiki page was successfully updated.')
     end
 
     it 'shows a validation error when trying to change the content' do

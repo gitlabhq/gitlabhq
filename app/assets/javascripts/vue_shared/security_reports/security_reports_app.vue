@@ -3,6 +3,7 @@ import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import ReportSection from '~/reports/components/report_section.vue';
 import { status } from '~/reports/constants';
 import { s__ } from '~/locale';
+import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import Flash from '~/flash';
 import Api from '~/api';
 
@@ -52,12 +53,27 @@ export default {
       });
   },
   methods: {
-    checkHasSecurityReports(reportTypes) {
-      return Api.pipelineJobs(this.projectId, this.pipelineId).then(({ data: jobs }) =>
-        jobs.some(({ artifacts = [] }) =>
+    async checkHasSecurityReports(reportTypes) {
+      let page = 1;
+      while (page) {
+        // eslint-disable-next-line no-await-in-loop
+        const { data: jobs, headers } = await Api.pipelineJobs(this.projectId, this.pipelineId, {
+          per_page: 100,
+          page,
+        });
+
+        const hasSecurityReports = jobs.some(({ artifacts = [] }) =>
           artifacts.some(({ file_type }) => reportTypes.includes(file_type)),
-        ),
-      );
+        );
+
+        if (hasSecurityReports) {
+          return true;
+        }
+
+        page = parseIntPagination(normalizeHeaders(headers)).nextPage;
+      }
+
+      return false;
     },
     activatePipelinesTab() {
       if (window.mrTabs) {

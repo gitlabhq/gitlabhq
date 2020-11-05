@@ -19,6 +19,15 @@ RSpec.describe BitbucketServer::Client do
 
       subject.pull_requests(project, repo_slug)
     end
+
+    it 'requests a collection with offset and limit' do
+      offset = 10
+      limit = 100
+
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :pull_request, page_offset: offset, limit: limit)
+
+      subject.pull_requests(project, repo_slug, page_offset: offset, limit: limit)
+    end
   end
 
   describe '#activities' do

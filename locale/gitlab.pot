@@ -19284,9 +19284,6 @@ msgstr ""
 msgid "Page settings"
 msgstr ""
 
-msgid "Page was successfully deleted"
-msgstr ""
-
 msgid "PagerDutySettings|Active"
 msgstr ""
 
@@ -21133,6 +21130,12 @@ msgid "ProjectSettings|Repository"
 msgstr ""
 
 msgid "ProjectSettings|Require"
+msgstr ""
+
+msgid "ProjectSettings|Requirements"
+msgstr ""
+
+msgid "ProjectSettings|Requirements management system for this project"
 msgstr ""
 
 msgid "ProjectSettings|Set the default behavior and availability of this option in merge requests. Changes made are also applied to existing merge requests."
@@ -30185,7 +30188,13 @@ msgstr ""
 msgid "Wiki"
 msgstr ""
 
-msgid "Wiki was successfully updated."
+msgid "Wiki page was successfully created."
+msgstr ""
+
+msgid "Wiki page was successfully deleted."
+msgstr ""
+
+msgid "Wiki page was successfully updated."
 msgstr ""
 
 msgid "WikiClone|Clone your wiki"
