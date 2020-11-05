@@ -16,6 +16,7 @@ class Discussion
             :commit_id,
             :confidential?,
             :for_commit?,
+            :for_design?,
             :for_merge_request?,
             :noteable_ability_name,
             :to_ability_name,

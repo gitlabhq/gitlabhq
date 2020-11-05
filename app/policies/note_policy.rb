@@ -7,12 +7,14 @@ class NotePolicy < BasePolicy
   delegate { @subject.noteable if DeclarativePolicy.has_policy?(@subject.noteable) }
 
   condition(:is_author) { @user && @subject.author == @user }
-  condition(:is_noteable_author) { @user && @subject.noteable.author_id == @user.id }
+  condition(:is_noteable_author) { @user && @subject.noteable.try(:author_id) == @user.id }
 
   condition(:editable, scope: :subject) { @subject.editable? }
 
   condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}") }
   condition(:commit_is_deleted) { @subject.for_commit? && @subject.noteable.blank? }
+
+  condition(:for_design) { @subject.for_design? }
 
   condition(:is_visible) { @subject.system_note_with_references_visible_for?(@user) }
 
@@ -28,6 +30,7 @@ class NotePolicy < BasePolicy
   rule { ~can_read_noteable }.policy do
     prevent :admin_note
     prevent :resolve_note
+    prevent :reposition_note
     prevent :award_emoji
   end
 
@@ -46,6 +49,7 @@ class NotePolicy < BasePolicy
     prevent :read_note
     prevent :admin_note
     prevent :resolve_note
+    prevent :reposition_note
     prevent :award_emoji
   end
 
@@ -57,7 +61,12 @@ class NotePolicy < BasePolicy
     prevent :read_note
     prevent :admin_note
     prevent :resolve_note
+    prevent :reposition_note
     prevent :award_emoji
+  end
+
+  rule { can?(:admin_note) | (for_design & can?(:create_note)) }.policy do
+    enable :reposition_note
   end
 
   def parent_namespace

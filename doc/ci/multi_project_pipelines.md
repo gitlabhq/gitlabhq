@@ -305,7 +305,7 @@ Some features are not implemented yet. For example, support for environments.
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
 
-## Trigger a pipeline when an upstream project is rebuilt
+## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
 

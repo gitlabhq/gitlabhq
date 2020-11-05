@@ -1,7 +1,0 @@
----
-name: ci_send_deployment_hook_when_start
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41214
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247137
-group: group::progressive delivery
-type: development
-default_enabled: false

@@ -79,8 +79,6 @@ class Deployment < ApplicationRecord
 
     after_transition any => :running do |deployment|
       deployment.run_after_commit do
-        next unless Feature.enabled?(:ci_send_deployment_hook_when_start, deployment.project)
-
         Deployments::ExecuteHooksWorker.perform_async(id)
       end
     end
