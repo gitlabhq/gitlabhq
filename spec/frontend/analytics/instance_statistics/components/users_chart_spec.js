@@ -7,7 +7,11 @@ import { useFakeDate } from 'helpers/fake_date';
 import UsersChart from '~/analytics/instance_statistics/components/users_chart.vue';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import usersQuery from '~/analytics/instance_statistics/graphql/queries/users.query.graphql';
-import { mockCountsData2, roundedSortedCountsMonthlyChartData2 } from '../mock_data';
+import {
+  mockCountsData1,
+  mockCountsData2,
+  roundedSortedCountsMonthlyChartData2,
+} from '../mock_data';
 import { mockQueryResponse } from '../apollo_mock_data';
 
 const localVue = createLocalVue();
@@ -21,9 +25,9 @@ describe('UsersChart', () => {
     loadingError = false,
     loading = false,
     users = [],
-    hasNextPage = false,
+    additionalData = [],
   } = {}) => {
-    queryHandler = mockQueryResponse({ key: 'users', data: users, loading, hasNextPage });
+    queryHandler = mockQueryResponse({ key: 'users', data: users, loading, additionalData });
 
     return shallowMount(UsersChart, {
       props: {
@@ -128,7 +132,7 @@ describe('UsersChart', () => {
       beforeEach(async () => {
         wrapper = createComponent({
           users: mockCountsData2,
-          hasNextPage: true,
+          additionalData: mockCountsData1,
         });
 
         jest.spyOn(wrapper.vm.$apollo.queries.users, 'fetchMore');
@@ -148,7 +152,7 @@ describe('UsersChart', () => {
       beforeEach(() => {
         wrapper = createComponent({
           users: mockCountsData2,
-          hasNextPage: true,
+          additionalData: mockCountsData1,
         });
 
         jest

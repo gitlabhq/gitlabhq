@@ -4,24 +4,23 @@ module Ci
   class DestroyExpiredJobArtifactsService
     include ::Gitlab::ExclusiveLeaseHelpers
     include ::Gitlab::LoopHelpers
+    include ::Gitlab::Utils::StrongMemoize
 
     BATCH_SIZE = 100
     LOOP_TIMEOUT = 5.minutes
-    LEGACY_LOOP_TIMEOUT = 45.minutes
     LOOP_LIMIT = 1000
     EXCLUSIVE_LOCK_KEY = 'expired_job_artifacts:destroy:lock'
-    LOCK_TIMEOUT = 10.minutes
-    LEGACY_LOCK_TIMEOUT = 50.minutes
+    LOCK_TIMEOUT = 6.minutes
 
     ##
     # Destroy expired job artifacts on GitLab instance
     #
-    # This destroy process cannot run for more than 10 minutes. This is for
+    # This destroy process cannot run for more than 6 minutes. This is for
     # preventing multiple `ExpireBuildArtifactsWorker` CRON jobs run concurrently,
-    # which is scheduled at every hour.
+    # which is scheduled every 7 minutes.
     def execute
-      in_lock(EXCLUSIVE_LOCK_KEY, ttl: lock_timeout, retries: 1) do
-        loop_until(timeout: loop_timeout, limit: LOOP_LIMIT) do
+      in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
+        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
           destroy_artifacts_batch
         end
       end
@@ -42,30 +41,19 @@ module Ci
 
       return false if artifacts.empty?
 
-      if parallel_destroy?
-        parallel_destroy_batch(artifacts)
-      else
-        legacy_destroy_batch(artifacts)
-        destroy_related_records_for(artifacts)
-      end
-
+      parallel_destroy_batch(artifacts)
       true
     end
 
+    # TODO: Make sure this can also be parallelized
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/270973
     def destroy_pipeline_artifacts_batch
       artifacts = Ci::PipelineArtifact.expired(BATCH_SIZE).to_a
       return false if artifacts.empty?
 
-      legacy_destroy_batch(artifacts)
-      true
-    end
-
-    def parallel_destroy?
-      ::Feature.enabled?(:ci_delete_objects)
-    end
-
-    def legacy_destroy_batch(artifacts)
       artifacts.each(&:destroy!)
+
+      true
     end
 
     def parallel_destroy_batch(job_artifacts)
@@ -77,6 +65,7 @@ module Ci
 
       # This is executed outside of the transaction because it depends on Redis
       update_statistics_for(job_artifacts)
+      destroyed_artifacts_counter.increment({}, job_artifacts.size)
     end
 
     # This method is implemented in EE and it must do only database work
@@ -91,19 +80,12 @@ module Ci
       end
     end
 
-    def loop_timeout
-      if parallel_destroy?
-        LOOP_TIMEOUT
-      else
-        LEGACY_LOOP_TIMEOUT
-      end
-    end
+    def destroyed_artifacts_counter
+      strong_memoize(:destroyed_artifacts_counter) do
+        name = :destroyed_job_artifacts_count_total
+        comment = 'Counter of destroyed expired job artifacts'
 
-    def lock_timeout
-      if parallel_destroy?
-        LOCK_TIMEOUT
-      else
-        LEGACY_LOCK_TIMEOUT
+        ::Gitlab::Metrics.counter(name, comment)
       end
     end
   end

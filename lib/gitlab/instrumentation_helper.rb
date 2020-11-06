@@ -21,6 +21,7 @@ module Gitlab
       instrument_rugged(payload)
       instrument_redis(payload)
       instrument_elasticsearch(payload)
+      instrument_throttle(payload)
     end
 
     def instrument_gitaly(payload)
@@ -54,6 +55,11 @@ module Gitlab
 
       payload[:elasticsearch_calls] = elasticsearch_calls
       payload[:elasticsearch_duration_s] = Gitlab::Instrumentation::ElasticsearchTransport.query_time
+    end
+
+    def instrument_throttle(payload)
+      safelist = Gitlab::Instrumentation::Throttle.safelist
+      payload[:throttle_safelist] = safelist if safelist.present?
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

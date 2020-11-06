@@ -25,11 +25,14 @@ describe('InstanceStatisticsApp', () => {
     expect(wrapper.find(InstanceCounts).exists()).toBe(true);
   });
 
-  it('displays the instance statistics count chart component', () => {
-    const allCharts = wrapper.findAll(InstanceStatisticsCountChart);
-    expect(allCharts).toHaveLength(2);
-    expect(allCharts.at(0).exists()).toBe(true);
-    expect(allCharts.at(1).exists()).toBe(true);
+  ['Pipelines', 'Issues & Merge Requests'].forEach(instance => {
+    it(`displays the ${instance} chart`, () => {
+      const chartTitles = wrapper
+        .findAll(InstanceStatisticsCountChart)
+        .wrappers.map(chartComponent => chartComponent.props('chartTitle'));
+
+      expect(chartTitles).toContain(instance);
+    });
   });
 
   it('displays the users chart component', () => {

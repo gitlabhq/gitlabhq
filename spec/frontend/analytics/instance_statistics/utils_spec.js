@@ -1,7 +1,7 @@
 import {
   getAverageByMonth,
-  extractValues,
-  sortByDate,
+  getEarliestDate,
+  generateDataKeys,
 } from '~/analytics/instance_statistics/utils';
 import {
   mockCountsData1,
@@ -44,55 +44,38 @@ describe('getAverageByMonth', () => {
   });
 });
 
-describe('extractValues', () => {
-  it('extracts only requested values', () => {
-    const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
-    expect(extractValues(data, ['bar'], 'foo', 'baz')).toEqual({ bazBar: 'quis' });
+describe('getEarliestDate', () => {
+  it('returns the date of the final item in the array', () => {
+    expect(getEarliestDate(mockCountsData1)).toBe('2020-06-12');
   });
 
-  it('it renames with the `renameKey` if provided', () => {
-    const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
-    expect(extractValues(data, ['bar'], 'foo', 'baz', { renameKey: 'renamed' })).toEqual({
-      renamedBar: 'quis',
-    });
+  it('returns null for an empty array', () => {
+    expect(getEarliestDate([])).toBeNull();
   });
 
-  it('is able to get nested data', () => {
-    const data = { fooBar: { even: [{ further: 'nested' }] }, ignored: 'ignored' };
-    expect(extractValues(data, ['bar'], 'foo', 'even[0].further')).toEqual({
-      'even[0].furtherBar': 'nested',
-    });
-  });
-
-  it('is able to extract multiple values', () => {
-    const data = {
-      fooBar: { baz: 'quis' },
-      fooBaz: { baz: 'quis' },
-      fooQuis: { baz: 'quis' },
-    };
-    expect(extractValues(data, ['bar', 'baz', 'quis'], 'foo', 'baz')).toEqual({
-      bazBar: 'quis',
-      bazBaz: 'quis',
-      bazQuis: 'quis',
-    });
-  });
-
-  it('returns empty data set when keys are not found', () => {
-    const data = { foo: { baz: 'quis' }, ignored: 'ignored' };
-    expect(extractValues(data, ['bar'], 'foo', 'baz')).toEqual({});
-  });
-
-  it('returns empty data when params are missing', () => {
-    expect(extractValues()).toEqual({});
+  it("returns null if the array has data but `recordedAt` isn't defined", () => {
+    expect(
+      getEarliestDate(mockCountsData1.map(({ recordedAt: date, ...rest }) => ({ date, ...rest }))),
+    ).toBeNull();
   });
 });
 
-describe('sortByDate', () => {
-  it('sorts the array by date', () => {
-    expect(sortByDate(mockCountsData1)).toStrictEqual([...mockCountsData1].reverse());
+describe('generateDataKeys', () => {
+  const fakeQueries = [
+    { identifier: 'from' },
+    { identifier: 'first' },
+    { identifier: 'to' },
+    { identifier: 'last' },
+  ];
+
+  const defaultValue = 'default value';
+  const res = generateDataKeys(fakeQueries, defaultValue);
+
+  it('extracts each query identifier and sets them as object keys', () => {
+    expect(Object.keys(res)).toEqual(['from', 'first', 'to', 'last']);
   });
 
-  it('does not modify the original array', () => {
-    expect(sortByDate(countsMonthlyChartData1)).not.toBe(countsMonthlyChartData1);
+  it('sets every value to the `defaultValue` provided', () => {
+    expect(Object.values(res)).toEqual(Array(fakeQueries.length).fill(defaultValue));
   });
 });

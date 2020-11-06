@@ -97,6 +97,16 @@ RSpec.describe Gitlab::InstrumentationHelper do
         expect(payload[:gitaly_duration]).to be_nil
       end
     end
+
+    context 'when the request matched a Rack::Attack safelist' do
+      it 'logs the safelist name' do
+        Gitlab::Instrumentation::Throttle.safelist = 'foobar'
+
+        subject
+
+        expect(payload[:throttle_safelist]).to eq('foobar')
+      end
+    end
   end
 
   describe '.queue_duration_for_job' do

@@ -5,87 +5,19 @@ Array [
   Object {
     "data": Array [
       Array [
-        "2020-06-01",
-        21,
-      ],
-      Array [
         "2020-07-01",
-        10,
+        41,
       ],
-      Array [
-        "2020-08-01",
-        5,
-      ],
-    ],
-    "name": "Total",
-  },
-  Object {
-    "data": Array [
-      Array [
-        "2020-06-01",
-        21,
-      ],
-      Array [
-        "2020-07-01",
-        10,
-      ],
-      Array [
-        "2020-08-01",
-        5,
-      ],
-    ],
-    "name": "Succeeded",
-  },
-  Object {
-    "data": Array [
       Array [
         "2020-06-01",
         22,
       ],
       Array [
-        "2020-07-01",
-        41,
-      ],
-      Array [
         "2020-08-01",
         5,
       ],
     ],
-    "name": "Failed",
-  },
-  Object {
-    "data": Array [
-      Array [
-        "2020-06-01",
-        21,
-      ],
-      Array [
-        "2020-07-01",
-        10,
-      ],
-      Array [
-        "2020-08-01",
-        5,
-      ],
-    ],
-    "name": "Canceled",
-  },
-  Object {
-    "data": Array [
-      Array [
-        "2020-06-01",
-        21,
-      ],
-      Array [
-        "2020-07-01",
-        10,
-      ],
-      Array [
-        "2020-08-01",
-        5,
-      ],
-    ],
-    "name": "Skipped",
+    "name": "Mock Query",
   },
 ]
 `;
@@ -95,67 +27,15 @@ Array [
   Object {
     "data": Array [
       Array [
-        "2020-06-01",
-        22,
-      ],
-      Array [
         "2020-07-01",
         41,
       ],
-    ],
-    "name": "Total",
-  },
-  Object {
-    "data": Array [
-      Array [
-        "2020-06-01",
-        21,
-      ],
-      Array [
-        "2020-07-01",
-        10,
-      ],
-    ],
-    "name": "Succeeded",
-  },
-  Object {
-    "data": Array [
-      Array [
-        "2020-06-01",
-        21,
-      ],
-      Array [
-        "2020-07-01",
-        10,
-      ],
-    ],
-    "name": "Failed",
-  },
-  Object {
-    "data": Array [
       Array [
         "2020-06-01",
         22,
       ],
-      Array [
-        "2020-07-01",
-        41,
-      ],
     ],
-    "name": "Canceled",
-  },
-  Object {
-    "data": Array [
-      Array [
-        "2020-06-01",
-        22,
-      ],
-      Array [
-        "2020-07-01",
-        41,
-      ],
-    ],
-    "name": "Skipped",
+    "name": "Mock Query",
   },
 ]
 `;

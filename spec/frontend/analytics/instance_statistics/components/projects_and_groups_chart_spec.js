@@ -25,23 +25,21 @@ describe('ProjectsAndGroupChart', () => {
     groups = [],
     projectsLoading = false,
     groupsLoading = false,
-    projectsHasNextPage = false,
-    groupsHasNextPage = false,
+    projectsAdditionalData = [],
+    groupsAdditionalData = [],
   } = {}) => {
     queryResponses = {
       projects: mockQueryResponse({
         key: 'projects',
         data: projects,
         loading: projectsLoading,
-        hasNextPage: projectsHasNextPage,
-        additionalData: mockAdditionalData,
+        additionalData: projectsAdditionalData,
       }),
       groups: mockQueryResponse({
         key: 'groups',
         data: groups,
         loading: groupsLoading,
-        hasNextPage: groupsHasNextPage,
-        additionalData: mockAdditionalData,
+        additionalData: groupsAdditionalData,
       }),
     };
 
@@ -169,9 +167,9 @@ describe('ProjectsAndGroupChart', () => {
   });
 
   describe.each`
-    metric        | loadingState                     | newData
-    ${'projects'} | ${{ projectsHasNextPage: true }} | ${{ projects: mockCountsData2 }}
-    ${'groups'}   | ${{ groupsHasNextPage: true }}   | ${{ groups: mockCountsData2 }}
+    metric        | loadingState                                      | newData
+    ${'projects'} | ${{ projectsAdditionalData: mockAdditionalData }} | ${{ projects: mockCountsData2 }}
+    ${'groups'}   | ${{ groupsAdditionalData: mockAdditionalData }}   | ${{ groups: mockCountsData2 }}
   `('$metric - fetchMore', ({ metric, loadingState, newData }) => {
     describe('when the fetchMore query returns data', () => {
       beforeEach(async () => {

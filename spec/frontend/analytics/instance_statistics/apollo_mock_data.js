@@ -5,36 +5,7 @@ const defaultPageInfo = {
   endCursor: null,
 };
 
-export function getApolloResponse(options = {}) {
-  const {
-    pipelinesTotal = [],
-    pipelinesSucceeded = [],
-    pipelinesFailed = [],
-    pipelinesCanceled = [],
-    pipelinesSkipped = [],
-    hasNextPage = false,
-  } = options;
-  return {
-    data: {
-      pipelinesTotal: { pageInfo: { ...defaultPageInfo, hasNextPage }, nodes: pipelinesTotal },
-      pipelinesSucceeded: {
-        pageInfo: { ...defaultPageInfo, hasNextPage },
-        nodes: pipelinesSucceeded,
-      },
-      pipelinesFailed: { pageInfo: { ...defaultPageInfo, hasNextPage }, nodes: pipelinesFailed },
-      pipelinesCanceled: {
-        pageInfo: { ...defaultPageInfo, hasNextPage },
-        nodes: pipelinesCanceled,
-      },
-      pipelinesSkipped: {
-        pageInfo: { ...defaultPageInfo, hasNextPage },
-        nodes: pipelinesSkipped,
-      },
-    },
-  };
-}
-
-const mockApolloResponse = ({ hasNextPage = false, key, data }) => ({
+export const mockApolloResponse = ({ hasNextPage = false, key, data }) => ({
   data: {
     [key]: {
       pageInfo: { ...defaultPageInfo, hasNextPage },
@@ -43,13 +14,8 @@ const mockApolloResponse = ({ hasNextPage = false, key, data }) => ({
   },
 });
 
-export const mockQueryResponse = ({
-  key,
-  data = [],
-  loading = false,
-  hasNextPage = false,
-  additionalData = [],
-}) => {
+export const mockQueryResponse = ({ key, data = [], loading = false, additionalData = [] }) => {
+  const hasNextPage = Boolean(additionalData.length);
   const response = mockApolloResponse({ hasNextPage, key, data });
   if (loading) {
     return jest.fn().mockReturnValue(new Promise(() => {}));

@@ -75,6 +75,14 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
           it 'does not remove the files' do
             expect { subject }.not_to change { artifact.file.exists? }
           end
+
+          it 'reports metrics for destroyed artifacts' do
+            counter = service.send(:destroyed_artifacts_counter)
+
+            expect(counter).to receive(:increment).with({}, 1).and_call_original
+
+            subject
+          end
         end
       end
 
@@ -114,49 +122,31 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
         stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_LIMIT', 10)
       end
 
-      context 'with ci_delete_objects disabled' do
+      context 'when the import fails' do
         before do
-          stub_feature_flags(ci_delete_objects: false)
-
-          allow_any_instance_of(Ci::JobArtifact)
-            .to receive(:destroy!)
+          expect(Ci::DeletedObject)
+            .to receive(:bulk_import)
+            .once
             .and_raise(ActiveRecord::RecordNotDestroyed)
         end
 
         it 'raises an exception and stop destroying' do
           expect { subject }.to raise_error(ActiveRecord::RecordNotDestroyed)
+                            .and not_change { Ci::JobArtifact.count }.from(1)
         end
       end
 
-      context 'with ci_delete_objects enabled' do
-        context 'when the import fails' do
-          before do
-            stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_LIMIT', 10)
-            expect(Ci::DeletedObject)
-              .to receive(:bulk_import)
-              .once
-              .and_raise(ActiveRecord::RecordNotDestroyed)
-          end
-
-          it 'raises an exception and stop destroying' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotDestroyed)
-                              .and not_change { Ci::JobArtifact.count }.from(1)
-          end
+      context 'when the delete fails' do
+        before do
+          expect(Ci::JobArtifact)
+            .to receive(:id_in)
+            .once
+            .and_raise(ActiveRecord::RecordNotDestroyed)
         end
 
-        context 'when the delete fails' do
-          before do
-            stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_LIMIT', 10)
-            expect(Ci::JobArtifact)
-              .to receive(:id_in)
-              .once
-              .and_raise(ActiveRecord::RecordNotDestroyed)
-          end
-
-          it 'raises an exception rolls back the insert' do
-            expect { subject }.to raise_error(ActiveRecord::RecordNotDestroyed)
-                              .and not_change { Ci::DeletedObject.count }.from(0)
-          end
+        it 'raises an exception rolls back the insert' do
+          expect { subject }.to raise_error(ActiveRecord::RecordNotDestroyed)
+                            .and not_change { Ci::DeletedObject.count }.from(0)
         end
       end
     end

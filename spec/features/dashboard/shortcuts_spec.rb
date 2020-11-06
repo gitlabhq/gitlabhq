@@ -59,7 +59,7 @@ RSpec.describe 'Dashboard shortcuts', :js do
       find('body').send_keys([:shift, 'P'])
 
       find('.nothing-here-block')
-      expect(page).to have_content("This user doesn't have any personal projects")
+      expect(page).to have_content('Explore public groups to find projects to contribute to.')
     end
   end
 

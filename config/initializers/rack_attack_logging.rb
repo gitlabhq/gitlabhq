@@ -5,7 +5,8 @@
 ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, request_id, payload|
   req = payload[:request]
 
-  if [:throttle, :blocklist].include? req.env['rack.attack.match_type']
+  case req.env['rack.attack.match_type']
+  when :throttle, :blocklist
     rack_attack_info = {
       message: 'Rack_Attack',
       env: req.env['rack.attack.match_type'],
@@ -31,5 +32,7 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, r
     end
 
     Gitlab::AuthLogger.error(rack_attack_info)
+  when :safelist
+    Gitlab::Instrumentation::Throttle.safelist = req.env['rack.attack.matched']
   end
 end

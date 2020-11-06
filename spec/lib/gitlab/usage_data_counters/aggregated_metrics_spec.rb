@@ -14,12 +14,10 @@ RSpec.describe 'aggregated metrics' do
   end
 
   let_it_be(:known_events) do
-    YAML.load_file(
-      Rails.root.join(Gitlab::UsageDataCounters::HLLRedisCounter::KNOWN_EVENTS_PATH)
-    ).map(&:with_indifferent_access)
+    Gitlab::UsageDataCounters::HLLRedisCounter.known_events
   end
 
-  YAML.load_file(Rails.root.join(Gitlab::UsageDataCounters::HLLRedisCounter::AGGREGATED_METRICS_PATH))&.map(&:with_indifferent_access).tap do |aggregated_metrics|
+  Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics.tap do |aggregated_metrics|
     it 'all events has unique name' do
       event_names = aggregated_metrics&.map { |event| event[:name] }
 

@@ -1,7 +1,0 @@
----
-name: ci_delete_objects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42242
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247103
-group: group::continuous integration
-type: development
-default_enabled: false

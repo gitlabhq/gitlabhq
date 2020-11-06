@@ -4,46 +4,44 @@ import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import InstanceStatisticsCountChart from '~/analytics/instance_statistics/components/instance_statistics_count_chart.vue';
-import pipelinesStatsQuery from '~/analytics/instance_statistics/graphql/queries/pipeline_stats.query.graphql';
+import statsQuery from '~/analytics/instance_statistics/graphql/queries/instance_count.query.graphql';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
-import { mockCountsData1, mockCountsData2 } from '../mock_data';
-import { getApolloResponse } from '../apollo_mock_data';
+import { mockCountsData1 } from '../mock_data';
+import { mockQueryResponse, mockApolloResponse } from '../apollo_mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-const PIPELINES_KEY_TO_NAME_MAP = {
-  total: 'Total',
-  succeeded: 'Succeeded',
-  failed: 'Failed',
-  canceled: 'Canceled',
-  skipped: 'Skipped',
-};
 const loadChartErrorMessage = 'My load error message';
 const noDataMessage = 'My no data message';
+
+const queryResponseDataKey = 'instanceStatisticsMeasurements';
+const identifier = 'MOCK_QUERY';
+const mockQueryConfig = {
+  identifier,
+  title: 'Mock Query',
+  query: statsQuery,
+  loadError: 'Failed to load mock query data',
+};
+
+const mockChartConfig = {
+  loadChartErrorMessage,
+  noDataMessage,
+  chartTitle: 'Foo',
+  yAxisTitle: 'Bar',
+  xAxisTitle: 'Baz',
+  queries: [mockQueryConfig],
+};
 
 describe('InstanceStatisticsCountChart', () => {
   let wrapper;
   let queryHandler;
 
-  const createApolloProvider = pipelineStatsHandler => {
-    return createMockApollo([[pipelinesStatsQuery, pipelineStatsHandler]]);
-  };
-
-  const createComponent = apolloProvider => {
+  const createComponent = ({ responseHandler }) => {
     return shallowMount(InstanceStatisticsCountChart, {
       localVue,
-      apolloProvider,
-      propsData: {
-        keyToNameMap: PIPELINES_KEY_TO_NAME_MAP,
-        prefix: 'pipelines',
-        loadChartErrorMessage,
-        noDataMessage,
-        chartTitle: 'Foo',
-        yAxisTitle: 'Bar',
-        xAxisTitle: 'Baz',
-        query: pipelinesStatsQuery,
-      },
+      apolloProvider: createMockApollo([[statsQuery, responseHandler]]),
+      propsData: { ...mockChartConfig },
     });
   };
 
@@ -58,9 +56,8 @@ describe('InstanceStatisticsCountChart', () => {
 
   describe('while loading', () => {
     beforeEach(() => {
-      queryHandler = jest.fn().mockReturnValue(new Promise(() => {}));
-      const apolloProvider = createApolloProvider(queryHandler);
-      wrapper = createComponent(apolloProvider);
+      queryHandler = mockQueryResponse({ key: queryResponseDataKey, loading: true });
+      wrapper = createComponent({ responseHandler: queryHandler });
     });
 
     it('requests data', () => {
@@ -82,10 +79,8 @@ describe('InstanceStatisticsCountChart', () => {
 
   describe('without data', () => {
     beforeEach(() => {
-      const emptyResponse = getApolloResponse();
-      queryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      const apolloProvider = createApolloProvider(queryHandler);
-      wrapper = createComponent(apolloProvider);
+      queryHandler = mockQueryResponse({ key: queryResponseDataKey, data: [] });
+      wrapper = createComponent({ responseHandler: queryHandler });
     });
 
     it('renders an no data message', () => {
@@ -103,16 +98,8 @@ describe('InstanceStatisticsCountChart', () => {
 
   describe('with data', () => {
     beforeEach(() => {
-      const response = getApolloResponse({
-        pipelinesTotal: mockCountsData1,
-        pipelinesSucceeded: mockCountsData2,
-        pipelinesFailed: mockCountsData2,
-        pipelinesCanceled: mockCountsData1,
-        pipelinesSkipped: mockCountsData1,
-      });
-      queryHandler = jest.fn().mockResolvedValue(response);
-      const apolloProvider = createApolloProvider(queryHandler);
-      wrapper = createComponent(apolloProvider);
+      queryHandler = mockQueryResponse({ key: queryResponseDataKey, data: mockCountsData1 });
+      wrapper = createComponent({ responseHandler: queryHandler });
     });
 
     it('requests data', () => {
@@ -140,30 +127,14 @@ describe('InstanceStatisticsCountChart', () => {
     const recordedAt = '2020-08-01';
     describe('when the fetchMore query returns data', () => {
       beforeEach(async () => {
-        const newData = { recordedAt, count: 5 };
-        const firstResponse = getApolloResponse({
-          pipelinesTotal: mockCountsData2,
-          pipelinesSucceeded: mockCountsData2,
-          pipelinesFailed: mockCountsData1,
-          pipelinesCanceled: mockCountsData2,
-          pipelinesSkipped: mockCountsData2,
-          hasNextPage: true,
+        const newData = [{ recordedAt, count: 5 }];
+        queryHandler = mockQueryResponse({
+          key: queryResponseDataKey,
+          data: mockCountsData1,
+          additionalData: newData,
         });
-        const secondResponse = getApolloResponse({
-          pipelinesTotal: [newData],
-          pipelinesSucceeded: [newData],
-          pipelinesFailed: [newData],
-          pipelinesCanceled: [newData],
-          pipelinesSkipped: [newData],
-          hasNextPage: false,
-        });
-        queryHandler = jest
-          .fn()
-          .mockResolvedValueOnce(firstResponse)
-          .mockResolvedValueOnce(secondResponse);
-        const apolloProvider = createApolloProvider(queryHandler);
-        wrapper = createComponent(apolloProvider);
 
+        wrapper = createComponent({ responseHandler: queryHandler });
         await wrapper.vm.$nextTick();
       });
 
@@ -178,25 +149,24 @@ describe('InstanceStatisticsCountChart', () => {
 
     describe('when the fetchMore query throws an error', () => {
       beforeEach(async () => {
-        const response = getApolloResponse({
-          pipelinesTotal: mockCountsData2,
-          pipelinesSucceeded: mockCountsData2,
-          pipelinesFailed: mockCountsData1,
-          pipelinesCanceled: mockCountsData2,
-          pipelinesSkipped: mockCountsData2,
-          hasNextPage: true,
-        });
-        queryHandler = jest.fn().mockResolvedValue(response);
-        const apolloProvider = createApolloProvider(queryHandler);
-        wrapper = createComponent(apolloProvider);
+        queryHandler = jest.fn().mockResolvedValueOnce(
+          mockApolloResponse({
+            key: queryResponseDataKey,
+            data: mockCountsData1,
+            hasNextPage: true,
+          }),
+        );
+
+        wrapper = createComponent({ responseHandler: queryHandler });
         jest
-          .spyOn(wrapper.vm.$apollo.queries.pipelineStats, 'fetchMore')
+          .spyOn(wrapper.vm.$apollo.queries[identifier], 'fetchMore')
           .mockImplementation(jest.fn().mockRejectedValue());
+
         await wrapper.vm.$nextTick();
       });
 
       it('calls fetchMore', () => {
-        expect(wrapper.vm.$apollo.queries.pipelineStats.fetchMore).toHaveBeenCalledTimes(1);
+        expect(wrapper.vm.$apollo.queries[identifier].fetchMore).toHaveBeenCalledTimes(1);
       });
 
       it('show an error message', () => {

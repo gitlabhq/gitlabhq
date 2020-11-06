@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import UserCallout from '~/user_callout';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '../vue_shared/translate';
 import GroupFilterableList from './groups_filterable_list';
@@ -16,6 +17,9 @@ Vue.use(Translate);
 export default (containerId = 'js-groups-tree', endpoint, action = '') => {
   const containerEl = document.getElementById(containerId);
   let dataEl;
+
+  // eslint-disable-next-line no-new
+  new UserCallout();
 
   // Don't do anything if element doesn't exist (No groups)
   // This is for when the user enters directly to the page via URL

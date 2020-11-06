@@ -18,14 +18,12 @@ module Ci
     end
 
     def max_running_jobs
-      if ::Feature.enabled?(:ci_delete_objects_low_concurrency)
-        2
-      elsif ::Feature.enabled?(:ci_delete_objects_medium_concurrency)
+      if ::Feature.enabled?(:ci_delete_objects_medium_concurrency)
         20
       elsif ::Feature.enabled?(:ci_delete_objects_high_concurrency)
         50
       else
-        0
+        2
       end
     end
 

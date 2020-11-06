@@ -14416,46 +14416,10 @@ msgstr ""
 msgid "Instance administrators group already exists"
 msgstr ""
 
-msgid "InstanceAnalytics|Canceled"
+msgid "InstanceStatistics|Could not load the issues and merge requests chart. Please refresh the page to try again."
 msgstr ""
 
-msgid "InstanceAnalytics|Could not load the issues and merge requests chart. Please refresh the page to try again."
-msgstr ""
-
-msgid "InstanceAnalytics|Could not load the pipelines chart. Please refresh the page to try again."
-msgstr ""
-
-msgid "InstanceAnalytics|Failed"
-msgstr ""
-
-msgid "InstanceAnalytics|Issues"
-msgstr ""
-
-msgid "InstanceAnalytics|Issues & Merge Requests"
-msgstr ""
-
-msgid "InstanceAnalytics|Items"
-msgstr ""
-
-msgid "InstanceAnalytics|Merge Requests"
-msgstr ""
-
-msgid "InstanceAnalytics|Month"
-msgstr ""
-
-msgid "InstanceAnalytics|Pipelines"
-msgstr ""
-
-msgid "InstanceAnalytics|Skipped"
-msgstr ""
-
-msgid "InstanceAnalytics|Succeeded"
-msgstr ""
-
-msgid "InstanceAnalytics|There is no data available."
-msgstr ""
-
-msgid "InstanceAnalytics|Total"
+msgid "InstanceStatistics|Could not load the pipelines chart. Please refresh the page to try again."
 msgstr ""
 
 msgid "InstanceStatistics|Could not load the projects and groups chart. Please refresh the page to try again."
@@ -14467,7 +14431,16 @@ msgstr ""
 msgid "InstanceStatistics|Issues"
 msgstr ""
 
+msgid "InstanceStatistics|Issues & Merge Requests"
+msgstr ""
+
+msgid "InstanceStatistics|Items"
+msgstr ""
+
 msgid "InstanceStatistics|Merge Requests"
+msgstr ""
+
+msgid "InstanceStatistics|Month"
 msgstr ""
 
 msgid "InstanceStatistics|No data available."
@@ -14476,7 +14449,43 @@ msgstr ""
 msgid "InstanceStatistics|Pipelines"
 msgstr ""
 
+msgid "InstanceStatistics|Pipelines canceled"
+msgstr ""
+
+msgid "InstanceStatistics|Pipelines failed"
+msgstr ""
+
+msgid "InstanceStatistics|Pipelines skipped"
+msgstr ""
+
+msgid "InstanceStatistics|Pipelines succeeded"
+msgstr ""
+
+msgid "InstanceStatistics|Pipelines total"
+msgstr ""
+
 msgid "InstanceStatistics|Projects"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the cancelled pipelines"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the failed pipelines"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the issues"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the merge requests"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the skipped pipelines"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the successful pipelines"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error fetching the total pipelines"
 msgstr ""
 
 msgid "InstanceStatistics|There was an error while loading the groups"
@@ -25956,6 +25965,9 @@ msgid "Subtracts"
 msgstr ""
 
 msgid "Succeeded"
+msgstr ""
+
+msgid "Successful purchase image"
 msgstr ""
 
 msgid "Successfully activated"

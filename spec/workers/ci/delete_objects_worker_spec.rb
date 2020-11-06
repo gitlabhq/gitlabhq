@@ -28,7 +28,6 @@ RSpec.describe Ci::DeleteObjectsWorker do
 
     before do
       stub_feature_flags(
-        ci_delete_objects_low_concurrency: low,
         ci_delete_objects_medium_concurrency: medium,
         ci_delete_objects_high_concurrency: high
       )
@@ -36,13 +35,11 @@ RSpec.describe Ci::DeleteObjectsWorker do
 
     subject(:max_running_jobs) { worker.max_running_jobs }
 
-    where(:low, :medium, :high, :expected) do
-      false | false | false | 0
-      true  | true  | true  | 2
-      true  | false | false | 2
-      false | true  | false | 20
-      false | true  | true  | 20
-      false | false | true  | 50
+    where(:medium, :high, :expected) do
+      false | false | 2
+      true  | false | 20
+      true  | true  | 20
+      false | true  | 50
     end
 
     with_them do

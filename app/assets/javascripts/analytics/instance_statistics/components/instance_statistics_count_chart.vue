@@ -1,16 +1,18 @@
 <script>
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { GlAlert } from '@gitlab/ui';
-import { mapValues, some, sum } from 'lodash';
+import { some, every } from 'lodash';
+import * as Sentry from '~/sentry/wrapper';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 import {
   differenceInMonths,
   formatDateAsMonth,
   getDayDifference,
 } from '~/lib/utils/datetime_utility';
-import { convertToTitleCase } from '~/lib/utils/text_utility';
-import { getAverageByMonth, sortByDate, extractValues } from '../utils';
+import { getAverageByMonth, getEarliestDate, generateDataKeys } from '../utils';
 import { TODAY, START_DATE } from '../constants';
+
+const QUERY_DATA_KEY = 'instanceStatisticsMeasurements';
 
 export default {
   name: 'InstanceStatisticsCountChart',
@@ -21,18 +23,7 @@ export default {
   },
   startDate: START_DATE,
   endDate: TODAY,
-  dataKey: 'nodes',
-  pageInfoKey: 'pageInfo',
-  firstKey: 'first',
   props: {
-    prefix: {
-      type: String,
-      required: true,
-    },
-    keyToNameMap: {
-      type: Object,
-      required: true,
-    },
     chartTitle: {
       type: String,
       required: true,
@@ -53,112 +44,46 @@ export default {
       type: String,
       required: true,
     },
-    query: {
-      type: Object,
+    queries: {
+      type: Array,
       required: true,
     },
   },
   data() {
     return {
-      loading: true,
-      loadingError: null,
+      errors: { ...generateDataKeys(this.queries, '') },
+      ...generateDataKeys(this.queries, []),
     };
   },
-  apollo: {
-    pipelineStats: {
-      query() {
-        return this.query;
-      },
-      variables() {
-        return this.nameKeys.reduce((memo, key) => {
-          const firstKey = `${this.$options.firstKey}${convertToTitleCase(key)}`;
-          return { ...memo, [firstKey]: this.totalDaysToShow };
-        }, {});
-      },
-      update(data) {
-        const allData = extractValues(data, this.nameKeys, this.prefix, this.$options.dataKey);
-        const allPageInfo = extractValues(
-          data,
-          this.nameKeys,
-          this.prefix,
-          this.$options.pageInfoKey,
-        );
-
-        return {
-          ...mapValues(allData, sortByDate),
-          ...allPageInfo,
-        };
-      },
-      result() {
-        if (this.hasNextPage) {
-          this.fetchNextPage();
-        }
-      },
-      error() {
-        this.handleError();
-      },
-    },
-  },
   computed: {
-    nameKeys() {
-      return Object.keys(this.keyToNameMap);
+    errorMessages() {
+      return Object.values(this.errors);
     },
     isLoading() {
-      return this.$apollo.queries.pipelineStats.loading;
+      return some(this.$apollo.queries, query => query?.loading);
     },
-    totalDaysToShow() {
-      return getDayDifference(this.$options.startDate, this.$options.endDate);
+    allQueriesFailed() {
+      return every(this.errorMessages, message => message.length);
     },
-    firstVariables() {
-      const firstDataPoints = extractValues(
-        this.pipelineStats,
-        this.nameKeys,
-        this.$options.dataKey,
-        '[0].recordedAt',
-        { renameKey: this.$options.firstKey },
-      );
-
-      return Object.keys(firstDataPoints).reduce((memo, name) => {
-        const recordedAt = firstDataPoints[name];
-        if (!recordedAt) {
-          return { ...memo, [name]: 0 };
-        }
-
-        const numberOfDays = Math.max(
-          0,
-          getDayDifference(this.$options.startDate, new Date(recordedAt)),
-        );
-
-        return { ...memo, [name]: numberOfDays };
-      }, {});
+    hasLoadingErrors() {
+      return some(this.errorMessages, message => message.length);
     },
-    cursorVariables() {
-      return extractValues(
-        this.pipelineStats,
-        this.nameKeys,
-        this.$options.pageInfoKey,
-        'endCursor',
-      );
-    },
-    hasNextPage() {
-      return (
-        sum(Object.values(this.firstVariables)) > 0 &&
-        some(this.pipelineStats, ({ hasNextPage }) => hasNextPage)
-      );
+    errorMessage() {
+      // show the generic loading message if all requests fail
+      return this.allQueriesFailed ? this.loadChartErrorMessage : this.errorMessages.join('\n\n');
     },
     hasEmptyDataSet() {
       return this.chartData.every(({ data }) => data.length === 0);
     },
+    totalDaysToShow() {
+      return getDayDifference(this.$options.startDate, this.$options.endDate);
+    },
     chartData() {
       const options = { shouldRound: true };
-
-      return this.nameKeys.map(key => {
-        const dataKey = `${this.$options.dataKey}${convertToTitleCase(key)}`;
-        return {
-          name: this.keyToNameMap[key],
-          data: getAverageByMonth(this.pipelineStats?.[dataKey], options),
-        };
-      });
+      return this.queries.map(({ identifier, title }) => ({
+        name: title,
+        data: getAverageByMonth(this[identifier]?.nodes, options),
+      }));
     },
     range() {
       return {
@@ -188,26 +113,73 @@ export default {
       };
     },
   },
+  created() {
+    this.queries.forEach(({ query, identifier, loadError }) => {
+      this.$apollo.addSmartQuery(identifier, {
+        query,
+        variables() {
+          return {
+            identifier,
+            first: this.totalDaysToShow,
+            after: null,
+          };
+        },
+        update(data) {
+          const { nodes = [], pageInfo } = data[QUERY_DATA_KEY] || {};
+          return {
+            nodes,
+            pageInfo,
+          };
+        },
+        result() {
+          const { pageInfo, nodes } = this[identifier];
+          if (pageInfo?.hasNextPage && this.calculateDaysToFetch(getEarliestDate(nodes)) > 0) {
+            this.fetchNextPage({
+              query: this.$apollo.queries[identifier],
+              errorMessage: loadError,
+              pageInfo,
+              identifier,
+            });
+          }
+        },
+        error(error) {
+          this.handleError({
+            message: loadError,
+            identifier,
+            error,
+          });
+        },
+      });
+    });
+  },
   methods: {
-    handleError() {
-      this.loadingError = true;
+    calculateDaysToFetch(firstDataPointDate = null) {
+      return firstDataPointDate
+        ? Math.max(0, getDayDifference(this.$options.startDate, new Date(firstDataPointDate)))
+        : 0;
     },
-    fetchNextPage() {
-      this.$apollo.queries.pipelineStats
+    handleError({ identifier, error, message }) {
+      this.loadingError = true;
+      this.errors = { ...this.errors, [identifier]: message };
+      Sentry.captureException(error);
+    },
+    fetchNextPage({ query, pageInfo, identifier, errorMessage }) {
+      query
         .fetchMore({
           variables: {
-            ...this.firstVariables,
-            ...this.cursorVariables,
+            identifier,
+            first: this.calculateDaysToFetch(getEarliestDate(this[identifier].nodes)),
+            after: pageInfo.endCursor,
           },
           updateQuery: (previousResult, { fetchMoreResult }) => {
-            return Object.keys(fetchMoreResult).reduce((memo, key) => {
-              const { nodes, ...rest } = fetchMoreResult[key];
-              const previousNodes = previousResult[key].nodes;
-              return { ...memo, [key]: { ...rest, nodes: [...previousNodes, ...nodes] } };
-            }, {});
+            const { nodes, ...rest } = fetchMoreResult[QUERY_DATA_KEY];
+            const { nodes: previousNodes } = previousResult[QUERY_DATA_KEY];
+            return {
+              [QUERY_DATA_KEY]: { ...rest, nodes: [...previousNodes, ...nodes] },
+            };
           },
         })
-        .catch(this.handleError);
+        .catch(error => this.handleError({ identifier, error, message: errorMessage }));
     },
   },
 };
@@ -215,13 +187,20 @@ export default {
 <template>
   <div>
     <h3>{{ chartTitle }}</h3>
-    <gl-alert v-if="loadingError" variant="danger" :dismissible="false" class="gl-mt-3">
-      {{ loadChartErrorMessage }}
+    <gl-alert v-if="hasLoadingErrors" variant="danger" :dismissible="false" class="gl-mt-3">
+      {{ errorMessage }}
     </gl-alert>
-    <chart-skeleton-loader v-else-if="isLoading" />
-    <gl-alert v-else-if="hasEmptyDataSet" variant="info" :dismissible="false" class="gl-mt-3">
-      {{ noDataMessage }}
-    </gl-alert>
-    <gl-line-chart v-else :option="chartOptions" :include-legend-avg-max="true" :data="chartData" />
+    <div v-if="!allQueriesFailed">
+      <chart-skeleton-loader v-if="isLoading" />
+      <gl-alert v-else-if="hasEmptyDataSet" variant="info" :dismissible="false" class="gl-mt-3">
+        {{ noDataMessage }}
+      </gl-alert>
+      <gl-line-chart
+        v-else
+        :option="chartOptions"
+        :include-legend-avg-max="true"
+        :data="chartData"
+      />
+    </div>
   </div>
 </template>

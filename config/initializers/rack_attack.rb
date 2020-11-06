@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specs for this file can be found on:
 # * spec/lib/gitlab/throttle_spec.rb
 # * spec/requests/rack_attack_global_spec.rb
@@ -13,6 +15,13 @@ module Gitlab::Throttle
 
   def self.omnibus_protected_paths_present?
     Rack::Attack.throttles.key?('protected paths')
+  end
+
+  def self.bypass_header
+    env_value = ENV['GITLAB_THROTTLE_BYPASS_HEADER']
+    return unless env_value.present?
+
+    "HTTP_#{env_value.upcase.tr('-', '_')}"
   end
 
   def self.unauthenticated_options
@@ -110,6 +119,11 @@ class Rack::Attack
         Gitlab::Throttle.protected_paths_enabled?
       req.authenticated_user_id([:api, :rss, :ics])
     end
+  end
+
+  safelist('throttle_bypass_header') do |req|
+    Gitlab::Throttle.bypass_header.present? &&
+      req.get_header(Gitlab::Throttle.bypass_header) == '1'
   end
 
   class Request
