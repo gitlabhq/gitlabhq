@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedDropdown } from '@gitlab/ui';
+import { GlDropdown } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import Tracking from '~/tracking';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
@@ -17,7 +17,7 @@ const trackingLabel = 'quickstart_dropdown';
 
 export default {
   components: {
-    GlDeprecatedDropdown,
+    GlDropdown,
     CodeInstruction,
   },
   mixins: [Tracking.mixin({ label: trackingLabel })],
@@ -37,15 +37,14 @@ export default {
 };
 </script>
 <template>
-  <gl-deprecated-dropdown
+  <gl-dropdown
     :text="$options.i18n.QUICK_START"
-    variant="primary"
-    size="sm"
+    variant="info"
     right
     @shown="track('click_dropdown')"
   >
     <!-- This li is used as a container since gl-dropdown produces a root ul, this mimics the functionality exposed by b-dropdown-form -->
-    <li role="presentation" class="px-2 py-1 dropdown-menu-large">
+    <li role="presentation" class="px-2 py-1">
       <code-instruction
         :label="$options.i18n.LOGIN_COMMAND_LABEL"
         :instruction="dockerLoginCommand"
@@ -71,5 +70,5 @@ export default {
         :tracking-label="$options.trackingLabel"
       />
     </li>
-  </gl-deprecated-dropdown>
+  </gl-dropdown>
 </template>

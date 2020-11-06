@@ -2276,9 +2276,6 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-msgid "Adoption"
-msgstr ""
-
 msgid "Advanced"
 msgstr ""
 
@@ -9398,13 +9395,7 @@ msgstr ""
 msgid "Detect host keys"
 msgstr ""
 
-msgid "DevOps"
-msgstr ""
-
 msgid "DevOps Report"
-msgstr ""
-
-msgid "DevOps Score"
 msgstr ""
 
 msgid "DevopsAdoptionSegmentSelection|The maximum number of selections has been reached"
@@ -9423,6 +9414,18 @@ msgid "DevopsAdoption|Add new segment"
 msgstr ""
 
 msgid "DevopsAdoption|DevOps adoption uses segments to track adoption across key features. Segments are a way to track multiple related projects and groups at once. For example, you could create a segment for the engineering department or a particular product team."
+msgstr ""
+
+msgid "DevopsReport|Adoption"
+msgstr ""
+
+msgid "DevopsReport|DevOps"
+msgstr ""
+
+msgid "DevopsReport|DevOps Score"
+msgstr ""
+
+msgid "DevopsReport|Score"
 msgstr ""
 
 msgid "Diff content limits"
@@ -23462,9 +23465,6 @@ msgid "Scopes can't be blank"
 msgstr ""
 
 msgid "Scopes: %{scope_list}"
-msgstr ""
-
-msgid "Score"
 msgstr ""
 
 msgid "Scroll down"

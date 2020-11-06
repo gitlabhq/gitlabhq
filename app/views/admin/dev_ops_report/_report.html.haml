@@ -13,9 +13,9 @@
       %h2.devops-header-title{ class: "devops-#{score_level(@metric.average_percentage_score)}-score" }
         = number_to_percentage(@metric.average_percentage_score, precision: 1)
       .devops-header-subtitle
-        = _('DevOps')
+        = s_('DevopsReport|DevOps')
         %br
-        = _('Score')
+        = s_('DevopsReport|Score')
         = link_to sprite_icon('question-o', css_class: 'devops-header-icon'), help_page_path('user/admin_area/analytics/dev_ops_report')
 
     .devops-cards.board-card-container

@@ -8,9 +8,10 @@ type: reference, howto
 # Web API Fuzz Testing **(ULTIMATE)**
 
 You can add web API fuzzing to your [GitLab CI/CD](../../../ci/README.md)
-pipelines. This helps you discover bugs and potential security issues that other QA processes may miss.
-API fuzzing performs fuzz testing of API operation parameters.
-Fuzz testing sets operation parameters to unexpected values in an effort to cause unexpected behavior and errors in the API backend.
+pipelines. This helps you discover bugs and potential security issues that other QA processes may
+miss. API fuzzing performs fuzz testing of API operation parameters. Fuzz testing sets operation
+parameters to unexpected values in an effort to cause unexpected behavior and errors in the API
+backend.
 
 We recommend that you use fuzz testing in addition to [GitLab Secure](../index.md)'s
 other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/README.md),
@@ -61,7 +62,7 @@ Examples of both configurations can be found here:
 
 - [Example OpenAPI v2 specification project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/openapi)
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/har)
-- [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/postman-collection/)
+- [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/postman-api-fuzzing-example)
 
 ### OpenAPI Specification
 

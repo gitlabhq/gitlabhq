@@ -24,10 +24,14 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   # class_name - The class name of the background migration to run.
   # arguments - The arguments to pass to the migration class.
   # lease_attempts - The number of times we will try to obtain an exclusive
-  #   lease on the class before running anyway.  Pass 0 to always run.
+  #   lease on the class before giving up. See MR for more discussion.
+  #   https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45298#note_434304956
   def perform(class_name, arguments = [], lease_attempts = 5)
     with_context(caller_id: class_name.to_s) do
-      should_perform, ttl = perform_and_ttl(class_name)
+      attempts_left = lease_attempts - 1
+      should_perform, ttl = perform_and_ttl(class_name, attempts_left)
+
+      break if should_perform.nil?
 
       if should_perform
         Gitlab::BackgroundMigration.perform(class_name, arguments)
@@ -37,32 +41,39 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
         # we'll reschedule the job in such a way that it is picked up again around
         # the time the lease expires.
         self.class
-          .perform_in(ttl || self.class.minimum_interval, class_name, arguments)
+          .perform_in(ttl || self.class.minimum_interval, class_name, arguments, attempts_left)
       end
     end
   end
 
-  def perform_and_ttl(class_name)
-    if always_perform?
-      # In test environments `perform_in` will run right away. This can then
-      # lead to stack level errors in the above `#perform`. To work around this
-      # we'll just perform the migration right away in the test environment.
-      [true, nil]
-    else
-      lease = lease_for(class_name)
-      perform = !!lease.try_obtain
+  def perform_and_ttl(class_name, attempts_left)
+    # In test environments `perform_in` will run right away. This can then
+    # lead to stack level errors in the above `#perform`. To work around this
+    # we'll just perform the migration right away in the test environment.
+    return [true, nil] if always_perform?
 
-      # If we managed to acquire the lease but the DB is not healthy, then we
-      # want to simply reschedule our job and try again _after_ the lease
-      # expires.
-      if perform && !healthy_database?
-        database_unhealthy_counter.increment
+    lease = lease_for(class_name)
+    lease_obtained = !!lease.try_obtain
+    healthy_db = healthy_database?
+    perform = lease_obtained && healthy_db
 
-        perform = false
-      end
+    database_unhealthy_counter.increment if lease_obtained && !healthy_db
 
-      [perform, lease.ttl]
+    # If we've tried several times to get a lease with a healthy DB without success, just give up.
+    # Otherwise we could end up in an infinite rescheduling loop.
+    if !perform && attempts_left < 0
+      msg = if !lease_obtained
+              'Job could not get an exclusive lease after several tries. Giving up.'
+            else
+              'Database was unhealthy after several tries. Giving up.'
+            end
+
+      Sidekiq.logger.warn(class: class_name, message: msg, job_id: jid)
+
+      return [nil, nil]
     end
+
+    [perform, lease.ttl]
   end
 
   def lease_for(class_name)

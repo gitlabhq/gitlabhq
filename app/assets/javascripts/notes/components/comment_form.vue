@@ -343,7 +343,7 @@ export default {
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
         <div class="flash-container error-alert timeline-content"></div>
-        <div class="timeline-icon d-none d-sm-none d-md-block">
+        <div class="timeline-icon d-none d-md-block">
           <user-avatar-link
             v-if="author"
             :link-href="author.path"

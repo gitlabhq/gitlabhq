@@ -40,39 +40,13 @@ If you see a **Revoke** button, you can revoke that user's PAT. Whether you see 
 | Revoked     | Yes                    | No                 | Not applicable; token is already revoked                                   |
 | Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |
 
+When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
+
 ## Delete a user's SSH key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
 
 You can **Delete** a user's SSH key by navigating to the credentials inventory's SSH Keys tab.
+The instance then notifies the user.
 
 ![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v13_5.png)
-
-## Revocation or deletion notification
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250354) in GitLab 13.6.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-revocation-or-deletion-notification).
-
-CAUTION: **Warning:**
-This feature might not be available to you. Check the **version history** note above for details.
-
-### Enable or disable revocation or deletion notification **(ULTIMATE ONLY)**
-
-Revocation or deletion notification is under development and not ready for production use. It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:credentials_inventory_revocation_emails)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:credentials_inventory_revocation_emails)
-```
