@@ -133,6 +133,9 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
+   DANGER: **Warning:**
+   In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the secondary is paused fails. Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting. This issue has been fixed in GitLab 13.4 or later.
+
    CAUTION: **Caution:**
    If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
    a point-in-time recovery to the last known state.
@@ -166,6 +169,9 @@ The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
 conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
+
+DANGER: **Warning:**
+In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the secondary is paused fails. Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting. This issue has been fixed in GitLab 13.4 or later.
 
 CAUTION: **Caution:**
    If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs

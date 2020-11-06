@@ -320,7 +320,7 @@ services:
      command: ["--registry-mirror", "https://registry-mirror.example.com"] # Specify the registry mirror to use.
 ```
 
-#### DinD service defined inside of GitLab Runner configuration
+##### DinD service defined inside of GitLab Runner configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
 

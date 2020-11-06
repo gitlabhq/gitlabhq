@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       itemsToBeDeleted: [],
-      isDesktop: true,
+      isMobile: false,
       deleteAlertType: null,
       dismissPartialCleanupWarning: false,
     };
@@ -110,7 +110,7 @@ export default {
       }
     },
     handleResize() {
-      this.isDesktop = GlBreakpointInstance.isDesktop();
+      this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
   },
 };
@@ -137,7 +137,7 @@ export default {
     <tags-loader v-if="isLoading" />
     <template v-else>
       <empty-tags-state v-if="tags.length === 0" :no-containers-image="config.noContainersImage" />
-      <tags-list v-else :tags="tags" :is-desktop="isDesktop" @delete="deleteTags" />
+      <tags-list v-else :tags="tags" :is-mobile="isMobile" @delete="deleteTags" />
     </template>
 
     <gl-pagination

@@ -423,7 +423,7 @@
                   = link_to project_settings_ci_cd_path(@project), title: _('CI / CD') do
                     %span
                       = _('CI / CD')
-              - if !@project.archived? && settings_operations_available?
+              - if settings_operations_available?
                 = nav_link(controller: [:operations]) do
                   = link_to project_settings_operations_path(@project), title: _('Operations'), data: { qa_selector: 'operations_settings_link' } do
                     = _('Operations')

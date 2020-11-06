@@ -1,5 +1,4 @@
 <script>
-import produce from 'immer';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
@@ -9,12 +8,17 @@ import createHttpIntegrationMutation from '../graphql/mutations/create_http_inte
 import createPrometheusIntegrationMutation from '../graphql/mutations/create_prometheus_integration.mutation.graphql';
 import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
 import updatePrometheusIntegrationMutation from '../graphql/mutations/update_prometheus_integration.mutation.graphql';
+import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
 import IntegrationsList from './alerts_integrations_list.vue';
 import SettingsFormOld from './alerts_settings_form_old.vue';
 import SettingsFormNew from './alerts_settings_form_new.vue';
 import { typeSet } from '../constants';
+import {
+  updateStoreAfterIntegrationDelete,
+  updateStoreAfterIntegrationAdd,
+} from '../utils/cache_updates';
 
 export default {
   typeSet,
@@ -22,6 +26,7 @@ export default {
     changesSaved: s__(
       'AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list.',
     ),
+    integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
   },
   components: {
     IntegrationsList,
@@ -89,6 +94,8 @@ export default {
   },
   methods: {
     createNewIntegration({ type, variables }) {
+      const { projectPath } = this;
+
       this.isUpdating = true;
       this.$apollo
         .mutate({
@@ -98,9 +105,11 @@ export default {
               : createPrometheusIntegrationMutation,
           variables: {
             ...variables,
-            projectPath: this.projectPath,
+            projectPath,
           },
-          update: this.updateIntegrations,
+          update(store, { data }) {
+            updateStoreAfterIntegrationAdd(store, getIntegrationsQuery, data, { projectPath });
+          },
         })
         .then(({ data: { httpIntegrationCreate, prometheusIntegrationCreate } = {} } = {}) => {
           const error = httpIntegrationCreate?.errors[0] || prometheusIntegrationCreate?.errors[0];
@@ -118,41 +127,6 @@ export default {
         .finally(() => {
           this.isUpdating = false;
         });
-    },
-    updateIntegrations(
-      store,
-      {
-        data: { httpIntegrationCreate, prometheusIntegrationCreate },
-      },
-    ) {
-      const integration =
-        httpIntegrationCreate?.integration || prometheusIntegrationCreate?.integration;
-      if (!integration) {
-        return;
-      }
-
-      const sourceData = store.readQuery({
-        query: getIntegrationsQuery,
-        variables: {
-          projectPath: this.projectPath,
-        },
-      });
-
-      const data = produce(sourceData, draftData => {
-        // eslint-disable-next-line no-param-reassign
-        draftData.project.alertManagementIntegrations.nodes = [
-          integration,
-          ...draftData.project.alertManagementIntegrations.nodes,
-        ];
-      });
-
-      store.writeQuery({
-        query: getIntegrationsQuery,
-        variables: {
-          projectPath: this.projectPath,
-        },
-        data,
-      });
     },
     updateIntegration({ type, variables }) {
       this.isUpdating = true;
@@ -201,6 +175,12 @@ export default {
             if (error) {
               return createFlash({ message: error });
             }
+
+            const integration =
+              httpIntegrationResetToken?.integration ||
+              prometheusIntegrationResetToken?.integration;
+            this.currentIntegration = integration;
+
             return createFlash({
               message: this.$options.i18n.changesSaved,
               type: FLASH_TYPES.SUCCESS,
@@ -217,8 +197,41 @@ export default {
     editIntegration({ id }) {
       this.currentIntegration = this.integrations.list.find(integration => integration.id === id);
     },
-    deleteIntegration() {
-      // TODO, handle delete via GraphQL
+    deleteIntegration({ id }) {
+      const { projectPath } = this;
+
+      this.isUpdating = true;
+      this.$apollo
+        .mutate({
+          mutation: destroyHttpIntegrationMutation,
+          variables: {
+            id,
+          },
+          update(store, { data }) {
+            updateStoreAfterIntegrationDelete(store, getIntegrationsQuery, data, { projectPath });
+          },
+        })
+        .then(({ data: { httpIntegrationDestroy } = {} } = {}) => {
+          const error = httpIntegrationDestroy?.errors[0];
+          if (error) {
+            return createFlash({ message: error });
+          }
+          this.currentIntegration = null;
+          return createFlash({
+            message: this.$options.i18n.integrationRemoved,
+            type: FLASH_TYPES.SUCCESS,
+          });
+        })
+        .catch(err => {
+          this.errored = true;
+          createFlash({ message: err });
+        })
+        .finally(() => {
+          this.isUpdating = false;
+        });
+    },
+    clearCurrentIntegration() {
+      this.currentIntegration = null;
     },
   },
 };
@@ -239,6 +252,7 @@ export default {
       @create-new-integration="createNewIntegration"
       @update-integration="updateIntegration"
       @reset-token="resetToken"
+      @clear-current-integration="clearCurrentIntegration"
     />
     <settings-form-old v-else />
   </div>

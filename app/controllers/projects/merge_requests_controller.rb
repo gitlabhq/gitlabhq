@@ -318,8 +318,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def export_csv
-    return render_404 unless Feature.enabled?(:export_merge_requests_as_csv, project, default_enabled: true)
-
     IssuableExportCsvWorker.perform_async(:merge_request, current_user.id, project.id, finder_options.to_h) # rubocop:disable CodeReuse/Worker
 
     index_path = project_merge_requests_path(project)

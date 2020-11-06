@@ -124,7 +124,7 @@ describe('Details Page', () => {
 
     it('has the correct props bound', () => {
       expect(findTagsList().props()).toMatchObject({
-        isDesktop: true,
+        isMobile: false,
         tags: store.state.tags,
       });
     });

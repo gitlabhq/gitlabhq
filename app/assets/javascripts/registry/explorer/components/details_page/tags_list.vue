@@ -14,9 +14,9 @@ export default {
       required: false,
       default: () => [],
     },
-    isDesktop: {
+    isMobile: {
       type: Boolean,
-      default: false,
+      default: true,
       required: false,
     },
   },
@@ -34,7 +34,7 @@ export default {
       return this.tags.some(tag => this.selectedItems[tag.name]);
     },
     showMultiDeleteButton() {
-      return this.tags.some(tag => tag.destroy_path) && this.isDesktop;
+      return this.tags.some(tag => tag.destroy_path) && !this.isMobile;
     },
   },
   methods: {
@@ -68,7 +68,7 @@ export default {
       :tag="tag"
       :first="index === 0"
       :selected="selectedItems[tag.name]"
-      :is-desktop="isDesktop"
+      :is-mobile="isMobile"
       @select="updateSelectedItems(tag.name)"
       @delete="$emit('delete', { [tag.name]: true })"
     />

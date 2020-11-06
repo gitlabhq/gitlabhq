@@ -234,23 +234,23 @@ There are also two edge cases worth mentioning:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29654) in GitLab 12.5
 
-The top-level `workflow:` key applies to the entirety of a pipeline, and
-determines whether or not a pipeline is created. It accepts a single
-`rules:` key that operates similarly to [`rules:` defined within jobs](#rules),
-enabling dynamic configuration of the pipeline.
+The top-level `workflow:` keyword determines whether or not a pipeline is created.
+It accepts a single `rules:` keyword that is similar to [`rules:` defined within jobs](#rules).
+Use it to define what can trigger a new pipeline.
 
-If you are new to GitLab CI/CD and `workflow: rules`, you may find the [`workflow:rules` templates](#workflowrules-templates) useful.
+You can use the [`workflow:rules` templates](#workflowrules-templates) to import
+a preconfigured `workflow: rules` entry.
 
-To define your own `workflow: rules`, the available configuration options are:
+`workflow: rules` accepts these keywords:
 
-- [`if`](#rulesif): Define a rule.
-- [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
+- [`if`](#rulesif): Check this rule to determine when to run a pipeline.
+- [`when`](#when): Specify what to do when the `if` rule evaluates to true. 
+  - To run a pipeline, set to `always`.
+  - To prevent pipelines from running, set to `never`.
 
-If a pipeline attempts to run but matches no rule, it's dropped and doesn't run.
+When no rules evaluate to true, the pipeline does not run.
 
-Use the example rules below exactly as written to allow pipelines that match the rule
-to run. Add `when: never` to prevent pipelines that match the rule from running. See
-the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more examples.
+Some example `if` clauses for `workflow: rules`:
 
 | Example rules                                        | Details                                                   |
 |------------------------------------------------------|-----------------------------------------------------------|
@@ -259,9 +259,12 @@ the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more exa
 | `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run.                           |
 | `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run.                        |
 
+See the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more examples.
+
 For example, in the following configuration, pipelines run for all `push` events (changes to
-branches and new tags). Only push events with `-wip` in the commit message are excluded. Scheduled
-pipelines and merge request pipelines don't run, as there's no rule allowing them.
+branches and new tags). Pipelines for push events with `-wip` in the commit message
+don't run, because they are set to `when: never`. Pipelines for schedules or merge requests
+don't run either, because no rules evaluate to true for them:
 
 ```yaml
 workflow:
@@ -271,11 +274,11 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "push"'
 ```
 
-This example has strict rules, and no other pipelines can run.
+This example has strict rules, and pipelines do **not** run in any other case.
 
-Alternatively, you can have loose rules by using only `when: never` rules, followed
-by a final `when: always` rule. This allows all types of pipelines, except for any
-that match the `when: never` rules:
+Alternatively, all of the rules can be `when: never`, with a final
+`when: always` rule. Pipelines that match the `when: never` rules do not run.
+All other pipeline types run:
 
 ```yaml
 workflow:
@@ -287,12 +290,13 @@ workflow:
     - when: always
 ```
 
-This example never allows pipelines for schedules or `push` (branches and tags) pipelines,
-but does allow pipelines in **all** other cases, *including* merge request pipelines.
+This example prevents pipelines for schedules or `push` (branches and tags) pipelines.
+The final `when: always` rule lets all other pipeline types run, **including** merge
+request pipelines.
 
-Be careful not to use a configuration that might run
-merge request pipelines and branch pipelines at the same time. As with `rules` defined in jobs,
-it can cause [duplicate pipelines](#prevent-duplicate-pipelines).
+Be careful not to have rules that match both branch pipelines
+and merge request pipelines. Similar to `rules` defined in jobs, this can cause
+[duplicate pipelines](#prevent-duplicate-pipelines).
 
 #### `workflow:rules` templates
 

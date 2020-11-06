@@ -1,7 +1,0 @@
----
-name: export_merge_requests_as_csv
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45130
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267129
-type: development
-group: group::compliance
-default_enabled: true

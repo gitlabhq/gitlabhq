@@ -302,7 +302,7 @@ module ProjectsHelper
   end
 
   def settings_operations_available?
-    can?(current_user, :read_environment, @project)
+    !@project.archived? && can?(current_user, :admin_operations, @project)
   end
 
   def error_tracking_setting_project_json

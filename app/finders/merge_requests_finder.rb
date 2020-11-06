@@ -164,13 +164,6 @@ class MergeRequestsFinder < IssuableFinder
   end
   # rubocop: enable CodeReuse/Finder
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def items_assigned_to(items, user)
-    assignee_or_reviewer = MergeRequest.from_union([super, items.reviewer_assigned_to(user)])
-    items.where(id: assignee_or_reviewer)
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   def by_deployments(items)
     env = params[:environment]
     before = params[:deployed_before]
