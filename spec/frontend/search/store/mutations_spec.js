@@ -35,4 +35,14 @@ describe('Global Search Store Mutations', () => {
       expect(state.groups).toEqual([]);
     });
   });
+
+  describe('SET_QUERY', () => {
+    const payload = { key: 'key1', value: 'value1' };
+
+    it('sets query key to value', () => {
+      mutations[types.SET_QUERY](state, payload);
+
+      expect(state.query[payload.key]).toBe(payload.value);
+    });
+  });
 });

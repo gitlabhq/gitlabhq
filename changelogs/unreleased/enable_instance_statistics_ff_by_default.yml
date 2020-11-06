@@ -1,0 +1,5 @@
+---
+title: Enable 'instance_statistics' feature flag by default
+merge_request: 46962
+author:
+type: changed

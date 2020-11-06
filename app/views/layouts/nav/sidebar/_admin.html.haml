@@ -69,7 +69,7 @@
             = link_to admin_cohorts_path, title: _('Cohorts') do
               %span
                 = _('Cohorts')
-          - if Feature.enabled?(:instance_statistics)
+          - if Feature.enabled?(:instance_statistics, default_enabled: true)
             = nav_link(controller: :instance_statistics) do
               = link_to admin_instance_statistics_path, title: _('Instance Statistics') do
                 %span

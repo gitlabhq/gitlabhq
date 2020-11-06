@@ -12,4 +12,7 @@ export default {
     state.fetchingGroups = false;
     state.groups = [];
   },
+  [types.SET_QUERY](state, { key, value }) {
+    state.query[key] = value;
+  },
 };

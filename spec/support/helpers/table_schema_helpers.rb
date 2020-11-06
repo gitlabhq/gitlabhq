@@ -24,6 +24,14 @@ module TableSchemaHelpers
     expect(index_exists_by_name(name, schema: schema)).to be_nil
   end
 
+  def expect_primary_keys_after_tables(tables, schema: nil)
+    tables.each do |table|
+      primary_key = primary_key_constraint_name(table, schema: schema)
+
+      expect(primary_key).to eq("#{table}_pkey")
+    end
+  end
+
   def table_oid(name)
     connection.select_value(<<~SQL)
       SELECT oid
@@ -75,13 +83,15 @@ module TableSchemaHelpers
     SQL
   end
 
-  def primary_key_constraint_name(table_name)
+  def primary_key_constraint_name(table_name, schema: nil)
+    table_name = schema ? "#{schema}.#{table_name}" : table_name
+
     connection.select_value(<<~SQL)
       SELECT
         conname AS constraint_name
       FROM pg_catalog.pg_constraint
-      WHERE conrelid = '#{table_name}'::regclass
-        AND contype = 'p'
+      WHERE pg_constraint.conrelid = '#{table_name}'::regclass
+        AND pg_constraint.contype = 'p'
     SQL
   end
 

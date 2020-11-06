@@ -179,7 +179,8 @@ module Gitlab
         # Replaces a non-partitioned table with its partitioned copy. This is the final step in a partitioning
         # migration, which makes the partitioned table ready for use by the application. The partitioned copy should be
         # replaced with the original table in such a way that it appears seamless to any database clients. The replaced
-        # table will be renamed to "#{replaced_table}_archived"
+        # table will be renamed to "#{replaced_table}_archived". Partitions and primary key constraints will also be
+        # renamed to match the naming scheme of the parent table.
         #
         # **NOTE** This method should only be used after all other migration steps have completed successfully.
         # There are several limitations to this method that MUST be handled before, or during, the swap migration:
@@ -415,7 +416,7 @@ module Gitlab
         end
 
         def replace_table(original_table_name, replacement_table_name, replaced_table_name, primary_key_name)
-          replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(original_table_name,
+          replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(original_table_name.to_s,
               replacement_table_name, replaced_table_name, primary_key_name)
 
           with_lock_retries do

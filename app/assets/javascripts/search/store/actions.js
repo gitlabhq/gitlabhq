@@ -14,3 +14,7 @@ export const fetchGroups = ({ commit }, search) => {
       commit(types.RECEIVE_GROUPS_ERROR);
     });
 };
+
+export const setQuery = ({ commit }, { key, value }) => {
+  commit(types.SET_QUERY, { key, value });
+};

@@ -36,22 +36,3 @@ in the categories shown in [Total counts](#total-counts).
 These charts help you visualize how rapidly these records are being created on your instance.
 
 ![Instance Activity Pipelines chart](img/instance_activity_pipelines_chart_v13_6.png)
-
-### Enable or disable Instance Statistics
-
-Instance Statistics is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:instance_statistics)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:instance_statistics)
-```

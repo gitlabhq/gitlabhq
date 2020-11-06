@@ -30,9 +30,6 @@ RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform' do
         created_at timestamptz NOT NULL,
         PRIMARY KEY (id, created_at))
         PARTITION BY RANGE (created_at);
-
-      CREATE TABLE #{replacement_table}_202001 PARTITION OF #{replacement_table}
-      FOR VALUES FROM ('2020-01-01') TO ('2020-02-01');
     SQL
   end
 
@@ -56,13 +53,58 @@ RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform' do
   end
 
   it 'renames the primary key constraints to match the new table names' do
-    expect(primary_key_constraint_name(original_table)).to eq(original_primary_key)
-    expect(primary_key_constraint_name(replacement_table)).to eq(replacement_primary_key)
+    expect_primary_keys_after_tables([original_table, replacement_table])
 
     expect_table_to_be_replaced { replace_table }
 
-    expect(primary_key_constraint_name(original_table)).to eq(original_primary_key)
-    expect(primary_key_constraint_name(archived_table)).to eq(archived_primary_key)
+    expect_primary_keys_after_tables([original_table, archived_table])
+  end
+
+  context 'when the table has partitions' do
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE gitlab_partitions_dynamic.#{replacement_table}_202001 PARTITION OF #{replacement_table}
+        FOR VALUES FROM ('2020-01-01') TO ('2020-02-01');
+
+        CREATE TABLE gitlab_partitions_dynamic.#{replacement_table}_202002 PARTITION OF #{replacement_table}
+        FOR VALUES FROM ('2020-02-01') TO ('2020-03-01');
+      SQL
+    end
+
+    it 'renames the partitions to match the new table name' do
+      expect(partitions_for_parent_table(original_table).count).to eq(0)
+      expect(partitions_for_parent_table(replacement_table).count).to eq(2)
+
+      expect_table_to_be_replaced { replace_table }
+
+      expect(partitions_for_parent_table(archived_table).count).to eq(0)
+
+      partitions = partitions_for_parent_table(original_table).all
+
+      expect(partitions.size).to eq(2)
+
+      expect(partitions[0]).to have_attributes(
+        identifier: "gitlab_partitions_dynamic.#{original_table}_202001",
+        condition: "FOR VALUES FROM ('2020-01-01 00:00:00+00') TO ('2020-02-01 00:00:00+00')")
+
+      expect(partitions[1]).to have_attributes(
+        identifier: "gitlab_partitions_dynamic.#{original_table}_202002",
+        condition: "FOR VALUES FROM ('2020-02-01 00:00:00+00') TO ('2020-03-01 00:00:00+00')")
+    end
+
+    it 'renames the primary key constraints to match the new partition names' do
+      original_partitions = ["#{replacement_table}_202001", "#{replacement_table}_202002"]
+      expect_primary_keys_after_tables(original_partitions, schema: 'gitlab_partitions_dynamic')
+
+      expect_table_to_be_replaced { replace_table }
+
+      renamed_partitions = ["#{original_table}_202001", "#{original_table}_202002"]
+      expect_primary_keys_after_tables(renamed_partitions, schema: 'gitlab_partitions_dynamic')
+    end
+  end
+
+  def partitions_for_parent_table(table)
+    Gitlab::Database::PostgresPartition.for_parent_table(table)
   end
 
   def expect_table_to_be_replaced(&block)

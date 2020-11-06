@@ -43,3 +43,11 @@ describe('Global Search Store Actions', () => {
     });
   });
 });
+
+describe('setQuery', () => {
+  const payload = { key: 'key1', value: 'value1' };
+
+  it('calls the SET_QUERY mutation', done => {
+    testAction(actions.setQuery, payload, state, [{ type: types.SET_QUERY, payload }], [], done);
+  });
+});

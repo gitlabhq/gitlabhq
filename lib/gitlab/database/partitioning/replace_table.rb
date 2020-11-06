@@ -43,38 +43,70 @@ module Gitlab
         end
 
         def sql_to_replace_table
-          @sql_to_replace_table ||= [
-            drop_default_sql(original_table, primary_key_column),
-            set_default_sql(replacement_table, primary_key_column, "nextval('#{quote_table_name(sequence)}'::regclass)"),
-
-            change_sequence_owner_sql(sequence, replacement_table, primary_key_column),
-
-            rename_table_sql(original_table, replaced_table),
-            rename_constraint_sql(replaced_table, original_primary_key, replaced_primary_key),
-
-            rename_table_sql(replacement_table, original_table),
-            rename_constraint_sql(original_table, replacement_primary_key, original_primary_key)
-          ].join(DELIMITER)
+          @sql_to_replace_table ||= combined_sql_statements.map(&:chomp).join(DELIMITER)
         end
 
-        def drop_default_sql(table, column)
-          "ALTER TABLE #{quote_table_name(table)} ALTER COLUMN #{quote_column_name(column)} DROP DEFAULT"
+        def combined_sql_statements
+          statements = []
+
+          statements << alter_column_default(original_table, primary_key_column, expression: nil)
+          statements << alter_column_default(replacement_table, primary_key_column,
+              expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
+
+          statements << alter_sequence_owned_by(sequence, replacement_table, primary_key_column)
+
+          rename_table_objects(statements, original_table, replaced_table, original_primary_key, replaced_primary_key)
+          rename_table_objects(statements, replacement_table, original_table, replacement_primary_key, original_primary_key)
+
+          statements
         end
 
-        def set_default_sql(table, column, expression)
-          "ALTER TABLE #{quote_table_name(table)} ALTER COLUMN #{quote_column_name(column)} SET DEFAULT #{expression}"
+        def rename_table_objects(statements, old_table, new_table, old_primary_key, new_primary_key)
+          statements << rename_table(old_table, new_table)
+          statements << rename_constraint(new_table, old_primary_key, new_primary_key)
+
+          rename_partitions(statements, old_table, new_table)
         end
 
-        def change_sequence_owner_sql(sequence, table, column)
-          "ALTER SEQUENCE #{quote_table_name(sequence)} OWNED BY #{quote_table_name(table)}.#{quote_column_name(column)}"
+        def rename_partitions(statements, old_table_name, new_table_name)
+          Gitlab::Database::PostgresPartition.for_parent_table(old_table_name).each do |partition|
+            new_partition_name = partition.name.sub(/#{old_table_name}/, new_table_name)
+            old_primary_key = default_primary_key(partition.name)
+            new_primary_key = default_primary_key(new_partition_name)
+
+            statements << rename_constraint(partition.identifier, old_primary_key, new_primary_key)
+            statements << rename_table(partition.identifier, new_partition_name)
+          end
         end
 
-        def rename_table_sql(old_name, new_name)
-          "ALTER TABLE #{quote_table_name(old_name)} RENAME TO #{quote_table_name(new_name)}"
+        def alter_column_default(table_name, column_name, expression:)
+          default_clause = expression.nil? ? 'DROP DEFAULT' : "SET DEFAULT #{expression}"
+
+          <<~SQL
+            ALTER TABLE #{quote_table_name(table_name)}
+            ALTER COLUMN #{quote_column_name(column_name)} #{default_clause}
+          SQL
         end
 
-        def rename_constraint_sql(table, old_name, new_name)
-          "ALTER TABLE #{quote_table_name(table)} RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}"
+        def alter_sequence_owned_by(sequence_name, table_name, column_name)
+          <<~SQL
+            ALTER SEQUENCE #{quote_table_name(sequence_name)}
+            OWNED BY #{quote_table_name(table_name)}.#{quote_column_name(column_name)}
+          SQL
+        end
+
+        def rename_table(old_name, new_name)
+          <<~SQL
+            ALTER TABLE #{quote_table_name(old_name)}
+            RENAME TO #{quote_table_name(new_name)}
+          SQL
+        end
+
+        def rename_constraint(table_name, old_name, new_name)
+          <<~SQL
+            ALTER TABLE #{quote_table_name(table_name)}
+            RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}
+          SQL
         end
       end
     end
