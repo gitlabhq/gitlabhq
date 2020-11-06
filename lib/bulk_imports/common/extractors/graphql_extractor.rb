@@ -14,11 +14,9 @@ module BulkImports
           @context = context
 
           Enumerator.new do |yielder|
-            context.entities.each do |entity|
-              result = graphql_client.execute(parsed_query, query_variables(entity))
+            result = graphql_client.execute(parsed_query, query_variables(context.entity))
 
-              yielder << result.original_hash.deep_dup
-            end
+            yielder << result.original_hash.deep_dup
           end
         end
 

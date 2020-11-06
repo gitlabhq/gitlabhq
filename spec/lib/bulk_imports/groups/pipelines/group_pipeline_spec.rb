@@ -7,20 +7,18 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
     let(:user) { create(:user) }
     let(:parent) { create(:group) }
     let(:entity) do
-      instance_double(
-        BulkImports::Entity,
+      create(
+        :bulk_import_entity,
         source_full_path: 'source/full/path',
         destination_name: 'My Destination Group',
         destination_namespace: parent.full_path
       )
     end
 
-    let(:entities) { [entity] }
     let(:context) do
-      instance_double(
-        BulkImports::Pipeline::Context,
+      BulkImports::Pipeline::Context.new(
         current_user: user,
-        entities: entities
+        entity: entity
       )
     end
 

@@ -8,40 +8,49 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   let(:bulk_import_entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
   let(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
   let(:context) do
-    instance_double(
-      BulkImports::Pipeline::Context,
+    BulkImports::Pipeline::Context.new(
       current_user: user,
-      entities: [bulk_import_entity],
+      entity: bulk_import_entity,
       configuration: bulk_import_configuration
     )
   end
 
-  subject { described_class.new(bulk_import_entity.id) }
+  subject { described_class.new(bulk_import_entity) }
+
+  before do
+    allow(BulkImports::Pipeline::Context).to receive(:new).and_return(context)
+    stub_http_requests
+  end
 
   describe '#execute' do
-    before do
-      allow(BulkImports::Pipeline::Context).to receive(:new).and_return(context)
+    it "starts the entity and run its pipelines" do
+      expect(bulk_import_entity).to receive(:start).and_call_original
+      expect_to_run_pipeline BulkImports::Groups::Pipelines::GroupPipeline, context: context
+      expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context
+
+      subject.execute
+
+      expect(bulk_import_entity.reload).to be_finished
     end
+  end
 
-    context 'when import entity does not have parent' do
-      it 'executes GroupPipeline' do
-        expect_next_instance_of(BulkImports::Groups::Pipelines::GroupPipeline) do |pipeline|
-          expect(pipeline).to receive(:run).with(context)
-        end
-
-        subject.execute
-      end
+  def expect_to_run_pipeline(klass, context:)
+    expect_next_instance_of(klass) do |pipeline|
+      expect(pipeline).to receive(:run).with(context)
     end
+  end
 
-    context 'when import entity has parent' do
-      let(:bulk_import_entity_parent) { create(:bulk_import_entity, bulk_import: bulk_import) }
-      let(:bulk_import_entity) { create(:bulk_import_entity, bulk_import: bulk_import, parent: bulk_import_entity_parent) }
+  def stub_http_requests
+    double_response = double(
+      code: 200,
+      success?: true,
+      parsed_response: {},
+      headers: {}
+    )
 
-      it 'does not execute GroupPipeline' do
-        expect(BulkImports::Groups::Pipelines::GroupPipeline).not_to receive(:new)
-
-        subject.execute
-      end
+    allow_next_instance_of(BulkImports::Clients::Http) do |client|
+      allow(client).to receive(:get).and_return(double_response)
+      allow(client).to receive(:post).and_return(double_response)
     end
   end
 end

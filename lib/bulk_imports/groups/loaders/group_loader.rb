@@ -11,7 +11,11 @@ module BulkImports
         def load(context, data)
           return unless user_can_create_group?(context.current_user, data)
 
-          ::Groups::CreateService.new(context.current_user, data).execute
+          group = ::Groups::CreateService.new(context.current_user, data).execute
+
+          context.entity.update!(group: group)
+
+          group
         end
 
         private

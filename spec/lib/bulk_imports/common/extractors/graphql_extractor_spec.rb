@@ -10,7 +10,7 @@ RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor do
   let(:context) do
     instance_double(
       BulkImports::Pipeline::Context,
-      entities: [import_entity]
+      entity: import_entity
     )
   end
 

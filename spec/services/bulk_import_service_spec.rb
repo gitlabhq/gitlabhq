@@ -43,14 +43,6 @@ RSpec.describe BulkImportService do
       expect { subject.execute }.to change { BulkImports::Configuration.count }.by(1)
     end
 
-    it 'updates bulk import state' do
-      expect_next_instance_of(BulkImport) do |bulk_import|
-        expect(bulk_import).to receive(:start!)
-      end
-
-      subject.execute
-    end
-
     it 'enqueues BulkImportWorker' do
       expect(BulkImportWorker).to receive(:perform_async)
 

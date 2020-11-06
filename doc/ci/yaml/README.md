@@ -1408,10 +1408,18 @@ To determine if jobs should be added to a pipeline, `rules: changes` clauses che
 the files changed by Git push events.
 
 `rules: changes` works exactly the same way as [`only: changes` and `except: changes`](#onlychangesexceptchanges),
-accepting an array of paths. Similarly, it always returns true if there is no
-Git push event, for example, when a new tag is created. It's recommended to use it
-only with branch pipelines or merge request pipelines. For example, it's common to
-use `rules: changes` with one of the following `if` clauses:
+accepting an array of paths.
+
+It always returns true and adds jobs to the pipeline if there is no Git push event.
+For example, jobs with `rules: changes` always run on scheduled and tag pipelines,
+because they are not associated with a Git push event. Only certain pipelines have
+a Git push event associated with them:
+
+- All pipelines with a `$CI_PIPELINE_SOURCE` of `merge_request` or `external_merge_request`.
+- Branch pipelines, which have the `$CI_COMMIT_BRANCH` variable present and a `$CI_PIPELINE_SOURCE` of `push`.
+
+It's recommended to use it only with branch pipelines or merge request pipelines.
+For example, it's common to use `rules: changes` with one of the following `if` clauses:
 
 - `if: $CI_COMMIT_BRANCH`
 - `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`

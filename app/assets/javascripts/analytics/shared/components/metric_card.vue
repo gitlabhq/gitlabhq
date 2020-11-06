@@ -43,7 +43,7 @@ export default {
 };
 </script>
 <template>
-  <gl-card>
+  <gl-card class="gl-mb-5">
     <template #header>
       <strong ref="title">{{ title }}</strong>
     </template>

@@ -55,10 +55,12 @@ RSpec.describe Import::BulkImportsController do
 
         describe 'serialized group data' do
           let(:client_response) do
-            [
-              { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1' },
-              { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2' }
-            ]
+            double(
+              parsed_response: [
+                { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1' },
+                { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2' }
+              ]
+            )
           end
 
           before do
@@ -69,7 +71,7 @@ RSpec.describe Import::BulkImportsController do
           it 'returns serialized group data' do
             get :status, format: :json
 
-            expect(response.parsed_body).to eq({ importable_data: client_response }.as_json)
+            expect(json_response).to eq({ importable_data: client_response.parsed_response }.as_json)
           end
         end
 

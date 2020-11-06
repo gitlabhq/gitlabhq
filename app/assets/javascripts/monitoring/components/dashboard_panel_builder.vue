@@ -85,7 +85,7 @@ export default {
 <template>
   <div class="prometheus-panel-builder">
     <div class="gl-xs-flex-direction-column gl-display-flex gl-mx-n3">
-      <gl-card class="gl-flex-grow-1 gl-flex-basis-0 gl-mx-3">
+      <gl-card class="gl-flex-grow-1 gl-flex-basis-0 gl-mx-3 gl-mb-5">
         <template #header>
           <h2 class="gl-font-size-h2 gl-my-3">{{ s__('Metrics|1. Define and preview panel') }}</h2>
         </template>
@@ -124,7 +124,7 @@ export default {
       </gl-card>
 
       <gl-card
-        class="gl-flex-grow-1 gl-flex-basis-0 gl-mx-3"
+        class="gl-flex-grow-1 gl-flex-basis-0 gl-mx-3 gl-mb-5"
         body-class="gl-display-flex gl-flex-direction-column"
       >
         <template #header>

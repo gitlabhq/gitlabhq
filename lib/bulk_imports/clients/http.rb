@@ -18,7 +18,7 @@ module BulkImports
       end
 
       def get(resource, query = {})
-        response = with_error_handling do
+        with_error_handling do
           Gitlab::HTTP.get(
             resource_url(resource),
             headers: request_headers,
@@ -26,8 +26,22 @@ module BulkImports
             query: query.merge(request_query)
           )
         end
+      end
 
-        response.parsed_response
+      def each_page(method, resource, query = {}, &block)
+        return to_enum(__method__, method, resource, query) unless block_given?
+
+        next_page = @page
+
+        while next_page
+          @page = next_page.to_i
+
+          response = self.public_send(method, resource, query) # rubocop: disable GitlabSecurity/PublicSend
+          collection = response.parsed_response
+          next_page = response.headers['x-next-page'].presence
+
+          yield collection
+        end
       end
 
       private

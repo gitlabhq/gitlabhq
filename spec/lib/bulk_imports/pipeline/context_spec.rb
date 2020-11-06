@@ -7,7 +7,7 @@ RSpec.describe BulkImports::Pipeline::Context do
     it 'initializes with permitted attributes' do
       args = {
         current_user: create(:user),
-        entities: [],
+        entity: create(:bulk_import_entity),
         configuration: create(:bulk_import_configuration)
       }
 

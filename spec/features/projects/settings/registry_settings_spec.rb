@@ -33,13 +33,13 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       subject
 
       within '#js-registry-policies' do
-        within '.card-body' do
+        within '.gl-card-body' do
           select('7 days until tags are automatically removed', from: 'Expiration interval:')
           select('Every day', from: 'Expiration schedule:')
           select('50 tags per image name', from: 'Number of tags to retain:')
           fill_in('Tags with names matching this regex pattern will expire:', with: '.*-production')
         end
-        submit_button = find('.card-footer .btn.btn-success')
+        submit_button = find('.gl-card-footer .btn.btn-success')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -51,10 +51,10 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       subject
 
       within '#js-registry-policies' do
-        within '.card-body' do
+        within '.gl-card-body' do
           fill_in('Tags with names matching this regex pattern will expire:', with: '*-production')
         end
-        submit_button = find('.card-footer .btn.btn-success')
+        submit_button = find('.gl-card-footer .btn.btn-success')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -85,7 +85,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         within '#js-registry-policies' do
           case result
           when :available_section
-            expect(find('.card-header')).to have_content('Tag expiration policy')
+            expect(find('.gl-card-header')).to have_content('Tag expiration policy')
           when :disabled_message
             expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
           end

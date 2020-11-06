@@ -13,6 +13,7 @@ import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId } from '~/boards/constants';
 import issueMoveListMutation from '~/boards/queries/issue_move_list.mutation.graphql';
+import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import { fullBoardId, formatListIssues, formatBoardLists } from '~/boards/boards_util';
 
 const expectNotImplemented = action => {
@@ -546,6 +547,48 @@ describe('moveIssue', () => {
             toListId: 'gid://gitlab/List/2',
             originalIndex: 0,
           },
+        },
+      ],
+      [],
+      done,
+    );
+  });
+});
+
+describe('setAssignees', () => {
+  const node = { username: 'name' };
+  const name = 'username';
+  const projectPath = 'h/h';
+  const refPath = `${projectPath}#3`;
+  const iid = '1';
+
+  beforeEach(() => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: { issueSetAssignees: { issue: { assignees: { nodes: [{ ...node }] } } } },
+    });
+  });
+
+  it('calls mutate with the correct values', async () => {
+    await actions.setAssignees(
+      { commit: () => {}, getters: { getActiveIssue: { iid, referencePath: refPath } } },
+      [name],
+    );
+
+    expect(gqlClient.mutate).toHaveBeenCalledWith({
+      mutation: updateAssignees,
+      variables: { iid, assigneeUsernames: [name], projectPath },
+    });
+  });
+
+  it('calls the correct mutation with the correct values', done => {
+    testAction(
+      actions.setAssignees,
+      {},
+      { getActiveIssue: { iid, referencePath: refPath }, commit: () => {} },
+      [
+        {
+          type: 'UPDATE_ISSUE_BY_ID',
+          payload: { prop: 'assignees', issueId: undefined, value: [node] },
         },
       ],
       [],

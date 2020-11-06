@@ -3,7 +3,7 @@ import { sortBy } from 'lodash';
 import { mapState } from 'vuex';
 import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
-import { sprintf, __ } from '~/locale';
+import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueDueDate from './issue_due_date.vue';
@@ -89,6 +89,12 @@ export default {
     orderedLabels() {
       return sortBy(this.issue.labels.filter(this.isNonListLabel), 'title');
     },
+    blockedLabel() {
+      if (this.issue.blockedByCount) {
+        return n__(`Blocked by %d issue`, `Blocked by %d issues`, this.issue.blockedByCount);
+      }
+      return __('Blocked issue');
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -139,9 +145,10 @@ export default {
           v-if="issue.blocked"
           v-gl-tooltip
           name="issue-block"
-          :title="__('Blocked issue')"
+          :title="blockedLabel"
           class="issue-blocked-icon gl-mr-2"
-          :aria-label="__('Blocked issue')"
+          :aria-label="blockedLabel"
+          data-testid="issue-blocked-icon"
         />
         <gl-icon
           v-if="issue.confidential"
@@ -205,7 +212,7 @@ export default {
           :key="assignee.id"
           :link-href="assigneeUrl(assignee)"
           :img-alt="avatarUrlTitle(assignee)"
-          :img-src="assignee.avatar || assignee.avatar_url"
+          :img-src="assignee.avatarUrl || assignee.avatar || assignee.avatar_url"
           :img-size="24"
           class="js-no-trigger"
           tooltip-placement="bottom"

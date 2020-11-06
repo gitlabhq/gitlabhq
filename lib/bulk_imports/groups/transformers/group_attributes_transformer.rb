@@ -9,7 +9,7 @@ module BulkImports
         end
 
         def transform(context, data)
-          import_entity = find_by_full_path(data['full_path'], context.entities)
+          import_entity = context.entity
 
           data
             .then { |data| transform_name(import_entity, data) }
@@ -74,10 +74,6 @@ module BulkImports
 
           data['subgroup_creation_level'] = Gitlab::Access.subgroup_creation_string_options[subgroup_creation_level]
           data
-        end
-
-        def find_by_full_path(full_path, entities)
-          entities.find { |entity| entity.source_full_path == full_path }
         end
       end
     end

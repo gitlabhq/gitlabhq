@@ -22,7 +22,9 @@ export default {
       return sprintf(__("%{userName}'s avatar"), { userName: this.user.name });
     },
     avatarUrl() {
-      return this.user.avatar || this.user.avatar_url || gon.default_avatar_url;
+      return (
+        this.user.avatarUrl || this.user.avatar || this.user.avatar_url || gon.default_avatar_url
+      );
     },
     isMergeRequest() {
       return this.issuableType === 'merge_request';

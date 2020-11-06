@@ -42,7 +42,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def importable_data
-    client.get('groups', top_level_only: true)
+    client.get('groups', top_level_only: true).parsed_response
   end
 
   def client
@@ -63,7 +63,6 @@ class Import::BulkImportsController < ApplicationController
   def bulk_import_params
     %i[
       source_type
-      source_name
       source_full_path
       destination_name
       destination_namespace

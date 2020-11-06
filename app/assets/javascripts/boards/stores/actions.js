@@ -18,6 +18,7 @@ import boardLabelsQuery from '../queries/board_labels.query.graphql';
 import createBoardListMutation from '../queries/board_list_create.mutation.graphql';
 import updateBoardListMutation from '../queries/board_list_update.mutation.graphql';
 import issueMoveListMutation from '../queries/issue_move_list.mutation.graphql';
+import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import issueSetLabels from '../queries/issue_set_labels.mutation.graphql';
 import issueSetDueDate from '../queries/issue_set_due_date.mutation.graphql';
 
@@ -289,6 +290,25 @@ export default {
       .catch(() =>
         commit(types.MOVE_ISSUE_FAILURE, { originalIssue, fromListId, toListId, originalIndex }),
       );
+  },
+
+  setAssignees: ({ commit, getters }, assigneeUsernames) => {
+    return gqlClient
+      .mutate({
+        mutation: updateAssignees,
+        variables: {
+          iid: getters.getActiveIssue.iid,
+          projectPath: getters.getActiveIssue.referencePath.split('#')[0],
+          assigneeUsernames,
+        },
+      })
+      .then(({ data }) => {
+        commit('UPDATE_ISSUE_BY_ID', {
+          issueId: getters.getActiveIssue.id,
+          prop: 'assignees',
+          value: data.issueSetAssignees.issue.assignees.nodes,
+        });
+      });
   },
 
   createNewIssue: () => {
