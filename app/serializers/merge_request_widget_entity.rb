@@ -129,7 +129,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :security_reports_docs_path do |merge_request|
-    help_page_path('user/application_security/sast/index.md', anchor: 'reports-json-format')
+    help_page_path('user/application_security/index.md', anchor: 'viewing-security-scan-information-in-merge-requests')
   end
 
   private

@@ -177,6 +177,10 @@ module QA
           has_element?(:file_name_content, text: file_name)
         end
 
+        def has_no_file?(file_name)
+          has_no_element?(:file_name_content, text: file_name)
+        end
+
         def has_merge_button?
           refresh
 

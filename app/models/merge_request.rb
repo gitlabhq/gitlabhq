@@ -303,6 +303,19 @@ class MergeRequest < ApplicationRecord
     includes(:metrics)
   end
 
+  scope :reviewer_assigned_to, ->(user) do
+    mr_reviewers_table = MergeRequestReviewer.arel_table
+
+    inner_sql = mr_reviewers_table
+                  .project(Arel::Nodes::True.new)
+                  .where(
+                    mr_reviewers_table[:merge_request_id].eq(MergeRequest.arel_table[:id])
+                      .and(mr_reviewers_table[:user_id].eq(user.id))
+                  ).exists
+
+    where(inner_sql)
+  end
+
   after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project

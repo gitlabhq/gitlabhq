@@ -362,13 +362,13 @@ Kubernetes:
 
 ##### Docker executor inside GitLab Runner configuration
 
-If you are an administrator of GitLab Runner and you always want to use
+If you are an administrator of GitLab Runner and you want to use
 the mirror for every `dind` service, update the
 [configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
 to specify a [volume
 mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
 
-Given we have a file `/opt/docker/daemon.json` with the following
+For example, if you have a `/opt/docker/daemon.json` file with the following
 content:
 
 ```json
@@ -379,7 +379,7 @@ content:
 }
 ```
 
-Update the `config.toml` for GitLab Runner to mount the file to
+Update the `config.toml` file to mount the file to
 `/etc/docker/daemon.json`. This would mount the file for **every**
 container that is created by GitLab Runner. The configuration will be
 picked up by the `dind` service.
@@ -394,7 +394,57 @@ picked up by the `dind` service.
     volumes = ["/opt/docker/daemon.json:/etc/docker/daemon.json:ro"]
 ```
 
-### Use Docker socket binding
+##### Kubernetes executor inside GitLab Runner configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
+
+If you are an administrator of GitLab Runner and you want to use
+the mirror for every `dind` service, update the
+[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+to specify a [ConfigMap volume
+mount](https://docs.gitlab.com/runner/executors/kubernetes.html#using-volumes).
+
+For example, if you have a `/tmp/daemon.json` file with the following
+content:
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry-mirror.example.com"
+  ]
+}
+```
+
+Create a [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/) with the content
+of this file. You can do this with a command like:
+
+```shell
+kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tmp/daemon.json
+```
+
+NOTE: **Note:**
+Make sure to use the namespace that GitLab Runner Kubernetes executor uses
+to create job pods in.
+
+After the ConfigMap is created, you can update the `config.toml`
+file to mount the file to `/etc/docker/daemon.json`. This update
+mounts the file for **every** container that is created by GitLab Runner.
+The configuration is picked up by the `dind` service.
+
+```toml
+[[runners]]
+  ...
+  executor = "kubernetes"
+  [runners.kubernetes]
+    image = "alpine:3.12"
+    privileged = true
+    [[runners.kubernetes.volumes.config_map]]
+      name = "docker-daemon"
+      mount_path = "/etc/docker/daemon.json"
+      sub_path = "daemon.json"
+```
+
+#### Use Docker socket binding
 
 The third approach is to bind-mount `/var/run/docker.sock` into the
 container so that Docker is available in the context of that image.

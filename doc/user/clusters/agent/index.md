@@ -77,8 +77,10 @@ neither stable nor versioned yet. For this reason, GitLab only guarantees compat
 between corresponding major.minor (X.Y) versions of GitLab and its cluster side
 component, `agentk`.
 
-Upgrade your agent installations together with GitLab upgrades: if you install
-GitLab version 13.6, use version 13.6.x versions of `agentk`.
+Upgrade your agent installations together with GitLab upgrades. To decide which version of `agentk`to install follow:
+
+1. Open the [GITLAB_KAS_VERSION](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_KAS_VERSION) file from the GitLab Repository, which contains the latest `agentk` version associated with the `master` branch.
+1. Change the `master` branch and select the Git tag associated with your version. For instance, you could change it to GitLab [v13.5.3-ee release](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.5.3-ee/GITLAB_KAS_VERSION)
 
 The available `agentk` versions can be found in
 [its container registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/eyJuYW1lIjoiZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9hZ2VudGsiLCJ0YWdzX3BhdGgiOiIvZ2l0bGFiLW9yZy9jbHVzdGVyLWludGVncmF0aW9uL2dpdGxhYi1hZ2VudC9yZWdpc3RyeS9yZXBvc2l0b3J5LzEyMjMyMDUvdGFncz9mb3JtYXQ9anNvbiIsImlkIjoxMjIzMjA1LCJjbGVhbnVwX3BvbGljeV9zdGFydGVkX2F0IjpudWxsfQ==).

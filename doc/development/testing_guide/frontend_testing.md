@@ -759,7 +759,7 @@ While you work on a test suite, you may want to run these specs in watch mode, s
 # Watch and rerun all specs matching the name icon
 yarn jest --watch icon
 
-# Watch and rerun one specifc file
+# Watch and rerun one specific file
 yarn jest --watch path/to/spec/file.spec.js
 ```
 

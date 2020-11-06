@@ -123,6 +123,24 @@ latest versions of the scanning tools without having to do anything. There are s
 with this approach, however, and there is a
 [plan to resolve them](https://gitlab.com/gitlab-org/gitlab/-/issues/9725).
 
+## Viewing security scan information in merge requests **(CORE)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Core 13.5.
+> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
+> - It's [deployed behind a feature flag](../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It can be enabled or disabled for a single project.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-basic-security-widget). **(CORE ONLY)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Merge requests which have run security scans let you know that the generated
+reports are available to download.
+
+![Security widget](img/security_widget_v13_6.png)
+
 ## Interacting with the vulnerabilities
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
@@ -594,3 +612,28 @@ Analyzer results are displayed in the [job logs](../../ci/pipelines/#expand-and-
 [Merge Request widget](sast/index.md#overview)
 or [Security Dashboard](security_dashboard/index.md).
 There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.
+
+### Enable or disable the basic security widget **(CORE ONLY)**
+
+The basic security widget is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:core_security_mr_widget)
+# For a single project
+Feature.enable(:core_security_mr_widget, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:core_security_mr_widget)
+# For a single project
+Feature.disable(:core_security_mr_widget, Project.find(<project id>))
+```

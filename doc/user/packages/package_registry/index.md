@@ -38,7 +38,7 @@ Learn more about using CI/CD to build:
 - [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd)
 - [NuGet packages](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 - [Conan packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
-- [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages)
+- [PyPI packages](../pypi_repository/index.md#publish-a-pypi-package-by-using-cicd)
 - [Generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 
 If you use CI/CD to build a package, extended activity information is displayed

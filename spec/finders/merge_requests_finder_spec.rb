@@ -333,6 +333,8 @@ RSpec.describe MergeRequestsFinder do
       end
 
       context 'assignee filtering' do
+        let_it_be(:user3) { create(:user) }
+
         let(:issuables) { described_class.new(user, params).execute }
 
         it_behaves_like 'assignee ID filter' do
@@ -351,7 +353,6 @@ RSpec.describe MergeRequestsFinder do
             merge_request3.assignees = [user2, user3]
           end
 
-          let_it_be(:user3) { create(:user) }
           let(:params) { { assignee_username: [user2.username, user3.username] } }
           let(:expected_issuables) { [merge_request3] }
         end
@@ -366,7 +367,6 @@ RSpec.describe MergeRequestsFinder do
         end
 
         it_behaves_like 'no assignee filter' do
-          let_it_be(:user3) { create(:user) }
           let(:expected_issuables) { [merge_request4, merge_request5] }
         end
 
@@ -374,30 +374,54 @@ RSpec.describe MergeRequestsFinder do
           let(:expected_issuables) { [merge_request1, merge_request2, merge_request3] }
         end
 
-        context 'filtering by group milestone' do
-          let(:group_milestone) { create(:milestone, group: group) }
+        context 'with just reviewers' do
+          it_behaves_like 'assignee username filter' do
+            before do
+              merge_request4.reviewers = [user3]
+              merge_request4.assignees = []
+            end
 
-          before do
-            merge_request1.update!(milestone: group_milestone)
-            merge_request2.update!(milestone: group_milestone)
+            let(:params) { { assignee_username: [user3.username] } }
+            let(:expected_issuables) { [merge_request4] }
           end
+        end
 
-          it 'returns merge requests assigned to that group milestone' do
-            params = { milestone_title: group_milestone.title }
+        context 'with an additional reviewer' do
+          it_behaves_like 'assignee username filter' do
+            before do
+              merge_request3.assignees = [user3]
+              merge_request4.reviewers = [user3]
+            end
 
+            let(:params) { { assignee_username: [user3.username] } }
+            let(:expected_issuables) { [merge_request3, merge_request4] }
+          end
+        end
+      end
+
+      context 'filtering by group milestone' do
+        let(:group_milestone) { create(:milestone, group: group) }
+
+        before do
+          merge_request1.update!(milestone: group_milestone)
+          merge_request2.update!(milestone: group_milestone)
+        end
+
+        it 'returns merge requests assigned to that group milestone' do
+          params = { milestone_title: group_milestone.title }
+
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+        end
+
+        context 'using NOT' do
+          let(:params) { { not: { milestone_title: group_milestone.title } } }
+
+          it 'returns MRs not assigned to that group milestone' do
             merge_requests = described_class.new(user, params).execute
 
-            expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
-          end
-
-          context 'using NOT' do
-            let(:params) { { not: { milestone_title: group_milestone.title } } }
-
-            it 'returns MRs not assigned to that group milestone' do
-              merge_requests = described_class.new(user, params).execute
-
-              expect(merge_requests).to contain_exactly(merge_request3, merge_request4, merge_request5)
-            end
+            expect(merge_requests).to contain_exactly(merge_request3, merge_request4, merge_request5)
           end
         end
       end
@@ -562,6 +586,27 @@ RSpec.describe MergeRequestsFinder do
 
           expect(mrs).to eq([mr2])
         end
+      end
+
+      it 'does not raise any exception with complex filters' do
+        # available filters from MergeRequest dashboard UI
+        params = {
+          project_id: project1.id,
+          scope: 'authored',
+          state: 'opened',
+          author_username: user.username,
+          assignee_username: user.username,
+          approver_usernames: [user.username],
+          approved_by_usernames: [user.username],
+          milestone_title: 'none',
+          release_tag: 'none',
+          label_names: 'none',
+          my_reaction_emoji: 'none',
+          draft: 'no'
+        }
+
+        merge_requests = described_class.new(user, params).execute
+        expect { merge_requests.load }.not_to raise_error
       end
     end
 

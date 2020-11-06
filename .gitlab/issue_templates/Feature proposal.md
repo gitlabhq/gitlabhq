@@ -96,7 +96,8 @@ In which enterprise tier should this feature go? See https://about.gitlab.com/ha
 
 ### Links / references
 
-<!--  Label reminders - you should have one of each of the following labels if you can figure out the correct ones -->
+<!--  Label reminders - you should have one of each of the following labels.
+Read the descriptions on https://gitlab.com/gitlab-org/gitlab/-/labels to find the correct ones -->
 /label ~devops:: ~group: ~Category:
 
 /label ~feature

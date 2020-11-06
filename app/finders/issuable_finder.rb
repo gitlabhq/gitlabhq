@@ -406,12 +406,16 @@ class IssuableFinder
     elsif params.filter_by_any_assignee?
       items.assigned
     elsif params.assignee
-      items.assigned_to(params.assignee)
+      items_assigned_to(items, params.assignee)
     elsif params.assignee_id? || params.assignee_username? # assignee not found
       items.none
     else
       items
     end
+  end
+
+  def items_assigned_to(items, user)
+    items.assigned_to(user)
   end
 
   def by_negated_assignee(items)

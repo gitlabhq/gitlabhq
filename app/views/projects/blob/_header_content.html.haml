@@ -1,7 +1,7 @@
 .file-header-content
   = blob_icon blob.mode, blob.name
 
-  %strong.file-title-name
+  %strong.file-title-name{ data: { qa_selector: 'file_name_content' } }
     = blob.name
 
   = copy_file_path_button(blob.path)

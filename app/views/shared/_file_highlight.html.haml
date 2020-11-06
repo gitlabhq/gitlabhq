@@ -11,7 +11,7 @@
           = link_icon
           = i
   - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
-  .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight } }
+  .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }
     %pre.code.highlight
       %code
         = blob.present.highlight

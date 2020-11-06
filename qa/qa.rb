@@ -403,6 +403,7 @@ module QA
 
     module Layout
       autoload :Banner, 'qa/page/layout/banner'
+      autoload :Flash, 'qa/page/layout/flash'
       autoload :PerformanceBar, 'qa/page/layout/performance_bar'
     end
 
