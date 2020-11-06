@@ -5,6 +5,9 @@ module API
     module IssuesHelpers
       extend Grape::API::Helpers
 
+      params :negatable_issue_filter_params_ee do
+      end
+
       params :optional_issue_params_ee do
       end
 

@@ -13,7 +13,7 @@ module QA
           element :new_user_register_button
         end
 
-        view 'app/views/registrations/welcome.html.haml' do
+        view 'app/views/registrations/welcome/show.html.haml' do
           element :get_started_button
         end
 

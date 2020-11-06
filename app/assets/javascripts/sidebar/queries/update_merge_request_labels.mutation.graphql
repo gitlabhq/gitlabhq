@@ -1,0 +1,15 @@
+mutation mergeRequestSetLabels($input: MergeRequestSetLabelsInput!) {
+  mergeRequestSetLabels(input: $input) {
+    errors
+    mergeRequest {
+      labels {
+        nodes {
+          color
+          description
+          id
+          title
+        }
+      }
+    }
+  }
+}

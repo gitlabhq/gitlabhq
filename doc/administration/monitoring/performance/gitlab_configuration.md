@@ -7,21 +7,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Configuration
 
 GitLab Performance Monitoring is disabled by default. To enable it and change any of its
-settings, navigate to **Admin Area > Settings > Metrics and profiling**
-(`/admin/application_settings/metrics_and_profiling`).
+settings:
 
-![GitLab Performance Monitoring Admin Settings](img/metrics_gitlab_configuration_settings.png)
+1. Navigate to **Admin Area > Settings > Metrics and profiling**
+  (`/admin/application_settings/metrics_and_profiling`):
 
-Finally, a restart of all GitLab processes is required for the changes to take
-effect:
+   ![GitLab Performance Monitoring Administration Settings](img/metrics_gitlab_configuration_settings.png)
 
-```shell
-# For Omnibus installations
-sudo gitlab-ctl restart
+1. You must restart all GitLab processes for the changes to take effect:
 
-# For installations from source
-sudo service gitlab restart
-```
+   - For Omnibus GitLab installations: `sudo gitlab-ctl restart`
+   - For installations from source: `sudo service gitlab restart`
 
 ## Pending Migrations
 

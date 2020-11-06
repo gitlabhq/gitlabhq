@@ -8,7 +8,7 @@
       %p
         .gl-text-center= html_escape(_('In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you.')) % { br_tag: '<br/>'.html_safe }
 
-      = form_for(current_user, url: users_sign_up_update_registration_path, html: { class: 'card gl-w-full! gl-p-5', 'aria-live' => 'assertive' }) do |f|
+      = form_for(current_user, url: users_sign_up_welcome_path, html: { class: 'card gl-w-full! gl-p-5', 'aria-live' => 'assertive' }) do |f|
         .devise-errors
           = render 'devise/shared/error_messages', resource: current_user
         .row

@@ -1,16 +1,18 @@
 import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import {
   mockLabels,
   mockRegularLabel,
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
-import axios from '~/lib/utils/axios_utils';
+import updateIssueLabelsMutation from '~/boards/queries/issue_set_labels.mutation.graphql';
+import { MutationOperationMode } from '~/graphql_shared/utils';
+import { IssuableType } from '~/issue_show/constants';
 import SidebarLabels from '~/sidebar/components/labels/sidebar_labels.vue';
+import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
+import { toLabelGid } from '~/sidebar/utils';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
 
 describe('sidebar labels', () => {
-  let axiosMock;
   let wrapper;
 
   const defaultProps = {
@@ -23,29 +25,52 @@ describe('sidebar labels', () => {
     issuableType: 'issue',
     labelsFetchPath: '/gitlab-org/gitlab-test/-/labels.json?include_ancestor_groups=true',
     labelsManagePath: '/gitlab-org/gitlab-test/-/labels',
-    labelsUpdatePath: '/gitlab-org/gitlab-test/-/issues/1.json',
     projectIssuesPath: '/gitlab-org/gitlab-test/-/issues',
     projectPath: 'gitlab-org/gitlab-test',
   };
 
+  const $apollo = {
+    mutate: jest.fn().mockResolvedValue(),
+  };
+
+  const userUpdatedLabels = [
+    {
+      ...mockRegularLabel,
+      set: false,
+    },
+    {
+      id: 40,
+      title: 'Security',
+      color: '#ddd',
+      text_color: '#fff',
+      set: true,
+    },
+    {
+      id: 55,
+      title: 'Tooling',
+      color: '#ddd',
+      text_color: '#fff',
+      set: false,
+    },
+  ];
+
   const findLabelsSelect = () => wrapper.find(LabelsSelect);
 
-  const mountComponent = () => {
+  const mountComponent = (props = {}) => {
     wrapper = shallowMount(SidebarLabels, {
       provide: {
         ...defaultProps,
+        ...props,
+      },
+      mocks: {
+        $apollo,
       },
     });
   };
 
-  beforeEach(() => {
-    axiosMock = new AxiosMockAdapter(axios);
-  });
-
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    axiosMock.restore();
   });
 
   describe('LabelsSelect props', () => {
@@ -72,64 +97,94 @@ describe('sidebar labels', () => {
     });
   });
 
-  describe('when labels are updated', () => {
+  describe('when type is issue', () => {
     beforeEach(() => {
-      mountComponent();
+      mountComponent({ issuableType: IssuableType.Issue });
     });
 
-    it('makes an API call to update labels', async () => {
-      const labels = [
-        {
-          ...mockRegularLabel,
-          set: false,
-        },
-        {
-          id: 40,
-          title: 'Security',
-          color: '#ddd',
-          text_color: '#fff',
-          set: true,
-        },
-        {
-          id: 55,
-          title: 'Tooling',
-          color: '#ddd',
-          text_color: '#fff',
-          set: false,
-        },
-      ];
+    describe('when labels are updated', () => {
+      it('invokes a mutation', () => {
+        findLabelsSelect().vm.$emit('updateSelectedLabels', userUpdatedLabels);
 
-      findLabelsSelect().vm.$emit('updateSelectedLabels', labels);
+        const expected = {
+          mutation: updateIssueLabelsMutation,
+          variables: {
+            input: {
+              addLabelIds: [40],
+              iid: defaultProps.iid,
+              projectPath: defaultProps.projectPath,
+              removeLabelIds: [26, 55],
+            },
+          },
+        };
 
-      await axios.waitForAll();
+        expect($apollo.mutate).toHaveBeenCalledWith(expected);
+      });
+    });
 
-      const expected = {
-        [defaultProps.issuableType]: {
-          label_ids: [27, 28, 29, 40],
-        },
-      };
+    describe('when label `x` is clicked', () => {
+      it('invokes a mutation', () => {
+        findLabelsSelect().vm.$emit('onLabelRemove', 27);
 
-      expect(axiosMock.history.put[0].data).toEqual(JSON.stringify(expected));
+        const expected = {
+          mutation: updateIssueLabelsMutation,
+          variables: {
+            input: {
+              iid: defaultProps.iid,
+              projectPath: defaultProps.projectPath,
+              removeLabelIds: [27],
+            },
+          },
+        };
+
+        expect($apollo.mutate).toHaveBeenCalledWith(expected);
+      });
     });
   });
 
-  describe('when label `x` is clicked', () => {
+  describe('when type is merge_request', () => {
     beforeEach(() => {
-      mountComponent();
+      mountComponent({ issuableType: IssuableType.MergeRequest });
     });
 
-    it('makes an API call to update labels', async () => {
-      findLabelsSelect().vm.$emit('onLabelRemove', 27);
+    describe('when labels are updated', () => {
+      it('invokes a mutation', () => {
+        findLabelsSelect().vm.$emit('updateSelectedLabels', userUpdatedLabels);
 
-      await axios.waitForAll();
+        const expected = {
+          mutation: updateMergeRequestLabelsMutation,
+          variables: {
+            input: {
+              iid: defaultProps.iid,
+              labelIds: [toLabelGid(27), toLabelGid(28), toLabelGid(29), toLabelGid(40)],
+              operationMode: MutationOperationMode.Replace,
+              projectPath: defaultProps.projectPath,
+            },
+          },
+        };
 
-      const expected = {
-        [defaultProps.issuableType]: {
-          label_ids: [26, 28, 29],
-        },
-      };
+        expect($apollo.mutate).toHaveBeenCalledWith(expected);
+      });
+    });
 
-      expect(axiosMock.history.put[0].data).toEqual(JSON.stringify(expected));
+    describe('when label `x` is clicked', () => {
+      it('invokes a mutation', () => {
+        findLabelsSelect().vm.$emit('onLabelRemove', 27);
+
+        const expected = {
+          mutation: updateMergeRequestLabelsMutation,
+          variables: {
+            input: {
+              iid: defaultProps.iid,
+              labelIds: [toLabelGid(27)],
+              operationMode: MutationOperationMode.Remove,
+              projectPath: defaultProps.projectPath,
+            },
+          },
+        };
+
+        expect($apollo.mutate).toHaveBeenCalledWith(expected);
+      });
     });
   });
 });

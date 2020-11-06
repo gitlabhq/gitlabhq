@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'registrations/welcome' do
+RSpec.describe 'registrations/welcome/show' do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { User.new }

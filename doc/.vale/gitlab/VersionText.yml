@@ -11,4 +11,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-
 level: error
 scope: raw
 raw:
-  - '> (- ){0}\[?Introduced.+\n.+'
+  - '> (- ){0}\[?Introduced.+\n[^\n`]'

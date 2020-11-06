@@ -492,6 +492,21 @@ module IssuablesHelper
     }
   end
 
+  def sidebar_labels_data(issuable_sidebar, project)
+    {
+      allow_label_create: issuable_sidebar.dig(:current_user, :can_admin_label).to_s,
+      allow_scoped_labels: issuable_sidebar[:scoped_labels_available].to_s,
+      can_edit: issuable_sidebar.dig(:current_user, :can_edit).to_s,
+      iid: issuable_sidebar[:iid],
+      issuable_type: issuable_sidebar[:type],
+      labels_fetch_path: issuable_sidebar[:project_labels_path],
+      labels_manage_path: project_labels_path(project),
+      project_issues_path: issuable_sidebar[:project_issuables_path],
+      project_path: project.full_path,
+      selected_labels: issuable_sidebar[:labels].to_json
+    }
+  end
+
   def parent
     @project || @group
   end

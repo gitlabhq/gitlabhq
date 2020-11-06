@@ -12,6 +12,7 @@ export default class FilteredSearchDropdownManager {
     runnerTagsEndpoint = '',
     labelsEndpoint = '',
     milestonesEndpoint = '',
+    iterationsEndpoint = '',
     releasesEndpoint = '',
     environmentsEndpoint = '',
     epicsEndpoint = '',
@@ -28,6 +29,7 @@ export default class FilteredSearchDropdownManager {
     this.runnerTagsEndpoint = removeTrailingSlash(runnerTagsEndpoint);
     this.labelsEndpoint = removeTrailingSlash(labelsEndpoint);
     this.milestonesEndpoint = removeTrailingSlash(milestonesEndpoint);
+    this.iterationsEndpoint = removeTrailingSlash(iterationsEndpoint);
     this.releasesEndpoint = removeTrailingSlash(releasesEndpoint);
     this.epicsEndpoint = removeTrailingSlash(epicsEndpoint);
     this.environmentsEndpoint = removeTrailingSlash(environmentsEndpoint);

@@ -8,9 +8,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'.freeze
 
-  layout :choose_layout
+  layout 'devise'
 
-  skip_before_action :required_signup_info, :check_two_factor_requirement, only: [:welcome, :update_registration]
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :load_recaptcha, only: :new
@@ -46,30 +45,6 @@ class RegistrationsController < Devise::RegistrationsController
       redirect_to new_user_session_path, status: :see_other, notice: s_('Profiles|Account scheduled for removal.')
     else
       redirect_to profile_account_path, status: :see_other, alert: destroy_confirmation_failure_message
-    end
-  end
-
-  def welcome
-    return redirect_to new_user_registration_path unless current_user
-    return redirect_to path_for_signed_in_user(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
-  end
-
-  def update_registration
-    return redirect_to new_user_registration_path unless current_user
-
-    result = ::Users::SignupService.new(current_user, update_registration_params).execute
-
-    if result[:status] == :success
-      if ::Gitlab.com? && show_onboarding_issues_experiment?
-        track_experiment_event(:onboarding_issues, 'signed_up')
-        record_experiment_user(:onboarding_issues)
-      end
-
-      return redirect_to new_users_sign_up_group_path if experiment_enabled?(:onboarding_issues) && show_onboarding_issues_experiment?
-
-      redirect_to path_for_signed_in_user(current_user)
-    else
-      render :welcome
     end
   end
 
@@ -160,10 +135,6 @@ class RegistrationsController < Devise::RegistrationsController
     params.require(:user).permit(:username, :email, :name, :first_name, :last_name, :password)
   end
 
-  def update_registration_params
-    params.require(:user).permit(:role, :setup_for_company)
-  end
-
   def resource_name
     :user
   end
@@ -180,41 +151,8 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42380')
   end
 
-  def path_for_signed_in_user(user)
-    if requires_confirmation?(user)
-      users_almost_there_path
-    else
-      stored_location_for(user) || dashboard_projects_path
-    end
-  end
-
-  def requires_confirmation?(user)
-    return false if user.confirmed?
-    return false if Feature.enabled?(:soft_email_confirmation)
-    return false if experiment_enabled?(:signup_flow)
-
-    true
-  end
-
   def load_recaptcha
     Gitlab::Recaptcha.load_configurations!
-  end
-
-  # Part of an experiment to build a new sign up flow. Will be resolved
-  # with https://gitlab.com/gitlab-org/growth/engineering/issues/64
-  def choose_layout
-    if %w(welcome update_registration).include?(action_name)
-      'welcome'
-    else
-      'devise'
-    end
-  end
-
-  def show_onboarding_issues_experiment?
-    !helpers.in_subscription_flow? &&
-      !helpers.in_invitation_flow? &&
-      !helpers.in_oauth_flow? &&
-      !helpers.in_trial_flow?
   end
 
   def set_user_state

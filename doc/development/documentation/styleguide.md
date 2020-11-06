@@ -337,8 +337,6 @@ In most cases, it’s appropriate to use the second-person (you, yours) point of
 view, because it’s friendly and easy to understand. (Tested in
 [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
 
-<!-- How do we harmonize the second person in Pajamas with our first person plural in our doc guide? -->
-
 ### Capitalization
 
 #### Headings
@@ -556,8 +554,8 @@ tenses, words, and phrases:
     appropriate way.
   - Exceptions to this rule include commonly accepted technical terms, such as
     CI/CD and TCP/IP.
-- <!-- vale gitlab.LatinTerms = NO -->
-  We discourage the use of Latin abbreviations and terms, such as _e.g._,
+<!-- vale gitlab.LatinTerms = NO -->
+- We discourage the use of Latin abbreviations and terms, such as _e.g._,
   _i.e._, _etc._, or _via_, as even native users of English can misunderstand
   those terms. (Tested in [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml).)
   - Instead of _i.e._, use _that is_.
@@ -565,7 +563,7 @@ tenses, words, and phrases:
   - Instead of _e.g._, use _for example_, _such as_, _for instance_, or _like_.
   - Instead of _etc._, either use _and so on_ or consider editing it out, since
     it can be vague.
-    <!-- vale gitlab.LatinTerms = YES -->
+<!-- vale gitlab.LatinTerms = YES -->
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
@@ -1678,58 +1676,69 @@ item in the **Version history**, or as an inline reference with related text.
 
 #### Version text in the **Version History**
 
-If all content in a section is related, add version text in a bulleted list
-following the heading for the section. To render correctly, it must be on its
+If all content in a section is related, add version text following the header for
+the section. Each entry should be on a single line. To render correctly, it must be on its
 own line and surrounded by blank lines.
 
-- For features that need to declare the GitLab version that the feature was
-  introduced. Text similar to the following should be added immediately following
-  the heading as a blockquote:
-  - `> Introduced in GitLab 11.3.`.
+Features should declare the GitLab version that introduced a feature in a blockquote
+following the header:
 
-- Whenever possible, version text should have a link to the _completed_ issue,
-  merge request, or epic that introduced the feature. An issue is preferred over
-  a merge request, and a merge request is preferred over an epic. For example:
-  - `> [Introduced](<link-to-issue>) in GitLab 11.3.`.
+```markdown
+## Feature name
 
-- If the feature is only available in GitLab Enterprise Edition, mention
-  the [paid tier](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/)
-  the feature is available in:
-  - `> [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.`.
+> Introduced in GitLab 11.3.
 
-- If listing information for multiple version as a feature evolves, add the
-  information to a block-quoted bullet list. For example:
+This feature does something.
+```
 
-  ```markdown
-  > - [Introduced](<link-to-issue>) in GitLab 11.3.
-  > - Enabled by default in GitLab 11.4.
-  ```
+Whenever possible, version text should have a link to the _completed_ issue,
+merge request, or epic that introduced the feature. An issue is preferred over
+a merge request, and a merge request is preferred over an epic. For example:
 
-- If a feature is moved to another tier:
+```markdown
+> [Introduced](<link-to-issue>) in GitLab 11.3.
+```
 
-  ```markdown
-  > - [Introduced](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
-  > - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
-  > - [Moved](<link-to-issue>) to GitLab Core in 12.0.
-  ```
+If the feature is only available in GitLab Enterprise Edition, mention
+the [paid tier](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/)
+the feature is available in:
 
-- If a feature is deprecated, include a link to a replacement (when available):
+```markdown
+> [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
+```
 
-  ```markdown
-  > - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
-  ```
+If listing information for multiple version as a feature evolves, add the
+information to a block-quoted bullet list. For example:
 
-   It's also acceptable to describe the replacement in surrounding text, if
-   available.
+```markdown
+> - [Introduced](<link-to-issue>) in GitLab 11.3.
+> - Enabled by default in GitLab 11.4.
+```
 
-   If the deprecation is not obvious in existing text, you may want to include a
-   warning such as:
+If a feature is moved to another tier:
 
-   ```markdown
-   DANGER: **Deprecated:**
-   This feature was [deprecated](link-to-issue) in GitLab 12.3
-   and replaced by [Feature name](link-to-feature-documentation).
-   ```
+```markdown
+> - [Introduced](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
+> - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
+> - [Moved](<link-to-issue>) to GitLab Core in 12.0.
+```
+
+If a feature is deprecated, include a link to a replacement (when available):
+
+```markdown
+> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
+```
+
+You can also describe the replacement in surrounding text, if available.
+
+If the deprecation is not obvious in existing text, you may want to include a
+warning such as:
+
+```markdown
+DANGER: **Deprecated:**
+This feature was [deprecated](link-to-issue) in GitLab 12.3
+and replaced by [Feature name](link-to-feature-documentation).
+```
 
 #### Inline version text
 

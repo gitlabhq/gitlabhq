@@ -28,6 +28,8 @@ module API
                  coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
                  desc: 'Return issues which are assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
+
+        use :negatable_issue_filter_params_ee
       end
 
       params :issues_stats_params do

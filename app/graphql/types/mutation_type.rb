@@ -39,6 +39,7 @@ module Types
     mount_mutation Mutations::Issues::SetSubscription
     mount_mutation Mutations::Issues::Update
     mount_mutation Mutations::Issues::Move
+    mount_mutation Mutations::Labels::Create
     mount_mutation Mutations::MergeRequests::Create
     mount_mutation Mutations::MergeRequests::Update
     mount_mutation Mutations::MergeRequests::SetLabels

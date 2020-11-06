@@ -91,8 +91,13 @@ export function mountSidebarLabels() {
     return false;
   }
 
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
+
   return new Vue({
     el,
+    apolloProvider,
     provide: {
       ...el.dataset,
       allowLabelCreate: parseBoolean(el.dataset.allowLabelCreate),

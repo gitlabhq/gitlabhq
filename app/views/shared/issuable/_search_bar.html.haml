@@ -96,6 +96,7 @@
                   %li.filter-dropdown-item
                     %button.btn.btn-link.js-data-value{ type: 'button' }
                       {{title}}
+              = render_if_exists 'shared/issuable/filter_iteration', type: type
               #js-dropdown-release.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }

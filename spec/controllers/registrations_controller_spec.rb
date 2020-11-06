@@ -402,43 +402,4 @@ RSpec.describe RegistrationsController do
       end
     end
   end
-
-  describe '#welcome' do
-    subject { get :welcome }
-
-    it 'renders the welcome layout' do
-      sign_in(create(:user))
-
-      expect(subject).to render_template(:welcome)
-    end
-
-    context '2FA is required from group' do
-      before do
-        user = create(:user, require_two_factor_authentication_from_group: true)
-        sign_in(user)
-      end
-
-      it 'does not perform a redirect' do
-        expect(subject).not_to redirect_to(profile_two_factor_auth_path)
-      end
-    end
-  end
-
-  describe '#update_registration' do
-    subject(:update_registration) do
-      patch :update_registration, params: { user: { role: 'software_developer', setup_for_company: 'false' } }
-    end
-
-    context 'without a signed in user' do
-      it { is_expected.to redirect_to new_user_registration_path }
-    end
-
-    context 'with a signed in user' do
-      before do
-        sign_in(create(:user))
-      end
-
-      it { is_expected.to redirect_to(dashboard_projects_path)}
-    end
-  end
 end

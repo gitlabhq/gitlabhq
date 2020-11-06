@@ -20,7 +20,7 @@ module Rouge
           is_first = false
 
           yield %(<span id="LC#{@line_number}" class="line" lang="#{@tag}">)
-          line.each { |token, value| yield span(token, value.chomp) }
+          line.each { |token, value| yield span(token, value.chomp! || value) }
           yield %(</span>)
 
           @line_number += 1

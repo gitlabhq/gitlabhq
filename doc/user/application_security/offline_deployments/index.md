@@ -213,3 +213,28 @@ do
   ssh $GITLAB_HOST "sudo docker push ${registry}/analyzers/${i}:2"
 done
 ```
+
+### Using GitLab Secure with AutoDevOps in an offline environment
+
+You can use GitLab AutoDevOps for Secure scans in an offline environment. However, you must first do
+these steps:
+
+1. Load the container images into the local registry. GitLab Secure leverages analyzer container
+   images to do the various scans. These images must be available as part of running AutoDevOps.
+   Before running AutoDevOps, follow the [above steps](#using-the-official-gitlab-template)
+   to load those container images into the local container registry.
+
+1. Set the pipeline variable to ensure that AutoDevOps looks in the right place for those images.
+   The AutoDevOps templates leverage the `SECURE_ANALYZERS_PREFIX` variable to identify the location
+   of analyzer images. This variable is discussed above in [Using the secure bundle created](#using-the-secure-bundle-created).
+   Ensure that you set this variable to the correct value for where you loaded the analyzer images.
+   You could consider doing this with a pipeline variable or by [modifying](../../../topics/autodevops/customize.md#customizing-gitlab-ciyml)
+   the `.gitlab-ci.yml` file directly.
+
+Once these steps are complete, GitLab has local copies of the Secure analyzers and is set up to use
+them instead of an Internet-hosted container image. This allows you to run Secure in AutoDevOps in
+an offline environment.
+
+Note that these steps are specific to GitLab Secure with AutoDevOps. Using other stages with
+AutoDevOps may require other steps covered in the
+[Auto DevOps documentation](../../../topics/autodevops/).
