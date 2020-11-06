@@ -195,6 +195,10 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
+CAUTION: **Caution:**
+Pausing and resuming of replication is currently only supported for Geo installations using an
+Omnibus GitLab-managed database. External databases are currently not supported.
+
 In some circumstances, like during [upgrades](replication/updating_the_geo_nodes.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the secondary node.

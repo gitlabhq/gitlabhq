@@ -129,7 +129,11 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
-   
+   CAUTION: **Caution:**
+   If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
+   a point-in-time recovery to the last known state.
+   Data that was created on the primary while the secondary was paused will be lost.
+
    To promote the secondary node to primary along with preflight checks:
 
    ```shell
@@ -159,11 +163,16 @@ conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
 
+CAUTION: **Caution:**
+If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
+a point-in-time recovery to the last known state.
+Data that was created on the primary while the secondary was paused will be lost.
+
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
 
    ```shell
-   sudo gitlab-pg-ctl promote
+   sudo gitlab-ctl promote-db
    ```
 
    In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
