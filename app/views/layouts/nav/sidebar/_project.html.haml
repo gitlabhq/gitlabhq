@@ -268,6 +268,12 @@
                   %span
                     = _('Serverless')
 
+            - if project_nav_tab? :terraform
+              = nav_link(controller: :terraform) do
+                = link_to project_terraform_index_path(@project), title: _('Terraform') do
+                  %span
+                    = _('Terraform')
+
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
               = nav_link(controller: [:clusters, :user, :gcp]) do

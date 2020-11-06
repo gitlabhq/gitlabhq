@@ -2488,6 +2488,24 @@ msgstr ""
 msgid "AlertManagement|You have enabled the Opsgenie integration. Your alerts will be visible directly in Opsgenie."
 msgstr ""
 
+msgid "AlertMappingBuilder|Define fallback"
+msgstr ""
+
+msgid "AlertMappingBuilder|GitLab alert key"
+msgstr ""
+
+msgid "AlertMappingBuilder|Make selection"
+msgstr ""
+
+msgid "AlertMappingBuilder|Payload alert key"
+msgstr ""
+
+msgid "AlertMappingBuilder|Select key"
+msgstr ""
+
+msgid "AlertMappingBuilder|Title is a required field for alerts in GitLab. Should the payload field you specified not be available, specifiy which field we should use instead. "
+msgstr ""
+
 msgid "AlertService|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
@@ -26324,6 +26342,9 @@ msgstr ""
 msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
+msgid "Terraform"
+msgstr ""
+
 msgid "Terraform|%{number} Terraform report failed to generate"
 msgid_plural "Terraform|%{number} Terraform reports failed to generate"
 msgstr[0] ""
@@ -26340,16 +26361,34 @@ msgstr ""
 msgid "Terraform|A Terraform report was generated in your pipelines."
 msgstr ""
 
+msgid "Terraform|An error occurred while loading your Terraform States"
+msgstr ""
+
+msgid "Terraform|Find out how to use the %{linkStart}GitLab managed Terraform State%{linkEnd}"
+msgstr ""
+
 msgid "Terraform|Generating the report caused an error."
 msgstr ""
 
+msgid "Terraform|Get started with Terraform"
+msgstr ""
+
+msgid "Terraform|Locked"
+msgstr ""
+
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
+msgstr ""
+
+msgid "Terraform|States"
 msgstr ""
 
 msgid "Terraform|The Terraform report %{name} failed to generate."
 msgstr ""
 
 msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
+msgstr ""
+
+msgid "Terraform|updated %{timeStart}time%{timeEnd}"
 msgstr ""
 
 msgid "Test"

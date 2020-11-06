@@ -40,6 +40,7 @@ RSpec.describe API::Settings, 'Settings' do
       expect(json_response['spam_check_endpoint_enabled']).to be_falsey
       expect(json_response['spam_check_endpoint_url']).to be_nil
       expect(json_response['wiki_page_max_content_bytes']).to be_a(Integer)
+      expect(json_response['require_admin_approval_after_user_signup']).to eq(false)
     end
   end
 
@@ -421,6 +422,14 @@ RSpec.describe API::Settings, 'Settings' do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['abuse_notification_email']).to eq('test@example.com')
+    end
+
+    it 'supports setting require_admin_approval_after_user_signup' do
+      put api('/application/settings', admin),
+          params: { require_admin_approval_after_user_signup: true }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
     end
 
     context "missing sourcegraph_url value when sourcegraph_enabled is true" do

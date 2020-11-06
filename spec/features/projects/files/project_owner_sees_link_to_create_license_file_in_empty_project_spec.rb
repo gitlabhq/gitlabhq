@@ -27,9 +27,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
 
     ide_commit
 
-    click_button('Commit')
-
-    expect(current_path).to eq("/-/ide/project/#{project.full_path}/tree/master/-/")
+    expect(current_path).to eq("/-/ide/project/#{project.full_path}/tree/master/-/LICENSE/")
 
     expect(page).to have_content('All changes are committed')
 

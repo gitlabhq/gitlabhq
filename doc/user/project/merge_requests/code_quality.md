@@ -284,6 +284,21 @@ code_quality:
     paths: [gl-code-quality-report.html]
 ```
 
+It's also possible to generate both JSON and HTML report files by defining
+another job and using `extends: code_quality`:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality_html:
+  extends: code_quality
+  variables:
+    REPORT_FORMAT: html
+  artifacts:
+    paths: [gl-code-quality-report.html]
+```
+
 ## Extending functionality
 
 ### Using Analysis Plugins

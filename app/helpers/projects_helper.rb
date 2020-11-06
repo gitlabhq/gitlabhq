@@ -465,6 +465,7 @@ module ProjectsHelper
       builds:             :read_build,
       clusters:           :read_cluster,
       serverless:         :read_cluster,
+      terraform:          :read_terraform_state,
       error_tracking:     :read_sentry_issue,
       alert_management:   :read_alert_management_alert,
       incidents:          :read_issue,
@@ -484,7 +485,8 @@ module ProjectsHelper
       :read_issue,
       :read_sentry_issue,
       :read_cluster,
-      :read_feature_flag
+      :read_feature_flag,
+      :read_terraform_state
     ].any? do |ability|
       can?(current_user, ability, project)
     end
@@ -762,6 +764,7 @@ module ProjectsHelper
       metrics_dashboard
       feature_flags
       tracings
+      terraform
     ]
   end
 

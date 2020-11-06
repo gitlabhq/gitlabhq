@@ -1,7 +1,7 @@
 ---
 name: release_mr_issue_urls
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18727
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/276619
 group: group::release management
 type: development
-default_enabled: false
+default_enabled: true

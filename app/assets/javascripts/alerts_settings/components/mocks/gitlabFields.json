@@ -1,0 +1,48 @@
+[
+  {
+    "key":"title",
+    "label":"Title",
+    "type":"String",
+    "hasFallback": true
+  },
+  {
+    "key":"description",
+    "label":"Description",
+    "type":"String"
+  },
+  {
+    "key":"startTime",
+    "label":"Start time",
+    "type":"DateTime"
+  },
+  {
+    "key":"service",
+    "label":"Service",
+    "type":"String"
+  },
+  {
+    "key":"monitoringTool",
+    "label":"Monitoring tool",
+    "type":"String"
+  },
+  {
+    "key":"hosts",
+    "label":"Hosts",
+    "type":"String or Array"
+  },
+  {
+    "key":"severity",
+    "label":"Severity",
+    "type":"String"
+  },
+  {
+    "key":"fingerprint",
+    "label":"Fingerprint",
+    "type":"String"
+  },
+  {
+    "key":"environment",
+    "label":"Environment",
+    "type":"String"
+  }
+]

@@ -1,0 +1,12 @@
+#import "../fragments/state.fragment.graphql"
+
+query getStates($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    terraformStates {
+      count
+      nodes {
+        ...State
+      }
+    }
+  }
+}

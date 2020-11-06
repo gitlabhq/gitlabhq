@@ -477,6 +477,7 @@ export default {
           max-rows="10"
         />
       </gl-form-group>
+
       <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
         $options.i18n.testAlertInfo
       }}</gl-button>

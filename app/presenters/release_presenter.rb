@@ -82,7 +82,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def release_mr_issue_urls_available?
-    ::Feature.enabled?(:release_mr_issue_urls, project)
+    ::Feature.enabled?(:release_mr_issue_urls, project, default_enabled: true)
   end
 
   def release_edit_page_available?

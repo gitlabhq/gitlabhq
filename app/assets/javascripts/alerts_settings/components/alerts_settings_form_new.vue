@@ -12,6 +12,7 @@ import {
   GlModalDirective,
   GlToggle,
 } from '@gitlab/ui';
+import MappingBuilder from './alert_mapping_builder.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -84,6 +85,7 @@ export default {
     GlModal,
     GlToggle,
     AlertSettingsFormHelpBlock,
+    MappingBuilder,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -344,7 +346,7 @@ export default {
         label-for="mapping-builder"
       >
         <span class="gl-text-gray-500">{{ $options.i18n.integrationFormSteps.step5.intro }}</span>
-        <!--mapping builder will be added here-->
+        <mapping-builder />
       </gl-form-group>
       <div class="gl-display-flex gl-justify-content-end">
         <gl-button type="reset" class="gl-mr-3 js-no-auto-disable">{{ __('Cancel') }}</gl-button>

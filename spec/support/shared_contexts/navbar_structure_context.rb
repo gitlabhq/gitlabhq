@@ -72,6 +72,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Alerts'),
           _('Incidents'),
           _('Serverless'),
+          _('Terraform'),
           _('Kubernetes'),
           _('Environments'),
           _('Feature Flags'),

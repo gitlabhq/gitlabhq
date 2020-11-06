@@ -1,0 +1,6 @@
+fragment State on TerraformState {
+  id
+  name
+  lockedAt
+  updatedAt
+}

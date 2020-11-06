@@ -1,0 +1,5 @@
+---
+title: Fix loading current directory when changing branches
+merge_request: 46479
+author:
+type: fixed
