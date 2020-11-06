@@ -21,9 +21,6 @@ Updating Geo nodes involves performing:
 NOTE: **Note:**
 These general update steps are not intended for [high-availability deployments](https://docs.gitlab.com/omnibus/update/README.html#multi-node--ha-deployment), and will cause downtime. If you want to avoid downtime, consider using [zero downtime updates](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
 
-DANGER: **Danger:**
-In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
-
 To update the Geo nodes when a new GitLab version is released, update **primary**
 and all **secondary** nodes:
 

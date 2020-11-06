@@ -227,14 +227,15 @@ conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
 
-DANGER: **Danger:**
-In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
+CAUTION: **Caution:**
+   If the secondary node [has been paused](../../../geo/index.md#pausing-and-resuming-replication), this performs
+a point-in-time recovery to the last known state.
+Data that was created on the primary while the secondary was paused will be lost.
 
-1. SSH in to the PostgreSQL node in the **secondary** and trigger PostgreSQL to
-   promote to read-write:
+1. SSH in to the PostgreSQL node in the **secondary** and promote PostgreSQL separately:
 
    ```shell
-   sudo gitlab-pg-ctl promote
+   sudo gitlab-ctl promote-db
    ```
 
    In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
