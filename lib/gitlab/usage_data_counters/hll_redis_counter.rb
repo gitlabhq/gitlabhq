@@ -15,9 +15,9 @@ module Gitlab
       CategoryMismatch = Class.new(EventError)
       UnknownAggregationOperator = Class.new(EventError)
 
-      KNOWN_EVENTS_PATH = 'lib/gitlab/usage_data_counters/known_events/*.yml'
+      KNOWN_EVENTS_PATH = File.expand_path('known_events/*.yml', __dir__)
       ALLOWED_AGGREGATIONS = %i(daily weekly).freeze
-      AGGREGATED_METRICS_PATH = 'lib/gitlab/usage_data_counters/aggregated_metrics/*.yml'
+      AGGREGATED_METRICS_PATH = File.expand_path('aggregated_metrics/*.yml', __dir__)
       ALLOWED_METRICS_AGGREGATIONS = %w[ANY].freeze
 
       # Track event on entity_id
@@ -156,7 +156,7 @@ module Gitlab
         end
 
         def load_yaml_from_path(path)
-          YAML.safe_load(File.read(Rails.root.join(path)))&.map(&:with_indifferent_access)
+          YAML.safe_load(File.read(path))&.map(&:with_indifferent_access)
         end
 
         def known_events_names
