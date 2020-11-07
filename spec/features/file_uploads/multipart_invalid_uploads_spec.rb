@@ -22,13 +22,13 @@ RSpec.describe 'Invalid uploads that must be rejected', :api, :js do
       )
     end
 
-    RSpec.shared_examples 'rejecting invalid keys' do |key_name:, message: nil, status: 500|
+    RSpec.shared_examples 'rejecting invalid keys' do |key_name:, message: nil|
       context "with invalid key #{key_name}" do
         let(:body) { { key_name => file, 'package[test][name]' => 'test' } }
 
         it { expect { subject }.not_to change { Packages::Package.nuget.count } }
 
-        it { expect(subject.code).to eq(status) }
+        it { expect(subject.code).to eq(500) }
 
         it { expect(subject.body).to include(message.presence || "invalid field: \"#{key_name}\"") }
       end
@@ -45,7 +45,7 @@ RSpec.describe 'Invalid uploads that must be rejected', :api, :js do
     # These keys are rejected directly by rack itself.
     # The request will not be received by multipart.rb (can't use the 'handling file uploads' shared example)
     it_behaves_like 'rejecting invalid keys', key_name: 'x' * 11000, message: 'Puma caught this error: exceeded available parameter key space (RangeError)'
-    it_behaves_like 'rejecting invalid keys', key_name: 'package[]test', status: 400, message: 'Bad Request'
+    it_behaves_like 'rejecting invalid keys', key_name: 'package[]test', message: 'Puma caught this error: expected Hash (got Array)'
 
     it_behaves_like 'handling file uploads', 'by rejecting uploads with an invalid key'
   end

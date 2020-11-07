@@ -636,7 +636,9 @@ Group SAML on a self-managed instance is limited when compared to the recommende
 
 ## Troubleshooting
 
-You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog).
+### SAML Response
+
+You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
 
 ### GitLab+SAML Testing Environments
 
@@ -682,7 +684,7 @@ This error means that the IdP doesn't recognize GitLab as a valid sender and
 receiver of SAML requests. Make sure to add the GitLab callback URL to the approved
 audiences of the IdP server.
 
-### Missing claims
+### Missing claims, or `Email can't be blank` errors
 
 The IdP server needs to pass certain information in order for GitLab to either
 create an account, or match the login information to an existing account. `email`
@@ -710,3 +712,10 @@ For this you need take the following into account:
 
 Make sure that one of the above described scenarios is valid, or the requests will
 fail with one of the mentioned errors.
+
+### User is blocked when signing in through SAML
+
+The following are the most likely reasons that a user is blocked when signing in through SAML:
+
+- In the configuration, `gitlab_rails['omniauth_block_auto_created_users'] = true` is set and this is the user's first time signing in.
+- There are [`required_groups`](#required-groups) configured, but the user is not a member of one.

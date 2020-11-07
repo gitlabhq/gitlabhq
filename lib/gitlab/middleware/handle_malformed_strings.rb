@@ -5,8 +5,6 @@ module Gitlab
     # There is no valid reason for a request to contain a malformed string
     # so just return HTTP 400 (Bad Request) if we receive one
     class HandleMalformedStrings
-      include ActionController::HttpAuthentication::Basic
-
       NULL_BYTE_REGEX = Regexp.new(Regexp.escape("\u0000")).freeze
 
       attr_reader :app
@@ -23,26 +21,16 @@ module Gitlab
 
       private
 
-      def request_contains_malformed_string?(env)
+      def request_contains_malformed_string?(request)
         return false if ENV['DISABLE_REQUEST_VALIDATION'] == '1'
 
-        # Duplicate the env, so it is not modified when accessing the parameters
-        # https://github.com/rails/rails/blob/34991a6ae2fc68347c01ea7382fa89004159e019/actionpack/lib/action_dispatch/http/parameters.rb#L59
-        # The modification causes problems with our multipart middleware
-        request = ActionDispatch::Request.new(env.dup)
+        request = Rack::Request.new(request)
 
         return true if malformed_path?(request.path)
-        return true if credentials_malformed?(request)
 
         request.params.values.any? do |value|
           param_has_null_byte?(value)
         end
-      rescue ActionController::BadRequest
-        # If we can't build an ActionDispatch::Request something's wrong
-        # This would also happen if `#params` contains invalid UTF-8
-        # in this case we'll return a 400
-        #
-        true
       end
 
       def malformed_path?(path)
@@ -50,13 +38,6 @@ module Gitlab
       rescue ArgumentError
         # Rack::Utils.unescape raised this, path is malformed.
         true
-      end
-
-      def credentials_malformed?(request)
-        credentials = decode_credentials(request).presence
-        return false unless credentials
-
-        string_malformed?(credentials)
       end
 
       def param_has_null_byte?(value, depth = 0)
