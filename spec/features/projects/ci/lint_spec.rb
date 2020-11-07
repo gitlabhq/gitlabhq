@@ -11,7 +11,6 @@ RSpec.describe 'CI Lint', :js do
   let(:content_selector) { '.content .view-lines' }
 
   before do
-    stub_feature_flags(ci_lint_vue: false)
     project.add_developer(user)
     sign_in(user)
 
@@ -26,7 +25,6 @@ RSpec.describe 'CI Lint', :js do
   describe 'YAML parsing' do
     shared_examples 'validates the YAML' do
       before do
-        stub_feature_flags(ci_lint_vue: false)
         click_on 'Validate'
       end
 
@@ -68,14 +66,6 @@ RSpec.describe 'CI Lint', :js do
 
       it_behaves_like 'validates the YAML'
     end
-
-    describe 'YAML revalidate' do
-      let(:yaml_content) { 'my yaml content' }
-
-      it 'loads previous YAML content after validation' do
-        expect(page).to have_field('content', with: 'my yaml content', visible: false, type: 'textarea')
-      end
-    end
   end
 
   describe 'YAML clearing' do
@@ -89,7 +79,7 @@ RSpec.describe 'CI Lint', :js do
       end
 
       it 'YAML content is cleared' do
-        expect(page).to have_field('content', with: '', visible: false, type: 'textarea')
+        expect(page).to have_field(class: 'inputarea', with: '', visible: false, type: 'textarea')
       end
     end
   end

@@ -47,9 +47,9 @@ RSpec.describe Projects::Ci::LintsController do
   describe 'POST #create' do
     subject { post :create, params: params }
 
-    let(:format) { :html }
-    let(:params) { { namespace_id: project.namespace, project_id: project, content: content, format: format } }
+    let(:params) { { namespace_id: project.namespace, project_id: project, content: content, format: :json } }
     let(:remote_file_path) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
+    let(:parsed_body) { Gitlab::Json.parse(response.body) }
 
     let(:remote_file_content) do
       <<~HEREDOC
@@ -72,17 +72,23 @@ RSpec.describe Projects::Ci::LintsController do
       HEREDOC
     end
 
-    shared_examples 'successful request with format json' do
-      context 'with format json' do
-        let(:format) { :json }
-        let(:parsed_body) { Gitlab::Json.parse(response.body) }
+    shared_examples 'returns a successful validation' do
+      before do
+        subject
+      end
 
-        it 'renders json' do
-          expect(response).to have_gitlab_http_status :ok
-          expect(response.content_type).to eq 'application/json'
-          expect(parsed_body).to include('errors', 'warnings', 'jobs', 'valid')
-          expect(parsed_body).to match_schema('entities/lint_result_entity')
-        end
+      it 'returns successfully' do
+        expect(response).to have_gitlab_http_status :ok
+      end
+
+      it 'renders json' do
+        expect(response.content_type).to eq 'application/json'
+        expect(parsed_body).to include('errors', 'warnings', 'jobs', 'valid')
+        expect(parsed_body).to match_schema('entities/lint_result_entity')
+      end
+
+      it 'retrieves project' do
+        expect(assigns(:project)).to eq(project)
       end
     end
 
@@ -92,25 +98,7 @@ RSpec.describe Projects::Ci::LintsController do
         project.add_developer(user)
       end
 
-      shared_examples 'returns a successful validation' do
-        before do
-          subject
-        end
-
-        it 'returns successfully' do
-          expect(response).to have_gitlab_http_status :ok
-        end
-
-        it 'renders show page' do
-          expect(response).to render_template :show
-        end
-
-        it 'retrieves project' do
-          expect(assigns(:project)).to eq(project)
-        end
-
-        it_behaves_like 'successful request with format json'
-      end
+      it_behaves_like 'returns a successful validation'
 
       context 'using legacy validation (YamlProcessor)' do
         it_behaves_like 'returns a successful validation'
@@ -166,27 +154,23 @@ RSpec.describe Projects::Ci::LintsController do
         subject
       end
 
+      it_behaves_like 'returns a successful validation'
+
       it 'assigns result with errors' do
-        expect(assigns[:result].errors).to match_array([
+        expect(parsed_body['errors']).to match_array([
           'jobs rubocop config should implement a script: or a trigger: keyword',
           'jobs config should contain at least one visible job'
         ])
       end
 
-      it 'render show page' do
-        expect(response).to render_template :show
-      end
-
-      it_behaves_like 'successful request with format json'
-
       context 'with dry_run mode' do
         subject { post :create, params: params.merge(dry_run: 'true') }
 
         it 'assigns result with errors' do
-          expect(assigns[:result].errors).to eq(['jobs rubocop config should implement a script: or a trigger: keyword'])
+          expect(parsed_body['errors']).to eq(['jobs rubocop config should implement a script: or a trigger: keyword'])
         end
 
-        it_behaves_like 'successful request with format json'
+        it_behaves_like 'returns a successful validation'
       end
     end
 
@@ -199,14 +183,6 @@ RSpec.describe Projects::Ci::LintsController do
 
       it 'responds with 404' do
         expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      context 'with format json' do
-        let(:format) { :json }
-
-        it 'responds with 404' do
-          expect(response).to have_gitlab_http_status :not_found
-        end
       end
     end
   end

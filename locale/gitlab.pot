@@ -3154,9 +3154,6 @@ msgstr ""
 msgid "An error occurred while rendering the editor"
 msgstr ""
 
-msgid "An error occurred while rendering the linter"
-msgstr ""
-
 msgid "An error occurred while reordering issues."
 msgstr ""
 

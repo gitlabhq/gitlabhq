@@ -1,7 +1,0 @@
----
-name: ci_lint_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42401
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/249661
-group: group::continuous integration
-type: development
-default_enabled: true
