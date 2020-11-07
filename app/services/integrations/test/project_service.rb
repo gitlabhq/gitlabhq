@@ -35,6 +35,8 @@ module Integrations
             wiki_page_events_data
           when 'deployment'
             deployment_events_data
+          when 'release'
+            releases_events_data
           else
             push_events_data
           end

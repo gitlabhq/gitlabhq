@@ -213,7 +213,7 @@ export default {
     class="js-file-title file-title file-title-flex-parent"
     @click.self="handleToggleFile"
   >
-    <div class="file-header-content gl-display-flex gl-align-items-center gl-pr-0!">
+    <div class="file-header-content">
       <gl-icon
         v-if="collapsible"
         ref="collapseIcon"
@@ -226,7 +226,7 @@ export default {
       <a
         ref="titleWrapper"
         :v-once="!viewDiffsFileByFile"
-        class="gl-mr-2 gl-text-decoration-none! gl-text-truncate"
+        class="gl-mr-2 gl-text-decoration-none! gl-word-break-all"
         :href="titleLink"
         @click="handleFileNameClick"
       >
@@ -280,12 +280,12 @@ export default {
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
-      <span v-if="isUsingLfs" class="label label-lfs gl-mr-2"> {{ __('LFS') }} </span>
+      <span v-if="isUsingLfs" class="badge label label-lfs gl-mr-2"> {{ __('LFS') }} </span>
     </div>
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-flex align-items-center flex-wrap"
+      class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start"
     >
       <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
       <gl-button-group class="gl-pt-0!">

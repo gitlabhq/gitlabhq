@@ -30,5 +30,15 @@ module Releases
     def external?
       !internal?
     end
+
+    def hook_attrs
+      {
+        id: id,
+        external: external?,
+        link_type: link_type,
+        name: name,
+        url: url
+      }
+    end
   end
 end

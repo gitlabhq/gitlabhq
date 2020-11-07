@@ -2006,6 +2006,7 @@ GET /projects/:id/hooks/:hook_id
   "pipeline_events": true,
   "wiki_page_events": true,
   "deployment_events": true,
+  "releases_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -2065,6 +2066,7 @@ PUT /projects/:id/hooks/:hook_id
 | `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; this isn't returned in the response. |
 | `url`                        | string         | **{check-circle}** Yes | The hook URL. |
 | `wiki_events`                | boolean        | **{dotted-circle}** No | Trigger hook on wiki events. |
+| `releases_events`            | boolean        | **{dotted-circle}** No | Trigger hook on release events. |
 
 ### Delete project hook
 

@@ -1043,6 +1043,7 @@ GET /groups/:id/hooks/:hook_id
   "pipeline_events": true,
   "wiki_page_events": true,
   "deployment_events": true,
+  "releases_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -1071,6 +1072,7 @@ POST /groups/:id/hooks
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
+| `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -1098,6 +1100,7 @@ PUT /groups/:id/hooks/:hook_id
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
 | `wiki_events`                | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
+| `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; this will not be returned in the response |
 

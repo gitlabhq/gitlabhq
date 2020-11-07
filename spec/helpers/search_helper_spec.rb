@@ -477,7 +477,7 @@ RSpec.describe SearchHelper do
     end
   end
 
-  describe '#highlight_and_truncate_issue' do
+  describe '#highlight_and_truncate_issuable' do
     let(:description) { 'hello world' }
     let(:issue) { create(:issue, description: description) }
     let(:user) { create(:user) }
@@ -486,7 +486,7 @@ RSpec.describe SearchHelper do
       allow(self).to receive(:current_user).and_return(user)
     end
 
-    subject { highlight_and_truncate_issue(issue, 'test', {}) }
+    subject { highlight_and_truncate_issuable(issue, 'test', {}) }
 
     context 'when description is not present' do
       let(:description) { nil }
@@ -542,6 +542,40 @@ RSpec.describe SearchHelper do
         expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
 
         subject
+      end
+    end
+  end
+
+  describe '#issuable_state_to_badge_class' do
+    context 'with merge request' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_to_badge_class(build(:merge_request, :merged))).to eq(:primary)
+        expect(issuable_state_to_badge_class(build(:merge_request, :closed))).to eq(:danger)
+        expect(issuable_state_to_badge_class(build(:merge_request, :opened))).to eq(:success)
+      end
+    end
+
+    context 'with an issue' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_to_badge_class(build(:issue, :closed))).to eq(:info)
+        expect(issuable_state_to_badge_class(build(:issue, :opened))).to eq(:success)
+      end
+    end
+  end
+
+  describe '#issuable_state_text' do
+    context 'with merge request' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_text(build(:merge_request, :merged))).to eq(_('Merged'))
+        expect(issuable_state_text(build(:merge_request, :closed))).to eq(_('Closed'))
+        expect(issuable_state_text(build(:merge_request, :opened))).to eq(_('Open'))
+      end
+    end
+
+    context 'with an issue' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_text(build(:issue, :closed))).to eq(_('Closed'))
+        expect(issuable_state_text(build(:issue, :opened))).to eq(_('Open'))
       end
     end
   end

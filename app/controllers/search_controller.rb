@@ -9,6 +9,7 @@ class SearchController < ApplicationController
   SCOPE_PRELOAD_METHOD = {
     projects: :with_web_entity_associations,
     issues: :with_web_entity_associations,
+    merge_requests: :with_web_entity_associations,
     epics: :with_web_entity_associations
   }.freeze
 

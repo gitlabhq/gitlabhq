@@ -367,10 +367,10 @@ module SearchHelper
   end
 
   # _search_highlight is used in EE override
-  def highlight_and_truncate_issue(issue, search_term, _search_highlight)
-    return unless issue.description.present?
+  def highlight_and_truncate_issuable(issuable, search_term, _search_highlight)
+    return unless issuable.description.present?
 
-    simple_search_highlight_and_truncate(issue.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
+    simple_search_highlight_and_truncate(issuable.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
   end
 
   def show_user_search_tab?
@@ -378,6 +378,36 @@ module SearchHelper
       project_search_tabs?(:members)
     else
       can?(current_user, :read_users_list)
+    end
+  end
+
+  def issuable_state_to_badge_class(issuable)
+    # Closed is considered "danger" for MR so we need to handle separately
+    if issuable.is_a?(::MergeRequest)
+      if issuable.merged?
+        :primary
+      elsif issuable.closed?
+        :danger
+      else
+        :success
+      end
+    else
+      if issuable.closed?
+        :info
+      else
+        :success
+      end
+    end
+  end
+
+  def issuable_state_text(issuable)
+    case issuable.state
+    when 'merged'
+      _("Merged")
+    when 'closed'
+      _("Closed")
+    else
+      _("Open")
     end
   end
 end

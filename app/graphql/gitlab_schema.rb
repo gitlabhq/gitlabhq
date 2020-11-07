@@ -78,6 +78,13 @@ class GitlabSchema < GraphQL::Schema
       find_by_gid(gid)
     end
 
+    def resolve_type(type, object, ctx = :__undefined__)
+      tc = type.metadata[:type_class]
+      return if tc.respond_to?(:assignable?) && !tc.assignable?(object)
+
+      super
+    end
+
     # Find an object by looking it up from its 'GlobalID'.
     #
     # * For `ApplicationRecord`s, this is equivalent to

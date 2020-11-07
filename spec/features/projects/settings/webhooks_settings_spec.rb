@@ -45,6 +45,7 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         expect(page).to have_content('Merge requests events')
         expect(page).to have_content('Pipeline events')
         expect(page).to have_content('Wiki page events')
+        expect(page).to have_content('Releases events')
       end
 
       it 'create webhook' do

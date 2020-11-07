@@ -24,6 +24,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
       :project_wiki      | ->(wiki)          { "/#{wiki.container.full_path}/-/wikis/home" }
+      :release           | ->(release)       { "/#{release.project.full_path}/-/releases/#{release.tag}" }
       :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
       :design            | ->(design)        { "/#{design.project.full_path}/-/design_management/designs/#{design.id}/raw_image" }
 

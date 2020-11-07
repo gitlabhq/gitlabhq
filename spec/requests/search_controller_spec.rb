@@ -45,14 +45,9 @@ RSpec.describe SearchController, type: :request do
       let(:object) { :merge_request }
       let(:creation_args) { { source_project: project, title: 'bar' } }
       let(:params) { { search: 'bar', scope: 'merge_requests' } }
-      # some N+1 queries exist
-      # each merge request require 4 extra queries for:
-      # - one for projects
-      # - one for namespaces
-      # - two for routes
-      # plus 4 additional queries run for the logged in user:
+      # there are 4 additional queries run for the logged in user:
       #   - (1) geo_nodes, (1) users, (2) broadcast_messages
-      let(:threshold) { 16 }
+      let(:threshold) { 4 }
 
       it_behaves_like 'an efficient database result'
     end

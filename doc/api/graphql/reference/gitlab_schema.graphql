@@ -21475,7 +21475,7 @@ input UpdateIssueInput {
   """
   The ID of the parent epic. NULL when removing the association
   """
-  epicId: ID
+  epicId: EpicID
 
   """
   The desired health status

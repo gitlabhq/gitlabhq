@@ -83,6 +83,15 @@ class Release < ApplicationRecord
     self.milestones.map {|m| m.title }.sort.join(", ")
   end
 
+  def to_hook_data(action)
+    Gitlab::HookData::ReleaseBuilder.new(self).build(action)
+  end
+
+  def execute_hooks(action)
+    hook_data = to_hook_data(action)
+    project.execute_hooks(hook_data, :release_hooks)
+  end
+
   private
 
   def actual_sha

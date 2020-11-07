@@ -62412,7 +62412,7 @@
               "description": "The ID of the parent epic. NULL when removing the association",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "EpicID",
                 "ofType": null
               },
               "defaultValue": null

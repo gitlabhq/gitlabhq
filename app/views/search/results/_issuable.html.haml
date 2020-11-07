@@ -1,0 +1,10 @@
+%div{ class: 'search-result-row gl-pb-3! gl-mt-5 gl-mb-0!' }
+  %span.gl-display-flex.gl-align-items-center
+    %span.badge.badge-pill.gl-badge.sm{ class: "badge-#{issuable_state_to_badge_class(issuable)}" }= issuable_state_text(issuable)
+    = sprite_icon('eye-slash', css_class: 'gl-text-gray-500 gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
+    = link_to issuable_path(issuable), data: { track_event: 'click_text', track_label: "#{issuable.class.name.downcase}_title", track_property: 'search_result' }, class: 'gl-w-full' do
+      %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issuable.title
+  .gl-text-gray-500.gl-my-3
+    = sprintf(s_(' %{project_name}#%{issuable_iid} &middot; opened %{issuable_created} by %{author}'), { project_name: issuable.project.full_name, issuable_iid: issuable.iid, issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(@project, issuable.author, avatar: false) }).html_safe
+  .description.term.col-sm-10.gl-px-0
+    = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)

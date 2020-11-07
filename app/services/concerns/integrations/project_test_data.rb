@@ -58,5 +58,12 @@ module Integrations
 
       Gitlab::DataBuilder::Deployment.build(deployment)
     end
+
+    def releases_events_data
+      release = project.releases.first
+      return { error: s_('TestHooks|Ensure the project has releases.') } unless release.present?
+
+      release.to_hook_data('create')
+    end
   end
 end

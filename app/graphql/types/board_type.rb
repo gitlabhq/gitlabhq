@@ -4,7 +4,7 @@ module Types
   class BoardType < BaseObject
     graphql_name 'Board'
     description 'Represents a project or group board'
-
+    accepts ::Board
     authorize :read_board
 
     field :id, type: GraphQL::ID_TYPE, null: false,

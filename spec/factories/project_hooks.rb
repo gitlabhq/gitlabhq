@@ -23,6 +23,7 @@ FactoryBot.define do
       wiki_page_events { true }
       deployment_events { true }
       feature_flag_events { true }
+      releases_events { true }
     end
   end
 end

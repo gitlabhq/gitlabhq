@@ -2,7 +2,7 @@
 .js-file-title.file-title-flex-parent
   = render 'projects/blob/header_content', blob: blob
 
-  .file-actions<
+  .file-actions.gl-display-flex.gl-flex-fill-1.gl-align-self-start.gl-md-justify-content-end<
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
     - if Feature.enabled?(:consolidated_edit_button, @project)
       = render 'shared/web_ide_button', blob: blob

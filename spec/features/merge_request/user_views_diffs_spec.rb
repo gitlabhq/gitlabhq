@@ -61,7 +61,7 @@ RSpec.describe 'User views diffs', :js do
   end
 
   it 'expands all diffs' do
-    first('.js-file-title').click
+    first('.diff-toggle-caret').click
 
     expect(page).to have_button('Expand all')
 

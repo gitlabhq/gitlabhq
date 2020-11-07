@@ -19,8 +19,8 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "btn-success btn", data: { qa_selector: "create_milestone_button" }
-      = link_to "Cancel", group_milestones_path(@group), class: "btn btn-cancel"
+      = f.submit 'Create milestone', class: "btn-success gl-button btn", data: { qa_selector: "create_milestone_button" }
+      = link_to "Cancel", group_milestones_path(@group), class: "btn gl-button btn-cancel"
     - else
-      = f.submit 'Update milestone', class: "btn-success btn"
-      = link_to "Cancel", group_milestone_path(@group, @milestone), class: "btn btn-cancel"
+      = f.submit 'Update milestone', class: "btn-success gl-button btn"
+      = link_to "Cancel", group_milestone_path(@group, @milestone), class: "btn gl-button btn-cancel"

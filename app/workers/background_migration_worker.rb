@@ -59,8 +59,10 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
 
     database_unhealthy_counter.increment if lease_obtained && !healthy_db
 
-    # If we've tried several times to get a lease with a healthy DB without success, just give up.
-    # Otherwise we could end up in an infinite rescheduling loop.
+    # When the DB is unhealthy or the lease can't be obtained after several tries,
+    # then give up on the job and log a warning. Otherwise we could end up in
+    # an infinite rescheduling loop. Jobs can be tracked in the database with the
+    # use of Gitlab::Database::BackgroundMigrationJob
     if !perform && attempts_left < 0
       msg = if !lease_obtained
               'Job could not get an exclusive lease after several tries. Giving up.'

@@ -70,6 +70,10 @@ module GitlabRoutingHelper
     project_commit_url(entity.project, entity.sha, *args)
   end
 
+  def release_url(entity, *args)
+    project_release_url(entity.project, entity, *args)
+  end
+
   def preview_markdown_path(parent, *args)
     return group_preview_markdown_path(parent, *args) if parent.is_a?(Group)
 

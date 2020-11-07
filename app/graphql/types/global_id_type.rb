@@ -30,6 +30,8 @@ module Types
     # @param value [String]
     # @return [GID]
     def self.coerce_input(value, _ctx)
+      return if value.nil?
+
       gid = GlobalID.parse(value)
       raise GraphQL::CoercionError, "#{value.inspect} is not a valid Global ID" if gid.nil?
       raise GraphQL::CoercionError, "#{value.inspect} is not a Gitlab Global ID" unless gid.app == GlobalID.app

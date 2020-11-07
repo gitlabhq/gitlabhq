@@ -30,6 +30,8 @@ module TestHooks
           pipeline_events_data
         when 'wiki_page_events'
           wiki_page_events_data
+        when 'releases_events'
+          releases_events_data
         end
       end
     end

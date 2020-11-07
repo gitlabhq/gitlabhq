@@ -81,6 +81,10 @@ module Releases
       params.key?(:milestones)
     end
 
+    def execute_hooks(release, action = 'create')
+      release.execute_hooks(action)
+    end
+
     # overridden in EE
     def project_group_id; end
   end
