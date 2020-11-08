@@ -16,7 +16,6 @@ const initStaticSiteEditor = el => {
     //       so we are adding them here as a convenience for future use.
     // eslint-disable-next-line no-unused-vars
     staticSiteGenerator,
-    // eslint-disable-next-line no-unused-vars
     imageUploadPath,
     mounts,
   } = el.dataset;
@@ -31,6 +30,7 @@ const initStaticSiteEditor = el => {
     returnUrl,
     sourcePath,
     username,
+    imageUploadPath,
   });
 
   return new Vue({

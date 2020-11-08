@@ -20,6 +20,4 @@ export const TRACKING_ACTION_CREATE_COMMIT = 'create_commit';
 export const TRACKING_ACTION_CREATE_MERGE_REQUEST = 'create_merge_request';
 export const TRACKING_ACTION_INITIALIZE_EDITOR = 'initialize_editor';
 
-export const DEFAULT_IMAGE_UPLOAD_PATH = 'source/images/uploads/';
-
 export const MR_META_LOCAL_STORAGE_KEY = 'sse-merge-request-meta-storage-key';

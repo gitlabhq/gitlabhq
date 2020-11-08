@@ -79,3 +79,5 @@ export const mounts = [
     target: '',
   },
 ];
+
+export const imageRoot = 'source/images/';

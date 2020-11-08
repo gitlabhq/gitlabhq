@@ -140,6 +140,7 @@ export default {
         :return-url="appData.returnUrl"
         :mounts="appData.mounts"
         :project="appData.project"
+        :image-root="appData.imageUploadPath"
         @submit="onPrepareSubmit"
       />
       <edit-meta-modal

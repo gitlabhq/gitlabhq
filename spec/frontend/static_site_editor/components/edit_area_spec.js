@@ -17,6 +17,7 @@ import {
   returnUrl,
   mounts,
   project,
+  imageRoot,
 } from '../mock_data';
 
 jest.mock('~/static_site_editor/services/formatter', () => jest.fn(str => `${str} format-pass`));
@@ -35,6 +36,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
         returnUrl,
         mounts,
         project,
+        imageRoot,
         savingChanges,
         ...propsData,
       },

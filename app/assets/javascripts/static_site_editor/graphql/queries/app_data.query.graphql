@@ -10,5 +10,6 @@ query appData {
       source
       target
     }
+    imageUploadPath
   }
 }

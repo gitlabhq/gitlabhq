@@ -27,6 +27,7 @@ type AppData {
   sourcePath: String!
   username: String!
   mounts: [Mount]!
+  imageUploadPath: String!
 }
 
 input HasSubmittedChangesInput {

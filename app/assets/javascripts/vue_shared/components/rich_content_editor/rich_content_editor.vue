@@ -53,7 +53,6 @@ export default {
     imageRoot: {
       type: String,
       required: true,
-      validator: prop => prop.endsWith('/'),
     },
   },
   data() {
