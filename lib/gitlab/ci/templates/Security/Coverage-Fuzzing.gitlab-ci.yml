@@ -11,6 +11,14 @@ variables:
   COVFUZZ_URL_PREFIX: "https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw"
 
 
+coverage_fuzzing_unlicensed:
+  stage: test
+  allow_failure: true
+  rules:
+    - if: $GITLAB_FEATURES !~ /\bcoverage_fuzzing\b/ && $COVFUZZ_DISABLED == null
+  script:
+    - echo "ERROR Your GitLab project is missing licensing for Coverage Fuzzing" && exit 1
+
 .fuzz_base:
   stage: fuzz
   allow_failure: true

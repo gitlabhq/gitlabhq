@@ -22,7 +22,7 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
       if Rails.env.test?
         command.push(
           'BUNDLE_FLAGS=--no-deployment',
-          "BUNDLE_PATH=#{Bundler.bundle_path}")
+          "GEM_HOME=#{Bundler.bundle_path}")
       end
 
       storage_paths = { 'default' => args.storage_path }

@@ -31,6 +31,29 @@ GitLab displays identified secrets visibly in a few places:
 - Detecting unintentional commit of secrets like keys, passwords, and API tokens.
 - Performing a single or recurring scan of the full history of your repository for secrets.
 
+## Supported secrets
+
+Secret Detection detects a variety of common secrets by default. You can also customize the secret detection patterns using [custom rulesets](#custom-rulesets).
+
+The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks/gitleaks.toml) includes the following key types: 
+
+- Cloud services:
+  - Amazon Web Services (AWS)
+  - Google Cloud Platform (GCP) 
+Encryption keys:  
+  - PKCS8
+  - RSA
+  - SSH
+  - PGP
+- Social media platforms:
+  - Facebook API
+  - Twitter API
+- Cloud SaaS vendors: 
+  - GitHub API
+  - Slack Token
+  - Stripe API
+  - Generic API key strings starting with `api-`
+
 ## Requirements
 
 To run Secret Detection jobs, by default, you need GitLab Runner with the
