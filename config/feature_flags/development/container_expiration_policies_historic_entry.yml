@@ -2,6 +2,7 @@
 name: container_expiration_policies_historic_entry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44444
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/262639
+milestone: '13.5'
 type: development
 group: group::package
 default_enabled: false

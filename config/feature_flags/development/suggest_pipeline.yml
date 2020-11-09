@@ -2,6 +2,7 @@
 name: suggest_pipeline
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45926
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267492
+milestone: '13.6'
 type: development
 group: group::expansion
 default_enabled: true

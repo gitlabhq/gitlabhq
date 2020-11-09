@@ -646,7 +646,7 @@ describe('setAssignees', () => {
 
   it('calls mutate with the correct values', async () => {
     await actions.setAssignees(
-      { commit: () => {}, getters: { getActiveIssue: { iid, referencePath: refPath } } },
+      { commit: () => {}, getters: { activeIssue: { iid, referencePath: refPath } } },
       [name],
     );
 
@@ -660,7 +660,7 @@ describe('setAssignees', () => {
     testAction(
       actions.setAssignees,
       {},
-      { getActiveIssue: { iid, referencePath: refPath }, commit: () => {} },
+      { activeIssue: { iid, referencePath: refPath }, commit: () => {} },
       [
         {
           type: 'UPDATE_ISSUE_BY_ID',

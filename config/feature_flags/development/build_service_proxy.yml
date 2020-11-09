@@ -1,7 +1,8 @@
 ---
 name: build_service_proxy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9723
-rollout_issue_url:
-group: group::editor
+rollout_issue_url: 
+milestone: '11.11'
 type: development
+group: group::editor
 default_enabled: false

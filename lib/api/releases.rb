@@ -91,7 +91,7 @@ module API
         optional :name,        type: String, desc: 'The name of the release'
         optional :description, type: String, desc: 'Release notes with markdown support'
         optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready.'
-        optional :milestones,  type: Array, desc: 'The titles of the related milestones'
+        optional :milestones,  type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The titles of the related milestones'
       end
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_update_release!

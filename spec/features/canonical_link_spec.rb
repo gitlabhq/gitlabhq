@@ -67,18 +67,4 @@ RSpec.describe 'Canonical link' do
     let(:request_url) { explore_root_path }
     let(:expected_url) { explore_projects_url }
   end
-
-  context 'when feature flag generic_canonical is disabled' do
-    before do
-      stub_feature_flags(generic_canonical: false)
-    end
-
-    it_behaves_like 'does not show canonical link' do
-      let(:request_url) { issue_request + '/' }
-    end
-
-    it_behaves_like 'does not show canonical link' do
-      let(:request_url) { project_request + '/' }
-    end
-  end
 end

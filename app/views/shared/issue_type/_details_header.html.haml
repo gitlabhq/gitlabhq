@@ -36,9 +36,9 @@
             - unless current_user == issuable.author
               %li= link_to _('Report abuse'), new_abuse_report_path(user_id: issuable.author.id, ref_url: issue_url(issuable))
             - if can_update_issue
-              %li= link_to _('Close %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, issue_path(issuable, issue: { state_event: :close }, format: 'json'), class: "btn-close js-btn-issue-action #{issue_button_visibility(issuable, true)}", title: _('Close %{display_issuable_type}') % { display_issuable_type: display_issuable_type }
+              %li= link_to _('Close %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, issue_path(issuable, issue: { state_event: :close }, format: 'json'), class: "btn-close js-btn-issue-action #{issue_button_visibility(issuable, true)}", title: _('Close %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, data: { endpoint: close_reopen_issuable_path(issuable) }
             - if can_reopen_issue
-              %li= link_to _('Reopen %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, issue_path(issuable, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen js-btn-issue-action #{issue_button_visibility(issuable, false)}", title: _('Reopen %{display_issuable_type}') % { display_issuable_type: display_issuable_type }
+              %li= link_to _('Reopen %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, issue_path(issuable, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen js-btn-issue-action #{issue_button_visibility(issuable, false)}", title: _('Reopen %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, data: { endpoint: close_reopen_issuable_path(issuable) }
             - if can_report_spam
               %li= link_to _('Submit as spam'), mark_as_spam_project_issue_path(@project, issuable), method: :post, class: 'btn-spam', title: 'Submit as spam'
             - if can_create_issue

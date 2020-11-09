@@ -316,14 +316,14 @@ export default {
       .mutate({
         mutation: updateAssignees,
         variables: {
-          iid: getters.getActiveIssue.iid,
-          projectPath: getters.getActiveIssue.referencePath.split('#')[0],
+          iid: getters.activeIssue.iid,
+          projectPath: getters.activeIssue.referencePath.split('#')[0],
           assigneeUsernames,
         },
       })
       .then(({ data }) => {
         commit('UPDATE_ISSUE_BY_ID', {
-          issueId: getters.getActiveIssue.id,
+          issueId: getters.activeIssue.id,
           prop: 'assignees',
           value: data.issueSetAssignees.issue.assignees.nodes,
         });

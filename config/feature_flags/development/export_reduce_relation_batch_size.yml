@@ -1,7 +1,8 @@
 ---
 name: export_reduce_relation_batch_size
-introduced_by_url:
-rollout_issue_url:
-group: group::import
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::import
 default_enabled: false

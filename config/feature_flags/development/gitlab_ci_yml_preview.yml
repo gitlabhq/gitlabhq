@@ -2,6 +2,7 @@
 name: gitlab_ci_yml_preview
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40880
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/244905
-group: group::ci
+milestone: '13.4'
 type: development
+group: group::ci
 default_enabled: false

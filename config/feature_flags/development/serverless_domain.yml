@@ -2,6 +2,7 @@
 name: serverless_domain
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21222
 rollout_issue_url: 
-group: group::configure
+milestone: '12.8'
 type: development
+group: group::configure
 default_enabled: false

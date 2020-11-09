@@ -2,6 +2,7 @@
 name: web_ide_primary_edit
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35957
 rollout_issue_url: 
-group: group::editor
+milestone: '13.3'
 type: development
+group: group::editor
 default_enabled: false

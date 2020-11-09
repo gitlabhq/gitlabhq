@@ -998,6 +998,17 @@ RSpec.describe API::Releases do
           end
         end
 
+        context 'without milestones parameter' do
+          let(:params) { { name: 'some new name' } }
+
+          it 'does not change the milestone' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(returned_milestones).to match_array(['v1.0'])
+          end
+        end
+
         context 'multiple milestones' do
           context 'with one new' do
             let!(:milestone2) { create(:milestone, project: project, title: 'milestone2') }

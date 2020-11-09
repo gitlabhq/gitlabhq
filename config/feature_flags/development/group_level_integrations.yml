@@ -2,6 +2,7 @@
 name: group_level_integrations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27557
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/238575
-group: group::ecosystem
+milestone: '12.10'
 type: development
+group: group::ecosystem
 default_enabled: false

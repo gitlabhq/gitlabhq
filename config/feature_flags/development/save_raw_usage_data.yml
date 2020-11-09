@@ -1,7 +1,8 @@
 ---
 name: save_raw_usage_data
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38457
-rollout_issue_url:
-group: group::product analytics
+rollout_issue_url: 
+milestone: '13.3'
 type: development
+group: group::product analytics
 default_enabled: false

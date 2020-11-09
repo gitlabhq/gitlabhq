@@ -2,6 +2,7 @@
 name: api_json_content_type
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42229
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/270067
-group: group::ecosystem
+milestone: '13.6'
 type: development
+group: group::ecosystem
 default_enabled: false

@@ -2,6 +2,7 @@
 name: ci_runners_tokens_optional_encryption
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cbba8fe02b0ea3adabcfe18685c9af6be3859e2d
 rollout_issue_url: 
-group: group::continuous integration
+milestone: 
 type: development
+group: group::continuous integration
 default_enabled: true

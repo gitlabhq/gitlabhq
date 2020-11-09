@@ -1,7 +1,8 @@
 ---
 name: usage_data_g_compliance_dashboard
-introduced_by_url:
-rollout_issue_url:
-group: group::compliance
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::compliance
 default_enabled: false

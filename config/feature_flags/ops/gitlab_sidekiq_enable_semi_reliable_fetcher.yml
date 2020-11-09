@@ -2,6 +2,7 @@
 name: gitlab_sidekiq_enable_semi_reliable_fetcher
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: ops
+group: 
 default_enabled: true

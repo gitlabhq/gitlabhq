@@ -2,6 +2,7 @@
 name: feature_flags_legacy_read_only
 introduced_by_url: 
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/240985
-group: group::progressive delivery
+milestone: '13.7'
 type: development
+group: group::progressive delivery
 default_enabled: true

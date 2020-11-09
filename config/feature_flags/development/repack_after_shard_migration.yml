@@ -2,6 +2,7 @@
 name: repack_after_shard_migration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21502
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/195597
-group: group::source code
+milestone: '12.6'
 type: development
+group: group::source code
 default_enabled: false

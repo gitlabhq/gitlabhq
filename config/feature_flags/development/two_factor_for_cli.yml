@@ -2,6 +2,7 @@
 name: two_factor_for_cli
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39703
 rollout_issue_url: 
+milestone: '13.5'
 type: development
 group: group::access
 default_enabled: false

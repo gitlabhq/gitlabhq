@@ -1,0 +1,7 @@
+---
+name: dynamic_image_resizing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45050
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/266986
+type: ops
+group: group::memory
+default_enabled: true

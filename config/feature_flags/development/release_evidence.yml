@@ -2,6 +2,7 @@
 name: release_evidence
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26509
 rollout_issue_url: 
-group: group::release management
+milestone: '12.10'
 type: development
+group: group::release management
 default_enabled: true

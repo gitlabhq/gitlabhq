@@ -2,6 +2,7 @@
 name: use_workhorse_s3_client
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: development
+group: 
 default_enabled: true

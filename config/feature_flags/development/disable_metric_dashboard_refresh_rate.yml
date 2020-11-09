@@ -1,7 +1,8 @@
 ---
 name: disable_metric_dashboard_refresh_rate
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229831
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37195
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229841
-group: group::health
+milestone: '13.2'
 type: development
+group: group::health
 default_enabled: false

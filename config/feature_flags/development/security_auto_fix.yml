@@ -1,7 +1,8 @@
 ---
 name: security_auto_fix
-introduced_by_url:
-rollout_issue_url:
-group: group::composition analysis
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::composition analysis
 default_enabled: false

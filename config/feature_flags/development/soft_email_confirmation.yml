@@ -1,7 +1,8 @@
 ---
 name: soft_email_confirmation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31245
-rollout_issue_url:
-group: group::acquisition
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::acquisition
 default_enabled: false

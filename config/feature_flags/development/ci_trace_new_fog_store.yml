@@ -2,6 +2,7 @@
 name: ci_trace_new_fog_store
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46209
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/273405
+milestone: '13.6'
 type: development
 group: group::testing
 default_enabled: true

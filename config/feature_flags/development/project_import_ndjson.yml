@@ -1,7 +1,8 @@
 ---
 name: project_import_ndjson
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27206
-rollout_issue_url:
-group: group::import
+rollout_issue_url: 
+milestone: '12.10'
 type: development
+group: group::import
 default_enabled: true

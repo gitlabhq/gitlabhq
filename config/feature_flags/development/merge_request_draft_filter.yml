@@ -1,7 +1,8 @@
 ---
 name: merge_request_draft_filter
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35942
-rollout_issue_url:
-group: group::source code
+rollout_issue_url: 
+milestone: '13.3'
 type: development
+group: group::source code
 default_enabled: true

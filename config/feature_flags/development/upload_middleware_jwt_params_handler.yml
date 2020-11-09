@@ -2,6 +2,7 @@
 name: upload_middleware_jwt_params_handler
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33277
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/233895
-group: group::package
+milestone: '13.4'
 type: development
+group: group::package
 default_enabled: true

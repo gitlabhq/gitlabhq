@@ -2,6 +2,7 @@
 name: allow_possible_spam
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17604
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/29830
-group: group::portfolio management
+milestone: '12.4'
 type: development
+group: group::portfolio management
 default_enabled: false

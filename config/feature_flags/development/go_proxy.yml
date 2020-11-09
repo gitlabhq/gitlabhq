@@ -1,7 +1,8 @@
 ---
 name: go_proxy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27746
-rollout_issue_url:
-group: group::package
+rollout_issue_url: 
+milestone: '13.1'
 type: development
+group: group::package
 default_enabled: false

@@ -2,6 +2,7 @@
 name: metrics_dashboard
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29634
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257902
-group: group::health
+milestone: '13.0'
 type: development
+group: group::health
 default_enabled: true

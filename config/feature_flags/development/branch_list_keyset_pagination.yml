@@ -2,6 +2,7 @@
 name: branch_list_keyset_pagination
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: development
+group: 
 default_enabled: false

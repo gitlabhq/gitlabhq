@@ -2,6 +2,7 @@
 name: core_security_mr_widget
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44639
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/249543
+milestone: '13.5'
 type: development
 group: group::static analysis
 default_enabled: true

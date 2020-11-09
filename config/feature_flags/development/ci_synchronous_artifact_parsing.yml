@@ -2,6 +2,7 @@
 name: ci_synchronous_artifact_parsing
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26247
 rollout_issue_url: 
-group: group::progressive delivery
+milestone: '12.9'
 type: development
+group: group::progressive delivery
 default_enabled: true

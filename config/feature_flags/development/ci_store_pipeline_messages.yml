@@ -1,7 +1,8 @@
 ---
 name: ci_store_pipeline_messages
-introduced_by_url:
-rollout_issue_url:
-group: group::continuous integration
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::continuous integration
 default_enabled: true

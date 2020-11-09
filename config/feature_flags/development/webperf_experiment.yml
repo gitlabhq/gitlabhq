@@ -1,7 +1,8 @@
 ---
 name: webperf_experiment
-introduced_by_url:
-rollout_issue_url:
-group: group::editor
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::editor
 default_enabled: false

@@ -2,6 +2,7 @@
 name: async_commit_diff_files
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: development
+group: 
 default_enabled: false

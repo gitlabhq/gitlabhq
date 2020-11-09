@@ -2,6 +2,7 @@
 name: force_autodevops_on_by_default
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: development
+group: 
 default_enabled: false

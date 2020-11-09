@@ -2,6 +2,7 @@
 name: real_time_issue_sidebar
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30239
 rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/1210
-group: group::project management
+milestone: '13.0'
 type: development
+group: group::project management
 default_enabled: false

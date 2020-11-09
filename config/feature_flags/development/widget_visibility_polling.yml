@@ -1,7 +1,8 @@
 ---
 name: widget_visibility_polling
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29318
-rollout_issue_url:
-group: group::source code
+rollout_issue_url: 
+milestone: '12.10'
 type: development
+group: group::source code
 default_enabled: true

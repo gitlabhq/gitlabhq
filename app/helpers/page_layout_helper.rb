@@ -164,7 +164,6 @@ module PageLayoutHelper
     strong_memoize(:generic_canonical_url) do
       next unless request.get? || request.head?
       next unless generate_generic_canonical_url?
-      next unless Feature.enabled?(:generic_canonical, current_user)
 
       # Request#url builds the url without the trailing slash
       request.url

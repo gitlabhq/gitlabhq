@@ -1,7 +1,8 @@
 ---
 name: bulk_update_health_status
-introduced_by_url:
-rollout_issue_url:
-group: group::portfolio management
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::portfolio management
 default_enabled: true

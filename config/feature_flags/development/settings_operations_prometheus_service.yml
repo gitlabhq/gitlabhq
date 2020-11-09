@@ -2,6 +2,7 @@
 name: settings_operations_prometheus_service
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24296
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258560
-group: group::health
+milestone: '12.8'
 type: development
+group: group::health
 default_enabled: false

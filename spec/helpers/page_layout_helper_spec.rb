@@ -196,16 +196,6 @@ RSpec.describe PageLayoutHelper do
       it_behaves_like 'does not return a canonical url' do
         let(:method) { 'PUT' }
       end
-
-      context 'when feature flag generic_canonical is disabled' do
-        let(:method) { 'GET' }
-
-        before do
-          stub_feature_flags(generic_canonical: false)
-        end
-
-        it_behaves_like 'does not return a canonical url'
-      end
     end
   end
 

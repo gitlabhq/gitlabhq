@@ -2,6 +2,7 @@
 name: consolidated_edit_button
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44311
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/270433
-group: group::editor
+milestone: '13.5'
 type: development
+group: group::editor
 default_enabled: false

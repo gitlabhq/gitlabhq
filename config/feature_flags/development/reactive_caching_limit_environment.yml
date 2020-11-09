@@ -2,6 +2,7 @@
 name: reactive_caching_limit_environment
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34202
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/202633
-group: group::configure
+milestone: '13.2'
 type: development
+group: group::configure
 default_enabled: true

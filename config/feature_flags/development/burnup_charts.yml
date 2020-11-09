@@ -1,7 +1,8 @@
 ---
 name: burnup_charts
-introduced_by_url:
+introduced_by_url: 
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/268350
-group: group::project management
+milestone: '13.6'
 type: development
+group: group::project management
 default_enabled: true

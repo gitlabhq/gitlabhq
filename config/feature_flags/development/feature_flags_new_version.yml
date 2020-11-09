@@ -2,6 +2,7 @@
 name: feature_flags_new_version
 introduced_by_url: 
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258831
-group: group::progressive delivery
+milestone: '13.7'
 type: development
+group: group::progressive delivery
 default_enabled: true
