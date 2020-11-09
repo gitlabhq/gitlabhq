@@ -23,8 +23,20 @@ RSpec.describe DesignManagement::Design do
     it { is_expected.to belong_to(:issue) }
     it { is_expected.to have_many(:actions) }
     it { is_expected.to have_many(:versions) }
+    it { is_expected.to have_many(:authors) }
     it { is_expected.to have_many(:notes).dependent(:delete_all) }
     it { is_expected.to have_many(:user_mentions) }
+
+    describe '#authors' do
+      it 'returns unique version authors', :aggregate_failures do
+        author = create(:user)
+        create_list(:design_version, 2, designs: [design1], author: author)
+        version_authors = design1.versions.map(&:author)
+
+        expect(version_authors).to contain_exactly(issue.author, author, author)
+        expect(design1.authors).to contain_exactly(issue.author, author)
+      end
+    end
   end
 
   describe 'validations' do
@@ -322,6 +334,46 @@ RSpec.describe DesignManagement::Design do
         restore_designs(design)
 
         expect(design).not_to be_deleted
+      end
+    end
+  end
+
+  describe '#participants' do
+    let_it_be_with_refind(:design) { create(:design, issue: issue) }
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:version_author) { create(:user) }
+    let_it_be(:note_author) { create(:user) }
+    let_it_be(:mentioned_user) { create(:user) }
+    let_it_be(:design_version) { create(:design_version, :committed, designs: [design], author: version_author) }
+    let_it_be(:note) do
+      create(:diff_note_on_design,
+        noteable: design,
+        issue: issue,
+        project: issue.project,
+        author: note_author,
+        note: mentioned_user.to_reference
+      )
+    end
+
+    subject { design.participants(current_user) }
+
+    it { is_expected.to be_empty }
+
+    context 'when participants can read the project' do
+      before do
+        design.project.add_guest(version_author)
+        design.project.add_guest(note_author)
+        design.project.add_guest(mentioned_user)
+      end
+
+      it { is_expected.to contain_exactly(version_author, note_author, mentioned_user) }
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(design_management_design_notification_participants: false)
+        end
+
+        it { is_expected.to be_empty }
       end
     end
   end

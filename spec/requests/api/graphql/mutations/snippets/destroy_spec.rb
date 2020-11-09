@@ -53,10 +53,11 @@ RSpec.describe 'Destroying a Snippet' do
         let!(:snippet_gid) { project.to_gid.to_s }
 
         it 'returns an error' do
+          err_message = %Q["#{snippet_gid}" does not represent an instance of Snippet]
+
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(graphql_errors)
-            .to include(a_hash_including('message' => "#{snippet_gid} is not a valid ID for Snippet."))
+          expect(graphql_errors).to include(a_hash_including('message' => a_string_including(err_message)))
         end
 
         it 'does not destroy the Snippet' do

@@ -73,7 +73,7 @@ RSpec.describe Resolvers::Users::SnippetsResolver do
 
         expect do
           resolve_snippets(args: args)
-        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        end.to raise_error(GraphQL::CoercionError)
       end
     end
   end

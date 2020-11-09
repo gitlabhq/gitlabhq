@@ -75,7 +75,7 @@ describe('PipelineTourSuccessModal', () => {
   });
 
   it('renders the link for codeQualityLink', () => {
-    expect(wrapper.find(GlLink).attributes('href')).toBe(wrapper.vm.$options.codeQualityLink);
+    expect(wrapper.find(GlLink).attributes('href')).toBe('/code-quality-link');
   });
 
   it('calls to remove cookie', () => {

@@ -9,8 +9,6 @@ const trackingMixin = Tracking.mixin();
 export default {
   beginnerLink:
     'https://about.gitlab.com/blog/2018/01/22/a-beginners-guide-to-continuous-integration/',
-  exampleLink: 'https://docs.gitlab.com/ee/ci/examples/',
-  codeQualityLink: 'https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html',
   goToTrackValuePipelines: 10,
   goToTrackValueMergeRequest: 20,
   trackEvent: 'click_button',
@@ -36,6 +34,14 @@ export default {
       required: true,
     },
     humanAccess: {
+      type: String,
+      required: true,
+    },
+    exampleLink: {
+      type: String,
+      required: true,
+    },
+    codeQualityLink: {
       type: String,
       required: true,
     },
@@ -93,7 +99,7 @@ export default {
     <p>
       <gl-sprintf :message="$options.i18n.bodyMessage">
         <template #codeQualityLink="{content}">
-          <gl-link :href="$options.codeQualityLink" target="_blank" class="font-size-inherit">{{
+          <gl-link :href="codeQualityLink" target="_blank" class="font-size-inherit">{{
             content
           }}</gl-link>
         </template>
@@ -106,7 +112,7 @@ export default {
         </gl-link>
       </template>
       <template #exampleLink="{content}">
-        <gl-link :href="$options.exampleLink" target="_blank">
+        <gl-link :href="exampleLink" target="_blank">
           {{ content }}
         </gl-link>
       </template>

@@ -3,9 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Client do
+  using RSpec::Parameterized::TableSyntax
+
   let(:token) { '12345' }
   let(:options) { { token: token } }
-  let(:client) { described_class.new("http://container-registry", options) }
+  let(:registry_api_url) { 'http://container-registry' }
+  let(:client) { described_class.new(registry_api_url, options) }
   let(:push_blob_headers) do
     {
         'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
@@ -99,16 +102,6 @@ RSpec.describe ContainerRegistry::Client do
 
       expect(response).to eq('Successfully redirected')
     end
-  end
-
-  def stub_upload(path, content, digest, status = 200)
-    stub_request(:post, "http://container-registry/v2/#{path}/blobs/uploads/")
-      .with(headers: headers_with_accept_types)
-      .to_return(status: status, body: "", headers: { 'location' => 'http://container-registry/next_upload?id=someid' })
-
-    stub_request(:put, "http://container-registry/next_upload?digest=#{digest}&id=someid")
-      .with(body: content, headers: push_blob_headers)
-      .to_return(status: status, body: "", headers: {})
   end
 
   describe '#upload_blob' do
@@ -221,28 +214,36 @@ RSpec.describe ContainerRegistry::Client do
   describe '#supports_tag_delete?' do
     subject { client.supports_tag_delete? }
 
-    context 'when the server supports tag deletion' do
-      before do
-        stub_request(:options, "http://container-registry/v2/name/tags/reference/tag")
-          .to_return(status: 200, body: "", headers: { 'Allow' => 'DELETE' })
-      end
-
-      it { is_expected.to be_truthy }
+    where(:registry_tags_support_enabled, :is_on_dot_com, :container_registry_features, :expect_registry_to_be_pinged, :expected_result) do
+      true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | true
+      true  | true  | []                                                       | true  | true
+      true  | false | []                                                       | true  | true
+      false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | false
+      false | true  | []                                                       | true  | false
+      false | false | []                                                       | true  | false
     end
 
-    context 'when the server does not support tag deletion' do
+    with_them do
       before do
-        stub_request(:options, "http://container-registry/v2/name/tags/reference/tag")
-          .to_return(status: 404, body: "")
+        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        stub_registry_tags_support(registry_tags_support_enabled)
+        stub_application_setting(container_registry_features: container_registry_features)
       end
 
-      it { is_expected.to be_falsey }
-    end
-  end
+      it 'returns the expected result' do
+        if expect_registry_to_be_pinged
+          expect_next_instance_of(Faraday::Connection) do |connection|
+            expect(connection).to receive(:run_request).and_call_original
+          end
+        else
+          expect(Faraday::Connection).not_to receive(:new)
+        end
 
-  def stub_registry_info(headers: {}, status: 200)
-    stub_request(:get, 'http://container-registry/v2/')
-      .to_return(status: status, body: "", headers: headers)
+        expect(subject).to be expected_result
+      end
+    end
   end
 
   describe '#registry_info' do
@@ -291,55 +292,87 @@ RSpec.describe ContainerRegistry::Client do
   end
 
   describe '.supports_tag_delete?' do
-    let(:registry_enabled) { true }
-    let(:registry_api_url) { 'http://sandbox.local' }
-    let(:registry_tags_support_enabled) { true }
-    let(:is_on_dot_com) { false }
-
     subject { described_class.supports_tag_delete? }
 
-    before do
-      allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
-      stub_container_registry_config(enabled: registry_enabled, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
-      stub_registry_tags_support(registry_tags_support_enabled)
+    where(:registry_api_url, :registry_enabled, :registry_tags_support_enabled, :is_on_dot_com, :container_registry_features, :expect_registry_to_be_pinged, :expected_result) do
+      'http://sandbox.local' | true  | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      'http://sandbox.local' | true  | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | true
+      'http://sandbox.local' | true  | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | true
+      'http://sandbox.local' | true  | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | true  | false
+      'http://sandbox.local' | false | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | false | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | false | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | false | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      'http://sandbox.local' | true  | true  | true  | []                                                       | true  | true
+      'http://sandbox.local' | true  | true  | false | []                                                       | true  | true
+      'http://sandbox.local' | true  | false | true  | []                                                       | true  | false
+      'http://sandbox.local' | true  | false | false | []                                                       | true  | false
+      'http://sandbox.local' | false | true  | true  | []                                                       | false | false
+      'http://sandbox.local' | false | true  | false | []                                                       | false | false
+      'http://sandbox.local' | false | false | true  | []                                                       | false | false
+      'http://sandbox.local' | false | false | false | []                                                       | false | false
+      ''                     | true  | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | true  | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | true  | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | false | true  | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | false | false | false | [ContainerRegistry::Client::REGISTRY_TAG_DELETE_FEATURE] | false | false
+      ''                     | true  | true  | true  | []                                                       | false | false
+      ''                     | true  | true  | false | []                                                       | false | false
+      ''                     | true  | false | true  | []                                                       | false | false
+      ''                     | true  | false | false | []                                                       | false | false
+      ''                     | false | true  | true  | []                                                       | false | false
+      ''                     | false | true  | false | []                                                       | false | false
+      ''                     | false | false | true  | []                                                       | false | false
+      ''                     | false | false | false | []                                                       | false | false
     end
 
-    context 'with the registry enabled' do
-      it { is_expected.to be true }
-
-      context 'without an api url' do
-        let(:registry_api_url) { '' }
-
-        it { is_expected.to be false }
+    with_them do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        stub_container_registry_config(enabled: registry_enabled, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+        stub_registry_tags_support(registry_tags_support_enabled)
+        stub_application_setting(container_registry_features: container_registry_features)
       end
 
-      context 'on .com' do
-        let(:is_on_dot_com) { true }
+      it 'returns the expected result' do
+        if expect_registry_to_be_pinged
+          expect_next_instance_of(Faraday::Connection) do |connection|
+            expect(connection).to receive(:run_request).and_call_original
+          end
+        else
+          expect(Faraday::Connection).not_to receive(:new)
+        end
 
-        it { is_expected.to be true }
+        expect(subject).to be expected_result
       end
-
-      context 'when registry server does not support tag deletion' do
-        let(:registry_tags_support_enabled) { false }
-
-        it { is_expected.to be false }
-      end
     end
+  end
 
-    context 'with the registry disabled' do
-      let(:registry_enabled) { false }
+  def stub_upload(path, content, digest, status = 200)
+    stub_request(:post, "#{registry_api_url}/v2/#{path}/blobs/uploads/")
+      .with(headers: headers_with_accept_types)
+      .to_return(status: status, body: "", headers: { 'location' => "#{registry_api_url}/next_upload?id=someid" })
 
-      it { is_expected.to be false }
-    end
+    stub_request(:put, "#{registry_api_url}/next_upload?digest=#{digest}&id=someid")
+      .with(body: content, headers: push_blob_headers)
+      .to_return(status: status, body: "", headers: {})
+  end
 
-    def stub_registry_tags_support(supported = true)
-      status_code = supported ? 200 : 404
-      stub_request(:options, "#{registry_api_url}/v2/name/tags/reference/tag")
-        .to_return(
-          status: status_code,
-          body: '',
-          headers: { 'Allow' => 'DELETE' }
-        )
-    end
+  def stub_registry_info(headers: {}, status: 200)
+    stub_request(:get, "#{registry_api_url}/v2/")
+      .to_return(status: status, body: "", headers: headers)
+  end
+
+  def stub_registry_tags_support(supported = true)
+    status_code = supported ? 200 : 404
+    stub_request(:options, "#{registry_api_url}/v2/name/tags/reference/tag")
+      .to_return(
+        status: status_code,
+        body: '',
+        headers: { 'Allow' => 'DELETE' }
+      )
   end
 end

@@ -9,7 +9,7 @@ type: howto
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
 
-When [Require admin approval for new sign-ups](settings/sign_up_restrictions.md#require-admin-approval-for-new-sign-ups) is enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state.
+When [Require admin approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) is enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state.
 
 A user pending approval is functionally identical to a [blocked](blocking_unblocking_users.md) user.
 

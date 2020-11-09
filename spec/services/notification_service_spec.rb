@@ -834,53 +834,63 @@ RSpec.describe NotificationService, :mailer do
       end
     end
 
-    context 'when notified of a new design diff note' do
+    context 'design diff note', :deliver_mails_inline do
       include DesignManagementTestHelpers
 
       let_it_be(:design) { create(:design, :with_file) }
       let_it_be(:project) { design.project }
-      let_it_be(:dev) { create(:user) }
-      let_it_be(:stranger) { create(:user) }
+      let_it_be(:member_and_mentioned) { create(:user, developer_projects: [project]) }
+      let_it_be(:member_and_author_of_second_note) { create(:user, developer_projects: [project]) }
+      let_it_be(:member_and_not_mentioned) { create(:user, developer_projects: [project]) }
+      let_it_be(:non_member_and_mentioned) { create(:user) }
       let_it_be(:note) do
         create(:diff_note_on_design,
            noteable: design,
-           note: "Hello #{dev.to_reference}, G'day #{stranger.to_reference}")
+           note: "Hello #{member_and_mentioned.to_reference}, G'day #{non_member_and_mentioned.to_reference}")
       end
-      let(:mailer) { double(deliver_later: true) }
+      let_it_be(:note_2) do
+        create(:diff_note_on_design, noteable: design, author: member_and_author_of_second_note)
+      end
 
       context 'design management is enabled' do
         before do
           enable_design_management
-          project.add_developer(dev)
-          allow(Notify).to receive(:note_design_email) { mailer }
         end
 
-        it 'sends new note notifications' do
-          expect(subject).to receive(:send_new_note_notifications).with(note)
+        it 'sends new note notifications', :aggregate_failures do
+          notification.new_note(note)
 
-          subject.new_note(note)
+          should_email(design.authors.first)
+          should_email(member_and_mentioned)
+          should_email(member_and_author_of_second_note)
+          should_not_email(member_and_not_mentioned)
+          should_not_email(non_member_and_mentioned)
+          should_not_email(note.author)
         end
 
-        it 'sends a mail to the developer' do
-          expect(Notify)
-            .to receive(:note_design_email).with(dev.id, note.id, 'mentioned')
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(design_management_design_notification_participants: false)
+          end
 
-          subject.new_note(note)
-        end
+          it 'sends a new note notification only to the mentioned member', :aggregate_failures do
+            notification.new_note(note)
 
-        it 'does not notify non-developers' do
-          expect(Notify)
-            .not_to receive(:note_design_email).with(stranger.id, note.id)
-
-          subject.new_note(note)
+            should_email(member_and_mentioned)
+            should_not_email(design.authors.first)
+            should_not_email(member_and_author_of_second_note)
+            should_not_email(member_and_not_mentioned)
+            should_not_email(non_member_and_mentioned)
+            should_not_email(note.author)
+          end
         end
       end
 
       context 'design management is disabled' do
-        it 'does not notify the user' do
-          expect(Notify).not_to receive(:note_design_email)
+        it 'does not notify anyone' do
+          notification.new_note(note)
 
-          subject.new_note(note)
+          should_not_email_anyone
         end
       end
     end

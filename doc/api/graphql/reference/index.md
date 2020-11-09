@@ -2841,7 +2841,7 @@ Represents a snippet entry.
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
 | `fileName` | String | File Name of the snippet |
 | `httpUrlToRepo` | String | HTTP URL to the snippet repository |
-| `id` | ID! | ID of the snippet |
+| `id` | SnippetID! | ID of the snippet |
 | `notes` | NoteConnection! | All notes on this noteable |
 | `project` | Project | The project the snippet is associated with |
 | `rawUrl` | String! | Raw URL of the snippet |

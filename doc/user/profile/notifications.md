@@ -7,13 +7,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Notification Emails
 
-GitLab Notifications allow you to stay informed about what's happening in GitLab. With notifications enabled, you can receive updates about activity in issues, merge requests, and epics. Notifications are sent via email.
+GitLab Notifications allow you to stay informed about what's happening in GitLab. With notifications
+enabled, you can receive updates about activity in issues, merge requests, epics, and designs.
+Notifications are sent via email.
 
 ## Receiving notifications
 
 You will receive notifications for one of the following reasons:
 
-- You participate in an issue, merge request, or epic. In this context, _participate_ means comment, or edit.
+- You participate in an issue, merge request, epic or design. In this context, _participate_ means comment, or edit.
 - You enable notifications in an issue, merge request, or epic. To enable notifications, click the **Notifications** toggle in the sidebar to _on_.
 
 While notifications are enabled, you will receive notification of actions occurring in that issue, merge request, or epic.
@@ -208,6 +210,44 @@ you've created or mentions you.
 If an open merge request becomes unmergeable due to conflict, its author will be notified about the cause.
 If a user has also set the merge request to automatically merge once pipeline succeeds,
 then that user will also be notified.
+
+## Design email notifications
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217095) in GitLab 13.6.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-email-notifications). **(CORE ONLY)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Email notifications are sent to the participants when comments are made on a design.
+
+The participants are:
+
+- Authors of the design (can be multiple people if different authors have uploaded different versions of the design).
+- Authors of comments on the design.
+- Anyone that is `@mentioned` in a comment on the design.
+
+### Enable or disable design email notifications **(CORE ONLY)**
+
+The design email notifications feature is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:design_management_design_notification_participants)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:design_management_design_notification_participants)
+```
 
 ## Filtering email
 

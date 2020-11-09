@@ -139,10 +139,10 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207528) in GitLab 13.0.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
-The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request). The collected Terraform
+The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/mr_integration.md#setup). The collected Terraform
 plan report uploads to GitLab as an artifact and displays
 in merge requests. For more information, see
-[Output `terraform plan` information into a merge request](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request).
+[Output `terraform plan` information into a merge request](../../user/infrastructure/mr_integration.md).
 
 #### `artifacts:reports:codequality`
 

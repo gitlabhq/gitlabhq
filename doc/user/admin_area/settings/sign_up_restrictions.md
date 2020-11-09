@@ -7,49 +7,44 @@ type: reference
 
 # Sign-up restrictions **(CORE ONLY)**
 
-You can use sign-up restrictions to:
+You can enforce the following restrictions on sign ups:
 
-- Disable new sign-ups.
-- Require admin approval for new sign-ups.
+- Disable new sign ups.
+- Require administrator approval for new sign ups.
 - Require user email confirmation.
-- Denylist or allowlist email addresses belonging to specific domains.
+- Allow or deny sign ups using specific email domains.
 
-NOTE: **Note:**
-These restrictions are only applied during sign-up from an external user. An admin can add a user through the admin panel with a disallowed domain. Also, note that the users can change their email addresses after sign-up to
-disallowed domains.
+## Disable new sign ups
 
-## Disable new signups
+By default, any user visiting your GitLab domain can sign up for an account. For customers running
+public-facing GitLab instances, we **highly** recommend that you consider disabling new sign ups if
+you do not expect public users to sign up for an account.
 
-When this setting is enabled, any user visiting your GitLab domain will be able to sign up for an account.
+To disable sign ups:
 
-![Disable signups](img/disable_signup_v12_7.png)
+1. Go to **Admin Area > Settings > General** and expand **Sign-up restrictions**.
+1. Clear the **Sign-up enabled** checkbox, then select **Save changes**.
 
-You can restrict new users from signing up by themselves for an account in your instance by disabling this setting.
-
-### Recommendations
-
-For customers running public-facing GitLab instances, we highly recommend that you
-consider disabling new sign-ups if you do not expect public users to sign up for an
-account.
-
-Alternatively, you could also consider setting up a
-[allowlist](#allowlist-email-domains) or [denylist](#denylist-email-domains) on
-email domains to prevent malicious users from creating accounts.
-
-## Require admin approval for new sign-ups
+## Require administrator approval for new sign ups
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
 
-When this setting is enabled, any user visiting your GitLab domain and signing up for a new account will have to be explicitly [approved](../approving_users.md#approving-a-user) by an administrator before they can start using their account.
+When this setting is enabled, any user visiting your GitLab domain and signing up for a new account must be explicitly [approved](../approving_users.md#approving-a-user) by an administrator before they can start using their account. This setting is only applicable if sign ups are enabled.
 
-![Require admin approval for new signups](img/sign_up_restrictions_v13_5.png)
+To require administrator approval for new sign ups:
+
+1. Go to **Admin Area > Settings > General** and expand **Sign-up restrictions**.
+1. Select the **Require admin approval for new sign-ups** checkbox, then select **Save changes**.
 
 ## Require email confirmation
 
-You can send confirmation emails during sign-up and require that users confirm
+You can send confirmation emails during sign up and require that users confirm
 their email address before they are allowed to sign in.
 
-![Email confirmation](img/sign_up_restrictions_v13_5.png)
+To enforce confirmation of the email address used for new sign ups:
+
+1. Go to **Admin Area > Settings > General** and expand **Sign-up restrictions**.
+1. Select the **Enable email restrictions for sign ups** checkbox, then select **Save changes**.
 
 ## Minimum password length limit
 
@@ -58,40 +53,42 @@ their email address before they are allowed to sign in.
 You can [change](../../../security/password_length_limits.md#modify-minimum-password-length-using-gitlab-ui)
 the minimum number of characters a user must have in their password using the GitLab UI.
 
-## Allowlist email domains
+## Allow or deny sign ups using specific email domains
+
+You can specify an inclusive or exclusive list of email domains which can be used for user sign up.
+
+These restrictions are only applied during sign up from an external user. An administrator can add a
+user through the admin panel with a disallowed domain. Also, note that the users can change their
+email addresses to disallowed domains after sign up.
+
+### Allowlist email domains
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598) in GitLab 7.11.0
 
 You can restrict users only to sign up using email addresses matching the given
 domains list.
 
-## Denylist email domains
+### Denylist email domains
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5259) in GitLab 8.10.
 
-With this feature enabled, you can block email addresses of a specific domain
-from creating an account on your GitLab server. This is particularly useful
-to prevent malicious users from creating spam accounts with disposable email
-addresses.
+You can block users from signing up when using an email addresses of specific domains. This can
+reduce the risk of malicious users creating spam accounts with disposable email addresses.
 
-## Settings
+### Create email domain allowlist or denylist
 
-To access this feature:
+To create an email domain allowlist or denylist:
 
-1. Navigate to the **Admin Area > Settings > General**.
-1. Expand the **Sign-up restrictions** section.
+1. Go to **Admin Area > Settings > General** and expand **Sign-up restrictions**.
+1. For the allowlist, you must enter the list manually. For the denylist, you can enter the list
+   manually or upload a `.txt` file that contains list entries.
 
-For the denylist, you can enter the list manually or upload a `.txt` file that
-contains list entries.
-
-For the allowlist, you must enter the list manually.
-
-Both the allowlist and denylist accept wildcards. For example, you can use
+   Both the allowlist and denylist accept wildcards. For example, you can use
 `*.company.com` to accept every `company.com` subdomain, or `*.io` to block all
-domains ending in `.io`. Domains should be separated by a whitespace,
+domains ending in `.io`. Domains must be separated by a whitespace,
 semicolon, comma, or a new line.
 
-![Domain Denylist](img/domain_denylist.png)
+   ![Domain Denylist](img/domain_denylist.png)
 
 <!-- ## Troubleshooting
 

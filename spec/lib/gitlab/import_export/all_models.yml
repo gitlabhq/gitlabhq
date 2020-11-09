@@ -652,6 +652,7 @@ milestone_releases:
 evidences:
 - release
 design: &design
+- authors
 - issue
 - actions
 - versions

@@ -7,8 +7,7 @@ module Mutations
 
       ERROR_MSG = 'Error deleting the snippet'
 
-      argument :id,
-               GraphQL::ID_TYPE,
+      argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,
                description: 'The global id of the snippet to destroy'
 

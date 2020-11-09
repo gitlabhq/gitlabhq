@@ -36,7 +36,7 @@ RSpec.describe Resolvers::SnippetsResolver do
     context 'when using filters' do
       context 'by author id' do
         it 'returns the snippets' do
-          snippets = resolve_snippets(args: { author_id: current_user.to_global_id })
+          snippets = resolve_snippets(args: { author_id: global_id_of(current_user) })
 
           expect(snippets).to contain_exactly(personal_snippet, project_snippet)
         end
@@ -44,7 +44,7 @@ RSpec.describe Resolvers::SnippetsResolver do
         it 'returns an error if the param id is invalid' do
           expect do
             resolve_snippets(args: { author_id: 'foo' })
-          end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+          end.to raise_error(GraphQL::CoercionError)
         end
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Resolvers::SnippetsResolver do
         it 'returns an error if the param id is invalid' do
           expect do
             resolve_snippets(args: { project_id: 'foo' })
-          end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+          end.to raise_error(GraphQL::CoercionError)
         end
       end
 
@@ -99,14 +99,14 @@ RSpec.describe Resolvers::SnippetsResolver do
         expect(snippets).to contain_exactly(personal_snippet, project_snippet)
       end
 
-      it 'returns an error if the gid is invalid' do
+      it 'returns an error if the id cannot be coerced' do
         args = {
           ids: [personal_snippet.to_global_id, 'foo']
         }
 
         expect do
           resolve_snippets(args: args)
-        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+        end.to raise_error(GraphQL::CoercionError, '"foo" is not a valid Global ID')
       end
 
       it 'returns an error if both project and author are provided' do

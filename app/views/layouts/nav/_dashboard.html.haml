@@ -71,11 +71,11 @@
 
   - if Feature.enabled?(:user_mode_in_session)
     - if header_link?(:admin_mode)
-      = nav_link(controller: 'admin/sessions', html_options: { class: "d-none d-lg-block d-xl-block"}) do
+      = nav_link(controller: 'admin/sessions', html_options: { class: "d-none d-lg-block"}) do
         = link_to destroy_admin_session_path, method: :post, title: _('Leave Admin Mode'), aria: { label: _('Leave Admin Mode') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
           = sprite_icon('lock-open', size: 18)
     - elsif current_user.admin?
-      = nav_link(controller: 'admin/sessions', html_options: { class: "d-none d-lg-block d-xl-block"}) do
+      = nav_link(controller: 'admin/sessions', html_options: { class: "d-none d-lg-block"}) do
         = link_to new_admin_session_path, title: _('Enter Admin Mode'), aria: { label: _('Enter Admin Mode') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
           = sprite_icon('lock', size: 18)
 

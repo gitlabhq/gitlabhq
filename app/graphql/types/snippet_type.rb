@@ -13,7 +13,7 @@ module Types
 
     expose_permissions Types::PermissionTypes::Snippet
 
-    field :id, GraphQL::ID_TYPE,
+    field :id, Types::GlobalIDType[::Snippet],
           description: 'ID of the snippet',
           null: false
 

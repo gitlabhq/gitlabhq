@@ -8,11 +8,11 @@ module Resolvers
 
     alias_method :user, :object
 
-    argument :author_id, GraphQL::ID_TYPE,
+    argument :author_id, ::Types::GlobalIDType[::User],
               required: false,
               description: 'The ID of an author'
 
-    argument :project_id, GraphQL::ID_TYPE,
+    argument :project_id, ::Types::GlobalIDType[::Project],
               required: false,
               description: 'The ID of a project'
 
@@ -36,9 +36,11 @@ module Resolvers
     private
 
     def snippet_finder_params(args)
+      # TODO: remove the type arguments when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
       super
-        .merge(author: resolve_gid(args[:author_id], :author),
-               project: resolve_gid(args[:project_id], :project),
+        .merge(author: resolve_ids(args[:author_id], ::Types::GlobalIDType[::User]),
+               project: resolve_ids(args[:project_id], ::Types::GlobalIDType[::Project]),
                explore: args[:explore])
     end
   end

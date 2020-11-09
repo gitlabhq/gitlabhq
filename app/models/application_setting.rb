@@ -415,6 +415,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :slack_app_secret, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :slack_app_verification_token, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :ci_jwt_signing_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_truncated_aes_256_gcm
 
   before_validation :ensure_uuid!
 

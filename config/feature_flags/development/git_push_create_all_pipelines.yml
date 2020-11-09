@@ -2,7 +2,7 @@
 name: git_push_create_all_pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27205
 rollout_issue_url: 
-milestone: 
+milestone: '11.10'
 type: development
 group: group::continuous integration
 default_enabled: false

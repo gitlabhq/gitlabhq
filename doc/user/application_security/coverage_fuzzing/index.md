@@ -222,6 +222,34 @@ This essentially creates two steps:
 
 The `covfuzz-ci.yml` is the same as that in the [original synchronous example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example#running-go-fuzz-from-ci).
 
+## Interacting with the vulnerabilities
+
+After a vulnerability is found, you can [interact with it](../index.md#interacting-with-the-vulnerabilities).
+The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
+artifacts. By clicking one of the detected vulnerabilities, you can see its details.
+
+![Coverage Fuzzing Security Report](img/coverage_fuzzing_report_v13_6.png)
+
+You can also view the vulnerability from the [Security Dashboard](../security_dashboard/index.md),
+which shows an overview of all the security vulnerabilities in your groups, projects, and pipelines.
+
+Clicking the vulnerability opens a modal that provides additional information about the
+vulnerability:
+
+- Status: The vulnerability's status. As with any type of vulnerability, a coverage fuzzing
+  vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
+- Project: The project in which the vulnerability exists.
+- Crash type: The type of crash or weakness in the code. This typically maps to a [CWE](https://cwe.mitre.org/).
+- Crash state: A normalized version of the stacktrace, containing the last three functions of the
+  crash (without random addresses).
+- Stacktrace snippet: The last few lines of the stacktrace, which shows details about the crash.
+- Identifier: The vulnerability's identifier. This maps to either a [CVE](https://cve.mitre.org/)
+  or [CWE](https://cwe.mitre.org/).
+- Severity: The vulnerability's severity. This can be Critical, High, Medium, Low, Info, or Unknown.
+- Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
+- Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
+  engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
+
 ### Glossary
 
 - Seed corpus: The set of test cases given as initial input to the fuzz target. This usually speeds

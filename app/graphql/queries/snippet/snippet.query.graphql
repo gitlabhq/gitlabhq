@@ -1,4 +1,4 @@
-query GetSnippetQuery($ids: [ID!]) {
+query GetSnippetQuery($ids: [SnippetID!]) {
   snippets(ids: $ids) {
     __typename
     nodes {

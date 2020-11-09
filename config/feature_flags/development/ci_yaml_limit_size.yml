@@ -1,8 +1,8 @@
 ---
 name: ci_yaml_limit_size
 introduced_by_url: 
-rollout_issue_url: 
-milestone: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56018
+milestone: '12.0'
 type: development
 group: group::continuous integration
 default_enabled: true

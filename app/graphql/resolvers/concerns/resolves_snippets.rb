@@ -6,7 +6,7 @@ module ResolvesSnippets
   included do
     type Types::SnippetType, null: false
 
-    argument :ids, [GraphQL::ID_TYPE],
+    argument :ids, [::Types::GlobalIDType[::Snippet]],
              required: false,
              description: 'Array of global snippet ids, e.g., "gid://gitlab/ProjectSnippet/1"'
 
@@ -32,16 +32,15 @@ module ResolvesSnippets
     }.merge(options_by_type(args[:type]))
   end
 
-  def resolve_ids(ids)
-    Array.wrap(ids).map { |id| resolve_gid(id, :id) }
-  end
+  def resolve_ids(ids, type = ::Types::GlobalIDType[::Snippet])
+    Array.wrap(ids).map do |id|
+      next unless id.present?
 
-  def resolve_gid(gid, argument)
-    return unless gid.present?
-
-    GlobalID.parse(gid)&.model_id.tap do |id|
-      raise Gitlab::Graphql::Errors::ArgumentError, "Invalid global id format for param #{argument}" if id.nil?
-    end
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      id = type.coerce_isolated_input(id)
+      id.model_id
+    end.compact
   end
 
   def options_by_type(type)

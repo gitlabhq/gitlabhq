@@ -15,6 +15,7 @@ module ContainerRegistry
     CONTAINER_IMAGE_V1_TYPE = 'application/vnd.docker.container.image.v1+json'
     REGISTRY_VERSION_HEADER = 'gitlab-container-registry-version'
     REGISTRY_FEATURES_HEADER = 'gitlab-container-registry-features'
+    REGISTRY_TAG_DELETE_FEATURE = 'tag_delete'
 
     ACCEPTED_TYPES = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE].freeze
 
@@ -24,8 +25,6 @@ module ContainerRegistry
     def self.supports_tag_delete?
       registry_config = Gitlab.config.registry
       return false unless registry_config.enabled && registry_config.api_url.present?
-
-      return true if ::Gitlab.com?
 
       token = Auth::ContainerRegistryAuthenticationService.access_token([], [])
       client = new(registry_config.api_url, token: token)
@@ -81,6 +80,9 @@ module ContainerRegistry
     # the DELETE method in the Allow header. Others reply with an 404 Not Found.
     def supports_tag_delete?
       strong_memoize(:supports_tag_delete) do
+        registry_features = Gitlab::CurrentSettings.container_registry_features || []
+        next true if ::Gitlab.com? && registry_features.include?(REGISTRY_TAG_DELETE_FEATURE)
+
         response = faraday.run_request(:options, '/v2/name/tags/reference/tag', '', {})
         response.success? && response.headers['allow']&.include?('DELETE')
       end

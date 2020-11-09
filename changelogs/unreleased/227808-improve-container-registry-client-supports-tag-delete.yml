@@ -1,0 +1,5 @@
+---
+title: Improve the container registry client tags delete method
+merge_request: 46989
+author:
+type: changed

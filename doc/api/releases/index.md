@@ -584,7 +584,7 @@ Example response:
          "id":53,
          "iid":3,
          "project_id":24,
-         "title":"v1.0",
+         "title":"v1.2",
          "description":"Voluptate fugiat possimus quis quod aliquam expedita.",
          "state":"active",
          "created_at":"2019-09-01T13:00:00.256Z",
