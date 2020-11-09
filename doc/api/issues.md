@@ -1944,7 +1944,7 @@ GET /projects/:id/issues/:issue_iid/closed_by
 
 | Attribute   | Type           | Required | Description                        |
 | ----------- | ---------------| -------- | ---------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](./README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer        | yes      | The internal ID of a project issue |
 
 ```shell
@@ -2084,4 +2084,4 @@ Example response:
 ## List issue state events
 
 To track which state was set, who did it, and when it happened, check out
-[Resource state events API](./resource_state_events.md#issues).
+[Resource state events API](resource_state_events.md#issues).

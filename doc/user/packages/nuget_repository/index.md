@@ -71,7 +71,7 @@ Prerequisites:
 - A personal access token or deploy token. For repository authentication:
   - You can generate a [personal access token](../../../user/profile/personal_access_tokens.md)
     with the scope set to `api`.
-  - You can generate a [deploy token](./../../project/deploy_tokens/index.md)
+  - You can generate a [deploy token](../../project/deploy_tokens/index.md)
     with the scope set to `read_package_registry`, `write_package_registry`, or
     both.
 - A name for your source.

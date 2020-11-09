@@ -22,7 +22,7 @@ were before.
 This change is deployed behind a feature flag that is **enabled by default**.
 
 If you experience any issues with upload,
-[GitLab administrators with access to the GitLab Rails console](./feature_flags.md)
+[GitLab administrators with access to the GitLab Rails console](feature_flags.md)
 can opt to disable it.
 
 To enable it:

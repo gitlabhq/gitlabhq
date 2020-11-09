@@ -53,7 +53,7 @@ of the new feature should be.
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
-Be sure to read about [page-specific JavaScript](./performance.md#page-specific-javascript).
+Be sure to read about [page-specific JavaScript](performance.md#page-specific-javascript).
 
 ### Bootstrapping Gotchas
 

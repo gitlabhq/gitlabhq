@@ -33,8 +33,8 @@ module KubernetesHelpers
     kube_response(kube_deployments_body)
   end
 
-  def kube_ingresses_response
-    kube_response(kube_ingresses_body)
+  def kube_ingresses_response(with_canary: false)
+    kube_response(kube_ingresses_body(with_canary: with_canary))
   end
 
   def stub_kubeclient_discover_base(api_url)
@@ -155,12 +155,12 @@ module KubernetesHelpers
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
-  def stub_kubeclient_ingresses(namespace, status: nil)
+  def stub_kubeclient_ingresses(namespace, status: nil, method: :get, resource_path: "", response: kube_ingresses_response)
     stub_kubeclient_discover(service.api_url)
-    ingresses_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{namespace}/ingresses"
+    ingresses_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{namespace}/ingresses#{resource_path}"
     response = { status: status } if status
 
-    WebMock.stub_request(:get, ingresses_url).to_return(response || kube_ingresses_response)
+    WebMock.stub_request(method, ingresses_url).to_return(response)
   end
 
   def stub_kubeclient_knative_services(options = {})
@@ -546,10 +546,12 @@ module KubernetesHelpers
     }
   end
 
-  def kube_ingresses_body
+  def kube_ingresses_body(with_canary: false)
+    items = with_canary ? [kube_ingress, kube_ingress(track: :canary)] : [kube_ingress]
+
     {
       "kind" => "List",
-      "items" => [kube_ingress]
+      "items" => items
     }
   end
 

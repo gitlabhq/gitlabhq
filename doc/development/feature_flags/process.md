@@ -80,7 +80,7 @@ In order to build a final release and present the feature for self-managed
 users, the feature flag should be at least defaulted to **on**. If the feature
 is deemed stable and there is confidence that removing the feature flag is safe,
 consider removing the feature flag altogether. It's _strongly_ recommended that
-the feature flag is [enabled **globally** on **production**](./controls.md#enabling-a-feature-for-gitlabcom) for **at least one day**
+the feature flag is [enabled **globally** on **production**](controls.md#enabling-a-feature-for-gitlabcom) for **at least one day**
 before making this decision. Unexpected bugs are sometimes discovered during this period.
 
 The process for enabling features that are disabled by default can take 5-6 days

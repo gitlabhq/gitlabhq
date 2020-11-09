@@ -175,6 +175,16 @@ module Gitlab
         end
       end
 
+      def patch_ingress(*args)
+        extensions_client.discover unless extensions_client.discovered
+
+        if extensions_client.respond_to?(:patch_ingress)
+          extensions_client.patch_ingress(*args)
+        else
+          networking_client.patch_ingress(*args)
+        end
+      end
+
       def create_or_update_cluster_role_binding(resource)
         update_cluster_role_binding(resource)
       end

@@ -1,0 +1,5 @@
+---
+title: Fix 404 error from Commit Signature API when using Rugged
+merge_request: 46736
+author:
+type: fixed

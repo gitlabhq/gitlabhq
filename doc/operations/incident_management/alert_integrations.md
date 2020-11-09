@@ -132,12 +132,12 @@ GitLab displays an error or success message, depending on the outcome of your te
 In GitLab versions 13.2 and greater, GitLab groups alerts based on their
 payload. When an incoming alert contains the same payload as another alert
 (excluding the `start_time` and `hosts` attributes), GitLab groups these alerts
-together and displays a counter on the [Alert Management List](./incidents.md)
+together and displays a counter on the [Alert Management List](incidents.md)
 and details pages.
 
 If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
-![Alert Management List](./img/alert_list_v13_1.png)
+![Alert Management List](img/alert_list_v13_1.png)
 
 ## Link to your Opsgenie Alerts
 

@@ -163,7 +163,7 @@ Example recipe names:
 To authenticate to the Package Registry, you need either a personal access token or deploy token.
 
 - If you use a [personal access token](../../../user/profile/personal_access_tokens.md), set the scope to `api`.
-- If you use a [deploy token](./../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
+- If you use a [deploy token](../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
 
 ### Add your credentials to the GitLab remote
 
@@ -237,7 +237,7 @@ conan upload Hello/0.1@mycompany/beta --all
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11678) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
-To work with Conan commands in [GitLab CI/CD](./../../../ci/README.md), you can use
+To work with Conan commands in [GitLab CI/CD](../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 You can provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each

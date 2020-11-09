@@ -240,7 +240,7 @@ it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/
 
 ## Internal API
 
-The [internal API](./internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints
+The [internal API](internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints
 different components are making use of.
 
 ## Avoiding N+1 problems
@@ -297,7 +297,7 @@ end
 
 ## Testing
 
-When writing tests for new API endpoints, consider using a schema [fixture](./testing_guide/best_practices.md#fixtures) located in `/spec/fixtures/api/schemas`. You can `expect` a response to match a given schema:
+When writing tests for new API endpoints, consider using a schema [fixture](testing_guide/best_practices.md#fixtures) located in `/spec/fixtures/api/schemas`. You can `expect` a response to match a given schema:
 
 ```ruby
 expect(response).to match_response_schema('merge_requests')

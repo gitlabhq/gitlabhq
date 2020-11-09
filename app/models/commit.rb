@@ -335,7 +335,11 @@ class Commit
     strong_memoize(:raw_signature_type) do
       next unless @raw.instance_of?(Gitlab::Git::Commit)
 
-      @raw.raw_commit.signature_type if defined? @raw.raw_commit.signature_type
+      if raw_commit_from_rugged? && gpg_commit.signature_text.present?
+        :PGP
+      elsif defined? @raw.raw_commit.signature_type
+        @raw.raw_commit.signature_type
+      end
     end
   end
 
@@ -347,13 +351,21 @@ class Commit
     strong_memoize(:signature) do
       case signature_type
       when :PGP
-        Gitlab::Gpg::Commit.new(self).signature
+        gpg_commit.signature
       when :X509
         Gitlab::X509::Commit.new(self).signature
       else
         nil
       end
     end
+  end
+
+  def raw_commit_from_rugged?
+    @raw.raw_commit.is_a?(Rugged::Commit)
+  end
+
+  def gpg_commit
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 
   def revert_branch_name

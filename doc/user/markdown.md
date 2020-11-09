@@ -532,7 +532,7 @@ If this snippet was placed on a page at `<your_wiki>/documentation/main`,
 it would link to `<your_wiki>/documentation/related`:
 
 ```markdown
-[Link to Related Page](./related)
+[Link to Related Page](related)
 ```
 
 If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,
@@ -546,7 +546,7 @@ If this snippet was placed on a page at `<your_wiki>/documentation/main`,
 it would link to `<your_wiki>/documentation/related.md`:
 
 ```markdown
-[Link to Related Page](./related.md)
+[Link to Related Page](related.md)
 ```
 
 If this snippet was placed on a page at `<your_wiki>/documentation/related/content`,

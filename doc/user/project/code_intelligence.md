@@ -35,7 +35,9 @@ code_navigation:
       lsif: dump.lsif
 ```
 
-The generated LSIF file must be less than 170MiB.
+The generated LSIF file size may be limited by
+the [artifact application limits (`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact),
+default to 100MB (configurable by an instance administrator).
 
 After the job succeeds, code intelligence data can be viewed while browsing the code:
 

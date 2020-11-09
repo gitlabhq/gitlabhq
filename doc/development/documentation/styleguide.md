@@ -1042,12 +1042,14 @@ To link to internal documentation:
 - Use relative links to Markdown files in the same repository.
 - Do not use absolute URLs or URLs from `docs.gitlab.com`.
 - Use `../` to navigate to higher-level directories.
-- Do not link relative to root. For example, `/ee/user/gitlab_com/index.md`.
+- Don't prepend `./` to links to files or directories.
+- Don't link relative to root. For example, `/ee/user/gitlab_com/index.md`.
 
   Don't:
 
   - `https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html`
   - `/ee/administration/geo/replication/troubleshooting.md`
+  - `./troubleshooting.md`
 
   Do: `../../geo/replication/troubleshooting.md`
 

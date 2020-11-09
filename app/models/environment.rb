@@ -305,6 +305,10 @@ class Environment < ApplicationRecord
     latest_opened_most_severe_alert.present?
   end
 
+  def has_running_deployments?
+    all_deployments.running.exists?
+  end
+
   def metrics
     prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
   end

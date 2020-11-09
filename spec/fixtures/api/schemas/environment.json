@@ -16,6 +16,7 @@
   ],
   "properties": {
     "id": { "type": "integer" },
+    "global_id": { "type": "string" },
     "name": { "type": "string" },
     "state": { "type": "string" },
     "external_url": { "$ref": "types/nullable_string.json" },

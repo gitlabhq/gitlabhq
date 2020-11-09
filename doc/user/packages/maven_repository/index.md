@@ -189,7 +189,7 @@ published to the GitLab Package Registry.
 To authenticate to the Package Registry, you need either a personal access token or deploy token.
 
 - If you use a [personal access token](../../../user/profile/personal_access_tokens.md), set the scope to `api`.
-- If you use a [deploy token](./../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
+- If you use a [deploy token](../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
 
 ### Authenticate with a personal access token in Maven
 
@@ -276,7 +276,7 @@ Read more about [how to create Maven packages using GitLab CI/CD](#create-maven-
 To authenticate to the Package Registry, you need either a personal access token or deploy token.
 
 - If you use a [personal access token](../../../user/profile/personal_access_tokens.md), set the scope to `api`.
-- If you use a [deploy token](./../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
+- If you use a [deploy token](../../project/deploy_tokens/index.md), set the scope to `read_package_registry`, `write_package_registry`, or both.
 
 ### Authenticate with a personal access token in Gradle
 

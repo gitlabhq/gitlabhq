@@ -4814,6 +4814,12 @@ msgstr ""
 msgid "Canary Deployments is a popular CI strategy, where a small portion of the fleet is updated to the new version of your application."
 msgstr ""
 
+msgid "Canary Ingress does not exist in the environment."
+msgstr ""
+
+msgid "Canary weight must be specified and valid range (0..100)."
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -11380,6 +11386,9 @@ msgstr ""
 msgid "Failed to update tag!"
 msgstr ""
 
+msgid "Failed to update the Canary Ingress."
+msgstr ""
+
 msgid "Failed to update."
 msgstr ""
 
@@ -11417,6 +11426,9 @@ msgid "Favicon was successfully removed."
 msgstr ""
 
 msgid "Feature Flags"
+msgstr ""
+
+msgid "Feature flag is not enabled on the environment's project."
 msgstr ""
 
 msgid "Feature flag was not removed."
@@ -26766,6 +26778,9 @@ msgstr ""
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
+msgid "The license for Deploy Board is required to use this feature."
+msgstr ""
+
 msgid "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc."
 msgstr ""
 
@@ -27046,6 +27061,9 @@ msgid "There are no projects shared with this group yet"
 msgstr ""
 
 msgid "There are no variables yet."
+msgstr ""
+
+msgid "There are running deployments on the environment. Please retry later."
 msgstr ""
 
 msgid "There is a limit of %{ci_project_subscriptions_limit} subscriptions from or to a project."
@@ -27418,6 +27436,9 @@ msgid "This environment is being deployed"
 msgstr ""
 
 msgid "This environment is being re-deployed"
+msgstr ""
+
+msgid "This environment's canary ingress has been updated recently. Please retry later."
 msgstr ""
 
 msgid "This epic already has the maximum number of child epics."
@@ -30788,6 +30809,9 @@ msgid "You do not have permission to leave this %{namespaceType}."
 msgstr ""
 
 msgid "You do not have permission to run the Web Terminal. Please contact a project administrator."
+msgstr ""
+
+msgid "You do not have permission to update the environment."
 msgstr ""
 
 msgid "You do not have permissions to run the import."

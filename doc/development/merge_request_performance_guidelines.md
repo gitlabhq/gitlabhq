@@ -546,7 +546,7 @@ end
 
 The usage of shared temporary storage is required if your intent
 is to persistent file for a disk-based storage, and not Object Storage.
-[Workhorse direct_upload](./uploads.md#direct-upload) when accepting file
+[Workhorse direct_upload](uploads.md#direct-upload) when accepting file
 can write it to shared storage, and later GitLab Rails can perform a move operation.
 The move operation on the same destination is instantaneous.
 The system instead of performing `copy` operation just re-attaches file into a new place.
@@ -570,7 +570,7 @@ that implements a seamless support for Shared and Object Storage-based persisten
 #### Data access
 
 Each feature that accepts data uploads or allows to download them needs to use
-[Workhorse direct_upload](./uploads.md#direct-upload). It means that uploads needs to be
+[Workhorse direct_upload](uploads.md#direct-upload). It means that uploads needs to be
 saved directly to Object Storage by Workhorse, and all downloads needs to be served
 by Workhorse.
 
@@ -582,5 +582,5 @@ can time out, which is especially problematic for slow clients. If clients take 
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
-For the above reasons it is required that [Workhorse direct_upload](./uploads.md#direct-upload) is implemented
+For the above reasons it is required that [Workhorse direct_upload](uploads.md#direct-upload) is implemented
 for all file uploads and downloads.

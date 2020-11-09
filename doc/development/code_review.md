@@ -104,7 +104,7 @@ with [domain expertise](#domain-experts).
    - If the license used by the new library hasn't been approved for use in
      GitLab, the license must be **approved by a [legal department member](https://about.gitlab.com/handbook/legal/)**.
      More information about license compatiblity can be found in our
-     [GitLab Licensing and Compatibility documentation](./licensing.md).
+     [GitLab Licensing and Compatibility documentation](licensing.md).
 1. If your merge request includes adding a new UI/UX paradigm (*1*), it must be
    **approved by a [UX lead](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes a new dependency or a filesystem change, it must be

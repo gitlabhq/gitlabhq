@@ -858,7 +858,7 @@ Find this content in the [Container Registry troubleshooting docs](../packages/c
 
 ## Sidekiq
 
-This content has been moved to the [Troubleshooting Sidekiq docs](./sidekiq.md).
+This content has been moved to the [Troubleshooting Sidekiq docs](sidekiq.md).
 
 ## Redis
 

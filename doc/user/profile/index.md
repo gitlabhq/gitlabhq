@@ -86,7 +86,7 @@ From there, you can:
 
 If you don't know your current password, select the 'I forgot my password' link.
 
-![Change your password](./img/change_password_v13_0.png)
+![Change your password](img/change_password_v13_0.png)
 
 ## Changing your username
 

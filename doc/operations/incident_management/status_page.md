@@ -12,11 +12,11 @@ With a GitLab Status Page, you can create and deploy a static website to communi
 efficiently to users during an incident. The Status Page landing page displays an
 overview of recent incidents:
 
-![Status Page landing page](./img/status_page_incidents_v12_10.png)
+![Status Page landing page](img/status_page_incidents_v12_10.png)
 
 Clicking an incident displays a detail page with more information about a particular incident:
 
-![Status Page detail](./img/status_page_detail_v12_10.png)
+![Status Page detail](img/status_page_detail_v12_10.png)
 
 - Status on the incident, including when the incident was last updated.
 - The incident title, including any emojis.
@@ -138,7 +138,7 @@ you provided during setup. As part of publication, GitLab will:
 After publication, you can access the incident's details page by clicking the
 **Published on status page** button displayed under the Incident's title.
 
-![Status Page detail link](./img/status_page_detail_link_v13_1.png)
+![Status Page detail link](img/status_page_detail_link_v13_1.png)
 
 ### Update an incident
 

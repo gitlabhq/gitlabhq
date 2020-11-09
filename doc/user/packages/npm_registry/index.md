@@ -87,7 +87,7 @@ To authenticate to the Package Registry, you must use one of the following:
 
 - A [personal access token](../../../user/profile/personal_access_tokens.md)
   (required for two-factor authentication (2FA)), with the scope set to `api`.
-- A [deploy token](./../../project/deploy_tokens/index.md), with the scope set to `read_package_registry`, `write_package_registry`, or both.
+- A [deploy token](../../project/deploy_tokens/index.md), with the scope set to `read_package_registry`, `write_package_registry`, or both.
 - It's not recommended, but you can use [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow).
   Standard OAuth tokens cannot authenticate to the GitLab NPM Registry. You must use a personal access token with OAuth headers.
 - A [CI job token](#authenticate-with-a-ci-job-token).
@@ -227,7 +227,7 @@ a given scope, you get a `403 Forbidden!` error.
 
 ## Publish an NPM package by using CI/CD
 
-To work with NPM commands within [GitLab CI/CD](./../../../ci/README.md), you can use
+To work with NPM commands within [GitLab CI/CD](../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token or deploy token in your commands.
 
 An example `.gitlab-ci.yml` file for publishing NPM packages:
@@ -406,7 +406,7 @@ And the `.npmrc` file should look like:
 
 ### `npm install` returns `Error: Failed to replace env in config: ${NPM_TOKEN}`
 
-You do not need a token to run `npm install` unless your project is private. The token is only required to publish. If the `.npmrc` file was checked in with a reference to `$NPM_TOKEN`, you can remove it. If you prefer to leave the reference in, you must set a value prior to running `npm install` or set the value by using [GitLab environment variables](./../../../ci/variables/README.md):
+You do not need a token to run `npm install` unless your project is private. The token is only required to publish. If the `.npmrc` file was checked in with a reference to `$NPM_TOKEN`, you can remove it. If you prefer to leave the reference in, you must set a value prior to running `npm install` or set the value by using [GitLab environment variables](../../../ci/variables/README.md):
 
 ```shell
 NPM_TOKEN=<your_token> npm install

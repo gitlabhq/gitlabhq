@@ -468,7 +468,7 @@ Cleanup policies can be run on all projects, with these exceptions:
   ```
 
   There are performance risks with enabling it for all projects, especially if you
-  are using an [external registry](./index.md#use-with-external-container-registries).
+  are using an [external registry](index.md#use-with-external-container-registries).
 - For self-managed GitLab instances, you can enable or disable the cleanup policy for a specific
   project.
 
@@ -580,7 +580,7 @@ See the API documentation for further details: [Edit project](../../../api/proje
 
 ### Use with external container registries
 
-When using an [external container registry](./../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
+When using an [external container registry](../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
 running a cleanup policy on a project may have some performance risks.
 If a project runs a policy to remove thousands of tags
 the GitLab background jobs may get backed up or fail completely.

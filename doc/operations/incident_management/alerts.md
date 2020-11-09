@@ -63,7 +63,7 @@ Alerts contain one of the following icons:
 
 ## Alert details page
 
-Navigate to the Alert details view by visiting the [Alert list](./alerts.md)
+Navigate to the Alert details view by visiting the [Alert list](alerts.md)
 and selecting an alert from the list. You need least Developer [permissions](../../user/permissions.md)
 to access alerts.
 
@@ -142,7 +142,7 @@ There are different actions avilable in GitLab to help triage and respond to ale
 ### Update an alert's status
 
 The Alert detail view enables you to update the Alert Status.
-See [Create and manage alerts in GitLab](./alerts.md) for more details.
+See [Create and manage alerts in GitLab](alerts.md) for more details.
 
 ### Create an incident from an alert
 
@@ -168,11 +168,11 @@ To assign an alert:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**:
 
-   ![Alert List View Assignee(s)](./img/alert_list_assignees_v13_1.png)
+   ![Alert List View Assignee(s)](img/alert_list_assignees_v13_1.png)
 
 1. Select your desired alert to display its **Alert Details View**:
 
-   ![Alert Details View Assignee(s)](./img/alert_details_assignees_v13_1.png)
+   ![Alert Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
    **{angle-double-right}** **Expand sidebar** to expand it.
@@ -180,7 +180,7 @@ To assign an alert:
    From the dropdown menu, select each user you want to assign to the alert.
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
-   ![Alert Details View Assignee(s)](./img/alert_todo_assignees_v13_1.png)
+   ![Alert Details View Assignee(s)](img/alert_todo_assignees_v13_1.png)
 
 After completing their portion of investigating or fixing the alert, users can
 unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
@@ -198,11 +198,11 @@ add a to-do item:
 1. Select your desired alert to display its **Alert Management Details View**.
 1. Select the **Add a To-Do** button in the right sidebar:
 
-   ![Alert Details Add a To-Do](./img/alert_detail_add_todo_v13_1.png)
+   ![Alert Details Add a To-Do](img/alert_detail_add_todo_v13_1.png)
 
 Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
 
-![Alert Details Added to do](./img/alert_detail_added_todo_v13_1.png)
+![Alert Details Added to do](img/alert_detail_added_todo_v13_1.png)
 
 ## Link runbooks to alerts
 
@@ -219,8 +219,7 @@ the correct runbook:
 
 ## View the environment that generated the alert
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5
-    behind a feature flag, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5 behind a feature flag, disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.6.
 
 CAUTION: **Warning:**

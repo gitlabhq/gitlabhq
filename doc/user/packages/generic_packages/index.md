@@ -90,7 +90,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Publish a generic package by using CI/CD
 
-To work with generic packages in [GitLab CI/CD](./../../../ci/README.md), you can use
+To work with generic packages in [GitLab CI/CD](../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 For example:

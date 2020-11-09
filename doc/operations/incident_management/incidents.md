@@ -27,7 +27,7 @@ Incident, you have two options to do this manually.
 - Create a new issue using the `incident` template available when creating it.
 - Create a new issue and assign the `incident` label to it.
 
-![Incident List Create](./img/incident_list_create_v13_3.png)
+![Incident List Create](img/incident_list_create_v13_3.png)
 
 **From the Issues List:**
 
@@ -37,7 +37,7 @@ Incident, you have two options to do this manually.
 - Create a new issue using the `type` drop-down and select `Incident`.
 - The page refreshes and the page only displays fields relevant to Incidents.
 
-![Incident List Create](./img/new_incident_create_v13_4.png)
+![Incident List Create](img/new_incident_create_v13_4.png)
 
 ### Create incidents automatically
 
@@ -48,7 +48,7 @@ With Maintainer or higher [permissions](../../user/permissions.md), you can enab
 
 1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**:
 
-   ![Incident Management Settings](./img/incident_management_settings_v13_3.png)
+   ![Incident Management Settings](img/incident_management_settings_v13_3.png)
 
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
@@ -71,7 +71,7 @@ in both PagerDuty and GitLab:
 1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
-   ![PagerDuty incidents integration](./img/pagerduty_incidents_integration_v13_3.png)
+   ![PagerDuty incidents integration](img/pagerduty_incidents_integration_v13_3.png)
 
 1. Activate the integration, and save the changes in GitLab.
 1. Copy the value of **Webhook URL** for use in a later step.
@@ -170,7 +170,7 @@ tab, the incident must have been created with a linked alert. Incidents
 created automatically from alerts have this
 field populated.
 
-![Incident alert details](./img/incident_alert_details_v13_4.png)
+![Incident alert details](img/incident_alert_details_v13_4.png)
 
 ### Timeline view
 
@@ -180,7 +180,7 @@ To quickly see the latest updates on an incident, click
 **{comments}** **Turn timeline view on** in the comment bar to display comments
 un-threaded and ordered chronologically, newest to oldest:
 
-![Timeline view toggle](./img/timeline_view_toggle_v13_5.png)
+![Timeline view toggle](img/timeline_view_toggle_v13_5.png)
 
 ### Service Level Agreement countdown timer
 
