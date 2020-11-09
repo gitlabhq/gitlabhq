@@ -130,7 +130,7 @@ in the future, but it's available for anyone who wants to try it at the above li
 
 ### Push `.gitlab-ci.yml` to GitLab
 
-Once you've created `.gitlab-ci.yml`, you should add it to your Git repository
+After you've created a `.gitlab-ci.yml`, you should add it to your Git repository
 and push it to GitLab.
 
 ```shell

@@ -47,12 +47,11 @@ module Mutations
         end
 
         def position_params(note, args)
-          new_position = args[:position]&.to_h&.compact
-          return unless new_position
+          return unless args[:position]
 
           original_position = note.position.to_h
 
-          Gitlab::Diff::Position.new(original_position.merge(new_position))
+          Gitlab::Diff::Position.new(original_position.merge(args[:position]))
         end
       end
     end

@@ -1,30 +1,35 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :github, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/26952', type: :bug } do
-    describe 'Project import from GitHub' do
-      let(:imported_project) do
-        Resource::ProjectImportedFromGithub.fabricate! do |project|
-          project.name = 'imported-project'
-          project.personal_access_token = Runtime::Env.github_access_token
-          project.github_repository_path = 'gitlab-qa/test-project'
+  RSpec.describe 'Manage', :github, :requires_admin do
+    describe 'Project import' do
+      let!(:user) do
+        Resource::User.fabricate_via_api! do |resource|
+          resource.api_client = Runtime::API::Client.as_admin
         end
       end
 
-      after do
-        # We need to delete the imported project because it's impossible to import
-        # the same GitHub project twice for a given user.
-        api_client = Runtime::API::Client.new(:gitlab)
-        delete_project_request = Runtime::API::Request.new(api_client, "/projects/#{CGI.escape("#{Runtime::Namespace.path}/#{imported_project.name}")}")
-        delete delete_project_request.url
+      let(:group) { Resource::Group.fabricate_via_api! }
 
-        expect_status(202)
-
-        Page::Main::Menu.perform(&:sign_out_if_signed_in)
+      let(:imported_project) do
+        Resource::ProjectImportedFromGithub.fabricate_via_browser_ui! do |project|
+          project.name = 'imported-project'
+          project.group = group
+          project.github_personal_access_token = Runtime::Env.github_access_token
+          project.github_repository_path = 'gitlab-qa-github/test-project'
+        end
       end
 
-      it 'user imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/385' do
-        Flow::Login.sign_in
+      before do
+        group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
+      end
+
+      after do
+        user.remove_via_api!
+      end
+
+      it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/385' do
+        Flow::Login.sign_in(as: user)
 
         imported_project # import the project
 
@@ -55,14 +60,14 @@ module QA
 
           click_link 'This is a sample issue'
 
-          expect(page).to have_content('We should populate this project with issues, pull requests and wiki pages.')
+          expect(page).to have_content('This is a sample first comment')
 
           # Comments
-          comment_text = 'This is a comment from @rymai.'
+          comment_text = 'This is a comment from @sliaquat'
 
           Page::Project::Issue::Show.perform do |issue_page|
             expect(issue_page).to have_comment(comment_text)
-            expect(issue_page).to have_label('enhancement')
+            expect(issue_page).to have_label('custom new label')
             expect(issue_page).to have_label('help wanted')
             expect(issue_page).to have_label('good first issue')
           end
@@ -71,26 +76,22 @@ module QA
 
       def verify_merge_requests_import
         Page::Project::Menu.perform(&:click_merge_requests)
-        expect(page).to have_content('Improve README.md')
+        expect(page).to have_content('Improve readme')
 
-        click_link 'Improve README.md'
+        click_link 'Improve readme'
 
         expect(page).to have_content('This improves the README file a bit.')
 
-        # Review comment are not supported yet
-        expect(page).not_to have_content('Really nice change.')
-
         # Comments
-        expect(page).to have_content('Nice work! This is a comment from @rymai.')
+        expect(page).to have_content('[PR comment by @sliaquat] Nice work!')
 
         # Diff comments
-        expect(page).to have_content('[Review comment] I like that!')
-        expect(page).to have_content('[Review comment] Nice blank line.')
-        expect(page).to have_content('[Single diff comment] Much better without this line!')
+        expect(page).to have_content('[Single diff comment] Good riddance')
+        expect(page).to have_content('[Single diff comment] Nice addition')
 
         Page::MergeRequest::Show.perform do |merge_request|
           expect(merge_request).to have_label('bug')
-          expect(merge_request).to have_label('enhancement')
+          expect(merge_request).to have_label('documentation')
         end
       end
 

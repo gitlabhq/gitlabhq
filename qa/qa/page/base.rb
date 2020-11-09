@@ -38,15 +38,15 @@ module QA
         assert_no_selector(element_selector_css(name))
       end
 
-      def refresh
+      def refresh(skip_finished_loading_check: false)
         page.refresh
 
-        wait_for_requests
+        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
       end
 
-      def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: true)
+      def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: true, skip_finished_loading_check_on_refresh: false)
         Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
-          yield || (reload && refresh && false)
+          yield || (reload && refresh(skip_finished_loading_check: skip_finished_loading_check_on_refresh) && false)
         end
       end
 

@@ -122,7 +122,7 @@ user for your application and add its credentials to GitLab instead of using
 a developer's credentials.
 
 To start a manual deployment in GitLab go to **CI/CD > Pipelines** then click
-on **Run Pipeline**. Once the app is finished deploying it will display the URL
+on **Run Pipeline**. After the app is finished deploying it will display the URL
 of your application in the logs for the `production` job like:
 
 ```shell

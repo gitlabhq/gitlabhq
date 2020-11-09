@@ -5,7 +5,7 @@ module Types
     class Note < BasePermissionType
       graphql_name 'NotePermissions'
 
-      abilities :read_note, :create_note, :admin_note, :resolve_note, :award_emoji
+      abilities :read_note, :create_note, :admin_note, :resolve_note, :reposition_note, :award_emoji
     end
   end
 end

@@ -261,7 +261,7 @@ Please read through the [documentation on CI/CD configuration](../../../ci/yaml/
 ### Build your game with GitLab CI/CD
 
 We need to update our build job to ensure tests get run as well. Add `gulp build-test`
-to the end of the `script` array for the existing `build` job. Once these commands run,
+to the end of the `script` array for the existing `build` job. After these commands run,
 we know we will need to access everything in the `built` folder, given by GitLab CI/CD's `artifacts`.
 We'll also cache `node_modules` to avoid having to do a full re-pull of those dependencies:
 just pack them up in the cache. Here is the full `build` job:

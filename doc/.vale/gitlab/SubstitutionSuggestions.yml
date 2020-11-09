@@ -13,3 +13,6 @@ ignorecase: true
 swap:
   since: because
   utilize: use
+  once that: after that
+  once the: after the
+  once you: after you

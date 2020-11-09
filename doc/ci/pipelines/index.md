@@ -195,7 +195,7 @@ stage has a job with a manual action.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27188) in GitLab 11.11.
 
 Multiple manual actions in a single stage can be started at the same time using the "Play all manual" button.
-Once you click this button, each individual manual action is triggered and refreshed
+After you click this button, each individual manual action is triggered and refreshed
 to an updated status.
 
 This functionality is only available:

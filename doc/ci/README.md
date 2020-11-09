@@ -77,7 +77,7 @@ While building your `.gitlab-ci.yml`, you can use the [CI/CD configuration visua
 
 For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
-Once you're familiar with how GitLab CI/CD works, see the
+After you're familiar with how GitLab CI/CD works, see the
 [`.gitlab-ci.yml` full reference](yaml/README.md)
 for all the attributes you can set and use.
 

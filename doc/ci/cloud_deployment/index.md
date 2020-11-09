@@ -239,7 +239,7 @@ pass three JSON input objects, based on existing templates:
 
    - [Template for the _Deploy to EC2_ step on AWS](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html).
 
-1. Once you have completed these three templates based on your requirements, you
+1. After you have completed these three templates based on your requirements, you
    have two ways to pass in these JSON objects:
 
    - They can be three actual files located in your project. You must specify their path relative to

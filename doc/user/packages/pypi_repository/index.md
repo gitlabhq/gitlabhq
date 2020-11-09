@@ -159,7 +159,7 @@ To do this, you can use:
 
 - A [personal access token](../../../user/profile/personal_access_tokens.md)
   with the scope set to `api`.
-- A [deploy token](./../../project/deploy_tokens/index.md) with the scope set to
+- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#authenticate-with-a-ci-job-token).
 
@@ -202,7 +202,7 @@ Your project ID is on your project's home page.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202012) in GitLab 13.4.
 
-To work with PyPI commands within [GitLab CI/CD](./../../../ci/README.md), you
+To work with PyPI commands within [GitLab CI/CD](../../../ci/README.md), you
 can use `CI_JOB_TOKEN` instead of a personal access token or deploy token.
 
 For example:

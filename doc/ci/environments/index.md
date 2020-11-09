@@ -442,7 +442,7 @@ The configuration in this section provides a full development workflow where you
 - Tested.
 - Built.
 - Deployed as a Review App.
-- Deployed to a staging server once the merge request is merged.
+- Deployed to a staging server after the merge request is merged.
 - Finally, able to be manually deployed to the production server.
 
 The following combines the previous configuration examples, including:

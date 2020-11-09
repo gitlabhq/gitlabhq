@@ -61,6 +61,7 @@ module Types
                    description: 'Updates a DiffNote on an image (a `Note` where the `position.positionType` is `"image"`). ' \
                                 'If the body of the Note contains only quick actions, the Note will be ' \
                                 'destroyed during the update, and no Note will be returned'
+    mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Terraform::State::Delete
     mount_mutation Mutations::Terraform::State::Lock

@@ -23,6 +23,14 @@ module Types
       argument :height, GraphQL::INT_TYPE,
                required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :height)
+
+      def prepare
+        to_h.compact.tap do |properties|
+          if properties.empty?
+            raise GraphQL::ExecutionError, "At least one property of `#{self.class.graphql_name}` must be set"
+          end
+        end
+      end
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end
