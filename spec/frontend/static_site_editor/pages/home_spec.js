@@ -24,6 +24,8 @@ import {
   trackingCategory,
   images,
   mounts,
+  branch,
+  baseUrl,
   imageRoot,
 } from '../mock_data';
 
@@ -44,6 +46,8 @@ describe('static_site_editor/pages/home', () => {
     username,
     sourcePath,
     mounts,
+    branch,
+    baseUrl,
     imageUploadPath: imageRoot,
   };
   const hasSubmittedChangesMutationPayload = {

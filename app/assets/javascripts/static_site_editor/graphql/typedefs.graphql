@@ -26,6 +26,8 @@ type AppData {
   returnUrl: String
   sourcePath: String!
   username: String!
+  branch: String!
+  baseUrl: String!
   mounts: [Mount]!
   imageUploadPath: String!
 }

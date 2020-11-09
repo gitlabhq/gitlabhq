@@ -10,13 +10,13 @@ import {
 } from '../mock_data';
 
 describe('Boards - Getters', () => {
-  describe('getLabelToggleState', () => {
+  describe('labelToggleState', () => {
     it('should return "on" when isShowingLabels is true', () => {
       const state = {
         isShowingLabels: true,
       };
 
-      expect(getters.getLabelToggleState(state)).toBe('on');
+      expect(getters.labelToggleState(state)).toBe('on');
     });
 
     it('should return "off" when isShowingLabels is false', () => {
@@ -24,7 +24,7 @@ describe('Boards - Getters', () => {
         isShowingLabels: false,
       };
 
-      expect(getters.getLabelToggleState(state)).toBe('off');
+      expect(getters.labelToggleState(state)).toBe('off');
     });
   });
 
@@ -112,7 +112,7 @@ describe('Boards - Getters', () => {
     });
   });
 
-  describe('getActiveIssue', () => {
+  describe('activeIssue', () => {
     it.each`
       id     | expected
       ${'1'} | ${'issue'}
@@ -120,11 +120,11 @@ describe('Boards - Getters', () => {
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
       const state = { issues: { '1': 'issue' }, activeId: id };
 
-      expect(getters.getActiveIssue(state)).toEqual(expected);
+      expect(getters.activeIssue(state)).toEqual(expected);
     });
   });
 
-  describe('getIssues', () => {
+  describe('getIssuesByList', () => {
     const boardsState = {
       issuesByListId: mockIssuesByListId,
       issues,
@@ -132,7 +132,7 @@ describe('Boards - Getters', () => {
     it('returns issues for a given listId', () => {
       const getIssueById = issueId => [mockIssue, mockIssue2].find(({ id }) => id === issueId);
 
-      expect(getters.getIssues(boardsState, { getIssueById })('gid://gitlab/List/2')).toEqual(
+      expect(getters.getIssuesByList(boardsState, { getIssueById })('gid://gitlab/List/2')).toEqual(
         mockIssues,
       );
     });

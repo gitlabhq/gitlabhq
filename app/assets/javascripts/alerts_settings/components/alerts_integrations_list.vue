@@ -58,6 +58,11 @@ export default {
       required: false,
       default: false,
     },
+    currentIntegration: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   fields: [
     {
@@ -82,17 +87,16 @@ export default {
       integrationToDelete: integrationToDeleteDefault,
     };
   },
-  computed: {
-    tbodyTrClass() {
-      return {
-        [bodyTrClass]: this.integrations.length,
-      };
-    },
-  },
   mounted() {
     this.trackPageViews();
   },
   methods: {
+    tbodyTrClass(item) {
+      return {
+        [bodyTrClass]: this.integrations.length,
+        'gl-bg-blue-50': item?.id === this.currentIntegration?.id,
+      };
+    },
     trackPageViews() {
       const { category, action } = trackAlertIntegrationsViewsOptions;
       Tracking.event(category, action);

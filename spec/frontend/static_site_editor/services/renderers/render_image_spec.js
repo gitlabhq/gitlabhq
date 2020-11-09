@@ -1,11 +1,11 @@
 import imageRenderer from '~/static_site_editor/services/renderers/render_image';
-import { mounts, project } from '../../mock_data';
+import { mounts, project, branch, baseUrl } from '../../mock_data';
 
 describe('rich_content_editor/renderers/render_image', () => {
   let renderer;
 
   beforeEach(() => {
-    renderer = imageRenderer.build(mounts, project);
+    renderer = imageRenderer.build(mounts, project, branch, baseUrl);
   });
 
   describe('build', () => {
@@ -27,37 +27,38 @@ describe('rich_content_editor/renderers/render_image', () => {
   });
 
   describe('render', () => {
-    let context;
-    let result;
-    const skipChildren = jest.fn();
-
-    beforeEach(() => {
+    it.each`
+      destination                                      | isAbsolute | src
+      ${'http://test.host/absolute/path/to/image.png'} | ${true}    | ${'http://test.host/absolute/path/to/image.png'}
+      ${'/relative/path/to/image.png'}                 | ${false}   | ${'http://test.host/user1/project1/-/raw/master/default/source/relative/path/to/image.png'}
+      ${'/target/image.png'}                           | ${false}   | ${'http://test.host/user1/project1/-/raw/master/source/with/target/image.png'}
+      ${'relative/to/current/image.png'}               | ${false}   | ${'http://test.host/user1/project1/-/raw/master/relative/to/current/image.png'}
+      ${'./relative/to/current/image.png'}             | ${false}   | ${'http://test.host/user1/project1/-/raw/master/./relative/to/current/image.png'}
+      ${'../relative/to/current/image.png'}            | ${false}   | ${'http://test.host/user1/project1/-/raw/master/../relative/to/current/image.png'}
+    `('returns an image with the correct attributes', ({ destination, isAbsolute, src }) => {
+      const skipChildren = jest.fn();
+      const context = { skipChildren };
       const node = {
-        destination: '/some/path/image.png',
+        destination,
         firstChild: {
           type: 'img',
           literal: 'Some Image',
         },
       };
+      const result = renderer.render(node, context);
 
-      context = { skipChildren };
-      result = renderer.render(node, context);
-    });
-
-    it('invokes `skipChildren`', () => {
-      expect(skipChildren).toHaveBeenCalled();
-    });
-
-    it('returns an image', () => {
       expect(result).toEqual({
         type: 'openTag',
         tagName: 'img',
         selfClose: true,
         attributes: {
-          src: '/some/path/image.png',
+          'data-original-src': !isAbsolute ? destination : '',
+          src,
           alt: 'Some Image',
         },
       });
+
+      expect(skipChildren).toHaveBeenCalled();
     });
   });
 });

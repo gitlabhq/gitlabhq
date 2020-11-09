@@ -13,11 +13,11 @@ const createDiscussionMock = (props = {}) =>
 const createNoteMock = (props = {}) =>
   Object.assign(JSON.parse(JSON.stringify(discussionMock.notes[0])), props);
 const createResolvableNote = () =>
-  createNoteMock({ resolvable: true, current_user: { can_resolve: true } });
+  createNoteMock({ resolvable: true, current_user: { can_resolve_discussion: true } });
 const createUnresolvableNote = () =>
-  createNoteMock({ resolvable: false, current_user: { can_resolve: false } });
+  createNoteMock({ resolvable: false, current_user: { can_resolve_discussion: false } });
 const createUnallowedNote = () =>
-  createNoteMock({ resolvable: true, current_user: { can_resolve: false } });
+  createNoteMock({ resolvable: true, current_user: { can_resolve_discussion: false } });
 
 describe('DiscussionActions', () => {
   let wrapper;

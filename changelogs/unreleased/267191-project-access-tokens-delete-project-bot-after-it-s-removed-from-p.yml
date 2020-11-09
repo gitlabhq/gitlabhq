@@ -1,0 +1,5 @@
+---
+title: Project Access Tokens - Delete project bot after token expires
+merge_request: 45828
+author:
+type: fixed

@@ -121,7 +121,13 @@ export default {
       return this.withBatchComments && this.noteId === '' && !this.discussion.for_commit;
     },
     showResolveDiscussionToggle() {
-      return (this.discussion?.id && this.discussion.resolvable) || this.isDraft;
+      if (!this.discussion?.notes) return false;
+
+      return (
+        this.discussion?.notes
+          .filter(n => n.resolvable)
+          .some(n => n.current_user?.can_resolve_discussion) || this.isDraft
+      );
     },
     noteHash() {
       if (this.noteId) {

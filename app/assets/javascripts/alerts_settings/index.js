@@ -29,19 +29,16 @@ export default el => {
     opsgenieMvcEnabled,
     opsgenieMvcTargetUrl,
     projectPath,
+    multiIntegrations,
   } = el.dataset;
 
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        cacheConfig: {},
-      },
-    ),
-  });
+  const resolvers = {};
 
-  apolloProvider.clients.defaultClient.cache.writeData({
-    data: {},
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(resolvers, {
+      cacheConfig: {},
+      assumeImmutableResults: true,
+    }),
   });
 
   return new Vue({
@@ -70,6 +67,7 @@ export default el => {
         opsgenieMvcIsAvailable: parseBoolean(opsgenieMvcAvailable),
       },
       projectPath,
+      multiIntegrations: parseBoolean(multiIntegrations),
     },
     apolloProvider,
     components: {

@@ -43,7 +43,7 @@ RSpec.describe 'search/_results' do
     let_it_be(:wiki_blob) { create(:wiki_page, project: project, content: '*') }
     let_it_be(:user) { create(:admin) }
 
-    %w[issues blobs notes wiki_blobs merge_requests milestones].each do |search_scope|
+    %w[issues merge_requests].each do |search_scope|
       context "when scope is #{search_scope}" do
         let(:scope) { search_scope }
         let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
@@ -55,16 +55,30 @@ RSpec.describe 'search/_results' do
           expect(rendered).to have_selector('[data-track-property=search_result]')
         end
 
-        it 'renders the state filter drop down' do
+        it 'does render the sidebar' do
           render
 
-          expect(rendered).to have_selector('#js-search-filter-by-state')
+          expect(rendered).to have_selector('#js-search-sidebar')
+        end
+      end
+    end
+
+    %w[blobs notes wiki_blobs milestones].each do |search_scope|
+      context "when scope is #{search_scope}" do
+        let(:scope) { search_scope }
+        let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
+
+        it 'renders the click text event tracking attributes' do
+          render
+
+          expect(rendered).to have_selector('[data-track-event=click_text]')
+          expect(rendered).to have_selector('[data-track-property=search_result]')
         end
 
-        it 'renders the confidential drop down' do
+        it 'does not render the sidebar' do
           render
 
-          expect(rendered).to have_selector('#js-search-filter-by-confidential')
+          expect(rendered).not_to have_selector('#js-search-sidebar')
         end
       end
     end

@@ -2,6 +2,7 @@
 /* global List */
 
 import Vue from 'vue';
+import { keyBy } from 'lodash';
 import '~/boards/models/list';
 import '~/boards/models/issue';
 import boardsStore from '~/boards/stores/boards_store';
@@ -309,6 +310,8 @@ export const mockLists = [
     loading: false,
   },
 ];
+
+export const mockListsById = keyBy(mockLists, 'id');
 
 export const mockListsWithModel = mockLists.map(listMock =>
   Vue.observable(new List({ ...listMock, doNotFetchIssues: true })),

@@ -184,16 +184,43 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_REMOVE_LIST', () => {
-    expectNotImplemented(mutations.REQUEST_REMOVE_LIST);
+  describe('REMOVE_LIST', () => {
+    it('removes list from boardLists', () => {
+      const [list, secondList] = mockListsWithModel;
+      const expected = {
+        [secondList.id]: secondList,
+      };
+      state = {
+        ...state,
+        boardLists: { ...initialBoardListsState },
+      };
+
+      mutations[types.REMOVE_LIST](state, list.id);
+
+      expect(state.boardLists).toEqual(expected);
+    });
   });
 
-  describe('RECEIVE_REMOVE_LIST_SUCCESS', () => {
-    expectNotImplemented(mutations.RECEIVE_REMOVE_LIST_SUCCESS);
-  });
+  describe('REMOVE_LIST_FAILURE', () => {
+    it('restores lists from backup', () => {
+      const backupLists = { ...initialBoardListsState };
 
-  describe('RECEIVE_REMOVE_LIST_ERROR', () => {
-    expectNotImplemented(mutations.RECEIVE_REMOVE_LIST_ERROR);
+      mutations[types.REMOVE_LIST_FAILURE](state, backupLists);
+
+      expect(state.boardLists).toEqual(backupLists);
+    });
+
+    it('sets error state', () => {
+      const backupLists = { ...initialBoardListsState };
+      state = {
+        ...state,
+        error: undefined,
+      };
+
+      mutations[types.REMOVE_LIST_FAILURE](state, backupLists);
+
+      expect(state.error).toEqual('An error occurred while removing the list. Please try again.');
+    });
   });
 
   describe('RESET_ISSUES', () => {

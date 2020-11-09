@@ -69,14 +69,18 @@ export default {
     eventHub.$off('sidebar.closeAll', this.unsetActiveId);
   },
   methods: {
-    ...mapActions(['unsetActiveId']),
+    ...mapActions(['unsetActiveId', 'removeList']),
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);
     },
     deleteBoard() {
       // eslint-disable-next-line no-alert
-      if (window.confirm(__('Are you sure you want to delete this list?'))) {
-        this.activeList.destroy();
+      if (window.confirm(__('Are you sure you want to remove this list?'))) {
+        if (this.shouldUseGraphQL) {
+          this.removeList(this.activeId);
+        } else {
+          this.activeList.destroy();
+        }
         this.unsetActiveId();
       }
     },

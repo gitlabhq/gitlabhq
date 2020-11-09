@@ -27,6 +27,7 @@ class UserPolicy < BasePolicy
   rule { default }.enable :read_user_profile
   rule { (private_profile | blocked_user) & ~(user_is_self | admin) }.prevent :read_user_profile
   rule { user_is_self | admin }.enable :disable_two_factor
+  rule { (user_is_self | admin) & ~blocked }.enable :create_user_personal_access_token
 end
 
 UserPolicy.prepend_if_ee('EE::UserPolicy')

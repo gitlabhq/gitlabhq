@@ -2,7 +2,7 @@ import { find } from 'lodash';
 import { inactiveId } from '../constants';
 
 export default {
-  getLabelToggleState: state => (state.isShowingLabels ? 'on' : 'off'),
+  labelToggleState: state => (state.isShowingLabels ? 'on' : 'off'),
   isSidebarOpen: state => state.activeId !== inactiveId,
   isSwimlanesOn: state => {
     if (!gon?.features?.boardsWithSwimlanes && !gon?.features?.swimlanes) {
@@ -15,12 +15,12 @@ export default {
     return state.issues[id] || {};
   },
 
-  getIssues: (state, getters) => listId => {
+  getIssuesByList: (state, getters) => listId => {
     const listIssueIds = state.issuesByListId[listId] || [];
     return listIssueIds.map(id => getters.getIssueById(id));
   },
 
-  getActiveIssue: state => {
+  activeIssue: state => {
     return state.issues[state.activeId] || {};
   },
 

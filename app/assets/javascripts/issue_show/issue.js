@@ -17,6 +17,8 @@ export function initIssuableApp(issuableData, store) {
       return createElement(IssuableApp, {
         props: {
           ...issuableData,
+          isConfidential: this.getNoteableData?.confidential,
+          isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
         },
       });

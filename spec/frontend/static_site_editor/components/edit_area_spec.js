@@ -17,6 +17,8 @@ import {
   returnUrl,
   mounts,
   project,
+  branch,
+  baseUrl,
   imageRoot,
 } from '../mock_data';
 
@@ -36,6 +38,8 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
         returnUrl,
         mounts,
         project,
+        branch,
+        baseUrl,
         imageRoot,
         savingChanges,
         ...propsData,

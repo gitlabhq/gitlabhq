@@ -372,7 +372,6 @@ describe('Pipelines', () => {
       });
 
       it('should render table', () => {
-        expect(wrapper.find('.table-holder').exists()).toBe(true);
         expect(wrapper.findAll('.gl-responsive-table-row')).toHaveLength(
           pipelines.pipelines.length + 1,
         );

@@ -18,7 +18,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ issue: 'getActiveIssue' }),
+    ...mapGetters({ issue: 'activeIssue' }),
     hasDueDate() {
       return this.issue.dueDate != null;
     },

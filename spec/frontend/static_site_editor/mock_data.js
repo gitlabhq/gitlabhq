@@ -75,9 +75,17 @@ export const images = new Map([
 
 export const mounts = [
   {
-    source: 'some/source/',
+    source: 'default/source/',
     target: '',
   },
+  {
+    source: 'source/with/target',
+    target: 'target',
+  },
 ];
+
+export const branch = 'master';
+
+export const baseUrl = '/user1/project1/-/sse/master%2Ftest.md';
 
 export const imageRoot = 'source/images/';

@@ -6,6 +6,11 @@ RSpec.describe PersonalAccessTokens::RevokeService do
   shared_examples_for 'a successfully revoked token' do
     it { expect(subject.success?).to be true }
     it { expect(service.token.revoked?).to be true }
+    it 'logs the event' do
+      expect(Gitlab::AppLogger).to receive(:info).with(/PAT REVOCATION: revoked_by: '#{current_user.username}', revoked_for: '#{token.user.username}', token_id: '\d+'/)
+
+      subject
+    end
   end
 
   shared_examples_for 'an unsuccessfully revoked token' do

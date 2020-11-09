@@ -1,7 +1,0 @@
----
-name: minimal_access_role
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942
-rollout_issue_url:
-group: group::access
-type: licensed
-default_enabled: true

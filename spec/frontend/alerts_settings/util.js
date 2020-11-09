@@ -25,4 +25,6 @@ export const defaultAlertSettingsConfig = {
     active: ACTIVE,
     opsgenieMvcTargetUrl: GENERIC_URL,
   },
+  projectPath: '',
+  multiIntegrations: true,
 };

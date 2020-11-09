@@ -46,7 +46,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getIssues']),
+    ...mapGetters(['getIssuesByList']),
     showBoardListAndBoardInfo() {
       return this.list.type !== ListType.promotion;
     },
@@ -58,7 +58,7 @@ export default {
       if (!this.glFeatures.graphqlBoardLists) {
         return this.list.issues;
       }
-      return this.getIssues(this.list.id);
+      return this.getIssuesByList(this.list.id);
     },
     shouldFetchIssues() {
       return this.glFeatures.graphqlBoardLists && this.list.type !== ListType.blank;

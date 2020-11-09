@@ -1,16 +1,12 @@
 .issuable-warning-icon {
   background-color: $orange-50;
   border-radius: $border-radius-default;
+  color: $orange-600;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
   margin-right: $issuable-warning-icon-margin;
   line-height: $gl-line-height-24;
-
-  .icon {
-    fill: $orange-600;
-    vertical-align: text-bottom;
-  }
 }
 
 .limit-container-width {

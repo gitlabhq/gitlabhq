@@ -40,6 +40,46 @@ RSpec.describe UserPolicy do
     end
   end
 
+  describe "creating a different user's Personal Access Tokens" do
+    context 'when current_user is admin' do
+      let(:current_user) { create(:user, :admin) }
+
+      context 'when admin mode is enabled and current_user is not blocked', :enable_admin_mode do
+        it { is_expected.to be_allowed(:create_user_personal_access_token) }
+      end
+
+      context 'when admin mode is enabled and current_user is blocked', :enable_admin_mode do
+        let(:current_user) { create(:admin, :blocked) }
+
+        it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+      end
+    end
+
+    context 'when current_user is not an admin' do
+      context 'creating their own personal access tokens' do
+        subject { described_class.new(current_user, current_user) }
+
+        context 'when current_user is not blocked' do
+          it { is_expected.to be_allowed(:create_user_personal_access_token) }
+        end
+
+        context 'when current_user is blocked' do
+          let(:current_user) { create(:user, :blocked) }
+
+          it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+        end
+      end
+
+      context "creating a different user's personal access tokens" do
+        it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+      end
+    end
+  end
+
   shared_examples 'changing a user' do |ability|
     context "when a regular user tries to destroy another regular user" do
       it { is_expected.not_to be_allowed(ability) }

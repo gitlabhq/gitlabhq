@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Profile > Personal Access Tokens', :js do
   let(:user) { create(:user) }
+  let(:pat_create_service) { double('PersonalAccessTokens::CreateService', execute: ServiceResponse.error(message: 'error', payload: { personal_access_token: PersonalAccessToken.new })) }
 
   def active_personal_access_tokens
     find(".table.active-tokens")
@@ -18,7 +19,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
   end
 
   def disallow_personal_access_token_saves!
-    allow_any_instance_of(PersonalAccessToken).to receive(:save).and_return(false)
+    allow(PersonalAccessTokens::CreateService).to receive(:new).and_return(pat_create_service)
 
     errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
     allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
@@ -100,7 +101,10 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     context "when revocation fails" do
       it "displays an error message" do
         visit profile_personal_access_tokens_path
-        allow_any_instance_of(PersonalAccessTokens::RevokeService).to receive(:revocation_permitted?).and_return(false)
+
+        allow_next_instance_of(PersonalAccessTokens::RevokeService) do |instance|
+          allow(instance).to receive(:revocation_permitted?).and_return(false)
+        end
 
         accept_confirm { click_on "Revoke" }
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)

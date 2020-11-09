@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o pipefail
 
 cd "$(dirname "$0")/.." || exit 1
 echo "=> Linting documents at path $(pwd) as $(whoami)..."
@@ -71,13 +72,14 @@ else
 function run_locally_or_in_docker() {
   local cmd=$1
   local args=$2
+  local pipe_cmd=$3
 
   if hash ${cmd} 2>/dev/null
   then
-    $cmd $args
+    $cmd $args | $pipe_cmd
   elif hash docker 2>/dev/null
   then
-    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint:latest ${cmd} ${args}
+    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs/lint:latest ${cmd} ${args} | $pipe_cmd
   else
     echo
     echo "  ✖ ERROR: '${cmd}' not found. Install '${cmd}' or Docker to proceed." >&2
@@ -99,7 +101,7 @@ echo
 run_locally_or_in_docker 'markdownlint' "--config .markdownlint.json ${MD_DOC_PATH}"
 
 echo '=> Linting prose...'
-run_locally_or_in_docker 'vale' "--minAlertLevel error ${MD_DOC_PATH}"
+run_locally_or_in_docker 'vale' "--minAlertLevel error --output=JSON ${MD_DOC_PATH}" "ruby scripts/vale.rb"
 
 if [ $ERRORCODE -ne 0 ]
 then

@@ -5,7 +5,9 @@
 @import './ide_theme_overrides';
 
 @import './ide_themes/dark';
+@import './ide_themes/solarized-light';
 @import './ide_themes/solarized-dark';
+@import './ide_themes/monokai';
 
 $search-list-icon-width: 18px;
 $ide-activity-bar-width: 60px;
@@ -176,11 +178,11 @@ $ide-commit-header-height: 48px;
     height: 100%;
     overflow: auto;
     padding: $gl-padding;
-    background-color: var(--ide-border-color, transparent);
+    background-color: var(--ide-empty-state-background, transparent);
   }
 
   .file-container {
-    background-color: var(--ide-border-color, $gray-darker);
+    background-color: var(--ide-empty-state-background, $gray-darker);
     display: flex;
     height: 100%;
     align-items: center;
@@ -491,7 +493,7 @@ $ide-commit-header-height: 48px;
   height: 100vh;
   align-items: center;
   justify-content: center;
-  background-color: var(--ide-border-color, transparent);
+  background-color: var(--ide-empty-state-background, transparent);
 }
 
 .ide {

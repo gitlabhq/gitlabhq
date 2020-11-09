@@ -136,6 +136,16 @@ export default {
       type: String,
       required: true,
     },
+    isConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     issuableType: {
       type: String,
       required: false,
@@ -453,6 +463,12 @@ export default {
                 <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />
                 <span class="gl-display-none d-sm-block">{{ statusText }}</span>
               </p>
+              <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
+                <gl-icon name="lock" :aria-label="__('Locked')" />
+              </span>
+              <span v-if="isConfidential" data-testid="confidential" class="issuable-warning-icon">
+                <gl-icon name="eye-slash" :aria-label="__('Confidential')" />
+              </span>
               <p
                 class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
                 :title="state.titleText"

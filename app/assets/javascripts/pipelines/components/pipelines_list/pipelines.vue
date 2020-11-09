@@ -337,7 +337,7 @@ export default {
         :message="emptyTabMessage"
       />
 
-      <div v-else-if="stateToRender === $options.stateMap.tableList" class="table-holder">
+      <div v-else-if="stateToRender === $options.stateMap.tableList">
         <pipelines-table-component
           :pipelines="state.pipelines"
           :pipeline-schedule-url="pipelineScheduleUrl"

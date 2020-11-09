@@ -2,6 +2,7 @@ import testAction from 'helpers/vuex_action_helper';
 import {
   mockListsWithModel,
   mockLists,
+  mockListsById,
   mockIssue,
   mockIssueWithModel,
   mockIssue2WithModel,
@@ -13,6 +14,7 @@ import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId } from '~/boards/constants';
 import issueMoveListMutation from '~/boards/queries/issue_move_list.mutation.graphql';
+import destroyBoardListMutation from '~/boards/queries/board_list_destroy.mutation.graphql';
 import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import { fullBoardId, formatListIssues, formatBoardLists } from '~/boards/boards_util';
 
@@ -318,8 +320,82 @@ describe('updateList', () => {
   });
 });
 
-describe('deleteList', () => {
-  expectNotImplemented(actions.deleteList);
+describe('removeList', () => {
+  let state;
+  const list = mockLists[0];
+  const listId = list.id;
+  const mutationVariables = {
+    mutation: destroyBoardListMutation,
+    variables: {
+      listId,
+    },
+  };
+
+  beforeEach(() => {
+    state = {
+      boardLists: mockListsById,
+    };
+  });
+
+  afterEach(() => {
+    state = null;
+  });
+
+  it('optimistically deletes the list', () => {
+    const commit = jest.fn();
+
+    actions.removeList({ commit, state }, listId);
+
+    expect(commit.mock.calls).toEqual([[types.REMOVE_LIST, listId]]);
+  });
+
+  it('keeps the updated list if remove succeeds', async () => {
+    const commit = jest.fn();
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        destroyBoardList: {
+          errors: [],
+        },
+      },
+    });
+
+    await actions.removeList({ commit, state }, listId);
+
+    expect(gqlClient.mutate).toHaveBeenCalledWith(mutationVariables);
+    expect(commit.mock.calls).toEqual([[types.REMOVE_LIST, listId]]);
+  });
+
+  it('restores the list if update fails', async () => {
+    const commit = jest.fn();
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue(Promise.reject());
+
+    await actions.removeList({ commit, state }, listId);
+
+    expect(gqlClient.mutate).toHaveBeenCalledWith(mutationVariables);
+    expect(commit.mock.calls).toEqual([
+      [types.REMOVE_LIST, listId],
+      [types.REMOVE_LIST_FAILURE, mockListsById],
+    ]);
+  });
+
+  it('restores the list if update response has errors', async () => {
+    const commit = jest.fn();
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        destroyBoardList: {
+          errors: ['update failed, ID invalid'],
+        },
+      },
+    });
+
+    await actions.removeList({ commit, state }, listId);
+
+    expect(gqlClient.mutate).toHaveBeenCalledWith(mutationVariables);
+    expect(commit.mock.calls).toEqual([
+      [types.REMOVE_LIST, listId],
+      [types.REMOVE_LIST_FAILURE, mockListsById],
+    ]);
+  });
 });
 
 describe('fetchIssuesForList', () => {
@@ -640,7 +716,7 @@ describe('addListIssueFailure', () => {
 
 describe('setActiveIssueLabels', () => {
   const state = { issues: { [mockIssue.id]: mockIssue } };
-  const getters = { getActiveIssue: mockIssue };
+  const getters = { activeIssue: mockIssue };
   const testLabelIds = labels.map(label => label.id);
   const input = {
     addLabelIds: testLabelIds,
@@ -654,7 +730,7 @@ describe('setActiveIssueLabels', () => {
       .mockResolvedValue({ data: { updateIssue: { issue: { labels: { nodes: labels } } } } });
 
     const payload = {
-      issueId: getters.getActiveIssue.id,
+      issueId: getters.activeIssue.id,
       prop: 'labels',
       value: labels,
     };
@@ -685,7 +761,7 @@ describe('setActiveIssueLabels', () => {
 
 describe('setActiveIssueDueDate', () => {
   const state = { issues: { [mockIssue.id]: mockIssue } };
-  const getters = { getActiveIssue: mockIssue };
+  const getters = { activeIssue: mockIssue };
   const testDueDate = '2020-02-20';
   const input = {
     dueDate: testDueDate,
@@ -705,7 +781,7 @@ describe('setActiveIssueDueDate', () => {
     });
 
     const payload = {
-      issueId: getters.getActiveIssue.id,
+      issueId: getters.activeIssue.id,
       prop: 'dueDate',
       value: testDueDate,
     };

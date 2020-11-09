@@ -141,6 +141,8 @@ export default {
     canResolve() {
       if (this.glFeatures.removeResolveNote && !this.discussionRoot) return false;
 
+      if (this.glFeatures.removeResolveNote) return this.note.current_user.can_resolve_discussion;
+
       return (
         this.note.current_user.can_resolve ||
         (this.note.isDraft && this.note.discussion_id !== null)

@@ -9,7 +9,7 @@ describe('AlertsSettingsFormNew', () => {
 
   const createComponent = ({
     data = {},
-    props = { loading: false },
+    props = {},
     multipleHttpIntegrationsCustomMapping = false,
   } = {}) => {
     wrapper = mount(AlertsSettingsForm, {
@@ -17,6 +17,8 @@ describe('AlertsSettingsFormNew', () => {
         return { ...data };
       },
       propsData: {
+        loading: false,
+        canAddIntegration: true,
         ...props,
       },
       provide: {
@@ -33,6 +35,8 @@ describe('AlertsSettingsFormNew', () => {
   const findFormToggle = () => wrapper.find(GlToggle);
   const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
   const findSubmitButton = () => wrapper.find(`[type = "submit"]`);
+  const findMultiSupportText = () =>
+    wrapper.find(`[data-testid="multi-integrations-not-supported"]`);
 
   afterEach(() => {
     if (wrapper) {
@@ -53,6 +57,7 @@ describe('AlertsSettingsFormNew', () => {
     it('render the initial form with only an integration type dropdown', () => {
       expect(findForm().exists()).toBe(true);
       expect(findSelect().exists()).toBe(true);
+      expect(findMultiSupportText().exists()).toBe(false);
       expect(findFormSteps().attributes('visible')).toBeUndefined();
     });
 
@@ -67,6 +72,12 @@ describe('AlertsSettingsFormNew', () => {
           .at(0)
           .isVisible(),
       ).toBe(true);
+    });
+
+    it('disabled the dropdown and shows help text when multi integrations are not supported', async () => {
+      createComponent({ props: { canAddIntegration: false } });
+      expect(findSelect().attributes('disabled')).toBe('disabled');
+      expect(findMultiSupportText().exists()).toBe(true);
     });
   });
 

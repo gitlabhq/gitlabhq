@@ -83,7 +83,9 @@ module ResourceAccessTokens
     end
 
     def create_personal_access_token(user)
-      PersonalAccessTokens::CreateService.new(user, personal_access_token_params).execute
+      PersonalAccessTokens::CreateService.new(
+        current_user: user, target_user: user, params: personal_access_token_params
+      ).execute
     end
 
     def personal_access_token_params

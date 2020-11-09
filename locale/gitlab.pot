@@ -2566,6 +2566,9 @@ msgstr ""
 msgid "AlertSettings|HTTP endpoint"
 msgstr ""
 
+msgid "AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations."
+msgstr ""
+
 msgid "AlertSettings|Integration"
 msgstr ""
 
@@ -2668,6 +2671,9 @@ msgstr ""
 msgid "AlertsIntegrations|Prometheus"
 msgstr ""
 
+msgid "AlertsIntegrations|The current integration could not be updated. Please try again."
+msgstr ""
+
 msgid "AlertsIntegrations|The integration could not be added. Please try again."
 msgstr ""
 
@@ -2678,6 +2684,9 @@ msgid "AlertsIntegrations|The integration has been successfully removed."
 msgstr ""
 
 msgid "AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list."
+msgstr ""
+
+msgid "AlertsIntegrations|The integration token could not be reset. Please try again."
 msgstr ""
 
 msgid "AlertsIntegrations|You have opted to delete the %{integrationName} integration. Do you want to proceed? It means you will no longer receive alerts from this endpoint in your alert list, and this action cannot be undone."
@@ -3582,9 +3591,6 @@ msgstr ""
 msgid "Are you sure you want to delete this device? This action cannot be undone."
 msgstr ""
 
-msgid "Are you sure you want to delete this list?"
-msgstr ""
-
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
@@ -3633,6 +3639,9 @@ msgid "Are you sure you want to remove the license?"
 msgstr ""
 
 msgid "Are you sure you want to remove this identity?"
+msgstr ""
+
+msgid "Are you sure you want to remove this list?"
 msgstr ""
 
 msgid "Are you sure you want to reset registration token?"
@@ -4401,6 +4410,9 @@ msgid "Boards|An error occurred while generating lists. Please reload the page."
 msgstr ""
 
 msgid "Boards|An error occurred while moving the issue. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while removing the list. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while updating the list. Please try again."
@@ -22939,6 +22951,9 @@ msgid "Reset authorization key"
 msgstr ""
 
 msgid "Reset authorization key?"
+msgstr ""
+
+msgid "Reset filters"
 msgstr ""
 
 msgid "Reset health check access token"

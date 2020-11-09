@@ -1,4 +1,4 @@
-import { GlTable, GlIcon } from '@gitlab/ui';
+import { GlTable, GlIcon, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import AlertIntegrationsList, {
@@ -8,11 +8,13 @@ import { trackAlertIntegrationsViewsOptions } from '~/alerts_settings/constants'
 
 const mockIntegrations = [
   {
+    id: '1',
     active: true,
     name: 'Integration 1',
     type: 'HTTP endpoint',
   },
   {
+    id: '2',
     active: false,
     name: 'Integration 2',
     type: 'HTTP endpoint',
@@ -30,6 +32,7 @@ describe('AlertIntegrationsList', () => {
       },
       stubs: {
         GlIcon: true,
+        GlButton: true,
       },
     });
   }
@@ -46,6 +49,7 @@ describe('AlertIntegrationsList', () => {
   });
 
   const findTableComponent = () => wrapper.find(GlTable);
+  const findTableComponentRows = () => wrapper.find(GlTable).findAll('table tbody tr');
   const finsStatusCell = () => wrapper.findAll('[data-testid="integration-activated-status"]');
 
   it('renders a table', () => {
@@ -55,6 +59,19 @@ describe('AlertIntegrationsList', () => {
   it('renders an empty state when no integrations provided', () => {
     mountComponent({ integrations: [] });
     expect(findTableComponent().text()).toContain(i18n.emptyState);
+  });
+
+  it('renders an an edit and delete button for each integration', () => {
+    expect(findTableComponent().findAll(GlButton).length).toBe(4);
+  });
+
+  it('renders an highlighted row when a current integration is selected to edit', () => {
+    mountComponent({ currentIntegration: { id: '1' } });
+    expect(
+      findTableComponentRows()
+        .at(0)
+        .classes(),
+    ).toContain('gl-bg-blue-50');
   });
 
   describe('integration status', () => {

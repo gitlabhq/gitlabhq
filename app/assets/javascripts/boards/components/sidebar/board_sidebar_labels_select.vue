@@ -21,7 +21,7 @@ export default {
   },
   inject: ['labelsFetchPath', 'labelsManagePath', 'labelsFilterBasePath'],
   computed: {
-    ...mapGetters({ issue: 'getActiveIssue' }),
+    ...mapGetters({ issue: 'activeIssue' }),
     selectedLabels() {
       const { labels = [] } = this.issue;
 

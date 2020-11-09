@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createStore } from '~/ide/stores';
 import ide from '~/ide/components/ide.vue';
 import { file } from '../helpers';
@@ -63,18 +64,17 @@ describe('ide component, non-empty repo', () => {
     vm.$destroy();
   });
 
-  it('shows error message when set', done => {
+  it('shows error message when set', async () => {
     expect(vm.$el.querySelector('.gl-alert')).toBe(null);
 
     vm.$store.state.errorMessage = {
       text: 'error',
     };
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.gl-alert')).not.toBe(null);
+    await waitForPromises();
+    await vm.$nextTick();
 
-      done();
-    });
+    expect(vm.$el.querySelector('.gl-alert')).not.toBe(null);
   });
 
   describe('onBeforeUnload', () => {

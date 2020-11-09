@@ -32,6 +32,13 @@ export default {
       return !this.currentTree || this.currentTree.loading;
     },
   },
+  watch: {
+    showLoading(newVal) {
+      if (!newVal) {
+        this.$emit('tree-ready');
+      }
+    },
+  },
   beforeCreate() {
     performanceMarkAndMeasure({ mark: WEBIDE_MARK_TREE_START });
   },

@@ -1,7 +1,0 @@
----
-name: search_facets
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46809
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46595
-group: group::global search
-type: development
-default_enabled: false

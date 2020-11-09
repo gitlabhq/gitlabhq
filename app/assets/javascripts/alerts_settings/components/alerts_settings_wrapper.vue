@@ -19,6 +19,12 @@ import {
   updateStoreAfterIntegrationDelete,
   updateStoreAfterIntegrationAdd,
 } from '../utils/cache_updates';
+import {
+  DELETE_INTEGRATION_ERROR,
+  ADD_INTEGRATION_ERROR,
+  RESET_INTEGRATION_TOKEN_ERROR,
+  UPDATE_INTEGRATION_ERROR,
+} from '../utils/error_messages';
 
 export default {
   typeSet,
@@ -43,6 +49,9 @@ export default {
     },
     projectPath: {
       default: '',
+    },
+    multiIntegrations: {
+      default: false,
     },
   },
   apollo: {
@@ -91,6 +100,9 @@ export default {
         },
       ];
     },
+    canAddIntegration() {
+      return this.multiIntegrations || this.integrations?.list?.length < 2;
+    },
   },
   methods: {
     createNewIntegration({ type, variables }) {
@@ -121,8 +133,8 @@ export default {
             type: FLASH_TYPES.SUCCESS,
           });
         })
-        .catch(err => {
-          createFlash({ message: err });
+        .catch(() => {
+          createFlash({ message: ADD_INTEGRATION_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -151,8 +163,8 @@ export default {
             type: FLASH_TYPES.SUCCESS,
           });
         })
-        .catch(err => {
-          createFlash({ message: err });
+        .catch(() => {
+          createFlash({ message: UPDATE_INTEGRATION_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -187,8 +199,8 @@ export default {
             });
           },
         )
-        .catch(err => {
-          createFlash({ message: err });
+        .catch(() => {
+          createFlash({ message: RESET_INTEGRATION_TOKEN_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -222,9 +234,8 @@ export default {
             type: FLASH_TYPES.SUCCESS,
           });
         })
-        .catch(err => {
-          this.errored = true;
-          createFlash({ message: err });
+        .catch(() => {
+          createFlash({ message: DELETE_INTEGRATION_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -242,6 +253,7 @@ export default {
     <integrations-list
       :integrations="glFeatures.httpIntegrationsList ? integrations.list : intergrationsOptionsOld"
       :loading="loading"
+      :current-integration="currentIntegration"
       @edit-integration="editIntegration"
       @delete-integration="deleteIntegration"
     />
@@ -249,6 +261,7 @@ export default {
       v-if="glFeatures.httpIntegrationsList"
       :loading="isUpdating"
       :current-integration="currentIntegration"
+      :can-add-integration="canAddIntegration"
       @create-new-integration="createNewIntegration"
       @update-integration="updateIntegration"
       @reset-token="resetToken"

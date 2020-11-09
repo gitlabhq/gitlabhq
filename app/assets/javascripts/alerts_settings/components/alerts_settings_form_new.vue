@@ -33,6 +33,9 @@ export default {
       step1: {
         label: s__('AlertSettings|1. Select integration type'),
         help: s__('AlertSettings|Learn more about our upcoming %{linkStart}integrations%{linkEnd}'),
+        enterprise: s__(
+          'AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations.',
+        ),
       },
       step2: {
         label: s__('AlertSettings|2. Name integration'),
@@ -106,6 +109,10 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    canAddIntegration: {
+      type: Boolean,
+      required: true,
     },
   },
   data() {
@@ -236,15 +243,24 @@ export default {
     >
       <gl-form-select
         v-model="selectedIntegration"
-        :disabled="currentIntegration !== null"
+        :disabled="currentIntegration !== null || !canAddIntegration"
         :options="options"
         @change="integrationTypeSelect"
       />
 
-      <alert-settings-form-help-block
-        :message="$options.i18n.integrationFormSteps.step1.help"
-        link="https://gitlab.com/groups/gitlab-org/-/epics/4390"
-      />
+      <div class="gl-my-4">
+        <alert-settings-form-help-block
+          :message="$options.i18n.integrationFormSteps.step1.help"
+          link="https://gitlab.com/groups/gitlab-org/-/epics/4390"
+        />
+      </div>
+
+      <div v-if="!canAddIntegration" class="gl-my-4" data-testid="multi-integrations-not-supported">
+        <alert-settings-form-help-block
+          :message="$options.i18n.integrationFormSteps.step1.enterprise"
+          link="https://about.gitlab.com/pricing"
+        />
+      </div>
     </gl-form-group>
     <gl-collapse v-model="formVisible" class="gl-mt-3">
       <gl-form-group

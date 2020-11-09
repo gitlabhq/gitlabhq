@@ -34,6 +34,10 @@ class NoteEntity < API::Entities::Note
     expose :can_resolve do |note|
       note.resolvable? && can?(current_user, :resolve_note, note)
     end
+
+    expose :can_resolve_discussion do |note|
+      note.discussion.resolvable? && note.discussion.can_resolve?(current_user)
+    end
   end
 
   expose :suggestions, using: SuggestionEntity

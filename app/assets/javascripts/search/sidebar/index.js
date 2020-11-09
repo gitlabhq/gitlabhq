@@ -1,12 +1,11 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import StatusFilter from './components/status_filter.vue';
-import ConfidentialityFilter from './components/confidentiality_filter.vue';
+import GlobalSearchSidebar from './components/app.vue';
 
 Vue.use(Translate);
 
-const mountRadioFilters = (store, { id, component }) => {
-  const el = document.getElementById(id);
+export const initSidebar = store => {
+  const el = document.getElementById('js-search-sidebar');
 
   if (!el) return false;
 
@@ -14,21 +13,7 @@ const mountRadioFilters = (store, { id, component }) => {
     el,
     store,
     render(createElement) {
-      return createElement(component);
+      return createElement(GlobalSearchSidebar);
     },
   });
 };
-
-const radioFilters = [
-  {
-    id: 'js-search-filter-by-state',
-    component: StatusFilter,
-  },
-  {
-    id: 'js-search-filter-by-confidential',
-    component: ConfidentialityFilter,
-  },
-];
-
-export const initSidebar = store =>
-  [...radioFilters].map(filter => mountRadioFilters(store, filter));

@@ -17,6 +17,7 @@ import {
 import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
 import DescriptionComponent from '~/issue_show/components/description.vue';
 import PinnedLinks from '~/issue_show/components/pinned_links.vue';
+import { IssuableStatus, IssuableStatusText } from '~/issue_show/constants';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
@@ -35,6 +36,10 @@ describe('Issuable output', () => {
   let wrapper;
 
   const findStickyHeader = () => wrapper.find('[data-testid="issue-sticky-header"]');
+
+  const findLockedBadge = () => wrapper.find('[data-testid="locked"]');
+
+  const findConfidentialBadge = () => wrapper.find('[data-testid="confidential"]');
 
   const mountComponent = (props = {}, options = {}) => {
     wrapper = mount(IssuableApp, {
@@ -532,7 +537,7 @@ describe('Issuable output', () => {
   describe('sticky header', () => {
     describe('when title is in view', () => {
       it('is not shown', () => {
-        expect(wrapper.find('.issue-sticky-header').exists()).toBe(false);
+        expect(findStickyHeader().exists()).toBe(false);
       });
     });
 
@@ -542,24 +547,45 @@ describe('Issuable output', () => {
         wrapper.find(GlIntersectionObserver).vm.$emit('disappear');
       });
 
-      it('is shown with title', () => {
+      it('shows with title', () => {
         expect(findStickyHeader().text()).toContain('Sticky header title');
       });
 
-      it('is shown with Open when status is opened', () => {
-        wrapper.setProps({ issuableStatus: 'opened' });
+      it.each`
+        title                                        | state
+        ${'shows with Open when status is opened'}   | ${IssuableStatus.Open}
+        ${'shows with Closed when status is closed'} | ${IssuableStatus.Closed}
+        ${'shows with Open when status is reopened'} | ${IssuableStatus.Reopened}
+      `('$title', async ({ state }) => {
+        wrapper.setProps({ issuableStatus: state });
 
-        return wrapper.vm.$nextTick(() => {
-          expect(findStickyHeader().text()).toContain('Open');
-        });
+        await wrapper.vm.$nextTick();
+
+        expect(findStickyHeader().text()).toContain(IssuableStatusText[state]);
       });
 
-      it('is shown with Closed when status is closed', () => {
-        wrapper.setProps({ issuableStatus: 'closed' });
+      it.each`
+        title                                                                | isConfidential
+        ${'does not show confidential badge when issue is not confidential'} | ${true}
+        ${'shows confidential badge when issue is confidential'}             | ${false}
+      `('$title', async ({ isConfidential }) => {
+        wrapper.setProps({ isConfidential });
 
-        return wrapper.vm.$nextTick(() => {
-          expect(findStickyHeader().text()).toContain('Closed');
-        });
+        await wrapper.vm.$nextTick();
+
+        expect(findConfidentialBadge().exists()).toBe(isConfidential);
+      });
+
+      it.each`
+        title                                                    | isLocked
+        ${'does not show locked badge when issue is not locked'} | ${true}
+        ${'shows locked badge when issue is locked'}             | ${false}
+      `('$title', async ({ isLocked }) => {
+        wrapper.setProps({ isLocked });
+
+        await wrapper.vm.$nextTick();
+
+        expect(findLockedBadge().exists()).toBe(isLocked);
       });
     });
   });

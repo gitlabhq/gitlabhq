@@ -151,7 +151,7 @@
     border-color: var(--ide-border-color-alt, $gray-100);
 
     code {
-      background-color: var(--ide-border-color, inherit);
+      background-color: var(--ide-empty-state-background, inherit);
     }
   }
 
@@ -427,7 +427,7 @@
   }
 
   .md table:not(.code) tbody {
-    background-color: var(--ide-border-color, $white);
+    background-color: var(--ide-empty-state-background, $white);
   }
 
   .animation-container {

@@ -51,7 +51,7 @@ module API
       delete ':id' do
         service = ::PersonalAccessTokens::RevokeService.new(
           current_user,
-          { token: find_token(params[:id]) }
+          token: find_token(params[:id])
         ).execute
 
         service.success? ? no_content! : bad_request!(nil)

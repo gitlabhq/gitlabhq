@@ -18,7 +18,7 @@ describe('BoardCardAssigneeDropdown', () => {
     wrapper = mount(BoardAssigneeDropdown, {
       data() {
         return {
-          selected: store.getters.getActiveIssue.assignees,
+          selected: store.getters.activeIssue.assignees,
           participants,
         };
       },

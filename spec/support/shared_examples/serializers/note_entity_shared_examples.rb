@@ -20,6 +20,39 @@ RSpec.shared_examples 'note entity' do
     it 'does not expose web_url for author' do
       expect(subject[:author]).not_to include(:web_url)
     end
+
+    it 'exposes permission fields on current_user' do
+      expect(subject[:current_user]).to include(:can_edit, :can_award_emoji, :can_resolve, :can_resolve_discussion)
+    end
+
+    describe ':can_resolve_discussion' do
+      context 'discussion is resolvable' do
+        before do
+          expect(note.discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context 'user can resolve' do
+          it 'is true' do
+            expect(note.discussion).to receive(:can_resolve?).with(user).and_return(true)
+            expect(subject[:current_user][:can_resolve_discussion]).to be_truthy
+          end
+        end
+
+        context 'user cannot resolve' do
+          it 'is false' do
+            expect(note.discussion).to receive(:can_resolve?).with(user).and_return(false)
+            expect(subject[:current_user][:can_resolve_discussion]).to be_falsey
+          end
+        end
+      end
+
+      context 'discussion is not resolvable' do
+        it 'is false' do
+          expect(note.discussion).to receive(:resolvable?).and_return(false)
+          expect(subject[:current_user][:can_resolve_discussion]).to be_falsey
+        end
+      end
+    end
   end
 
   context 'when note was edited' do

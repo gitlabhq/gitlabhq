@@ -9,12 +9,6 @@ exports[`WebIDE runs 1`] = `
       class="ide-view flex-grow d-flex"
     >
       <div
-        class="file-finder-overlay"
-        style="display: none;"
-      >
-        (jest: contents hidden)
-      </div>
-      <div
         class="gl-relative multi-file-commit-panel flex-column"
         style="width: 340px;"
       >
@@ -109,28 +103,12 @@ exports[`WebIDE runs 1`] = `
                 <h4>
                   Make and review changes in the browser with the Web IDE
                 </h4>
-                <div
-                  class="gl-spinner-container"
-                >
-                  <span
-                    aria-label="Loading"
-                    class="align-text-bottom gl-spinner gl-spinner-dark gl-spinner-md"
-                  />
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <footer
-      class="ide-status-bar"
-    >
-      <div
-        class="ide-status-list d-flex ml-auto"
-      >
-      </div>
-    </footer>
   </article>
 </div>
 `;
