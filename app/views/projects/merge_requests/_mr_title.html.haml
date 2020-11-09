@@ -41,7 +41,7 @@
           - if can_reopen_merge_request
             %li{ class: merge_request_button_visibility(@merge_request, false) }
               = link_to 'Reopen', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
-          - unless current_user == @merge_request.author
+          - unless @merge_request.merged? || current_user == @merge_request.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
 
       - if can_update_merge_request

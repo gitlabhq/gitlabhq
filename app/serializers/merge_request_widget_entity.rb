@@ -151,6 +151,10 @@ class MergeRequestWidgetEntity < Grape::Entity
       can?(current_user, :create_pipeline, merge_request.source_project)
   end
 
+  def use_merge_base_with_merged_results?
+    object.actual_head_pipeline&.merge_request_event_type == :merged_result
+  end
+
   def head_pipeline_downloadable_path_for_report_type(file_type)
     object.head_pipeline&.present(current_user: current_user)
       &.downloadable_path_for_report_type(file_type)
@@ -159,11 +163,6 @@ class MergeRequestWidgetEntity < Grape::Entity
   def base_pipeline_downloadable_path_for_report_type(file_type)
     object.base_pipeline&.present(current_user: current_user)
       &.downloadable_path_for_report_type(file_type)
-  end
-
-  def use_merge_base_with_merged_results?
-    Feature.enabled?(:merge_base_pipelines, object.target_project) &&
-      object.actual_head_pipeline&.merge_request_event_type == :merged_result
   end
 
   def merge_base_pipeline_downloadable_path_for_report_type(file_type)

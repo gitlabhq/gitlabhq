@@ -1,7 +1,7 @@
 ---
 # Error: gitlab.AlertBoxCaution
 #
-# Makes sure DANGER: alert boxes follow standard formatting.
+# Makes sure CAUTION: alert boxes follow standard formatting.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
