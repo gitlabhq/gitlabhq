@@ -14,10 +14,30 @@ By default, GitLab supports passwords with:
 
 GitLab administrators can modify password lengths:
 
-- Using configuration file.
-- [From](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) GitLab 12.6, using the GitLab UI.
+- Using the GitLab UI. **[From](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) GitLab 12.6 this is the only available option.**
+- Using configuration file. **Up to GitLab 12.5**.
+
+Changing the minimum or maximum length does not affect existing user passwords. Existing users are
+not asked to reset their password to adhere to the new limits. The new limit restriction applies
+only during new user sign-ups and when an existing user performs a password reset.
+
+## Modify minimum password length using GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
+
+The user password length is set to a minimum of 8 characters by default.
+
+To change the minimum password length using GitLab UI:
+
+1. Go to **Admin Area > Settings**, then select **Sign-up restrictions**.
+
+   ![Minimum password length settings](../user/admin_area/img/minimum_password_length_settings_v12_6.png)
+
+1. Input a **Minimum password length** value greater than or equal to 8, then select **Save changes**.
 
 ## Modify maximum password length using configuration file
+
+From GitLab 12.6, the minimum password length set in this configuration file is ignored. Minimum password lengths must instead be modified via the [GitLab UI](#modify-minimum-password-length-using-gitlab-ui).
 
 The user password length is set to a maximum of 128 characters by default.
 To change that for installations from source:
@@ -41,26 +61,6 @@ To change that for installations from source:
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source)
    for the changes to take effect.
-
-NOTE: **Note:**
-From GitLab 12.6, the minimum password length set in this configuration file will be ignored. Minimum password lengths will now have to be modified via the [GitLab UI](#modify-minimum-password-length-using-gitlab-ui) instead.
-
-## Modify minimum password length using GitLab UI
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
-
-The user password length is set to a minimum of 8 characters by default.
-To change that using GitLab UI:
-
-In **Admin Area > Settings** (`/admin/application_settings/general`), go to the section **Sign-up restrictions**.
-
-[Minimum password length settings](../user/admin_area/img/minimum_password_length_settings_v12_6.png)
-
-Set the **Minimum password length** to a value greater than or equal to 8 and hit **Save changes** to save the changes.
-
-CAUTION: **Caution:**
-Changing minimum or maximum limit does not affect existing user passwords in any manner. Existing users will not be asked to reset their password to adhere to the new limits.
-The new limit restriction will only apply during new user sign-ups and when an existing user performs a password reset.
 
 <!-- ## Troubleshooting
 

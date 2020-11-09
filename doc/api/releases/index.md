@@ -228,7 +228,7 @@ GET /projects/:id/releases/:tag_name
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The tag where the release will be created from.                                     |
+| `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:
 
@@ -508,7 +508,7 @@ POST /projects/:id/releases/:tag_name/evidence
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The tag where the release will be created from.                                     |
+| `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:
 
@@ -533,7 +533,7 @@ PUT /projects/:id/releases/:tag_name
 | Attribute     | Type            | Required | Description                                                                                                 |
 | ------------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
 | `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                         |
-| `tag_name`    | string          | yes      | The tag where the release will be created from.                                                             |
+| `tag_name`    | string          | yes      | The Git tag the release is associated with.                                                                 |
 | `name`        | string          | no       | The release name.                                                                                           |
 | `description` | string          | no       | The description of the release. You can use [Markdown](../../user/markdown.md).                             |
 | `milestones`  | array of string | no       | The title of each milestone to associate with the release. [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify group milestones. To remove all milestones from the release, specify `[]`. |
@@ -640,7 +640,7 @@ DELETE /projects/:id/releases/:tag_name
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The tag where the release will be created from.                                     |
+| `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:
 

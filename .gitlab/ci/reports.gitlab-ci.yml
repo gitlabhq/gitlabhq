@@ -152,6 +152,26 @@ dependency_scanning:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week  # GitLab-specific
 
+# The job below analysis dependencies for malicous behavior
+package_hunter:
+  extends:
+    - .reports:schedule-dast
+  stage: test
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:latest
+    entrypoint: [""]
+  needs: []
+  script:
+    - rm -r spec locale .git app/assets/images doc/
+    - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
+    - DEBUG=* HTR_user=$PACKAGE_HUNTER_USER HTR_pass=$PACKAGE_HUNTER_PASS node /usr/src/app/cli.js analyze --format gitlab gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
+  artifacts:
+    paths:
+      - gl-dependency-scanning-report.json  # GitLab-specific
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+    expire_in: 1 week  # GitLab-specific
+
 license_scanning:
   extends:
     - .default-retry

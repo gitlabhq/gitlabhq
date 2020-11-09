@@ -62,6 +62,8 @@ To get started with a GitLab-managed Terraform State, there are two different op
 - [Use a local machine](#get-started-using-local-development).
 - [Use GitLab CI](#get-started-using-gitlab-ci).
 
+Terraform States can be found by navigating to a Project's **{cloud-gear}** **Operations > Terraform** page.
+
 ## Permissions for using Terraform
 
 In GitLab version 13.1, [Maintainer access](../permissions.md) was required to use a

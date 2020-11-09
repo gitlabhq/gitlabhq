@@ -1408,37 +1408,20 @@ Other commonly used variables for `if` clauses:
 
 #### `rules:changes`
 
-To determine if jobs should be added to a pipeline, `rules: changes` clauses check
-the files changed by Git push events.
+`rules:changes` determines whether or not to add jobs to a pipeline by checking for
+changes to specific files.
 
 `rules: changes` works exactly the same way as [`only: changes` and `except: changes`](#onlychangesexceptchanges),
-accepting an array of paths.
-
-It always returns true and adds jobs to the pipeline if there is no Git push event.
-For example, jobs with `rules: changes` always run on scheduled and tag pipelines,
-because they are not associated with a Git push event. Only certain pipelines have
-a Git push event associated with them:
-
-- All pipelines with a `$CI_PIPELINE_SOURCE` of `merge_request` or `external_merge_request`.
-- Branch pipelines, which have the `$CI_COMMIT_BRANCH` variable present and a `$CI_PIPELINE_SOURCE` of `push`.
-
-It's recommended to use it only with branch pipelines or merge request pipelines.
-For example, it's common to use `rules: changes` with one of the following `if` clauses:
-
-- `if: $CI_COMMIT_BRANCH`
-- `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`
-
-For example:
+accepting an array of paths. It's recommended to only use `rules: changes` with branch
+pipelines or merge request pipelines. For example, it's common to use `rules: changes`
+with merge request pipelines:
 
 ```yaml
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - Dockerfile
       when: manual
       allow_failure: true
@@ -1446,13 +1429,28 @@ docker build:
 
 In this example:
 
-- [`workflow: rules`](#workflowrules) allows only pipelines for merge requests for all jobs.
+- If the pipeline is a merge request pipeline, check `Dockerfile` for changes.
 - If `Dockerfile` has changed, add the job to the pipeline as a manual job, and allow the pipeline
   to continue running even if the job is not triggered (`allow_failure: true`).
 - If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
 
-To implement a rule similar to [`except: changes`](#onlychangesexceptchanges),
+To use `rules: changes` with branch pipelines instead of merge request pipelines,
+change the `if:` clause in the example above to:
+
+```yaml
+rules:
+  - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
+```
+
+To implement a rule similar to [`except:changes`](#onlychangesexceptchanges),
 use `when: never`.
+
+CAUTION: **Caution:**
+You can use `rules: changes` with other pipeline types, but it is not recommended
+because `rules: changes` always evaluates to true when there is no Git `push` event.
+Tag pipelines, scheduled pipelines, and so on do **not** have a Git `push` event
+associated with them. A `rules: changes` job is **always** added to those pipeline
+if there is no `if:` statement that limits the job to branch or merge request pipelines.
 
 #### `rules:exists`
 
