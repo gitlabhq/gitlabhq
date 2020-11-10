@@ -1,6 +1,7 @@
 import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { IssuableType } from '~/issuable_show/constants';
 import HeaderActions from '~/issue_show/components/header_actions.vue';
 import { IssuableStatus, IssueStateEvent } from '~/issue_show/constants';
 import createStore from '~/notes/stores';
@@ -20,6 +21,7 @@ describe('HeaderActions component', () => {
     canUpdateIssue: true,
     iid: '32',
     isIssueAuthor: true,
+    issueType: IssuableType.Issue,
     newIssuePath: 'gitlab-org/gitlab-test/-/issues/new',
     projectPath: 'gitlab-org/gitlab-test',
     reportAbusePath:
@@ -74,93 +76,100 @@ describe('HeaderActions component', () => {
     wrapper.destroy();
   });
 
-  describe('close/reopen button', () => {
-    describe.each`
-      description                   | issueState               | buttonText        | newIssueState
-      ${'when the issue is open'}   | ${IssuableStatus.Open}   | ${'Close issue'}  | ${IssueStateEvent.Close}
-      ${'when the issue is closed'} | ${IssuableStatus.Closed} | ${'Reopen issue'} | ${IssueStateEvent.Reopen}
-    `('$description', ({ issueState, buttonText, newIssueState }) => {
-      beforeEach(() => {
-        dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+  describe.each`
+    issueType
+    ${IssuableType.Issue}
+    ${IssuableType.Incident}
+  `('when issue type is $issueType', ({ issueType }) => {
+    describe('close/reopen button', () => {
+      describe.each`
+        description                          | issueState               | buttonText               | newIssueState
+        ${`when the ${issueType} is open`}   | ${IssuableStatus.Open}   | ${`Close ${issueType}`}  | ${IssueStateEvent.Close}
+        ${`when the ${issueType} is closed`} | ${IssuableStatus.Closed} | ${`Reopen ${issueType}`} | ${IssueStateEvent.Reopen}
+      `('$description', ({ issueState, buttonText, newIssueState }) => {
+        beforeEach(() => {
+          dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
 
-        wrapper = mountComponent({ issueState });
-      });
+          wrapper = mountComponent({ props: { issueType }, issueState });
+        });
 
-      it(`has text "${buttonText}"`, () => {
-        expect(findToggleIssueStateButton().text()).toBe(buttonText);
-      });
+        it(`has text "${buttonText}"`, () => {
+          expect(findToggleIssueStateButton().text()).toBe(buttonText);
+        });
 
-      it('calls apollo mutation', () => {
-        findToggleIssueStateButton().vm.$emit('click');
+        it('calls apollo mutation', () => {
+          findToggleIssueStateButton().vm.$emit('click');
 
-        expect(mutate).toHaveBeenCalledWith(
-          expect.objectContaining({
-            variables: {
-              input: {
-                iid: defaultProps.iid.toString(),
-                projectPath: defaultProps.projectPath,
-                stateEvent: newIssueState,
+          expect(mutate).toHaveBeenCalledWith(
+            expect.objectContaining({
+              variables: {
+                input: {
+                  iid: defaultProps.iid.toString(),
+                  projectPath: defaultProps.projectPath,
+                  stateEvent: newIssueState,
+                },
               },
-            },
-          }),
-        );
-      });
+            }),
+          );
+        });
 
-      it('dispatches a custom event to update the issue page', async () => {
-        findToggleIssueStateButton().vm.$emit('click');
+        it('dispatches a custom event to update the issue page', async () => {
+          findToggleIssueStateButton().vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
+          await wrapper.vm.$nextTick();
 
-        expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+          expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+        });
       });
     });
-  });
 
-  describe.each`
-    description           | isCloseIssueItemVisible | findDropdownItems
-    ${'mobile dropdown'}  | ${true}                 | ${findMobileDropdownItems}
-    ${'desktop dropdown'} | ${false}                | ${findDesktopDropdownItems}
-  `('$description', ({ isCloseIssueItemVisible, findDropdownItems }) => {
     describe.each`
-      description                          | itemText            | isItemVisible              | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam
-      ${'when user can update issue'}      | ${'Close issue'}    | ${isCloseIssueItemVisible} | ${true}        | ${true}        | ${true}       | ${true}
-      ${'when user cannot update issue'}   | ${'Close issue'}    | ${false}                   | ${false}       | ${true}        | ${true}       | ${true}
-      ${'when user can create issue'}      | ${'New issue'}      | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}
-      ${'when user cannot create issue'}   | ${'New issue'}      | ${false}                   | ${true}        | ${false}       | ${true}       | ${true}
-      ${'when user can report abuse'}      | ${'Report abuse'}   | ${true}                    | ${true}        | ${true}        | ${false}      | ${true}
-      ${'when user cannot report abuse'}   | ${'Report abuse'}   | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}
-      ${'when user can submit as spam'}    | ${'Submit as spam'} | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}
-      ${'when user cannot submit as spam'} | ${'Submit as spam'} | ${false}                   | ${true}        | ${true}        | ${true}       | ${false}
-    `(
-      '$description',
-      ({
-        itemText,
-        isItemVisible,
-        canUpdateIssue,
-        canCreateIssue,
-        isIssueAuthor,
-        canReportSpam,
-      }) => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            props: {
-              canUpdateIssue,
-              canCreateIssue,
-              isIssueAuthor,
-              canReportSpam,
-            },
+      description           | isCloseIssueItemVisible | findDropdownItems
+      ${'mobile dropdown'}  | ${true}                 | ${findMobileDropdownItems}
+      ${'desktop dropdown'} | ${false}                | ${findDesktopDropdownItems}
+    `('$description', ({ isCloseIssueItemVisible, findDropdownItems }) => {
+      describe.each`
+        description                               | itemText                | isItemVisible              | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam
+        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`} | ${isCloseIssueItemVisible} | ${true}        | ${true}        | ${true}       | ${true}
+        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`} | ${false}                   | ${false}       | ${true}        | ${true}       | ${true}
+        ${`when user can create ${issueType}`}    | ${`New ${issueType}`}   | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}
+        ${`when user cannot create ${issueType}`} | ${`New ${issueType}`}   | ${false}                   | ${true}        | ${false}       | ${true}       | ${true}
+        ${'when user can report abuse'}           | ${'Report abuse'}       | ${true}                    | ${true}        | ${true}        | ${false}      | ${true}
+        ${'when user cannot report abuse'}        | ${'Report abuse'}       | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}
+        ${'when user can submit as spam'}         | ${'Submit as spam'}     | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}
+        ${'when user cannot submit as spam'}      | ${'Submit as spam'}     | ${false}                   | ${true}        | ${true}        | ${true}       | ${false}
+      `(
+        '$description',
+        ({
+          itemText,
+          isItemVisible,
+          canUpdateIssue,
+          canCreateIssue,
+          isIssueAuthor,
+          canReportSpam,
+        }) => {
+          beforeEach(() => {
+            wrapper = mountComponent({
+              props: {
+                canUpdateIssue,
+                canCreateIssue,
+                isIssueAuthor,
+                issueType,
+                canReportSpam,
+              },
+            });
           });
-        });
 
-        it(`${isItemVisible ? 'shows' : 'hides'} "${itemText}" item`, () => {
-          expect(
-            findDropdownItems()
-              .filter(item => item.text() === itemText)
-              .exists(),
-          ).toBe(isItemVisible);
-        });
-      },
-    );
+          it(`${isItemVisible ? 'shows' : 'hides'} "${itemText}" item`, () => {
+            expect(
+              findDropdownItems()
+                .filter(item => item.text() === itemText)
+                .exists(),
+            ).toBe(isItemVisible);
+          });
+        },
+      );
+    });
   });
 
   describe('modal', () => {

@@ -7,6 +7,14 @@ class Projects::TemplatesController < Projects::ApplicationController
 
   feature_category :templates
 
+  def index
+    templates = @template_type.template_subsets(project)
+
+    respond_to do |format|
+      format.json { render json: templates.to_json }
+    end
+  end
+
   def show
     template = @template_type.find(params[:key], project)
 

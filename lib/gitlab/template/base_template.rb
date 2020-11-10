@@ -105,6 +105,20 @@ module Gitlab
             files.map { |t| { name: t.name } }
           end
         end
+
+        def template_subsets(project = nil)
+          return [] if project && !project.repository.exists?
+
+          if categories.any?
+            categories.keys.map do |category|
+              files = self.by_category(category, project)
+              [category, files.map { |t| { key: t.key, name: t.name, content: t.content } }]
+            end.to_h
+          else
+            files = self.all(project)
+            files.map { |t| { key: t.key, name: t.name, content: t.content } }
+          end
+        end
       end
     end
   end

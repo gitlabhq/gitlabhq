@@ -403,6 +403,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       # Templates
       #
+      get '/templates/:template_type' => 'templates#index', # rubocop:todo Cop/PutProjectRoutesUnderScope
+          as: :templates,
+          defaults: { format: 'json' },
+          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
+
       get '/templates/:template_type/:key' => 'templates#show', # rubocop:todo Cop/PutProjectRoutesUnderScope
           as: :template,
           defaults: { format: 'json' },

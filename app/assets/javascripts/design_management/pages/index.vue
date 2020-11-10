@@ -1,17 +1,17 @@
 <script>
-import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { getFilename } from '~/lib/utils/file_upload';
 import UploadButton from '../components/upload/button.vue';
 import DeleteButton from '../components/delete_button.vue';
 import Design from '../components/list/item.vue';
 import DesignDestroyer from '../components/design_destroyer.vue';
 import DesignVersionDropdown from '../components/upload/design_version_dropdown.vue';
-import DesignDropzone from '../components/upload/design_dropzone.vue';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
 import moveDesignMutation from '../graphql/mutations/move_design.mutation.graphql';
 import allDesignsMixin from '../mixins/all_designs';
@@ -20,6 +20,7 @@ import {
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
   MOVE_DESIGN_ERROR,
+  UPLOAD_DESIGN_INVALID_FILETYPE_ERROR,
   designUploadSkippedWarning,
   designDeletionError,
 } from '../utils/error_messages';
@@ -34,6 +35,7 @@ import {
 } from '../utils/design_management_utils';
 import { trackDesignCreate, trackDesignUpdate } from '../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../router/constants';
+import { VALID_DESIGN_FILE_MIMETYPE } from '../constants';
 
 const MAXIMUM_FILE_UPLOAD_LIMIT = 10;
 
@@ -42,6 +44,8 @@ export default {
     GlLoadingIcon,
     GlAlert,
     GlButton,
+    GlSprintf,
+    GlLink,
     UploadButton,
     Design,
     DesignDestroyer,
@@ -49,6 +53,11 @@ export default {
     DeleteButton,
     DesignDropzone,
     VueDraggable,
+  },
+  dropzoneProps: {
+    dropToStartMessage: __('Drop your designs to start your upload.'),
+    isFileValid: isValidDesignFile,
+    validFileMimetypes: [VALID_DESIGN_FILE_MIMETYPE.mimetype],
   },
   mixins: [allDesignsMixin],
   apollo: {
@@ -247,6 +256,9 @@ export default {
       const errorMessage = designDeletionError({ singular: this.selectedDesigns.length === 1 });
       createFlash({ message: errorMessage });
     },
+    onDesignDropzoneError() {
+      createFlash({ message: UPLOAD_DESIGN_INVALID_FILETYPE_ERROR });
+    },
     onExistingDesignDropzoneChange(files, existingDesignFilename) {
       const filesArr = Array.from(files);
 
@@ -325,6 +337,9 @@ export default {
     animation: 200,
     ghostClass: 'gl-visibility-hidden',
   },
+  i18n: {
+    dropzoneDescriptionText: __('Drop or %{linkStart}upload%{linkEnd} designs to attach'),
+  },
 };
 </script>
 
@@ -335,7 +350,11 @@ export default {
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >
-    <header v-if="showToolbar" class="row-content-block gl-border-t-0 gl-p-3 gl-display-flex">
+    <header
+      v-if="showToolbar"
+      class="row-content-block gl-border-t-0 gl-p-3 gl-display-flex"
+      data-testid="design-toolbar-wrapper"
+    >
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
         <div>
           <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
@@ -371,7 +390,12 @@ export default {
               {{ s__('DesignManagement|Archive selected') }}
             </delete-button>
           </design-destroyer>
-          <upload-button v-if="canCreateDesign" :is-saving="isSaving" @upload="onUploadDesign" />
+          <upload-button
+            v-if="canCreateDesign"
+            :is-saving="isSaving"
+            data-testid="design-upload-button"
+            @upload="onUploadDesign"
+          />
         </div>
       </div>
     </header>
@@ -414,15 +438,26 @@ export default {
           class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
         >
           <design-dropzone
-            :has-designs="hasDesigns"
-            :is-dragging-design="isDraggingDesign"
+            :display-as-card="hasDesigns"
+            :enable-drag-behavior="isDraggingDesign"
+            v-bind="$options.dropzoneProps"
             @change="onExistingDesignDropzoneChange($event, design.filename)"
+            @error="onDesignDropzoneError"
           >
             <design
               v-bind="design"
               :is-uploading="isDesignToBeSaved(design.filename)"
               class="gl-bg-white"
             />
+            <template #upload-text="{ openFileUpload }">
+              <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
+                <template #link="{ content }">
+                  <gl-link @click.stop="openFileUpload">
+                    {{ content }}
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </template>
           </design-dropzone>
 
           <input
@@ -438,12 +473,24 @@ export default {
         <template #header>
           <li :class="designDropzoneWrapperClass" data-testid="design-dropzone-wrapper">
             <design-dropzone
-              :is-dragging-design="isDraggingDesign"
+              :enable-drag-behavior="isDraggingDesign"
               :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"
-              :has-designs="hasDesigns"
+              :display-as-card="hasDesigns"
+              v-bind="$options.dropzoneProps"
               data-qa-selector="design_dropzone_content"
               @change="onUploadDesign"
-            />
+              @error="onDesignDropzoneError"
+            >
+              <template #upload-text="{ openFileUpload }">
+                <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
+                  <template #link="{ content }">
+                    <gl-link @click.stop="openFileUpload">
+                      {{ content }}
+                    </gl-link>
+                  </template>
+                </gl-sprintf>
+              </template>
+            </design-dropzone>
           </li>
         </template>
       </vue-draggable>

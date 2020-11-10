@@ -12,7 +12,7 @@ import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
 import { TRACKING_ACTION_INITIALIZE_EDITOR } from '~/static_site_editor/constants';
 
 import {
-  projectId as project,
+  project,
   returnUrl,
   sourceContentYAML as content,
   sourceContentTitle as title,

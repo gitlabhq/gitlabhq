@@ -51,7 +51,7 @@ RSpec.describe 'User uploads new design', :js do
   end
 
   def upload_design(fixture, count:)
-    attach_file(:design_file, fixture, match: :first, make_visible: true)
+    attach_file(:upload_file, fixture, match: :first, make_visible: true)
 
     wait_for('designs uploaded') do
       issue.reload.designs.count == count

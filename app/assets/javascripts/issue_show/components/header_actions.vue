@@ -2,8 +2,10 @@
 import { GlButton, GlDropdown, GlDropdownItem, GlIcon, GlLink, GlModal } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issuable_show/constants';
 import { IssuableStatus, IssueStateEvent } from '~/issue_show/constants';
-import { __ } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { __, sprintf } from '~/locale';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
 
 export default {
@@ -22,18 +24,41 @@ export default {
     text: __('Yes, close issue'),
     attributes: [{ variant: 'warning' }],
   },
-  inject: [
-    'canCreateIssue',
-    'canReopenIssue',
-    'canReportSpam',
-    'canUpdateIssue',
-    'iid',
-    'isIssueAuthor',
-    'newIssuePath',
-    'projectPath',
-    'reportAbusePath',
-    'submitAsSpamPath',
-  ],
+  inject: {
+    canCreateIssue: {
+      default: false,
+    },
+    canReopenIssue: {
+      default: false,
+    },
+    canReportSpam: {
+      default: false,
+    },
+    canUpdateIssue: {
+      default: false,
+    },
+    iid: {
+      default: '',
+    },
+    isIssueAuthor: {
+      default: false,
+    },
+    issueType: {
+      default: IssuableType.Issue,
+    },
+    newIssuePath: {
+      default: '',
+    },
+    projectPath: {
+      default: '',
+    },
+    reportAbusePath: {
+      default: '',
+    },
+    submitAsSpamPath: {
+      default: '',
+    },
+  },
   data() {
     return {
       isUpdatingState: false,
@@ -45,12 +70,22 @@ export default {
       return this.getNoteableData.state === IssuableStatus.Closed;
     },
     buttonText() {
-      return this.isClosed ? __('Reopen issue') : __('Close issue');
+      return this.isClosed
+        ? sprintf(__('Reopen %{issueType}'), { issueType: this.issueType })
+        : sprintf(__('Close %{issueType}'), { issueType: this.issueType });
     },
     buttonVariant() {
       return this.isClosed ? 'default' : 'warning';
     },
-    showToggleIssueButton() {
+    dropdownText() {
+      return sprintf(__('%{issueType} actions'), {
+        issueType: capitalizeFirstCharacter(this.issueType),
+      });
+    },
+    newIssueTypeText() {
+      return sprintf(__('New %{issueType}'), { issueType: this.issueType });
+    },
+    showToggleIssueStateButton() {
       const canClose = !this.isClosed && this.canUpdateIssue;
       const canReopen = this.isClosed && this.canReopenIssue;
       return canClose || canReopen;
@@ -106,16 +141,16 @@ export default {
 
 <template>
   <div class="detail-page-header-actions">
-    <gl-dropdown class="gl-display-block gl-display-sm-none!" block :text="__('Issue actions')">
+    <gl-dropdown class="gl-display-block gl-display-sm-none!" block :text="dropdownText">
       <gl-dropdown-item
-        v-if="showToggleIssueButton"
+        v-if="showToggleIssueStateButton"
         :disabled="isUpdatingState"
         @click="toggleIssueState"
       >
         {{ buttonText }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">
-        {{ __('New issue') }}
+        {{ newIssueTypeText }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
         {{ __('Report abuse') }}
@@ -131,7 +166,7 @@ export default {
     </gl-dropdown>
 
     <gl-button
-      v-if="showToggleIssueButton"
+      v-if="showToggleIssueStateButton"
       class="gl-display-none gl-display-sm-inline-flex!"
       category="secondary"
       :loading="isUpdatingState"
@@ -149,11 +184,11 @@ export default {
     >
       <template #button-content>
         <gl-icon name="ellipsis_v" aria-hidden="true" />
-        <span class="gl-sr-only">{{ __('Actions') }}</span>
+        <span class="gl-sr-only">{{ dropdownText }}</span>
       </template>
 
       <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">
-        {{ __('New issue') }}
+        {{ newIssueTypeText }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
         {{ __('Report abuse') }}

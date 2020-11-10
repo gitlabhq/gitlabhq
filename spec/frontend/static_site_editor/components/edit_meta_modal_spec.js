@@ -1,34 +1,49 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import EditMetaModal from '~/static_site_editor/components/edit_meta_modal.vue';
 import EditMetaControls from '~/static_site_editor/components/edit_meta_controls.vue';
 import { MR_META_LOCAL_STORAGE_KEY } from '~/static_site_editor/constants';
-import { sourcePath, mergeRequestMeta, mergeRequestTemplates } from '../mock_data';
+import {
+  sourcePath,
+  mergeRequestMeta,
+  mergeRequestTemplates,
+  project as namespaceProject,
+} from '../mock_data';
 
 describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
   useLocalStorageSpy();
 
   let wrapper;
-  let resetCachedEditable;
-  let mockEditMetaControlsInstance;
+  let mockAxios;
   const { title, description } = mergeRequestMeta;
+  const [namespace, project] = namespaceProject.split('/');
 
   const buildWrapper = (propsData = {}, data = {}) => {
     wrapper = shallowMount(EditMetaModal, {
       propsData: {
         sourcePath,
+        namespace,
+        project,
         ...propsData,
       },
       data: () => data,
     });
   };
 
-  const buildMocks = () => {
-    resetCachedEditable = jest.fn();
-    mockEditMetaControlsInstance = { resetCachedEditable };
-    wrapper.vm.$refs.editMetaControls = mockEditMetaControlsInstance;
+  const buildMockAxios = () => {
+    mockAxios = new MockAdapter(axios);
+    const templatesMergeRequestsPath = `templates/merge_request`;
+    mockAxios
+      .onGet(`${namespace}/${project}/${templatesMergeRequestsPath}`)
+      .reply(200, mergeRequestTemplates);
+  };
+
+  const buildMockRefs = () => {
+    wrapper.vm.$refs.editMetaControls = { resetCachedEditable: jest.fn() };
   };
 
   const findGlModal = () => wrapper.find(GlModal);
@@ -37,16 +52,17 @@ describe('~/static_site_editor/components/edit_meta_modal.vue', () => {
 
   beforeEach(() => {
     localStorage.setItem(MR_META_LOCAL_STORAGE_KEY);
-  });
 
-  beforeEach(() => {
+    buildMockAxios();
     buildWrapper();
-    buildMocks();
+    buildMockRefs();
 
     return wrapper.vm.$nextTick();
   });
 
   afterEach(() => {
+    mockAxios.restore();
+
     wrapper.destroy();
     wrapper = null;
   });

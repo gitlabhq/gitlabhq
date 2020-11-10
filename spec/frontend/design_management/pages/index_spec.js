@@ -10,7 +10,7 @@ import permissionsQuery from 'shared_queries/design_management/design_permission
 import Index from '~/design_management/pages/index.vue';
 import uploadDesignQuery from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
-import DesignDropzone from '~/design_management/components/upload/design_dropzone.vue';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DeleteButton from '~/design_management/components/delete_button.vue';
 import Design from '~/design_management/components/list/item.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
@@ -105,6 +105,8 @@ describe('Design management index page', () => {
   const findDesignsWrapper = () => wrapper.find('[data-testid="designs-root"]');
   const findDesigns = () => wrapper.findAll(Design);
   const draggableAttributes = () => wrapper.find(VueDraggable).vm.$attrs;
+  const findDesignUploadButton = () => wrapper.find('[data-testid="design-upload-button"]');
+  const findDesignToolbarWrapper = () => wrapper.find('[data-testid="design-toolbar-wrapper"]');
 
   async function moveDesigns(localWrapper) {
     await jest.runOnlyPendingTimers();
@@ -214,13 +216,17 @@ describe('Design management index page', () => {
     it('renders designs list and header with upload button', () => {
       createComponent({ allVersions: [mockVersion] });
 
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findDesignsWrapper().exists()).toBe(true);
+      expect(findDesigns().length).toBe(3);
+      expect(findDesignToolbarWrapper().exists()).toBe(true);
+      expect(findDesignUploadButton().exists()).toBe(true);
     });
 
     it('does not render toolbar when there is no permission', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
 
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findDesignToolbarWrapper().exists()).toBe(false);
+      expect(findDesignUploadButton().exists()).toBe(false);
     });
 
     it('has correct classes applied to design dropzone', () => {
@@ -247,7 +253,7 @@ describe('Design management index page', () => {
 
     it('renders design dropzone', () =>
       wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
+        expect(findDropzone().exists()).toBe(true);
       }));
 
     it('has correct classes applied to design dropzone', () => {

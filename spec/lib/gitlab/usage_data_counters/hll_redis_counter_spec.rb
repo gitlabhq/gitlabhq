@@ -277,29 +277,23 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
   end
 
-  context 'aggregated metrics' do
+  context 'aggregated_metrics_data' do
     let(:known_events) do
       [
         { name: 'event1_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
         { name: 'event2_slot', redis_slot: "slot", category: 'category2', aggregation: "weekly" },
-        { name: 'event3', category: 'category2', aggregation: "weekly" }
-      ].map(&:with_indifferent_access)
-    end
-
-    let(:aggregated_metrics) do
-      [
-        { name: 'gmau_1', events: %w[event1_slot event2_slot], operator: "ANY" },
-        { name: 'gmau_2', events: %w[event3], operator: "ANY" }
+        { name: 'event3_slot', redis_slot: "slot", category: 'category3', aggregation: "weekly" },
+        { name: 'event5_slot', redis_slot: "slot", category: 'category4', aggregation: "weekly" },
+        { name: 'event4', category: 'category2', aggregation: "weekly" }
       ].map(&:with_indifferent_access)
     end
 
     before do
       allow(described_class).to receive(:known_events).and_return(known_events)
-      allow(described_class).to receive(:aggregated_metrics).and_return(aggregated_metrics)
     end
 
     shared_examples 'aggregated_metrics_data' do
-      context 'no combination is tracked' do
+      context 'no aggregated metrics is defined' do
         it 'returns empty hash' do
           allow(described_class).to receive(:aggregated_metrics).and_return([])
 
@@ -307,14 +301,51 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
       end
 
-      context 'there are some combinations defined' do
-        it 'returns the number of unique events for all known events' do
-          results = {
-            'gmau_1' => 2,
-            'gmau_2' => 3
-          }
+      context 'there are aggregated metrics defined' do
+        before do
+          allow(described_class).to receive(:aggregated_metrics).and_return(aggregated_metrics)
+        end
 
-          expect(aggregated_metrics_data).to eq(results)
+        context 'with ALL operator' do
+          let(:aggregated_metrics) do
+            [
+              { name: 'gmau_1', events: %w[event1_slot event2_slot], operator: "ALL" },
+              { name: 'gmau_2', events: %w[event1_slot event2_slot event3_slot], operator: "ALL" },
+              { name: 'gmau_3', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "ALL" },
+              { name: 'gmau_4', events: %w[event4], operator: "ALL" }
+            ].map(&:with_indifferent_access)
+          end
+
+          it 'returns the number of unique events for all known events' do
+            results = {
+              'gmau_1' => 3,
+              'gmau_2' => 2,
+              'gmau_3' => 1,
+              'gmau_4' => 3
+            }
+
+            expect(aggregated_metrics_data).to eq(results)
+          end
+        end
+
+        context 'with ANY operator' do
+          let(:aggregated_metrics) do
+            [
+              { name: 'gmau_1', events: %w[event3_slot event5_slot], operator: "ANY" },
+              { name: 'gmau_2', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "ANY" },
+              { name: 'gmau_3', events: %w[event4], operator: "ANY" }
+            ].map(&:with_indifferent_access)
+          end
+
+          it 'returns the number of unique events for all known events' do
+            results = {
+              'gmau_1' => 2,
+              'gmau_2' => 3,
+              'gmau_3' => 3
+            }
+
+            expect(aggregated_metrics_data).to eq(results)
+          end
         end
       end
     end
@@ -324,16 +355,22 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       before do
         described_class.track_event(entity1, 'event1_slot', 2.days.ago)
+        described_class.track_event(entity2, 'event1_slot', 2.days.ago)
+        described_class.track_event(entity3, 'event1_slot', 2.days.ago)
         described_class.track_event(entity1, 'event2_slot', 2.days.ago)
+        described_class.track_event(entity2, 'event2_slot', 3.days.ago)
         described_class.track_event(entity3, 'event2_slot', 3.days.ago)
+        described_class.track_event(entity1, 'event3_slot', 3.days.ago)
+        described_class.track_event(entity2, 'event3_slot', 3.days.ago)
+        described_class.track_event(entity2, 'event5_slot', 3.days.ago)
 
         # events out of time scope
         described_class.track_event(entity3, 'event2_slot', 8.days.ago)
 
         # events in different slots
-        described_class.track_event(entity1, 'event3', 2.days.ago)
-        described_class.track_event(entity2, 'event3', 2.days.ago)
-        described_class.track_event(entity4, 'event3', 2.days.ago)
+        described_class.track_event(entity1, 'event4', 2.days.ago)
+        described_class.track_event(entity2, 'event4', 2.days.ago)
+        described_class.track_event(entity4, 'event4', 2.days.ago)
       end
 
       it_behaves_like 'aggregated_metrics_data'
@@ -342,21 +379,58 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     describe '.aggregated_metrics_monthly_data' do
       subject(:aggregated_metrics_data) { described_class.aggregated_metrics_monthly_data }
 
-      before do
-        described_class.track_event(entity1, 'event1_slot', 2.days.ago)
-        described_class.track_event(entity1, 'event2_slot', 10.days.ago)
-        described_class.track_event(entity3, 'event2_slot', 4.weeks.ago.advance(days: 1))
+      it_behaves_like 'aggregated_metrics_data' do
+        before do
+          described_class.track_event(entity1, 'event1_slot', 2.days.ago)
+          described_class.track_event(entity2, 'event1_slot', 2.days.ago)
+          described_class.track_event(entity3, 'event1_slot', 2.days.ago)
+          described_class.track_event(entity1, 'event2_slot', 2.days.ago)
+          described_class.track_event(entity2, 'event2_slot', 3.days.ago)
+          described_class.track_event(entity3, 'event2_slot', 3.days.ago)
+          described_class.track_event(entity1, 'event3_slot', 3.days.ago)
+          described_class.track_event(entity2, 'event3_slot', 10.days.ago)
+          described_class.track_event(entity2, 'event5_slot', 4.weeks.ago.advance(days: 1))
 
-        # events out of time scope
-        described_class.track_event(entity3, 'event2_slot', 4.weeks.ago.advance(days: -1))
+          # events out of time scope
+          described_class.track_event(entity1, 'event5_slot', 4.weeks.ago.advance(days: -1))
 
-        # events in different slots
-        described_class.track_event(entity1, 'event3', 2.days.ago)
-        described_class.track_event(entity2, 'event3', 2.days.ago)
-        described_class.track_event(entity4, 'event3', 2.days.ago)
+          # events in different slots
+          described_class.track_event(entity1, 'event4', 2.days.ago)
+          described_class.track_event(entity2, 'event4', 2.days.ago)
+          described_class.track_event(entity4, 'event4', 2.days.ago)
+        end
       end
 
-      it_behaves_like 'aggregated_metrics_data'
+      context 'Redis calls' do
+        let(:aggregated_metrics) do
+          [
+            { name: 'gmau_3', events: %w[event1_slot event2_slot event3_slot event5_slot], operator: "ALL" }
+          ].map(&:with_indifferent_access)
+        end
+
+        let(:known_events) do
+          [
+            { name: 'event1_slot', redis_slot: "slot", category: 'category1', aggregation: "weekly" },
+            { name: 'event2_slot', redis_slot: "slot", category: 'category2', aggregation: "weekly" },
+            { name: 'event3_slot', redis_slot: "slot", category: 'category3', aggregation: "weekly" },
+            { name: 'event5_slot', redis_slot: "slot", category: 'category4', aggregation: "weekly" }
+          ].map(&:with_indifferent_access)
+        end
+
+        it 'caches intermediate operations' do
+          allow(described_class).to receive(:known_events).and_return(known_events)
+          allow(described_class).to receive(:aggregated_metrics).and_return(aggregated_metrics)
+
+          4.downto(1) do |subset_size|
+            known_events.combination(subset_size).each do |events|
+              keys = described_class.send(:weekly_redis_keys, events: events, start_date: 4.weeks.ago.to_date, end_date: Date.current)
+              expect(Gitlab::Redis::HLL).to receive(:count).with(keys: keys).once.and_return(0)
+            end
+          end
+
+          subject
+        end
+      end
     end
   end
 end

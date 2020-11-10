@@ -1,26 +1,25 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
-import DesignDropzone from '~/design_management/components/upload/design_dropzone.vue';
-import createFlash from '~/flash';
+import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 jest.mock('~/flash');
 
-describe('Design management dropzone component', () => {
+describe('Upload dropzone component', () => {
   let wrapper;
 
   const mockDragEvent = ({ types = ['Files'], files = [] }) => {
     return { dataTransfer: { types, files } };
   };
 
-  const findDropzoneCard = () => wrapper.find('.design-dropzone-card');
+  const findDropzoneCard = () => wrapper.find('.upload-dropzone-card');
   const findDropzoneArea = () => wrapper.find('[data-testid="dropzone-area"]');
   const findIcon = () => wrapper.find(GlIcon);
 
   function createComponent({ slots = {}, data = {}, props = {} } = {}) {
-    wrapper = shallowMount(DesignDropzone, {
+    wrapper = shallowMount(UploadDropzone, {
       slots,
       propsData: {
-        hasDesigns: true,
+        displayAsCard: true,
         ...props,
       },
       data() {
@@ -126,28 +125,50 @@ describe('Design management dropzone component', () => {
         expect(wrapper.emitted().change[0]).toEqual([[mockFile]]);
       });
 
-      it('calls createFlash when files are invalid', () => {
+      it('emits error event when files are invalid', () => {
         createComponent({ data: mockData });
+        const mockEvent = mockDragEvent({ files: [{ type: 'audio/midi' }] });
+
+        wrapper.vm.ondrop(mockEvent);
+        expect(wrapper.emitted()).toHaveProperty('error');
+      });
+
+      it('allows validation function to be overwritten', () => {
+        createComponent({ data: mockData, props: { isFileValid: () => true } });
 
         const mockEvent = mockDragEvent({ files: [{ type: 'audio/midi' }] });
 
         wrapper.vm.ondrop(mockEvent);
-        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(wrapper.emitted()).not.toHaveProperty('error');
       });
     });
   });
 
-  it('applies correct classes when there are no designs or no design saving loader', () => {
-    createComponent({ props: { hasDesigns: false } });
+  it('applies correct classes when displaying as a standalone item', () => {
+    createComponent({ props: { displayAsCard: false } });
     expect(findDropzoneArea().classes()).not.toContain('gl-flex-direction-column');
     expect(findIcon().classes()).toEqual(['gl-mr-3', 'gl-text-gray-500']);
     expect(findIcon().props('size')).toBe(16);
   });
 
-  it('applies correct classes when there are designs or design saving loader', () => {
-    createComponent({ props: { hasDesigns: true } });
+  it('applies correct classes when displaying in card mode', () => {
+    createComponent({ props: { displayAsCard: true } });
     expect(findDropzoneArea().classes()).toContain('gl-flex-direction-column');
     expect(findIcon().classes()).toEqual(['gl-mb-2']);
     expect(findIcon().props('size')).toBe(24);
+  });
+
+  it('correctly overrides description and drop messages', () => {
+    createComponent({
+      props: {
+        dropToStartMessage: 'Test drop-to-start message.',
+        validFileMimetypes: ['image/jpg', 'image/jpeg'],
+      },
+      slots: {
+        'upload-text': '<span>Test %{linkStart}description%{linkEnd} message.</span>',
+      },
+    });
+
+    expect(wrapper.element).toMatchSnapshot();
   });
 });

@@ -1,11 +1,12 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 import EditMetaControls from './edit_meta_controls.vue';
 
-import { MR_META_LOCAL_STORAGE_KEY } from '../constants';
+import { ISSUABLE_TYPE, MR_META_LOCAL_STORAGE_KEY } from '../constants';
 
 export default {
   components: {
@@ -15,6 +16,14 @@ export default {
   },
   props: {
     sourcePath: {
+      type: String,
+      required: true,
+    },
+    namespace: {
+      type: String,
+      required: true,
+    },
+    project: {
       type: String,
       required: true,
     },
@@ -49,9 +58,19 @@ export default {
       };
     },
   },
+  mounted() {
+    this.initTemplates();
+  },
   methods: {
     hide() {
       this.$refs.modal.hide();
+    },
+    initTemplates() {
+      const { namespace, project } = this;
+      Api.issueTemplates(namespace, project, ISSUABLE_TYPE, (err, templates) => {
+        if (err) return; // Error handled by global AJAX error handler
+        this.mergeRequestTemplates = templates;
+      });
     },
     show() {
       this.$refs.modal.show();

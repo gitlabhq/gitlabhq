@@ -153,18 +153,21 @@ module IssuesHelper
     }
   end
 
-  def issue_header_actions_data(project, issue, current_user)
+  def issue_header_actions_data(project, issuable, current_user)
+    new_issuable_params = ({ issuable_template: 'incident', issue: { issue_type: 'incident' } } if issuable.incident?)
+
     {
       can_create_issue: show_new_issue_link?(project).to_s,
-      can_reopen_issue: can?(current_user, :reopen_issue, issue).to_s,
-      can_report_spam: issue.submittable_as_spam_by?(current_user).to_s,
-      can_update_issue: can?(current_user, :update_issue, issue).to_s,
-      iid: issue.iid,
-      is_issue_author: (issue.author == current_user).to_s,
-      new_issue_path: new_project_issue_path(project),
+      can_reopen_issue: can?(current_user, :reopen_issue, issuable).to_s,
+      can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
+      can_update_issue: can?(current_user, :update_issue, issuable).to_s,
+      iid: issuable.iid,
+      is_issue_author: (issuable.author == current_user).to_s,
+      issue_type: issuable_display_type(issuable),
+      new_issue_path: new_project_issue_path(project, new_issuable_params),
       project_path: project.full_path,
-      report_abuse_path: new_abuse_report_path(user_id: issue.author.id, ref_url: issue_url(issue)),
-      submit_as_spam_path: mark_as_spam_project_issue_path(project, issue)
+      report_abuse_path: new_abuse_report_path(user_id: issuable.author.id, ref_url: issue_url(issuable)),
+      submit_as_spam_path: mark_as_spam_project_issue_path(project, issuable)
     }
   end
 end

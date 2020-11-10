@@ -72,6 +72,9 @@ export default {
       }
       return __('Applying suggestions...');
     },
+    isLoggedIn() {
+      return Boolean(gon.current_user_id);
+    },
   },
   methods: {
     applySuggestion() {
@@ -141,6 +144,7 @@ export default {
       </gl-button>
       <span v-gl-tooltip.viewport="tooltipMessage" tabindex="0">
         <gl-button
+          v-if="isLoggedIn"
           class="btn-inverted js-apply-btn btn-grouped"
           :disabled="isDisableButton"
           variant="success"

@@ -9,7 +9,7 @@
       - knapsack/
       - rspec_flaky/
       - rspec_profiling/
-      - crystalball/
+      - crystalball/packed-mapping.json.gz
 
 retrieve-tests-metadata:
   extends:

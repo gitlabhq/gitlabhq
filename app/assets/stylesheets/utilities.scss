@@ -122,3 +122,10 @@
     margin-left: $gl-spacing-scale-3;
   }
 }
+
+// This is used to help prevent issues with margin collapsing.
+// See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing.
+.gl-force-block-formatting-context::after {
+  content: '';
+  display: flex;
+}

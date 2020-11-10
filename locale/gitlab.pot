@@ -526,6 +526,9 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{issueType} actions"
+msgstr ""
+
 msgid "%{issuesCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
@@ -5585,13 +5588,13 @@ msgstr ""
 msgid "Close %{display_issuable_type}"
 msgstr ""
 
+msgid "Close %{issueType}"
+msgstr ""
+
 msgid "Close %{tabname}"
 msgstr ""
 
 msgid "Close epic"
-msgstr ""
-
-msgid "Close issue"
 msgstr ""
 
 msgid "Close milestone"
@@ -9754,7 +9757,13 @@ msgstr ""
 msgid "Drop or %{linkStart}upload%{linkEnd} designs to attach"
 msgstr ""
 
+msgid "Drop or %{linkStart}upload%{linkEnd} files to attach"
+msgstr ""
+
 msgid "Drop your designs to start your upload."
+msgstr ""
+
+msgid "Drop your files to start your upload."
 msgstr ""
 
 msgid "Due Date"
@@ -14947,9 +14956,6 @@ msgstr ""
 msgid "Issue Boards"
 msgstr ""
 
-msgid "Issue actions"
-msgstr ""
-
 msgid "Issue already promoted to epic."
 msgstr ""
 
@@ -18055,6 +18061,9 @@ msgstr ""
 msgid "New %{display_issuable_type}"
 msgstr ""
 
+msgid "New %{issueType}"
+msgstr ""
+
 msgid "New Application"
 msgstr ""
 
@@ -18307,9 +18316,6 @@ msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
 msgid "No containers available"
-msgstr ""
-
-msgid "No content to show"
 msgstr ""
 
 msgid "No contributions"
@@ -22563,10 +22569,10 @@ msgstr ""
 msgid "Reopen %{display_issuable_type}"
 msgstr ""
 
-msgid "Reopen epic"
+msgid "Reopen %{issueType}"
 msgstr ""
 
-msgid "Reopen issue"
+msgid "Reopen epic"
 msgstr ""
 
 msgid "Reopen milestone"
@@ -26986,6 +26992,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"
+msgstr ""
+
+msgid "The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax."
 msgstr ""
 
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been fixed or removed before changing its status."

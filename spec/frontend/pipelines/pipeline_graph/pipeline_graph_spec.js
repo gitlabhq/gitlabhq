@@ -33,7 +33,9 @@ describe('pipeline graph component', () => {
     });
 
     it('renders an empty section', () => {
-      expect(wrapper.text()).toContain('No content to show');
+      expect(wrapper.text()).toContain(
+        'The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax.',
+      );
       expect(findAllStagePills()).toHaveLength(0);
       expect(findAllJobPills()).toHaveLength(0);
     });

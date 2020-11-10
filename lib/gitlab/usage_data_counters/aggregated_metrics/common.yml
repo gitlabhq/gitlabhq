@@ -1,9 +1,13 @@
 #- name: unique name of aggregated metric
 #  operator: aggregation operator. Valid values are:
 #             - "ANY": counts unique elements that were observed triggering any of following events
+#             - "ALL": counts unique elements that were observed triggering all of following events
 #  events: list of events names to aggregate into metric. All events in this list must have the same 'redis_slot' and 'aggregation' attributes
 #           see from lib/gitlab/usage_data_counters/known_events.yml for the list of valid events.
 ---
 - name: product_analytics_test_aggregated_metrics
   operator: ANY
+  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+- name: product_analytics_test_combined_events
+  operator: ALL
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']

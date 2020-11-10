@@ -50,6 +50,7 @@ export function initIssueHeaderActions(store) {
       canUpdateIssue: parseBoolean(el.dataset.canUpdateIssue),
       iid: el.dataset.iid,
       isIssueAuthor: parseBoolean(el.dataset.isIssueAuthor),
+      issueType: el.dataset.issueType,
       newIssuePath: el.dataset.newIssuePath,
       projectPath: el.dataset.projectPath,
       reportAbusePath: el.dataset.reportAbusePath,

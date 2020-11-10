@@ -434,6 +434,17 @@ If there aren't any, check if you can perhaps slightly change an existing one to
 fit both the existing and new queries. Only add a new index if none of the
 existing indexes can be used in any way.
 
+When comparing execution plans, don't take timing as the only important metric.
+Good timing is the main goal of any optimization, but it can be too volatile to
+be used for comparison (for example, it depends a lot on the state of cache).
+When optimizing a query, we usually need to reduce the amount of data we're
+dealing with. Indexes are the way to work with fewer pages (buffers) to get the
+result, so, during optimization, look at the number of buffers used (read and hit),
+and work on reducing these numbers. Reduced timing will be the consequence of reduced
+buffer numbers. [#database-lab](#database-lab) guarantees that the plan is structurally
+identical to production (and overall number of buffers is the same as on production),
+but difference in cache state and I/O speed may lead to different timings.
+
 ## Queries that can't be optimised
 
 Now that we have seen how to optimise a query, let's look at another query that
