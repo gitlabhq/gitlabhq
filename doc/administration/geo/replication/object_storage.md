@@ -72,7 +72,7 @@ If you are using Google Cloud Storage, consider using
 Or you can use the [Storage Transfer Service](https://cloud.google.com/storage-transfer/docs/),
 although this only supports daily synchronization.
 
-For manual synchronization, or scheduled by `cron`, please have a look at:
+For manual synchronization, or scheduled by `cron`, see:
 
 - [`s3cmd sync`](https://s3tools.org/s3cmd-sync)
 - [`gsutil rsync`](https://cloud.google.com/storage/docs/gsutil/commands/rsync)

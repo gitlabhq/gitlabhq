@@ -2,6 +2,8 @@
 
 module Resolvers
   class ProjectPipelineResolver < BaseResolver
+    type ::Types::Ci::PipelineType, null: true
+
     alias_method :project, :object
 
     argument :iid, GraphQL::ID_TYPE,

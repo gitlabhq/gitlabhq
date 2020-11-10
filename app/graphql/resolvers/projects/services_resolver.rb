@@ -5,6 +5,8 @@ module Resolvers
     class ServicesResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
+      type Types::Projects::ServiceType.connection_type, null: true
+
       argument :active,
                GraphQL::BOOLEAN_TYPE,
                required: false,

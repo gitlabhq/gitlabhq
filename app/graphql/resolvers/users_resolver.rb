@@ -4,6 +4,7 @@ module Resolvers
   class UsersResolver < BaseResolver
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
+    type Types::UserType.connection_type, null: true
     description 'Find Users'
 
     argument :ids, [GraphQL::ID_TYPE],

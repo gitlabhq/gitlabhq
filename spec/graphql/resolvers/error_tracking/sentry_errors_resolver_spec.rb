@@ -14,6 +14,10 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
   let(:issues) { nil }
   let(:pagination) { nil }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryErrorType.connection_type)
+  end
+
   describe '#resolve' do
     context 'insufficient user permission' do
       let(:user) { create(:user) }

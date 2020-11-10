@@ -1,0 +1,5 @@
+mutation deletePipeline($id: CiPipelineID!) {
+  pipelineDestroy(input: { id: $id }) {
+    errors
+  }
+}

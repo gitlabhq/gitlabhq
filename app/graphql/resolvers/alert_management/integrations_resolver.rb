@@ -5,6 +5,8 @@ module Resolvers
     class IntegrationsResolver < BaseResolver
       alias_method :project, :synchronized_object
 
+      type Types::AlertManagement::IntegrationType.connection_type, null: true
+
       def resolve(**args)
         return [] unless Feature.enabled?(:multiple_http_integrations, project)
 

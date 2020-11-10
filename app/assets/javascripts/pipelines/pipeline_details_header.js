@@ -16,7 +16,7 @@ export const createPipelineHeaderApp = elSelector => {
     return;
   }
 
-  const { cancelPath, deletePath, fullPath, pipelineId, pipelineIid, retryPath } = el?.dataset;
+  const { fullPath, pipelineId, pipelineIid, pipelinesPath } = el?.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -26,10 +26,8 @@ export const createPipelineHeaderApp = elSelector => {
     apolloProvider,
     provide: {
       paths: {
-        cancel: cancelPath,
-        delete: deletePath,
         fullProject: fullPath,
-        retry: retryPath,
+        pipelinesPath,
       },
       pipelineId,
       pipelineIid,

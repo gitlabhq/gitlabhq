@@ -6,6 +6,8 @@ module Resolvers
       DesignID = ::Types::GlobalIDType[::DesignManagement::Design]
       VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
 
+      type ::Types::DesignManagement::DesignType.connection_type, null: true
+
       argument :ids, [DesignID],
                required: false,
                description: 'Filters designs by their ID'

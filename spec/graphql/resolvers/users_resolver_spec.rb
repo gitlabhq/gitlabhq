@@ -8,6 +8,10 @@ RSpec.describe Resolvers::UsersResolver do
   let_it_be(:user1) { create(:user, name: "SomePerson") }
   let_it_be(:user2) { create(:user, username: "someone123784") }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::UserType.connection_type)
+  end
+
   describe '#resolve' do
     it 'raises an error when read_users_list is not authorized' do
       expect(Ability).to receive(:allowed?).with(nil, :read_users_list).and_return(false)

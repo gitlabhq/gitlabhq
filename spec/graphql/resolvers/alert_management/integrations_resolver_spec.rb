@@ -14,6 +14,10 @@ RSpec.describe Resolvers::AlertManagement::IntegrationsResolver do
 
   subject { sync(resolve_http_integrations) }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::AlertManagement::IntegrationType.connection_type)
+  end
+
   context 'user does not have permission' do
     it { is_expected.to be_empty }
   end

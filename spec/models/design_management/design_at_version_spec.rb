@@ -185,7 +185,7 @@ RSpec.describe DesignManagement::DesignAtVersion do
   end
 
   describe 'validations' do
-    subject(:design_at_version) { build(:design_at_version) }
+    subject(:design_at_version) { build_stubbed(:design_at_version) }
 
     it { is_expected.to be_valid }
 

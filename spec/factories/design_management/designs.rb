@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :design, class: 'DesignManagement::Design' do
-    issue { create(:issue) }
-    project { issue&.project || create(:project) }
+    issue { association(:issue) }
+    project { issue&.project || association(:project) }
     sequence(:filename) { |n| "homescreen-#{n}.jpg" }
 
     transient do

@@ -2,6 +2,8 @@
 
 module Resolvers
   class GroupMembersResolver < MembersResolver
+    type Types::GroupMemberType.connection_type, null: true
+
     authorize :read_group_member
 
     private

@@ -1,19 +1,19 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
-import MockAdapter from 'axios-mock-adapter';
 import {
   mockCancelledPipelineHeader,
   mockFailedPipelineHeader,
   mockRunningPipelineHeader,
   mockSuccessfulPipelineHeader,
 } from './mock_data';
-import axios from '~/lib/utils/axios_utils';
 import HeaderComponent from '~/pipelines/components/header_component.vue';
+import deletePipelineMutation from '~/pipelines/graphql/mutations/delete_pipeline.mutation.graphql';
+import retryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
+import cancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 
 describe('Pipeline details header', () => {
   let wrapper;
   let glModalDirective;
-  let mockAxios;
 
   const findDeleteModal = () => wrapper.find(GlModal);
   const findRetryButton = () => wrapper.find('[data-testid="retryPipeline"]');
@@ -25,9 +25,7 @@ describe('Pipeline details header', () => {
     pipelineId: 14,
     pipelineIid: 1,
     paths: {
-      retry: '/retry',
-      cancel: '/cancel',
-      delete: '/delete',
+      pipelinesPath: '/namespace/my-project/-/pipelines',
       fullProject: '/namespace/my-project',
     },
   };
@@ -43,6 +41,7 @@ describe('Pipeline details header', () => {
           startPolling: jest.fn(),
         },
       },
+      mutate: jest.fn(),
     };
 
     return shallowMount(HeaderComponent, {
@@ -65,16 +64,9 @@ describe('Pipeline details header', () => {
     });
   };
 
-  beforeEach(() => {
-    mockAxios = new MockAdapter(axios);
-    mockAxios.onGet('*').replyOnce(200);
-  });
-
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-
-    mockAxios.restore();
   });
 
   describe('initial loading', () => {
@@ -111,13 +103,13 @@ describe('Pipeline details header', () => {
         wrapper = createComponent(mockCancelledPipelineHeader);
       });
 
-      it('should call axios with the right path when retry button is clicked', async () => {
-        jest.spyOn(axios, 'post');
+      it('should call retryPipeline Mutation with pipeline id', () => {
         findRetryButton().vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
-
-        expect(axios.post).toHaveBeenCalledWith(defaultProvideOptions.paths.retry);
+        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+          mutation: retryPipelineMutation,
+          variables: { id: mockCancelledPipelineHeader.id },
+        });
       });
     });
 
@@ -126,13 +118,13 @@ describe('Pipeline details header', () => {
         wrapper = createComponent(mockRunningPipelineHeader);
       });
 
-      it('should call axios with the right path when cancel button is clicked', async () => {
-        jest.spyOn(axios, 'post');
+      it('should call cancelPipeline Mutation with pipeline id', () => {
         findCancelButton().vm.$emit('click');
 
-        await wrapper.vm.$nextTick();
-
-        expect(axios.post).toHaveBeenCalledWith(defaultProvideOptions.paths.cancel);
+        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+          mutation: cancelPipelineMutation,
+          variables: { id: mockRunningPipelineHeader.id },
+        });
       });
     });
 
@@ -141,24 +133,21 @@ describe('Pipeline details header', () => {
         wrapper = createComponent(mockFailedPipelineHeader);
       });
 
-      it('displays delete modal when clicking on delete and does not call the delete action', async () => {
-        jest.spyOn(axios, 'delete');
+      it('displays delete modal when clicking on delete and does not call the delete action', () => {
         findDeleteButton().vm.$emit('click');
-
-        await wrapper.vm.$nextTick();
 
         expect(findDeleteModal().props('modalId')).toBe(wrapper.vm.$options.DELETE_MODAL_ID);
         expect(glModalDirective).toHaveBeenCalledWith(wrapper.vm.$options.DELETE_MODAL_ID);
-        expect(axios.delete).not.toHaveBeenCalled();
+        expect(wrapper.vm.$apollo.mutate).not.toHaveBeenCalled();
       });
 
-      it('should call delete path when modal is submitted', async () => {
-        jest.spyOn(axios, 'delete');
+      it('should call deletePipeline Mutation with pipeline id when modal is submitted', () => {
         findDeleteModal().vm.$emit('ok');
 
-        await wrapper.vm.$nextTick();
-
-        expect(axios.delete).toHaveBeenCalledWith(defaultProvideOptions.paths.delete);
+        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+          mutation: deletePipelineMutation,
+          variables: { id: mockFailedPipelineHeader.id },
+        });
       });
     });
   });

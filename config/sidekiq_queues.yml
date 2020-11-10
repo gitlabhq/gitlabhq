@@ -112,6 +112,8 @@
   - 2
 - - emails_on_push
   - 2
+- - environments_canary_ingress_update
+  - 1
 - - epics
   - 2
 - - error_tracking_issue_link

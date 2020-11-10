@@ -3,6 +3,8 @@
 module Resolvers
   module ErrorTracking
     class SentryDetailedErrorResolver < BaseResolver
+      type Types::ErrorTracking::SentryDetailedErrorType, null: true
+
       argument :id, GraphQL::ID_TYPE,
                 required: true,
                 description: 'ID of the Sentry issue'

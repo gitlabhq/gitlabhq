@@ -109,15 +109,82 @@ RSpec::Matchers.define :have_graphql_arguments do |*expected|
   end
 end
 
-RSpec::Matchers.define :have_graphql_type do |expected|
-  match do |field|
-    expect(field.type).to eq(expected)
+module GraphQLTypeHelpers
+  def message(object, expected, **opts)
+    non_null = expected.non_null? || (opts.key?(:null) && !opts[:null])
+
+    actual = object.type
+    actual_type = actual.unwrap.graphql_name
+    actual_type += '!' if actual.non_null?
+
+    expected_type = expected.unwrap.graphql_name
+    expected_type += '!' if non_null
+
+    "expected #{describe_object(object)} to have GraphQL type #{expected_type}, but got #{actual_type}"
+  end
+
+  def describe_object(object)
+    case object
+    when Types::BaseField
+      "#{describe_object(object.owner_type)}.#{object.graphql_name}"
+    when Types::BaseArgument
+      "#{describe_object(object.owner)}.#{object.graphql_name}"
+    when Class
+      object.try(:graphql_name) || object.name
+    else
+      object.to_s
+    end
+  end
+
+  def nullified(type, can_be_nil)
+    return type if can_be_nil.nil? # unknown!
+    return type if can_be_nil
+
+    type.to_non_null_type
+  end
+end
+
+RSpec::Matchers.define :have_graphql_type do |expected, opts = {}|
+  include GraphQLTypeHelpers
+
+  match do |object|
+    expect(object.type).to eq(nullified(expected, opts[:null]))
+  end
+
+  failure_message do |object|
+    message(object, expected, **opts)
+  end
+end
+
+RSpec::Matchers.define :have_nullable_graphql_type do |expected|
+  include GraphQLTypeHelpers
+
+  match do |object|
+    expect(object).to have_graphql_type(expected.unwrap, { null: true })
+  end
+
+  description do
+    "have nullable GraphQL type #{expected.graphql_name}"
+  end
+
+  failure_message do |object|
+    message(object, expected, null: true)
   end
 end
 
 RSpec::Matchers.define :have_non_null_graphql_type do |expected|
-  match do |field|
-    expect(field.type.to_graphql).to eq(!expected.to_graphql)
+  include GraphQLTypeHelpers
+
+  match do |object|
+    expect(object).to have_graphql_type(expected, { null: false })
+  end
+
+  description do
+    "have non-null GraphQL type #{expected.graphql_name}"
+  end
+
+  failure_message do |object|
+    message(object, expected, null: false)
   end
 end
 

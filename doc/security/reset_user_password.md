@@ -56,14 +56,15 @@ Don't forget to save the changes.
 user.save!
 ```
 
-Exit the console and try to login with your new password.
+Exit the console, and then try to sign in with your new password.
 
 NOTE: **Note:**
-Passwords can also be reset via the [Users API](../api/users.md#user-modification)
+You can also reset passwords by using the [Users API](../api/users.md#user-modification).
 
 ### Reset your root password
 
-The steps described above can also be used to reset the root password. But first, identify the root user, with an `id` of `1`. To do so, run the following command:
+The previously described steps can also be used to reset the root password. First,
+identify the root user, with an `id` of `1`. To do so, run the following command:
 
 ```shell
 user = User.where(id: 1).first

@@ -10,6 +10,10 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
 
   let(:issue_details_service) { spy('ErrorTracking::IssueDetailsService') }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryDetailedErrorType)
+  end
+
   before do
     project.add_developer(current_user)
 

@@ -38,7 +38,7 @@ module Resolvers
       # that the DesignAtVersion as found by its ID does in fact belong
       # to this issue.
       def consistent?(dav)
-        issue.nil? || (dav&.design&.issue_id == issue.id)
+        issue.nil? || (dav.present? && dav.design&.issue_id == issue.id)
       end
 
       def issue

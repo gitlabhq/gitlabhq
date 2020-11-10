@@ -1,16 +1,21 @@
 <script>
 import { GlAlert, GlButton, GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import axios from '~/lib/utils/axios_utils';
 import ciHeader from '~/vue_shared/components/header_ci_component.vue';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
 import getPipelineQuery from '../graphql/queries/get_pipeline_header_data.query.graphql';
+import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
+import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
+import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 
 const DELETE_MODAL_ID = 'pipeline-delete-modal';
+const POLL_INTERVAL = 10000;
 
 export default {
   name: 'PipelineHeaderSection',
+  pipelineCancel: 'pipelineCancel',
+  pipelineRetry: 'pipelineRetry',
   components: {
     ciHeader,
     GlAlert,
@@ -28,7 +33,7 @@ export default {
     [DEFAULT]: __('An unknown error occurred.'),
   },
   inject: {
-    // Receive `cancel`, `delete`, `fullProject` and `retry`
+    // Receive `fullProject` and `pipelinesPath`
     paths: {
       default: {},
     },
@@ -52,7 +57,7 @@ export default {
       error() {
         this.reportFailure(LOAD_FAILURE);
       },
-      pollInterval: 10000,
+      pollInterval: POLL_INTERVAL,
       watchLoading(isLoading) {
         if (!isLoading) {
           // To ensure apollo has updated the cache,
@@ -122,31 +127,58 @@ export default {
     reportFailure(errorType) {
       this.failureType = errorType;
     },
-    async postAction(path) {
+    async postPipelineAction(name, mutation) {
       try {
-        await axios.post(path);
-        this.$apollo.queries.pipeline.refetch();
+        const {
+          data: {
+            [name]: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation,
+          variables: { id: this.pipeline.id },
+        });
+
+        if (errors.length > 0) {
+          this.reportFailure(POST_FAILURE);
+        } else {
+          this.$apollo.queries.pipeline.refetch();
+        }
       } catch {
         this.reportFailure(POST_FAILURE);
       }
     },
-    async cancelPipeline() {
+    cancelPipeline() {
       this.isCanceling = true;
-      this.postAction(this.paths.cancel);
+      this.postPipelineAction(this.$options.pipelineCancel, cancelPipelineMutation);
     },
-    async retryPipeline() {
+    retryPipeline() {
       this.isRetrying = true;
-      this.postAction(this.paths.retry);
+      this.postPipelineAction(this.$options.pipelineRetry, retryPipelineMutation);
     },
     async deletePipeline() {
       this.isDeleting = true;
       this.$apollo.queries.pipeline.stopPolling();
 
       try {
-        const { request } = await axios.delete(this.paths.delete);
-        redirectTo(setUrlFragment(request.responseURL, 'delete_success'));
+        const {
+          data: {
+            pipelineDestroy: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: deletePipelineMutation,
+          variables: {
+            id: this.pipeline.id,
+          },
+        });
+
+        if (errors.length > 0) {
+          this.reportFailure(DELETE_FAILURE);
+          this.isDeleting = false;
+        } else {
+          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
+        }
       } catch {
-        this.$apollo.queries.pipeline.startPolling();
+        this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
         this.reportFailure(DELETE_FAILURE);
         this.isDeleting = false;
       }

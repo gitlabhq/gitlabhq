@@ -5,6 +5,8 @@ module Resolvers
     class JiraProjectsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
+      type Types::Projects::Services::JiraProjectType.connection_type, null: true
+
       argument :name,
                GraphQL::STRING_TYPE,
                required: false,

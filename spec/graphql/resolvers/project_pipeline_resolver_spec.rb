@@ -10,6 +10,10 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
   let(:current_user) { create(:user) }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(::Types::Ci::PipelineType)
+  end
+
   def resolve_pipeline(project, args)
     resolve(described_class, obj: project, args: args, ctx: { current_user: current_user })
   end

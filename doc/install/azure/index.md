@@ -347,8 +347,8 @@ connect to it using SSH ([Secure Shell](https://en.wikipedia.org/wiki/Secure_She
 If you're running Windows, you'll need to connect using [PuTTY](https://www.putty.org) or an equivalent Windows SSH client.
 If you're running Linux or macOS, then you already have an SSH client installed.
 
-Remember that you will need to login with the username and password you specified
-[when you created](#basics) your Azure VM.
+Remember to sign in with the username and password you specified when you
+[created your Azure VM](#basics).
 
 If you need to reset your VM password, read
 [how to reset SSH credentials for a user on an Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/troubleshooting/troubleshoot-ssh-connection).
@@ -375,20 +375,20 @@ read on [using PuTTY in Windows](https://mediatemple.net/community/products/dv/2
 
 ### Updating GitLab
 
-Once you've logged in via SSH, enter the following command to update GitLab to the latest
-version:
+After signing in by using SSH, enter the following command to update GitLab to
+the latest version:
 
 ```shell
 sudo apt-get update && sudo apt-get install gitlab-ce
 ```
 
-This command will update GitLab and its associated components to the latest versions, so it will
-take a little time to complete. You'll see various update tasks being completed in your SSH
-terminal window:
+This command updates GitLab and its associated components to the latest versions,
+so it will take a little time to complete. You'll see various update tasks being
+completed in your SSH terminal window:
 
 ![GitLab updating](img/gitlab-ssh-update-in-progress.png)
 
-Once the update process has completed, you'll see a message like this:
+After the update process is complete, you'll see a message like this:
 
 ```plaintext
 Upgrade complete! If your GitLab server is misbehaving try running

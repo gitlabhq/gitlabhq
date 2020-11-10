@@ -31,11 +31,18 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `user_update_for_group`
 - `user_update_for_team`
 
-The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repository URL, you can just listen for `project_rename`).
+The triggers for most of these are self-explanatory, but `project_update` and
+`project_rename` deserve some clarification: `project_update` is fired any time
+an attribute of a project is changed (including name, description, and tags)
+_unless_ the `path` attribute is also changed. In that case, a `project_rename`
+is triggered instead (so that, for instance, if all you care about is the
+repository URL, you can just listen for `project_rename`).
 
-`user_failed_login` is sent whenever a **blocked** user attempts to login and denied access.
+`user_failed_login` is sent whenever a _blocked_ user attempts to sign in and is
+denied access.
 
-System hooks can be used, e.g. for logging or changing information in a LDAP server.
+System hooks can be used, for example, for logging or changing information in an
+LDAP server.
 
 NOTE: **Note:**
 We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md)

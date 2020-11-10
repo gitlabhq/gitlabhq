@@ -8,31 +8,80 @@ module Resolvers
 
     argument_class ::Types::BaseArgument
 
+    def self.singular_type
+      return unless type
+
+      unwrapped = type.unwrap
+
+      %i[node_type relay_node_type of_type itself].reduce(nil) do |t, m|
+        t || unwrapped.try(m)
+      end
+    end
+
+    def self.when_single(&block)
+      as_single << block
+
+      # Have we been called after defining the single version of this resolver?
+      if @single.present?
+        @single.instance_exec(&block)
+      end
+    end
+
+    def self.as_single
+      @as_single ||= []
+    end
+
+    def self.single_definition_blocks
+      ancestors.flat_map { |klass| klass.try(:as_single) || [] }
+    end
+
     def self.single
-      @single ||= Class.new(self) do
-        def ready?(**args)
-          ready, early_return = super
-          [ready, select_result(early_return)]
+      @single ||= begin
+        parent = self
+        klass = Class.new(self) do
+          type parent.singular_type, null: true
+
+          def ready?(**args)
+            ready, early_return = super
+            [ready, select_result(early_return)]
+          end
+
+          def resolve(**args)
+            select_result(super)
+          end
+
+          def single?
+            true
+          end
+
+          def select_result(results)
+            results&.first
+          end
+
+          define_singleton_method :to_s do
+            "#{parent}.single"
+          end
         end
 
-        def resolve(**args)
-          select_result(super)
+        single_definition_blocks.each do |definition|
+          klass.instance_exec(&definition)
         end
 
-        def single?
-          true
-        end
-
-        def select_result(results)
-          results&.first
-        end
+        klass
       end
     end
 
     def self.last
+      parent = self
       @last ||= Class.new(self.single) do
+        type parent.singular_type, null: true
+
         def select_result(results)
           results&.last
+        end
+
+        define_singleton_method :to_s do
+          "#{parent}.last"
         end
       end
     end
@@ -68,14 +117,13 @@ module Resolvers
       end
     end
 
+    # TODO: remove! This should never be necessary
+    # Remove as part of https://gitlab.com/gitlab-org/gitlab/-/issues/13984,
+    # since once we use that authorization approach, the object is guaranteed to
+    # be synchronized before any field.
     def synchronized_object
       strong_memoize(:synchronized_object) do
-        case object
-        when BatchLoader::GraphQL
-          object.sync
-        else
-          object
-        end
+        ::Gitlab::Graphql::Lazy.force(object)
       end
     end
 

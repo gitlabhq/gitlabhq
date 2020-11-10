@@ -170,7 +170,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
-Users should now be able to login to the Container Registry with their GitLab
+Users should now be able to sign in to the Container Registry with their GitLab
 credentials using:
 
 ```shell
@@ -234,7 +234,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
-Users should now be able to login to the Container Registry using their GitLab
+Users should now be able to sign in to the Container Registry using their GitLab
 credentials:
 
 ```shell
@@ -1234,8 +1234,8 @@ This will launch the Docker daemon and proxy all connections through mitmproxy.
 
 #### Running the Docker client
 
-Now that we have mitmproxy and Docker running, we can attempt to login and push
-a container image. You may need to run as root to do this. For example:
+Now that we have mitmproxy and Docker running, we can attempt to sign in and
+push a container image. You may need to run as root to do this. For example:
 
 ```shell
 docker login s3-testing.myregistry.com:5050

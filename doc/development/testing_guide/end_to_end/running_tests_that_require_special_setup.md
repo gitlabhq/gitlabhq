@@ -238,7 +238,11 @@ run: ./services/tunnel_gitlab: (pid 2650) 10875s, normally down; run: log: (pid 
 run: ./services/tunnel_registry: (pid 2651) 10875s, normally down; run: log: (pid 65155) 177993s
 ```
 
-Also, restarting Docker and then, on the Terminal, issue the command  `docker login https://[YOUR-REGISTRY-PORT].qa-tunnel.gitlab.info:443` and use the GDK credentials to login. Note that the Registry port and GDK port are not the same. When configuring Auto DevOps in GDK, the `gdk reconfigure` command outputs the port of the Registry:
+Also, restarting Docker and then, on the Terminal, issue the command
+`docker login https://[YOUR-REGISTRY-PORT].qa-tunnel.gitlab.info:443` and use
+the GDK credentials to sign in. Note that the Registry port and GDK port aren't
+the same. When configuring Auto DevOps in GDK, the `gdk reconfigure` command
+outputs the port of the Registry:
 
 ```shell
 *********************************************

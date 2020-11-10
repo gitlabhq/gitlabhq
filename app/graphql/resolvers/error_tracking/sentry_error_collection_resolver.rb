@@ -3,6 +3,8 @@
 module Resolvers
   module ErrorTracking
     class SentryErrorCollectionResolver < BaseResolver
+      type Types::ErrorTracking::SentryErrorCollectionType, null: true
+
       def resolve(**args)
         project = object
 

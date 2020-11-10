@@ -76,6 +76,7 @@ How you enable container scanning depends on your GitLab version:
   that comes with your GitLab installation.
 - GitLab versions earlier than 11.9: Copy and use the job from the
   [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
+- GitLab 13.6 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) better support for [FIPS](https://csrc.nist.gov/publications/detail/fips/140/2/final) by upgrading the `CS_MAJOR_VERSION` from `2` to `3`.
 
 To include the `Container-Scanning.gitlab-ci.yml` template (GitLab 11.9 and later), add the
 following to your `.gitlab-ci.yml` file:
@@ -144,6 +145,26 @@ variables:
   CLAIR_OUTPUT: High
 ```
 
+Version `3` of the `container_scanning` Docker image uses [`centos:centos8`](https://hub.docker.com/_/centos)
+as the new base. It also removes the use of the [start.sh](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/merge_requests/77)
+script and instead executes the analyzer by default. Any customizations made to the
+`container_scanning` job's [`before_script`](../../../ci/yaml/README.md#before_script-and-after_script)
+and [`after_script`](../../../ci/yaml/README.md#before_script-and-after_script)
+blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
+Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-variables)
+variable.
+
+This example [includes](../../../ci/yaml/README.md#include) the container scanning template and
+enables version `2` of the analyzer:
+
+```yaml
+include:
+  - template: Container-Scanning.gitlab-ci.yml
+
+variables:
+  CS_MAJOR_VERSION: '2'
+```
+
 <!-- NOTE: The container scanning tool references the following heading in the code, so if you"
      make a change to this heading, make sure to update the documentation URLs used in the"
      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)" -->
@@ -164,6 +185,7 @@ scanning by using the following environment variables:
 | `CLAIR_VULNERABILITIES_DB_URL` | `clair-vulnerabilities-db` | (**DEPRECATED - use `CLAIR_DB_CONNECTION_STRING` instead**) This variable is explicitly set in the [services section](https://gitlab.com/gitlab-org/gitlab/-/blob/898c5da43504eba87b749625da50098d345b60d6/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L23) of the `Container-Scanning.gitlab-ci.yml` file and defaults to `clair-vulnerabilities-db`. This value represents the address that the [PostgreSQL server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db) is running on and **shouldn't be changed** unless you're running the image locally as described in the [Running the standalone container scanning tool](#running-the-standalone-container-scanning-tool) section. |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. |
+| `CS_MAJOR_VERSION`             | `3` | The major version of the Docker image tag. |
 | `DOCKER_INSECURE`              | `"false"`     | Allow [Klar](https://github.com/optiopay/klar) to access secure Docker registries using HTTPS with bad (or self-signed) SSL certificates. |
 | `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. |
 | `DOCKER_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. |

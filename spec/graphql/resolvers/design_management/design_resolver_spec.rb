@@ -6,6 +6,10 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(::Types::DesignManagement::DesignType)
+  end
+
   before do
     enable_design_management
   end

@@ -697,7 +697,9 @@ To configure markdownlint within your editor, install one of the following as ap
 To configure Vale within your editor, install one of the following as appropriate:
 
 - The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
-- The Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server). You don't need Vale Server to use the plugin.
+- The Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
+  You don't need Vale Server to use the plugin. You can configure the plugin to
+  [display only a subset of alerts](#show-subset-of-vale-alerts).
 - [Vim](https://github.com/dense-analysis/ale).
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
@@ -716,6 +718,23 @@ file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 
 To set up `lefthook` for documentation linting, see
 [Pre-push static analysis](../contributing/style_guides.md#pre-push-static-analysis).
+
+#### Show subset of Vale alerts
+
+You can set Visual Studio Code to display only a subset of Vale alerts when viewing files:
+
+1. Go to **Preferences > Settings > Extensions > Vale**.
+1. In **Vale CLI: Min Alert Level**, select the minimum alert level you want displayed in files.
+
+To display only a subset of Vale alerts when running Vale from the command line, use
+the `--minAlertLevel` flag, which accepts `error`, `warning`, or `suggestion`. Combine it with `--config`
+to point to the configuration file within the project, if needed:
+
+```shell
+vale --config .vale.ini --minAlertLevel error doc/**/*.md
+```
+
+Omit the flag to display all alerts, including `suggestion` level alerts.
 
 #### Disable Vale tests
 

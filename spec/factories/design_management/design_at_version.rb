@@ -9,13 +9,13 @@ FactoryBot.define do
     version { nil }
 
     transient do
-      issue { design&.issue || version&.issue || create(:issue) }
+      issue { design&.issue || version&.issue || association(:issue) }
     end
 
     initialize_with do
       attrs = attributes.dup
-      attrs[:design] ||= create(:design, issue: issue)
-      attrs[:version] ||= create(:design_version, issue: issue)
+      attrs[:design] ||= association(:design, issue: issue)
+      attrs[:version] ||= association(:design_version, issue: issue)
 
       new(attrs)
     end

@@ -88,8 +88,8 @@ To change these settings:
 
   ```ruby
   # CAUTION!
-  # This allows users to login without having a user account first. Define the allowed providers
-  # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
+  # This allows users to sign in without having a user account first. Define the allowed providers
+  # using an array, for example, ["saml", "twitter"], or as true/false to allow all providers or none.
   # User accounts will be created automatically when authentication was successful.
   gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter']
   gitlab_rails['omniauth_auto_link_ldap_user'] = true
@@ -111,13 +111,13 @@ To change these settings:
   ```yaml
   ## OmniAuth settings
   omniauth:
-    # Allow login via Twitter, Google, etc. using OmniAuth providers
+    # Allow sign-in by using Twitter, Google, etc. using OmniAuth providers
     # Versions prior to 11.4 require this to be set to true
     # enabled: true
 
     # CAUTION!
-    # This allows users to login without having a user account first. Define the allowed providers
-    # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
+    # This allows users to sign in without having a user account first. Define the allowed providers
+    # using an array, for example, ["saml", "twitter"], or as true/false to allow all providers or none.
     # User accounts will be created automatically when authentication was successful.
     allow_single_sign_on: ["saml", "twitter"]
 
@@ -177,9 +177,9 @@ like `google_oauth2` for Google. Refer to the examples for the full names of the
 supported providers.
 
 NOTE: **Note:**
-If you decide to remove an OmniAuth provider from the external providers list
-you will need to manually update the users that use this method to login, if you
-want their accounts to be upgraded to full internal accounts.
+If you decide to remove an OmniAuth provider from the external providers list,
+you must manually update the users that use this method to sign in if you want
+their accounts to be upgraded to full internal accounts.
 
 **For Omnibus installations**
 
@@ -302,13 +302,13 @@ omniauth:
 
 ## Bypassing two factor authentication
 
-Starting with GitLab 12.3, this allows users to login with the specified
-providers without two factor authentication.
+In GitLab 12.3 or later, users can sign in with specified providers _without_
+using two factor authentication.
 
-Define the allowed providers using an array, e.g. `["twitter", 'google_oauth2']`, or as
-`true`/`false` to allow all providers or none. This option should only be configured
-for providers which already have two factor authentication (default: false).
-This configuration dose not apply to SAML.
+Define the allowed providers using an array (for example, `["twitter", 'google_oauth2']`),
+or as `true` or `false` to allow all providers (or none). This option should be
+configured only for providers which already have two factor authentication
+(default: false). This configuration doesn't apply to SAML.
 
 ```ruby
 gitlab_rails['omniauth_allow_bypass_two_factor'] = ['twitter', 'google_oauth2']
@@ -323,13 +323,12 @@ omniauth:
 
 ## Automatically sign in with provider
 
-You can add the `auto_sign_in_with_provider` setting to your
-GitLab configuration to automatically redirect login requests
-to your OmniAuth provider for authentication, thus removing the need to click a button
-before actually signing in.
+You can add the `auto_sign_in_with_provider` setting to your GitLab
+configuration to redirect login requests to your OmniAuth provider for
+authentication, removing the need to click a button before actually signing in.
 
-For example, when using the Azure integration, you would set the following
-to enable auto sign in.
+For example, when using the Azure integration, set the following to enable auto
+sign-in:
 
 For Omnibus package:
 
@@ -344,13 +343,15 @@ omniauth:
   auto_sign_in_with_provider: azure_oauth2
 ```
 
-Please keep in mind that every sign in attempt will be redirected to the OmniAuth provider,
-so you will not be able to sign in using local credentials. Make sure that at least one
-of the OmniAuth users has admin permissions.
+Keep in mind that every sign-in attempt will be redirected to the OmniAuth
+provider; you won't be able to sign in using local credentials. Ensure at least
+one of the OmniAuth users has admin permissions.
 
-You may also bypass the auto signin feature by browsing to
+You may also bypass the auto sign in feature by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 ## Passwords for users created via OmniAuth
 
-The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via OmniAuth.
+The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md)
+guide provides an overview about how GitLab generates and sets passwords for
+users created with OmniAuth.

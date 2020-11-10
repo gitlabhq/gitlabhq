@@ -9,10 +9,7 @@ RSpec.describe Resolvers::EchoResolver do
   let(:text) { 'Message test' }
 
   specify do
-    expect(described_class.field_options).to include(
-      type: eq(::GraphQL::STRING_TYPE),
-      null: be_falsey
-    )
+    expect(described_class).to have_non_null_graphql_type(::GraphQL::STRING_TYPE)
   end
 
   describe '#resolve' do

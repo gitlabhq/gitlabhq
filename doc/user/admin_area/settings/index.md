@@ -23,7 +23,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [Account and limit](account_and_limit_settings.md) **(STARTER)** | Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan. |
 | [Diff limits](../diff_limits.md) | Diff content limits. |
 | [Sign-up restrictions](sign_up_restrictions.md) | Configure the way a user creates a new account. |
-| [Sign in restrictions](sign_in_restrictions.md) | Set requirements for a user to sign-in. Enable mandatory two-factor authentication. |
+| [Sign in restrictions](sign_in_restrictions.md) | Set requirements for a user to sign in. Enable mandatory two-factor authentication. |
 | [Terms of Service and Privacy Policy](terms.md) | Include a Terms of Service agreement and Privacy Policy that all users must accept. |
 | [External Authentication](external_authorization.md#configuration) | External Classification Policy Authorization |
 | [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) | Set max session time for web terminal. |

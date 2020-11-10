@@ -96,18 +96,17 @@ to authenticate with Kerberos tokens.
 The Administrative user can navigate to **Admin > Users > Example User > Identities**
 and attach a Kerberos account. Existing GitLab users can go to **Profile > Account**
 and attach a Kerberos account. If you want to allow users without a GitLab
-account to login, you should enable the option `allow_single_sign_on` as
-described in the [Configure GitLab](#configure-gitlab) section. Then, the first
-time a user signs in with Kerberos credentials, GitLab will create a new GitLab
-user associated with the email, which is built from the Kerberos username and
-realm. User accounts will be created automatically when authentication was
-successful.
+account to sign in, enable the `allow_single_sign_on` option, as described in the
+[Configure GitLab](#configure-gitlab) section. The first time a user signs in
+with Kerberos credentials, GitLab will create a new GitLab user associated with
+the email, which is built from the Kerberos username and realm. User accounts are
+created after successful authentications.
 
 ## Linking Kerberos and LDAP accounts together
 
-If your users log in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap/index.md)
-enabled, then your users will be automatically linked to their LDAP accounts on
-first login. For this to work, some prerequisites must be met:
+If your users sign in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap/index.md)
+enabled, your users will be linked to their LDAP accounts on their first sign-in.
+For this to work, some prerequisites must be met:
 
 The Kerberos username must match the LDAP user's UID. You can choose which LDAP
 attribute is used as the UID in GitLab's [LDAP configuration](../administration/auth/ldap/index.md#configuration)
@@ -125,10 +124,10 @@ LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9962) in GitLab 13.5.
 
-You can configure custom allowed realms when
-the user's Kerberos realm doesn't match the domain from the user's LDAP DN. The
-configuration value must specify all domains that users may be expected to
-have. Any other domains will be ignored and an LDAP identity will not be linked.
+You can configure custom allowed realms when the user's Kerberos realm doesn't
+match the domain from the user's LDAP DN. The configuration value must specify
+all domains that users may be expected to have. Any other domains will be
+ignored and an LDAP identity won't be linked.
 
 **For Omnibus installations**
 

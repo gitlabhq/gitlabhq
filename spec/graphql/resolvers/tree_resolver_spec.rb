@@ -7,6 +7,10 @@ RSpec.describe Resolvers::TreeResolver do
 
   let(:repository) { create(:project, :repository).repository }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::Tree::TreeType)
+  end
+
   describe '#resolve' do
     it 'resolves to a tree' do
       result = resolve_repository({ ref: "master" })

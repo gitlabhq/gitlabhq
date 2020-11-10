@@ -6,7 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrate your GitLab instance with GitHub
 
-You can integrate your GitLab instance with GitHub.com as well as GitHub Enterprise to enable users to import projects from GitHub and/or to login to your GitLab instance with your GitHub account.
+You can integrate your GitLab instance with GitHub.com and GitHub Enterprise to
+enable users to import projects from GitHub or sign in to your GitLab instance
+with your GitHub account.
 
 ## Enabling GitHub OAuth
 
@@ -24,11 +26,11 @@ See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
 
 Once you have configured the GitHub provider, you'll need the following information, which you'll need to substitute in the GitLab configuration file, in the steps shown next.
 
-| Setting from GitHub  |  Substitute in the GitLab configuration file | Description |
-|:---------------------|:-----------------------------------------------|:------------|
-| Client ID            | `YOUR_APP_ID`     |  OAuth 2 Client ID     |
-| Client Secret        | `YOUR_APP_SECRET` |  OAuth 2 Client Secret |
-| URL                  | `https://github.example.com/` |  GitHub Deployment URL |
+| Setting from GitHub  | Substitute in the GitLab configuration file  | Description |
+|:---------------------|:---------------------------------------------|:------------|
+| Client ID            | `YOUR_APP_ID`                                | OAuth 2 Client ID |
+| Client Secret        | `YOUR_APP_SECRET`                            | OAuth 2 Client Secret |
+| URL                  | `https://github.example.com/`                | GitHub Deployment URL |
 
 Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
 

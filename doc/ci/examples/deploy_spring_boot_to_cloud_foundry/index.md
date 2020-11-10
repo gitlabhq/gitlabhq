@@ -103,27 +103,27 @@ Hub](https://hub.docker.com/). We've also added the [`only`
 clause](../../yaml/README.md#onlyexcept-basic)
 to ensure our deployments only happen when we push to the master branch.
 
-Now, since the steps defined in `.gitlab-ci.yml` require credentials to login
-to CF, you'll need to add your CF credentials as [environment
-variables](../../variables/README.md#predefined-environment-variables)
-on GitLab CI/CD. To set the environment variables, navigate to your project's
-**Settings > CI/CD** and expand **Variables**. Name the variables
+Because the steps defined in `.gitlab-ci.yml` require credentials to sign in to
+CF, you'll need to add your CF credentials as
+[environment variables](../../variables/README.md#predefined-environment-variables)
+in GitLab CI/CD. To set the environment variables, navigate to your project's
+**Settings > CI/CD**, and then expand **Variables**. Name the variables
 `CF_USERNAME` and `CF_PASSWORD` and set them to the correct values.
 
 ![Variable Settings in GitLab](img/cloud_foundry_variables.png)
 
-Once set up, GitLab CI/CD will deploy your app to CF at every push to your
-repository's default branch. To see the build logs or watch your builds running
-live, navigate to **CI/CD > Pipelines**.
+After set up, GitLab CI/CD deploys your app to CF at every push to your
+repository's default branch. To review the build logs or watch your builds
+running live, navigate to **CI/CD > Pipelines**.
 
 CAUTION: **Caution:**
-It is considered best practice for security to create a separate deploy
-user for your application and add its credentials to GitLab instead of using
-a developer's credentials.
+It's considered best practice for security to create a separate deploy user for
+your application and add its credentials to GitLab instead of using a
+developer's credentials.
 
 To start a manual deployment in GitLab go to **CI/CD > Pipelines** then click
-on **Run Pipeline**. After the app is finished deploying it will display the URL
-of your application in the logs for the `production` job like:
+on **Run Pipeline**. After the app is finished deploying, it will display the
+URL of your application in the logs for the `production` job like:
 
 ```shell
 requested state: started

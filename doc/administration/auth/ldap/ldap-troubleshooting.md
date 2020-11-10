@@ -13,10 +13,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 #### Connection refused
 
-If you are getting `Connection Refused` errors when trying to connect to the
-LDAP server please double-check the LDAP `port` and `encryption` settings used by
-GitLab. Common combinations are `encryption: 'plain'` and `port: 389`, OR
-`encryption: 'simple_tls'` and `port: 636`.
+If you're getting `Connection Refused` error messages when attempting to
+connect to the LDAP server, review the LDAP `port` and `encryption` settings
+used by GitLab. Common combinations are `encryption: 'plain'` and `port: 389`,
+or `encryption: 'simple_tls'` and `port: 636`.
 
 #### Connection times out
 
@@ -103,16 +103,16 @@ A user can have trouble signing in for any number of reasons. To get started,
 here are some questions to ask yourself:
 
 - Does the user fall under the [configured `base`](index.md#configuration) in
-  LDAP? The user must fall under this `base` to sign-in.
+  LDAP? The user must fall under this `base` to sign in.
 - Does the user pass through the [configured `user_filter`](index.md#set-up-ldap-user-filter)?
   If one is not configured, this question can be ignored. If it is, then the
-  user must also pass through this filter to be allowed to sign-in.
+  user must also pass through this filter to be allowed to sign in.
   - Refer to our docs on [debugging the `user_filter`](#debug-ldap-user-filter).
 
 If the above are both okay, the next place to look for the problem is
 the logs themselves while reproducing the issue.
 
-- Ask the user to sign-in and let it fail.
+- Ask the user to sign in and let it fail.
 - [Look through the output](#gitlab-logs) for any errors or other
   messages about the sign-in. You may see one of the other error messages on
   this page, in which case that section can help resolve the issue.
@@ -159,7 +159,7 @@ The user should now be able to sign in.
 
 #### Email has already been taken
 
-A user tries to sign-in with the correct LDAP credentials, is denied access,
+A user tries to sign in with the correct LDAP credentials, is denied access,
 and the [production.log](../../logs.md#productionlog) shows an error that looks like this:
 
 ```plaintext
@@ -649,8 +649,7 @@ ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
 Note that the `bind_dn`, `password`, `port`, `host`, and `base` are all
 identical to what's configured in the `gitlab.rb`.
 
-Please see [the official
-`ldapsearch` documentation](https://linux.die.net/man/1/ldapsearch) for more.
+For more information, see the [official `ldapsearch` documentation](https://linux.die.net/man/1/ldapsearch).
 
 ### Using **AdFind** (Windows)
 
@@ -675,15 +674,15 @@ adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -u
 ### Rails console
 
 CAUTION: **Caution:**
-Please note that it is very easy to create, read, modify, and destroy data on the
-rails console, so please be sure to run commands exactly as listed.
+It is very easy to create, read, modify, and destroy data with the rails
+console. Be sure to run commands exactly as listed.
 
 The rails console is a valuable tool to help debug LDAP problems. It allows you to
 directly interact with the application by running commands and seeing how GitLab
 responds to them.
 
-Please refer to [this guide](../../operations/rails_console.md#starting-a-rails-console-session)
-for instructions on how to use the rails console.
+For instructions about how to use the rails console, refer to this
+[guide](../../operations/rails_console.md#starting-a-rails-console-session).
 
 #### Enable debug output
 

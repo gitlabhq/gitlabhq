@@ -12,20 +12,44 @@ packages, which can be easily consumed as a dependency in downstream projects.
 
 The Packages feature allows GitLab to act as a repository for the following:
 
-| Software repository | Description | Available in GitLab version |
-| ------------------- | ----------- | --------------------------- |
-| [PyPI Repository](../../user/packages/pypi_repository/index.md) | The GitLab PyPI Repository enables every project in GitLab to have its own space to store [PyPI](https://pypi.org/) packages. | 12.10+ |
-| [Composer Repository](../../user/packages/composer_repository/index.md) | The GitLab Composer Repository enables every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.1+ |
-| [NuGet Repository](../../user/packages/nuget_repository/index.md) | The GitLab NuGet Repository enables every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
-| [Conan Repository](../../user/packages/conan_repository/index.md) | The GitLab Conan Repository enables every project in GitLab to have its own space to store [Conan](https://conan.io/) packages. | 12.4+ |
-| [Maven Repository](../../user/packages/maven_repository/index.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. | 11.3+ |
-| [NPM Registry](../../user/packages/npm_registry/index.md)   | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. | 11.7+ |
-| [Go Proxy](../../user/packages/go_proxy/index.md) | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
-| [Generic packages](../../user/packages/generic_packages/index.md) | Store arbitrary files, like release binaries. | 13.5+ |
+The Package Registry supports the following formats:
 
-Don't you see your package management system supported yet?
-Please consider contributing
-to GitLab. This [development documentation](../../development/packages.md) will guide you through the process.
+<div class="row">
+<div class="col-md-9">
+<table align="left" style="width:50%">
+<tr style="background:#dfdfdf"><th>Package type</th><th>GitLab version</th></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/composer_repository/index.html">Composer</a></td><td>13.2+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/conan_repository/index.html">Conan</a></td><td>12.6+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/go_proxy/index.html">Go</a></td><td>13.1+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/maven_repository/index.html">Maven</a></td><td>11.3+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/npm_registry/index.html">NPM</a></td><td>11.7+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/index.html">NuGet</a></td><td>12.8+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html">PyPI</a></td><td>12.10+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/generic_packages/index.html">Generic packages</a></td><td>13.5+</td></tr>
+</table>
+</div>
+</div>
+
+## Accepting contributions
+
+The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md) will
+guide you through the process.
+
+| Format | Status |
+| ------ | ------ |
+| Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
+| CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
+| Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
+| CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
+| Debian    | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44746) |
+| Opkg      | [#36894](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) |
+| P2        | [#36895](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) |
+| Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |
+| RPM       | [#5932](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) |
+| RubyGems  | [#803](https://gitlab.com/gitlab-org/gitlab/-/issues/803) |
+| SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
+| Terraform | [WIP: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
+| Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
 ## Enabling the Packages feature
 
@@ -57,6 +81,18 @@ To enable the Packages feature:
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
+
+**Helm Chart installations**
+
+1. After the installation is complete, you will have to configure the `packages`
+   section in `global.appConfig.packages`. Set to `true` to enable it:
+
+   ```yaml
+   packages:
+     enabled: true
+   ```
+
+1. [Restart GitLab](../restart_gitlab.md#helm-chart-installations "How to reconfigure Helm GitLab") for the changes to take effect.
 
 ## Changing the storage path
 

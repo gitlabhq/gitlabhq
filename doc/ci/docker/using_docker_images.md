@@ -561,10 +561,11 @@ See below for examples of each.
 
 #### Determining your `DOCKER_AUTH_CONFIG` data
 
-As an example, let's assume that you want to use the `registry.example.com:5000/private/image:latest`
-image which is private and requires you to login into a private container registry.
+As an example, let's assume you want to use the `registry.example.com:5000/private/image:latest`
+image, which is private and requires you to sign in to a private container
+registry.
 
-Let's also assume that these are the login credentials:
+Let's also assume that these are the sign-in credentials:
 
 | Key      | Value                       |
 |:---------|:----------------------------|
@@ -572,9 +573,9 @@ Let's also assume that these are the login credentials:
 | username | `my_username`               |
 | password | `my_password`               |
 
-There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
+Use one of the following methods to determine the value of `DOCKER_AUTH_CONFIG`:
 
-- **First way -** Do a `docker login` on your local machine:
+- Do a `docker login` on your local machine:
 
   ```shell
   docker login registry.example.com:5000 --username my_username --password my_password
@@ -589,12 +590,11 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   docker logout registry.example.com:5000
   ```
 
-- **Second way -** In some setups, it's possible that Docker client
-  uses the available system key store to store the result of `docker
-  login`. In that case, it's impossible to read `~/.docker/config.json`,
-  so you need to prepare the required base64-encoded version of
-  `${username}:${password}` and create the Docker configuration JSON manually.
-  Open a terminal and execute the following command:
+- In some setups, it's possible that Docker client uses the available system key
+  store to store the result of `docker login`. In that case, it's impossible to
+  read `~/.docker/config.json`, so you need to prepare the required
+  base64-encoded version of `${username}:${password}` and create the Docker
+  configuration JSON manually. Open a terminal and execute the following command:
 
   ```shell
   # The use of "-n" - prevents encoding a newline in the password.

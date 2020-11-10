@@ -229,8 +229,8 @@ replicating missing data from the **primary** node in a process known as **backf
 Meanwhile, the **primary** node will start to notify each **secondary** node of any changes, so
 that the **secondary** node can act on those notifications immediately.
 
-Make sure the **secondary** node is running and accessible.
-You can login to the **secondary** node with the same credentials as used for the **primary** node.
+Be sure the _secondary_ node is running and accessible. You can sign in to the
+_secondary_ node with the same credentials as were used with the _primary_ node.
 
 ### Step 4. Enabling Hashed Storage
 
@@ -262,10 +262,10 @@ method to be enabled. Navigate to **Admin Area > Settings**
 
 Your **secondary** node is now configured!
 
-You can login to the **secondary** node with the same credentials you used for the
-**primary** node. Visit the **secondary** node's **Admin Area > Geo**
-(`/admin/geo/nodes`) in your browser to check if it's correctly identified as a
-**secondary** Geo node and if Geo is enabled.
+You can sign in to the _secondary_ node with the same credentials you used with
+the _primary_ node. Visit the _secondary_ node's **Admin Area > Geo**
+(`/admin/geo/nodes`) in your browser to determine if it's correctly identified
+as a _secondary_ Geo node, and if Geo is enabled.
 
 The initial replication, or 'backfill', will probably still be in progress. You
 can monitor the synchronization process on each Geo node from the **primary**
