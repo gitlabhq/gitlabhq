@@ -15,13 +15,17 @@ import {
 export const releaseToApiJson = (release, createFrom = null) => {
   const name = release.name?.trim().length > 0 ? release.name.trim() : null;
 
+  // Milestones may be either a list of milestone objects OR just a list
+  // of milestone titles. The API requires only the titles be sent.
+  const milestones = (release.milestones || []).map(m => m.title || m);
+
   return convertObjectPropsToSnakeCase(
     {
       name,
       tagName: release.tagName,
       ref: createFrom,
       description: release.description,
-      milestones: release.milestones,
+      milestones,
       assets: release.assets,
     },
     { deep: true },

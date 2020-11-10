@@ -73,6 +73,18 @@ describe('releases/util.js', () => {
         expect(releaseToApiJson(release)).toMatchObject(expectedJson);
       });
     });
+
+    describe('when milestones contains full milestone objects', () => {
+      it('converts the milestone objects into titles', () => {
+        const release = {
+          milestones: [{ title: '13.2' }, { title: '13.3' }, '13.4'],
+        };
+
+        const expectedJson = { milestones: ['13.2', '13.3', '13.4'] };
+
+        expect(releaseToApiJson(release)).toMatchObject(expectedJson);
+      });
+    });
   });
 
   describe('apiJsonToRelease', () => {
