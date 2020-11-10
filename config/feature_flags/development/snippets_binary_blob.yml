@@ -1,8 +1,8 @@
 ---
 name: snippets_binary_blob
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37419
 rollout_issue_url: 
-milestone: 
+milestone: '13.3'
 type: development
 group: group::editor
 default_enabled: false

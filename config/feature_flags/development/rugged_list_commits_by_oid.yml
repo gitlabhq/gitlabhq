@@ -1,8 +1,8 @@
 ---
 name: rugged_list_commits_by_oid
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27441
 rollout_issue_url: 
-milestone: 
+milestone: '11.10'
 type: development
-group: 
+group: group::gitaly
 default_enabled: false

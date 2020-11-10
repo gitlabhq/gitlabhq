@@ -1,8 +1,8 @@
 ---
 name: webauthn
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26692
 rollout_issue_url: 
-milestone: 
+milestone: '13.4'
 type: development
-group: 
+group: group::access
 default_enabled: false

@@ -1,8 +1,8 @@
 ---
 name: rugged_commit_tree_entry
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25896
 rollout_issue_url: 
-milestone: 
+milestone: '11.9'
 type: development
-group: 
+group: group::gitaly
 default_enabled: false

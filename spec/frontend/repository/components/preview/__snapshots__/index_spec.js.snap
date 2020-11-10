@@ -29,6 +29,7 @@ exports[`Repository file preview component renders file HTML 1`] = `
   <div
     class="blob-viewer"
     data-qa-selector="blob_viewer_content"
+    itemprop="about"
   >
     <div>
       <div

@@ -13,7 +13,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   presents :project
 
-  AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon)
+  AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon, :itemprop)
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
@@ -277,7 +277,9 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      icon + content_tag(:span, license_short_name, class: 'project-stat-value'),
                      license_path,
-                     'default')
+                     'default',
+                     nil,
+                     'license')
     else
       if current_user && can_current_user_push_to_default_branch?
         AnchorData.new(false,

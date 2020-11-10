@@ -1,8 +1,8 @@
 ---
 name: grape_gitlab_json
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36472
 rollout_issue_url: 
-milestone: 
+milestone: '13.2'
 type: development
-group: 
+group: group::source code
 default_enabled: true

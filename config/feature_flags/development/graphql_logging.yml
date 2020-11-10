@@ -1,8 +1,8 @@
 ---
 name: graphql_logging
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27885
 rollout_issue_url: 
-milestone: 
+milestone: '12.0'
 type: development
 group: 
 default_enabled: true

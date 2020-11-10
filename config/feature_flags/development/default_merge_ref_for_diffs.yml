@@ -1,7 +1,7 @@
 ---
 name: default_merge_ref_for_diffs
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34472
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/276917
 milestone: '13.4'
 type: development
 group: group::source code

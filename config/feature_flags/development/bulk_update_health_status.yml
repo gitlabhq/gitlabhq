@@ -1,8 +1,8 @@
 ---
 name: bulk_update_health_status
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33065
 rollout_issue_url: 
-milestone: 
+milestone: '13.2'
 type: development
 group: group::portfolio management
 default_enabled: true

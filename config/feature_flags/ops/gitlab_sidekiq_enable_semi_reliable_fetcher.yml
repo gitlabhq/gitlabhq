@@ -1,8 +1,8 @@
 ---
 name: gitlab_sidekiq_enable_semi_reliable_fetcher
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23854
 rollout_issue_url: 
-milestone: 
+milestone: '11.6'
 type: ops
-group: 
+group: group::geo
 default_enabled: true

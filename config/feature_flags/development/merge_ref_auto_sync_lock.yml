@@ -1,8 +1,8 @@
 ---
 name: merge_ref_auto_sync_lock
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31082
 rollout_issue_url: 
-milestone: 
+milestone: '12.2'
 type: development
-group: 
+group: group::source code
 default_enabled: true

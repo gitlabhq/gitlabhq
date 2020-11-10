@@ -571,14 +571,6 @@ module Ci
       end
     end
 
-    def dependency_variables
-      return [] if all_dependencies.empty?
-
-      Gitlab::Ci::Variables::Collection.new.concat(
-        Ci::JobVariable.where(job: all_dependencies).dotenv_source
-      )
-    end
-
     def features
       { trace_sections: true }
     end
@@ -828,10 +820,6 @@ module Ci
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
-    def all_dependencies
-      dependencies.all
-    end
-
     def has_valid_build_dependencies?
       dependencies.valid?
     end
@@ -991,12 +979,6 @@ module Ci
     def auto_retry
       strong_memoize(:auto_retry) do
         Gitlab::Ci::Build::AutoRetry.new(self)
-      end
-    end
-
-    def dependencies
-      strong_memoize(:dependencies) do
-        Ci::BuildDependencies.new(self)
       end
     end
 

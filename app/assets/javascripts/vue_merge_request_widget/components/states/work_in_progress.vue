@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
+import { produce } from 'immer';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import MergeRequest from '~/merge_request';
@@ -80,12 +81,18 @@ export default {
               return;
             }
 
-            const data = store.readQuery({
+            const sourceData = store.readQuery({
               query: getStateQuery,
               variables: mergeRequestQueryVariables,
             });
-            data.project.mergeRequest.workInProgress = workInProgress;
-            data.project.mergeRequest.title = title;
+
+            const data = produce(sourceData, draftState => {
+              // eslint-disable-next-line no-param-reassign
+              draftState.project.mergeRequest.workInProgress = workInProgress;
+              // eslint-disable-next-line no-param-reassign
+              draftState.project.mergeRequest.title = title;
+            });
+
             store.writeQuery({
               query: getStateQuery,
               data,

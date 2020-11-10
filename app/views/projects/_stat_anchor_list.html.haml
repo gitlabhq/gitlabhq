@@ -5,5 +5,5 @@
 %ul.nav
   - anchors.each do |anchor|
     %li.nav-item
-      = link_to_if anchor.link, anchor.label, anchor.link, class: anchor.is_link ? 'nav-link stat-link d-flex align-items-center' : "nav-link btn btn-#{anchor.class_modifier || 'missing'} d-flex align-items-center" do
+      = link_to_if(anchor.link, anchor.label, anchor.link, stat_anchor_attrs(anchor)) do
         .stat-text.d-flex.align-items-center{ class: ('btn btn-default disabled' if project_buttons) }= anchor.label

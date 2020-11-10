@@ -11,6 +11,8 @@ GitLab offers a way to view the changes made within the GitLab server for owners
 GitLab system administrators can also take advantage of the logs located on the
 file system. See [the logs system documentation](logs.md) for more details.
 
+You can generate an [Audit report](audit_reports.md) of audit events.
+
 ## Overview
 
 **Audit Events** is a tool for GitLab owners and administrators
