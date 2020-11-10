@@ -28,6 +28,8 @@ update-tests-metadata:
   dependencies:
     - setup-test-env
     - rspec migration pg11
+    - rspec frontend_fixture
+    - rspec-ee frontend_fixture
     - rspec unit pg11
     - rspec integration pg11
     - rspec system pg11

@@ -882,4 +882,23 @@ RSpec.describe GroupPolicy do
   end
 
   it_behaves_like 'Self-managed Core resource access tokens'
+
+  context 'support bot' do
+    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:current_user) { User.support_bot }
+
+    before do
+      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+    end
+
+    it { expect_disallowed(:read_label) }
+
+    context 'when group hierarchy has a project with service desk enabled' do
+      let_it_be(:subgroup) { create(:group, :private, parent: group)}
+      let_it_be(:project) { create(:project, group: subgroup, service_desk_enabled: true) }
+
+      it { expect_allowed(:read_label) }
+      it { expect(described_class.new(current_user, subgroup)).to be_allowed(:read_label) }
+    end
+  end
 end

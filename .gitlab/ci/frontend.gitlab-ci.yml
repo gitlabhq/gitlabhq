@@ -97,31 +97,40 @@ update-yarn-cache:
     - .rails-cache
     - .use-pg11
   stage: fixtures
-  needs: ["setup-test-env", "compile-test-assets"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   variables:
     SETUP_DB: "true"
     WEBPACK_VENDOR_DLL: "true"
   script:
+    - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
-    - run_timed_command "bin/rake frontend:fixtures"
+    - source ./scripts/rspec_helpers.sh
+    - rspec_paralellized_job "--tag frontend_fixture"
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
     when: always
     paths:
       - tmp/tests/frontend/
+      - knapsack/
 
-frontend-fixtures:
+rspec frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs
 
-frontend-fixtures-as-if-foss:
+rspec frontend_fixture as-if-foss:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
+
+rspec-ee frontend_fixture:
+  extends:
+    - .frontend-fixtures-base
+    - .frontend:rules:default-frontend-jobs
+  parallel: 2
 
 .frontend-test-base:
   extends:
@@ -152,7 +161,8 @@ karma:
   extends:
     - .karma-base
     - .frontend:rules:default-frontend-jobs
-  needs: ["frontend-fixtures"]
+  # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
+  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture"]
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
@@ -171,7 +181,7 @@ karma-as-if-foss:
     - .karma-base
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
-  needs: ["frontend-fixtures-as-if-foss"]
+  needs: ["rspec frontend_fixture as-if-foss"]
 
 .jest-base:
   extends: .frontend-test-base
@@ -183,7 +193,8 @@ jest:
   extends:
     - .jest-base
     - .frontend:rules:default-frontend-jobs
-  needs: ["frontend-fixtures"]
+  # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
+  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture"]
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -203,14 +214,15 @@ jest-integration:
   script:
     - *yarn-install
     - run_timed_command "yarn jest:integration --ci"
-  needs: ["frontend-fixtures"]
+  # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
+  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture"]
 
 jest-as-if-foss:
   extends:
     - .jest-base
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
-  needs: ["frontend-fixtures-as-if-foss"]
+  needs: ["rspec frontend_fixture as-if-foss"]
   parallel: 2
 
 coverage-frontend:

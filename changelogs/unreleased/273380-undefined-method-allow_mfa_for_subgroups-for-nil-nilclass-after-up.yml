@@ -1,0 +1,6 @@
+---
+title: Resolve problem when namespace_settings were not created for groups created
+  via admin panel
+merge_request: 46875
+author:
+type: fixed

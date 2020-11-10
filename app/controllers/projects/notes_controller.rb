@@ -60,7 +60,7 @@ class Projects::NotesController < Projects::ApplicationController
   def render_json_with_notes_serializer
     prepare_notes_for_rendering([note])
 
-    render json: note_serializer.represent(note)
+    render json: note_serializer.represent(note, render_truncated_diff_lines: true)
   end
 
   def note

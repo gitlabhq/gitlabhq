@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createFlash from '~/flash';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/registry/explorer/stores/actions';

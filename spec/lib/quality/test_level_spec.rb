@@ -18,6 +18,13 @@ RSpec.describe Quality::TestLevel do
       end
     end
 
+    context 'when level is frontend_fixture' do
+      it 'returns a pattern' do
+        expect(subject.pattern(:frontend_fixture))
+          .to eq("spec/{frontend/fixtures}{,/**/}*.rb")
+      end
+    end
+
     context 'when level is unit' do
       it 'returns a pattern' do
         expect(subject.pattern(:unit))
@@ -86,6 +93,13 @@ RSpec.describe Quality::TestLevel do
       end
     end
 
+    context 'when level is frontend_fixture' do
+      it 'returns a regexp' do
+        expect(subject.regexp(:frontend_fixture))
+          .to eq(%r{spec/(frontend/fixtures)})
+      end
+    end
+
     context 'when level is unit' do
       it 'returns a regexp' do
         expect(subject.regexp(:unit))
@@ -142,6 +156,10 @@ RSpec.describe Quality::TestLevel do
   describe '#level_for' do
     it 'returns the correct level for a unit test' do
       expect(subject.level_for('spec/models/abuse_report_spec.rb')).to eq(:unit)
+    end
+
+    it 'returns the correct level for a frontend fixture test' do
+      expect(subject.level_for('spec/frontend/fixtures/pipelines.rb')).to eq(:frontend_fixture)
     end
 
     it 'returns the correct level for a tooling test' do

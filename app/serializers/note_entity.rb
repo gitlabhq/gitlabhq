@@ -81,10 +81,24 @@ class NoteEntity < API::Entities::Note
 
   expose :cached_markdown_version
 
+  # Correctly rendering a note requires some background information about any
+  # discussion it is part of. This is essential for the notes endpoint, but
+  # optional for the discussions endpoint, which will include the discussion
+  # along with the note
+  expose :discussion, as: :base_discussion, using: BaseDiscussionEntity, if: -> (_, _) { with_base_discussion? }
+
   private
+
+  def discussion
+    @discussion ||= object.to_discussion(request.noteable)
+  end
 
   def current_user
     request.current_user
+  end
+
+  def with_base_discussion?
+    options.fetch(:with_base_discussion, true)
   end
 end
 

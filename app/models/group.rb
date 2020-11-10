@@ -584,6 +584,10 @@ class Group < Namespace
     ancestor_settings.allow_mfa_for_subgroups
   end
 
+  def has_project_with_service_desk_enabled?
+    Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
+  end
+
   private
 
   def update_two_factor_requirement

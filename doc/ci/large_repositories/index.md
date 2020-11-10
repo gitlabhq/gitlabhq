@@ -56,23 +56,10 @@ test:
 
 > Introduced in GitLab Runner 8.9.
 
-By default, GitLab is configured to always prefer the `GIT_STRATEGY: fetch` strategy.
-The `GIT_STRATEGY: fetch` strategy will re-use existing worktrees if found
-on disk. This is different to the `GIT_STRATEGY: clone` strategy
-as in case of clones, if a worktree is found, it is removed before clone.
-
-Usage of `fetch` is preferred because it reduces the amount of data to transfer and
+By default, GitLab is configured to use the [`fetch` Git strategy](../runners/README.md#git-strategy),
+which is recommended for large repositories.
+This strategy reduces the amount of data to transfer and
 does not really impact the operations that you might do on a repository from CI.
-
-However, `fetch` does require access to the previous worktree. This works
-well when using the `shell` or `docker` executor because these
-try to preserve worktrees and try to re-use them by default.
-
-This does not work today for `kubernetes` executor and has limitations when using
-`docker+machine`. `kubernetes` executor today always clones into ephemeral directory.
-
-GitLab also offers the `GIT_STRATEGY: none` strategy. This disables any `fetch` and `checkout` commands
-done by GitLab, requiring you to do them.
 
 ## Git clone path
 

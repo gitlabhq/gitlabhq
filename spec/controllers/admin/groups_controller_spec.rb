@@ -25,6 +25,20 @@ RSpec.describe Admin::GroupsController do
     end
   end
 
+  describe 'POST #create' do
+    it 'creates group' do
+      expect do
+        post :create, params: { group: {  path: 'test', name: 'test' } }
+      end.to change { Group.count }.by(1)
+    end
+
+    it 'creates namespace_settings for group' do
+      expect do
+        post :create, params: { group: {  path: 'test', name: 'test' } }
+      end.to change { NamespaceSetting.count }.by(1)
+    end
+  end
+
   describe 'PUT #members_update' do
     let(:group_user) { create(:user) }
 

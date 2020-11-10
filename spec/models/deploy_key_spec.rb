@@ -40,4 +40,56 @@ RSpec.describe DeployKey, :mailer do
       end
     end
   end
+
+  describe '.with_write_access_for_project' do
+    let_it_be(:project) { create(:project, :private) }
+
+    subject { described_class.with_write_access_for_project(project) }
+
+    context 'when no project is passed in' do
+      let(:project) { nil }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when a project is passed in' do
+      let_it_be(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project) }
+      let_it_be(:deploy_key) { deploy_keys_project.deploy_key }
+
+      it 'only returns deploy keys with write access' do
+        create(:deploy_keys_project, project: project)
+
+        is_expected.to contain_exactly(deploy_key)
+      end
+
+      it 'returns deploy keys only for this project' do
+        other_project = create(:project)
+        create(:deploy_keys_project, :write_access, project: other_project)
+
+        is_expected.to contain_exactly(deploy_key)
+      end
+
+      context 'and a specific deploy key is passed in' do
+        subject { described_class.with_write_access_for_project(project, deploy_key: specific_deploy_key) }
+
+        context 'and this deploy key is not linked to the project' do
+          let(:specific_deploy_key) { create(:deploy_key) }
+
+          it { is_expected.to be_empty }
+        end
+
+        context 'and this deploy key has not write access to the project' do
+          let(:specific_deploy_key) { create(:deploy_key, deploy_keys_projects: [create(:deploy_keys_project, project: project)]) }
+
+          it { is_expected.to be_empty }
+        end
+
+        context 'and this deploy key has write access to the project' do
+          let(:specific_deploy_key) { create(:deploy_key, deploy_keys_projects: [create(:deploy_keys_project, :write_access, project: project)]) }
+
+          it { is_expected.to contain_exactly(specific_deploy_key) }
+        end
+      end
+    end
+  end
 end

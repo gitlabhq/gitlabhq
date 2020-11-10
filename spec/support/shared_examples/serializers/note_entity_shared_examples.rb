@@ -5,8 +5,21 @@ RSpec.shared_examples 'note entity' do
 
   context 'basic note' do
     it 'exposes correct elements' do
-      expect(subject).to include(:type, :author, :note, :note_html, :current_user, :discussion_id,
-        :emoji_awardable, :award_emoji, :report_abuse_path, :attachment, :noteable_note_url, :resolvable)
+      expect(subject).to include(
+        :attachment,
+        :author,
+        :award_emoji,
+        :base_discussion,
+        :current_user,
+        :discussion_id,
+        :emoji_awardable,
+        :note,
+        :note_html,
+        :noteable_note_url,
+        :report_abuse_path,
+        :resolvable,
+        :type
+      )
     end
 
     it 'does not expose elements for specific notes cases' do

@@ -478,46 +478,43 @@ You can also use variables to configure how many times a runner
 > - Introduced in GitLab 8.9 as an experimental feature.
 > - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
 
-You can set the `GIT_STRATEGY` used for getting recent application code, either
-globally or per-job in the [`variables`](../yaml/README.md#variables) section. If left
-unspecified, the default from the project settings is used.
-
-There are three possible values: `clone`, `fetch`, and `none`.
-
-`clone` is the slowest option. It clones the repository from scratch for every
-job, ensuring that the local working copy is always pristine.
+You can set the `GIT_STRATEGY` used to fetch the repository content, either
+globally or per-job in the [`variables`](../yaml/README.md#variables) section:
 
 ```yaml
 variables:
   GIT_STRATEGY: clone
 ```
 
+There are three possible values: `clone`, `fetch`, and `none`. If left unspecified,
+jobs use the [project's pipeline setting](../pipelines/settings.md#git-strategy).
+
+`clone` is the slowest option. It clones the repository from scratch for every
+job, ensuring that the local working copy is always pristine.
+If an existing worktree is found, it is removed before cloning.
+
 `fetch` is faster as it re-uses the local working copy (falling back to `clone`
 if it does not exist). `git clean` is used to undo any changes made by the last
-job, and `git fetch` is used to retrieve commits made since the last job ran.
+job, and `git fetch` is used to retrieve commits made after the last job ran.
 
-```yaml
-variables:
-  GIT_STRATEGY: fetch
-```
+However, `fetch` does require access to the previous worktree. This works
+well when using the `shell` or `docker` executor because these
+try to preserve worktrees and try to re-use them by default.
 
-`none` also re-uses the local working copy. However, it skips all Git operations,
-including GitLab Runner's pre-clone script, if present.
+This has limitations when using the [Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
-It's useful for jobs that operate exclusively on artifacts, like a deployment job.
-Git repository data may be present, but it's likely out-of-date. You should only
+It does not work for [the `kubernetes` executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
+but a [feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3847) exists.
+The `kubernetes` executor always clones into an temporary directory.
+
+A Git strategy of `none` also re-uses the local working copy, but skips all Git
+operations normally done by GitLab. GitLab Runner pre-clone scripts are also skipped,
+if present. This strategy could mean you need to add `fetch` and `checkout` commands
+to [your `.gitlab-ci.yml` script](../yaml/README.md#script).
+
+It can be used for jobs that operate exclusively on artifacts, like a deployment job.
+Git repository data may be present, but it's likely out of date. You should only
 rely on files brought into the local working copy from cache or artifacts.
-
-```yaml
-variables:
-  GIT_STRATEGY: none
-```
-
-NOTE: **Note:**
-`GIT_STRATEGY` is not supported for
-[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
-but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3847)
-for updates.
 
 ### Git submodule strategy
 
