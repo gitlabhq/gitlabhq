@@ -35,6 +35,14 @@ export default {
   },
   mounted() {
     this.isDesktop = bp.isDesktop();
+
+    // Bootstrap Vue and GlDropdown to not support adding attributes to the dropdown toggle
+    // This can be changed once https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1060 is implemented
+    const dropdownToggle = this.$refs.glDropdown.$el.querySelector('.dropdown-toggle');
+
+    if (dropdownToggle) {
+      dropdownToggle.setAttribute('data-qa-selector', 'access_level_dropdown');
+    }
   },
   methods: {
     ...mapActions(['updateMemberRole']),
@@ -63,6 +71,7 @@ export default {
 
 <template>
   <gl-dropdown
+    ref="glDropdown"
     :right="!isDesktop"
     :text="member.accessLevel.stringValue"
     :header-text="__('Change permissions')"
@@ -73,6 +82,7 @@ export default {
       :key="value"
       is-check-item
       :is-checked="value === member.accessLevel.integerValue"
+      data-qa-selector="access_level_link"
       @click="handleSelect(value, name)"
     >
       {{ name }}

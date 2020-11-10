@@ -4,6 +4,7 @@ import * as actions from '~/milestones/stores/actions';
 import * as types from '~/milestones/stores/mutation_types';
 
 let mockProjectMilestonesReturnValue;
+let mockGroupMilestonesReturnValue;
 let mockProjectSearchReturnValue;
 
 jest.mock('~/api', () => ({
@@ -13,6 +14,7 @@ jest.mock('~/api', () => ({
   default: {
     projectMilestones: () => mockProjectMilestonesReturnValue,
     projectSearch: () => mockProjectSearchReturnValue,
+    groupMilestones: () => mockGroupMilestonesReturnValue,
   },
 }));
 
@@ -28,6 +30,24 @@ describe('Milestone combobox Vuex store actions', () => {
       const projectId = '4';
       testAction(actions.setProjectId, projectId, state, [
         { type: types.SET_PROJECT_ID, payload: projectId },
+      ]);
+    });
+  });
+
+  describe('setGroupId', () => {
+    it(`commits ${types.SET_GROUP_ID} with the new group ID`, () => {
+      const groupId = '123';
+      testAction(actions.setGroupId, groupId, state, [
+        { type: types.SET_GROUP_ID, payload: groupId },
+      ]);
+    });
+  });
+
+  describe('setGroupMilestonesAvailable', () => {
+    it(`commits ${types.SET_GROUP_MILESTONES_AVAILABLE} with the boolean indicating if group milestones are available (Premium)`, () => {
+      state.groupMilestonesAvailable = true;
+      testAction(actions.setGroupMilestonesAvailable, state.groupMilestonesAvailable, state, [
+        { type: types.SET_GROUP_MILESTONES_AVAILABLE, payload: state.groupMilestonesAvailable },
       ]);
     });
   });
@@ -66,19 +86,38 @@ describe('Milestone combobox Vuex store actions', () => {
   });
 
   describe('search', () => {
-    it(`commits ${types.SET_SEARCH_QUERY} with the new search query`, () => {
-      const searchQuery = 'v1.0';
-      testAction(
-        actions.search,
-        searchQuery,
-        state,
-        [{ type: types.SET_SEARCH_QUERY, payload: searchQuery }],
-        [{ type: 'searchMilestones' }],
-      );
+    describe('when project has license to add group milestones', () => {
+      it(`commits ${types.SET_SEARCH_QUERY} with the new search query to search for project and group milestones`, () => {
+        const getters = {
+          groupMilestonesEnabled: () => true,
+        };
+
+        const searchQuery = 'v1.0';
+        testAction(
+          actions.search,
+          searchQuery,
+          { ...state, ...getters },
+          [{ type: types.SET_SEARCH_QUERY, payload: searchQuery }],
+          [{ type: 'searchProjectMilestones' }, { type: 'searchGroupMilestones' }],
+        );
+      });
+    });
+
+    describe('when project does not have license to add group milestones', () => {
+      it(`commits ${types.SET_SEARCH_QUERY} with the new search query to search for project milestones`, () => {
+        const searchQuery = 'v1.0';
+        testAction(
+          actions.search,
+          searchQuery,
+          state,
+          [{ type: types.SET_SEARCH_QUERY, payload: searchQuery }],
+          [{ type: 'searchProjectMilestones' }],
+        );
+      });
     });
   });
 
-  describe('searchMilestones', () => {
+  describe('searchProjectMilestones', () => {
     describe('when the search is successful', () => {
       const projectSearchApiResponse = { data: [{ title: 'v1.0' }] };
 
@@ -87,7 +126,7 @@ describe('Milestone combobox Vuex store actions', () => {
       });
 
       it(`commits ${types.REQUEST_START}, ${types.RECEIVE_PROJECT_MILESTONES_SUCCESS} with the response from the API, and ${types.REQUEST_FINISH}`, () => {
-        return testAction(actions.searchMilestones, undefined, state, [
+        return testAction(actions.searchProjectMilestones, undefined, state, [
           { type: types.REQUEST_START },
           { type: types.RECEIVE_PROJECT_MILESTONES_SUCCESS, payload: projectSearchApiResponse },
           { type: types.REQUEST_FINISH },
@@ -103,7 +142,7 @@ describe('Milestone combobox Vuex store actions', () => {
       });
 
       it(`commits ${types.REQUEST_START}, ${types.RECEIVE_PROJECT_MILESTONES_ERROR} with the error object, and ${types.REQUEST_FINISH}`, () => {
-        return testAction(actions.searchMilestones, undefined, state, [
+        return testAction(actions.searchProjectMilestones, undefined, state, [
           { type: types.REQUEST_START },
           { type: types.RECEIVE_PROJECT_MILESTONES_ERROR, payload: error },
           { type: types.REQUEST_FINISH },
@@ -112,7 +151,71 @@ describe('Milestone combobox Vuex store actions', () => {
     });
   });
 
+  describe('searchGroupMilestones', () => {
+    describe('when the search is successful', () => {
+      const groupSearchApiResponse = { data: [{ title: 'group-v1.0' }] };
+
+      beforeEach(() => {
+        mockGroupMilestonesReturnValue = Promise.resolve(groupSearchApiResponse);
+      });
+
+      it(`commits ${types.REQUEST_START}, ${types.RECEIVE_GROUP_MILESTONES_SUCCESS} with the response from the API, and ${types.REQUEST_FINISH}`, () => {
+        return testAction(actions.searchGroupMilestones, undefined, state, [
+          { type: types.REQUEST_START },
+          { type: types.RECEIVE_GROUP_MILESTONES_SUCCESS, payload: groupSearchApiResponse },
+          { type: types.REQUEST_FINISH },
+        ]);
+      });
+    });
+
+    describe('when the search fails', () => {
+      const error = new Error('Something went wrong!');
+
+      beforeEach(() => {
+        mockGroupMilestonesReturnValue = Promise.reject(error);
+      });
+
+      it(`commits ${types.REQUEST_START}, ${types.RECEIVE_GROUP_MILESTONES_ERROR} with the error object, and ${types.REQUEST_FINISH}`, () => {
+        return testAction(actions.searchGroupMilestones, undefined, state, [
+          { type: types.REQUEST_START },
+          { type: types.RECEIVE_GROUP_MILESTONES_ERROR, payload: error },
+          { type: types.REQUEST_FINISH },
+        ]);
+      });
+    });
+  });
+
   describe('fetchMilestones', () => {
+    describe('when project has license to add group milestones', () => {
+      it(`dispatchs fetchProjectMilestones and fetchGroupMilestones`, () => {
+        const getters = {
+          groupMilestonesEnabled: () => true,
+        };
+
+        testAction(
+          actions.fetchMilestones,
+          undefined,
+          { ...state, ...getters },
+          [],
+          [{ type: 'fetchProjectMilestones' }, { type: 'fetchGroupMilestones' }],
+        );
+      });
+    });
+
+    describe('when project does not have license to add group milestones', () => {
+      it(`dispatchs fetchProjectMilestones`, () => {
+        testAction(
+          actions.fetchMilestones,
+          undefined,
+          state,
+          [],
+          [{ type: 'fetchProjectMilestones' }],
+        );
+      });
+    });
+  });
+
+  describe('fetchProjectMilestones', () => {
     describe('when the fetch is successful', () => {
       const projectMilestonesApiResponse = { data: [{ title: 'v1.0' }] };
 
@@ -121,7 +224,7 @@ describe('Milestone combobox Vuex store actions', () => {
       });
 
       it(`commits ${types.REQUEST_START}, ${types.RECEIVE_PROJECT_MILESTONES_SUCCESS} with the response from the API, and ${types.REQUEST_FINISH}`, () => {
-        return testAction(actions.fetchMilestones, undefined, state, [
+        return testAction(actions.fetchProjectMilestones, undefined, state, [
           { type: types.REQUEST_START },
           { type: types.RECEIVE_PROJECT_MILESTONES_SUCCESS, payload: projectMilestonesApiResponse },
           { type: types.REQUEST_FINISH },
@@ -137,9 +240,43 @@ describe('Milestone combobox Vuex store actions', () => {
       });
 
       it(`commits ${types.REQUEST_START}, ${types.RECEIVE_PROJECT_MILESTONES_ERROR} with the error object, and ${types.REQUEST_FINISH}`, () => {
-        return testAction(actions.fetchMilestones, undefined, state, [
+        return testAction(actions.fetchProjectMilestones, undefined, state, [
           { type: types.REQUEST_START },
           { type: types.RECEIVE_PROJECT_MILESTONES_ERROR, payload: error },
+          { type: types.REQUEST_FINISH },
+        ]);
+      });
+    });
+  });
+
+  describe('fetchGroupMilestones', () => {
+    describe('when the fetch is successful', () => {
+      const groupMilestonesApiResponse = { data: [{ title: 'group-v1.0' }] };
+
+      beforeEach(() => {
+        mockGroupMilestonesReturnValue = Promise.resolve(groupMilestonesApiResponse);
+      });
+
+      it(`commits ${types.REQUEST_START}, ${types.RECEIVE_GROUP_MILESTONES_SUCCESS} with the response from the API, and ${types.REQUEST_FINISH}`, () => {
+        return testAction(actions.fetchGroupMilestones, undefined, state, [
+          { type: types.REQUEST_START },
+          { type: types.RECEIVE_GROUP_MILESTONES_SUCCESS, payload: groupMilestonesApiResponse },
+          { type: types.REQUEST_FINISH },
+        ]);
+      });
+    });
+
+    describe('when the fetch fails', () => {
+      const error = new Error('Something went wrong!');
+
+      beforeEach(() => {
+        mockGroupMilestonesReturnValue = Promise.reject(error);
+      });
+
+      it(`commits ${types.REQUEST_START}, ${types.RECEIVE_GROUP_MILESTONES_ERROR} with the error object, and ${types.REQUEST_FINISH}`, () => {
+        return testAction(actions.fetchGroupMilestones, undefined, state, [
+          { type: types.REQUEST_START },
+          { type: types.RECEIVE_GROUP_MILESTONES_ERROR, payload: error },
           { type: types.REQUEST_FINISH },
         ]);
       });

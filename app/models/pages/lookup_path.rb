@@ -22,11 +22,7 @@ module Pages
     end
 
     def source
-      if artifacts_archive && !artifacts_archive.file_storage?
-        zip_source
-      else
-        file_source
-      end
+      zip_source || file_source
     end
 
     def prefix
@@ -42,19 +38,39 @@ module Pages
     attr_reader :project, :trim_prefix, :domain
 
     def artifacts_archive
-      return unless Feature.enabled?(:pages_artifacts_archive, project)
+      return unless Feature.enabled?(:pages_serve_from_artifacts_archive, project)
 
-      # Using build artifacts is temporary solution for quick test
-      # in production environment, we'll replace this with proper
-      # `pages_deployments` later
-      project.pages_metadatum.artifacts_archive&.file
+      archive = project.pages_metadatum.artifacts_archive
+
+      archive&.file
+    end
+
+    def deployment
+      return unless Feature.enabled?(:pages_serve_from_deployments, project)
+
+      deployment = project.pages_metadatum.pages_deployment
+
+      deployment&.file
     end
 
     def zip_source
-      {
-        type: 'zip',
-        path: artifacts_archive.url(expire_at: 1.day.from_now)
-      }
+      source = deployment || artifacts_archive
+
+      return unless source
+
+      if source.file_storage?
+        return unless Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
+
+        {
+          type: 'zip',
+          path: 'file://' + source.path
+        }
+      else
+        {
+          type: 'zip',
+          path: source.url(expire_at: 1.day.from_now)
+        }
+      end
     end
 
     def file_source

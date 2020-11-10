@@ -1,0 +1,5 @@
+---
+title: Use global IDs for GraphQL arguments accepting sentry IDs
+merge_request: 36098
+author:
+type: changed

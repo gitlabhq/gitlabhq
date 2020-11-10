@@ -1,5 +1,7 @@
 export default ({
   projectId,
+  groupId,
+  groupMilestonesAvailable = false,
   projectPath,
   markdownDocsPath,
   markdownPreviewPath,
@@ -13,6 +15,8 @@ export default ({
   defaultBranch = null,
 }) => ({
   projectId,
+  groupId,
+  groupMilestonesAvailable: Boolean(groupMilestonesAvailable),
   projectPath,
   markdownDocsPath,
   markdownPreviewPath,

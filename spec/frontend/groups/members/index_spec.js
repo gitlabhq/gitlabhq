@@ -9,7 +9,12 @@ describe('initGroupMembersApp', () => {
   let wrapper;
 
   const setup = () => {
-    vm = initGroupMembersApp(el, ['account'], () => ({}));
+    vm = initGroupMembersApp(
+      el,
+      ['account'],
+      { table: { 'data-qa-selector': 'members_list' } },
+      () => ({}),
+    );
     wrapper = createWrapper(vm);
   };
 
@@ -66,6 +71,12 @@ describe('initGroupMembersApp', () => {
     setup();
 
     expect(vm.$store.state.tableFields).toEqual(['account']);
+  });
+
+  it('sets `tableAttrs` in Vuex store', () => {
+    setup();
+
+    expect(vm.$store.state.tableAttrs).toEqual({ table: { 'data-qa-selector': 'members_list' } });
   });
 
   it('sets `requestFormatter` in Vuex store', () => {

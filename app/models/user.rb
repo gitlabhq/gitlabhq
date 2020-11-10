@@ -908,11 +908,10 @@ class User < ApplicationRecord
 
   # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
-    Group.unscoped do
-      Group.from_union([
-        groups,
-        authorized_projects.joins(:namespace).select('namespaces.*')
-      ])
+    if Feature.enabled?(:shared_group_membership_auth, self)
+      authorized_groups_with_shared_membership
+    else
+      authorized_groups_without_shared_membership
     end
   end
 
@@ -1806,6 +1805,26 @@ class User < ApplicationRecord
   end
 
   private
+
+  def authorized_groups_without_shared_membership
+    Group.from_union([
+      groups,
+      authorized_projects.joins(:namespace).select('namespaces.*')
+    ])
+  end
+
+  def authorized_groups_with_shared_membership
+    cte = Gitlab::SQL::CTE.new(:direct_groups, authorized_groups_without_shared_membership)
+    cte_alias = cte.table.alias(Group.table_name)
+
+    Group
+      .with(cte.to_arel)
+      .from_union([
+        Group.from(cte_alias),
+        Group.joins(:shared_with_group_links)
+             .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
+    ])
+  end
 
   def default_private_profile_to_false
     return unless private_profile_changed? && private_profile.nil?

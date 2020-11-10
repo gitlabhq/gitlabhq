@@ -30,4 +30,5 @@
                       %label.form-check-label{ for: field_id }
                         %strong
                           = notification_event_name(event)
-                          .fa.custom-notification-event-loading.spinner
+                          %span.spinner.is-loading.gl-vertical-align-middle.gl-display-none
+                          = sprite_icon('check', css_class: 'is-done gl-display-none gl-vertical-align-middle gl-text-green-600')

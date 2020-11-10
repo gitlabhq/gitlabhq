@@ -14,7 +14,7 @@
     "source": { "type": "object",
       "required": ["type", "path"],
       "properties" : {
-        "type": { "type": "string", "enum": ["file"] },
+        "type": { "type": "string", "enum": ["file", "zip", "zip_local"] },
         "path": { "type": "string" }
       },
       "additionalProperties": false

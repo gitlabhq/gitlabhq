@@ -179,7 +179,10 @@ export default {
       </template>
       <template v-if="!instructionsEmpty">
         <div class="gl-display-flex">
-          <pre class="bg-light gl-flex-fill-1" data-testid="binary-instructions">
+          <pre
+            class="bg-light gl-flex-fill-1 gl-white-space-pre-line"
+            data-testid="binary-instructions"
+          >
             {{ instructions.installInstructions }}
           </pre>
           <gl-button
@@ -196,7 +199,10 @@ export default {
         <h5 class="gl-mb-5">{{ $options.i18n.registerRunner }}</h5>
         <h5 class="gl-mb-5">{{ $options.i18n.method }}</h5>
         <div class="gl-display-flex">
-          <pre class="bg-light gl-flex-fill-1" data-testid="runner-instructions">
+          <pre
+            class="bg-light gl-flex-fill-1 gl-white-space-pre-line"
+            data-testid="runner-instructions"
+          >
             {{ instructions.registerInstructions }}
           </pre>
           <gl-button

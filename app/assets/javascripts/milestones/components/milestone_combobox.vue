@@ -39,6 +39,16 @@ export default {
       type: String,
       required: true,
     },
+    groupId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    groupMilestonesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     extraLinks: {
       type: Array,
       default: () => [],
@@ -56,12 +66,13 @@ export default {
     noMilestone: s__('MilestoneCombobox|No milestone'),
     noResultsLabel: s__('MilestoneCombobox|No matching results'),
     searchMilestones: s__('MilestoneCombobox|Search Milestones'),
-    searhErrorMessage: s__('MilestoneCombobox|An error occurred while searching for milestones'),
+    searchErrorMessage: s__('MilestoneCombobox|An error occurred while searching for milestones'),
     projectMilestones: s__('MilestoneCombobox|Project milestones'),
+    groupMilestones: s__('MilestoneCombobox|Group milestones'),
   },
   computed: {
     ...mapState(['matches', 'selectedMilestones']),
-    ...mapGetters(['isLoading']),
+    ...mapGetters(['isLoading', 'groupMilestonesEnabled']),
     selectedMilestonesLabel() {
       const { selectedMilestones } = this;
       const firstMilestoneName = selectedMilestones[0];
@@ -85,8 +96,14 @@ export default {
         this.matches.projectMilestones.totalCount > 0 || this.matches.projectMilestones.error,
       );
     },
+    showGroupMilestoneSection() {
+      return (
+        this.groupMilestonesEnabled &&
+        Boolean(this.matches.groupMilestones.totalCount > 0 || this.matches.groupMilestones.error)
+      );
+    },
     showNoResults() {
-      return !this.showProjectMilestoneSection;
+      return !this.showProjectMilestoneSection && !this.showGroupMilestoneSection;
     },
   },
   watch: {
@@ -115,11 +132,15 @@ export default {
     }, SEARCH_DEBOUNCE_MS);
 
     this.setProjectId(this.projectId);
+    this.setGroupId(this.groupId);
+    this.setGroupMilestonesAvailable(this.groupMilestonesAvailable);
     this.fetchMilestones();
   },
   methods: {
     ...mapActions([
       'setProjectId',
+      'setGroupId',
+      'setGroupMilestonesAvailable',
       'setSelectedMilestones',
       'clearSelectedMilestones',
       'toggleMilestones',
@@ -194,13 +215,26 @@ export default {
     </template>
     <template v-else>
       <milestone-results-section
+        v-if="showProjectMilestoneSection"
         :section-title="$options.translations.projectMilestones"
         :total-count="matches.projectMilestones.totalCount"
         :items="matches.projectMilestones.list"
         :selected-milestones="selectedMilestones"
         :error="matches.projectMilestones.error"
-        :error-message="$options.translations.searhErrorMessage"
+        :error-message="$options.translations.searchErrorMessage"
         data-testid="project-milestones-section"
+        @selected="selectMilestone($event)"
+      />
+
+      <milestone-results-section
+        v-if="showGroupMilestoneSection"
+        :section-title="$options.translations.groupMilestones"
+        :total-count="matches.groupMilestones.totalCount"
+        :items="matches.groupMilestones.list"
+        :selected-milestones="selectedMilestones"
+        :error="matches.groupMilestones.error"
+        :error-message="$options.translations.searchErrorMessage"
+        data-testid="group-milestones-section"
         @selected="selectMilestone($event)"
       />
     </template>

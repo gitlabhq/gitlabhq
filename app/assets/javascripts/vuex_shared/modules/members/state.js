@@ -3,6 +3,7 @@ export default ({
   sourceId,
   currentUserId,
   tableFields,
+  tableAttrs,
   memberPath,
   requestFormatter,
 }) => ({
@@ -10,6 +11,7 @@ export default ({
   sourceId,
   currentUserId,
   tableFields,
+  tableAttrs,
   memberPath,
   requestFormatter,
   showError: false,

@@ -27,6 +27,8 @@ describe('Release edit/new component', () => {
       updateReleaseApiDocsPath: 'path/to/update/release/api/docs',
       releasesPagePath: 'path/to/releases/page',
       projectId: '8',
+      groupId: '42',
+      groupMilestonesAvailable: true,
     };
 
     actions = {

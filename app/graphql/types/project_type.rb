@@ -296,8 +296,7 @@ module Types
           Types::ContainerRepositoryType.connection_type,
           null: true,
           description: 'Container repositories of the project',
-          resolver: Resolvers::ContainerRepositoriesResolver,
-          authorize: :read_container_image
+          resolver: Resolvers::ContainerRepositoriesResolver
 
     field :label,
           Types::LabelType,

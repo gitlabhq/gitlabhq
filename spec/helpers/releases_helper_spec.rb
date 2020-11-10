@@ -64,6 +64,8 @@ RSpec.describe ReleasesHelper do
     describe '#data_for_edit_release_page' do
       it 'has the needed data to display the "edit release" page' do
         keys = %i(project_id
+                  group_id
+                  group_milestones_available
                   project_path
                   tag_name
                   markdown_preview_path
@@ -81,6 +83,8 @@ RSpec.describe ReleasesHelper do
     describe '#data_for_new_release_page' do
       it 'has the needed data to display the "new release" page' do
         keys = %i(project_id
+                  group_id
+                  group_milestones_available
                   project_path
                   releases_page_path
                   markdown_preview_path

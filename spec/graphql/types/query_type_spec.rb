@@ -88,4 +88,10 @@ RSpec.describe GitlabSchema.types['Query'] do
       is_expected.to have_graphql_type(Types::Ci::RunnerSetupType)
     end
   end
+
+  describe 'container_repository field' do
+    subject { described_class.fields['containerRepository'] }
+
+    it { is_expected.to have_graphql_type(Types::ContainerRepositoryDetailsType) }
+  end
 end

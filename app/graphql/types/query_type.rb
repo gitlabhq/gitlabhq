@@ -50,10 +50,14 @@ module Types
     field :milestone, ::Types::MilestoneType,
           null: true,
           description: 'Find a milestone' do
-      argument :id, ::Types::GlobalIDType[Milestone],
-               required: true,
-               description: 'Find a milestone by its ID'
-    end
+            argument :id, ::Types::GlobalIDType[Milestone], required: true, description: 'Find a milestone by its ID'
+          end
+
+    field :container_repository, Types::ContainerRepositoryDetailsType,
+          null: true,
+          description: 'Find a container repository' do
+            argument :id, ::Types::GlobalIDType[::ContainerRepository], required: true, description: 'The global ID of the container repository'
+          end
 
     field :user, Types::UserType,
           null: true,
@@ -103,6 +107,13 @@ module Types
       # TODO: remove this line when the compatibility layer is removed
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
       id = ::Types::GlobalIDType[Milestone].coerce_isolated_input(id)
+      GitlabSchema.find_by_gid(id)
+    end
+
+    def container_repository(id:)
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      id = ::Types::GlobalIDType[::ContainerRepository].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
     end
   end

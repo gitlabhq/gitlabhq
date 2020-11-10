@@ -1,0 +1,78 @@
+{
+  "type": "object",
+  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "tags"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "expirationPolicyStartedAt": {
+      "type": ["string", "null"]
+    },
+    "status": {
+      "type": ["string", "null"]
+    },
+    "tagsCount": {
+      "type": "integer"
+    },
+    "canDelete": {
+      "type": "boolean"
+    },
+    "tags": {
+      "type": "object",
+      "required": ["nodes"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "path", "location", "digest", "revision", "shortRevision", "totalSize", "createdAt", "canDelete"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "digest": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string"
+              },
+              "shortRevision": {
+                "type": "string"
+              },
+              "totalSize": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "canDelete": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

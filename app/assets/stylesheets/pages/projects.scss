@@ -993,23 +993,6 @@ pre.light-well {
   }
 }
 
-.custom-notifications-form {
-  .is-loading {
-    .custom-notification-event-loading {
-      display: inline-block;
-    }
-  }
-}
-
-.custom-notification-event-loading {
-  display: none;
-  margin-left: 5px;
-
-  &.is-done {
-    color: $green-600;
-  }
-}
-
 .project-refs-form .dropdown-menu,
 .dropdown-menu-projects {
   width: 300px;

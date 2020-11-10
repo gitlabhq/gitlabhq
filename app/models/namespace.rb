@@ -362,7 +362,7 @@ class Namespace < ApplicationRecord
 
   def pages_virtual_domain
     Pages::VirtualDomain.new(
-      all_projects_with_pages.includes(:route, :project_feature),
+      all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
       trim_prefix: full_path
     )
   end

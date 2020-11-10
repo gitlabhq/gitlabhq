@@ -6,7 +6,7 @@ import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
-import { milestones as projectMilestones } from './mock_data';
+import { projectMilestones, groupMilestones } from './mock_data';
 import createStore from '~/milestones/stores/';
 
 const extraLinks = [
@@ -19,16 +19,21 @@ localVue.use(Vuex);
 
 describe('Milestone combobox component', () => {
   const projectId = '8';
+  const groupId = '24';
+  const groupMilestonesAvailable = true;
   const X_TOTAL_HEADER = 'x-total';
 
   let wrapper;
   let projectMilestonesApiCallSpy;
+  let groupMilestonesApiCallSpy;
   let searchApiCallSpy;
 
   const createComponent = (props = {}, attrs = {}) => {
     wrapper = mount(MilestoneCombobox, {
       propsData: {
         projectId,
+        groupId,
+        groupMilestonesAvailable,
         extraLinks,
         value: [],
         ...props,
@@ -56,6 +61,10 @@ describe('Milestone combobox component', () => {
       .fn()
       .mockReturnValue([200, projectMilestones, { [X_TOTAL_HEADER]: '6' }]);
 
+    groupMilestonesApiCallSpy = jest
+      .fn()
+      .mockReturnValue([200, groupMilestones, { [X_TOTAL_HEADER]: '6' }]);
+
     searchApiCallSpy = jest
       .fn()
       .mockReturnValue([200, projectMilestones, { [X_TOTAL_HEADER]: '6' }]);
@@ -63,6 +72,10 @@ describe('Milestone combobox component', () => {
     mock
       .onGet(`/api/v4/projects/${projectId}/milestones`)
       .reply(config => projectMilestonesApiCallSpy(config));
+
+    mock
+      .onGet(`/api/v4/groups/${groupId}/milestones`)
+      .reply(config => groupMilestonesApiCallSpy(config));
 
     mock.onGet(`/api/v4/projects/${projectId}/search`).reply(config => searchApiCallSpy(config));
   });
@@ -89,6 +102,11 @@ describe('Milestone combobox component', () => {
     findProjectMilestonesSection().findAll(GlDropdownItem);
   const findFirstProjectMilestonesDropdownItem = () => findProjectMilestonesDropdownItems().at(0);
 
+  const findGroupMilestonesSection = () => wrapper.find('[data-testid="group-milestones-section"]');
+  const findGroupMilestonesDropdownItems = () =>
+    findGroupMilestonesSection().findAll(GlDropdownItem);
+  const findFirstGroupMilestonesDropdownItem = () => findGroupMilestonesDropdownItems().at(0);
+
   //
   // Expecters
   //
@@ -96,6 +114,14 @@ describe('Milestone combobox component', () => {
     const projectMilestoneSection = findProjectMilestonesSection();
 
     return projectMilestoneSection
+      .text()
+      .includes(s__('MilestoneCombobox|An error occurred while searching for milestones'));
+  };
+
+  const groupMilestoneSectionContainsErrorMessage = () => {
+    const groupMilestoneSection = findGroupMilestonesSection();
+
+    return groupMilestoneSection
       .text()
       .includes(s__('MilestoneCombobox|An error occurred while searching for milestones'));
   };
@@ -111,19 +137,25 @@ describe('Milestone combobox component', () => {
     findFirstProjectMilestonesDropdownItem().vm.$emit('click');
   };
 
+  const selectFirstGroupMilestone = () => {
+    findFirstGroupMilestonesDropdownItem().vm.$emit('click');
+  };
+
   const waitForRequests = ({ andClearMocks } = { andClearMocks: false }) =>
     axios.waitForAll().then(() => {
       if (andClearMocks) {
         projectMilestonesApiCallSpy.mockClear();
+        groupMilestonesApiCallSpy.mockClear();
       }
     });
 
   describe('initialization behavior', () => {
     beforeEach(createComponent);
 
-    it('initializes the dropdown with project milestones when mounted', () => {
+    it('initializes the dropdown with milestones when mounted', () => {
       return waitForRequests().then(() => {
         expect(projectMilestonesApiCallSpy).toHaveBeenCalledTimes(1);
+        expect(groupMilestonesApiCallSpy).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -166,7 +198,7 @@ describe('Milestone combobox component', () => {
         return waitForRequests();
       });
 
-      it('renders the pre-selected project milestones', () => {
+      it('renders the pre-selected milestones', () => {
         expect(findButtonContent().text()).toBe('v0.1 + 5 more');
       });
     });
@@ -208,6 +240,8 @@ describe('Milestone combobox component', () => {
         projectMilestonesApiCallSpy = jest
           .fn()
           .mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+
+        groupMilestonesApiCallSpy = jest.fn().mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
 
         createComponent();
 
@@ -288,65 +322,195 @@ describe('Milestone combobox component', () => {
           expect(projectMilestoneSectionContainsErrorMessage()).toBe(true);
         });
       });
-    });
 
-    describe('selection', () => {
-      beforeEach(() => {
-        createComponent();
+      describe('selection', () => {
+        beforeEach(() => {
+          createComponent();
 
-        return waitForRequests();
-      });
+          return waitForRequests();
+        });
 
-      it('renders a checkmark by the selected item', async () => {
-        selectFirstProjectMilestone();
+        it('renders a checkmark by the selected item', async () => {
+          selectFirstProjectMilestone();
 
-        await localVue.nextTick();
+          await localVue.nextTick();
 
-        expect(
-          findFirstProjectMilestonesDropdownItem()
-            .find('span')
-            .classes('selected-item'),
-        ).toBe(false);
+          expect(
+            findFirstProjectMilestonesDropdownItem()
+              .find('span')
+              .classes('selected-item'),
+          ).toBe(false);
 
-        selectFirstProjectMilestone();
+          selectFirstProjectMilestone();
 
-        return localVue.nextTick().then(() => {
+          await localVue.nextTick();
+
           expect(
             findFirstProjectMilestonesDropdownItem()
               .find('span')
               .classes('selected-item'),
           ).toBe(true);
         });
-      });
 
-      describe('when a project milestones is selected', () => {
+        describe('when a project milestones is selected', () => {
+          beforeEach(() => {
+            createComponent();
+            projectMilestonesApiCallSpy = jest
+              .fn()
+              .mockReturnValue([200, [{ title: 'v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
+
+            return waitForRequests();
+          });
+
+          it("displays the project milestones name in the dropdown's button", async () => {
+            selectFirstProjectMilestone();
+            await localVue.nextTick();
+
+            expect(findButtonContent().text()).toBe(s__('MilestoneCombobox|No milestone'));
+
+            selectFirstProjectMilestone();
+
+            await localVue.nextTick();
+            expect(findButtonContent().text()).toBe('v1.0');
+          });
+
+          it('updates the v-model binding with the project milestone title', () => {
+            expect(wrapper.vm.value).toEqual([]);
+
+            selectFirstProjectMilestone();
+
+            expect(wrapper.vm.value).toEqual(['v1.0']);
+          });
+        });
+      });
+    });
+
+    describe('group milestones', () => {
+      describe('when the group milestones search returns results', () => {
         beforeEach(() => {
           createComponent();
-          projectMilestonesApiCallSpy = jest
-            .fn()
-            .mockReturnValue([200, [{ title: 'v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
 
           return waitForRequests();
         });
 
-        it("displays the project milestones name in the dropdown's button", async () => {
-          selectFirstProjectMilestone();
-          await localVue.nextTick();
-
-          expect(findButtonContent().text()).toBe(s__('MilestoneCombobox|No milestone'));
-
-          selectFirstProjectMilestone();
-
-          await localVue.nextTick();
-          expect(findButtonContent().text()).toBe('v1.0');
+        it('renders the group milestones section in the dropdown', () => {
+          expect(findGroupMilestonesSection().exists()).toBe(true);
         });
 
-        it('updates the v-model binding with the project milestone title', () => {
-          expect(wrapper.vm.value).toEqual([]);
+        it('renders the "Group milestones" heading with a total number indicator', () => {
+          expect(
+            findGroupMilestonesSection()
+              .find('[data-testid="milestone-results-section-header"]')
+              .text(),
+          ).toBe('Group milestones  6');
+        });
 
-          selectFirstProjectMilestone();
+        it("does not render an error message in the group milestone section's body", () => {
+          expect(groupMilestoneSectionContainsErrorMessage()).toBe(false);
+        });
 
-          expect(wrapper.vm.value).toEqual(['v1.0']);
+        it('renders each group milestones as a selectable item', () => {
+          const dropdownItems = findGroupMilestonesDropdownItems();
+
+          groupMilestones.forEach((milestone, i) => {
+            expect(dropdownItems.at(i).text()).toBe(milestone.title);
+          });
+        });
+      });
+
+      describe('when the group milestones search returns no results', () => {
+        beforeEach(() => {
+          groupMilestonesApiCallSpy = jest
+            .fn()
+            .mockReturnValue([200, [], { [X_TOTAL_HEADER]: '0' }]);
+
+          createComponent();
+
+          return waitForRequests();
+        });
+
+        it('does not render the group milestones section in the dropdown', () => {
+          expect(findGroupMilestonesSection().exists()).toBe(false);
+        });
+      });
+
+      describe('when the group milestones search returns an error', () => {
+        beforeEach(() => {
+          groupMilestonesApiCallSpy = jest.fn().mockReturnValue([500]);
+          searchApiCallSpy = jest.fn().mockReturnValue([500]);
+
+          createComponent({ value: [] });
+
+          return waitForRequests();
+        });
+
+        it('renders the group milestones section in the dropdown', () => {
+          expect(findGroupMilestonesSection().exists()).toBe(true);
+        });
+
+        it("renders an error message in the group milestones section's body", () => {
+          expect(groupMilestoneSectionContainsErrorMessage()).toBe(true);
+        });
+      });
+
+      describe('selection', () => {
+        beforeEach(() => {
+          createComponent();
+
+          return waitForRequests();
+        });
+
+        it('renders a checkmark by the selected item', async () => {
+          selectFirstGroupMilestone();
+
+          await localVue.nextTick();
+
+          expect(
+            findFirstGroupMilestonesDropdownItem()
+              .find('span')
+              .classes('selected-item'),
+          ).toBe(false);
+
+          selectFirstGroupMilestone();
+
+          await localVue.nextTick();
+
+          expect(
+            findFirstGroupMilestonesDropdownItem()
+              .find('span')
+              .classes('selected-item'),
+          ).toBe(true);
+        });
+
+        describe('when a group milestones is selected', () => {
+          beforeEach(() => {
+            createComponent();
+            groupMilestonesApiCallSpy = jest
+              .fn()
+              .mockReturnValue([200, [{ title: 'group-v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
+
+            return waitForRequests();
+          });
+
+          it("displays the group milestones name in the dropdown's button", async () => {
+            selectFirstGroupMilestone();
+            await localVue.nextTick();
+
+            expect(findButtonContent().text()).toBe(s__('MilestoneCombobox|No milestone'));
+
+            selectFirstGroupMilestone();
+
+            await localVue.nextTick();
+            expect(findButtonContent().text()).toBe('group-v1.0');
+          });
+
+          it('updates the v-model binding with the group milestone title', () => {
+            expect(wrapper.vm.value).toEqual([]);
+
+            selectFirstGroupMilestone();
+
+            expect(wrapper.vm.value).toEqual(['group-v1.0']);
+          });
         });
       });
     });

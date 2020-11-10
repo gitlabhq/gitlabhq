@@ -65,7 +65,9 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
     context 'blank id' do
       let(:args) { { id: '' } }
 
-      it_behaves_like 'it resolves to nil'
+      it 'responds with an error' do
+        expect { resolve_error(args) }.to raise_error(::GraphQL::CoercionError)
+      end
     end
   end
 

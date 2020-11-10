@@ -5,7 +5,7 @@ import {
   getByTestId as getByTestIdHelper,
   within,
 } from '@testing-library/dom';
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlTable } from '@gitlab/ui';
 import MembersTable from '~/vue_shared/components/members/table/members_table.vue';
 import MemberAvatar from '~/vue_shared/components/members/table/member_avatar.vue';
 import MemberSource from '~/vue_shared/components/members/table/member_source.vue';
@@ -28,6 +28,10 @@ describe('MemberList', () => {
       state: {
         members: [],
         tableFields: [],
+        tableAttrs: {
+          table: { 'data-qa-selector': 'members_list' },
+          tr: { 'data-qa-selector': 'member_row' },
+        },
         sourceId: 1,
         currentUserId: 1,
         ...state,
@@ -57,6 +61,8 @@ describe('MemberList', () => {
 
   const getByTestId = (id, options) =>
     createWrapper(getByTestIdHelper(wrapper.element, id, options));
+
+  const findTable = () => wrapper.find(GlTable);
 
   afterEach(() => {
     wrapper.destroy();
@@ -186,5 +192,21 @@ describe('MemberList', () => {
     createComponent();
 
     expect(initUserPopoversMock).toHaveBeenCalled();
+  });
+
+  it('adds QA selector to table', () => {
+    createComponent();
+
+    expect(findTable().attributes('data-qa-selector')).toBe('members_list');
+  });
+
+  it('adds QA selector to table row', () => {
+    createComponent();
+
+    expect(
+      findTable()
+        .find('tbody tr')
+        .attributes('data-qa-selector'),
+    ).toBe('member_row');
   });
 });

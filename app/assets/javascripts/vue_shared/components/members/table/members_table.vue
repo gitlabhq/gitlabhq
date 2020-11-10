@@ -39,7 +39,7 @@ export default {
       ),
   },
   computed: {
-    ...mapState(['members', 'tableFields', 'currentUserId', 'sourceId']),
+    ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId', 'sourceId']),
     filteredFields() {
       return FIELDS.filter(field => this.tableFields.includes(field.key) && this.showField(field));
     },
@@ -79,6 +79,7 @@ export default {
 <template>
   <div>
     <gl-table
+      v-bind="tableAttrs.table"
       class="members-table"
       data-testid="members-table"
       head-variant="white"
@@ -89,6 +90,7 @@ export default {
       thead-class="border-bottom"
       :empty-text="__('No members found')"
       show-empty
+      :tbody-tr-attr="tableAttrs.tr"
     >
       <template #cell(account)="{ item: member }">
         <members-table-cell #default="{ memberType, isCurrentUser }" :member="member">

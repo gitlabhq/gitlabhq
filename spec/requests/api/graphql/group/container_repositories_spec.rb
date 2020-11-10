@@ -92,9 +92,9 @@ RSpec.describe 'getting container repositories in a group' do
   end
 
   context 'limiting the number of repositories' do
-    let(:issue_limit) { 1 }
+    let(:limit) { 1 }
     let(:variables) do
-      { path: group.full_path, n: issue_limit }
+      { path: group.full_path, n: limit }
     end
 
     let(:query) do
@@ -107,10 +107,10 @@ RSpec.describe 'getting container repositories in a group' do
       GQL
     end
 
-    it 'only returns N issues' do
+    it 'only returns N repositories' do
       subject
 
-      expect(container_repositories_response.size).to eq(issue_limit)
+      expect(container_repositories_response.size).to eq(limit)
     end
   end
 
