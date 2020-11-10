@@ -33,10 +33,6 @@ require 'zlib'
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      signup_flow: {
-        tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow',
-        use_backwards_compatible_subject_index: true
-      },
       onboarding_issues: {
         tracking_category: 'Growth::Conversion::Experiment::OnboardingIssues',
         use_backwards_compatible_subject_index: true

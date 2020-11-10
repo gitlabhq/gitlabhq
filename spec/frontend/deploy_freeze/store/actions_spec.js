@@ -6,6 +6,7 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import getInitialState from '~/deploy_freeze/store/state';
 import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';
+import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
 jest.mock('~/api.js');
 jest.mock('~/flash.js');
@@ -13,8 +14,6 @@ jest.mock('~/flash.js');
 describe('deploy freeze store actions', () => {
   let mock;
   let state;
-  const freezePeriodsFixture = getJSONFixture('/api/freeze-periods/freeze_periods.json');
-  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);

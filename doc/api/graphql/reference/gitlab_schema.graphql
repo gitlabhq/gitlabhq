@@ -18411,7 +18411,7 @@ type RunnerSetup {
   """
   Instructions for registering the runner
   """
-  registerInstructions: String!
+  registerInstructions: String
 }
 
 """

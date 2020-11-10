@@ -7,7 +7,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
   it 'temporarily ensures we know what experiments exist for backwards compatibility' do
     expected_experiment_keys = [
-      :signup_flow,
       :onboarding_issues,
       :ci_notification_dot,
       :upgrade_link_in_user_menu_a,

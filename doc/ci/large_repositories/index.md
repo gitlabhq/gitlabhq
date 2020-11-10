@@ -78,7 +78,7 @@ done by GitLab, requiring you to do them.
 
 > Introduced in GitLab Runner 11.10.
 
-[`GIT_CLONE_PATH`](../yaml/README.md#custom-build-directories) allows you to
+[`GIT_CLONE_PATH`](../runners/README.md#custom-build-directories) allows you to
 control where you clone your sources. This can have implications if you
 heavily use big repositories with fork workflow.
 
@@ -90,7 +90,7 @@ In such cases, ideally you want to make the GitLab Runner executor be used only
 for the given project and not shared across different projects to make this
 process more efficient.
 
-The [`GIT_CLONE_PATH`](../yaml/README.md#custom-build-directories) has to be
+The [`GIT_CLONE_PATH`](../runners/README.md#custom-build-directories) has to be
 within the `$CI_BUILDS_DIR`. Currently, it is impossible to pick any path
 from disk.
 
@@ -98,12 +98,12 @@ from disk.
 
 > Introduced in GitLab Runner 11.10.
 
-[`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags) allows you to control
+[`GIT_CLEAN_FLAGS`](../runners/README.md#git-clean-flags) allows you to control
 whether or not you require the `git clean` command to be executed for each CI
 job. By default, GitLab ensures that you have your worktree on the given SHA,
 and that your repository is clean.
 
-[`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags) is disabled when set
+[`GIT_CLEAN_FLAGS`](../runners/README.md#git-clean-flags) is disabled when set
 to `none`. On very big repositories, this might be desired because `git
 clean` is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx
 -e .build/` (for example) allows you to control and disable removal of some
@@ -112,7 +112,7 @@ the incremental builds. This has the biggest effect if you re-use existing
 machines and have an existing worktree that you can re-use for builds.
 
 For exact parameters accepted by
-[`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags), see the documentation
+[`GIT_CLEAN_FLAGS`](../runners/README.md#git-clean-flags), see the documentation
 for [`git clean`](https://git-scm.com/docs/git-clean). The available parameters
 are dependent on Git version.
 
@@ -120,14 +120,14 @@ are dependent on Git version.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
 
-[`GIT_FETCH_EXTRA_FLAGS`](../yaml/README.md#git-fetch-extra-flags) allows you
+[`GIT_FETCH_EXTRA_FLAGS`](../runners/README.md#git-fetch-extra-flags) allows you
 to modify `git fetch` behavior by passing extra flags.
 
 For example, if your project contains a large number of tags that your CI jobs don't rely on,
 you could add [`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---no-tags)
 to the extra flags to make your fetches faster and more compact.
 
-See the [`GIT_FETCH_EXTRA_FLAGS` documentation](../yaml/README.md#git-fetch-extra-flags)
+See the [`GIT_FETCH_EXTRA_FLAGS` documentation](../runners/README.md#git-fetch-extra-flags)
 for more information.
 
 ## Fork-based workflow

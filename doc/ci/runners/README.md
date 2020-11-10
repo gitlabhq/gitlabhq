@@ -457,6 +457,342 @@ Example 2:
 1. A job that has no tags defined is executed and run.
 1. A second job that has a `docker` tag defined is stuck.
 
+## Configure runner behavior with variables
+
+You can use [CI/CD variables](../variables/README.md) to configure runner Git behavior
+globally or for individual jobs:
+
+- [`GIT_STRATEGY`](#git-strategy)
+- [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)
+- [`GIT_CHECKOUT`](#git-checkout)
+- [`GIT_CLEAN_FLAGS`](#git-clean-flags)
+- [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
+- [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
+
+You can also use variables to configure how many times a runner
+[attempts certain stages of job execution](#job-stages-attempts).
+
+### Git strategy
+
+> - Introduced in GitLab 8.9 as an experimental feature.
+> - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
+
+You can set the `GIT_STRATEGY` used for getting recent application code, either
+globally or per-job in the [`variables`](../yaml/README.md#variables) section. If left
+unspecified, the default from the project settings is used.
+
+There are three possible values: `clone`, `fetch`, and `none`.
+
+`clone` is the slowest option. It clones the repository from scratch for every
+job, ensuring that the local working copy is always pristine.
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+```
+
+`fetch` is faster as it re-uses the local working copy (falling back to `clone`
+if it does not exist). `git clean` is used to undo any changes made by the last
+job, and `git fetch` is used to retrieve commits made since the last job ran.
+
+```yaml
+variables:
+  GIT_STRATEGY: fetch
+```
+
+`none` also re-uses the local working copy. However, it skips all Git operations,
+including GitLab Runner's pre-clone script, if present.
+
+It's useful for jobs that operate exclusively on artifacts, like a deployment job.
+Git repository data may be present, but it's likely out-of-date. You should only
+rely on files brought into the local working copy from cache or artifacts.
+
+```yaml
+variables:
+  GIT_STRATEGY: none
+```
+
+NOTE: **Note:**
+`GIT_STRATEGY` is not supported for
+[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
+but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3847)
+for updates.
+
+### Git submodule strategy
+
+> Requires GitLab Runner v1.10+.
+
+The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
+submodules are included when fetching the code before a build. You can set them
+globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+
+There are three possible values: `none`, `normal`, and `recursive`:
+
+- `none` means that submodules are not included when fetching the project
+  code. This is the default, which matches the pre-v1.10 behavior.
+
+- `normal` means that only the top-level submodules are included. It's
+  equivalent to:
+
+  ```shell
+  git submodule sync
+  git submodule update --init
+  ```
+
+- `recursive` means that all submodules (including submodules of submodules)
+  are included. This feature needs Git v1.8.1 and later. When using a
+  GitLab Runner with an executor not based on Docker, make sure the Git version
+  meets that requirement. It's equivalent to:
+
+  ```shell
+  git submodule sync --recursive
+  git submodule update --init --recursive
+  ```
+
+For this feature to work correctly, the submodules must be configured
+(in `.gitmodules`) with either:
+
+- the HTTP(S) URL of a publicly-accessible repository, or
+- a relative path to another repository on the same GitLab server. See the
+  [Git submodules](../git_submodules.md) documentation.
+
+### Git checkout
+
+> Introduced in GitLab Runner 9.3.
+
+The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
+`clone` or `fetch` to specify whether a `git checkout` should be run. If not
+specified, it defaults to true. You can set them globally or per-job in the
+[`variables`](../yaml/README.md#variables) section.
+
+If set to `false`, the runner:
+
+- when doing `fetch` - updates the repository and leaves the working copy on
+  the current revision,
+- when doing `clone` - clones the repository and leaves the working copy on the
+  default branch.
+
+If `GIT_CHECKOUT` is set to `true`, both `clone` and `fetch` work the same way.
+The runner checks out the working copy of a revision related
+to the CI pipeline:
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: "false"
+script:
+  - git checkout -B master origin/master
+  - git merge $CI_COMMIT_SHA
+```
+
+### Git clean flags
+
+> Introduced in GitLab Runner 11.10
+
+The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
+`git clean` after checking out the sources. You can set it globally or per-job in the
+[`variables`](../yaml/README.md#variables) section.
+
+`GIT_CLEAN_FLAGS` accepts all possible options of the [`git clean`](https://git-scm.com/docs/git-clean)
+command.
+
+`git clean` is disabled if `GIT_CHECKOUT: "false"` is specified.
+
+If `GIT_CLEAN_FLAGS` is:
+
+- Not specified, `git clean` flags default to `-ffdx`.
+- Given the value `none`, `git clean` is not executed.
+
+For example:
+
+```yaml
+variables:
+  GIT_CLEAN_FLAGS: -ffdx -e cache/
+script:
+  - ls -al cache/
+```
+
+### Git fetch extra flags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
+
+The `GIT_FETCH_EXTRA_FLAGS` variable is used to control the behavior of
+`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+
+`GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
+
+The default flags are:
+
+- [GIT_DEPTH](#shallow-cloning).
+- The list of [refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec).
+- A remote called `origin`.
+
+If `GIT_FETCH_EXTRA_FLAGS` is:
+
+- Not specified, `git fetch` flags default to `--prune --quiet` along with the default flags.
+- Given the value `none`, `git fetch` is executed only with the default flags.
+
+For example, the default flags are `--prune --quiet`, so you can make `git fetch` more verbose by overriding this with just `--prune`:
+
+```yaml
+variables:
+  GIT_FETCH_EXTRA_FLAGS: --prune
+script:
+  - ls -al cache/
+```
+
+The configuration above results in `git fetch` being called this way:
+
+```shell
+git fetch origin $REFSPECS --depth 50  --prune
+```
+
+Where `$REFSPECS` is a value provided to the runner internally by GitLab.
+
+### Shallow cloning
+
+> Introduced in GitLab 8.9 as an experimental feature.
+
+You can specify the depth of fetching and cloning using `GIT_DEPTH`.
+`GIT_DEPTH` does a shallow clone of the repository and can significantly speed up cloning.
+It can be helpful for repositories with a large number of commits or old, large binaries. The value is
+passed to `git fetch` and `git clone`.
+
+In GitLab 12.0 and later, newly-created projects automatically have a
+[default `git depth` value of `50`](../pipelines/settings.md#git-shallow-clone).
+
+If you use a depth of `1` and have a queue of jobs or retry
+jobs, jobs may fail.
+
+Git fetching and cloning is based on a ref, such as a branch name, so runners
+can't clone a specific commit SHA. If multiple jobs are in the queue, or
+you're retrying an old job, the commit to be tested must be within the
+Git history that is cloned. Setting too small a value for `GIT_DEPTH` can make
+it impossible to run these old commits and `unresolved reference` is displayed in
+job logs. You should then reconsider changing `GIT_DEPTH` to a higher value.
+
+Jobs that rely on `git describe` may not work correctly when `GIT_DEPTH` is
+set since only part of the Git history is present.
+
+To fetch or clone only the last 3 commits:
+
+```yaml
+variables:
+  GIT_DEPTH: "3"
+```
+
+You can set it globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+
+### Custom build directories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2211) in GitLab Runner 11.10.
+
+By default, GitLab Runner clones the repository in a unique subpath of the
+`$CI_BUILDS_DIR` directory. However, your project might require the code in a
+specific directory (Go projects, for example). In that case, you can specify
+the `GIT_CLONE_PATH` variable to tell the runner the directory to clone the
+repository in:
+
+```yaml
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/project-name
+
+test:
+  script:
+    - pwd
+```
+
+The `GIT_CLONE_PATH` has to always be within `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
+is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+setting.
+
+This can only be used when `custom_build_dir` is enabled in the
+[runner's configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
+This is the default configuration for the `docker` and `kubernetes` executors.
+
+#### Handling concurrency
+
+An executor that uses a concurrency greater than `1` might lead
+to failures. Multiple jobs might be working on the same directory if the `builds_dir`
+is shared between jobs.
+
+The runner does not try to prevent this situation. It's up to the administrator
+and developers to comply with the requirements of runner configuration.
+
+To avoid this scenario, you can use a unique path within `$CI_BUILDS_DIR`, because runner
+exposes two additional variables that provide a unique `ID` of concurrency:
+
+- `$CI_CONCURRENT_ID`: Unique ID for all jobs running within the given executor.
+- `$CI_CONCURRENT_PROJECT_ID`: Unique ID for all jobs running within the given executor and project.
+
+The most stable configuration that should work well in any scenario and on any executor
+is to use `$CI_CONCURRENT_ID` in the `GIT_CLONE_PATH`. For example:
+
+```yaml
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/project-name
+
+test:
+  script:
+    - pwd
+```
+
+The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`
+as the `$CI_PROJECT_PATH` provides a path of a repository. That is, `group/subgroup/project`. For example:
+
+```yaml
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
+
+test:
+  script:
+    - pwd
+```
+
+#### Nested paths
+
+The value of `GIT_CLONE_PATH` is expanded once and nesting variables
+within is not supported.
+
+For example, you define both the variables below in your
+`.gitlab-ci.yml` file:
+
+```yaml
+variables:
+  GOPATH: $CI_BUILDS_DIR/go
+  GIT_CLONE_PATH: $GOPATH/src/namespace/project
+```
+
+The value of `GIT_CLONE_PATH` is expanded once into
+`$CI_BUILDS_DIR/go/src/namespace/project`, and results in failure
+because `$CI_BUILDS_DIR` is not expanded.
+
+### Job stages attempts
+
+> Introduced in GitLab, it requires GitLab Runner v1.9+.
+
+You can set the number of attempts that the running job tries to execute
+the following stages:
+
+| Variable                        | Description                                            |
+|---------------------------------|--------------------------------------------------------|
+| `ARTIFACT_DOWNLOAD_ATTEMPTS`    | Number of attempts to download artifacts running a job |
+| `EXECUTOR_JOB_SECTION_ATTEMPTS` | [In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) and later, the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
+| `GET_SOURCES_ATTEMPTS`          | Number of attempts to fetch sources running a job      |
+| `RESTORE_CACHE_ATTEMPTS`        | Number of attempts to restore the cache running a job  |
+
+The default is one single attempt.
+
+Example:
+
+```yaml
+variables:
+  GET_SOURCES_ATTEMPTS: 3
+```
+
+You can set them globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+
 ## System calls not available on GitLab.com shared runners
 
 GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.

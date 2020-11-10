@@ -29,7 +29,7 @@ There are two options. Using:
 - `git fetch`, which is faster as it re-uses the local working copy (falling
   back to clone if it doesn't exist).
 
-The default Git strategy can be overridden by the [GIT_STRATEGY variable](../yaml/README.md#git-strategy)
+The default Git strategy can be overridden by the [GIT_STRATEGY variable](../runners/README.md#git-strategy)
 in `.gitlab-ci.yml`.
 
 ## Git shallow clone

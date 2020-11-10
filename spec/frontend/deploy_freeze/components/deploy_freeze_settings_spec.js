@@ -4,6 +4,7 @@ import DeployFreezeSettings from '~/deploy_freeze/components/deploy_freeze_setti
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
 import createStore from '~/deploy_freeze/store';
+import { timezoneDataFixture } from '../helpers';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -11,7 +12,6 @@ localVue.use(Vuex);
 describe('Deploy freeze settings', () => {
   let wrapper;
   let store;
-  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   beforeEach(() => {
     store = createStore({

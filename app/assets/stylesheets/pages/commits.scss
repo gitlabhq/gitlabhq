@@ -14,12 +14,6 @@
   @extend %commit-description-base;
 }
 
-.js-details-expand {
-  &:hover {
-    text-decoration: none;
-  }
-}
-
 .commit-box {
   border-top: 1px solid $border-color;
   padding: $gl-padding 0;
@@ -27,17 +21,6 @@
   .commit-title {
     margin: 0;
     color: $gl-text-color;
-  }
-}
-
-.commit-hash-full {
-  @include media-breakpoint-down(sm) {
-    width: 80px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    vertical-align: bottom;
   }
 }
 

@@ -8,7 +8,7 @@ module Types
 
       field :install_instructions, GraphQL::STRING_TYPE, null: false,
         description: 'Instructions for installing the runner on the specified architecture'
-      field :register_instructions, GraphQL::STRING_TYPE, null: false,
+      field :register_instructions, GraphQL::STRING_TYPE, null: true,
         description: 'Instructions for registering the runner'
     end
   end

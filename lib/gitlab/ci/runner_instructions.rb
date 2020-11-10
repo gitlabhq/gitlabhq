@@ -106,7 +106,7 @@ module Gitlab
       end
 
       def get_file(path)
-        File.read(path)
+        File.read(Rails.root.join(path).to_s)
       end
 
       def registration_token

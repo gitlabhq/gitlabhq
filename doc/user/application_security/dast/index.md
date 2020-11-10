@@ -603,7 +603,7 @@ variables:
 ### Cloning the project's repository
 
 The DAST job does not require the project's repository to be present when running, so by default
-[`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
+[`GIT_STRATEGY`](../../../ci/runners/README.md#git-strategy) is set to `none`.
 
 ### Debugging DAST jobs
 

@@ -27,7 +27,7 @@ module Resolvers
         )
 
         {
-          install_instructions: instructions.install_script,
+          install_instructions: instructions.install_script || other_install_instructions(platform),
           register_instructions: instructions.register_command
         }
       ensure
@@ -35,6 +35,10 @@ module Resolvers
       end
 
       private
+
+      def other_install_instructions(platform)
+        Gitlab::Ci::RunnerInstructions::OTHER_ENVIRONMENTS[platform.to_sym][:installation_instructions_url]
+      end
 
       def target_param(args)
         project_param(args[:project_id]) || group_param(args[:group_id]) || {}

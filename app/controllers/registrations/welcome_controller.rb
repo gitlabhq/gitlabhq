@@ -51,7 +51,6 @@ module Registrations
     def requires_confirmation?(user)
       return false if user.confirmed?
       return false if Feature.enabled?(:soft_email_confirmation)
-      return false if experiment_enabled?(:signup_flow)
 
       true
     end
