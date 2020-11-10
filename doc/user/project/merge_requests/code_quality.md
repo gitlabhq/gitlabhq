@@ -348,7 +348,7 @@ This can be due to multiple reasons:
   nothing will be displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
   setting can cause the Code Quality artifact(s) to expire faster than desired.
-- Large `codeclimate.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
+- Large `codeclimate.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).
   As a work-around, try removing [properties](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types)
   that are [ignored by GitLab](#implementing-a-custom-tool). You can:
   - Configure the Code Quality tool to not output those types.

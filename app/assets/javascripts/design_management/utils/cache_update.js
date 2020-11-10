@@ -101,7 +101,7 @@ const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) =
   });
 };
 
-const updateImageDiffNoteInStore = (store, updateImageDiffNote, query, variables) => {
+const updateImageDiffNoteInStore = (store, repositionImageDiffNote, query, variables) => {
   const sourceData = store.readQuery({
     query,
     variables,
@@ -111,12 +111,12 @@ const updateImageDiffNoteInStore = (store, updateImageDiffNote, query, variables
     const design = extractDesign(draftData);
     const discussion = extractCurrentDiscussion(
       design.discussions,
-      updateImageDiffNote.note.discussion.id,
+      repositionImageDiffNote.note.discussion.id,
     );
 
     discussion.notes = {
       ...discussion.notes,
-      nodes: [updateImageDiffNote.note, ...discussion.notes.nodes.slice(1)],
+      nodes: [repositionImageDiffNote.note, ...discussion.notes.nodes.slice(1)],
     };
   });
 
@@ -268,7 +268,7 @@ export const updateStoreAfterAddImageDiffNote = (store, data, query, queryVariab
   }
 };
 
-export const updateStoreAfterUpdateImageDiffNote = (store, data, query, queryVariables) => {
+export const updateStoreAfterRepositionImageDiffNote = (store, data, query, queryVariables) => {
   if (hasErrors(data)) {
     onError(data, UPDATE_IMAGE_DIFF_NOTE_ERROR);
   } else {

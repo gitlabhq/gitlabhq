@@ -24,11 +24,11 @@ RSpec.describe Mutations::Todos::RestoreMany do
       expect(todo2.reload.state).to eq('pending')
       expect(other_user_todo.reload.state).to eq('done')
 
-      todo_ids = result[:updated_ids]
-      expect(todo_ids.size).to eq(1)
-      expect(todo_ids.first).to eq(todo1.to_global_id.to_s)
-
-      expect(result[:todos]).to contain_exactly(todo1)
+      expect(result).to match(
+        errors: be_empty,
+        updated_ids: contain_exactly(todo1.id),
+        todos: contain_exactly(todo1)
+      )
     end
 
     it 'handles a todo which is already pending as expected' do
@@ -36,8 +36,11 @@ RSpec.describe Mutations::Todos::RestoreMany do
 
       expect_states_were_not_changed
 
-      expect(result[:updated_ids]).to eq([])
-      expect(result[:todos]).to be_empty
+      expect(result).to match(
+        errors: be_empty,
+        updated_ids: be_empty,
+        todos: be_empty
+      )
     end
 
     it 'ignores requests for todos which do not belong to the current user' do
@@ -61,7 +64,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
       expect(result[:updated_ids].size).to eq(2)
 
       returned_todo_ids = result[:updated_ids]
-      expect(returned_todo_ids).to contain_exactly(todo1.to_global_id.to_s, todo4.to_global_id.to_s)
+      expect(returned_todo_ids).to contain_exactly(todo1.id, todo4.id)
       expect(result[:todos]).to contain_exactly(todo1, todo4)
 
       expect(todo1.reload.state).to eq('pending')

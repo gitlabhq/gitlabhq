@@ -65,11 +65,24 @@ the analyzer outputs an
 
 ## Project Security Dashboard
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235558) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+
+At the project level, the Security Dashboard displays a chart with the number of vulnerabilities over time. 
+Access it by navigating to **Security & Compliance > Security Dashboard**. Currently, we display historical
+data up to 365 days.
+
+![Project Security Dashboard](img/project_security_dashboard_chart_v13_6.png)
+
+Filter the historical data by clicking on the corresponding legend name. The image above, for example, shows 
+only the graph for vulnerabilities with **high** severity.
+
+### Vulnerability Report
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
-At the project level, the Security Dashboard displays the vulnerabilities that exist in your project's
-[default branch](../../project/repository/branches/index.md#default-branch). Access it by navigating
-to **Security & Compliance > Security Dashboard**. By default, the Security Dashboard is filtered to
+The vulnerabilities that exist in your project's
+[default branch](../../project/repository/branches/index.md#default-branch) are accessed by navigating to
+**Security & Compliance > Vulnerability Report**. By default, the Security Dashboard is filtered to
 display all detected and confirmed vulnerabilities.
 
 The Security Dashboard first displays the time at which the last pipeline completed on the project's

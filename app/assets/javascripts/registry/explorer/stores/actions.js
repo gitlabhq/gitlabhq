@@ -9,7 +9,7 @@ import {
   FETCH_TAGS_LIST_ERROR_MESSAGE,
   FETCH_IMAGE_DETAILS_ERROR_MESSAGE,
 } from '../constants/index';
-import { decodeAndParse } from '../utils';
+import { pathGenerator } from '../utils';
 
 export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);
 export const setShowGarbageCollectionTip = ({ commit }, data) =>
@@ -45,13 +45,13 @@ export const requestImagesList = (
     });
 };
 
-export const requestTagsList = ({ commit, dispatch }, { pagination = {}, params }) => {
+export const requestTagsList = ({ commit, dispatch, state: { imageDetails } }, pagination = {}) => {
   commit(types.SET_MAIN_LOADING, true);
-  const { tags_path } = decodeAndParse(params);
+  const tagsPath = pathGenerator(imageDetails);
 
   const { page = DEFAULT_PAGE, perPage = DEFAULT_PAGE_SIZE } = pagination;
   return axios
-    .get(tags_path, { params: { page, per_page: perPage } })
+    .get(tagsPath, { params: { page, per_page: perPage } })
     .then(({ data, headers }) => {
       dispatch('receiveTagsListSuccess', { data, headers });
     })
@@ -76,30 +76,30 @@ export const requestImageDetailsAndTagsList = ({ dispatch, commit }, id) => {
     });
 };
 
-export const requestDeleteTag = ({ commit, dispatch, state }, { tag, params }) => {
+export const requestDeleteTag = ({ commit, dispatch, state }, { tag }) => {
   commit(types.SET_MAIN_LOADING, true);
   return axios
     .delete(tag.destroy_path)
     .then(() => {
       dispatch('setShowGarbageCollectionTip', true);
-      return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
+
+      return dispatch('requestTagsList', state.tagsPagination);
     })
     .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };
 
-export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) => {
+export const requestDeleteTags = ({ commit, dispatch, state }, { ids }) => {
   commit(types.SET_MAIN_LOADING, true);
-  const { tags_path } = decodeAndParse(params);
 
-  const url = tags_path.replace('?format=json', '/bulk_destroy');
+  const tagsPath = pathGenerator(state.imageDetails, '/bulk_destroy');
 
   return axios
-    .delete(url, { params: { ids } })
+    .delete(tagsPath, { params: { ids } })
     .then(() => {
       dispatch('setShowGarbageCollectionTip', true);
-      return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
+      return dispatch('requestTagsList', state.tagsPagination);
     })
     .finally(() => {
       commit(types.SET_MAIN_LOADING, false);

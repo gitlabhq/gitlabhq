@@ -13,7 +13,7 @@ describe('Utils', () => {
     });
 
     it('returns the url with an ending when is passed', () => {
-      expect(pathGenerator(imageDetails, 'foo')).toBe('/foo/bar/registry/repository/1/foo');
+      expect(pathGenerator(imageDetails, '/foo')).toBe('/foo/bar/registry/repository/1/tags/foo');
     });
   });
 });

@@ -47,6 +47,8 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
 
         it 'skips the repository' do
           expect(ContainerExpirationPolicies::CleanupService).not_to receive(:new)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, :skipped)
 
           expect { subject }.to change { ContainerRepository.waiting_for_cleanup.count }.from(1).to(0)
           expect(repository.reload.cleanup_unscheduled?).to be_truthy

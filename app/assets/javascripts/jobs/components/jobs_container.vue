@@ -24,7 +24,7 @@ export default {
 };
 </script>
 <template>
-  <div class="js-jobs-container builds-container">
+  <div class="builds-container">
     <job-container-item
       v-for="job in jobs"
       :key="job.id"

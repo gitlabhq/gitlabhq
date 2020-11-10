@@ -60657,7 +60657,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "TodoID",
                       "ofType": null
                     }
                   }
@@ -60934,7 +60934,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "TodoID",
                       "ofType": null
                     }
                   }

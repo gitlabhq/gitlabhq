@@ -13,19 +13,19 @@ import DesignReplyForm from '../../components/design_notes/design_reply_form.vue
 import DesignSidebar from '../../components/design_sidebar.vue';
 import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import createImageDiffNoteMutation from '../../graphql/mutations/create_image_diff_note.mutation.graphql';
-import updateImageDiffNoteMutation from '../../graphql/mutations/update_image_diff_note.mutation.graphql';
+import repositionImageDiffNoteMutation from '../../graphql/mutations/reposition_image_diff_note.mutation.graphql';
 import updateActiveDiscussionMutation from '../../graphql/mutations/update_active_discussion.mutation.graphql';
 import {
   extractDiscussions,
   extractDesign,
-  updateImageDiffNoteOptimisticResponse,
+  repositionImageDiffNoteOptimisticResponse,
   toDiffNoteGid,
   extractDesignNoteId,
   getPageLayoutElement,
 } from '../../utils/design_management_utils';
 import {
   updateStoreAfterAddImageDiffNote,
-  updateStoreAfterUpdateImageDiffNote,
+  updateStoreAfterRepositionImageDiffNote,
 } from '../../utils/cache_update';
 import {
   ADD_DISCUSSION_COMMENT_ERROR,
@@ -182,12 +182,12 @@ export default {
     updateImageDiffNoteInStore(
       store,
       {
-        data: { updateImageDiffNote },
+        data: { repositionImageDiffNote },
       },
     ) {
-      return updateStoreAfterUpdateImageDiffNote(
+      return updateStoreAfterRepositionImageDiffNote(
         store,
-        updateImageDiffNote,
+        repositionImageDiffNote,
         getDesignQuery,
         this.designVariables,
       );
@@ -199,7 +199,7 @@ export default {
       );
 
       const mutationPayload = {
-        optimisticResponse: updateImageDiffNoteOptimisticResponse(note, {
+        optimisticResponse: repositionImageDiffNoteOptimisticResponse(note, {
           position,
         }),
         variables: {
@@ -208,7 +208,7 @@ export default {
             position,
           },
         },
-        mutation: updateImageDiffNoteMutation,
+        mutation: repositionImageDiffNoteMutation,
         update: this.updateImageDiffNoteInStore,
       };
 

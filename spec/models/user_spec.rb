@@ -319,7 +319,7 @@ RSpec.describe User do
         expect(subject).to validate_presence_of(:username)
       end
 
-      it 'rejects blacklisted names' do
+      it 'rejects denied names' do
         user = build(:user, username: 'dashboard')
 
         expect(user).not_to be_valid
@@ -442,9 +442,9 @@ RSpec.describe User do
     end
 
     describe 'email' do
-      context 'when no signup domains whitelisted' do
+      context 'when no signup domains allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return([])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return([])
         end
 
         it 'accepts any email' do
@@ -455,7 +455,7 @@ RSpec.describe User do
 
       context 'bad regex' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['([a-zA-Z0-9]+)+\.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['([a-zA-Z0-9]+)+\.com'])
         end
 
         it 'does not hang on evil input' do
@@ -467,9 +467,9 @@ RSpec.describe User do
         end
       end
 
-      context 'when a signup domain is whitelisted and subdomains are allowed' do
+      context 'when a signup domain is allowed and subdomains are allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com', '*.example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['example.com', '*.example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -488,9 +488,9 @@ RSpec.describe User do
         end
       end
 
-      context 'when a signup domain is whitelisted and subdomains are not allowed' do
+      context 'when a signup domain is allowed and subdomains are not allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -514,15 +514,15 @@ RSpec.describe User do
         end
       end
 
-      context 'domain blacklist' do
+      context 'domain denylist' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist_enabled?).and_return(true)
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist_enabled?).and_return(true)
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['example.com'])
         end
 
         context 'bad regex' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['([a-zA-Z0-9]+)+\.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['([a-zA-Z0-9]+)+\.com'])
           end
 
           it 'does not hang on evil input' do
@@ -534,7 +534,7 @@ RSpec.describe User do
           end
         end
 
-        context 'when a signup domain is blacklisted' do
+        context 'when a signup domain is denied' do
           it 'accepts info@test.com' do
             user = build(:user, email: 'info@test.com')
             expect(user).to be_valid
@@ -551,13 +551,13 @@ RSpec.describe User do
           end
         end
 
-        context 'when a signup domain is blacklisted but a wildcard subdomain is allowed' do
+        context 'when a signup domain is denied but a wildcard subdomain is allowed' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['test.example.com'])
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['*.example.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['test.example.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['*.example.com'])
           end
 
-          it 'gives priority to whitelist and allow info@test.example.com' do
+          it 'gives priority to allowlist and allow info@test.example.com' do
             user = build(:user, email: 'info@test.example.com')
             expect(user).to be_valid
           end
@@ -565,7 +565,7 @@ RSpec.describe User do
 
         context 'with both lists containing a domain' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['test.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['test.com'])
           end
 
           it 'accepts info@test.com' do
@@ -3637,9 +3637,9 @@ RSpec.describe User do
       end
     end
 
-    context 'when a domain whitelist is in place' do
+    context 'when a domain allowlist is in place' do
       before do
-        stub_application_setting(domain_whitelist: ['gitlab.com'])
+        stub_application_setting(domain_allowlist: ['gitlab.com'])
       end
 
       it 'creates a ghost user' do

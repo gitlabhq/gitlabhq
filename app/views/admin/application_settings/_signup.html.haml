@@ -31,14 +31,14 @@
       .form-text.text-muted
         = _("See GitLab's %{password_policy_guidelines}").html_safe % { password_policy_guidelines: password_policy_guidelines_link }
     .form-group
-      = f.label :domain_whitelist, _('Allowed domains for sign-ups'), class: 'label-bold'
+      = f.label :domain_allowlist, _('Allowed domains for sign-ups'), class: 'label-bold'
       = f.text_area :domain_allowlist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
       .form-text.text-muted ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
-      = f.label :domain_blacklist_enabled, _('Domain denylist'), class: 'label-bold'
+      = f.label :domain_denylist_enabled, _('Domain denylist'), class: 'label-bold'
       .form-check
-        = f.check_box :domain_blacklist_enabled, class: 'form-check-input'
-        = f.label :domain_blacklist_enabled, class: 'form-check-label' do
+        = f.check_box :domain_denylist_enabled, class: 'form-check-input'
+        = f.label :domain_denylist_enabled, class: 'form-check-label' do
           Enable domain denylist for sign ups
     .form-group
       .form-check
@@ -47,7 +47,7 @@
           .option-title
             Upload denylist file
       .form-check
-        = radio_button_tag :denylist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?, class: 'form-check-input'
+        = radio_button_tag :denylist_type, :raw, @application_setting.domain_denylist.present? || @application_setting.domain_denylist.blank?, class: 'form-check-input'
         = label_tag :denylist_type_raw, class: 'form-check-label' do
           .option-title
             Enter denylist manually
@@ -56,7 +56,7 @@
       = f.file_field :domain_denylist_file, class: 'form-control', accept: '.txt,.conf'
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
     .form-group.js-denylist-raw
-      = f.label :domain_blacklist, _('Denied domains for sign-ups'), class: 'label-bold'
+      = f.label :domain_denylist, _('Denied domains for sign-ups'), class: 'label-bold'
       = f.text_area :domain_denylist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group

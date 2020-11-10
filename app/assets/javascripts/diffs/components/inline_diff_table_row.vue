@@ -3,7 +3,13 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { CONTEXT_LINE_CLASS_NAME } from '../constants';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
-import * as utils from './diff_row_utils';
+import {
+  isHighlighted,
+  shouldShowCommentButton,
+  shouldRenderCommentButton,
+  classNameMapCell,
+  addCommentTooltip,
+} from './diff_row_utils';
 
 export default {
   components: {
@@ -48,60 +54,42 @@ export default {
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
-        return utils.isHighlighted(state, this.line, this.isCommented);
+        return isHighlighted(state, this.line, this.isCommented);
       },
     }),
-    isContextLine() {
-      return utils.isContextLine(this.line.type);
-    },
     classNameMap() {
       return [
         this.line.type,
         {
-          [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
+          [CONTEXT_LINE_CLASS_NAME]: this.line.isContextLine,
         },
       ];
     },
     inlineRowId() {
       return this.line.line_code || `${this.fileHash}_${this.line.old_line}_${this.line.new_line}`;
     },
-    isMatchLine() {
-      return utils.isMatchLine(this.line.type);
-    },
     coverageState() {
       return this.fileLineCoverage(this.filePath, this.line.new_line);
     },
-    isMetaLine() {
-      return utils.isMetaLine(this.line.type);
-    },
     classNameMapCell() {
-      return utils.classNameMapCell(this.line, this.isHighlighted, this.isLoggedIn, this.isHover);
+      return classNameMapCell(this.line, this.isHighlighted, this.isLoggedIn, this.isHover);
     },
     addCommentTooltip() {
-      return utils.addCommentTooltip(this.line);
+      return addCommentTooltip(this.line);
     },
     shouldRenderCommentButton() {
-      return utils.shouldRenderCommentButton(this.isLoggedIn, true);
+      return shouldRenderCommentButton(this.isLoggedIn, true);
     },
     shouldShowCommentButton() {
-      return utils.shouldShowCommentButton(
+      return shouldShowCommentButton(
         this.isHover,
-        this.isContextLine,
-        this.isMetaLine,
-        this.hasDiscussions,
+        this.line.isContextLine,
+        this.line.isMetaLine,
+        this.line.hasDiscussions,
       );
     },
-    hasDiscussions() {
-      return utils.hasDiscussions(this.line);
-    },
-    lineHref() {
-      return utils.lineHref(this.line);
-    },
-    lineCode() {
-      return utils.lineCode(this.line);
-    },
     shouldShowAvatarsOnGutter() {
-      return this.hasDiscussions;
+      return this.line.hasDiscussions;
     },
   },
   mounted() {
@@ -128,7 +116,6 @@ export default {
 
 <template>
   <tr
-    v-if="!isMatchLine"
     :id="inlineRowId"
     :class="classNameMap"
     class="line_holder"
@@ -158,8 +145,8 @@ export default {
         v-if="line.old_line"
         ref="lineNumberRefOld"
         :data-linenumber="line.old_line"
-        :href="lineHref"
-        @click="setHighlightedRow(lineCode)"
+        :href="line.lineHref"
+        @click="setHighlightedRow(line.lineCode)"
       >
       </a>
       <diff-gutter-avatars
@@ -167,7 +154,11 @@ export default {
         :discussions="line.discussions"
         :discussions-expanded="line.discussionsExpanded"
         @toggleLineDiscussions="
-          toggleLineDiscussions({ lineCode, fileHash, expanded: !line.discussionsExpanded })
+          toggleLineDiscussions({
+            lineCode: line.lineCode,
+            fileHash,
+            expanded: !line.discussionsExpanded,
+          })
         "
       />
     </td>
@@ -176,8 +167,8 @@ export default {
         v-if="line.new_line"
         ref="lineNumberRefNew"
         :data-linenumber="line.new_line"
-        :href="lineHref"
-        @click="setHighlightedRow(lineCode)"
+        :href="line.lineHref"
+        @click="setHighlightedRow(line.lineCode)"
       >
       </a>
     </td>

@@ -67,7 +67,12 @@ describe('Image List Row', () => {
       mountComponent();
       const link = findDetailsLink();
       expect(link.html()).toContain(item.path);
-      expect(link.props('to').name).toBe('details');
+      expect(link.props('to')).toMatchObject({
+        name: 'details',
+        params: {
+          id: item.id,
+        },
+      });
     });
 
     it('contains a clipboard button', () => {

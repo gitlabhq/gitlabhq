@@ -7,12 +7,17 @@ import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/registry/explorer/stores/actions';
 import * as types from '~/registry/explorer/stores/mutation_types';
 import { reposServerResponse, registryServerResponse } from '../mock_data';
+import * as utils from '~/registry/explorer/utils';
 
 jest.mock('~/flash.js');
+jest.mock('~/registry/explorer/utils');
 
 describe('Actions RegistryExplorer Store', () => {
   let mock;
   const endpoint = `${TEST_HOST}/endpoint.json`;
+
+  const url = `${endpoint}/1}`;
+  jest.spyOn(utils, 'pathGenerator').mockReturnValue(url);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -132,15 +137,12 @@ describe('Actions RegistryExplorer Store', () => {
   });
 
   describe('fetch tags list', () => {
-    const url = `${endpoint}/1}`;
-    const params = window.btoa(JSON.stringify({ tags_path: `${endpoint}/1}` }));
-
     it('sets the tagsList', done => {
       mock.onGet(url).replyOnce(200, registryServerResponse, {});
 
       testAction(
         actions.requestTagsList,
-        { params },
+        {},
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },
@@ -159,7 +161,7 @@ describe('Actions RegistryExplorer Store', () => {
     it('should create flash on error', done => {
       testAction(
         actions.requestTagsList,
-        { params },
+        {},
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },
@@ -177,8 +179,6 @@ describe('Actions RegistryExplorer Store', () => {
   describe('request delete single tag', () => {
     it('successfully performs the delete request', done => {
       const deletePath = 'delete/path';
-      const params = window.btoa(JSON.stringify({ tags_path: `${endpoint}/1}`, id: 1 }));
-
       mock.onDelete(deletePath).replyOnce(200);
 
       testAction(
@@ -187,7 +187,6 @@ describe('Actions RegistryExplorer Store', () => {
           tag: {
             destroy_path: deletePath,
           },
-          params,
         },
         {
           tagsPagination: {},
@@ -203,7 +202,7 @@ describe('Actions RegistryExplorer Store', () => {
           },
           {
             type: 'requestTagsList',
-            payload: { pagination: {}, params },
+            payload: {},
           },
         ],
         done,
@@ -270,17 +269,13 @@ describe('Actions RegistryExplorer Store', () => {
   });
 
   describe('request delete multiple tags', () => {
-    const url = `project-path/registry/repository/foo/tags`;
-    const params = window.btoa(JSON.stringify({ tags_path: `${url}?format=json` }));
-
     it('successfully performs the delete request', done => {
-      mock.onDelete(`${url}/bulk_destroy`).replyOnce(200);
+      mock.onDelete(url).replyOnce(200);
 
       testAction(
         actions.requestDeleteTags,
         {
           ids: [1, 2],
-          params,
         },
         {
           tagsPagination: {},
@@ -296,7 +291,7 @@ describe('Actions RegistryExplorer Store', () => {
           },
           {
             type: 'requestTagsList',
-            payload: { pagination: {}, params },
+            payload: {},
           },
         ],
         done,
@@ -310,7 +305,6 @@ describe('Actions RegistryExplorer Store', () => {
         actions.requestDeleteTags,
         {
           ids: [1, 2],
-          params,
         },
         {
           tagsPagination: {},

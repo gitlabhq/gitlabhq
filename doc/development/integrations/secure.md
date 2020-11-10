@@ -256,7 +256,7 @@ to `info`.
 
 When executing command lines, scanners should use the `debug` level to log the command line and its output.
 For instance, the [bundler-audit](https://gitlab.com/gitlab-org/security-products/analyzers/bundler-audit) scanner
-uses the `debug` level to log the command line `bundle audit check --quiet`,
+uses the `debug` level to log the command line `bundle audit check --quiet`,
 and what `bundle audit` writes to the standard output.
 
 #### common logutil package
@@ -298,7 +298,7 @@ The `vulnerabilities` field of the report is an array of vulnerability objects.
 
 #### ID
 
-The `id` field is the unique identifier of the vulnerability.
+The `id` field is the unique identifier of the vulnerability.
 It is used to reference a fixed vulnerability from a [remediation objects](#remediations).
 We recommend that you generate a UUID and use it as the `id` field's value.
 

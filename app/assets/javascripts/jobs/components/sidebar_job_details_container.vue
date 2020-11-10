@@ -6,7 +6,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 
 export default {
-  name: 'SidebarJobDetailsContainer',
+  name: 'JobSidebarDetailsContainer',
   components: {
     DetailRow,
   },

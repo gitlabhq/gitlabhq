@@ -5,7 +5,7 @@ import createStore from '~/jobs/store';
 import { extendedWrapper } from '../../helpers/vue_test_utils_helper';
 import job from '../mock_data';
 
-describe('Sidebar Job Details Container', () => {
+describe('Job Sidebar Details Container', () => {
   let store;
   let wrapper;
 

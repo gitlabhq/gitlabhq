@@ -449,6 +449,7 @@
   }
 }
 
+.diff-table.code,
 table.code {
   width: 100%;
   font-family: $monospace-font;
@@ -459,10 +460,12 @@ table.code {
   table-layout: fixed;
   border-radius: 0 0 $border-radius-default $border-radius-default;
 
+  .diff-tr:first-of-type.line_expansion > .diff-td,
   tr:first-of-type.line_expansion > td {
     border-top: 0;
   }
 
+  .diff-tr:nth-last-of-type(2).line_expansion > .diff-td,
   tr:nth-last-of-type(2).line_expansion,
   tr:last-of-type.line_expansion {
     > td {
@@ -470,6 +473,7 @@ table.code {
     }
   }
 
+  .diff-tr.line_holder .diff-td,
   tr.line_holder td {
     line-height: $code-line-height;
     font-size: $code-font-size;
@@ -565,22 +569,93 @@ table.code {
   }
 
   .line_holder:last-of-type {
+    .diff-td:first-child,
     td:first-child {
       border-bottom-left-radius: $border-radius-default;
     }
   }
 
   &.left-side-selected {
+    .diff-td.line_content.parallel.right-side,
     td.line_content.parallel.right-side {
       user-select: none;
     }
   }
 
   &.right-side-selected {
+    .diff-td.line_content.parallel.left-side,
     td.line_content.parallel.left-side {
       user-select: none;
     }
   }
+}
+
+// Merge request diff grid layout
+.diff-grid {
+  .diff-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .diff-grid-left,
+  .diff-grid-right {
+    display: grid;
+    grid-template-columns: 50px 8px 1fr;
+
+    .diff-td:nth-child(2) {
+      display: none;
+    }
+  }
+
+  .diff-grid-comments {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .diff-grid-drafts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &.inline {
+    .diff-grid-comments {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .diff-grid-drafts {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .diff-grid-row {
+      grid-template-columns: 1fr;
+    }
+
+    .diff-grid-left,
+    .diff-grid-right {
+      grid-template-columns: 50px 50px 8px 1fr;
+
+      .diff-td:nth-child(2) {
+        display: block;
+      }
+    }
+
+    .diff-grid-left .old:nth-child(2) [data-linenumber],
+    .diff-grid-right .new:nth-child(2) [data-linenumber] {
+      display: inline;
+    }
+
+    .diff-grid-left .old:nth-child(3) [data-linenumber],
+    .diff-grid-right .new:nth-child(1) [data-linenumber] {
+      display: none;
+    }
+  }
+}
+
+// Merge request diff grid layout overrides
+.diff-table.code .diff-tr.line_holder .diff-td.line_content.parallel {
+  width: unset;
 }
 
 .diff-stats {

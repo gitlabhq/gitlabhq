@@ -379,41 +379,41 @@ RSpec.describe API::Settings, 'Settings' do
       end
     end
 
-    context 'domain_blacklist settings' do
-      it 'rejects domain_blacklist_enabled when domain_blacklist is empty' do
+    context 'domain_denylist settings' do
+      it 'rejects domain_denylist_enabled when domain_denylist is empty' do
         put api('/application/settings', admin),
           params: {
-            domain_blacklist_enabled: true,
-            domain_blacklist: []
+            domain_denylist_enabled: true,
+            domain_denylist: []
           }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         message = json_response["message"]
-        expect(message["domain_blacklist"]).to eq(["Domain blacklist cannot be empty if Blacklist is enabled."])
+        expect(message["domain_denylist"]).to eq(["Domain denylist cannot be empty if denylist is enabled."])
       end
 
-      it 'allows array for domain_blacklist' do
+      it 'allows array for domain_denylist' do
         put api('/application/settings', admin),
           params: {
-            domain_blacklist_enabled: true,
-            domain_blacklist: ['domain1.com', 'domain2.com']
+            domain_denylist_enabled: true,
+            domain_denylist: ['domain1.com', 'domain2.com']
           }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['domain_blacklist_enabled']).to be(true)
-        expect(json_response['domain_blacklist']).to eq(['domain1.com', 'domain2.com'])
+        expect(json_response['domain_denylist_enabled']).to be(true)
+        expect(json_response['domain_denylist']).to eq(['domain1.com', 'domain2.com'])
       end
 
-      it 'allows a string for domain_blacklist' do
+      it 'allows a string for domain_denylist' do
         put api('/application/settings', admin),
           params: {
-            domain_blacklist_enabled: true,
-            domain_blacklist: 'domain3.com, *.domain4.com'
+            domain_denylist_enabled: true,
+            domain_denylist: 'domain3.com, *.domain4.com'
           }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['domain_blacklist_enabled']).to be(true)
-        expect(json_response['domain_blacklist']).to eq(['domain3.com', '*.domain4.com'])
+        expect(json_response['domain_denylist_enabled']).to be(true)
+        expect(json_response['domain_denylist']).to eq(['domain3.com', '*.domain4.com'])
       end
     end
 

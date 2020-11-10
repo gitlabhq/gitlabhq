@@ -3,6 +3,9 @@ import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
 
+export const hasForwardDeploymentFailure = state =>
+  state?.job?.failure_reason === 'forward_deployment_failure';
+
 export const hasUnmetPrerequisitesFailure = state =>
   state?.job?.failure_reason === 'unmet_prerequisites';
 

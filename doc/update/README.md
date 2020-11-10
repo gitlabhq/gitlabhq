@@ -164,7 +164,7 @@ upgrade paths.
 ## Upgrading to a new major version
 
 Upgrading the *major* version requires more attention.
-Backward-incompatible changes and migrations are reserved for major versions.
+Backward-incompatible changes and migrations are reserved for major versions.
 We cannot guarantee that upgrading between major versions will be seamless.
 It is suggested to upgrade to the latest available *minor* version within
 your major version before proceeding to the next major version.

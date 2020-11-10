@@ -218,8 +218,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     # TODO Remove domain_denylist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
     params.delete(:domain_denylist_raw) if params[:domain_denylist_file]
-    params.delete(:domain_denylist_raw) if params[:domain_blacklist]
-    params.delete(:domain_allowlist_raw) if params[:domain_whitelist]
+    params.delete(:domain_denylist_raw) if params[:domain_denylist]
+    params.delete(:domain_allowlist_raw) if params[:domain_allowlist]
 
     params.require(:application_setting).permit(
       visible_application_setting_attributes

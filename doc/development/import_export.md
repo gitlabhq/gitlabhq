@@ -360,28 +360,28 @@ The NDJSON tree will look like this:
 ```shell
 tree
 ├── project
-│   ├── auto_devops.ndjson
-│   ├── boards.ndjson
-│   ├── ci_cd_settings.ndjson
-│   ├── ci_pipelines.ndjson
-│   ├── container_expiration_policy.ndjson
-│   ├── custom_attributes.ndjson
-│   ├── error_tracking_setting.ndjson
-│   ├── external_pull_requests.ndjson
-│   ├── issues.ndjson
-│   ├── labels.ndjson
-│   ├── merge_requests.ndjson
-│   ├── milestones.ndjson
-│   ├── pipeline_schedules.ndjson
-│   ├── project_badges.ndjson
-│   ├── project_feature.ndjson
-│   ├── project_members.ndjson
-│   ├── protected_branches.ndjson
-│   ├── protected_tags.ndjson
-│   ├── releases.ndjson
-│   ├── services.ndjson
-│   ├── snippets.ndjson
-│   └── triggers.ndjson
+│   ├── auto_devops.ndjson
+│   ├── boards.ndjson
+│   ├── ci_cd_settings.ndjson
+│   ├── ci_pipelines.ndjson
+│   ├── container_expiration_policy.ndjson
+│   ├── custom_attributes.ndjson
+│   ├── error_tracking_setting.ndjson
+│   ├── external_pull_requests.ndjson
+│   ├── issues.ndjson
+│   ├── labels.ndjson
+│   ├── merge_requests.ndjson
+│   ├── milestones.ndjson
+│   ├── pipeline_schedules.ndjson
+│   ├── project_badges.ndjson
+│   ├── project_feature.ndjson
+│   ├── project_members.ndjson
+│   ├── protected_branches.ndjson
+│   ├── protected_tags.ndjson
+│   ├── releases.ndjson
+│   ├── services.ndjson
+│   ├── snippets.ndjson
+│   └── triggers.ndjson
 └── project.json
 ```
 
@@ -395,19 +395,19 @@ The NDJSON tree will look like this:
 tree
 └── groups
     ├── 4351
-    │   ├── badges.ndjson
-    │   ├── boards.ndjson
-    │   ├── epics.ndjson
-    │   ├── labels.ndjson
-    │   ├── members.ndjson
-    │   └── milestones.ndjson
+    │   ├── badges.ndjson
+    │   ├── boards.ndjson
+    │   ├── epics.ndjson
+    │   ├── labels.ndjson
+    │   ├── members.ndjson
+    │   └── milestones.ndjson
     ├── 4352
-    │   ├── badges.ndjson
-    │   ├── boards.ndjson
-    │   ├── epics.ndjson
-    │   ├── labels.ndjson
-    │   ├── members.ndjson
-    │   └── milestones.ndjson
+    │   ├── badges.ndjson
+    │   ├── boards.ndjson
+    │   ├── epics.ndjson
+    │   ├── labels.ndjson
+    │   ├── members.ndjson
+    │   └── milestones.ndjson
     ├── _all.ndjson
     ├── 4351.json
     └── 4352.json

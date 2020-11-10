@@ -1843,15 +1843,15 @@ class User < ApplicationRecord
     valid = true
     error = nil
 
-    if Gitlab::CurrentSettings.domain_blacklist_enabled?
-      blocked_domains = Gitlab::CurrentSettings.domain_blacklist
+    if Gitlab::CurrentSettings.domain_denylist_enabled?
+      blocked_domains = Gitlab::CurrentSettings.domain_denylist
       if domain_matches?(blocked_domains, email)
         error = 'is not from an allowed domain.'
         valid = false
       end
     end
 
-    allowed_domains = Gitlab::CurrentSettings.domain_whitelist
+    allowed_domains = Gitlab::CurrentSettings.domain_allowlist
     unless allowed_domains.blank?
       if domain_matches?(allowed_domains, email)
         valid = true

@@ -3,7 +3,7 @@ import {
   updateStoreAfterDesignsDelete,
   updateStoreAfterAddImageDiffNote,
   updateStoreAfterUploadDesign,
-  updateStoreAfterUpdateImageDiffNote,
+  updateStoreAfterRepositionImageDiffNote,
 } from '~/design_management/utils/cache_update';
 import {
   designDeletionError,
@@ -26,11 +26,11 @@ describe('Design Management cache update', () => {
 
   describe('error handling', () => {
     it.each`
-      fnName                                   | subject                                | errorMessage                               | extraArgs
-      ${'updateStoreAfterDesignsDelete'}       | ${updateStoreAfterDesignsDelete}       | ${designDeletionError({ singular: true })} | ${[[design]]}
-      ${'updateStoreAfterAddImageDiffNote'}    | ${updateStoreAfterAddImageDiffNote}    | ${ADD_IMAGE_DIFF_NOTE_ERROR}               | ${[]}
-      ${'updateStoreAfterUploadDesign'}        | ${updateStoreAfterUploadDesign}        | ${mockErrors[0]}                           | ${[]}
-      ${'updateStoreAfterUpdateImageDiffNote'} | ${updateStoreAfterUpdateImageDiffNote} | ${UPDATE_IMAGE_DIFF_NOTE_ERROR}            | ${[]}
+      fnName                                   | subject                                    | errorMessage                               | extraArgs
+      ${'updateStoreAfterDesignsDelete'}       | ${updateStoreAfterDesignsDelete}           | ${designDeletionError({ singular: true })} | ${[[design]]}
+      ${'updateStoreAfterAddImageDiffNote'}    | ${updateStoreAfterAddImageDiffNote}        | ${ADD_IMAGE_DIFF_NOTE_ERROR}               | ${[]}
+      ${'updateStoreAfterUploadDesign'}        | ${updateStoreAfterUploadDesign}            | ${mockErrors[0]}                           | ${[]}
+      ${'updateStoreAfterUpdateImageDiffNote'} | ${updateStoreAfterRepositionImageDiffNote} | ${UPDATE_IMAGE_DIFF_NOTE_ERROR}            | ${[]}
     `('$fnName handles errors in response', ({ subject, extraArgs, errorMessage }) => {
       expect(createFlash).not.toHaveBeenCalled();
       expect(() => subject(mockStore, { errors: mockErrors }, {}, ...extraArgs)).toThrow();

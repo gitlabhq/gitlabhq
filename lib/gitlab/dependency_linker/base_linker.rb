@@ -6,6 +6,7 @@ module Gitlab
       URL_REGEX = %r{https?://[^'" ]+}.freeze
       GIT_INVALID_URL_REGEX = /^git\+#{URL_REGEX}/.freeze
       REPO_REGEX = %r{[^/'" ]+/[^/'" ]+}.freeze
+      VALID_LINK_ATTRIBUTES = %w[href rel target].freeze
 
       include ActionView::Helpers::SanitizeHelper
 
@@ -66,7 +67,7 @@ module Gitlab
       def link_tag(name, url)
         sanitize(
           %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>},
-          attributes: %w[href rel target]
+          attributes: VALID_LINK_ATTRIBUTES
         )
       end
 
@@ -77,7 +78,7 @@ module Gitlab
       #   # Will link `user/repo` in `github: "user/repo"` or `:github => "user/repo"`
       def link_regex(regex, &url_proc)
         highlighted_lines.map!.with_index do |rich_line, i|
-          marker = StringRegexMarker.new(plain_lines[i].chomp, rich_line.html_safe)
+          marker = StringRegexMarker.new((plain_lines[i].chomp! || plain_lines[i]), rich_line.html_safe)
 
           marker.mark(regex, group: :name) do |text, left:, right:|
             url = yield(text)

@@ -54,11 +54,6 @@ export default {
       required: false,
       default: false,
     },
-    colspan: {
-      type: Number,
-      required: false,
-      default: 4,
-    },
   },
   computed: {
     ...mapState({
@@ -231,28 +226,26 @@ export default {
 </script>
 
 <template>
-  <td :colspan="colspan" class="text-center gl-font-regular">
-    <div class="content js-line-expansion-content">
-      <a
-        v-if="canExpandDown"
-        class="gl-mx-2 gl-cursor-pointer js-unfold-down gl-display-inline-block gl-py-4"
-        @click="handleExpandLines(EXPAND_DOWN)"
-      >
-        <gl-icon :size="12" name="expand-down" aria-hidden="true" />
-        <span>{{ $options.i18n.showMore }}</span>
-      </a>
-      <a class="gl-mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
-        <gl-icon :size="12" name="expand" aria-hidden="true" />
-        <span>{{ $options.i18n.showAll }}</span>
-      </a>
-      <a
-        v-if="canExpandUp"
-        class="gl-mx-2 gl-cursor-pointer js-unfold gl-display-inline-block gl-py-4"
-        @click="handleExpandLines(EXPAND_UP)"
-      >
-        <gl-icon :size="12" name="expand-up" aria-hidden="true" />
-        <span>{{ $options.i18n.showMore }}</span>
-      </a>
-    </div>
-  </td>
+  <div class="content js-line-expansion-content">
+    <a
+      v-if="canExpandDown"
+      class="gl-mx-2 gl-cursor-pointer js-unfold-down gl-display-inline-block gl-py-4"
+      @click="handleExpandLines(EXPAND_DOWN)"
+    >
+      <gl-icon :size="12" name="expand-down" aria-hidden="true" />
+      <span>{{ $options.i18n.showMore }}</span>
+    </a>
+    <a class="gl-mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
+      <gl-icon :size="12" name="expand" aria-hidden="true" />
+      <span>{{ $options.i18n.showAll }}</span>
+    </a>
+    <a
+      v-if="canExpandUp"
+      class="gl-mx-2 gl-cursor-pointer js-unfold gl-display-inline-block gl-py-4"
+      @click="handleExpandLines(EXPAND_UP)"
+    >
+      <gl-icon :size="12" name="expand-up" aria-hidden="true" />
+      <span>{{ $options.i18n.showMore }}</span>
+    </a>
+  </div>
 </template>

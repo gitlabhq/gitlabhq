@@ -49,15 +49,15 @@ end
 
 RSpec.shared_examples 'application settings examples' do
   context 'restricted signup domains' do
-    it_behaves_like 'string of domains', :domain_allowlist, :domain_whitelist
+    it_behaves_like 'string of domains', :domain_allowlist, :domain_allowlist
   end
 
-  context 'blacklisted signup domains' do
-    it_behaves_like 'string of domains', :domain_denylist, :domain_blacklist
+  context 'denied signup domains' do
+    it_behaves_like 'string of domains', :domain_denylist, :domain_denylist
 
     it 'sets multiple domain with file' do
       setting.domain_denylist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_denylist.txt'))
-      expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
+      expect(setting.domain_denylist).to contain_exactly('example.com', 'test.com', 'foo.bar')
     end
   end
 

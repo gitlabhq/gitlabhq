@@ -113,7 +113,7 @@ module Gitlab
         end
       rescue SocketError
         # If the dns rebinding protection is not enabled or the domain
-        # is whitelisted we avoid the dns rebinding checks
+        # is allowed we avoid the dns rebinding checks
         return if domain_allowed?(uri) || !dns_rebind_protection
 
         # In the test suite we use a lot of mocked urls that are either invalid or

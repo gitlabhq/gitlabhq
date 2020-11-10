@@ -1,11 +1,13 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
     CiIcon,
+    GlDropdown,
+    GlDropdownItem,
     GlLink,
   },
   props: {
@@ -78,20 +80,15 @@ export default {
       </template>
     </div>
 
-    <button
-      type="button"
-      data-toggle="dropdown"
-      class="js-selected-stage dropdown-menu-toggle gl-mt-3"
-    >
-      {{ selectedStage }} <i class="fa fa-chevron-down"></i>
-    </button>
-
-    <ul class="dropdown-menu">
-      <li v-for="stage in stages" :key="stage.name">
-        <button type="button" class="js-stage-item stage-item" @click="onStageClick(stage)">
-          {{ stage.name }}
-        </button>
-      </li>
-    </ul>
+    <gl-dropdown :text="selectedStage" class="js-selected-stage gl-w-full gl-mt-3">
+      <gl-dropdown-item
+        v-for="stage in stages"
+        :key="stage.name"
+        class="js-stage-item stage-item"
+        @click="onStageClick(stage)"
+      >
+        {{ stage.name }}
+      </gl-dropdown-item>
+    </gl-dropdown>
   </div>
 </template>

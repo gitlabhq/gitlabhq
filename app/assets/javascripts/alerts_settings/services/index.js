@@ -2,6 +2,7 @@
 import axios from '~/lib/utils/axios_utils';
 
 export default {
+  // TODO: All this code save updateTestAlert will be deleted as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/255501
   updateGenericKey({ endpoint, params }) {
     return axios.put(endpoint, params);
   },
@@ -25,11 +26,11 @@ export default {
       },
     });
   },
-  updateTestAlert({ endpoint, data, authKey }) {
+  updateTestAlert({ endpoint, data, token }) {
     return axios.post(endpoint, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authKey}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   },

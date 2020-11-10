@@ -15,7 +15,8 @@ module Ci
         "build_status" => @build.status,
         "build_stage" => @build.stage,
         "log_state" => '',
-        "build_options" => javascript_build_options
+        "build_options" => javascript_build_options,
+        "retry_outdated_job_docs_url" => help_page_path('ci/pipelines/settings', anchor: 'retry-outdated-jobs')
       }
     end
   end

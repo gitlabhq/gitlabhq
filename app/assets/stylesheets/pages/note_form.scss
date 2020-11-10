@@ -2,6 +2,7 @@
  * Note Form
  */
 .diff-file .diff-content {
+  .diff-tr.line_holder:hover > .diff-td .line_note_link,
   tr.line_holder:hover > td .line_note_link {
     opacity: 1;
     filter: alpha(opacity = 100);

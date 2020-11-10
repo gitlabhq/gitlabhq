@@ -453,6 +453,8 @@ $note-form-margin-left: 72px;
 }
 
 .diff-file {
+  .diff-grid-left:hover,
+  .diff-grid-right:hover,
   .is-over {
     .add-diff-note {
       display: inline-flex;
@@ -490,6 +492,7 @@ $note-form-margin-left: 72px;
   .notes_holder {
     font-family: $regular-font;
 
+    .diff-td,
     td {
       border: 1px solid $border-color;
       border-left: 0;
@@ -805,6 +808,8 @@ $note-form-margin-left: 72px;
  * Line note button on the side of diffs
  */
 
+.diff-grid-left:hover,
+.diff-grid-right:hover,
 .line_holder .is-over:not(.no-comment-btn) {
   .add-diff-note {
     opacity: 1;

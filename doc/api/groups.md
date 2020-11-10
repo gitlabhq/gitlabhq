@@ -95,7 +95,7 @@ GET /groups?statistics=true
     "parent_id": null,
     "created_at": "2020-01-15T12:36:29.590Z",
     "statistics": {
-      "storage_size" : 212,
+      "storage_size" : 363,
       "repository_size" : 33,
       "wiki_size" : 100,
       "lfs_objects_size" : 123,

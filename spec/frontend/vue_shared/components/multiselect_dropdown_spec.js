@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { getByText } from '@testing-library/dom';
-import AssigneesDropdown from '~/vue_shared/components/sidebar/assignees_dropdown.vue';
+import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
 
-describe('AssigneesDropdown Component', () => {
+describe('MultiSelectDropdown Component', () => {
   it('renders items slot', () => {
-    const wrapper = shallowMount(AssigneesDropdown, {
+    const wrapper = shallowMount(MultiSelectDropdown, {
       propsData: {
         text: '',
         headerText: '',

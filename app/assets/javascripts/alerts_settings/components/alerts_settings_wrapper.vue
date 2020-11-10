@@ -24,6 +24,7 @@ import {
   ADD_INTEGRATION_ERROR,
   RESET_INTEGRATION_TOKEN_ERROR,
   UPDATE_INTEGRATION_ERROR,
+  INTEGRATION_PAYLOAD_TEST_ERROR,
 } from '../utils/error_messages';
 
 export default {
@@ -244,6 +245,9 @@ export default {
     clearCurrentIntegration() {
       this.currentIntegration = null;
     },
+    testPayloadFailure() {
+      createFlash({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
+    },
   },
 };
 </script>
@@ -266,6 +270,7 @@ export default {
       @update-integration="updateIntegration"
       @reset-token="resetToken"
       @clear-current-integration="clearCurrentIntegration"
+      @test-payload-failure="testPayloadFailure"
     />
     <settings-form-old v-else />
   </div>

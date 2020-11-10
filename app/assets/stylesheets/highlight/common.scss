@@ -20,6 +20,7 @@
 @mixin diff-expansion($background, $border, $link) {
   background-color: $background;
 
+  .diff-td,
   td {
     border-top: 1px solid $border;
     border-bottom: 1px solid $border;
@@ -39,5 +40,14 @@
 
   &.no-coverage {
     border-left: 3px solid $no-coverage;
+  }
+}
+
+@mixin line-number-hover($color) {
+  background-color: $color;
+  border-color: darken($color, 5%);
+
+  a {
+    color: darken($color, 15%);
   }
 }

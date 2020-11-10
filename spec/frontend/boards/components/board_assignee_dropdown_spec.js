@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { GlDropdownItem, GlAvatarLink, GlAvatarLabeled } from '@gitlab/ui';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
-import AssigneesDropdown from '~/vue_shared/components/sidebar/assignees_dropdown.vue';
+import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import store from '~/boards/stores';
 import getIssueParticipants from '~/vue_shared/components/sidebar/queries/getIssueParticipants.query.graphql';
@@ -109,7 +109,7 @@ describe('BoardCardAssigneeDropdown', () => {
       createComponent();
 
       expect(wrapper.find(IssuableAssignees).isVisible()).toBe(true);
-      expect(wrapper.find(AssigneesDropdown).isVisible()).toBe(false);
+      expect(wrapper.find(MultiSelectDropdown).isVisible()).toBe(false);
     });
   });
 
@@ -122,7 +122,7 @@ describe('BoardCardAssigneeDropdown', () => {
 
     it('shows assignees dropdown', async () => {
       expect(wrapper.find(IssuableAssignees).isVisible()).toBe(false);
-      expect(wrapper.find(AssigneesDropdown).isVisible()).toBe(true);
+      expect(wrapper.find(MultiSelectDropdown).isVisible()).toBe(true);
     });
 
     it('shows the issue returned as the activeIssue', async () => {

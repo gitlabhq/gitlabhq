@@ -112,9 +112,9 @@ export default {
     },
     canMoveNote(note) {
       const { userPermissions } = note;
-      const { adminNote } = userPermissions || {};
+      const { repositionNote } = userPermissions || {};
 
-      return Boolean(adminNote);
+      return Boolean(repositionNote);
     },
     isPositionInOverlay(position) {
       const { top, left } = this.getNoteRelativePosition(position);

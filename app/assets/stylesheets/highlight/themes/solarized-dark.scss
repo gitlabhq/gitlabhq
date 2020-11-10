@@ -129,6 +129,9 @@ $solarized-dark-il: #2aa198;
       @include dark-diff-match-line;
     }
 
+    .diff-td.diff-line-num.hll:not(.empty-cell),
+    .diff-td.line-coverage.hll:not(.empty-cell),
+    .diff-td.line_content.hll:not(.empty-cell),
     td.diff-line-num.hll:not(.empty-cell),
     td.line-coverage.hll:not(.empty-cell),
     td.line_content.hll:not(.empty-cell) {
@@ -138,6 +141,13 @@ $solarized-dark-il: #2aa198;
 
     .line-coverage {
       @include line-coverage-border-color($solarized-dark-coverage, $solarized-dark-no-coverage);
+    }
+
+    .diff-grid-left:hover,
+    .diff-grid-right:hover {
+      .diff-line-num:not(.empty-cell) {
+        @include line-number-hover($solarized-dark-over-bg);
+      }
     }
 
     .diff-line-num.new,
@@ -165,12 +175,7 @@ $solarized-dark-il: #2aa198;
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        background-color: $solarized-dark-over-bg;
-        border-color: darken($solarized-dark-over-bg, 5%);
-
-        a {
-          color: darken($solarized-dark-over-bg, 15%);
-        }
+        @include line-number-hover($solarized-dark-over-bg);
       }
     }
 

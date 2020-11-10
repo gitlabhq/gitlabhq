@@ -2668,6 +2668,9 @@ msgstr ""
 msgid "AlertsIntegrations|Integration Name"
 msgstr ""
 
+msgid "AlertsIntegrations|Integration payload is invalid. You can still save your changes."
+msgstr ""
+
 msgid "AlertsIntegrations|No integrations have been added yet"
 msgstr ""
 
@@ -15334,6 +15337,15 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Jobs|Are you sure you want to proceed?"
+msgstr ""
+
+msgid "Jobs|Are you sure you want to retry this job?"
+msgstr ""
+
+msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
+msgstr ""
+
 msgid "Job|Browse"
 msgstr ""
 
@@ -23086,6 +23098,9 @@ msgid "Resync all %{replicableType}"
 msgstr ""
 
 msgid "Retry"
+msgstr ""
+
+msgid "Retry job"
 msgstr ""
 
 msgid "Retry this job"

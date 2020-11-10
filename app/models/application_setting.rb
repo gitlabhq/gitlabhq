@@ -40,8 +40,8 @@ class ApplicationSetting < ApplicationRecord
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_denylist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
   serialize :asset_proxy_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -184,9 +184,9 @@ class ApplicationSetting < ApplicationRecord
   validates :enabled_git_access_protocol,
             inclusion: { in: %w(ssh http), allow_blank: true }
 
-  validates :domain_blacklist,
-            presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
-            if: :domain_blacklist_enabled?
+  validates :domain_denylist,
+            presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
+            if: :domain_denylist_enabled?
 
   validates :housekeeping_incremental_repack_period,
             presence: true,

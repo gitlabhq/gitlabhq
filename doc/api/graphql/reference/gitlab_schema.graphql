@@ -20841,7 +20841,7 @@ type TodoRestoreManyPayload {
   """
   The ids of the updated todo items. Deprecated in 13.2: Use todos
   """
-  updatedIds: [ID!]! @deprecated(reason: "Use todos. Deprecated in 13.2")
+  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2")
 }
 
 """
@@ -20938,7 +20938,7 @@ type TodosMarkAllDonePayload {
   """
   Ids of the updated todos. Deprecated in 13.2: Use todos
   """
-  updatedIds: [ID!]! @deprecated(reason: "Use todos. Deprecated in 13.2")
+  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2")
 }
 
 """

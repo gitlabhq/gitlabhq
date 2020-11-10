@@ -136,6 +136,9 @@ $solarized-light-il: #2aa198;
       @include match-line;
     }
 
+    .diff-td.diff-line-num.hll:not(.empty-cell),
+    .diff-td.line-coverage.hll:not(.empty-cell),
+    .diff-td.line_content.hll:not(.empty-cell),
     td.diff-line-num.hll:not(.empty-cell),
     td.line-coverage.hll:not(.empty-cell),
     td.line_content.hll:not(.empty-cell) {
@@ -159,6 +162,13 @@ $solarized-light-il: #2aa198;
       }
     }
 
+    .diff-grid-left:hover,
+    .diff-grid-right:hover {
+      .diff-line-num:not(.empty-cell) {
+        @include line-number-hover($solarized-light-over-bg);
+      }
+    }
+
     .diff-line-num.old,
     .line-coverage.old,
     .line_content.old {
@@ -173,12 +183,7 @@ $solarized-light-il: #2aa198;
     .diff-line-num {
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        background-color: $solarized-light-over-bg;
-        border-color: darken($solarized-light-over-bg, 5%);
-
-        a {
-          color: darken($solarized-light-over-bg, 15%);
-        }
+        @include line-number-hover($solarized-light-over-bg);
       }
     }
 

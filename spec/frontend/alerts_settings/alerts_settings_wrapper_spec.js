@@ -20,6 +20,7 @@ import {
   ADD_INTEGRATION_ERROR,
   RESET_INTEGRATION_TOKEN_ERROR,
   UPDATE_INTEGRATION_ERROR,
+  INTEGRATION_PAYLOAD_TEST_ERROR,
 } from '~/alerts_settings/utils/error_messages';
 import createFlash from '~/flash';
 import { defaultAlertSettingsConfig } from './util';
@@ -326,6 +327,20 @@ describe('AlertsSettingsWrapper', () => {
 
       await waitForPromises();
       expect(createFlash).toHaveBeenCalledWith({ message: UPDATE_INTEGRATION_ERROR });
+    });
+
+    it('shows an error alert when integration test payload fails ', async () => {
+      createComponent({
+        data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
+        provide: { glFeatures: { httpIntegrationsList: true } },
+        loading: false,
+      });
+
+      wrapper.find(AlertsSettingsFormNew).vm.$emit('test-payload-failure');
+
+      await waitForPromises();
+      expect(createFlash).toHaveBeenCalledWith({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
   });
 

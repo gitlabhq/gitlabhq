@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { roundOffFloat } from '~/lib/utils/common_utils';
+import { roundDownFloat } from '~/lib/utils/common_utils';
 
 export default {
   directives: {
@@ -89,7 +89,7 @@ export default {
         return 0;
       }
 
-      const percent = roundOffFloat((count / this.totalCount) * 100, 1);
+      const percent = roundDownFloat((count / this.totalCount) * 100, 1);
       if (percent > 0 && percent < 1) {
         return '< 1';
       }

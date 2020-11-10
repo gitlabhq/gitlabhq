@@ -1013,7 +1013,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       before do
         job.run!
         visit project_job_path(project, job)
-        find('.js-cancel-job').click
+        find('[data-testid="cancel-button"]').click
       end
 
       it 'loads the page and shows all needed controls' do
@@ -1030,7 +1030,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        find('.js-retry-button').click
+        find('[data-testid="retry-button"]').click
       end
 
       it 'shows the right status and buttons' do
@@ -1054,6 +1054,31 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       it 'does not show the Retry button' do
         page.within('aside.right-sidebar') do
           expect(page).not_to have_content 'Retry'
+        end
+      end
+    end
+
+    context "Job that failed because of a forward deployment failure" do
+      let(:job) { create(:ci_build, :forward_deployment_failure, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        find('[data-testid="retry-button"]').click
+      end
+
+      it 'shows a modal to warn the user' do
+        page.within('.modal-header') do
+          expect(page).to have_content 'Are you sure you want to retry this job?'
+        end
+      end
+
+      it 'retries the job' do
+        find('[data-testid="retry-button-modal"]').click
+
+        within '[data-testid="ci-header-content"]' do
+          expect(page).to have_content('pending')
         end
       end
     end

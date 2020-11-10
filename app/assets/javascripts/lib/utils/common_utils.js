@@ -741,6 +741,24 @@ export const roundOffFloat = (number, precision = 0) => {
 };
 
 /**
+ * Method to round down values with decimal places
+ * with provided precision.
+ *
+ * Eg; roundDownFloat(3.141592, 3) = 3.141
+ *
+ * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * more supported examples.
+ *
+ * @param {Float} number
+ * @param {Number} precision
+ */
+export const roundDownFloat = (number, precision = 0) => {
+  // eslint-disable-next-line no-restricted-properties
+  const multiplier = Math.pow(10, precision);
+  return Math.floor(number * multiplier) / multiplier;
+};
+
+/**
  * Represents navigation type constants of the Performance Navigation API.
  * Detailed explanation see https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation.
  */

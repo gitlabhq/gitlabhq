@@ -43,9 +43,9 @@ Example response:
    "home_page_url" : null,
    "default_snippet_visibility" : "private",
    "outbound_local_requests_whitelist": [],
-   "domain_whitelist" : [],
-   "domain_blacklist_enabled" : false,
-   "domain_blacklist" : [],
+   "domain_allowlist" : [],
+   "domain_denylist_enabled" : false,
+   "domain_denylist" : [],
    "created_at" : "2016-01-04T15:44:55.176Z",
    "default_ci_config_path" : null,
    "default_project_visibility" : "private",
@@ -134,9 +134,9 @@ Example response:
   "default_snippet_visibility": "private",
   "default_group_visibility": "private",
   "outbound_local_requests_whitelist": [],
-  "domain_whitelist": [],
-  "domain_blacklist_enabled" : false,
-  "domain_blacklist" : [],
+  "domain_allowlist": [],
+  "domain_denylist_enabled" : false,
+  "domain_denylist" : [],
   "external_authorization_service_enabled": true,
   "external_authorization_service_url": "https://authorize.me",
   "external_authorization_service_default_label": "default",
@@ -233,9 +233,9 @@ listed in the descriptions of the relevant settings.
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum diff patch size (Bytes). |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
 | `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS rebinding attack protection. |
-| `domain_blacklist_enabled`               | boolean          | no                                   | (**If enabled, requires:** `domain_blacklist`) Allows blocking sign-ups from emails from specific domains. |
-| `domain_blacklist`                       | array of strings | no                                   | Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: `domain.com`, `*.domain.com`. |
-| `domain_whitelist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
+| `domain_denylist_enabled`                | boolean          | no                                   | (**If enabled, requires:** `domain_denylist`) Allows blocking sign-ups from emails from specific domains. |
+| `domain_denylist`                        | array of strings | no                                   | Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: `domain.com`, `*.domain.com`. |
+| `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |

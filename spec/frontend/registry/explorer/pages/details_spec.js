@@ -14,9 +14,10 @@ import {
   SET_TAGS_LIST_SUCCESS,
   SET_TAGS_PAGINATION,
   SET_INITIAL_STATE,
+  SET_IMAGE_DETAILS,
 } from '~/registry/explorer/stores/mutation_types';
 
-import { tagsListResponse } from '../mock_data';
+import { tagsListResponse, imageDetailsMock } from '../mock_data';
 import { DeleteModal } from '../stubs';
 
 describe('Details Page', () => {
@@ -33,8 +34,7 @@ describe('Details Page', () => {
   const findEmptyTagsState = () => wrapper.find(EmptyTagsState);
   const findPartialCleanupAlert = () => wrapper.find(PartialCleanupAlert);
 
-  const routeIdGenerator = override =>
-    window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar', ...override }));
+  const routeId = 1;
 
   const tagsArrayToSelectedTags = tags =>
     tags.reduce((acc, c) => {
@@ -42,7 +42,7 @@ describe('Details Page', () => {
       return acc;
     }, {});
 
-  const mountComponent = ({ options, routeParams } = {}) => {
+  const mountComponent = ({ options } = {}) => {
     wrapper = shallowMount(component, {
       store,
       stubs: {
@@ -51,7 +51,7 @@ describe('Details Page', () => {
       mocks: {
         $route: {
           params: {
-            id: routeIdGenerator(routeParams),
+            id: routeId,
           },
         },
       },
@@ -65,12 +65,20 @@ describe('Details Page', () => {
     dispatchSpy.mockResolvedValue();
     store.commit(SET_TAGS_LIST_SUCCESS, tagsListResponse.data);
     store.commit(SET_TAGS_PAGINATION, tagsListResponse.headers);
+    store.commit(SET_IMAGE_DETAILS, imageDetailsMock);
     jest.spyOn(Tracking, 'event');
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  describe('lifecycle events', () => {
+    it('calls the appropriate action on mount', () => {
+      mountComponent();
+      expect(dispatchSpy).toHaveBeenCalledWith('requestImageDetailsAndTagsList', routeId);
+    });
   });
 
   describe('when isLoading is true', () => {
@@ -194,8 +202,7 @@ describe('Details Page', () => {
       dispatchSpy.mockResolvedValue();
       findPagination().vm.$emit(GlPagination.model.event, 2);
       expect(store.dispatch).toHaveBeenCalledWith('requestTagsList', {
-        params: wrapper.vm.$route.params.id,
-        pagination: { page: 2 },
+        page: 2,
       });
     });
   });
@@ -227,7 +234,6 @@ describe('Details Page', () => {
           findDeleteModal().vm.$emit('confirmDelete');
           expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTag', {
             tag: store.state.tags[0],
-            params: routeIdGenerator(),
           });
         });
       });
@@ -242,7 +248,6 @@ describe('Details Page', () => {
           findDeleteModal().vm.$emit('confirmDelete');
           expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTags', {
             ids: store.state.tags.map(t => t.name),
-            params: routeIdGenerator(),
           });
         });
       });
@@ -257,7 +262,7 @@ describe('Details Page', () => {
 
     it('has the correct props', () => {
       mountComponent();
-      expect(findDetailsHeader().props()).toEqual({ imageName: 'foo' });
+      expect(findDetailsHeader().props()).toEqual({ imageName: imageDetailsMock.name });
     });
   });
 
@@ -293,10 +298,14 @@ describe('Details Page', () => {
     };
 
     describe('when expiration_policy_started is not null', () => {
-      const routeParams = { cleanup_policy_started_at: Date.now().toString() };
-
+      beforeEach(() => {
+        store.commit(SET_IMAGE_DETAILS, {
+          ...imageDetailsMock,
+          cleanup_policy_started_at: Date.now().toString(),
+        });
+      });
       it('exists', () => {
-        mountComponent({ routeParams });
+        mountComponent();
 
         expect(findPartialCleanupAlert().exists()).toBe(true);
       });
@@ -304,13 +313,13 @@ describe('Details Page', () => {
       it('has the correct props', () => {
         store.commit(SET_INITIAL_STATE, { ...config });
 
-        mountComponent({ routeParams });
+        mountComponent();
 
         expect(findPartialCleanupAlert().props()).toEqual({ ...config });
       });
 
       it('dismiss hides the component', async () => {
-        mountComponent({ routeParams });
+        mountComponent();
 
         expect(findPartialCleanupAlert().exists()).toBe(true);
         findPartialCleanupAlert().vm.$emit('dismiss');

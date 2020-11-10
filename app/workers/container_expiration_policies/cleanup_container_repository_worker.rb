@@ -16,15 +16,16 @@ module ContainerExpirationPolicies
       return unless throttling_enabled?
       return unless container_repository
 
+      log_extra_metadata_on_done(:container_repository_id, container_repository.id)
+
       unless allowed_to_run?(container_repository)
         container_repository.cleanup_unscheduled!
-        log_info(container_repository_id: container_repository.id, cleanup_status: :skipped)
+        log_extra_metadata_on_done(:cleanup_status, :skipped)
         return
       end
 
       result = ContainerExpirationPolicies::CleanupService.new(container_repository)
                                                           .execute
-      log_extra_metadata_on_done(:container_repository_id, result.payload[:container_repository_id])
       log_extra_metadata_on_done(:cleanup_status, result.payload[:cleanup_status])
     end
 

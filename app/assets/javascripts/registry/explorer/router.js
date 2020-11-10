@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import List from './pages/list.vue';
 import Details from './pages/details.vue';
-import { decodeAndParse } from './utils';
 import { CONTAINER_REGISTRY_TITLE } from './constants/index';
 
 Vue.use(VueRouter);
@@ -26,7 +25,7 @@ export default function createRouter(base) {
         path: '/:id',
         component: Details,
         meta: {
-          nameGenerator: route => decodeAndParse(route.params.id).name,
+          nameGenerator: ({ imageDetails }) => imageDetails?.name,
         },
       },
     ],

@@ -37,15 +37,6 @@ export default {
     ROW_SCHEDULED_FOR_DELETION,
   },
   computed: {
-    encodedItem() {
-      const params = JSON.stringify({
-        name: this.item.path,
-        tags_path: this.item.tags_path,
-        id: this.item.id,
-        cleanup_policy_started_at: this.item.cleanup_policy_started_at,
-      });
-      return window.btoa(params);
-    },
     disabledDelete() {
       return !this.item.destroy_path || this.item.deleting;
     },
@@ -82,7 +73,7 @@ export default {
       <router-link
         class="gl-text-body gl-font-weight-bold"
         data-testid="detailsLink"
-        :to="{ name: 'details', params: { id: encodedItem } }"
+        :to="{ name: 'details', params: { id: item.id } }"
       >
         {{ item.path }}
       </router-link>

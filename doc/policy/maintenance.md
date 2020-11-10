@@ -74,7 +74,7 @@ A step-by-step guide to [upgrading the Omnibus-bundled PostgreSQL is documented 
 
 ## Upgrading major versions
 
-Backward-incompatible changes and migrations are reserved for major versions. See the [upgrade guide](../update/README.md#upgrading-to-a-new-major-version).
+Backward-incompatible changes and migrations are reserved for major versions. See the [upgrade guide](../update/README.md#upgrading-to-a-new-major-version).
 
 ## Patch releases
 

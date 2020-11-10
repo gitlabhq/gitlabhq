@@ -201,3 +201,76 @@ describe('shouldShowCommentButton', () => {
     },
   );
 });
+
+describe('mapParallel', () => {
+  it('should assign computed properties to the line object', () => {
+    const side = {
+      discussions: [{}],
+      discussionsExpanded: true,
+      hasForm: true,
+    };
+    const content = {
+      diffFile: {},
+      hasParallelDraftLeft: () => false,
+      hasParallelDraftRight: () => false,
+      draftForLine: () => ({}),
+    };
+    const line = { left: side, right: side };
+    const expectation = {
+      commentRowClasses: '',
+      draftRowClasses: 'js-temp-notes-holder',
+      hasDiscussionsLeft: true,
+      hasDiscussionsRight: true,
+      isContextLineLeft: false,
+      isContextLineRight: false,
+      isMatchLineLeft: false,
+      isMatchLineRight: false,
+      isMetaLineLeft: false,
+      isMetaLineRight: false,
+    };
+    const leftExpectation = {
+      renderDiscussion: true,
+      hasDraft: false,
+      lineDraft: {},
+      hasCommentForm: true,
+    };
+    const rightExpectation = {
+      renderDiscussion: false,
+      hasDraft: false,
+      lineDraft: {},
+      hasCommentForm: false,
+    };
+    const mapped = utils.mapParallel(content)(line);
+
+    expect(mapped).toMatchObject(expectation);
+    expect(mapped.left).toMatchObject(leftExpectation);
+    expect(mapped.right).toMatchObject(rightExpectation);
+  });
+});
+
+describe('mapInline', () => {
+  it('should assign computed properties to the line object', () => {
+    const content = {
+      diffFile: {},
+      shouldRenderDraftRow: () => false,
+    };
+    const line = {
+      discussions: [{}],
+      discussionsExpanded: true,
+      hasForm: true,
+    };
+    const expectation = {
+      commentRowClasses: '',
+      hasDiscussions: true,
+      isContextLine: false,
+      isMatchLine: false,
+      isMetaLine: false,
+      renderDiscussion: true,
+      hasDraft: false,
+      hasCommentForm: true,
+    };
+    const mapped = utils.mapInline(content)(line);
+
+    expect(mapped).toMatchObject(expectation);
+  });
+});

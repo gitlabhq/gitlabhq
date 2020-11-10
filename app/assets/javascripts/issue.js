@@ -84,13 +84,7 @@ export default class Issue {
       projectIssuesCounter.text(addDelimiter(numProjectIssues));
 
       if (this.createMergeRequestDropdown) {
-        if (isClosed) {
-          this.createMergeRequestDropdown.unavailable();
-          this.createMergeRequestDropdown.disable();
-        } else {
-          // We should check in case a branch was created in another tab
-          this.createMergeRequestDropdown.checkAbilityToCreateBranch();
-        }
+        this.createMergeRequestDropdown.checkAbilityToCreateBranch();
       }
     } else {
       flash(issueFailMessage);

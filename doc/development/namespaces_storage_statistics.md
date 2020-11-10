@@ -6,18 +6,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Database case study: Namespaces storage statistics
 
-## Introduction
+## Introduction
 
 On [Storage and limits management for groups](https://gitlab.com/groups/gitlab-org/-/epics/886),
 we want to facilitate a method for easily viewing the amount of
 storage consumed by a group, and allow easy management.
 
-## Proposal
+## Proposal
 
 1. Create a new ActiveRecord model to hold the namespaces' statistics in an aggregated form (only for root namespaces).
 1. Refresh the statistics in this model every time a project belonging to this namespace is changed.
 
-## Problem
+## Problem
 
 In GitLab, we update the project storage statistics through a
 [callback](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/app/models/project.rb#L97)
@@ -42,7 +42,7 @@ alternative method.
 
 ## Attempts
 
-### Attempt A: PostgreSQL materialized view
+### Attempt A: PostgreSQL materialized view
 
 Model can be updated through a refresh strategy based on a project routes SQL and a [materialized view](https://www.postgresql.org/docs/11/rules-materializedviews.html):
 
@@ -71,7 +71,7 @@ While this implied a single query update (and probably a fast one), it has some 
 - Materialized views syntax varies from PostgreSQL and MySQL. While this feature was worked on, MySQL was still supported by GitLab.
 - Rails does not have native support for materialized views. We'd need to use a specialized gem to take care of the management of the database views, which implies additional work.
 
-### Attempt B: An update through a CTE
+### Attempt B: An update through a CTE
 
 Similar to Attempt A: Model update done through a refresh strategy with a [Common Table Expression](https://www.postgresql.org/docs/9.1/queries-with.html)
 
@@ -140,7 +140,7 @@ Even though this approach would make aggregating much easier, it has some major 
 - We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
 - Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
-### Attempt E (final): Update the namespace storage statistics in async way
+### Attempt E (final): Update the namespace storage statistics in async way
 
 This approach consists of keep using the incremental statistics updates we currently already have,
 but we refresh them through Sidekiq jobs and in different transactions:
@@ -170,7 +170,7 @@ The only downside of this approach is that namespaces' statistics are updated up
 which means there's a time window in which the statistics are inaccurate. Because we're still not
 [enforcing storage limits](https://gitlab.com/gitlab-org/gitlab/-/issues/17664), this is not a major problem.
 
-## Conclusion
+## Conclusion
 
 Updating the storage statistics asynchronously, was the less problematic and
 performant approach of aggregating the root namespaces.

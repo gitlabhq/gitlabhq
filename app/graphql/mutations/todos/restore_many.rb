@@ -12,7 +12,7 @@ module Mutations
                required: true,
                description: 'The global ids of the todos to restore (a maximum of 50 is supported at once)'
 
-      field :updated_ids, [GraphQL::ID_TYPE],
+      field :updated_ids, [::Types::GlobalIDType[Todo]],
             null: false,
             description: 'The ids of the updated todo items',
             deprecated: { reason: 'Use todos', milestone: '13.2' }
@@ -28,17 +28,13 @@ module Mutations
         updated_ids = restore(todos)
 
         {
-            updated_ids: gids_of(updated_ids),
+            updated_ids: updated_ids,
             todos: Todo.id_in(updated_ids),
             errors: errors_on_objects(todos)
         }
       end
 
       private
-
-      def gids_of(ids)
-        ids.map { |id| Gitlab::GlobalId.as_global_id(id, model_name: Todo.name).to_s }
-      end
 
       def model_ids_of(ids)
         ids.map do |gid|

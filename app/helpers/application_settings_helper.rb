@@ -199,11 +199,11 @@ module ApplicationSettingsHelper
       :default_projects_limit,
       :default_snippet_visibility,
       :disabled_oauth_sign_in_sources,
-      :domain_blacklist,
-      :domain_blacklist_enabled,
+      :domain_denylist,
+      :domain_denylist_enabled,
       # TODO Remove domain_denylist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
       :domain_denylist_raw,
-      :domain_whitelist,
+      :domain_allowlist,
       # TODO Remove domain_allowlist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
       :domain_allowlist_raw,
       :outbound_local_requests_allowlist_raw,

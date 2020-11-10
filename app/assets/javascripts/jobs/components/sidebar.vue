@@ -1,28 +1,39 @@
 <script>
 import { isEmpty } from 'lodash';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import ArtifactsBlock from './artifacts_block.vue';
+import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
+import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
 import TriggerBlock from './trigger_block.vue';
 import CommitBlock from './commit_block.vue';
 import StagesDropdown from './stages_dropdown.vue';
 import JobsContainer from './jobs_container.vue';
-import SidebarJobDetailsContainer from './sidebar_job_details_container.vue';
+import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
+import { JOB_SIDEBAR } from '../constants';
+
+export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
 
 export default {
   name: 'JobSidebar',
+  i18n: {
+    ...JOB_SIDEBAR,
+  },
+  forwardDeploymentFailureModalId,
   components: {
     ArtifactsBlock,
     CommitBlock,
-    GlIcon,
-    TriggerBlock,
-    StagesDropdown,
-    JobsContainer,
-    GlLink,
     GlButton,
-    SidebarJobDetailsContainer,
+    GlLink,
+    GlIcon,
+    JobsContainer,
+    JobSidebarRetryButton,
+    JobRetryForwardDeploymentModal,
+    JobSidebarDetailsContainer,
+    StagesDropdown,
     TooltipOnTruncate,
+    TriggerBlock,
   },
   props: {
     artifactHelpUrl: {
@@ -37,9 +48,10 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['hasForwardDeploymentFailure']),
     ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
     retryButtonClass() {
-      let className = 'js-retry-button btn btn-retry';
+      let className = 'btn btn-retry';
       className +=
         this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
       return className;
@@ -55,6 +67,9 @@ export default {
     },
     commit() {
       return this.job?.pipeline?.commit || {};
+    },
+    shouldShowJobRetryForwardDeploymentModal() {
+      return this.job.retry_path && this.hasForwardDeploymentFailure;
     },
   },
   methods: {
@@ -73,27 +88,27 @@ export default {
             </h4>
           </tooltip-on-truncate>
           <div class="flex-grow-1 flex-shrink-0 text-right">
-            <gl-link
+            <job-sidebar-retry-button
               v-if="job.retry_path"
               :class="retryButtonClass"
               :href="job.retry_path"
-              data-method="post"
+              :modal-id="$options.forwardDeploymentFailureModalId"
               data-qa-selector="retry_button"
-              rel="nofollow"
-              >{{ __('Retry') }}
-            </gl-link>
+              data-testid="retry-button"
+            />
             <gl-link
               v-if="job.cancel_path"
               :href="job.cancel_path"
-              class="js-cancel-job btn btn-default"
+              class="btn btn-default"
               data-method="post"
+              data-testid="cancel-button"
               rel="nofollow"
-              >{{ __('Cancel') }}
+              >{{ $options.i18n.cancel }}
             </gl-link>
           </div>
 
           <gl-button
-            :aria-label="__('Toggle Sidebar')"
+            :aria-label="$options.i18n.toggleSidebar"
             category="tertiary"
             class="gl-display-md-none gl-ml-2 js-sidebar-build-toggle"
             icon="chevron-double-lg-right"
@@ -107,19 +122,20 @@ export default {
             :href="job.new_issue_path"
             class="btn btn-success btn-inverted float-left mr-2"
             data-testid="job-new-issue"
-            >{{ __('New issue') }}
+            >{{ $options.i18n.newIssue }}
           </gl-link>
           <gl-link
             v-if="job.terminal_path"
             :href="job.terminal_path"
-            class="js-terminal-link btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
+            class="btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
             target="_blank"
+            data-testid="terminal-link"
           >
-            {{ __('Debug') }}
+            {{ $options.i18n.debug }}
             <gl-icon :size="14" name="external-link" />
           </gl-link>
         </div>
-        <sidebar-job-details-container :runner-help-url="runnerHelpUrl" />
+        <job-sidebar-details-container :runner-help-url="runnerHelpUrl" />
         <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
         <trigger-block v-if="hasTriggers" :trigger="job.trigger" />
         <commit-block
@@ -139,5 +155,10 @@ export default {
 
       <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />
     </div>
+    <job-retry-forward-deployment-modal
+      v-if="shouldShowJobRetryForwardDeploymentModal"
+      :modal-id="$options.forwardDeploymentFailureModalId"
+      :href="job.retry_path"
+    />
   </aside>
 </template>

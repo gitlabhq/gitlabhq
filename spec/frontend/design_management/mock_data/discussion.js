@@ -18,7 +18,7 @@ export default {
       },
       createdAt: '2020-05-08T07:10:45Z',
       userPermissions: {
-        adminNote: true,
+        repositionNote: true,
       },
       resolved: false,
     },

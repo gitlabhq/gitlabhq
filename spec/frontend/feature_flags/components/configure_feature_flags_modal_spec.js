@@ -129,7 +129,7 @@ describe('Configure Feature Flags Modal', () => {
       expect(findPrimaryAction()).toBe(null);
     });
 
-    it('shold not display regenerating instance ID', async () => {
+    it('should not display regenerating instance ID', async () => {
       expect(findDangerCallout().exists()).toBe(false);
     });
 

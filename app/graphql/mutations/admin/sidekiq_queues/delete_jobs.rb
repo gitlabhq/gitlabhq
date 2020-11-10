@@ -33,9 +33,9 @@ module Mutations
           super
         end
 
-        def resolve(args)
+        def resolve(queue_name:, **args)
           {
-            result: Gitlab::SidekiqQueue.new(args[:queue_name]).drop_jobs!(args, timeout: 30),
+            result: Gitlab::SidekiqQueue.new(queue_name).drop_jobs!(args, timeout: 30),
             errors: []
           }
         rescue Gitlab::SidekiqQueue::NoMetadataError
@@ -44,7 +44,7 @@ module Mutations
             errors: ['No metadata provided']
           }
         rescue Gitlab::SidekiqQueue::InvalidQueueError
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, "Queue #{args[:queue_name]} not found"
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable, "Queue #{queue_name} not found"
         end
       end
     end

@@ -350,7 +350,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           expect(described_class).to be_blocked_url('http://[fe80::c800:eff:fe74:8]', allow_local_network: false)
         end
 
-        context 'when local domain/IP is whitelisted' do
+        context 'when local domain/IP is allowed' do
           let(:url_blocker_attributes) do
             {
               allow_localhost: false,
@@ -360,11 +360,11 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
           before do
             allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
-            stub_application_setting(outbound_local_requests_whitelist: whitelist)
+            stub_application_setting(outbound_local_requests_whitelist: allowlist)
           end
 
-          context 'with IPs in whitelist' do
-            let(:whitelist) do
+          context 'with IPs in allowlist' do
+            let(:allowlist) do
               [
                 '0.0.0.0',
                 '127.0.0.1',
@@ -396,7 +396,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
 
             it_behaves_like 'allows local requests', { allow_localhost: false, allow_local_network: false }
 
-            it 'whitelists IP when dns_rebind_protection is disabled' do
+            it 'allows IP when dns_rebind_protection is disabled' do
               url = "http://example.com"
               attrs = url_blocker_attributes.merge(dns_rebind_protection: false)
 
@@ -410,8 +410,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             end
           end
 
-          context 'with domains in whitelist' do
-            let(:whitelist) do
+          context 'with domains in allowlist' do
+            let(:allowlist) do
               [
                 'www.example.com',
                 'example.com',
@@ -420,7 +420,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
               ]
             end
 
-            it 'allows domains present in whitelist' do
+            it 'allows domains present in allowlist' do
               domain = 'example.com'
               subdomain1 = 'www.example.com'
               subdomain2 = 'subdomain.example.com'
@@ -435,7 +435,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
                   url_blocker_attributes)
               end
 
-              # subdomain2 is not part of the whitelist so it should be blocked
+              # subdomain2 is not part of the allowlist so it should be blocked
               stub_domain_resolv(subdomain2, '192.168.1.1') do
                 expect(described_class).to be_blocked_url("http://#{subdomain2}",
                   url_blocker_attributes)
@@ -458,8 +458,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             end
 
             shared_examples 'dns rebinding checks' do
-              shared_examples 'whitelists the domain' do
-                let(:whitelist) { [domain] }
+              shared_examples 'allowlists the domain' do
+                let(:allowlist) { [domain] }
                 let(:url) { "http://#{domain}" }
 
                 before do
@@ -475,13 +475,13 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
                 context 'enabled' do
                   let(:dns_rebind_value) { true }
 
-                  it_behaves_like 'whitelists the domain'
+                  it_behaves_like 'allowlists the domain'
                 end
 
                 context 'disabled' do
                   let(:dns_rebind_value) { false }
 
-                  it_behaves_like 'whitelists the domain'
+                  it_behaves_like 'allowlists the domain'
                 end
               end
             end
@@ -504,11 +504,11 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
           end
 
           context 'with ports' do
-            let(:whitelist) do
+            let(:allowlist) do
               ["127.0.0.1:2000"]
             end
 
-            it 'allows domain with port when resolved ip has port whitelisted' do
+            it 'allows domain with port when resolved ip has port allowed' do
               stub_domain_resolv("www.resolve-domain.com", '127.0.0.1') do
                 expect(described_class).not_to be_blocked_url("http://www.resolve-domain.com:2000", url_blocker_attributes)
               end
