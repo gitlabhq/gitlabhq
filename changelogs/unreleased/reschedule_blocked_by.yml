@@ -1,0 +1,6 @@
+---
+title: Reschedule again background migration which convers 'blocked_by' issue links
+  to 'block'
+merge_request: 46770
+author:
+type: changed

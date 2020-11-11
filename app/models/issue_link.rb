@@ -10,6 +10,7 @@ class IssueLink < ApplicationRecord
   validates :target, presence: true
   validates :source, uniqueness: { scope: :target_id, message: 'is already related' }
   validate :check_self_relation
+  validate :check_opposite_relation
 
   scope :for_source_issue, ->(issue) { where(source_id: issue.id) }
   scope :for_target_issue, ->(issue) { where(target_id: issue.id) }
@@ -31,6 +32,14 @@ class IssueLink < ApplicationRecord
 
     if source == target
       errors.add(:source, 'cannot be related to itself')
+    end
+  end
+
+  def check_opposite_relation
+    return unless source && target
+
+    if IssueLink.find_by(source: target, target: source)
+      errors.add(:source, 'is already related to this issue')
     end
   end
 end

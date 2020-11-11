@@ -12,7 +12,6 @@ class Projects::RawController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :show_rate_limit, only: [:show], unless: :external_storage_request?
   before_action :assign_ref_vars
-  before_action :no_cache_headers, only: [:show]
   before_action :redirect_to_external_storage, only: :show, if: :static_objects_external_storage_enabled?
 
   feature_category :source_code_management

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20201015073808_schedule_blocked_by_links_replacement')
+require Rails.root.join('db', 'post_migrate', '20201102073808_schedule_blocked_by_links_replacement_second_try')
 
-RSpec.describe ScheduleBlockedByLinksReplacement do
+RSpec.describe ScheduleBlockedByLinksReplacementSecondTry do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }
   let(:project) { table(:projects).create!(namespace_id: namespace.id, name: 'gitlab') }
   let(:issue1) { table(:issues).create!(project_id: project.id, title: 'a') }

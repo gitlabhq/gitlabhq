@@ -21,7 +21,7 @@ pre-push:
     scss-lint:
       tags: stylesheet css style
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.scss.css"
+      glob: "*.scss{,.css}"
       exclude: "app/assets/stylesheets/pages/emojis.scss"
       run: bundle exec scss-lint --config .scss-lint.yml {files}
     rubocop:

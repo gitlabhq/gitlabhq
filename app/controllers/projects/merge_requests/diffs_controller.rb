@@ -176,7 +176,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def update_diff_discussion_positions!
-    return unless Feature.enabled?(:merge_red_head_comments_position_on_demand, @merge_request.target_project, default_enabled: true)
     return if @merge_request.has_any_diff_note_positions?
 
     Discussions::CaptureDiffNotePositionsService.new(@merge_request).execute

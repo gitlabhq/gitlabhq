@@ -44,7 +44,6 @@ module SendsBlob
         Blob::CACHE_TIME
       end
 
-    response.etag = blob.id
     !stale
   end
 

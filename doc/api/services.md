@@ -311,7 +311,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | The Unify Circuit webhook. For example, `https://circuit.com/rest/v2/webhooks/incoming/...`. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". The default value is "default" |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
@@ -356,7 +356,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | The Webex Teams webhook. For example, `https://api.ciscospark.com/v1/webhooks/incoming/...`. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". The default value is "default" |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
@@ -482,7 +482,7 @@ Parameters:
 | `send_from_committer_email` | boolean | false | Send from committer |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". Notifications will be always fired for tag pushes. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". Notifications will be always fired for tag pushes. The default value is "all" |
 
 ### Delete Emails on push service
 
@@ -665,7 +665,7 @@ Parameters:
 | `webhook` | string | true | The Hangouts Chat webhook. For example, `https://chat.googleapis.com/v1/spaces...`. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified` |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". The default value is "default" |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
@@ -978,7 +978,7 @@ Parameters:
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
 | `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected. The default value is "default" |
 | `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28271)) |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 
@@ -1171,7 +1171,7 @@ Parameters:
 | `channel` | string | false | Default channel to use if others are not configured |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified` |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". The default value is "default" |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
@@ -1230,7 +1230,7 @@ Parameters:
 | `webhook` | string | true | The Microsoft Teams webhook. For example, `https://outlook.office.com/webhook/...` |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified` |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". The default value is "default" |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
@@ -1281,7 +1281,7 @@ Parameters:
 | `channel` | string | false | Default channel to use if others are not configured |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified` |
-| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". The default value is "default" |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |

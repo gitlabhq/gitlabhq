@@ -19,10 +19,8 @@ class ScheduleBlockedByLinksReplacement < ActiveRecord::Migration[6.0]
   end
 
   def up
-    relation = IssueLink.where(link_type: 2)
-
-    queue_background_migration_jobs_by_range_at_intervals(
-      relation, MIGRATION, INTERVAL, batch_size: BATCH_SIZE)
+    # no-op
+    # superseded by db/post_migrate/20201102073808_schedule_blocked_by_links_replacement_second_try.rb
   end
 
   def down

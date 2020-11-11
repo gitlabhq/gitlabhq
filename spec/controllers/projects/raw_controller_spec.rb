@@ -33,11 +33,6 @@ RSpec.describe Projects::RawController do
 
       it_behaves_like 'project cache control headers'
       it_behaves_like 'content disposition headers'
-      it_behaves_like 'uncached response' do
-        before do
-          subject
-        end
-      end
     end
 
     context 'image header' do
@@ -222,6 +217,23 @@ RSpec.describe Projects::RawController do
             expect(response).to have_gitlab_http_status(:found)
             expect(response.location).to end_with('/users/sign_in')
           end
+        end
+      end
+    end
+
+    describe 'caching' do
+      def request_file
+        get(:show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' })
+      end
+
+      context 'when If-None-Match header is set' do
+        it 'returns a 304 status' do
+          request_file
+
+          request.headers['If-None-Match'] = response.headers['ETag']
+          request_file
+
+          expect(response).to have_gitlab_http_status(:not_modified)
         end
       end
     end

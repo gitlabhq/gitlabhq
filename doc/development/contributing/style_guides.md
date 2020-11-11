@@ -23,13 +23,24 @@ for static analysis offenses before pushing your changes.
 To install `lefthook`, run the following in your GitLab source directory:
 
 ```shell
-# Make sure to uninstall Overcommit first
+# 1. Make sure to uninstall Overcommit first
 overcommit --uninstall
 
 # If using rbenv, at this point you may need to do: rbenv rehash
 
-# Install lefthook
-gem install lefthook && lefthook install -f
+# 2. Install lefthook...
+
+## With Homebrew (macOS)
+brew install Arkweid/lefthook/lefthook
+
+## Or with Go
+go get github.com/Arkweid/lefthook
+
+## Or with Rubygems
+gem install lefthook
+
+# 3. Install the Git hooks
+lefthook install -f
 ```
 
 Before you push your changes, Lefthook then automatically run Danger checks, and other checks
