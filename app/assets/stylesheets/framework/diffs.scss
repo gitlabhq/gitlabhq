@@ -641,12 +641,12 @@ table.code {
       }
     }
 
-    .diff-grid-left .old:nth-child(2) [data-linenumber],
+    .diff-grid-left .old:nth-child(1) [data-linenumber],
     .diff-grid-right .new:nth-child(2) [data-linenumber] {
       display: inline;
     }
 
-    .diff-grid-left .old:nth-child(3) [data-linenumber],
+    .diff-grid-left .old:nth-child(2) [data-linenumber],
     .diff-grid-right .new:nth-child(1) [data-linenumber] {
       display: none;
     }

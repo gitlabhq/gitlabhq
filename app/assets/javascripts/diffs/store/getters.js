@@ -170,5 +170,8 @@ export const diffLines = state => (file, unifiedDiffComponents) => {
     return null;
   }
 
-  return parallelizeDiffLines(file.highlighted_diff_lines || []);
+  return parallelizeDiffLines(
+    file.highlighted_diff_lines || [],
+    state.diffViewType === INLINE_DIFF_VIEW_TYPE,
+  );
 };

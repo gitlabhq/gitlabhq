@@ -18551,6 +18551,9 @@ msgstr ""
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr ""
 
+msgid "Not applicable to personal namespaced projects, which are deleted immediately on request."
+msgstr ""
+
 msgid "Not available"
 msgstr ""
 

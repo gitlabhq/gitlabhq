@@ -36,9 +36,12 @@ export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includ
  *
  * @param {Object[]} diffLines - inline diff lines
  *
+ * @param {Boolean} inline - is inline context or not
+ *
  * @returns {Object[]} parallel lines
  */
-export const parallelizeDiffLines = (diffLines = []) => {
+
+export const parallelizeDiffLines = (diffLines, inline) => {
   let freeRightIndex = null;
   const lines = [];
 
@@ -57,7 +60,7 @@ export const parallelizeDiffLines = (diffLines = []) => {
       }
       index += 1;
     } else if (isAdded(line)) {
-      if (freeRightIndex !== null) {
+      if (freeRightIndex !== null && !inline) {
         // If an old line came before this without a line on the right, this
         // line can be put to the right of it.
         lines[freeRightIndex].right = line;

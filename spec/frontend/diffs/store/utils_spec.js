@@ -1221,5 +1221,26 @@ describe('DiffsStoreUtils', () => {
         file.parallel_diff_lines,
       );
     });
+
+    /**
+     * What's going on here?
+     *
+     * The inline version of parallelizeDiffLines simply keeps the difflines
+     * in the same order they are received as opposed to shuffling them
+     * to be "side by side".
+     *
+     * This keeps the underlying data structure the same which simplifies
+     * the components, but keeps the changes grouped together as users
+     * expect when viewing changes inline.
+     */
+    it('converts inline diff lines to inline diff lines with a parallel structure', () => {
+      const file = getDiffFileMock();
+      const files = utils.parallelizeDiffLines(file.highlighted_diff_lines, true);
+
+      expect(files[5].left).toEqual(file.parallel_diff_lines[5].left);
+      expect(files[5].right).toBeNull();
+      expect(files[6].left).toBeNull();
+      expect(files[6].right).toEqual(file.parallel_diff_lines[5].right);
+    });
   });
 });

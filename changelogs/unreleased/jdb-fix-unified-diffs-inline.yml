@@ -1,0 +1,5 @@
+---
+title: Fix unified component inline display
+merge_request: 47345
+author:
+type: fixed
