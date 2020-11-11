@@ -49,6 +49,9 @@ tasks:
         if [ "$GITLAB_RUN_DB_MIGRATIONS" == true ]; then
           make gitlab-db-migrate
         fi
+        cd ../gitlab
+        git checkout db/structure.sql
+        cd ../gitlab-development-kit
         # Waiting for GitLab ...
         gp await-port 3000
         printf "Waiting for GitLab at $(gp url 3000) ..."

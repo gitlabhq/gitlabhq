@@ -814,8 +814,36 @@ RSpec.describe 'GFM autocomplete', :js do
       end
     end
 
+    context 'issues' do
+      let(:object) { issue }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
     context 'merge requests' do
       let(:object) { create(:merge_request, source_project: project) }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
+    context 'project snippets' do
+      let!(:object) { create(:project_snippet, project: project, title: 'code snippet') }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
+    context 'label' do
+      let!(:object) { label }
+      let(:expected_body) { object.title }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
+    context 'milestone' do
+      let!(:object) { create(:milestone, project: project) }
       let(:expected_body) { object.to_reference }
 
       it_behaves_like 'autocomplete suggestions'

@@ -11,6 +11,7 @@ const AutoComplete = {
   Members: 'members',
   MergeRequests: 'mergeRequests',
   Milestones: 'milestones',
+  Snippets: 'snippets',
 };
 
 const groupType = 'Group'; // eslint-disable-line @gitlab/require-i18n-strings
@@ -129,6 +130,14 @@ const autoCompleteMap = {
       return escape(original.title);
     },
   },
+  [AutoComplete.Snippets]: {
+    filterValues() {
+      return this[AutoComplete.Snippets];
+    },
+    menuItemTemplate({ original }) {
+      return `<small>${original.id}</small> ${escape(original.title)}`;
+    },
+  },
 };
 
 export default {
@@ -183,6 +192,13 @@ export default {
           menuItemTemplate: autoCompleteMap[AutoComplete.Milestones].menuItemTemplate,
           selectTemplate: ({ original }) => `%"${escape(original.title)}"`,
           values: this.getValues(AutoComplete.Milestones),
+        },
+        {
+          trigger: '$',
+          fillAttr: 'id',
+          lookup: value => value.id + value.title,
+          menuItemTemplate: autoCompleteMap[AutoComplete.Snippets].menuItemTemplate,
+          values: this.getValues(AutoComplete.Snippets),
         },
       ],
     });

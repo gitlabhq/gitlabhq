@@ -181,8 +181,8 @@ have `/help`. HTML is permitted if:
 ### Markdown Rules
 
 GitLab ensures that the Markdown used across all documentation is consistent, as
-well as easy to review and maintain, by [testing documentation changes](index.md#testing)
-with [markdownlint](index.md#markdownlint). This lint test fails when any
+well as easy to review and maintain, by [testing documentation changes](testing.md)
+with [markdownlint](testing.md#markdownlint). This lint test fails when any
 document has an issue with Markdown formatting that may cause the page to render
 incorrectly within GitLab. It will also fail when a document is using
 non-standard Markdown (which may render correctly, but is not the current

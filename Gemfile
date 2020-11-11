@@ -173,7 +173,7 @@ gem 'diffy', '~> 3.3'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.1.4'
+gem 'rack', '~> 2.2.3'
 # https://github.com/sharpstone/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.5.1', require: 'rack/timeout/base'
 
