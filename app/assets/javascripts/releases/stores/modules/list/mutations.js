@@ -39,4 +39,8 @@ export default {
     state.restPageInfo = {};
     state.graphQlPageInfo = {};
   },
+
+  [types.SET_SORTING](state, sorting) {
+    state.sorting = { ...state.sorting, ...sorting };
+  },
 };

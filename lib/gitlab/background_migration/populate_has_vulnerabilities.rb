@@ -9,10 +9,12 @@ module Gitlab
         self.table_name = 'project_settings'
 
         UPSERT_SQL = <<~SQL
+          WITH upsert_data (project_id, has_vulnerabilities, created_at, updated_at) AS (
+            SELECT projects.id, true, current_timestamp, current_timestamp FROM projects WHERE projects.id IN (%{project_ids})
+          )
           INSERT INTO project_settings
           (project_id, has_vulnerabilities, created_at, updated_at)
-          VALUES
-          %{values}
+          (SELECT * FROM upsert_data)
           ON CONFLICT (project_id)
           DO UPDATE SET
             has_vulnerabilities = true,
@@ -20,10 +22,7 @@ module Gitlab
         SQL
 
         def self.upsert_for(project_ids)
-          timestamp = connection.quote(Time.now)
-          values = project_ids.map { |project_id| "(#{project_id}, true, #{timestamp}, #{timestamp})" }.join(', ')
-
-          connection.execute(UPSERT_SQL % { values: values })
+          connection.execute(UPSERT_SQL % { project_ids: project_ids.join(', ') })
         end
       end
 

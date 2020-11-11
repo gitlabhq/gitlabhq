@@ -6951,6 +6951,9 @@ msgstr ""
 msgid "Compliance framework (optional)"
 msgstr ""
 
+msgid "Compliance frameworks"
+msgstr ""
+
 msgid "ComplianceDashboard|created by:"
 msgstr ""
 
@@ -20335,9 +20338,6 @@ msgstr ""
 msgid "Prevent users from changing their profile name"
 msgstr ""
 
-msgid "Prevent users from modifying merge request approvers list"
-msgstr ""
-
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
 msgstr ""
 
@@ -22251,6 +22251,9 @@ msgstr ""
 msgid "Registry setup"
 msgstr ""
 
+msgid "Regulate approvals by authors/committers, based on compliance frameworks. Can be changed only at the instance level."
+msgstr ""
+
 msgid "Reindexing status"
 msgstr ""
 
@@ -22323,6 +22326,9 @@ msgid "ReleaseAssetLinkType|Runbook"
 msgstr ""
 
 msgid "ReleaseAssetLinkType|Runbooks"
+msgstr ""
+
+msgid "Released date"
 msgstr ""
 
 msgid "Releases"
@@ -26665,6 +26671,9 @@ msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated lis
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
+msgstr ""
+
+msgid "The above settings apply to all projects with the selected compliance framework(s)."
 msgstr ""
 
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."

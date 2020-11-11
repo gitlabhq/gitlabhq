@@ -6,8 +6,6 @@ type: reference
 ---
 
 # Configuring runners in GitLab
-<!-- This topic contains several commented-out sections that were accidentally added in 13.2.-->
-<!-- The commented-out sections will be added back in a future release.-->
 
 In GitLab CI/CD, runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 A runner is a lightweight, highly-scalable agent that picks up a CI job through
@@ -39,10 +37,10 @@ multiple projects.
 
 If you are using a self-managed instance of GitLab:
 
-- Your administrator can install and register shared runners by [following the documentation](https://docs.gitlab.com/runner/install/index.html).
-  <!-- going to your project's
-  <!-- **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show runner installation instructions**.-->
-  <!-- These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).-->
+- Your administrator can install and register shared runners by
+  going to your project's **Settings > CI / CD**, expanding the
+  **Runners** section, and clicking **Show runner installation instructions**.
+  These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).
 - The administrator can also configure a maximum number of shared runner [pipeline minutes for
   each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota).
 

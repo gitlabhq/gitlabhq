@@ -178,7 +178,10 @@ module Banzai
             collection.where(id: to_query).each { |row| cache[row.id] = row }
           end
 
-          ids.uniq.map { |id| cache[id] }.compact
+          ids.each_with_object([]) do |id, array|
+            row = cache[id]
+            array << row if row
+          end
         else
           collection.where(id: ids)
         end

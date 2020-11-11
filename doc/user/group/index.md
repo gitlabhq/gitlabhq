@@ -394,13 +394,6 @@ milestones.
 ## Group wikis **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
-> - It's [deployed behind a feature flag](../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-group-wikis).
-
-CAUTION: **Warning:**
-This feature might not be available to you. Check the **version history** note above for details.
 
 Group wikis work the same way as [project wikis](../project/wiki/index.md), please refer to those docs for details on usage.
 
@@ -421,25 +414,6 @@ For updates, you can follow:
 
 - [The epic tracking feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
 - [The issue for adding the ability to move group wikis using the API](https://gitlab.com/gitlab-org/gitlab/-/issues/219003).
-
-### Enable or disable group wikis **(PREMIUM ONLY)**
-
-Group wikis are under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:group_wikis)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:group_wikis)
-```
 
 ## Group Security Dashboard **(ULTIMATE)**
 

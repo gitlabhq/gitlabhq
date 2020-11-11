@@ -452,9 +452,9 @@ CI jobs:
    from `Dockerfile` that may be overridden in `.gitlab-ci.yml`)
 1. The runner attaches itself to a running container.
 1. The runner prepares a script (the combination of
-   [`before_script`](../yaml/README.md#before_script-and-after_script),
+   [`before_script`](../yaml/README.md#before_script),
    [`script`](../yaml/README.md#script),
-   and [`after_script`](../yaml/README.md#before_script-and-after_script)).
+   and [`after_script`](../yaml/README.md#after_script)).
 1. The runner sends the script to the container's shell STDIN and receives the
    output.
 

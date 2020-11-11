@@ -25,6 +25,7 @@ exceptions:
   - CPU
   - CSS
   - CSV
+  - DAG
   - DAST
   - DNS
   - EKS

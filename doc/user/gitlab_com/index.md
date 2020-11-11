@@ -409,7 +409,7 @@ test:
 - For the beta release, we have included a set of software packages in
   the base VM image. If your CI job requires additional software that's
   not included in this list, then you will need to add installation
-  commands to [`before_script`](../../ci/yaml/README.md#before_script-and-after_script) or [`script`](../../ci/yaml/README.md#script) to install the required
+  commands to [`before_script`](../../ci/yaml/README.md#before_script) or [`script`](../../ci/yaml/README.md#script) to install the required
   software. Note that each job runs on a new VM instance, so the
   installation of additional software packages needs to be repeated for
   each job in your pipeline.

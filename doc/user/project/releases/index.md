@@ -43,6 +43,13 @@ To view a list of releases:
   - On private projects, this number is visible to users with Reporter
     [permissions](../../permissions.md#project-members-permissions) or higher.
 
+### Sort Releases
+
+On the top right of the **Releases** page, you can use the sorting button to order releases by
+**Released date** or **Created date**. You can sort releases in ascending or descending order.
+
+![Sort Releases dropdown button](img/releases_sort_v13_6.png)
+
 ## Create a release
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab 12.9. Releases can be created directly in the GitLab UI.

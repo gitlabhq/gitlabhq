@@ -39,6 +39,13 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateHasVulnerabilities, schema: 
                                                                                  count: 2)
     end
 
+    context 'when non-existing project_id is given' do
+      it 'populates only for the existing projects' do
+        expect { subject.perform(project_1.id, 0, project_3.id) }.to change { project_settings.count }.from(1).to(2)
+                                                                 .and change { project_settings.where(has_vulnerabilities: true).count }.from(0).to(2)
+      end
+    end
+
     context 'when an error happens' do
       before do
         allow(described_class::ProjectSetting).to receive(:upsert_for).and_raise('foo')

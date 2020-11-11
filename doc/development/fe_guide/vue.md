@@ -66,29 +66,32 @@ You should only do this while initializing the application, because the mounted 
 
 The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
 instead of querying the DOM inside the main Vue component is avoiding the need to create a fixture or an HTML element in the unit test,
-which will make the tests easier. See the following example:
+which will make the tests easier.
+
+See the following example, also, please refer to our [Vue style guide](style/vue.md#basic-rules) for additional
+information on why we explicitly declare the data being passed into the Vue app;
 
 ```javascript
 // haml
 #js-vue-app{ data: { endpoint: 'foo' }}
 
 // index.js
-document.addEventListener('DOMContentLoaded', () => new Vue({
-  el: '#js-vue-app',
-  data() {
-    const dataset = this.$options.el.dataset;
-    return {
-      endpoint: dataset.endpoint,
-    };
-  },
+const el = document.getElementById('js-vue-app');
+
+if (!el) return false;
+
+const { endpoint } = el.dataset;
+
+return new Vue({
+  el,
   render(createElement) {
     return createElement('my-component', {
       props: {
-        endpoint: this.endpoint,
+        endpoint
       },
     });
   },
-}));
+}
 ```
 
 > When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique across the codebase
@@ -100,7 +103,7 @@ By following this practice, we can avoid the need to mock the `gl` object, which
 It should be done while initializing our Vue instance, and the data should be provided as `props` to the main component:
 
 ```javascript
-document.addEventListener('DOMContentLoaded', () => new Vue({
+return new Vue({
   el: '.js-vue-app',
   render(createElement) {
     return createElement('my-component', {
@@ -109,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});
 ```
 
 #### Accessing feature flags

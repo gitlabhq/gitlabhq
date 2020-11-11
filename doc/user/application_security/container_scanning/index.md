@@ -148,8 +148,8 @@ variables:
 Version `3` of the `container_scanning` Docker image uses [`centos:centos8`](https://hub.docker.com/_/centos)
 as the new base. It also removes the use of the [start.sh](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/merge_requests/77)
 script and instead executes the analyzer by default. Any customizations made to the
-`container_scanning` job's [`before_script`](../../../ci/yaml/README.md#before_script-and-after_script)
-and [`after_script`](../../../ci/yaml/README.md#before_script-and-after_script)
+`container_scanning` job's [`before_script`](../../../ci/yaml/README.md#before_script)
+and [`after_script`](../../../ci/yaml/README.md#after_script)
 blocks may not work with the new version. To roll back to the previous [`alpine:3.11.3`](https://hub.docker.com/_/alpine)-based
 Docker image, you can specify the major version through the [`CS_MAJOR_VERSION`](#available-variables)
 variable.

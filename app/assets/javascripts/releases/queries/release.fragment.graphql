@@ -4,6 +4,7 @@ fragment Release on Release {
   tagPath
   descriptionHtml
   releasedAt
+  createdAt
   upcomingRelease
   assets {
     count

@@ -360,8 +360,8 @@ export default initialState => ({
 ```
 
 We've made the conscious decision to avoid this pattern to aid in the
-discoverability and searchability of our frontend codebase. The reasoning for
-this is described in [this
+discoverability and searchability of our frontend codebase. The same applies
+when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in [this
 discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
 
 > Consider a `someStateKey` is being used in the store state. You _may_ not be

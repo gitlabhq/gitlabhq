@@ -23,14 +23,35 @@ cache-repo:
   stage: sync
   variables:
     GIT_STRATEGY: none
-    TAR_FILENAME: /tmp/gitlab-master.tar
+    SHALLOW_CLONE_TAR_FILENAME: gitlab-master-shallow.tar
+    FULL_CLONE_TAR_FILENAME: gitlab-master.tar
+  before_script:
+    - '[ -z "$CI_REPO_CACHE_CREDENTIALS" ] || gcloud auth activate-service-account --key-file=$CI_REPO_CACHE_CREDENTIALS'
   script:
-    - cd ..
-    - rm -rf $CI_PROJECT_NAME
-    - git clone --progress $CI_REPOSITORY_URL $CI_PROJECT_NAME
-    - cd $CI_PROJECT_NAME
-    - gcloud auth activate-service-account --key-file=$CI_REPO_CACHE_CREDENTIALS
-    - git remote rm origin
-    - tar cf $TAR_FILENAME .
-    - gzip $TAR_FILENAME
-    - gsutil cp $TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/gitlab-master.tar.gz
+    # Enable shallow repo caching only if the $ENABLE_SHALLOW_REPO_CACHING variable exists
+    - if [ -n "$ENABLE_SHALLOW_REPO_CACHING" ]; then
+        cd .. && rm -rf $CI_PROJECT_NAME;
+        today=$(date +%Y-%m-%d);
+        year=$(date +%Y);
+        last_year=`expr $year - 1`;
+        one_year_ago=$(echo $today | sed "s/$year/$last_year/");
+        echo "Cloning $CI_REPOSITORY_URL into $CI_PROJECT_NAME with commits from $one_year_ago.";
+        time git clone --progress --no-checkout --shallow-since=$one_year_ago $CI_REPOSITORY_URL $CI_PROJECT_NAME;
+        cd $CI_PROJECT_NAME;
+        echo "Archiving $CI_PROJECT_NAME into /tmp/$SHALLOW_CLONE_TAR_FILENAME.";
+        time tar cf /tmp/$SHALLOW_CLONE_TAR_FILENAME .;
+        echo "GZipping /tmp/$SHALLOW_CLONE_TAR_FILENAME.";
+        time gzip /tmp/$SHALLOW_CLONE_TAR_FILENAME;
+        [ -z "$CI_REPO_CACHE_CREDENTIALS" ] || (echo "Uploading /tmp/$SHALLOW_CLONE_TAR_FILENAME.gz to GCloud." && time gsutil cp /tmp/$SHALLOW_CLONE_TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/$SHALLOW_CLONE_TAR_FILENAME.gz);
+      fi
+    # By default, we want to cache the full repo, unless the $DISABLE_FULL_REPO_CACHING variable exists (in the case the shallow clone caching is working well)
+    - if [ -z "$DISABLE_FULL_REPO_CACHING" ]; then
+        cd .. && rm -rf $CI_PROJECT_NAME;
+        echo "Cloning $CI_REPOSITORY_URL into $CI_PROJECT_NAME.";
+        time git clone --progress $CI_REPOSITORY_URL $CI_PROJECT_NAME;
+        echo "Archiving $CI_PROJECT_NAME into /tmp/$FULL_CLONE_TAR_FILENAME.";
+        time tar cf /tmp/$FULL_CLONE_TAR_FILENAME .;
+        echo "GZipping /tmp/$FULL_CLONE_TAR_FILENAME.";
+        time gzip /tmp/$FULL_CLONE_TAR_FILENAME;
+        [ -z "$CI_REPO_CACHE_CREDENTIALS" ] || (echo "Uploading /tmp/$FULL_CLONE_TAR_FILENAME.gz to GCloud." && time gsutil cp /tmp/$FULL_CLONE_TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/$FULL_CLONE_TAR_FILENAME.gz);
+      fi
