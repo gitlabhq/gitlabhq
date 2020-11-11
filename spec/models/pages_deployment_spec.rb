@@ -27,14 +27,26 @@ RSpec.describe PagesDeployment do
   end
 
   describe 'default for file_store' do
+    let(:project) { create(:project) }
+    let(:deployment) do
+      filepath = Rails.root.join("spec/fixtures/pages.zip")
+
+      described_class.create!(
+        project: project,
+        file: fixture_file_upload(filepath),
+        file_sha256: Digest::SHA256.file(filepath).hexdigest,
+        file_count: 3
+      )
+    end
+
     it 'uses local store when object storage is not enabled' do
-      expect(build(:pages_deployment).file_store).to eq(ObjectStorage::Store::LOCAL)
+      expect(deployment.file_store).to eq(ObjectStorage::Store::LOCAL)
     end
 
     it 'uses remote store when object storage is enabled' do
       stub_pages_object_storage(::Pages::DeploymentUploader)
 
-      expect(build(:pages_deployment).file_store).to eq(ObjectStorage::Store::REMOTE)
+      expect(deployment.file_store).to eq(ObjectStorage::Store::REMOTE)
     end
   end
 

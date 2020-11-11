@@ -82,6 +82,11 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d Other"
+msgid_plural "%d Others"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Package"
 msgid_plural "%d Packages"
 msgstr[0] ""
@@ -445,6 +450,9 @@ msgstr ""
 msgid "%{count} total weight"
 msgstr ""
 
+msgid "%{criticalStart}%{critical} Critical%{criticalEnd} %{highStart}%{high} High%{highEnd} and %{otherStart}%{otherMessage}%{otherEnd}"
+msgstr ""
+
 msgid "%{dashboard_path} could not be found."
 msgstr ""
 
@@ -710,34 +718,13 @@ msgstr[1] ""
 msgid "%{remaining_approvals} left"
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} and %{highStart}%{high} high%{highEnd} severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status}"
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} and %{highStart}%{high} high%{highEnd} severity vulnerabilities."
+msgid "%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}"
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} severity vulnerabilities out of %{total}."
-msgstr ""
-
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} severity vulnerability."
-msgid_plural "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} severity vulnerabilities."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{reportType} %{status} detected %{highStart}%{high} high%{highEnd} severity vulnerabilities out of %{total}."
-msgstr ""
-
-msgid "%{reportType} %{status} detected %{highStart}%{high} high%{highEnd} severity vulnerability."
-msgid_plural "%{reportType} %{status} detected %{highStart}%{high} high%{highEnd} severity vulnerabilities."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{reportType} %{status} detected %{other} vulnerability."
-msgid_plural "%{reportType} %{status} detected %{other} vulnerabilities."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{reportType} %{status} detected no vulnerabilities."
+msgid "%{reportType} detected %{totalStart}no%{totalEnd} vulnerabilities."
 msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
@@ -9710,9 +9697,6 @@ msgid "Download artifacts"
 msgstr ""
 
 msgid "Download as"
-msgstr ""
-
-msgid "Download as CSV"
 msgstr ""
 
 msgid "Download codes"
@@ -26445,6 +26429,9 @@ msgid_plural "Terraform|%{number} Terraform reports were generated in your pipel
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Terraform|%{user} updated %{timeAgo}"
+msgstr ""
+
 msgid "Terraform|A Terraform report failed to generate."
 msgstr ""
 
@@ -26466,6 +26453,9 @@ msgstr ""
 msgid "Terraform|Locked"
 msgstr ""
 
+msgid "Terraform|Locked by %{user} %{timeAgo}"
+msgstr ""
+
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
 msgstr ""
 
@@ -26476,9 +26466,6 @@ msgid "Terraform|The Terraform report %{name} failed to generate."
 msgstr ""
 
 msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
-msgstr ""
-
-msgid "Terraform|updated %{timeStart}time%{timeEnd}"
 msgstr ""
 
 msgid "Test"
@@ -28291,7 +28278,7 @@ msgstr ""
 msgid "To use Gitpod you must first enable the feature in the integrations section of your %{user_prefs}."
 msgstr ""
 
-msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"
+msgid "To view all %{scannedResourcesCount} scanned URLs, %{linkStart}please download the CSV file%{linkEnd}"
 msgstr ""
 
 msgid "To view instance-level analytics, ask an admin to turn on %{docLinkStart}usage ping%{docLinkEnd}."
@@ -31551,13 +31538,7 @@ msgstr ""
 msgid "ciReport|%{sameNum} same"
 msgstr ""
 
-msgid "ciReport|(errors when loading results)"
-msgstr ""
-
-msgid "ciReport|(is loading)"
-msgstr ""
-
-msgid "ciReport|(is loading, errors when loading results)"
+msgid "ciReport|: Loading resulted in an error"
 msgstr ""
 
 msgid "ciReport|All projects"
@@ -31722,6 +31703,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "ciReport|View full report"
+msgstr ""
+
+msgid "ciReport|is loading"
+msgstr ""
+
+msgid "ciReport|is loading, errors when loading results"
 msgstr ""
 
 msgid "closed issue"
@@ -32825,6 +32812,11 @@ msgstr ""
 
 msgid "view the source"
 msgstr ""
+
+msgid "vulnerability"
+msgid_plural "vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "vulnerability|Add a comment"
 msgstr ""

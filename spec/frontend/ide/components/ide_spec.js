@@ -44,11 +44,11 @@ describe('ide component, empty repo', () => {
     vm.$destroy();
   });
 
-  it('renders "New file" button in empty repo', done => {
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).not.toBeNull();
-      done();
-    });
+  it('renders "New file" button in empty repo', async () => {
+    await waitForPromises();
+    await vm.$nextTick();
+
+    expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).not.toBeNull();
   });
 });
 
@@ -105,11 +105,11 @@ describe('ide component, non-empty repo', () => {
   });
 
   describe('non-existent branch', () => {
-    it('does not render "New file" button for non-existent branch when repo is not empty', done => {
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
-        done();
-      });
+    it('does not render "New file" button for non-existent branch when repo is not empty', async () => {
+      await waitForPromises();
+      await vm.$nextTick();
+
+      expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
     });
   });
 
@@ -118,11 +118,11 @@ describe('ide component, non-empty repo', () => {
       store.state.trees['abcproject/master'].tree = [file()];
     });
 
-    it('does not render "New file" button', done => {
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
-        done();
-      });
+    it('does not render "New file" button', async () => {
+      await waitForPromises();
+      await vm.$nextTick();
+
+      expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
     });
   });
 });

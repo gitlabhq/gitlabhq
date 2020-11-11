@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import StatesTable from '~/terraform/components/states_table.vue';
@@ -12,12 +12,32 @@ describe('StatesTable', () => {
       {
         name: 'state-1',
         lockedAt: '2020-10-13T00:00:00Z',
+        lockedByUser: {
+          name: 'user-1',
+        },
         updatedAt: '2020-10-13T00:00:00Z',
+        latestVersion: null,
       },
       {
         name: 'state-2',
         lockedAt: null,
+        lockedByUser: null,
         updatedAt: '2020-10-10T00:00:00Z',
+        latestVersion: null,
+      },
+      {
+        name: 'state-3',
+        lockedAt: '2020-10-10T00:00:00Z',
+        lockedByUser: {
+          name: 'user-2',
+        },
+        updatedAt: '2020-10-10T00:00:00Z',
+        latestVersion: {
+          updatedAt: '2020-10-11T00:00:00Z',
+          createdByUser: {
+            name: 'user-3',
+          },
+        },
       },
     ],
   };
@@ -33,30 +53,38 @@ describe('StatesTable', () => {
   });
 
   it.each`
-    stateName    | locked   | lineNumber
-    ${'state-1'} | ${true}  | ${0}
-    ${'state-2'} | ${false} | ${1}
+    name         | toolTipText                      | locked   | lineNumber
+    ${'state-1'} | ${'Locked by user-1 2 days ago'} | ${true}  | ${0}
+    ${'state-2'} | ${null}                          | ${false} | ${1}
+    ${'state-3'} | ${'Locked by user-2 5 days ago'} | ${true}  | ${2}
   `(
-    'displays the name "$stateName" for line "$lineNumber"',
-    ({ stateName, locked, lineNumber }) => {
+    'displays the name and locked information "$name" for line "$lineNumber"',
+    ({ name, toolTipText, locked, lineNumber }) => {
       const states = wrapper.findAll('[data-testid="terraform-states-table-name"]');
 
       const state = states.at(lineNumber);
+      const toolTip = state.find(GlTooltip);
 
-      expect(state.text()).toContain(stateName);
+      expect(state.text()).toContain(name);
       expect(state.find(GlIcon).exists()).toBe(locked);
+      expect(toolTip.exists()).toBe(locked);
+
+      if (locked) {
+        expect(toolTip.text()).toMatchInterpolatedText(toolTipText);
+      }
     },
   );
 
   it.each`
-    updateTime              | lineNumber
-    ${'updated 2 days ago'} | ${0}
-    ${'updated 5 days ago'} | ${1}
+    updateTime                     | lineNumber
+    ${'updated 2 days ago'}        | ${0}
+    ${'updated 5 days ago'}        | ${1}
+    ${'user-3 updated 4 days ago'} | ${2}
   `('displays the time "$updateTime" for line "$lineNumber"', ({ updateTime, lineNumber }) => {
     const states = wrapper.findAll('[data-testid="terraform-states-table-updated"]');
 
     const state = states.at(lineNumber);
 
-    expect(state.text()).toBe(updateTime);
+    expect(state.text()).toMatchInterpolatedText(updateTime);
   });
 });

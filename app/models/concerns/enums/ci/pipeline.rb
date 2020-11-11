@@ -53,6 +53,10 @@ module Enums
         sources.except(*dangling_sources.keys)
       end
 
+      def self.ci_and_parent_sources
+        ci_sources.merge(sources.slice(:parent_pipeline))
+      end
+
       # Returns the `Hash` to use for creating the `config_sources` enum for
       # `Ci::Pipeline`.
       def self.config_sources

@@ -172,9 +172,9 @@ export default {
     notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
     eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
-  async mounted() {
+  mounted() {
     if (this.hasDiff) {
-      await this.postRender();
+      this.postRender();
     }
   },
   beforeDestroy() {
@@ -231,8 +231,8 @@ export default {
         })
         .then(() => {
           requestIdleCallback(
-            async () => {
-              await this.postRender();
+            () => {
+              this.postRender();
               this.assignDiscussionsToDiff(this.getDiffFileDiscussions(this.file));
             },
             { timeout: 1000 },

@@ -543,15 +543,20 @@ export const setExpandedDiffLines = ({ commit, state }, { file, data }) => {
       }),
     }),
   };
+  const unifiedDiffLinesEnabled = window.gon?.features?.unifiedDiffLines;
   const currentDiffLinesKey =
-    state.diffViewType === INLINE_DIFF_VIEW_TYPE ? INLINE_DIFF_LINES_KEY : PARALLEL_DIFF_LINES_KEY;
+    state.diffViewType === INLINE_DIFF_VIEW_TYPE || unifiedDiffLinesEnabled
+      ? INLINE_DIFF_LINES_KEY
+      : PARALLEL_DIFF_LINES_KEY;
   const hiddenDiffLinesKey =
     state.diffViewType === INLINE_DIFF_VIEW_TYPE ? PARALLEL_DIFF_LINES_KEY : INLINE_DIFF_LINES_KEY;
 
-  commit(types.SET_HIDDEN_VIEW_DIFF_FILE_LINES, {
-    filePath: file.file_path,
-    lines: expandedDiffLines[hiddenDiffLinesKey],
-  });
+  if (!unifiedDiffLinesEnabled) {
+    commit(types.SET_HIDDEN_VIEW_DIFF_FILE_LINES, {
+      filePath: file.file_path,
+      lines: expandedDiffLines[hiddenDiffLinesKey],
+    });
+  }
 
   if (expandedDiffLines[currentDiffLinesKey].length > MAX_RENDERING_DIFF_LINES) {
     let index = START_RENDERING_INDEX;

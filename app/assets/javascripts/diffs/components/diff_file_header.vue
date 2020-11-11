@@ -10,6 +10,7 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownDivider,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -32,6 +33,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
+    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -365,8 +367,10 @@ export default {
             <gl-dropdown-item
               v-if="!diffFile.is_fully_expanded"
               ref="expandDiffToFullFileButton"
+              :disabled="diffFile.isLoadingFullFile"
               @click="toggleFullDiff(diffFile.file_path)"
             >
+              <gl-loading-icon v-if="diffFile.isLoadingFullFile" inline />
               {{ expandDiffToFullFileTitle }}
             </gl-dropdown-item>
           </template>

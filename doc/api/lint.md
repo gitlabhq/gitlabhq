@@ -99,6 +99,54 @@ Example response:
 }
 ```
 
+## Validate a CI YAML configuration with a namespace
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.6.
+
+Checks if CI/CD YAML configuration is valid. This endpoint has namespace
+specific context.
+
+```plaintext
+POST /projects/:id/ci/lint
+```
+
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `content`  | string  | yes      | The CI/CD configuration content. |
+| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#pipeline-simulation), or only do static check. This is false by default. |
+
+Example request:
+
+```shell
+curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects/:id/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
+```
+
+Example responses:
+
+- Valid configuration:
+
+  ```json
+  {
+    "valid": true,
+    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "errors": [],
+    "warnings": []
+  }
+  ```
+
+- Invalid configuration:
+
+  ```json
+  {
+    "valid": false,
+    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "errors": [
+      "jobs config should contain at least one visible job"
+    ],
+    "warnings": []
+  }
+  ```
+
 ## Validate a project's CI configuration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.5.

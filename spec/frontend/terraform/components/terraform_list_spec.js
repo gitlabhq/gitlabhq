@@ -55,12 +55,16 @@ describe('TerraformList', () => {
           name: 'state-1',
           lockedAt: null,
           updatedAt: null,
+          lockedByUser: null,
+          latestVersion: null,
         },
         {
           id: 'gid://gitlab/Terraform::State/2',
           name: 'state-2',
           lockedAt: null,
           updatedAt: null,
+          lockedByUser: null,
+          latestVersion: null,
         },
       ];
 

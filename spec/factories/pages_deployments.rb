@@ -5,7 +5,7 @@ FactoryBot.define do
     project
 
     after(:build) do |deployment, _evaluator|
-      filepath =  Rails.root.join("spec/fixtures/pages.zip")
+      filepath = Rails.root.join("spec/fixtures/pages.zip")
 
       deployment.file = fixture_file_upload(filepath)
       deployment.file_sha256 = Digest::SHA256.file(filepath).hexdigest
