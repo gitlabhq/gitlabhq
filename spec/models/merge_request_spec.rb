@@ -79,6 +79,18 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.with_jira_issue_keys' do
+    let_it_be(:mr_with_jira_title) { create(:merge_request, :unique_branches, title: 'Fix TEST-123') }
+    let_it_be(:mr_with_jira_description) { create(:merge_request, :unique_branches, description: 'this closes TEST-321') }
+    let_it_be(:mr_without_jira_reference) { create(:merge_request, :unique_branches) }
+
+    subject { described_class.with_jira_issue_keys }
+
+    it { is_expected.to contain_exactly(mr_with_jira_title, mr_with_jira_description) }
+
+    it { is_expected.not_to include(mr_without_jira_reference) }
+  end
+
   describe '#squash_in_progress?' do
     let(:repo_path) do
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do

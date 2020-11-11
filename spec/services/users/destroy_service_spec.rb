@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Users::DestroyService do
-  describe "Deletes a user and all their personal projects" do
-    let!(:user)      { create(:user) }
-    let!(:admin)     { create(:admin) }
-    let!(:namespace) { user.namespace }
-    let!(:project)   { create(:project, namespace: namespace) }
-    let(:service)    { described_class.new(admin) }
-    let(:gitlab_shell) { Gitlab::Shell.new }
+  let!(:user)      { create(:user) }
+  let!(:admin)     { create(:admin) }
+  let!(:namespace) { user.namespace }
+  let!(:project)   { create(:project, namespace: namespace) }
+  let(:service)    { described_class.new(admin) }
+  let(:gitlab_shell) { Gitlab::Shell.new }
 
+  describe "Deletes a user and all their personal projects", :enable_admin_mode do
     context 'no options are given' do
       it 'deletes the user' do
         user_data = service.execute(user)
@@ -215,35 +215,6 @@ RSpec.describe Users::DestroyService do
       end
     end
 
-    context "deletion permission checks" do
-      it 'does not delete the user when user is not an admin' do
-        other_user = create(:user)
-
-        expect { described_class.new(other_user).execute(user) }.to raise_error(Gitlab::Access::AccessDeniedError)
-        expect(User.exists?(user.id)).to be(true)
-      end
-
-      it 'allows admins to delete anyone' do
-        described_class.new(admin).execute(user)
-
-        expect(User.exists?(user.id)).to be(false)
-      end
-
-      it 'allows users to delete their own account' do
-        described_class.new(user).execute(user)
-
-        expect(User.exists?(user.id)).to be(false)
-      end
-
-      it 'allows user to be deleted if skip_authorization: true' do
-        other_user = create(:user)
-
-        described_class.new(user).execute(other_user, skip_authorization: true)
-
-        expect(User.exists?(other_user.id)).to be(false)
-      end
-    end
-
     context "migrating associated records" do
       let!(:issue)     { create(:issue, author: user) }
 
@@ -318,6 +289,45 @@ RSpec.describe Users::DestroyService do
 
         service.execute(user)
       end
+    end
+  end
+
+  describe "Deletion permission checks" do
+    it 'does not delete the user when user is not an admin' do
+      other_user = create(:user)
+
+      expect { described_class.new(other_user).execute(user) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect(User.exists?(user.id)).to be(true)
+    end
+
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'allows admins to delete anyone' do
+        described_class.new(admin).execute(user)
+
+        expect(User.exists?(user.id)).to be(false)
+      end
+    end
+
+    context 'when admin mode is disabled' do
+      it 'disallows admins to delete anyone' do
+        expect { described_class.new(admin).execute(user) }.to raise_error(Gitlab::Access::AccessDeniedError)
+
+        expect(User.exists?(user.id)).to be(true)
+      end
+    end
+
+    it 'allows users to delete their own account' do
+      described_class.new(user).execute(user)
+
+      expect(User.exists?(user.id)).to be(false)
+    end
+
+    it 'allows user to be deleted if skip_authorization: true' do
+      other_user = create(:user)
+
+      described_class.new(user).execute(other_user, skip_authorization: true)
+
+      expect(User.exists?(other_user.id)).to be(false)
     end
   end
 end

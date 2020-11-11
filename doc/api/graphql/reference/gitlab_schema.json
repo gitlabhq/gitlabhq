@@ -21169,6 +21169,34 @@
               "deprecationReason": null
             },
             {
+              "name": "moved",
+              "description": "Indicates if issue got moved from other project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "movedTo",
+              "description": "Updated Issue after it got moved to another project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Issue",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "notes",
               "description": "All notes on this noteable",
               "args": [
@@ -27816,6 +27844,34 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Milestone",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "moved",
+              "description": "Indicates if issue got moved from other project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "movedTo",
+              "description": "Updated Issue after it got moved to another project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Issue",
                 "ofType": null
               },
               "isDeprecated": false,

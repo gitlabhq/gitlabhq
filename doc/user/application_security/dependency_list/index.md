@@ -32,7 +32,7 @@ Dependencies are displayed with the following information:
 | --------- | ----------- |
 | Component | The dependency's name and version |
 | Packager  | The packager used to install the dependency |
-| Location  | A link to the packager-specific lock file in your project that declared the dependency |
+| Location  | A link to the packager-specific lock file in your project that declared the dependency. It also shows the [dependency path](#dependency-paths) to a top-level dependency, if any, and if supported. |
 | License   | Links to dependency's software licenses |
 
 Dependencies shown are initially sorted by the severity of their known vulnerabilities, if any. They
@@ -43,6 +43,18 @@ can also be sorted by name or by the packager that installed them.
 If a dependency has known vulnerabilities, you can view them by clicking the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
 vulnerability, its severity and description then appears below it.
+
+### Dependency Paths
+
+The dependency list shows the path between a dependency and a top-level dependency it's connected
+to, if any. There are many possible paths connecting a transient dependency to top-level
+dependencies, but the UI only shows one of the shortest paths.
+
+![Dependency Path](img/yarn_dependency_path_v13_6.png)
+
+Dependency Paths are supported for the following package managers:
+
+- [NuGet](https://www.nuget.org/)
 
 ## Licenses
 

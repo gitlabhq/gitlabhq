@@ -218,7 +218,8 @@ module API
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
       mount ::API::MavenPackages
-      mount ::API::NpmPackages
+      mount ::API::NpmProjectPackages
+      mount ::API::NpmInstancePackages
       mount ::API::GenericPackages
       mount ::API::GoProxy
       mount ::API::Pages

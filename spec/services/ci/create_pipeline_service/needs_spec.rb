@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService do
   context 'needs' do
-    let_it_be(:user)    { create(:admin) }
-    let_it_be(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user)    { project.owner }
 
     let(:ref)      { 'refs/heads/master' }
     let(:source)   { :push }
@@ -14,6 +14,7 @@ RSpec.describe Ci::CreatePipelineService do
 
     before do
       stub_ci_pipeline_yaml_file(config)
+      project.add_developer(user)
     end
 
     context 'with a valid config' do

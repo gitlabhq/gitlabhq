@@ -311,6 +311,8 @@ class MergeRequest < ApplicationRecord
     includes(:metrics)
   end
 
+  scope :with_jira_issue_keys, -> { where('title ~ :regex OR merge_requests.description ~ :regex', regex: Gitlab::Regex.jira_issue_key_regex.source) }
+
   after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project

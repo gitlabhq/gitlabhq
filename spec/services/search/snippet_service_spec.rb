@@ -49,12 +49,24 @@ RSpec.describe Search::SnippetService do
         expect(results.objects('snippet_titles')).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet]
       end
 
-      it 'returns all snippets when user is admin' do
-        admin = create(:admin)
-        search = described_class.new(admin, search: 'bar')
-        results = search.execute
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns all snippets when user is admin' do
+          admin = create(:admin)
+          search = described_class.new(admin, search: 'bar')
+          results = search.execute
 
-        expect(results.objects('snippet_titles')).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+          expect(results.objects('snippet_titles')).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns only public & internal snippets when user is admin' do
+          admin = create(:admin)
+          search = described_class.new(admin, search: 'bar')
+          results = search.execute
+
+          expect(results.objects('snippet_titles')).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet]
+        end
       end
     end
   end

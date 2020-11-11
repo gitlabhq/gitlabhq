@@ -1,0 +1,5 @@
+---
+title: Jira Connect automatically synchronizes up to 400 existing merge requests per project when a namespace is connected.
+merge_request: 43880
+author:
+type: added

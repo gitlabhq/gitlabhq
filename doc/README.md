@@ -260,9 +260,9 @@ The following documentation relates to the DevOps **Verify** stage:
 
 ### Package
 
-GitLab Packages allows organizations to utilize GitLab as a private repository
+GitLab Packages allows organizations to use GitLab as a private repository
 for a variety of common package managers. Users are able to build and publish
-packages, which can be easily consumed as a dependency in downstream projects.
+packages, which can be consumed as a dependency in downstream projects.
 
 The following documentation relates to the DevOps **Package** stage:
 

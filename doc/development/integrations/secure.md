@@ -289,8 +289,7 @@ You can find the schemas for these scanners here:
 
 ### Version
 
-This field specifies the version of the report schema you are using. Please reference individual scanner
-pages for the specific versions to use.
+This field specifies the version of the [Security Report Schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) you are using. Please refer to the [releases](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases) of the schemas for the specific versions to use.
 
 ### Vulnerabilities
 

@@ -602,7 +602,7 @@ class Project < ApplicationRecord
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
   def self.public_or_visible_to_user(user = nil, min_access_level = nil)
-    min_access_level = nil if user&.admin?
+    min_access_level = nil if user&.can_read_all_resources?
 
     return public_to_user unless user
 
@@ -628,7 +628,7 @@ class Project < ApplicationRecord
   def self.with_feature_available_for_user(feature, user)
     visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
 
-    if user&.admin?
+    if user&.can_read_all_resources?
       with_feature_enabled(feature)
     elsif user
       min_access_level = ProjectFeature.required_minimum_access_level(feature)

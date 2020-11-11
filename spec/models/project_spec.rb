@@ -3996,8 +3996,16 @@ RSpec.describe Project, factory_default: :keep do
       context 'when feature is private' do
         let(:project) { create(:project, :public, :merge_requests_private) }
 
-        it 'returns projects with the project feature private' do
-          is_expected.to include(project)
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns projects with the project feature private' do
+            is_expected.to include(project)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not return projects with the project feature private' do
+            is_expected.not_to include(project)
+          end
         end
       end
     end
@@ -4020,7 +4028,7 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '.filter_by_feature_visibility', :enable_admin_mode do
+  describe '.filter_by_feature_visibility' do
     include_context 'ProjectPolicyTable context'
     include ProjectHelpers
     using RSpec::Parameterized::TableSyntax
@@ -4032,12 +4040,13 @@ RSpec.describe Project, factory_default: :keep do
     context 'reporter level access' do
       let(:feature) { MergeRequest }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_reporter_feature_access
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4052,12 +4061,13 @@ RSpec.describe Project, factory_default: :keep do
     context 'issues' do
       let(:feature) { Issue }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_guest_feature_access
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4072,12 +4082,13 @@ RSpec.describe Project, factory_default: :keep do
     context 'wiki' do
       let(:feature) { :wiki }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_guest_feature_access
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4092,12 +4103,13 @@ RSpec.describe Project, factory_default: :keep do
     context 'code' do
       let(:feature) { :repository }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_guest_feature_access_and_non_private_project_only
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []

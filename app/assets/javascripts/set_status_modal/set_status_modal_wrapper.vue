@@ -179,7 +179,7 @@ export default {
           <span class="input-group-prepend">
             <button
               ref="toggleEmojiMenuButton"
-              v-gl-tooltip.bottom
+              v-gl-tooltip.bottom.hover
               :title="s__('SetStatusModal|Add status emoji')"
               :aria-label="s__('SetStatusModal|Add status emoji')"
               name="button"

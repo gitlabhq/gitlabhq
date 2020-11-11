@@ -2,20 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Loaders::EntitiesLoader do
+RSpec.describe BulkImports::Common::Loaders::EntityLoader do
   describe '#load' do
     it "creates entities for the given data" do
       group = create(:group, path: "imported-group")
       parent_entity = create(:bulk_import_entity, group: group, bulk_import: create(:bulk_import))
       context = instance_double(BulkImports::Pipeline::Context, entity: parent_entity)
 
-      data = [{
+      data = {
         source_type: :group_entity,
         source_full_path: "parent/subgroup",
         destination_name: "subgroup",
         destination_namespace: parent_entity.group.full_path,
         parent_id: parent_entity.id
-      }]
+      }
 
       expect { subject.load(context, data) }.to change(BulkImports::Entity, :count).by(1)
 

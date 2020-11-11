@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Auth::ContainerRegistryAuthenticationService do
+  include AdminModeHelper
+
   let(:current_project) { nil }
   let(:current_user) { nil }
   let(:current_params) { {} }
@@ -695,6 +697,10 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
 
     context 'user has access to all projects' do
       let_it_be(:current_user) { create(:user, :admin) }
+
+      before do
+        enable_admin_mode!(current_user)
+      end
 
       it_behaves_like 'a browsable' do
         let(:access) do

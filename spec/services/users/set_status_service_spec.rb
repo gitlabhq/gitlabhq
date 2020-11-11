@@ -52,7 +52,7 @@ RSpec.describe Users::SetStatusService do
           { emoji: 'taurus', message: 'a random status', user: target_user }
         end
 
-        context 'the current user is admin' do
+        context 'the current user is admin', :enable_admin_mode do
           let(:current_user) { create(:admin) }
 
           it 'changes the status when the current user is allowed to do that' do

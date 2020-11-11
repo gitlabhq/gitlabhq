@@ -13,6 +13,8 @@ module AdminModeHelper
   def enable_admin_mode!(user)
     fake_user_mode = instance_double(Gitlab::Auth::CurrentUserMode)
 
+    allow(Gitlab::Auth::CurrentUserMode).to receive(:new).and_call_original
+
     allow(Gitlab::Auth::CurrentUserMode).to receive(:new).with(user).and_return(fake_user_mode)
     allow(fake_user_mode).to receive(:admin_mode?).and_return(user&.admin?)
   end

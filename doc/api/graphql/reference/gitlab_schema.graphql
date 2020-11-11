@@ -7646,6 +7646,16 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   milestone: Milestone
 
   """
+  Indicates if issue got moved from other project
+  """
+  moved: Boolean
+
+  """
+  Updated Issue after it got moved to another project
+  """
+  movedTo: Issue
+
+  """
   All notes on this noteable
   """
   notes(
@@ -10168,6 +10178,16 @@ type Issue implements CurrentUserTodos & Noteable {
   Milestone of the issue
   """
   milestone: Milestone
+
+  """
+  Indicates if issue got moved from other project
+  """
+  moved: Boolean
+
+  """
+  Updated Issue after it got moved to another project
+  """
+  movedTo: Issue
 
   """
   All notes on this noteable

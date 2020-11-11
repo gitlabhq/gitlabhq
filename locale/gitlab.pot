@@ -3546,6 +3546,9 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
+msgid "Archived (%{movedToStart}moved%{movedToEnd})"
+msgstr ""
+
 msgid "Archived in this version"
 msgstr ""
 
@@ -5325,6 +5328,9 @@ msgid "Choose file…"
 msgstr ""
 
 msgid "Choose labels"
+msgstr ""
+
+msgid "Choose specific groups or storage shards"
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
@@ -7156,7 +7162,7 @@ msgstr ""
 msgid "Container repositories"
 msgstr ""
 
-msgid "Container repositories sync capacity"
+msgid "Container repositories synchronization concurrency limit"
 msgstr ""
 
 msgid "Container repository"
@@ -8810,9 +8816,6 @@ msgstr ""
 msgid "Delete variable"
 msgstr ""
 
-msgid "DeleteProject|Delete %{name}"
-msgstr ""
-
 msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
 msgstr ""
 
@@ -10423,6 +10426,9 @@ msgstr ""
 msgid "Environments|Delete"
 msgstr ""
 
+msgid "Environments|Delete '%{environmentName}'?"
+msgstr ""
+
 msgid "Environments|Delete environment"
 msgstr ""
 
@@ -11754,7 +11760,7 @@ msgstr ""
 msgid "File renamed with no changes."
 msgstr ""
 
-msgid "File sync capacity"
+msgid "File synchronization concurrency limit"
 msgstr ""
 
 msgid "File templates"
@@ -16053,6 +16059,9 @@ msgstr ""
 msgid "Limit namespaces and projects that can be indexed"
 msgstr ""
 
+msgid "Limit the number of concurrent operations this secondary node can run in the background."
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
@@ -17683,6 +17692,9 @@ msgid "Move selection down"
 msgstr ""
 
 msgid "Move selection up"
+msgstr ""
+
+msgid "Move test case"
 msgstr ""
 
 msgid "Move this issue to another project."
@@ -22856,7 +22868,7 @@ msgstr ""
 msgid "Repository storage"
 msgstr ""
 
-msgid "Repository sync capacity"
+msgid "Repository synchronization concurrency limit"
 msgstr ""
 
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets}"
@@ -24559,12 +24571,6 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
-msgid "Set the number of concurrent requests this secondary node will make to the primary node while backfilling."
-msgstr ""
-
-msgid "Set the synchronization and verification capacity for the secondary node."
-msgstr ""
-
 msgid "Set the timeout in seconds to send a secondary node status to the primary and IPs allowed for the secondary nodes."
 msgstr ""
 
@@ -24607,13 +24613,16 @@ msgstr ""
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
+msgid "Set verification limit and frequency."
+msgstr ""
+
 msgid "Set weight"
 msgstr ""
 
 msgid "Set weight to %{weight}."
 msgstr ""
 
-msgid "Set what should be replicated by choosing specific projects or groups by the secondary node."
+msgid "Set what should be replicated by this secondary node."
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
@@ -26210,6 +26219,9 @@ msgstr ""
 msgid "Synchronization disabled"
 msgstr ""
 
+msgid "Synchronization settings"
+msgstr ""
+
 msgid "Syncing…"
 msgstr ""
 
@@ -26489,6 +26501,12 @@ msgstr[1] ""
 msgid "Test settings"
 msgstr ""
 
+msgid "TestCases|Move test case"
+msgstr ""
+
+msgid "TestCases|Moving test case"
+msgstr ""
+
 msgid "TestCases|New Test Case"
 msgstr ""
 
@@ -26514,6 +26532,9 @@ msgid "TestCases|Something went wrong while fetching test cases list."
 msgstr ""
 
 msgid "TestCases|Something went wrong while marking test case todo as done."
+msgstr ""
+
+msgid "TestCases|Something went wrong while moving test case."
 msgstr ""
 
 msgid "TestCases|Something went wrong while updating the test case labels."
@@ -29632,7 +29653,7 @@ msgstr ""
 msgid "Various settings that affect GitLab performance."
 msgstr ""
 
-msgid "Verification capacity"
+msgid "Verification concurrency limit"
 msgstr ""
 
 msgid "Verification information"

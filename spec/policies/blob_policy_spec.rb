@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobPolicy, :enable_admin_mode do
+RSpec.describe BlobPolicy do
   include_context 'ProjectPolicyTable context'
   include ProjectHelpers
   using RSpec::Parameterized::TableSyntax
@@ -13,12 +13,13 @@ RSpec.describe BlobPolicy, :enable_admin_mode do
 
   subject(:policy) { described_class.new(user, blob) }
 
-  where(:project_level, :feature_access_level, :membership, :expected_count) do
+  where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
     permission_table_for_guest_feature_access_and_non_private_project_only
   end
 
   with_them do
     it "grants permission" do
+      enable_admin_mode!(user) if admin_mode
       update_feature_access_level(project, feature_access_level)
 
       if expected_count == 1

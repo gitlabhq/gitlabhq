@@ -827,6 +827,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: jira_connect:jira_connect_sync_project
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: jira_importer:jira_import_advance_stage
   :feature_category: :importers
   :has_external_dependencies:

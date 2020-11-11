@@ -3099,12 +3099,26 @@ RSpec.describe NotificationService, :mailer do
         subject.new_issue(issue, member)
       end
 
-      it 'still delivers email to admins' do
-        member.update!(admin: true)
+      context 'with admin user' do
+        before do
+          member.update!(admin: true)
+        end
 
-        expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'still delivers email to admins' do
+            expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
 
-        subject.new_issue(issue, member)
+            subject.new_issue(issue, member)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not send an email' do
+            expect(Notify).not_to receive(:new_issue_email)
+
+            subject.new_issue(issue, member)
+          end
+        end
       end
     end
   end

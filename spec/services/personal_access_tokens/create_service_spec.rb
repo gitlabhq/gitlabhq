@@ -38,7 +38,13 @@ RSpec.describe PersonalAccessTokens::CreateService do
     context 'when current_user is an administrator' do
       let(:current_user) { create(:admin) }
 
-      it_behaves_like 'a successfully created token'
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it_behaves_like 'a successfully created token'
+      end
+
+      context 'when admin mode is disabled' do
+        it_behaves_like 'an unsuccessfully created token'
+      end
     end
 
     context 'when current_user is not an administrator' do

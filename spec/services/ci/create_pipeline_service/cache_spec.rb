@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService do
   context 'cache' do
-    let(:user)     { create(:admin) }
+    let(:project)  { create(:project, :custom_repo, files: files) }
+    let(:user)     { project.owner }
     let(:ref)      { 'refs/heads/master' }
     let(:source)   { :push }
     let(:service)  { described_class.new(project, user, { ref: ref }) }
     let(:pipeline) { service.execute(source) }
     let(:job)      { pipeline.builds.find_by(name: 'job') }
-    let(:project)  { create(:project, :custom_repo, files: files) }
 
     before do
       stub_ci_pipeline_yaml_file(config)

@@ -72,6 +72,10 @@ module PolicyActor
   def try_obtain_ldap_lease
     nil
   end
+
+  def can_read_all_resources?
+    false
+  end
 end
 
 PolicyActor.prepend_if_ee('EE::PolicyActor')

@@ -72,14 +72,25 @@ RSpec.describe Projects::CreateService, '#execute' do
   end
 
   context "admin creates project with other user's namespace_id" do
-    it 'sets the correct permissions' do
-      admin = create(:admin)
-      project = create_project(admin, opts)
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'sets the correct permissions' do
+        admin = create(:admin)
+        project = create_project(admin, opts)
 
-      expect(project).to be_persisted
-      expect(project.owner).to eq(user)
-      expect(project.team.maintainers).to contain_exactly(user)
-      expect(project.namespace).to eq(user.namespace)
+        expect(project).to be_persisted
+        expect(project.owner).to eq(user)
+        expect(project.team.maintainers).to contain_exactly(user)
+        expect(project.namespace).to eq(user.namespace)
+      end
+    end
+
+    context 'when admin mode is disabled' do
+      it 'is not allowed' do
+        admin = create(:admin)
+        project = create_project(admin, opts)
+
+        expect(project).not_to be_persisted
+      end
     end
   end
 
@@ -336,7 +347,15 @@ RSpec.describe Projects::CreateService, '#execute' do
         )
       end
 
-      it 'allows a restricted visibility level for admins' do
+      it 'does not allow a restricted visibility level for admins when admin mode is disabled' do
+        admin = create(:admin)
+        project = create_project(admin, opts)
+
+        expect(project.errors.any?).to be(true)
+        expect(project.saved?).to be_falsey
+      end
+
+      it 'allows a restricted visibility level for admins when admin mode is enabled', :enable_admin_mode do
         admin = create(:admin)
         project = create_project(admin, opts)
 

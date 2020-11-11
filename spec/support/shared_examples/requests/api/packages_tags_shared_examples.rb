@@ -40,7 +40,7 @@ RSpec.shared_examples 'returns package tags' do |user_type|
   context 'with invalid package name' do
     where(:package_name, :status) do
       '%20' | :bad_request
-      nil   | :forbidden
+      nil   | :not_found
     end
 
     with_them do
@@ -95,7 +95,7 @@ RSpec.shared_examples 'create package tag' do |user_type|
 
   context 'with invalid package name' do
     where(:package_name, :status) do
-      'unknown' | :forbidden
+      'unknown' | :not_found
       ''        | :not_found
       '%20'     | :bad_request
     end
@@ -160,7 +160,7 @@ RSpec.shared_examples 'delete package tag' do |user_type|
 
     context 'with invalid package name' do
       where(:package_name, :status) do
-        'unknown' | :forbidden
+        'unknown' | :not_found
         ''        | :not_found
         '%20'     | :bad_request
       end

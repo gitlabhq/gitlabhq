@@ -35,7 +35,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
 
     before do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
-        allow(extractor).to receive(:extract).and_return([subgroup_data])
+        allow(extractor).to receive(:extract).and_return(subgroup_data)
       end
 
       parent.add_owner(user)
@@ -67,14 +67,14 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
 
     it 'has transformers' do
       expect(described_class.transformers).to contain_exactly(
-        klass: BulkImports::Groups::Transformers::SubgroupsToEntitiesTransformer,
+        klass: BulkImports::Groups::Transformers::SubgroupToEntityTransformer,
         options: nil
       )
     end
 
     it 'has loaders' do
       expect(described_class.loaders).to contain_exactly(
-        klass: BulkImports::Common::Loaders::EntitiesLoader,
+        klass: BulkImports::Common::Loaders::EntityLoader,
         options: nil
       )
     end

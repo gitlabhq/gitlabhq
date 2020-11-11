@@ -24,10 +24,19 @@ RSpec.describe PersonalAccessTokens::RevokeService do
     let(:service) { described_class.new(current_user, token: token) }
 
     context 'when current_user is an administrator' do
-      let_it_be(:current_user) { create(:admin) }
-      let_it_be(:token) { create(:personal_access_token) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        let_it_be(:current_user) { create(:admin) }
+        let_it_be(:token) { create(:personal_access_token) }
 
-      it_behaves_like 'a successfully revoked token'
+        it_behaves_like 'a successfully revoked token'
+      end
+
+      context 'when admin mode is disabled' do
+        let_it_be(:current_user) { create(:admin) }
+        let_it_be(:token) { create(:personal_access_token) }
+
+        it_behaves_like 'an unsuccessfully revoked token'
+      end
     end
 
     context 'when current_user is not an administrator' do

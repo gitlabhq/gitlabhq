@@ -1,0 +1,7 @@
+---
+name: jira_connect_full_namespace_sync
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43880
+rollout_issue_url: 
+type: development
+group: group::ecosystem
+default_enabled: false

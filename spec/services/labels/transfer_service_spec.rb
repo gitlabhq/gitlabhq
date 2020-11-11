@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Labels::TransferService do
   describe '#execute' do
-    let_it_be(:user) { create(:admin) }
+    let_it_be(:user) { create(:user) }
 
     let_it_be(:old_group_ancestor) { create(:group) }
     let_it_be(:old_group) { create(:group, parent: old_group_ancestor) }
@@ -14,6 +14,11 @@ RSpec.describe Labels::TransferService do
     let_it_be(:project) { create(:project, :repository, group: new_group) }
 
     subject(:service) { described_class.new(user, old_group, project) }
+
+    before do
+      old_group_ancestor.add_developer(user)
+      new_group.add_developer(user)
+    end
 
     it 'recreates missing group labels at project level and assigns them to the issuables' do
       old_group_label_1 = create(:group_label, group: old_group)

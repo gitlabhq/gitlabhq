@@ -46,8 +46,18 @@ RSpec.describe ResourceAccessTokens::CreateService do
         end
 
         context 'when created by an admin' do
-          it_behaves_like 'creates a user that has their email confirmed' do
-            let(:user) { create(:admin) }
+          let(:user) { create(:admin) }
+
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it_behaves_like 'creates a user that has their email confirmed'
+          end
+
+          context 'when admin mode is disabled' do
+            it 'returns error' do
+              response = subject
+
+              expect(response.error?).to be true
+            end
           end
         end
 
