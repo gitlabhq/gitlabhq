@@ -3057,6 +3057,25 @@ Represents a requirement test report.
 | `id` | ID! | ID of the test report |
 | `state` | TestReportState! | State of the test report |
 
+### TimeReportStats
+
+Represents the time report stats for timeboxes.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `complete` | TimeboxMetrics | Completed issues metrics |
+| `incomplete` | TimeboxMetrics | Incomplete issues metrics |
+| `total` | TimeboxMetrics | Total issues metrics |
+
+### TimeboxMetrics
+
+Represents measured stats metrics for timeboxes.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `count` | Int! | The count metric |
+| `weight` | Int! | The weight metric |
+
 ### TimeboxReport
 
 Represents a historically accurate report about the timebox.
@@ -3064,6 +3083,7 @@ Represents a historically accurate report about the timebox.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `burnupTimeSeries` | BurnupChartDailyTotals! => Array | Daily scope and completed totals for burnup charts |
+| `stats` | TimeReportStats | Represents the time report stats for the timebox |
 
 ### Timelog
 

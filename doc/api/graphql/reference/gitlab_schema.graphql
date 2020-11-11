@@ -20807,6 +20807,41 @@ Time represented in ISO 8601
 scalar Time
 
 """
+Represents the time report stats for timeboxes
+"""
+type TimeReportStats {
+  """
+  Completed issues metrics
+  """
+  complete: TimeboxMetrics
+
+  """
+  Incomplete issues metrics
+  """
+  incomplete: TimeboxMetrics
+
+  """
+  Total issues metrics
+  """
+  total: TimeboxMetrics
+}
+
+"""
+Represents measured stats metrics for timeboxes
+"""
+type TimeboxMetrics {
+  """
+  The count metric
+  """
+  count: Int!
+
+  """
+  The weight metric
+  """
+  weight: Int!
+}
+
+"""
 Represents a historically accurate report about the timebox
 """
 type TimeboxReport {
@@ -20814,6 +20849,11 @@ type TimeboxReport {
   Daily scope and completed totals for burnup charts
   """
   burnupTimeSeries: [BurnupChartDailyTotals!]
+
+  """
+  Represents the time report stats for the timebox
+  """
+  stats: TimeReportStats
 }
 
 interface TimeboxReportInterface {

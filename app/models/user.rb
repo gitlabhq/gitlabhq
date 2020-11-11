@@ -908,10 +908,12 @@ class User < ApplicationRecord
 
   # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
-    if Feature.enabled?(:shared_group_membership_auth, self)
-      authorized_groups_with_shared_membership
-    else
-      authorized_groups_without_shared_membership
+    Group.unscoped do
+      if Feature.enabled?(:shared_group_membership_auth, self)
+        authorized_groups_with_shared_membership
+      else
+        authorized_groups_without_shared_membership
+      end
     end
   end
 

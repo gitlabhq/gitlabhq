@@ -1,0 +1,5 @@
+---
+title: Make Terraform/Base.latest.gitlab-ci.yml template safer to use in projects that have non-terraform jobs
+merge_request: 47254
+author:
+type: changed

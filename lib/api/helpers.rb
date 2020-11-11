@@ -387,8 +387,8 @@ module API
       render_api_error!('401 Unauthorized', 401)
     end
 
-    def not_allowed!
-      render_api_error!('405 Method Not Allowed', 405)
+    def not_allowed!(message = nil)
+      render_api_error!(message || '405 Method Not Allowed', :method_not_allowed)
     end
 
     def not_acceptable!

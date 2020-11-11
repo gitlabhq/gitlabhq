@@ -60461,6 +60461,110 @@
         },
         {
           "kind": "OBJECT",
+          "name": "TimeReportStats",
+          "description": "Represents the time report stats for timeboxes",
+          "fields": [
+            {
+              "name": "complete",
+              "description": "Completed issues metrics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TimeboxMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "incomplete",
+              "description": "Incomplete issues metrics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TimeboxMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "total",
+              "description": "Total issues metrics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TimeboxMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TimeboxMetrics",
+          "description": "Represents measured stats metrics for timeboxes",
+          "fields": [
+            {
+              "name": "count",
+              "description": "The count metric",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "weight",
+              "description": "The weight metric",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "TimeboxReport",
           "description": "Represents a historically accurate report about the timebox",
           "fields": [
@@ -60482,6 +60586,20 @@
                     "ofType": null
                   }
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stats",
+              "description": "Represents the time report stats for the timebox",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TimeReportStats",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
