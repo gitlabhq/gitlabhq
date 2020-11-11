@@ -63,6 +63,7 @@ module Types
                                 'destroyed during the update, and no Note will be returned'
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
+    mount_mutation Mutations::Releases::Create
     mount_mutation Mutations::Terraform::State::Delete
     mount_mutation Mutations::Terraform::State::Lock
     mount_mutation Mutations::Terraform::State::Unlock

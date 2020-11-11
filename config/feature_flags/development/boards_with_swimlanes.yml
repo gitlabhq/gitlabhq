@@ -1,8 +1,8 @@
 ---
 name: boards_with_swimlanes
-introduced_by_url: 
-rollout_issue_url: 
-milestone: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/218040
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/238222
+milestone: 13.6
+group: group::product planning
 type: development
-group: group::project management
-default_enabled: false
+default_enabled: true

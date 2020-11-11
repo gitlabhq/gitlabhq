@@ -17,5 +17,9 @@ FactoryBot.define do
 
       container { project }
     end
+
+    trait :empty_repo do
+      after(:create, &:create_wiki_repository)
+    end
   end
 end

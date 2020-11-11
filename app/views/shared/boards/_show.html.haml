@@ -17,7 +17,7 @@
 
 = render 'shared/issuable/search_bar', type: :boards, board: board
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
-  - if Feature.enabled?(:boards_with_swimlanes, current_board_parent) || Feature.enabled?(:graphql_board_lists, current_board_parent)
+  - if Feature.enabled?(:boards_with_swimlanes, current_board_parent, default_enabled: true) || Feature.enabled?(:graphql_board_lists, current_board_parent)
     %board-content{ "v-cloak" => "true",
       "ref" => "board_content",
       ":lists" => "state.lists",

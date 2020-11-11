@@ -33,7 +33,7 @@
 
 = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded), data: { qa_selector: 'runners_settings_content' } }
+%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded || params[:expand_runners]), data: { qa_selector: 'runners_settings_content' } }
   .settings-header
     %h4
       = _("Runners")

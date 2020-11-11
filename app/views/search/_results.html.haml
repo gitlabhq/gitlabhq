@@ -1,10 +1,7 @@
 - if @search_objects.to_a.empty?
-  .gl-display-md-flex
-    - if %w(issues merge_requests).include?(@scope)
-      #js-search-sidebar.gl-display-flex.gl-flex-direction-column.col-md-3.gl-mr-4{ }
-    .gl-w-full
-      = render partial: "search/results/empty"
-      = render_if_exists 'shared/promotions/promote_advanced_search'
+  = render partial: "search/results/filters"
+  = render partial: "search/results/empty"
+  = render_if_exists 'shared/promotions/promote_advanced_search'
 - else
   .search-results-status
     .row-content-block.gl-display-flex
@@ -27,21 +24,19 @@
       .gl-display-md-flex.gl-flex-direction-column
         = render partial: 'search/sort_dropdown'
   = render_if_exists 'shared/promotions/promote_advanced_search'
+  = render partial: "search/results/filters"
 
-  .results.gl-display-md-flex.gl-mt-3
-    - if %w(issues merge_requests).include?(@scope)
-      #js-search-sidebar{ }
-    .gl-w-full
-      - if @scope == 'commits'
-        %ul.content-list.commit-list
-          = render partial: "search/results/commit", collection: @search_objects
-      - else
-        .search-results
-          - if @scope == 'projects'
-            .term
-              = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
-          - else
-            = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
+  .results.gl-mt-3
+    - if @scope == 'commits'
+      %ul.content-list.commit-list
+        = render partial: "search/results/commit", collection: @search_objects
+    - else
+      .search-results
+        - if @scope == 'projects'
+          .term
+            = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
+        - else
+          = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
-      - if @scope != 'projects'
-        = paginate_collection(@search_objects)
+    - if @scope != 'projects'
+      = paginate_collection(@search_objects)

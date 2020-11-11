@@ -105,7 +105,7 @@ When [configuring your identify provider](#configuring-your-identity-provider), 
 ### Azure setup notes
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
+For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU). Please note that the video is outdated in regards to objectID mapping and the [SCIM documentation should be followed](scim_setup.md#azure-configuration-steps).
 
 | GitLab Setting | Azure Field |
 |--------------|----------------|

@@ -50,7 +50,7 @@ To create an iteration:
 
 ## Edit an iteration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 
 NOTE: **Note:**
 You need Developer [permissions](../../permissions.md) or higher to edit an iteration.
@@ -73,7 +73,7 @@ An iteration report displays a list of all the issues assigned to an iteration a
 
 To view an iteration report, go to the iterations list page and click an iteration's title.
 
-## Disable Iterations **(CORE ONLY)**
+## Disable Iterations **(STARTER ONLY)**
 
 GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)

@@ -774,6 +774,7 @@ ExternalPullRequest:
 - target_sha
 DesignManagement::Design:
 - id
+- iid
 - project_id
 - filename
 - relative_position

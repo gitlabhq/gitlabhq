@@ -98,6 +98,7 @@
          "designs":[
             {
                "id":38,
+               "iid": 1,
                "project_id":30,
                "issue_id":469,
                "filename":"chirrido3.jpg",
@@ -107,6 +108,7 @@
             },
             {
                "id":39,
+               "iid": 2,
                "project_id":30,
                "issue_id":469,
                "filename":"jonathan_richman.jpg",
@@ -116,6 +118,7 @@
             },
             {
                "id":40,
+               "iid": 3,
                "project_id":30,
                "issue_id":469,
                "filename":"mariavontrap.jpeg",
@@ -137,6 +140,7 @@
                      "event":0,
                      "design":{
                         "id":38,
+                       "iid": 1,
                         "project_id":30,
                         "issue_id":469,
                         "filename":"chirrido3.jpg"
@@ -156,6 +160,7 @@
                      "event":1,
                      "design":{
                         "id":38,
+                       "iid": 1,
                         "project_id":30,
                         "issue_id":469,
                         "filename":"chirrido3.jpg"
@@ -167,6 +172,7 @@
                      "event":0,
                      "design":{
                         "id":39,
+                        "iid": 2,
                         "project_id":30,
                         "issue_id":469,
                         "filename":"jonathan_richman.jpg"
@@ -186,6 +192,7 @@
                      "event":1,
                      "design":{
                         "id":38,
+                       "iid": 1,
                         "project_id":30,
                         "issue_id":469,
                         "filename":"chirrido3.jpg"
@@ -197,6 +204,7 @@
                      "event":2,
                      "design":{
                         "id":39,
+                       "iid": 2,
                         "project_id":30,
                         "issue_id":469,
                         "filename":"jonathan_richman.jpg"
@@ -208,6 +216,7 @@
                      "event":0,
                      "design":{
                         "id":40,
+                        "iid": 3,
                         "project_id":30,
                         "issue_id":469,
                         "filename":"mariavontrap.jpeg"

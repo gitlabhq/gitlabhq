@@ -29,7 +29,7 @@ module Repositories
 
     def upload_finalize
       if store_file!(oid, size)
-        head 200
+        head 200, content_type: LfsRequest::CONTENT_TYPE
       else
         render plain: 'Unprocessable entity', status: :unprocessable_entity
       end

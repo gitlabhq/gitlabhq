@@ -9,18 +9,17 @@ RSpec.describe 'Git LFS API and storage' do
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:other_project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-  let!(:lfs_object) { create(:lfs_object, :with_file) }
+  let(:lfs_object) { create(:lfs_object, :with_file) }
 
   let(:headers) do
     {
       'Authorization' => authorization,
-      'X-Sendfile-Type' => sendfile
+      'X-Sendfile-Type' => 'X-Sendfile'
     }.compact
   end
 
   let(:include_workhorse_jwt_header) { true }
   let(:authorization) { }
-  let(:sendfile) { }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:sample_oid) { lfs_object.oid }
@@ -37,18 +36,6 @@ RSpec.describe 'Git LFS API and storage' do
     stub_lfs_setting(enabled: lfs_enabled)
   end
 
-  describe 'when LFS is disabled' do
-    let(:lfs_enabled) { false }
-    let(:body) { upload_body(multiple_objects) }
-    let(:authorization) { authorize_user }
-
-    before do
-      post_lfs_json batch_url(project), body, headers
-    end
-
-    it_behaves_like 'LFS http 501 response'
-  end
-
   context 'project specific LFS settings' do
     let(:body) { upload_body(sample_object) }
     let(:authorization) { authorize_user }
@@ -60,105 +47,36 @@ RSpec.describe 'Git LFS API and storage' do
       subject
     end
 
-    context 'with LFS disabled globally' do
-      let(:lfs_enabled) { false }
+    describe 'LFS disabled in project' do
+      let(:project_lfs_enabled) { false }
 
-      describe 'LFS disabled in project' do
-        let(:project_lfs_enabled) { false }
+      context 'when uploading' do
+        subject { post_lfs_json(batch_url(project), body, headers) }
 
-        context 'when uploading' do
-          subject { post_lfs_json(batch_url(project), body, headers) }
-
-          it_behaves_like 'LFS http 501 response'
-        end
-
-        context 'when downloading' do
-          subject { get(objects_url(project, sample_oid), params: {}, headers: headers) }
-
-          it_behaves_like 'LFS http 501 response'
-        end
+        it_behaves_like 'LFS http 404 response'
       end
 
-      describe 'LFS enabled in project' do
-        let(:project_lfs_enabled) { true }
+      context 'when downloading' do
+        subject { get(objects_url(project, sample_oid), params: {}, headers: headers) }
 
-        context 'when uploading' do
-          subject { post_lfs_json(batch_url(project), body, headers) }
-
-          it_behaves_like 'LFS http 501 response'
-        end
-
-        context 'when downloading' do
-          subject { get(objects_url(project, sample_oid), params: {}, headers: headers) }
-
-          it_behaves_like 'LFS http 501 response'
-        end
+        it_behaves_like 'LFS http 404 response'
       end
     end
 
-    context 'with LFS enabled globally' do
-      describe 'LFS disabled in project' do
-        let(:project_lfs_enabled) { false }
+    describe 'LFS enabled in project' do
+      let(:project_lfs_enabled) { true }
 
-        context 'when uploading' do
-          subject { post_lfs_json(batch_url(project), body, headers) }
+      context 'when uploading' do
+        subject { post_lfs_json(batch_url(project), body, headers) }
 
-          it_behaves_like 'LFS http 403 response'
-        end
-
-        context 'when downloading' do
-          subject { get(objects_url(project, sample_oid), params: {}, headers: headers) }
-
-          it_behaves_like 'LFS http 403 response'
-        end
+        it_behaves_like 'LFS http 200 response'
       end
 
-      describe 'LFS enabled in project' do
-        let(:project_lfs_enabled) { true }
+      context 'when downloading' do
+        subject { get(objects_url(project, sample_oid), params: {}, headers: headers) }
 
-        context 'when uploading' do
-          subject { post_lfs_json(batch_url(project), body, headers) }
-
-          it_behaves_like 'LFS http 200 response'
-        end
-
-        context 'when downloading' do
-          subject { get(objects_url(project, sample_oid), params: {}, headers: headers) }
-
-          it_behaves_like 'LFS http 200 response'
-        end
+        it_behaves_like 'LFS http 200 blob response'
       end
-    end
-  end
-
-  describe 'deprecated API' do
-    let(:authorization) { authorize_user }
-
-    shared_examples 'deprecated request' do
-      before do
-        subject
-      end
-
-      it_behaves_like 'LFS http expected response code and message' do
-        let(:response_code) { 501 }
-        let(:message) { 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.' }
-      end
-    end
-
-    context 'when fetching LFS object using deprecated API' do
-      subject { get(deprecated_objects_url(project, sample_oid), params: {}, headers: headers) }
-
-      it_behaves_like 'deprecated request'
-    end
-
-    context 'when handling LFS request using deprecated API' do
-      subject { post_lfs_json(deprecated_objects_url(project), nil, headers) }
-
-      it_behaves_like 'deprecated request'
-    end
-
-    def deprecated_objects_url(project, oid = nil)
-      File.join(["#{project.http_url_to_repo}/info/lfs/objects/", oid].compact)
     end
   end
 
@@ -167,196 +85,133 @@ RSpec.describe 'Git LFS API and storage' do
     let(:before_get) { }
 
     before do
+      project.lfs_objects << lfs_object
       update_permissions
       before_get
+
       get objects_url(project, sample_oid), params: {}, headers: headers
     end
 
-    context 'and request comes from gitlab-workhorse' do
-      context 'without user being authorized' do
-        it_behaves_like 'LFS http 401 response'
+    context 'when LFS uses object storage' do
+      let(:authorization) { authorize_user }
+
+      let(:update_permissions) do
+        project.add_maintainer(user)
       end
 
-      context 'with required headers' do
-        shared_examples 'responds with a file' do
-          let(:sendfile) { 'X-Sendfile' }
-
-          it_behaves_like 'LFS http 200 response'
-
-          it 'responds with the file location' do
-            expect(response.headers['Content-Type']).to eq('application/octet-stream')
-            expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
-          end
+      context 'when proxy download is enabled' do
+        let(:before_get) do
+          stub_lfs_object_storage(proxy_download: true)
+          lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
         end
 
-        context 'with user is authorized' do
-          let(:authorization) { authorize_user }
+        it 'responds with the workhorse send-url' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
+        end
+      end
 
-          context 'and does not have project access' do
-            let(:update_permissions) do
-              project.lfs_objects << lfs_object
-            end
-
-            it_behaves_like 'LFS http 404 response'
-          end
-
-          context 'and does have project access' do
-            let(:update_permissions) do
-              project.add_maintainer(user)
-              project.lfs_objects << lfs_object
-            end
-
-            it_behaves_like 'responds with a file'
-
-            context 'when LFS uses object storage' do
-              context 'when proxy download is enabled' do
-                let(:before_get) do
-                  stub_lfs_object_storage(proxy_download: true)
-                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
-                end
-
-                it_behaves_like 'LFS http 200 response'
-
-                it 'responds with the workhorse send-url' do
-                  expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("send-url:")
-                end
-              end
-
-              context 'when proxy download is disabled' do
-                let(:before_get) do
-                  stub_lfs_object_storage(proxy_download: false)
-                  lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
-                end
-
-                it 'responds with redirect' do
-                  expect(response).to have_gitlab_http_status(:found)
-                end
-
-                it 'responds with the file location' do
-                  expect(response.location).to include(lfs_object.reload.file.path)
-                end
-              end
-            end
-          end
+      context 'when proxy download is disabled' do
+        let(:before_get) do
+          stub_lfs_object_storage(proxy_download: false)
+          lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
         end
 
-        context 'when deploy key is authorized' do
-          let(:key) { create(:deploy_key) }
-          let(:authorization) { authorize_deploy_key }
+        it 'responds with redirect' do
+          expect(response).to have_gitlab_http_status(:found)
+        end
+
+        it 'responds with the file location' do
+          expect(response.location).to include(lfs_object.reload.file.path)
+        end
+      end
+    end
+
+    context 'when deploy key is authorized' do
+      let(:key) { create(:deploy_key) }
+      let(:authorization) { authorize_deploy_key }
+
+      let(:update_permissions) do
+        project.deploy_keys << key
+      end
+
+      it_behaves_like 'LFS http 200 blob response'
+    end
+
+    context 'when using a user key (LFSToken)' do
+      let(:authorization) { authorize_user_key }
+
+      context 'when user allowed' do
+        let(:update_permissions) do
+          project.add_maintainer(user)
+        end
+
+        it_behaves_like 'LFS http 200 blob response'
+
+        context 'when user password is expired' do
+          let(:user) { create(:user, password_expires_at: 1.minute.ago)}
+
+          it_behaves_like 'LFS http 401 response'
+        end
+
+        context 'when user is blocked' do
+          let(:user) { create(:user, :blocked)}
+
+          it_behaves_like 'LFS http 401 response'
+        end
+      end
+
+      context 'when user not allowed' do
+        it_behaves_like 'LFS http 404 response'
+      end
+    end
+
+    context 'when build is authorized as' do
+      let(:authorization) { authorize_ci_project }
+
+      shared_examples 'can download LFS only from own projects' do
+        context 'for owned project' do
+          let(:project) { create(:project, namespace: user.namespace) }
+
+          it_behaves_like 'LFS http 200 blob response'
+        end
+
+        context 'for member of project' do
+          let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
           let(:update_permissions) do
-            project.deploy_keys << key
-            project.lfs_objects << lfs_object
+            project.add_reporter(user)
           end
 
-          it_behaves_like 'responds with a file'
+          it_behaves_like 'LFS http 200 blob response'
         end
 
-        describe 'when using a user key (LFSToken)' do
-          let(:authorization) { authorize_user_key }
+        context 'for other project' do
+          let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-          context 'when user allowed' do
-            let(:update_permissions) do
-              project.add_maintainer(user)
-              project.lfs_objects << lfs_object
-            end
-
-            it_behaves_like 'responds with a file'
-
-            context 'when user password is expired' do
-              let(:user) { create(:user, password_expires_at: 1.minute.ago)}
-
-              it_behaves_like 'LFS http 401 response'
-            end
-
-            context 'when user is blocked' do
-              let(:user) { create(:user, :blocked)}
-
-              it_behaves_like 'LFS http 401 response'
-            end
-          end
-
-          context 'when user not allowed' do
-            let(:update_permissions) do
-              project.lfs_objects << lfs_object
-            end
-
-            it_behaves_like 'LFS http 404 response'
-          end
-        end
-
-        context 'when build is authorized as' do
-          let(:authorization) { authorize_ci_project }
-
-          shared_examples 'can download LFS only from own projects' do
-            context 'for owned project' do
-              let(:project) { create(:project, namespace: user.namespace) }
-
-              let(:update_permissions) do
-                project.lfs_objects << lfs_object
-              end
-
-              it_behaves_like 'responds with a file'
-            end
-
-            context 'for member of project' do
-              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-              let(:update_permissions) do
-                project.add_reporter(user)
-                project.lfs_objects << lfs_object
-              end
-
-              it_behaves_like 'responds with a file'
-            end
-
-            context 'for other project' do
-              let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
-
-              let(:update_permissions) do
-                project.lfs_objects << lfs_object
-              end
-
-              it 'rejects downloading code' do
-                expect(response).to have_gitlab_http_status(other_project_status)
-              end
-            end
-          end
-
-          context 'administrator' do
-            let(:user) { create(:admin) }
-            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
-
-            it_behaves_like 'can download LFS only from own projects' do
-              # We render 403, because administrator does have normally access
-              let(:other_project_status) { 403 }
-            end
-          end
-
-          context 'regular user' do
-            let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
-
-            it_behaves_like 'can download LFS only from own projects' do
-              # We render 404, to prevent data leakage about existence of the project
-              let(:other_project_status) { 404 }
-            end
-          end
-
-          context 'does not have user' do
-            let(:build) { create(:ci_build, :running, pipeline: pipeline) }
-
-            it_behaves_like 'can download LFS only from own projects' do
-              # We render 404, to prevent data leakage about existence of the project
-              let(:other_project_status) { 404 }
-            end
+          it 'rejects downloading code' do
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
 
-      context 'without required headers' do
-        let(:authorization) { authorize_user }
+      context 'administrator' do
+        let(:user) { create(:admin) }
+        let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-        it_behaves_like 'LFS http 404 response'
+        it_behaves_like 'can download LFS only from own projects'
+      end
+
+      context 'regular user' do
+        let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+
+        it_behaves_like 'can download LFS only from own projects'
+      end
+
+      context 'does not have user' do
+        let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+        it_behaves_like 'can download LFS only from own projects'
       end
     end
   end
@@ -511,7 +366,7 @@ RSpec.describe 'Git LFS API and storage' do
           let(:role) { :reporter }
         end
 
-        context 'when user does is not member of the project' do
+        context 'when user is not a member of the project' do
           let(:update_user_permissions) { nil }
 
           it_behaves_like 'LFS http 404 response'
@@ -520,7 +375,7 @@ RSpec.describe 'Git LFS API and storage' do
         context 'when user does not have download access' do
           let(:role) { :guest }
 
-          it_behaves_like 'LFS http 403 response'
+          it_behaves_like 'LFS http 404 response'
         end
 
         context 'when user password is expired' do
@@ -591,7 +446,7 @@ RSpec.describe 'Git LFS API and storage' do
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
             it 'rejects downloading code' do
-              expect(response).to have_gitlab_http_status(other_project_status)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -600,28 +455,19 @@ RSpec.describe 'Git LFS API and storage' do
           let(:user) { create(:admin) }
           let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-          it_behaves_like 'can download LFS only from own projects', renew_authorization: true do
-            # We render 403, because administrator does have normally access
-            let(:other_project_status) { 403 }
-          end
+          it_behaves_like 'can download LFS only from own projects', renew_authorization: true
         end
 
         context 'regular user' do
           let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-          it_behaves_like 'can download LFS only from own projects', renew_authorization: true do
-            # We render 404, to prevent data leakage about existence of the project
-            let(:other_project_status) { 404 }
-          end
+          it_behaves_like 'can download LFS only from own projects', renew_authorization: true
         end
 
         context 'does not have user' do
           let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-          it_behaves_like 'can download LFS only from own projects', renew_authorization: false do
-            # We render 404, to prevent data leakage about existence of the project
-            let(:other_project_status) { 404 }
-          end
+          it_behaves_like 'can download LFS only from own projects', renew_authorization: false
         end
       end
 
@@ -919,11 +765,7 @@ RSpec.describe 'Git LFS API and storage' do
                 put_authorize
               end
 
-              it_behaves_like 'LFS http 200 response'
-
-              it 'uses the gitlab-workhorse content type' do
-                expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-              end
+              it_behaves_like 'LFS http 200 workhorse response'
             end
 
             shared_examples 'a local file' do
@@ -1142,7 +984,7 @@ RSpec.describe 'Git LFS API and storage' do
             put_authorize
           end
 
-          it_behaves_like 'LFS http 404 response'
+          it_behaves_like 'LFS http 403 response'
         end
       end
 
@@ -1155,7 +997,7 @@ RSpec.describe 'Git LFS API and storage' do
             put_authorize
           end
 
-          it_behaves_like 'LFS http 200 response'
+          it_behaves_like 'LFS http 200 workhorse response'
 
           context 'when user password is expired' do
             let(:user) { create(:user, password_expires_at: 1.minute.ago)}
@@ -1202,7 +1044,7 @@ RSpec.describe 'Git LFS API and storage' do
               put_authorize
             end
 
-            it_behaves_like 'LFS http 200 response'
+            it_behaves_like 'LFS http 200 workhorse response'
 
             it 'with location of LFS store and object details' do
               expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
@@ -1328,6 +1170,52 @@ RSpec.describe 'Git LFS API and storage' do
 
     def lfs_tmp_file
       "#{sample_oid}012345678"
+    end
+  end
+
+  context 'with projects' do
+    it_behaves_like 'LFS http requests' do
+      let(:container) { project }
+      let(:authorize_guest) { project.add_guest(user) }
+      let(:authorize_download) { project.add_reporter(user) }
+      let(:authorize_upload) { project.add_developer(user) }
+    end
+  end
+
+  context 'with project wikis' do
+    it_behaves_like 'LFS http requests' do
+      let(:container) { create(:project_wiki, :empty_repo, project: project) }
+      let(:authorize_guest) { project.add_guest(user) }
+      let(:authorize_download) { project.add_reporter(user) }
+      let(:authorize_upload) { project.add_developer(user) }
+    end
+  end
+
+  context 'with snippets' do
+    # LFS is not supported on snippets, so we override the shared examples
+    # to expect 404 responses instead.
+    [
+      'LFS http 200 response',
+      'LFS http 200 blob response',
+      'LFS http 403 response'
+    ].each do |examples|
+      shared_examples_for(examples) { it_behaves_like 'LFS http 404 response' }
+    end
+
+    context 'with project snippets' do
+      it_behaves_like 'LFS http requests' do
+        let(:container) { create(:project_snippet, :empty_repo, project: project) }
+        let(:authorize_guest) { project.add_guest(user) }
+        let(:authorize_download) { project.add_reporter(user) }
+        let(:authorize_upload) { project.add_developer(user) }
+      end
+    end
+
+    context 'with personal snippets' do
+      it_behaves_like 'LFS http requests' do
+        let(:container) { create(:personal_snippet, :empty_repo) }
+        let(:authorize_upload) { container.update!(author: user) }
+      end
     end
   end
 end

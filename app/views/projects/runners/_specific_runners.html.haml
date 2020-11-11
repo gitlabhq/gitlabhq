@@ -17,9 +17,10 @@
   %h4.underlined-title= _('Runners activated for this project')
   %ul.bordered-list.activated-specific-runners
     = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
+  = paginate @project_runners, theme: "gitlab", param_name: "project_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
 
 - if @assignable_runners.any?
   %h4.underlined-title= _('Available specific runners')
   %ul.bordered-list.available-specific-runners
     = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
-  = paginate @assignable_runners, theme: "gitlab", :params => { :anchor => '#js-runners-settings' }
+  = paginate @assignable_runners, theme: "gitlab", param_name: "specific_page", :params => { :anchor => 'js-runners-settings'}

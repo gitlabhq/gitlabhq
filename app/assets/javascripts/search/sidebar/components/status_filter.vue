@@ -21,6 +21,5 @@ export default {
 <template>
   <div v-if="showDropdown">
     <radio-filter :filter-data="$options.stateFilterData" />
-    <hr class="gl-my-5 gl-border-gray-100" />
   </div>
 </template>

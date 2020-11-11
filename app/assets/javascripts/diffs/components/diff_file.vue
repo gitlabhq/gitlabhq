@@ -15,6 +15,8 @@ import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
   EVT_EXPAND_ALL_FILES,
+  EVT_PERF_MARK_DIFF_FILES_END,
+  EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
 } from '../constants';
 import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
 import eventHub from '../event_hub';
@@ -34,6 +36,16 @@ export default {
     file: {
       type: Object,
       required: true,
+    },
+    isFirstFile: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastFile: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     canCurrentUserFork: {
       type: Boolean,
@@ -160,6 +172,11 @@ export default {
     notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
     eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
+  async mounted() {
+    if (this.hasDiff) {
+      await this.postRender();
+    }
+  },
   beforeDestroy() {
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
@@ -174,6 +191,23 @@ export default {
       if (this.isCollapsed) {
         this.handleToggle();
       }
+    },
+    async postRender() {
+      const eventsForThisFile = [];
+
+      if (this.isFirstFile) {
+        eventsForThisFile.push(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
+      }
+
+      if (this.isLastFile) {
+        eventsForThisFile.push(EVT_PERF_MARK_DIFF_FILES_END);
+      }
+
+      await this.$nextTick();
+
+      eventsForThisFile.forEach(event => {
+        eventHub.$emit(event);
+      });
     },
     handleToggle() {
       const currentCollapsedFlag = this.isCollapsed;
@@ -197,7 +231,8 @@ export default {
         })
         .then(() => {
           requestIdleCallback(
-            () => {
+            async () => {
+              await this.postRender();
               this.assignDiscussionsToDiff(this.getDiffFileDiscussions(this.file));
             },
             { timeout: 1000 },

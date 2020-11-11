@@ -11650,7 +11650,9 @@ CREATE TABLE design_management_designs (
     issue_id integer,
     filename character varying NOT NULL,
     relative_position integer,
-    CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255))
+    iid integer,
+    CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
+    CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
 );
 
 CREATE SEQUENCE design_management_designs_id_seq
@@ -14722,6 +14724,8 @@ CREATE VIEW postgres_indexes AS
     pg_index.indisvalid AS valid_index,
     pg_class.relispartition AS partitioned,
     pg_index.indisexclusion AS exclusion,
+    (pg_index.indexprs IS NOT NULL) AS expression,
+    (pg_index.indpred IS NOT NULL) AS partial,
     pg_indexes.indexdef AS definition,
     pg_relation_size((pg_class.oid)::regclass) AS ondisk_size_bytes
    FROM (((pg_index
@@ -20591,6 +20595,8 @@ CREATE INDEX index_description_versions_on_issue_id ON description_versions USIN
 CREATE INDEX index_description_versions_on_merge_request_id ON description_versions USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
 
 CREATE INDEX index_design_management_designs_issue_id_relative_position_id ON design_management_designs USING btree (issue_id, relative_position, id);
+
+CREATE UNIQUE INDEX index_design_management_designs_on_iid_and_project_id ON design_management_designs USING btree (project_id, iid);
 
 CREATE UNIQUE INDEX index_design_management_designs_on_issue_id_and_filename ON design_management_designs USING btree (issue_id, filename);
 

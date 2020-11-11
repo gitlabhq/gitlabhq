@@ -2,6 +2,7 @@
 
 module DesignManagement
   class Design < ApplicationRecord
+    include AtomicInternalId
     include Importable
     include Noteable
     include Gitlab::FileTypeDetection
@@ -25,6 +26,10 @@ module DesignManagement
     has_many :user_mentions, class_name: 'DesignUserMention', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
     has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+    has_internal_id :iid, scope: :project, presence: true,
+      hook_names: %i[create update], # Deal with old records
+      track_if: -> { !importing? }
 
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?

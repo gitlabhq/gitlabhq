@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :design, class: 'DesignManagement::Design' do
+  factory :design, traits: [:has_internal_id], class: 'DesignManagement::Design' do
     issue { association(:issue) }
     project { issue&.project || association(:project) }
     sequence(:filename) { |n| "homescreen-#{n}.jpg" }

@@ -31,16 +31,16 @@ module LfsHttpHelpers
     post(url, params: params, headers: headers)
   end
 
-  def batch_url(project)
-    "#{project.http_url_to_repo}/info/lfs/objects/batch"
+  def batch_url(container)
+    "#{container.http_url_to_repo}/info/lfs/objects/batch"
   end
 
-  def objects_url(project, oid = nil, size = nil)
-    File.join(["#{project.http_url_to_repo}/gitlab-lfs/objects", oid, size].compact.map(&:to_s))
+  def objects_url(container, oid = nil, size = nil)
+    File.join(["#{container.http_url_to_repo}/gitlab-lfs/objects", oid, size].compact.map(&:to_s))
   end
 
-  def authorize_url(project, oid, size)
-    File.join(objects_url(project, oid, size), 'authorize')
+  def authorize_url(container, oid, size)
+    File.join(objects_url(container, oid, size), 'authorize')
   end
 
   def download_body(objects)

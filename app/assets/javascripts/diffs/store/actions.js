@@ -8,7 +8,8 @@ import { __, s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import TreeWorker from '../workers/tree_worker';
-import eventHub from '../../notes/event_hub';
+import notesEventHub from '../../notes/event_hub';
+import eventHub from '../event_hub';
 import {
   getDiffPositionByLineCode,
   getNoteFormData,
@@ -42,6 +43,9 @@ import {
   NO_SHOW_WHITESPACE,
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
+  EVT_PERF_MARK_FILE_TREE_START,
+  EVT_PERF_MARK_FILE_TREE_END,
+  EVT_PERF_MARK_DIFF_FILES_START,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
 import { isCollapsed } from '../diff_file';
@@ -78,6 +82,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
   commit(types.SET_BATCH_LOADING, true);
   commit(types.SET_RETRIEVING_BATCHES, true);
+  eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
   const getBatch = (page = 1) =>
     axios
@@ -139,9 +144,11 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
   };
 
   commit(types.SET_LOADING, true);
+  eventHub.$emit(EVT_PERF_MARK_FILE_TREE_START);
 
   worker.addEventListener('message', ({ data }) => {
     commit(types.SET_TREE_DATA, data);
+    eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
 
     worker.terminate();
   });
@@ -215,7 +222,7 @@ export const assignDiscussionsToDiff = (
   }
 
   Vue.nextTick(() => {
-    eventHub.$emit('scrollToDiscussion');
+    notesEventHub.$emit('scrollToDiscussion');
   });
 };
 
@@ -240,7 +247,7 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
       }
 
       if (file.viewer.automaticallyCollapsed) {
-        eventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
+        notesEventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
         scrollToElement(document.getElementById(file.file_hash));
       } else if (file.viewer.manuallyCollapsed) {
         commit(types.SET_FILE_COLLAPSED, {
@@ -248,9 +255,9 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
           collapsed: false,
           trigger: DIFF_FILE_AUTOMATIC_COLLAPSE,
         });
-        eventHub.$emit('scrollToDiscussion');
+        notesEventHub.$emit('scrollToDiscussion');
       } else {
-        eventHub.$emit('scrollToDiscussion');
+        notesEventHub.$emit('scrollToDiscussion');
       }
     }
   }
@@ -485,7 +492,7 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
     historyPushState(mergeUrlParams({ w }, window.location.href));
   }
 
-  eventHub.$emit('refetchDiffData');
+  notesEventHub.$emit('refetchDiffData');
 };
 
 export const toggleFileFinder = ({ commit }, visible) => {

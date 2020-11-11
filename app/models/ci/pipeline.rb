@@ -42,9 +42,16 @@ module Ci
     belongs_to :external_pull_request
     belongs_to :ci_ref, class_name: 'Ci::Ref', foreign_key: :ci_ref_id, inverse_of: :pipelines
 
-    has_internal_id :iid, scope: :project, presence: false, track_if: -> { !importing? }, ensure_if: -> { !importing? }, init: ->(s) do
-      s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
-    end
+    has_internal_id :iid, scope: :project, presence: false,
+      track_if: -> { !importing? },
+      ensure_if: -> { !importing? },
+      init: ->(pipeline, scope) do
+        if pipeline
+          pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
+        elsif scope
+          ::Ci::Pipeline.where(**scope).maximum(:iid)
+        end
+      end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline

@@ -48,7 +48,7 @@ class Issue < ApplicationRecord
   belongs_to :moved_to, class_name: 'Issue'
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
 
-  has_internal_id :iid, scope: :project, track_if: -> { !importing? }, init: ->(s) { s&.project&.issues&.maximum(:iid) }
+  has_internal_id :iid, scope: :project, track_if: -> { !importing? }
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 

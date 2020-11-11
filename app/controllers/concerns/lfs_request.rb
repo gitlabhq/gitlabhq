@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # This concern assumes:
+# - a `#container` accessor
 # - a `#project` accessor
 # - a `#user` accessor
 # - a `#authentication_result` accessor
@@ -11,6 +12,7 @@
 # - a `#has_authentication_ability?(ability)` method
 module LfsRequest
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   CONTENT_TYPE = 'application/vnd.git-lfs+json'
 
@@ -29,16 +31,19 @@ module LfsRequest
         message: _('Git LFS is not enabled on this GitLab server, contact your admin.'),
         documentation_url: help_url
       },
+      content_type: CONTENT_TYPE,
       status: :not_implemented
     )
   end
 
   def lfs_check_access!
-    return render_lfs_not_found unless project
+    return render_lfs_not_found unless container&.lfs_enabled?
     return if download_request? && lfs_download_access?
     return if upload_request? && lfs_upload_access?
 
-    if project.public? || can?(user, :read_project, project)
+    # Only return a 403 response if the user has download access permission,
+    # otherwise return a 404 to avoid exposing the existence of the container.
+    if lfs_download_access?
       lfs_forbidden!
     else
       render_lfs_not_found
@@ -72,9 +77,9 @@ module LfsRequest
   end
 
   def lfs_download_access?
-    return false unless project.lfs_enabled?
-
-    ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code? || deploy_token_can_download_code?
+    strong_memoize(:lfs_download_access) do
+      ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code? || deploy_token_can_download_code?
+    end
   end
 
   def deploy_token_can_download_code?
@@ -93,11 +98,12 @@ module LfsRequest
   end
 
   def lfs_upload_access?
-    return false unless project.lfs_enabled?
-    return false unless has_authentication_ability?(:push_code)
-    return false if limit_exceeded?
+    strong_memoize(:lfs_upload_access) do
+      next false unless has_authentication_ability?(:push_code)
+      next false if limit_exceeded?
 
-    lfs_deploy_token? || can?(user, :push_code, project)
+      lfs_deploy_token? || can?(user, :push_code, project)
+    end
   end
 
   def lfs_deploy_token?

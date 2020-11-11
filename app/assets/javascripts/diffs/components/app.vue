@@ -20,6 +20,8 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import MergeConflictWarning from './merge_conflict_warning.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 
+import { diffsApp } from '../utils/performance';
+
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -272,8 +274,12 @@ export default {
       );
     }
   },
+  beforeCreate() {
+    diffsApp.instrument();
+  },
   created() {
     this.adjustView();
+
     eventHub.$once('fetchDiffData', this.fetchData);
     eventHub.$on('refetchDiffData', this.refetchDiffData);
     this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
@@ -294,6 +300,8 @@ export default {
     );
   },
   beforeDestroy() {
+    diffsApp.deinstrument();
+
     eventHub.$off('fetchDiffData', this.fetchData);
     eventHub.$off('refetchDiffData', this.refetchDiffData);
     this.removeEventListeners();
@@ -487,9 +495,11 @@ export default {
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file
-              v-for="file in diffs"
+              v-for="(file, index) in diffs"
               :key="file.newPath"
               :file="file"
+              :is-first-file="index === 0"
+              :is-last-file="index === diffs.length - 1"
               :help-page-path="helpPagePath"
               :can-current-user-fork="canCurrentUserFork"
               :view-diffs-file-by-file="viewDiffsFileByFile"

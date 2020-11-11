@@ -17,8 +17,8 @@ class Iteration < ApplicationRecord
   belongs_to :project
   belongs_to :group
 
-  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.iterations&.maximum(:iid) }
-  has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.iterations&.maximum(:iid) }
+  has_internal_id :iid, scope: :project
+  has_internal_id :iid, scope: :group
 
   validates :start_date, presence: true
   validates :due_date, presence: true

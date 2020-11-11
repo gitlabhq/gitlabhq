@@ -6958,9 +6958,6 @@ msgstr ""
 msgid "Compliance framework (optional)"
 msgstr ""
 
-msgid "Compliance frameworks"
-msgstr ""
-
 msgid "ComplianceDashboard|created by:"
 msgstr ""
 
@@ -19103,6 +19100,9 @@ msgstr ""
 msgid "Outdent"
 msgstr ""
 
+msgid "Overall Activity"
+msgstr ""
+
 msgid "Overridden"
 msgstr ""
 
@@ -20337,6 +20337,9 @@ msgid "Prevent project forking outside current group"
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
+msgstr ""
+
+msgid "Prevent users from modifying merge request approvers list"
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -22252,9 +22255,6 @@ msgstr ""
 msgid "Registry setup"
 msgstr ""
 
-msgid "Regulate approvals by authors/committers, based on compliance frameworks. Can be changed only at the instance level."
-msgstr ""
-
 msgid "Reindexing status"
 msgstr ""
 
@@ -22751,6 +22751,9 @@ msgstr ""
 msgid "Repositories Analytics"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Average Coverage by Job"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Coverage"
 msgstr ""
 
@@ -22781,10 +22784,16 @@ msgstr ""
 msgid "RepositoriesAnalytics|Please select projects to display."
 msgstr ""
 
+msgid "RepositoriesAnalytics|Projects with Tests"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Test Code Coverage"
 msgstr ""
 
 msgid "RepositoriesAnalytics|There was an error fetching the projects."
+msgstr ""
+
+msgid "RepositoriesAnalytics|Total Number of Coverages"
 msgstr ""
 
 msgid "Repository"
@@ -22972,9 +22981,6 @@ msgid "Reset authorization key"
 msgstr ""
 
 msgid "Reset authorization key?"
-msgstr ""
-
-msgid "Reset filters"
 msgstr ""
 
 msgid "Reset health check access token"
@@ -26651,9 +26657,6 @@ msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated lis
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
-msgstr ""
-
-msgid "The above settings apply to all projects with the selected compliance framework(s)."
 msgstr ""
 
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."

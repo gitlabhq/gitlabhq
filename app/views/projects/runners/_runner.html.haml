@@ -37,8 +37,8 @@
   - if runner.description.present?
     %p.runner-description
       = runner.description
-  - if runner.tag_list.present?
+  - if runner.tags.present?
     %p
-      - runner.tag_list.sort.each do |tag|
+      - runner.tags.map(&:name).sort.each do |tag|
         %span.badge.badge-primary
           = tag

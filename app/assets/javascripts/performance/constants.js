@@ -29,3 +29,17 @@ export const WEBIDE_MARK_FILE_FINISH = 'webide-file-finished';
 export const WEBIDE_MEASURE_TREE_FROM_REQUEST = 'webide-tree-loading-from-request';
 export const WEBIDE_MEASURE_FILE_FROM_REQUEST = 'webide-file-loading-from-request';
 export const WEBIDE_MEASURE_FILE_AFTER_INTERACTION = 'webide-file-loading-after-interaction';
+
+//
+// MR Diffs namespace
+
+// Marks
+export const MR_DIFFS_MARK_FILE_TREE_START = 'mr-diffs-mark-file-tree-start';
+export const MR_DIFFS_MARK_FILE_TREE_END = 'mr-diffs-mark-file-tree-end';
+export const MR_DIFFS_MARK_DIFF_FILES_START = 'mr-diffs-mark-diff-files-start';
+export const MR_DIFFS_MARK_FIRST_DIFF_FILE_SHOWN = 'mr-diffs-mark-first-diff-file-shown';
+export const MR_DIFFS_MARK_DIFF_FILES_END = 'mr-diffs-mark-diff-files-end';
+
+// Measures
+export const MR_DIFFS_MEASURE_FILE_TREE_DONE = 'mr-diffs-measure-file-tree-done';
+export const MR_DIFFS_MEASURE_DIFF_FILES_DONE = 'mr-diffs-measure-diff-files-done';

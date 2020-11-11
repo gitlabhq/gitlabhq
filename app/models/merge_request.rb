@@ -41,7 +41,14 @@ class MergeRequest < ApplicationRecord
   belongs_to :merge_user, class_name: "User"
   belongs_to :iteration, foreign_key: 'sprint_id'
 
-  has_internal_id :iid, scope: :target_project, track_if: -> { !importing? }, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
+  has_internal_id :iid, scope: :target_project, track_if: -> { !importing? },
+    init: ->(mr, scope) do
+      if mr
+        mr.target_project&.merge_requests&.maximum(:iid)
+      elsif scope[:project]
+        where(target_project: scope[:project]).maximum(:iid)
+      end
+    end
 
   has_many :merge_request_diffs
   has_many :merge_request_context_commits, inverse_of: :merge_request

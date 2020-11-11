@@ -172,20 +172,26 @@ module DesignManagement
       def copy_designs!
         design_attributes = attributes_config[:design_attributes]
 
-        new_rows = designs.map do |design|
-          design.attributes.slice(*design_attributes).merge(
-            issue_id: target_issue.id,
-            project_id: target_project.id
+        ::DesignManagement::Design.with_project_iid_supply(target_project) do |supply|
+          new_rows = designs.each_with_index.map do |design, i|
+            design.attributes.slice(*design_attributes).merge(
+              issue_id: target_issue.id,
+              project_id: target_project.id,
+              iid: supply.next_value
+            )
+          end
+
+          # TODO Replace `Gitlab::Database.bulk_insert` with `BulkInsertSafe`
+          # once https://gitlab.com/gitlab-org/gitlab/-/issues/247718 is fixed.
+          # When this is fixed, we can remove the call to
+          # `with_project_iid_supply` above, since the objects will be instantiated
+          # and callbacks (including `ensure_project_iid!`) will fire.
+          ::Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
+            DesignManagement::Design.table_name,
+            new_rows,
+            return_ids: true
           )
         end
-
-        # TODO Replace `Gitlab::Database.bulk_insert` with `BulkInsertSafe`
-        # once https://gitlab.com/gitlab-org/gitlab/-/issues/247718 is fixed.
-        ::Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
-          DesignManagement::Design.table_name,
-          new_rows,
-          return_ids: true
-        )
       end
 
       def copy_versions!

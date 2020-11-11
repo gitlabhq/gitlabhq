@@ -8,7 +8,7 @@ class Groups::BoardsController < Groups::ApplicationController
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:graphql_board_lists, group, default_enabled: false)
-    push_frontend_feature_flag(:boards_with_swimlanes, group, default_enabled: false)
+    push_frontend_feature_flag(:boards_with_swimlanes, group, default_enabled: true)
   end
 
   feature_category :boards

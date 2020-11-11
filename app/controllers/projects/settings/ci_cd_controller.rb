@@ -5,6 +5,8 @@ module Projects
     class CiCdController < Projects::ApplicationController
       include RunnerSetupScripts
 
+      NUMBER_OF_RUNNERS_PER_PAGE = 20
+
       before_action :authorize_admin_pipeline!
       before_action :define_variables
       before_action do
@@ -108,13 +110,13 @@ module Projects
       end
 
       def define_runners_variables
-        @project_runners = @project.runners.ordered
+        @project_runners = @project.runners.ordered.page(params[:project_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
 
         @assignable_runners = current_user
           .ci_owned_runners
           .assignable_for(project)
           .ordered
-          .page(params[:page]).per(20)
+          .page(params[:specific_page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
 
         @shared_runners = ::Ci::Runner.instance_type.active
 
