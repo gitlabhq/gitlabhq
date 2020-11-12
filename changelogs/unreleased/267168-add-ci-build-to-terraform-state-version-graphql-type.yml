@@ -1,0 +1,5 @@
+---
+title: Add CI job to Terraform state version GraphQL type
+merge_request: 47339
+author:
+type: added

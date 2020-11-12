@@ -20668,6 +20668,11 @@ type TerraformStateVersion {
   id: ID!
 
   """
+  The job that created this version
+  """
+  job: CiJob
+
+  """
   Timestamp the version was updated
   """
   updatedAt: Time!

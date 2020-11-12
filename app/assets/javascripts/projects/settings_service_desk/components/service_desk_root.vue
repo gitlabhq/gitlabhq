@@ -20,7 +20,12 @@ export default {
       type: String,
       required: true,
     },
-    initialIncomingEmail: {
+    incomingEmail: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    customEmail: {
       type: String,
       required: false,
       default: '',
@@ -50,23 +55,18 @@ export default {
   data() {
     return {
       isEnabled: this.initialIsEnabled,
-      incomingEmail: this.initialIncomingEmail,
       isTemplateSaving: false,
       isAlertShowing: false,
       alertVariant: 'danger',
       alertMessage: '',
+      updatedCustomEmail: this.customEmail,
     };
   },
 
   created() {
     eventHub.$on('serviceDeskEnabledCheckboxToggled', this.onEnableToggled);
     eventHub.$on('serviceDeskTemplateSave', this.onSaveTemplate);
-
     this.service = new ServiceDeskService(this.endpoint);
-
-    if (this.isEnabled && !this.incomingEmail) {
-      this.fetchIncomingEmail();
-    }
   },
 
   beforeDestroy() {
@@ -75,22 +75,6 @@ export default {
   },
 
   methods: {
-    fetchIncomingEmail() {
-      this.service
-        .fetchIncomingEmail()
-        .then(({ data }) => {
-          const email = data.service_desk_address;
-          if (!email) {
-            throw new Error(__("Response didn't include `service_desk_address`"));
-          }
-
-          this.incomingEmail = email;
-        })
-        .catch(() =>
-          this.showAlert(__('An error occurred while fetching the Service Desk address.')),
-        );
-    },
-
     onEnableToggled(isChecked) {
       this.isEnabled = isChecked;
       this.incomingEmail = '';
@@ -119,7 +103,7 @@ export default {
       this.service
         .updateTemplate({ selectedTemplate, outgoingName, projectKey }, this.isEnabled)
         .then(({ data }) => {
-          this.incomingEmail = data?.service_desk_address;
+          this.updatedCustomEmail = data?.service_desk_address;
           this.showAlert(__('Changes were successfully made.'), 'success');
         })
         .catch(err => {
@@ -155,6 +139,7 @@ export default {
     <service-desk-setting
       :is-enabled="isEnabled"
       :incoming-email="incomingEmail"
+      :custom-email="updatedCustomEmail"
       :initial-selected-template="selectedTemplate"
       :initial-outgoing-name="outgoingName"
       :initial-project-key="projectKey"

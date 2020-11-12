@@ -64,7 +64,9 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
             </div>
           </div> <button type=\\"button\\" disabled=\\"disabled\\" class=\\"btn gl-mt-3 btn-default btn-md disabled gl-button\\">
             <!---->
-            <!----> <span class=\\"gl-button-text\\">Reset Key</span></button>
+            <!----> <span class=\\"gl-button-text\\">
+          Reset Key
+        </span></button>
           <!---->
         </div>
         <!---->
@@ -72,8 +74,9 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
         <!---->
       </div>
     </div>
-    <div role=\\"group\\" class=\\"form-group gl-form-group\\" id=\\"__BVID__40\\"><label for=\\"test-integration\\" class=\\"d-block col-form-label\\" id=\\"__BVID__40__BV_label_\\">4. Test integration(optional)</label>
-      <div class=\\"bv-no-focus-ring\\"><span class=\\"gl-text-gray-500\\">Provide an example payload from the monitoring tool you intend to integrate with to send a test alert to the <a rel=\\"noopener noreferrer\\" target=\\"_blank\\" href=\\"http://invalid\\" class=\\"gl-link gl-display-inline-block\\">alerts page</a>. This payload can be used to test the integration using the \\"save and test payload\\" button.</span> <textarea id=\\"test-integration\\" disabled=\\"disabled\\" placeholder=\\"Enter test alert JSON....\\" wrap=\\"soft\\" class=\\"gl-form-input gl-form-textarea gl-my-4 form-control is-valid\\" style=\\"resize: none; overflow-y: scroll;\\"></textarea>
+    <div id=\\"test-integration\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"test-integration__BV_label_\\" for=\\"test-integration\\" class=\\"d-block col-form-label\\">4. Test integration(optional)</label>
+      <div class=\\"bv-no-focus-ring\\"><span class=\\"gl-text-gray-500\\">Provide an example payload from the monitoring tool you intend to integrate with to send a test alert to the <a rel=\\"noopener noreferrer\\" target=\\"_blank\\" href=\\"http://invalid\\" class=\\"gl-link gl-display-inline-block\\">alerts page</a>. This payload can be used to test the integration using the \\"save and test payload\\" button.</span> <textarea id=\\"test-payload\\" disabled=\\"disabled\\" placeholder=\\"Enter test alert JSON....\\" wrap=\\"soft\\" class=\\"gl-form-input gl-form-textarea gl-my-4 form-control is-valid\\" style=\\"resize: none; overflow-y: scroll;\\"></textarea>
+        <!---->
         <!---->
         <!---->
         <!---->
@@ -86,7 +89,8 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
         <!---->
         <!----> <span class=\\"gl-button-text\\">Save and test payload</span></button> <button data-testid=\\"integration-form-submit\\" type=\\"submit\\" class=\\"btn js-no-auto-disable btn-success btn-md gl-button\\">
         <!---->
-        <!----> <span class=\\"gl-button-text\\">Save integration</span></button></div>
+        <!----> <span class=\\"gl-button-text\\">Save integration
+      </span></button></div>
   </div>
 </form>"
 `;

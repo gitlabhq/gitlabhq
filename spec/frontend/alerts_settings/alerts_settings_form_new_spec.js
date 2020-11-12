@@ -1,5 +1,13 @@
 import { mount } from '@vue/test-utils';
-import { GlForm, GlFormSelect, GlCollapse, GlFormInput, GlToggle } from '@gitlab/ui';
+import {
+  GlForm,
+  GlFormSelect,
+  GlCollapse,
+  GlFormInput,
+  GlToggle,
+  GlFormTextarea,
+  GlButton,
+} from '@gitlab/ui';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form_new.vue';
 import { defaultAlertSettingsConfig } from './util';
 import { typeSet } from '~/alerts_settings/constants';
@@ -33,12 +41,13 @@ describe('AlertsSettingsFormNew', () => {
   const findFormSteps = () => wrapper.find(GlCollapse);
   const findFormFields = () => wrapper.findAll(GlFormInput);
   const findFormToggle = () => wrapper.find(GlToggle);
+  const findTestPayloadSection = () => wrapper.find(`[id = "test-integration"]`);
   const findMappingBuilderSection = () => wrapper.find(`[id = "mapping-builder"]`);
   const findSubmitButton = () => wrapper.find(`[type = "submit"]`);
   const findMultiSupportText = () =>
     wrapper.find(`[data-testid="multi-integrations-not-supported"]`);
   const findJsonTestSubmit = () => wrapper.find(`[data-testid="integration-test-and-submit"]`);
-  const findJsonTextArea = () => wrapper.find(`[id = "test-integration"]`);
+  const findJsonTextArea = () => wrapper.find(`[id = "test-payload"]`);
 
   afterEach(() => {
     if (wrapper) {
@@ -241,18 +250,91 @@ describe('AlertsSettingsFormNew', () => {
     });
   });
 
-  describe('Mapping builder section', () => {
+  describe('Test payload section for HTTP integration', () => {
     beforeEach(() => {
-      createComponent({});
+      createComponent({
+        multipleHttpIntegrationsCustomMapping: true,
+        props: {
+          currentIntegration: {
+            type: typeSet.http,
+          },
+        },
+      });
     });
 
-    it('should NOT render when feature flag disabled', () => {
-      expect(findMappingBuilderSection().exists()).toBe(false);
+    describe.each`
+      active   | resetSamplePayloadConfirmed | disabled
+      ${true}  | ${true}                     | ${undefined}
+      ${false} | ${true}                     | ${'disabled'}
+      ${true}  | ${false}                    | ${'disabled'}
+      ${false} | ${false}                    | ${'disabled'}
+    `('', ({ active, resetSamplePayloadConfirmed, disabled }) => {
+      const payloadResetMsg = resetSamplePayloadConfirmed ? 'was confirmed' : 'was not confirmed';
+      const enabledState = disabled === 'disabled' ? 'disabled' : 'enabled';
+      const activeState = active ? 'active' : 'not active';
+
+      it(`textarea should be ${enabledState} when payload reset ${payloadResetMsg} and current integration is ${activeState}`, async () => {
+        wrapper.setData({
+          customMapping: { samplePayload: true },
+          active,
+          resetSamplePayloadConfirmed,
+        });
+        await wrapper.vm.$nextTick();
+        expect(
+          findTestPayloadSection()
+            .find(GlFormTextarea)
+            .attributes('disabled'),
+        ).toBe(disabled);
+      });
     });
 
-    it('should render when feature flag is enabled', () => {
-      createComponent({ multipleHttpIntegrationsCustomMapping: true });
-      expect(findMappingBuilderSection().exists()).toBe(true);
+    describe('action buttons for sample payload', () => {
+      describe.each`
+        resetSamplePayloadConfirmed | samplePayload | caption
+        ${false}                    | ${true}       | ${'Edit payload'}
+        ${true}                     | ${false}      | ${'Submit payload'}
+        ${true}                     | ${true}       | ${'Submit payload'}
+        ${false}                    | ${false}      | ${'Submit payload'}
+      `('', ({ resetSamplePayloadConfirmed, samplePayload, caption }) => {
+        const samplePayloadMsg = samplePayload ? 'was provided' : 'was not provided';
+        const payloadResetMsg = resetSamplePayloadConfirmed ? 'was confirmed' : 'was not confirmed';
+
+        it(`shows ${caption} button when sample payload ${samplePayloadMsg} and payload reset ${payloadResetMsg}`, async () => {
+          wrapper.setData({
+            selectedIntegration: typeSet.http,
+            customMapping: { samplePayload },
+            resetSamplePayloadConfirmed,
+          });
+          await wrapper.vm.$nextTick();
+          expect(
+            findTestPayloadSection()
+              .find(GlButton)
+              .text(),
+          ).toBe(caption);
+        });
+      });
+    });
+  });
+
+  describe('Mapping builder section', () => {
+    describe.each`
+      featureFlag | integrationOption | visible
+      ${true}     | ${1}              | ${true}
+      ${true}     | ${2}              | ${false}
+      ${false}    | ${1}              | ${false}
+      ${false}    | ${2}              | ${false}
+    `('', ({ featureFlag, integrationOption, visible }) => {
+      const visibleMsg = visible ? 'is rendered' : 'is not rendered';
+      const featureFlagMsg = featureFlag ? 'is enabled' : 'is disabled';
+      const integrationType = integrationOption === 1 ? typeSet.http : typeSet.prometheus;
+
+      it(`${visibleMsg} when multipleHttpIntegrationsCustomMapping feature flag ${featureFlagMsg} and integration type is ${integrationType}`, async () => {
+        createComponent({ multipleHttpIntegrationsCustomMapping: featureFlag });
+        const options = findSelect().findAll('option');
+        options.at(integrationOption).setSelected();
+        await wrapper.vm.$nextTick();
+        expect(findMappingBuilderSection().exists()).toBe(visible);
+      });
     });
   });
 });

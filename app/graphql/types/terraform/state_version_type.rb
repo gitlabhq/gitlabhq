@@ -17,6 +17,12 @@ module Types
             description: 'The user that created this version',
             resolve: -> (version, _, _) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, version.created_by_user_id).find }
 
+      field :job, Types::Ci::JobType,
+            null: true,
+            authorize: :read_build,
+            description: 'The job that created this version',
+            resolve: -> (version, _, _) { Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Build, version.ci_build_id).find }
+
       field :created_at, Types::TimeType,
             null: false,
             description: 'Timestamp the version was created'

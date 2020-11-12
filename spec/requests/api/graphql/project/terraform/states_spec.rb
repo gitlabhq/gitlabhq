@@ -29,6 +29,10 @@ RSpec.describe 'query terraform states' do
             createdByUser {
               id
             }
+
+            job {
+              name
+            }
           }
 
           lockedByUser {
@@ -61,6 +65,7 @@ RSpec.describe 'query terraform states' do
     expect(version['createdAt']).to eq(latest_version.created_at.iso8601)
     expect(version['updatedAt']).to eq(latest_version.updated_at.iso8601)
     expect(version.dig('createdByUser', 'id')).to eq(latest_version.created_by_user.to_global_id.to_s)
+    expect(version.dig('job', 'name')).to eq(latest_version.build.name)
   end
 
   it 'returns count of terraform states' do

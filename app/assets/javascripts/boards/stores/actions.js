@@ -10,16 +10,18 @@ import {
   formatListIssues,
   fullBoardId,
   formatListsPageInfo,
+  formatIssue,
 } from '../boards_util';
 import boardStore from '~/boards/stores/boards_store';
 
+import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import listsIssuesQuery from '../queries/lists_issues.query.graphql';
 import boardLabelsQuery from '../queries/board_labels.query.graphql';
 import createBoardListMutation from '../queries/board_list_create.mutation.graphql';
 import updateBoardListMutation from '../queries/board_list_update.mutation.graphql';
 import issueMoveListMutation from '../queries/issue_move_list.mutation.graphql';
 import destroyBoardListMutation from '../queries/board_list_destroy.mutation.graphql';
-import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
+import issueCreateMutation from '../queries/issue_create.mutation.graphql';
 import issueSetLabels from '../queries/issue_set_labels.mutation.graphql';
 import issueSetDueDate from '../queries/issue_set_due_date.mutation.graphql';
 
@@ -330,16 +332,43 @@ export default {
       });
   },
 
-  createNewIssue: () => {
-    notImplemented();
+  createNewIssue: ({ commit, state }, issueInput) => {
+    const input = issueInput;
+    const { boardType, endpoints } = state;
+    if (boardType === BoardType.project) {
+      input.projectPath = endpoints.fullPath;
+    }
+
+    return gqlClient
+      .mutate({
+        mutation: issueCreateMutation,
+        variables: { input },
+      })
+      .then(({ data }) => {
+        if (data.createIssue.errors.length) {
+          commit(types.CREATE_ISSUE_FAILURE);
+        } else {
+          return data.createIssue?.issue;
+        }
+        return null;
+      })
+      .catch(() => commit(types.CREATE_ISSUE_FAILURE));
   },
 
   addListIssue: ({ commit }, { list, issue, position }) => {
     commit(types.ADD_ISSUE_TO_LIST, { list, issue, position });
   },
 
-  addListIssueFailure: ({ commit }, { list, issue }) => {
-    commit(types.ADD_ISSUE_TO_LIST_FAILURE, { list, issue });
+  addListNewIssue: ({ commit, dispatch }, { issueInput, list }) => {
+    const issue = formatIssue({ ...issueInput, id: 'tmp' });
+    commit(types.ADD_ISSUE_TO_LIST, { list, issue, position: 0 });
+
+    dispatch('createNewIssue', issueInput)
+      .then(res => {
+        commit(types.ADD_ISSUE_TO_LIST, { list, issue: formatIssue(res) });
+        commit(types.REMOVE_ISSUE_FROM_LIST, { list, issue });
+      })
+      .catch(() => commit(types.ADD_ISSUE_TO_LIST_FAILURE, { list, issueId: issueInput.id }));
   },
 
   setActiveIssueLabels: async ({ commit, getters }, input) => {

@@ -8,7 +8,12 @@ describe('AlertMappingBuilder', () => {
   let wrapper;
 
   function mountComponent() {
-    wrapper = shallowMount(AlertMappingBuilder);
+    wrapper = shallowMount(AlertMappingBuilder, {
+      propsData: {
+        payloadFields: parsedMapping.samplePayload.payloadAlerFields.nodes,
+        mapping: parsedMapping.storedMapping.nodes,
+      },
+    });
   }
 
   afterEach(() => {
@@ -29,11 +34,6 @@ describe('AlertMappingBuilder', () => {
       .findAll('.gl-display-table-cell ')
       .at(column);
 
-  const fieldsByTypeCount = parsedMapping.reduce((acc, { type }) => {
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, {});
-
   it('renders column captions', () => {
     expect(findColumnInRow(0, 0).text()).toContain(i18n.columns.gitlabKeyTitle);
     expect(findColumnInRow(0, 2).text()).toContain(i18n.columns.payloadKeyTitle);
@@ -48,7 +48,7 @@ describe('AlertMappingBuilder', () => {
   it('renders disabled form input for each mapped field', () => {
     gitlabFields.forEach((field, index) => {
       const input = findColumnInRow(index + 1, 0).find(GlFormInput);
-      expect(input.attributes('value')).toBe(`${field.label} (${field.type})`);
+      expect(input.attributes('value')).toBe(`${field.label} (${field.type.join(' or ')})`);
       expect(input.attributes('disabled')).toBe('');
     });
   });
@@ -61,27 +61,36 @@ describe('AlertMappingBuilder', () => {
   });
 
   it('renders mapping dropdown for each field', () => {
-    gitlabFields.forEach(({ type }, index) => {
+    gitlabFields.forEach(({ compatibleTypes }, index) => {
       const dropdown = findColumnInRow(index + 1, 2).find(GlDropdown);
       const searchBox = dropdown.find(GlSearchBoxByType);
       const dropdownItems = dropdown.findAll(GlDropdownItem);
+      const { nodes } = parsedMapping.samplePayload.payloadAlerFields;
+      const numberOfMappingOptions = nodes.filter(({ type }) =>
+        type.some(t => compatibleTypes.includes(t)),
+      );
 
       expect(dropdown.exists()).toBe(true);
       expect(searchBox.exists()).toBe(true);
-      expect(dropdownItems.length).toBe(fieldsByTypeCount[type]);
+      expect(dropdownItems).toHaveLength(numberOfMappingOptions.length);
     });
   });
 
   it('renders fallback dropdown only for the fields that have fallback', () => {
-    gitlabFields.forEach(({ type, hasFallback }, index) => {
+    gitlabFields.forEach(({ compatibleTypes, numberOfFallbacks }, index) => {
       const dropdown = findColumnInRow(index + 1, 3).find(GlDropdown);
-      expect(dropdown.exists()).toBe(Boolean(hasFallback));
+      expect(dropdown.exists()).toBe(Boolean(numberOfFallbacks));
 
-      if (hasFallback) {
+      if (numberOfFallbacks) {
         const searchBox = dropdown.find(GlSearchBoxByType);
         const dropdownItems = dropdown.findAll(GlDropdownItem);
-        expect(searchBox.exists()).toBe(hasFallback);
-        expect(dropdownItems.length).toBe(fieldsByTypeCount[type]);
+        const { nodes } = parsedMapping.samplePayload.payloadAlerFields;
+        const numberOfMappingOptions = nodes.filter(({ type }) =>
+          type.some(t => compatibleTypes.includes(t)),
+        );
+
+        expect(searchBox.exists()).toBe(Boolean(numberOfFallbacks));
+        expect(dropdownItems).toHaveLength(numberOfMappingOptions.length);
       }
     });
   });

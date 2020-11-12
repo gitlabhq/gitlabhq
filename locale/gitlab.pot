@@ -2541,6 +2541,9 @@ msgstr ""
 msgid "AlertSettings|Delete integration"
 msgstr ""
 
+msgid "AlertSettings|Edit payload"
+msgstr ""
+
 msgid "AlertSettings|Enter integration name"
 msgstr ""
 
@@ -2554,6 +2557,9 @@ msgid "AlertSettings|HTTP Endpoint"
 msgstr ""
 
 msgid "AlertSettings|HTTP endpoint"
+msgstr ""
+
+msgid "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields."
 msgstr ""
 
 msgid "AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations."
@@ -2571,6 +2577,9 @@ msgstr ""
 msgid "AlertSettings|Opsgenie"
 msgstr ""
 
+msgid "AlertSettings|Proceed with editing"
+msgstr ""
+
 msgid "AlertSettings|Prometheus API base URL"
 msgstr ""
 
@@ -2581,6 +2590,9 @@ msgid "AlertSettings|Reset Key"
 msgstr ""
 
 msgid "AlertSettings|Reset key"
+msgstr ""
+
+msgid "AlertSettings|Reset the mapping"
 msgstr ""
 
 msgid "AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in."
@@ -2596,6 +2608,9 @@ msgid "AlertSettings|Save integration"
 msgstr ""
 
 msgid "AlertSettings|Select integration type"
+msgstr ""
+
+msgid "AlertSettings|Submit payload"
 msgstr ""
 
 msgid "AlertSettings|Test alert payload"
@@ -3025,9 +3040,6 @@ msgid "An error occurred while fetching tags. Retry the search."
 msgstr ""
 
 msgid "An error occurred while fetching terraform reports."
-msgstr ""
-
-msgid "An error occurred while fetching the Service Desk address."
 msgstr ""
 
 msgid "An error occurred while fetching the board lists. Please try again."

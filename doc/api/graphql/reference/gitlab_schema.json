@@ -60019,6 +60019,20 @@
               "deprecationReason": null
             },
             {
+              "name": "job",
+              "description": "The job that created this version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CiJob",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp the version was updated",
               "args": [

@@ -184,6 +184,38 @@ If the current version is `v12p1`, and we need to create a new version for `v12p
 1. Change the namespace for files under `v12p1` folder from `Latest` to `V12p1`
 1. Make changes to files under the `latest` folder as needed
 
+## Creating a new Global Search migration
+
+> This functionality was introduced by [#234046](https://gitlab.com/gitlab-org/gitlab/-/issues/234046).
+
+NOTE: **Note:**
+This only supported for indices created with GitLab 13.0 or greater.
+
+Migrations are stored in the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder with `YYYYMMDDHHMMSS_migration_name.rb`
+file name format, which is similar to Rails database migrations:
+
+```ruby
+# frozen_string_literal: true
+
+class MigrationName < Elastic::Migration
+  # Important: Any update to the Elastic index mappings should be replicated in Elastic::Latest::Config
+
+  def migrate
+  end
+
+  # Check if the migration has completed
+  # Return true if completed, otherwise return false
+  def completed?
+  end
+end
+```
+
+Applied migrations are stored in `gitlab-#{RAILS_ENV}-migrations` index. All unexecuted migrations
+are applied by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
+cron worker sequentially.
+
+Any update to the Elastic index mappings should be replicated in [`Elastic::Latest::Config`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+
 ## Performance Monitoring
 
 ### Prometheus

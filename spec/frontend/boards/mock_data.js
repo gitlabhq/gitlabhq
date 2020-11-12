@@ -291,6 +291,7 @@ export const mockLists = [
     assignee: null,
     milestone: null,
     loading: false,
+    issuesSize: 1,
   },
   {
     id: 'gid://gitlab/List/2',
@@ -308,6 +309,7 @@ export const mockLists = [
     assignee: null,
     milestone: null,
     loading: false,
+    issuesSize: 0,
   },
 ];
 

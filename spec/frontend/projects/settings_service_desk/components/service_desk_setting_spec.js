@@ -13,6 +13,7 @@ describe('ServiceDeskSetting', () => {
   });
 
   const findTemplateDropdown = () => wrapper.find('#service-desk-template-select');
+  const findIncomingEmail = () => wrapper.find('[data-testid="incoming-email"]');
 
   describe('when isEnabled=true', () => {
     describe('only isEnabled', () => {
@@ -35,7 +36,7 @@ describe('ServiceDeskSetting', () => {
 
         it('should see loading spinner and not the incoming email', () => {
           expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-          expect(wrapper.find('.incoming-email').exists()).toBe(false);
+          expect(findIncomingEmail().exists()).toBe(false);
         });
       });
     });
@@ -73,7 +74,7 @@ describe('ServiceDeskSetting', () => {
       });
 
       it('should see email and not the loading spinner', () => {
-        expect(wrapper.find('.incoming-email').element.value).toEqual(incomingEmail);
+        expect(findIncomingEmail().element.value).toEqual(incomingEmail);
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
       });
 
@@ -82,6 +83,45 @@ describe('ServiceDeskSetting', () => {
         expect(wrapper.find('.qa-clipboard-button').element.dataset.clipboardText).toBe(
           incomingEmail,
         );
+      });
+    });
+
+    describe('with customEmail', () => {
+      describe('customEmail is different than incomingEmail', () => {
+        const incomingEmail = 'foo@bar.com';
+        const customEmail = 'custom@bar.com';
+
+        beforeEach(() => {
+          wrapper = mount(ServiceDeskSetting, {
+            propsData: {
+              isEnabled: true,
+              incomingEmail,
+              customEmail,
+            },
+          });
+        });
+
+        it('should see custom email', () => {
+          expect(findIncomingEmail().element.value).toEqual(customEmail);
+        });
+      });
+
+      describe('customEmail is the same as incomingEmail', () => {
+        const email = 'foo@bar.com';
+
+        beforeEach(() => {
+          wrapper = mount(ServiceDeskSetting, {
+            propsData: {
+              isEnabled: true,
+              incomingEmail: email,
+              customEmail: email,
+            },
+          });
+        });
+
+        it('should see custom email', () => {
+          expect(findIncomingEmail().element.value).toEqual(email);
+        });
       });
     });
 

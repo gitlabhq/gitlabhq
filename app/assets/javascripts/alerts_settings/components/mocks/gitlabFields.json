@@ -1,48 +1,112 @@
 [
   {
-    "key":"title",
-    "label":"Title",
-    "type":"String",
-    "hasFallback": true
+    "name": "title",
+    "label": "Title",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ],
+    "numberOfFallbacks": 1
   },
   {
-    "key":"description",
-    "label":"Description",
-    "type":"String"
+    "name": "description",
+    "label": "Description",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"startTime",
-    "label":"Start time",
-    "type":"DateTime"
+    "name": "startTime",
+    "label": "Start time",
+    "type": [
+      "DateTime"
+    ],
+    "compatibleTypes": [
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"service",
-    "label":"Service",
-    "type":"String"
+    "name": "service",
+    "label": "Service",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"monitoringTool",
-    "label":"Monitoring tool",
-    "type":"String"
+    "name": "monitoringTool",
+    "label": "Monitoring tool",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"hosts",
-    "label":"Hosts",
-    "type":"String or Array"
+    "name": "hosts",
+    "label": "Hosts",
+    "type": [
+      "String",
+      "Array"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Array",
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"severity",
-    "label":"Severity",
-    "type":"String"
+    "name": "severity",
+    "label": "Severity",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"fingerprint",
-    "label":"Fingerprint",
-    "type":"String"
+    "name": "fingerprint",
+    "label": "Fingerprint",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
   },
   {
-    "key":"environment",
-    "label":"Environment",
-    "type":"String"
+    "name": "environment",
+    "label": "Environment",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
   }
 ]
