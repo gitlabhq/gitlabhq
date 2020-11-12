@@ -1,0 +1,7 @@
+---
+name: graphql_pipeline_details
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46380
+rollout_issue_url:
+type: development
+group: group::pipeline authoring
+default_enabled: false

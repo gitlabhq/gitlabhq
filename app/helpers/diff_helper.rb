@@ -64,13 +64,15 @@ module DiffHelper
     else
       # `sub` and substring-ing would destroy HTML-safeness of `line`
       if line.start_with?('+', '-', ' ')
-        line.dup.tap do |line|
-          line[0] = ''
-        end
+        line[1, line.length]
       else
         line
       end
     end
+  end
+
+  def diff_link_number(line_type, match, text)
+    line_type == match ? " " : text
   end
 
   def parallel_diff_discussions(left, right, diff_file)

@@ -429,13 +429,22 @@ w
    - `values`: One value or array of values we count. For example: user_id, visitor_id, user_ids.
    - `event_name`: event name.
 
-1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date)`.
+1. Track event on context level using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event_in_context(entity_id, event_name, context)`.
+
+   Arguments:
+
+   - `entity_id`: value we count. For example: user_id, visitor_id.
+   - `event_name`: event name.
+   - `context`: context value. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`
+
+1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date:, context: '')`.
 
    Arguments:
 
    - `event_names`: the list of event names.
    - `start_date`: start date of the period for which we want to get event data.
    - `end_date`: end date of the period for which we want to get event data.
+   - `context`: context of the event. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`.
 
 Recommendations:
 

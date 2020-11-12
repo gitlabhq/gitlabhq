@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Charts do
-  context "yearchart" do
+  context 'yearchart' do
     let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::YearChart.new(project) }
 
@@ -16,9 +16,13 @@ RSpec.describe Gitlab::Ci::Charts do
     it 'starts at the beginning of the current year' do
       expect(chart.from).to eq(chart.to.years_ago(1).beginning_of_month.beginning_of_day)
     end
+
+    it 'uses %B %Y as labels format' do
+      expect(chart.labels).to include(chart.from.strftime('%B %Y'))
+    end
   end
 
-  context "monthchart" do
+  context 'monthchart' do
     let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::MonthChart.new(project) }
 
@@ -31,9 +35,13 @@ RSpec.describe Gitlab::Ci::Charts do
     it 'starts one month ago' do
       expect(chart.from).to eq(1.month.ago.beginning_of_day)
     end
+
+    it 'uses %d %B as labels format' do
+      expect(chart.labels).to include(chart.from.strftime('%d %B'))
+    end
   end
 
-  context "weekchart" do
+  context 'weekchart' do
     let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project) }
 
@@ -46,9 +54,13 @@ RSpec.describe Gitlab::Ci::Charts do
     it 'starts one week ago' do
       expect(chart.from).to eq(1.week.ago.beginning_of_day)
     end
+
+    it 'uses %d %B as labels format' do
+      expect(chart.labels).to include(chart.from.strftime('%d %B'))
+    end
   end
 
-  context "pipeline_times" do
+  context 'pipeline_times' do
     let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::PipelineTime.new(project) }
 

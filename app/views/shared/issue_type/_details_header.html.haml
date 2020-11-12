@@ -28,10 +28,10 @@
   - else
     .detail-page-header-actions.js-issuable-actions.js-issuable-buttons{ data: { "action": "close-reopen" } }
       .clearfix.issue-btn-group.dropdown
-        %button.btn.gl-button.btn-default.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
+        %button.btn.gl-button.btn-default.float-left.gl-display-md-none{ type: "button", data: { toggle: "dropdown" } }
           = _('Options')
           = icon('caret-down')
-        .dropdown-menu.dropdown-menu-right.d-lg-none.d-xl-none
+        .dropdown-menu.dropdown-menu-right
           %ul
             - unless current_user == issuable.author
               %li= link_to _('Report abuse'), new_abuse_report_path(user_id: issuable.author.id, ref_url: issue_url(issuable))
@@ -49,7 +49,7 @@
       = render 'shared/issuable/close_reopen_button', issuable: issuable, can_update: can_update_issue, can_reopen: can_reopen_issue, warn_before_close: defined?(issuable.blocked?) && issuable.blocked?
 
       - if can_report_spam
-        = link_to _('Submit as spam'), mark_as_spam_project_issue_path(@project, issuable), method: :post, class: 'gl-display-none gl-display-sm-none gl-display-md-block gl-button btn btn-grouped btn-spam', title: 'Submit as spam'
+        = link_to _('Submit as spam'), mark_as_spam_project_issue_path(@project, issuable), method: :post, class: 'gl-display-none gl-display-md-block gl-button btn btn-grouped btn-spam', title: 'Submit as spam'
       - if can_create_issue
-        = link_to new_project_issue_path(@project, new_issuable_params), class: 'gl-display-none gl-display-sm-none gl-display-md-block gl-button btn btn-grouped btn-success btn-inverted', title: _('New %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, id: 'new_%{display_issuable_type}_link' % { display_issuable_type: display_issuable_type } do
+        = link_to new_project_issue_path(@project, new_issuable_params), class: 'gl-display-none gl-display-md-block gl-button btn btn-grouped btn-success btn-inverted', title: _('New %{display_issuable_type}') % { display_issuable_type: display_issuable_type }, id: 'new_%{display_issuable_type}_link' % { display_issuable_type: display_issuable_type } do
           = _('New %{display_issuable_type}') % { display_issuable_type: display_issuable_type }

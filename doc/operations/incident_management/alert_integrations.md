@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to [GitLab Core](https://about.gitlab.com/pricing/) in 12.8.
 
-GitLab can accept alerts from any source via a webhook receiver. This can be configured generically or, in GitLab versions 13.1 and greater, you can configure
+GitLab can accept alerts from any source via a webhook receiver. This can be configured
+generically or, in GitLab versions 13.1 and greater, you can configure
 [External Prometheus instances](../metrics/alerts.md#external-prometheus-instances)
 to use this endpoint.
 
@@ -26,16 +27,14 @@ The list displays the integration name, type, and status (enabled or disabled):
 
 ## Configuration
 
-You can either configure alerts to integrate with an [external Prometheus server](#external-prometheus-integration),
-or provide a [generic HTTP endpoint](#generic-http-endpoint) to receive alerts
-from other services.
+GitLab can receive alerts via a [HTTP endpoint](#generic-http-endpoint) that you configure,
+or the [Prometheus integration](#external-prometheus-integration).
 
-### Generic HTTP Endpoint
+### Generic HTTP Endpoint **CORE**
 
-Enabling the Generic HTTP Endpoint creates a unique HTTP endpoint that can receive alert payloads in JSON format. You can always
-[customize the payload](#customizing-the-payload) to your liking.
-
-You will need to activate the endpoint and obtain credentials to set up this integration:
+Enabling the Generic HTTP Endpoint activates a unique HTTP endpoint that can
+receive alert payloads in JSON format. You can always
+[customize the payload](#customize-the-alert-payload-outside-of-gitlab) to your liking.
 
 1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
    for a project.
@@ -44,20 +43,49 @@ You will need to activate the endpoint and obtain credentials to set up this int
 1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
    for the webhook configuration.
 
+### HTTP Endpoints **PREMIUM**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+
+In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
+unique HTTP endpoints to receive alerts from any external source in JSON format,
+and you can [customize the payload](#customize-the-alert-payload-outside-of-gitlab).
+
+1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
+   for a project.
+1. Navigate to **Settings > Operations** in your project.
+1. Expand the **Alerts** section.
+1. For each endpoint you want to create:
+
+   1. In the **Integration** dropdown menu, select **HTTP Endpoint**.
+   1. Name the integration.
+   1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
+      for the webhook configuration. You will input the URL and Authorization Key
+      in your external service.
+   1. _(Optional)_ To generate a test alert to test the new integration, enter a
+      sample payload, then click **Save and test alert payload**.Valid JSON is required.
+   1. Click **Save Integration**.
+
+The new HTTP Endpoint displays in the [integrations list](#integrations-list).
+You can edit the integration by selecting the **{pencil}** pencil icon on the right
+side of the integrations list.
+
 ### External Prometheus integration
 
-For GitLab versions 13.1 and greater, please see [External Prometheus Instances](../metrics/alerts.md#external-prometheus-instances) to configure alerts for this integration.
+For GitLab versions 13.1 and greater, please read
+[External Prometheus Instances](../metrics/alerts.md#external-prometheus-instances)
+to configure alerts for this integration.
 
-## Customizing the payload
+## Customize the alert payload outside of GitLab
 
-You can customize the payload by sending the following parameters. This applies to all types of integrations. All fields
-other than `title` are optional:
+For all integration types, you can customize the payload by sending the following
+parameters. All fields other than `title` are optional:
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |
 | `title`                   | String          | The title of the incident. Required. |
 | `description`             | String          | A high-level summary of the problem. |
-| `start_time`              | DateTime        | The time of the incident. If none is provided, a timestamp of the issue will be used. |
+| `start_time`              | DateTime        | The time of the incident. If none is provided, a timestamp of the issue is used. |
 | `end_time`                | DateTime        | For existing alerts only. When provided, the alert is resolved and the associated incident is closed. |
 | `service`                 | String          | The affected service. |
 | `monitoring_tool`         | String          |  The name of the associated monitoring tool. |
@@ -74,8 +102,9 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-TIP: **Payload size:**
-Ensure your requests are smaller than the [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
+TIP: **Tip:**
+Ensure your requests are smaller than the
+[payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
 Example request:
 

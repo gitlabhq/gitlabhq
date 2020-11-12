@@ -130,6 +130,38 @@ RSpec.describe DiffHelper do
     end
   end
 
+  describe "#diff_link_number" do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:line) do
+      double(:line, type: line_type)
+    end
+
+    # This helper is used to generate the line numbers on the
+    # diff lines. It essentially just returns a blank string
+    # on the old/new lines. The following table tests all the
+    # possible permutations for clarity.
+
+    where(:line_type, :match, :line_number, :expected_return_value) do
+      "new"           | "new" | 1  | " "
+      "new"           | "old" | 2  | 2
+      "old"           | "new" | 3  | 3
+      "old"           | "old" | 4  | " "
+      "new-nonewline" | "new" | 5  | 5
+      "new-nonewline" | "old" | 6  | 6
+      "old-nonewline" | "new" | 7  | 7
+      "old-nonewline" | "old" | 8  | 8
+      "match"         | "new" | 9  | 9
+      "match"         | "old" | 10 | 10
+    end
+
+    with_them do
+      it "returns the expected value" do
+        expect(helper.diff_link_number(line.type, match, line_number)).to eq(expected_return_value)
+      end
+    end
+  end
+
   describe "#mark_inline_diffs" do
     let(:old_line) { %{abc 'def'} }
     let(:new_line) { %{abc "def"} }

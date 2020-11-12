@@ -290,6 +290,8 @@ Represents an epic on an issue board.
 | `title` | String | Title of the epic |
 | `updatedAt` | Time | Timestamp of when the epic was updated |
 | `upvotes` | Int! | Number of upvotes the epic has received |
+| `userDiscussionsCount` | Int! | Number of user discussions in the epic |
+| `userNotesCount` | Int! | Number of user notes of the epic |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
 | `userPreferences` | BoardEpicUserPreferences | User preferences for the epic on the issue board |
 | `webPath` | String! | Web path of the epic |
@@ -1189,6 +1191,8 @@ Represents an epic.
 | `title` | String | Title of the epic |
 | `updatedAt` | Time | Timestamp of when the epic was updated |
 | `upvotes` | Int! | Number of upvotes the epic has received |
+| `userDiscussionsCount` | Int! | Number of user discussions in the epic |
+| `userNotesCount` | Int! | Number of user notes of the epic |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
 | `webPath` | String! | Web path of the epic |
 | `webUrl` | String! | Web URL of the epic |

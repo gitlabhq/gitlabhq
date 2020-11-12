@@ -1803,6 +1803,16 @@ type BoardEpic implements CurrentUserTodos & Noteable {
   upvotes: Int!
 
   """
+  Number of user discussions in the epic
+  """
+  userDiscussionsCount: Int!
+
+  """
+  Number of user notes of the epic
+  """
+  userNotesCount: Int!
+
+  """
   Permissions for the current user on the resource
   """
   userPermissions: EpicPermissions!
@@ -7249,6 +7259,16 @@ type Epic implements CurrentUserTodos & Noteable {
   Number of upvotes the epic has received
   """
   upvotes: Int!
+
+  """
+  Number of user discussions in the epic
+  """
+  userDiscussionsCount: Int!
+
+  """
+  Number of user notes of the epic
+  """
+  userNotesCount: Int!
 
   """
   Permissions for the current user on the resource

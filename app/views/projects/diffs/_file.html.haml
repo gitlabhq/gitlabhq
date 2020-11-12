@@ -14,16 +14,15 @@
         = submodule_diff_compare_link(diff_file)
 
     - unless diff_file.submodule?
-      - blob = diff_file.blob
       .file-actions.d-none.d-sm-block
-        - if blob&.readable_text?
+        - if diff_file.blob&.readable_text?
           = link_to '#', class: 'js-toggle-diff-comments gl-button btn active has-tooltip', title: _("Toggle comments for this file"), disabled: @diff_notes_disabled do
             = sprite_icon('comment')
           \
           - if editable_diff?(diff_file)
             - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
             = edit_blob_button(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
-                             blob: blob, link_opts: link_opts)
+                             blob: diff_file.blob, link_opts: link_opts)
 
         - if image_diff && image_replaced
           = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, replaced: true)

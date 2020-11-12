@@ -3087,6 +3087,9 @@ msgstr ""
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
+msgid "An error occurred while loading a section of this page."
+msgstr ""
+
 msgid "An error occurred while loading all the files."
 msgstr ""
 
@@ -3139,6 +3142,9 @@ msgid "An error occurred while loading the merge request version data."
 msgstr ""
 
 msgid "An error occurred while loading the merge request."
+msgstr ""
+
+msgid "An error occurred while loading the pipeline."
 msgstr ""
 
 msgid "An error occurred while loading the pipelines jobs."
@@ -3196,6 +3202,9 @@ msgid "An error occurred while subscribing to notifications."
 msgstr ""
 
 msgid "An error occurred while triggering the job."
+msgstr ""
+
+msgid "An error occurred while trying to generate the report. Please try again later."
 msgstr ""
 
 msgid "An error occurred while trying to run a new pipeline for this Merge Request."

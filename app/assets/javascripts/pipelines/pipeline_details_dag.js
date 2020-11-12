@@ -10,11 +10,12 @@ const apolloProvider = new VueApollo({
 });
 
 const createDagApp = () => {
-  if (!window.gon?.features?.dagPipelineTab) {
+  const el = document.querySelector('#js-pipeline-dag-vue');
+
+  if (!window.gon?.features?.dagPipelineTab || !el) {
     return;
   }
 
-  const el = document.querySelector('#js-pipeline-dag-vue');
   const { pipelineProjectPath, pipelineIid, emptySvgPath, dagDocPath } = el?.dataset;
 
   // eslint-disable-next-line no-new

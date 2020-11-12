@@ -21,6 +21,7 @@ export default {
 
 <template>
   <gl-dropdown class="show" :text="text" :header-text="headerText">
+    <slot name="search"></slot>
     <gl-dropdown-form>
       <slot name="items"></slot>
     </gl-dropdown-form>

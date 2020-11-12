@@ -1,17 +1,14 @@
-- show_toggle = local_assigns.fetch(:show_toggle, true)
-
-- if show_toggle
+- if local_assigns.fetch(:show_toggle, true)
   %i.fa.diff-toggle-caret.fa-fw
 
 - if diff_file.submodule?
-  - blob = diff_file.blob
   %span
     = sprite_icon('archive')
 
     %strong.file-title-name
-      = submodule_link(blob, diff_file.content_sha, diff_file.repository)
+      = submodule_link(diff_file.blob, diff_file.content_sha, diff_file.repository)
 
-    = copy_file_path_button(blob.path)
+    = copy_file_path_button(diff_file.blob.path)
 - else
   = conditional_link_to url.present?, url do
     = blob_icon diff_file.b_mode, diff_file.file_path

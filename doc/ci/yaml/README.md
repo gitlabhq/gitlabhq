@@ -244,7 +244,7 @@ a preconfigured `workflow: rules` entry.
 `workflow: rules` accepts these keywords:
 
 - [`if`](#rulesif): Check this rule to determine when to run a pipeline.
-- [`when`](#when): Specify what to do when the `if` rule evaluates to true. 
+- [`when`](#when): Specify what to do when the `if` rule evaluates to true.
   - To run a pipeline, set to `always`.
   - To prevent pipelines from running, set to `never`.
 
@@ -1346,6 +1346,53 @@ because `rules: changes` always evaluates to true when there is no Git `push` ev
 Tag pipelines, scheduled pipelines, and so on do **not** have a Git `push` event
 associated with them. A `rules: changes` job is **always** added to those pipeline
 if there is no `if:` statement that limits the job to branch or merge request pipelines.
+
+##### Variables in `rules:changes`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34272) in GitLab 13.6.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-variables-support-in-ruleschanges). **(CORE ONLY)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Environment variables can be used in `rules:changes` expressions to determine when
+to add jobs to a pipeline:
+
+```yaml
+docker build:
+  variables:
+    DOCKERFILES_DIR: 'path/to/files/'
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - changes:
+        - $DOCKERFILES_DIR/*
+```
+
+The `$` character can be used for both variables and paths. For example, if the
+`$DOCKERFILES_DIR` variable exists, its value is used. If it does not exist, the
+`$` is interpreted as being part of a path.
+
+###### Enable or disable variables support in `rules:changes` **(CORE ONLY)**
+
+Variables support in `rules:changes` is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_variable_expansion_in_rules_changes)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_variable_expansion_in_rules_changes)
+```
 
 #### `rules:exists`
 

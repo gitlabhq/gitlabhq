@@ -278,8 +278,10 @@ Uploads routes belong to one of these categories:
 
 1. Rails controllers: uploads handled by Rails controllers.
 1. Grape API: uploads handled by a Grape API endpoint.
-1. GraphQL API: uploads handled by a GraphQL resolve function. In these cases, there is nothing else
-   to do apart from implementing the actual upload.
+1. GraphQL API: uploads handled by a GraphQL resolve function.
+
+CAUTION: **Warning:**
+GraphQL uploads do not support [direct upload](#direct-upload) yet. Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details please follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
 
 ### Update Workhorse for the new route
 

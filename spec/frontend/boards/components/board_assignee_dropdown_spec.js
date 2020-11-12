@@ -1,23 +1,59 @@
-import { mount } from '@vue/test-utils';
-import { GlDropdownItem, GlAvatarLink, GlAvatarLabeled } from '@gitlab/ui';
+import { mount, createLocalVue } from '@vue/test-utils';
+import { GlDropdownItem, GlAvatarLink, GlAvatarLabeled, GlSearchBoxByType } from '@gitlab/ui';
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import VueApollo from 'vue-apollo';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import store from '~/boards/stores';
 import getIssueParticipants from '~/vue_shared/components/sidebar/queries/getIssueParticipants.query.graphql';
+import searchUsers from '~/boards/queries/users_search.query.graphql';
 import { participants } from '../mock_data';
+
+const localVue = createLocalVue();
+
+localVue.use(VueApollo);
 
 describe('BoardCardAssigneeDropdown', () => {
   let wrapper;
+  let fakeApollo;
+  let getIssueParticipantsSpy;
+  let getSearchUsersSpy;
+
   const iid = '111';
   const activeIssueName = 'test';
   const anotherIssueName = 'hello';
 
-  const createComponent = () => {
+  const createComponent = (search = '') => {
     wrapper = mount(BoardAssigneeDropdown, {
       data() {
         return {
+          search,
+          selected: store.getters.activeIssue.assignees,
+          participants,
+        };
+      },
+      store,
+      provide: {
+        canUpdate: true,
+        rootPath: '',
+      },
+    });
+  };
+
+  const createComponentWithApollo = (search = '') => {
+    fakeApollo = createMockApollo([
+      [getIssueParticipants, getIssueParticipantsSpy],
+      [searchUsers, getSearchUsersSpy],
+    ]);
+
+    wrapper = mount(BoardAssigneeDropdown, {
+      localVue,
+      apolloProvider: fakeApollo,
+      data() {
+        return {
+          search,
           selected: store.getters.activeIssue.assignees,
           participants,
         };
@@ -43,7 +79,7 @@ describe('BoardCardAssigneeDropdown', () => {
   };
 
   const findByText = text => {
-    return wrapper.findAll(GlDropdownItem).wrappers.find(x => x.text().indexOf(text) === 0);
+    return wrapper.findAll(GlDropdownItem).wrappers.find(node => node.text().indexOf(text) === 0);
   };
 
   beforeEach(() => {
@@ -56,6 +92,10 @@ describe('BoardCardAssigneeDropdown', () => {
     };
 
     jest.spyOn(store, 'dispatch').mockResolvedValue();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   afterEach(() => {
@@ -203,27 +243,66 @@ describe('BoardCardAssigneeDropdown', () => {
     },
   );
 
-  describe('Apollo Schema', () => {
+  describe('Apollo', () => {
     beforeEach(() => {
-      createComponent();
+      getIssueParticipantsSpy = jest.fn().mockResolvedValue({
+        data: {
+          issue: {
+            participants: {
+              nodes: [
+                {
+                  username: 'participant',
+                  name: 'participant',
+                  webUrl: '',
+                  avatarUrl: '',
+                  id: '',
+                },
+              ],
+            },
+          },
+        },
+      });
+      getSearchUsersSpy = jest.fn().mockResolvedValue({
+        data: {
+          users: {
+            nodes: [{ username: 'root', name: 'root', webUrl: '', avatarUrl: '', id: '' }],
+          },
+        },
+      });
     });
 
-    it('returns the correct query', () => {
-      expect(wrapper.vm.$options.apollo.participants.query).toEqual(getIssueParticipants);
+    describe('when search is empty', () => {
+      beforeEach(() => {
+        createComponentWithApollo();
+      });
+
+      it('calls getIssueParticipants', async () => {
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+
+        expect(getIssueParticipantsSpy).toHaveBeenCalledWith({ id: 'gid://gitlab/Issue/111' });
+      });
     });
 
-    it('contains the correct variables', () => {
-      const { variables } = wrapper.vm.$options.apollo.participants;
-      const boundVariable = variables.bind(wrapper.vm);
+    describe('when search is not empty', () => {
+      beforeEach(() => {
+        createComponentWithApollo('search term');
+      });
 
-      expect(boundVariable()).toEqual({ id: 'gid://gitlab/Issue/111' });
+      it('calls searchUsers', async () => {
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+
+        expect(getSearchUsersSpy).toHaveBeenCalledWith({ search: 'search term' });
+      });
     });
+  });
 
-    it('returns the correct data from update', () => {
-      const node = { test: 1 };
-      const { update } = wrapper.vm.$options.apollo.participants;
+  it('finds GlSearchBoxByType', async () => {
+    createComponent();
 
-      expect(update({ issue: { participants: { nodes: [node] } } })).toEqual([node]);
-    });
+    await openDropdown();
+
+    expect(wrapper.find(GlSearchBoxByType).exists()).toBe(true);
   });
 });

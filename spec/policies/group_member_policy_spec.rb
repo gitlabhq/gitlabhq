@@ -42,6 +42,7 @@ RSpec.describe GroupMemberPolicy do
     it do
       expect_disallowed(:destroy_group_member)
       expect_disallowed(:update_group_member)
+      expect_allowed(:read_group)
     end
   end
 

@@ -8,6 +8,9 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   let(:entity3) { '34rfjuuy-ce56-sa35-ds34-dfer567dfrf2' }
   let(:entity4) { '8b9a2671-2abf-4bec-a682-22f6a8f7bf31' }
 
+  let(:default_context) { 'default' }
+  let(:invalid_context) { 'invalid' }
+
   around do |example|
     # We need to freeze to a reference time
     # because visits are grouped by the week number in the year
@@ -55,11 +58,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     let(:no_slot) { 'no_slot' }
     let(:different_aggregation) { 'different_aggregation' }
     let(:custom_daily_event) { 'g_analytics_custom' }
+    let(:context_event) { 'context_event' }
 
     let(:global_category) { 'global' }
     let(:compliance_category) { 'compliance' }
     let(:productivity_category) { 'productivity' }
     let(:analytics_category) { 'analytics' }
+    let(:other_category) { 'other' }
 
     let(:known_events) do
       [
@@ -68,7 +73,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         { name: category_productivity_event, redis_slot: "analytics", category: productivity_category, aggregation: "weekly" },
         { name: compliance_slot_event, redis_slot: "compliance", category: compliance_category, aggregation: "weekly" },
         { name: no_slot, category: global_category, aggregation: "daily" },
-        { name: different_aggregation, category: global_category, aggregation: "monthly" }
+        { name: different_aggregation, category: global_category, aggregation: "monthly" },
+        { name: context_event, category: other_category, expiry: 6, aggregation: 'weekly' }
       ].map(&:with_indifferent_access)
     end
 
@@ -170,6 +176,34 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       end
     end
 
+    describe '.track_event_in_context' do
+      context 'with valid contex' do
+        it 'increments conext event counte' do
+          expect(Gitlab::Redis::HLL).to receive(:add) do |kwargs|
+            expect(kwargs[:key]).to match(/^#{default_context}\_.*/)
+          end
+
+          described_class.track_event_in_context(entity1, context_event, default_context)
+        end
+      end
+
+      context 'with empty context' do
+        it 'does not increment a counter' do
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
+
+          described_class.track_event_in_context(entity1, context_event, '')
+        end
+      end
+
+      context 'when sending invalid context' do
+        it 'does not increment a counter' do
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
+
+          described_class.track_event_in_context(entity1, context_event, invalid_context)
+        end
+      end
+    end
+
     describe '.unique_events' do
       before do
         # events in current week, should not be counted as week is not complete
@@ -246,6 +280,48 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       context 'when no slot is set' do
         it { expect(described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)).to eq(1) }
+      end
+    end
+  end
+
+  describe 'context level tracking' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:known_events) do
+      [
+        { name: 'event_name_1', redis_slot: 'event', category: 'category1', aggregation: "weekly" },
+        { name: 'event_name_2', redis_slot: 'event', category: 'category1', aggregation: "weekly" },
+        { name: 'event_name_3', redis_slot: 'event', category: 'category1', aggregation: "weekly" }
+      ].map(&:with_indifferent_access)
+    end
+
+    before do
+      allow(described_class).to receive(:known_events).and_return(known_events)
+      allow(described_class).to receive(:categories).and_return(%w(category1 category2))
+
+      described_class.track_event_in_context([entity1, entity3], 'event_name_1', default_context, 2.days.ago)
+      described_class.track_event_in_context(entity3, 'event_name_1', default_context, 2.days.ago)
+      described_class.track_event_in_context(entity3, 'event_name_1', invalid_context, 2.days.ago)
+      described_class.track_event_in_context([entity1, entity2], 'event_name_2', '', 2.weeks.ago)
+    end
+
+    subject(:unique_events) { described_class.unique_events(event_names: event_names, start_date: 4.weeks.ago, end_date: Date.current, context: context) }
+
+    context 'with correct arguments' do
+      where(:event_names, :context, :value) do
+        ['event_name_1'] | 'default' | 2
+        ['event_name_1'] | ''        | 0
+        ['event_name_2'] | ''        | 0
+      end
+
+      with_them do
+        it { is_expected.to eq value }
+      end
+    end
+
+    context 'with invalid context' do
+      it 'raise error' do
+        expect { described_class.unique_events(event_names: 'event_name_1', start_date: 4.weeks.ago, end_date: Date.current, context: invalid_context) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::InvalidContext)
       end
     end
   end

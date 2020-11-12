@@ -2,13 +2,13 @@
   - if current_user && can?(current_user, :fork_project, @project)
     .count-badge.d-inline-flex.align-item-stretch.gl-mr-3
       - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: s_('ProjectOverview|Go to your fork'), class: 'gl-button btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn' do
+        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: s_('ProjectOverview|Go to your fork'), class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn' do
           = sprite_icon('fork', css_class: 'icon')
           %span= s_('ProjectOverview|Fork')
       - else
         - can_create_fork = current_user.can?(:create_fork)
         = link_to new_project_fork_path(@project),
-            class: "gl-button btn btn-default btn-xs has-tooltip count-badge-button d-flex align-items-center fork-btn #{'has-tooltip disabled' unless can_create_fork}",
+            class: "btn btn-default btn-xs has-tooltip count-badge-button d-flex align-items-center fork-btn #{'has-tooltip disabled' unless can_create_fork}",
             title: (s_('ProjectOverview|You have reached your project limit') unless can_create_fork) do
           = sprite_icon('fork', css_class: 'icon')
           %span= s_('ProjectOverview|Fork')

@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: Manage
+group: Access
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 type: reference, how-to
 ---
@@ -47,7 +47,7 @@ sudo chmod 0600 /etc/http.keytab
 
 ### Configure GitLab
 
-**Installations from source**
+#### Installations from source
 
 NOTE: **Note:**
 For source installations, make sure the `kerberos` gem group
@@ -74,7 +74,7 @@ For source installations, make sure the `kerberos` gem group
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-**Omnibus package installations**
+#### Omnibus package installations
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -91,18 +91,71 @@ GitLab will now offer the `negotiate` authentication method for signing in and
 HTTP Git access, enabling Git clients that support this authentication protocol
 to authenticate with Kerberos tokens.
 
-## Creating and linking Kerberos accounts
+#### Enable single sign-on
 
-The Administrative user can navigate to **Admin > Users > Example User > Identities**
-and attach a Kerberos account. Existing GitLab users can go to **Profile > Account**
-and attach a Kerberos account. If you want to allow users without a GitLab
-account to sign in, enable the `allow_single_sign_on` option, as described in the
-[Configure GitLab](#configure-gitlab) section. The first time a user signs in
-with Kerberos credentials, GitLab will create a new GitLab user associated with
-the email, which is built from the Kerberos username and realm. User accounts are
-created after successful authentications.
+See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
+for initial settings to enable single sign-on and add Kerberos servers
+as an identity provider.
 
-## Linking Kerberos and LDAP accounts together
+## Create and link Kerberos accounts
+
+You can either link a Kerberos account to an existing GitLab account, or
+set up GitLab to create a new account when a Kerberos user tries to sign in.
+
+### Link a Kerberos account to an existing GitLab account
+
+If you're an administrator, you can link a Kerberos account to an
+existing GitLab account. To do so:
+
+1. Navigate to **Admin Area > Overview > Users > Example User**.
+1. Select the Identities tab.
+1. Select 'Kerberos Spnego' in the 'Provider' dropdown box.
+1. Make sure the **Identifier** corresponds to the Kerberos username.
+1. Select **Save changes**.
+
+If you're not an administrator:
+
+1. Select your avatar in the upper-right corner, and select **Settings**.
+1. Select Account. In the **Social sign-in** section, select
+   **Connect Kerberos Spnego**.
+   If you don't see a **Social sign-in** Kerberos option, follow the
+   requirements in [Enable single sign-on](#enable-single-sign-on).
+
+In either case, you should now be able to sign in to your GitLab account
+with your Kerberos credentials.
+
+### Create accounts on first sign-in
+
+The first time users sign in to GitLab with their Kerberos accounts,
+GitLab creates a matching account.
+Before you continue, review the [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) options in Omnibus and GitLab source. You must also include `kerberos`.
+
+With that information at hand:
+
+1. Include `'kerberos'` with the `allow_single_sign_on` setting.
+1. For now, accept the default `block_auto_created_users` option, true.
+1. When a user tries to sign in with Kerberos credentials, GitLab
+   creates a new account.
+   1. If `block_auto_created_users` is true, the Kerberos user may see
+      a message like:
+
+      ```shell
+      Your account has been blocked. Please contact your GitLab
+      administrator if you think this is an error.
+      ```
+
+      1. As an administrator, you can confirm the new, blocked account.
+         Select **Admin Area > Overview > Users** and review the Blocked tab.
+      1. You can enable the user.
+   1. If `block_auto_created_users` is false, the Kerberos user is
+      authenticated and is signed in to GitLab.
+
+CAUTION: **Warning**
+We recommend that you retain the default for `block_auto_created_users`.
+Kerberos users who create accounts on GitLab without administrator
+knowledge can be a security risk.
+
+## Link Kerberos and LDAP accounts together
 
 If your users sign in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap/index.md)
 enabled, your users will be linked to their LDAP accounts on their first sign-in.

@@ -1,0 +1,5 @@
+---
+title: Fix syntax highlight issue with regular expressions
+merge_request: 47469
+author:
+type: fixed

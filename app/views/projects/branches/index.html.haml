@@ -24,7 +24,7 @@
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.light
             = branches_sort_options_hash[@sort]
-          = icon('chevron-down')
+          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
           %li.dropdown-header
             = s_('Branches|Sort by')

@@ -1,5 +1,10 @@
 import pollUntilComplete from '~/lib/utils/poll_until_complete';
 import axios from '~/lib/utils/axios_utils';
+import {
+  FEEDBACK_TYPE_DISMISSAL,
+  FEEDBACK_TYPE_ISSUE,
+  FEEDBACK_TYPE_MERGE_REQUEST,
+} from '../constants';
 
 export const fetchDiffData = (state, endpoint, category) => {
   const requests = [pollUntilComplete(endpoint)];
@@ -24,21 +29,21 @@ export const enrichVulnerabilityWithFeedback = (vulnerability, feedback = []) =>
   feedback
     .filter(fb => fb.project_fingerprint === vulnerability.project_fingerprint)
     .reduce((vuln, fb) => {
-      if (fb.feedback_type === 'dismissal') {
+      if (fb.feedback_type === FEEDBACK_TYPE_DISMISSAL) {
         return {
           ...vuln,
           isDismissed: true,
           dismissalFeedback: fb,
         };
       }
-      if (fb.feedback_type === 'issue' && fb.issue_iid) {
+      if (fb.feedback_type === FEEDBACK_TYPE_ISSUE && fb.issue_iid) {
         return {
           ...vuln,
           hasIssue: true,
           issue_feedback: fb,
         };
       }
-      if (fb.feedback_type === 'merge_request' && fb.merge_request_iid) {
+      if (fb.feedback_type === FEEDBACK_TYPE_MERGE_REQUEST && fb.merge_request_iid) {
         return {
           ...vuln,
           hasMergeRequest: true,

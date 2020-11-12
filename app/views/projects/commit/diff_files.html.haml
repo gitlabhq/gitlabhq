@@ -1,3 +1,1 @@
-- diff_files = diffs.diff_files
-
-= render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: 'is-commit' }
+= render partial: 'projects/diffs/file', collection: diffs.diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: 'is-commit' }
