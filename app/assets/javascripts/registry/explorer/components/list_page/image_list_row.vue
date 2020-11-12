@@ -72,7 +72,7 @@ export default {
     <template #left-primary>
       <router-link
         class="gl-text-body gl-font-weight-bold"
-        data-testid="detailsLink"
+        data-testid="details-link"
         :to="{ name: 'details', params: { id: item.id } }"
       >
         {{ item.path }}

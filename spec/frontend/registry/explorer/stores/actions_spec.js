@@ -8,6 +8,11 @@ import * as actions from '~/registry/explorer/stores/actions';
 import * as types from '~/registry/explorer/stores/mutation_types';
 import { reposServerResponse, registryServerResponse } from '../mock_data';
 import * as utils from '~/registry/explorer/utils';
+import {
+  FETCH_IMAGES_LIST_ERROR_MESSAGE,
+  FETCH_TAGS_LIST_ERROR_MESSAGE,
+  FETCH_IMAGE_DETAILS_ERROR_MESSAGE,
+} from '~/registry/explorer/constants/index';
 
 jest.mock('~/flash.js');
 jest.mock('~/registry/explorer/utils');
@@ -129,7 +134,7 @@ describe('Actions RegistryExplorer Store', () => {
         ],
         [],
         () => {
-          expect(createFlash).toHaveBeenCalled();
+          expect(createFlash).toHaveBeenCalledWith({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
           done();
         },
       );
@@ -169,7 +174,7 @@ describe('Actions RegistryExplorer Store', () => {
         ],
         [],
         () => {
-          expect(createFlash).toHaveBeenCalled();
+          expect(createFlash).toHaveBeenCalledWith({ message: FETCH_TAGS_LIST_ERROR_MESSAGE });
           done();
         },
       );
@@ -261,7 +266,7 @@ describe('Actions RegistryExplorer Store', () => {
         ],
         [],
         () => {
-          expect(createFlash).toHaveBeenCalled();
+          expect(createFlash).toHaveBeenCalledWith({ message: FETCH_IMAGE_DETAILS_ERROR_MESSAGE });
           done();
         },
       );

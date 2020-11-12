@@ -81,8 +81,7 @@ RSpec.describe 'Group show page' do
         it 'allows creating subgroups' do
           visit path
 
-          expect(page)
-            .to have_css("li[data-text='New subgroup']", visible: false)
+          expect(page).to have_link('New subgroup')
         end
       end
     end
@@ -102,8 +101,7 @@ RSpec.describe 'Group show page' do
             path = group_path(relaxed_group)
             visit path
 
-            expect(page)
-              .to have_css("li[data-text='New subgroup']", visible: false)
+            expect(page).to have_link('New subgroup')
           end
         end
 
@@ -116,9 +114,7 @@ RSpec.describe 'Group show page' do
             path = group_path(restricted_group)
             visit path
 
-            expect(page)
-              .not_to have_selector("li[data-text='New subgroup']",
-                                    visible: false)
+            expect(page).not_to have_link('New subgroup')
           end
         end
       end

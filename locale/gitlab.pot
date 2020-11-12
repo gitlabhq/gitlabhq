@@ -13565,12 +13565,6 @@ msgstr ""
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
 msgstr ""
 
-msgid "GroupsTree|Create a project in this group."
-msgstr ""
-
-msgid "GroupsTree|Create a subgroup in this group."
-msgstr ""
-
 msgid "GroupsTree|Edit group"
 msgstr ""
 

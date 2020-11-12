@@ -89,6 +89,20 @@ RSpec.describe 'Container Registry', :js do
     end
   end
 
+  context 'when an image has the same name as the subgroup' do
+    before do
+      stub_container_registry_tags(tags: %w[latest], with_manifest: true)
+      project.container_repositories <<  create(:container_repository, name: group.name)
+      visit_container_registry
+    end
+
+    it 'details page loads properly' do
+      find('a[data-testid="details-link"]').click
+
+      expect(page).to have_content 'latest'
+    end
+  end
+
   def visit_container_registry
     visit group_container_registries_path(group)
   end

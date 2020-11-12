@@ -19,7 +19,7 @@ describe('Image List Row', () => {
   let wrapper;
   const item = imagesListResponse.data[0];
 
-  const findDetailsLink = () => wrapper.find('[data-testid="detailsLink"]');
+  const findDetailsLink = () => wrapper.find('[data-testid="details-link"]');
   const findTagsCount = () => wrapper.find('[data-testid="tagsCount"]');
   const findDeleteBtn = () => wrapper.find(DeleteButton);
   const findClipboardButton = () => wrapper.find(ClipboardButton);

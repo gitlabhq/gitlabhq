@@ -1,0 +1,6 @@
+---
+title: Add BulkImport::Tracker to store the pagination information of the Group Migration
+  (BulkImport) requests
+merge_request: 47009
+author:
+type: changed

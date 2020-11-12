@@ -8114,7 +8114,7 @@
             },
             {
               "name": "branch",
-              "description": "Name of the branch",
+              "description": "Name of the branch to commit into, it can be a new branch",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -8123,6 +8123,16 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "startBranch",
+              "description": "If on a new branch, name of the original branch",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },

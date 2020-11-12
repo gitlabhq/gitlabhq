@@ -146,12 +146,6 @@ module DesignManagement
       strong_memoize(:most_recent_action) { actions.ordered.last }
     end
 
-    def participants(current_user = nil)
-      return [] unless Feature.enabled?(:design_management_design_notification_participants, project)
-
-      super
-    end
-
     # A reference for a design is the issue reference, indexed by the filename
     # with an optional infix when full.
     #

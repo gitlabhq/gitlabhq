@@ -24,11 +24,14 @@ const mockIntegrations = [
 describe('AlertIntegrationsList', () => {
   let wrapper;
 
-  function mountComponent(propsData = {}) {
+  function mountComponent({ data = {}, props = {} } = {}) {
     wrapper = mount(AlertIntegrationsList, {
+      data() {
+        return { ...data };
+      },
       propsData: {
         integrations: mockIntegrations,
-        ...propsData,
+        ...props,
       },
       stubs: {
         GlIcon: true,
@@ -57,7 +60,7 @@ describe('AlertIntegrationsList', () => {
   });
 
   it('renders an empty state when no integrations provided', () => {
-    mountComponent({ integrations: [] });
+    mountComponent({ props: { integrations: [] } });
     expect(findTableComponent().text()).toContain(i18n.emptyState);
   });
 
@@ -66,7 +69,7 @@ describe('AlertIntegrationsList', () => {
   });
 
   it('renders an highlighted row when a current integration is selected to edit', () => {
-    mountComponent({ currentIntegration: { id: '1' } });
+    mountComponent({ data: { currentIntegration: { id: '1' } } });
     expect(
       findTableComponentRows()
         .at(0)

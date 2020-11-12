@@ -146,7 +146,7 @@ RSpec.describe API::Release::Links do
         specify do
           get api("/projects/#{project.id}/releases/v0.1/assets/links/#{link.id}", maintainer)
 
-          expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.namespace.path}/#{project.name}/-/releases/#{release.tag}/bin/bigfile.exe")
+          expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.namespace.path}/#{project.name}/-/releases/#{release.tag}/downloads/bin/bigfile.exe")
         end
       end
 

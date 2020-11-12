@@ -235,7 +235,7 @@ There are two different ways to add a new project to a group:
 
 - Select a group, and then click **New project**. You can then continue [creating your project](../../gitlab-basics/create-project.md).
 
-  ![New project](img/create_new_project_from_group.png)
+  ![New project](img/create_new_project_from_group_v13_6.png)
 
 - While you are creating a project, select a group namespace
   you've already created from the dropdown menu.

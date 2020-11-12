@@ -4,6 +4,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
+import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
 import createHttpIntegrationMutation from '../graphql/mutations/create_http_integration.mutation.graphql';
 import createPrometheusIntegrationMutation from '../graphql/mutations/create_prometheus_integration.mutation.graphql';
 import updateHttpIntegrationMutation from '../graphql/mutations/update_http_integration.mutation.graphql';
@@ -11,6 +12,7 @@ import updatePrometheusIntegrationMutation from '../graphql/mutations/update_pro
 import destroyHttpIntegrationMutation from '../graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutation.graphql';
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
+import updateCurrentIntergrationMutation from '../graphql/mutations/update_current_intergration.mutation.graphql';
 import IntegrationsList from './alerts_integrations_list.vue';
 import SettingsFormOld from './alerts_settings_form_old.vue';
 import SettingsFormNew from './alerts_settings_form_new.vue';
@@ -75,6 +77,9 @@ export default {
         createFlash({ message: err });
       },
     },
+    currentIntegration: {
+      query: getCurrentIntegrationQuery,
+    },
   },
   data() {
     return {
@@ -87,7 +92,7 @@ export default {
     loading() {
       return this.$apollo.queries.integrations.loading;
     },
-    intergrationsOptionsOld() {
+    integrationsOptionsOld() {
       return [
         {
           name: s__('AlertSettings|HTTP endpoint'),
@@ -208,7 +213,19 @@ export default {
         });
     },
     editIntegration({ id }) {
-      this.currentIntegration = this.integrations.list.find(integration => integration.id === id);
+      const currentIntegration = this.integrations.list.find(integration => integration.id === id);
+      this.$apollo.mutate({
+        mutation: updateCurrentIntergrationMutation,
+        variables: {
+          id: currentIntegration.id,
+          name: currentIntegration.name,
+          active: currentIntegration.active,
+          token: currentIntegration.token,
+          type: currentIntegration.type,
+          url: currentIntegration.url,
+          apiUrl: currentIntegration.apiUrl,
+        },
+      });
     },
     deleteIntegration({ id }) {
       const { projectPath } = this;
@@ -229,7 +246,7 @@ export default {
           if (error) {
             return createFlash({ message: error });
           }
-          this.currentIntegration = null;
+          this.clearCurrentIntegration();
           return createFlash({
             message: this.$options.i18n.integrationRemoved,
             type: FLASH_TYPES.SUCCESS,
@@ -243,7 +260,10 @@ export default {
         });
     },
     clearCurrentIntegration() {
-      this.currentIntegration = null;
+      this.$apollo.mutate({
+        mutation: updateCurrentIntergrationMutation,
+        variables: {},
+      });
     },
     testPayloadFailure() {
       createFlash({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
@@ -255,16 +275,14 @@ export default {
 <template>
   <div>
     <integrations-list
-      :integrations="glFeatures.httpIntegrationsList ? integrations.list : intergrationsOptionsOld"
+      :integrations="glFeatures.httpIntegrationsList ? integrations.list : integrationsOptionsOld"
       :loading="loading"
-      :current-integration="currentIntegration"
       @edit-integration="editIntegration"
       @delete-integration="deleteIntegration"
     />
     <settings-form-new
       v-if="glFeatures.httpIntegrationsList"
       :loading="isUpdating"
-      :current-integration="currentIntegration"
       :can-add-integration="canAddIntegration"
       @create-new-integration="createNewIntegration"
       @update-integration="updateIntegration"

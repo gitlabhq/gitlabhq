@@ -1,8 +1,0 @@
----
-name: ci_lint_creates_pipeline_with_dry_run
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37828
-rollout_issue_url: 
-milestone: '13.3'
-type: development
-group: group::continuous integration
-default_enabled: true

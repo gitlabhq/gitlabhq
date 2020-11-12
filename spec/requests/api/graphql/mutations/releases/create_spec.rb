@@ -121,7 +121,7 @@ RSpec.describe 'Creation of a new release' do
         create_release
 
         release = mutation_response[:release]
-        expected_direct_asset_url = Gitlab::Routing.url_helpers.project_release_url(project, Release.find_by(tag: tag_name)) << asset_link[:directAssetPath]
+        expected_direct_asset_url = Gitlab::Routing.url_helpers.project_release_url(project, Release.find_by(tag: tag_name)) << "/downloads#{asset_link[:directAssetPath]}"
 
         expected_attributes = {
           tagName: tag_name,

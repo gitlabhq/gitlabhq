@@ -147,7 +147,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
               'name' => link.name,
               'url' => link.url,
               'external' => link.external?,
-              'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << link.filepath : link.url
+              'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << "/downloads#{link.filepath}" : link.url
             }
           end
 

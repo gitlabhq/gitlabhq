@@ -2996,7 +2996,7 @@ input CommitCreateInput {
   actions: [CommitAction!]!
 
   """
-  Name of the branch
+  Name of the branch to commit into, it can be a new branch
   """
   branch: String!
 
@@ -3014,6 +3014,11 @@ input CommitCreateInput {
   Project full path the branch is associated with
   """
   projectPath: ID!
+
+  """
+  If on a new branch, name of the original branch
+  """
+  startBranch: String
 }
 
 """

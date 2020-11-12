@@ -49,6 +49,7 @@ cache-repo:
         cd .. && rm -rf $CI_PROJECT_NAME;
         echo "Cloning $CI_REPOSITORY_URL into $CI_PROJECT_NAME.";
         time git clone --progress $CI_REPOSITORY_URL $CI_PROJECT_NAME;
+        cd $CI_PROJECT_NAME;
         echo "Archiving $CI_PROJECT_NAME into /tmp/$FULL_CLONE_TAR_FILENAME.";
         time tar cf /tmp/$FULL_CLONE_TAR_FILENAME .;
         echo "GZipping /tmp/$FULL_CLONE_TAR_FILENAME.";

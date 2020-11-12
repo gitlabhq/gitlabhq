@@ -1,10 +1,13 @@
 import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
+import apolloProvider from './graphql';
 
-Vue.use(VueApollo);
+apolloProvider.clients.defaultClient.cache.writeData({
+  data: {
+    currentIntegration: null,
+  },
+});
 
 export default el => {
   if (!el) {
@@ -31,15 +34,6 @@ export default el => {
     projectPath,
     multiIntegrations,
   } = el.dataset;
-
-  const resolvers = {};
-
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers, {
-      cacheConfig: {},
-      assumeImmutableResults: true,
-    }),
-  });
 
   return new Vue({
     el,

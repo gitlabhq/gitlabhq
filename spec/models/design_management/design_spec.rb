@@ -375,14 +375,6 @@ RSpec.describe DesignManagement::Design do
       end
 
       it { is_expected.to contain_exactly(version_author, note_author, mentioned_user) }
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(design_management_design_notification_participants: false)
-        end
-
-        it { is_expected.to be_empty }
-      end
     end
   end
 

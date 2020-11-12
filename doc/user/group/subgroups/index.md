@@ -99,10 +99,9 @@ creation is disabled by an administrator in their settings.
 
 To create a subgroup:
 
-1. In the group's dashboard expand the **New project** split button, select
-   **New subgroup** and click the **New subgroup** button.
+1. In the group's dashboard click the **New subgroup** button.
 
-   ![Subgroups page](img/create_subgroup_button.png)
+   ![Subgroups page](img/create_subgroup_button_v13_6.png)
 
 1. Create a new group like you would normally do. Notice that the immediate parent group
    namespace is fixed under **Group path**. The visibility level can differ from

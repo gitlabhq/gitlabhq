@@ -56,7 +56,7 @@ export const requestTagsList = ({ commit, dispatch, state: { imageDetails } }, p
       dispatch('receiveTagsListSuccess', { data, headers });
     })
     .catch(() => {
-      createFlash(FETCH_TAGS_LIST_ERROR_MESSAGE);
+      createFlash({ message: FETCH_TAGS_LIST_ERROR_MESSAGE });
     })
     .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
@@ -71,7 +71,7 @@ export const requestImageDetailsAndTagsList = ({ dispatch, commit }, id) => {
       dispatch('requestTagsList');
     })
     .catch(() => {
-      createFlash(FETCH_IMAGE_DETAILS_ERROR_MESSAGE);
+      createFlash({ message: FETCH_IMAGE_DETAILS_ERROR_MESSAGE });
       commit(types.SET_MAIN_LOADING, false);
     });
 };

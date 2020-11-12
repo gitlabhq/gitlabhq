@@ -38,7 +38,7 @@ RSpec.describe 'User views releases', :js do
       context 'when there is a link as an asset' do
         let!(:release_link) { create(:release_link, release: release_v1, url: url ) }
         let(:url) { "#{project.web_url}/-/jobs/1/artifacts/download" }
-        let(:direct_asset_link) { Gitlab::Routing.url_helpers.project_release_url(project, release_v1) << release_link.filepath }
+        let(:direct_asset_link) { Gitlab::Routing.url_helpers.project_release_url(project, release_v1) << "/downloads#{release_link.filepath}" }
 
         it 'sees the link' do
           page.within("##{release_v1.tag} .js-assets-list") do

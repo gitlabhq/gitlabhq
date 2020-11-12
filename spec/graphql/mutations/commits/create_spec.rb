@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe Mutations::Commits::Create do
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
-  let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:context) do
     GraphQL::Query::Context.new(
       query: OpenStruct.new(schema: nil),
@@ -18,9 +19,10 @@ RSpec.describe Mutations::Commits::Create do
   specify { expect(described_class).to require_graphql_authorizations(:push_code) }
 
   describe '#resolve' do
-    subject { mutation.resolve(project_path: project.full_path, branch: branch, message: message, actions: actions) }
+    subject { mutation.resolve(project_path: project.full_path, branch: branch, start_branch: start_branch, message: message, actions: actions) }
 
     let(:branch) { 'master' }
+    let(:start_branch) { nil }
     let(:message) { 'Commit message' }
     let(:actions) do
       [
@@ -139,6 +141,29 @@ RSpec.describe Mutations::Commits::Create do
         it 'returns errors' do
           expect(mutated_commit).to be_nil
           expect(subject[:errors]).to eq(['You can only create or edit files when you are on a branch'])
+        end
+      end
+
+      context 'when branch does not exist and a start branch is provided' do
+        let(:branch) { 'my-branch' }
+        let(:start_branch) { 'master' }
+        let(:actions) do
+          [
+            {
+              action: 'create',
+              file_path: 'ANOTHER_FILE.md',
+              content: 'Bye'
+            }
+          ]
+        end
+
+        it 'returns a new commit' do
+          expect(mutated_commit).to have_attributes(message: message, project: project)
+          expect(subject[:errors]).to be_empty
+
+          expect_to_contain_deltas([
+            a_hash_including(a_mode: '0', b_mode: '100644', new_file: true, new_path: 'ANOTHER_FILE.md')
+          ])
         end
       end
 

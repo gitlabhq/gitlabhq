@@ -152,9 +152,9 @@ describe('AlertsSettingsFormNew', () => {
       createComponent({
         data: {
           selectedIntegration: typeSet.http,
+          currentIntegration: { id: '1', name: 'Test integration pre' },
         },
         props: {
-          currentIntegration: { id: '1', name: 'Test integration pre' },
           loading: false,
         },
       });
@@ -183,9 +183,9 @@ describe('AlertsSettingsFormNew', () => {
       createComponent({
         data: {
           selectedIntegration: typeSet.prometheus,
+          currentIntegration: { id: '1', apiUrl: 'https://test-pre.com' },
         },
         props: {
-          currentIntegration: { id: '1', apiUrl: 'https://test-pre.com' },
           loading: false,
         },
       });
@@ -219,10 +219,10 @@ describe('AlertsSettingsFormNew', () => {
       createComponent({
         data: {
           selectedIntegration: typeSet.http,
+          currentIntegration: { id: '1', name: 'Test' },
           active: true,
         },
         props: {
-          currentIntegration: { id: '1', name: 'Test' },
           loading: false,
         },
       });

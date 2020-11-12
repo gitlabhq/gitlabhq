@@ -44,7 +44,7 @@
     .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
       - if current_user
         .d-inline-flex
-          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs', emails_disabled: emails_disabled
+          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs', dropdown_container_class: 'gl-mr-3', emails_disabled: emails_disabled
 
       .count-buttons.d-inline-flex
         = render 'projects/buttons/star'

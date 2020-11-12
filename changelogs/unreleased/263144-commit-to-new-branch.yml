@@ -1,0 +1,5 @@
+---
+title: Extend GraphQL API to commit to a new branch in a single operation
+merge_request: 47203
+author:
+type: changed

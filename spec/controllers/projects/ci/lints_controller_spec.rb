@@ -123,20 +123,6 @@ RSpec.describe Projects::Ci::LintsController do
 
           subject
         end
-
-        context 'when dry_run feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_lint_creates_pipeline_with_dry_run: false)
-          end
-
-          it_behaves_like 'returns a successful validation'
-
-          it 'runs validations through YamlProcessor' do
-            expect(Gitlab::Ci::YamlProcessor).to receive(:new).and_call_original
-
-            subject
-          end
-        end
       end
     end
 

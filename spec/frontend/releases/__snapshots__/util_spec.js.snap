@@ -18,7 +18,7 @@ Object {
         "count": 8,
         "links": Array [
           Object {
-            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/awesome-app-3",
+            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-3",
             "external": true,
             "id": "gid://gitlab/Releases::Link/13",
             "linkType": "image",
@@ -26,7 +26,7 @@ Object {
             "url": "https://example.com/image",
           },
           Object {
-            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/awesome-app-2",
+            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-2",
             "external": true,
             "id": "gid://gitlab/Releases::Link/12",
             "linkType": "package",
@@ -34,7 +34,7 @@ Object {
             "url": "https://example.com/package",
           },
           Object {
-            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/awesome-app-1",
+            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-1",
             "external": false,
             "id": "gid://gitlab/Releases::Link/11",
             "linkType": "runbook",
@@ -42,7 +42,7 @@ Object {
             "url": "http://localhost/releases-namespace/releases-project/runbook",
           },
           Object {
-            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/linux-amd64",
+            "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/linux-amd64",
             "external": true,
             "id": "gid://gitlab/Releases::Link/10",
             "linkType": "other",
@@ -146,7 +146,7 @@ Object {
       "count": 8,
       "links": Array [
         Object {
-          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/awesome-app-3",
+          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-3",
           "external": true,
           "id": "gid://gitlab/Releases::Link/13",
           "linkType": "image",
@@ -154,7 +154,7 @@ Object {
           "url": "https://example.com/image",
         },
         Object {
-          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/awesome-app-2",
+          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-2",
           "external": true,
           "id": "gid://gitlab/Releases::Link/12",
           "linkType": "package",
@@ -162,7 +162,7 @@ Object {
           "url": "https://example.com/package",
         },
         Object {
-          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/awesome-app-1",
+          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-1",
           "external": false,
           "id": "gid://gitlab/Releases::Link/11",
           "linkType": "runbook",
@@ -170,7 +170,7 @@ Object {
           "url": "http://localhost/releases-namespace/releases-project/runbook",
         },
         Object {
-          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/binaries/linux-amd64",
+          "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/linux-amd64",
           "external": true,
           "id": "gid://gitlab/Releases::Link/10",
           "linkType": "other",

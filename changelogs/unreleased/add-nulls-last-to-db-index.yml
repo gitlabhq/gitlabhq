@@ -1,0 +1,5 @@
+---
+title: Add NULLS LAST to index on merge request metrics
+merge_request: 47300
+author:
+type: performance

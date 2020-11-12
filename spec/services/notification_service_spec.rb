@@ -867,23 +867,6 @@ RSpec.describe NotificationService, :mailer do
           should_not_email(non_member_and_mentioned)
           should_not_email(note.author)
         end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(design_management_design_notification_participants: false)
-          end
-
-          it 'sends a new note notification only to the mentioned member', :aggregate_failures do
-            notification.new_note(note)
-
-            should_email(member_and_mentioned)
-            should_not_email(design.authors.first)
-            should_not_email(member_and_author_of_second_note)
-            should_not_email(member_and_not_mentioned)
-            should_not_email(non_member_and_mentioned)
-            should_not_email(note.author)
-          end
-        end
       end
 
       context 'design management is disabled' do

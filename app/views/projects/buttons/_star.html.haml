@@ -13,7 +13,7 @@
 
 - else
   .count-badge.d-inline-flex.align-item-stretch.gl-mr-3
-    = link_to new_user_session_path, class: 'gl-button btn btn-default btn-xs has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
+    = link_to new_user_session_path, class: 'btn btn-default btn-xs has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
       = sprite_icon('star-o', css_class: 'icon')
       %span= s_('ProjectOverview|Star')
     %span.star-count.count-badge-count.d-flex.align-items-center
