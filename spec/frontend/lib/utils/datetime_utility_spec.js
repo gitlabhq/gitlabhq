@@ -643,16 +643,15 @@ describe('localTimeAgo', () => {
   });
 
   it.each`
-    timeagoArg | title          | dataOriginalTitle
-    ${false}   | ${'some time'} | ${null}
-    ${true}    | ${''}          | ${'Feb 18, 2020 10:22pm GMT+0000'}
-  `('converts $seconds seconds to $approximation', ({ timeagoArg, title, dataOriginalTitle }) => {
+    timeagoArg | title
+    ${false}   | ${'some time'}
+    ${true}    | ${'Feb 18, 2020 10:22pm GMT+0000'}
+  `('converts $seconds seconds to $approximation', ({ timeagoArg, title }) => {
     const element = document.querySelector('time');
     datetimeUtility.localTimeAgo($(element), timeagoArg);
 
     jest.runAllTimers();
 
-    expect(element.getAttribute('data-original-title')).toBe(dataOriginalTitle);
     expect(element.getAttribute('title')).toBe(title);
   });
 });

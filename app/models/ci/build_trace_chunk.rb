@@ -22,20 +22,26 @@ module Ci
 
     FailedToPersistDataError = Class.new(StandardError)
 
-    # Note: The ordering of this enum is related to the precedence of persist store.
+    # Note: The ordering of this hash is related to the precedence of persist store.
     # The bottom item takes the highest precedence, and the top item takes the lowest precedence.
-    enum data_store: {
+    DATA_STORES = {
       redis: 1,
       database: 2,
       fog: 3
-    }
+    }.freeze
+
+    STORE_TYPES = DATA_STORES.keys.map do |store|
+      [store, "Ci::BuildTraceChunks::#{store.capitalize}".constantize]
+    end.to_h.freeze
+
+    enum data_store: DATA_STORES
 
     scope :live, -> { redis }
     scope :persisted, -> { not_redis.order(:chunk_index) }
 
     class << self
       def all_stores
-        @all_stores ||= self.data_stores.keys
+        STORE_TYPES.keys
       end
 
       def persistable_store
@@ -44,12 +50,14 @@ module Ci
       end
 
       def get_store_class(store)
-        @stores ||= {}
+        store = store.to_sym
+
+        raise "Unknown store type: #{store}" unless STORE_TYPES.key?(store)
 
         # Can't memoize this because the feature flag may alter this
-        return fog_store_class.new if store.to_sym == :fog
+        return fog_store_class.new if store == :fog
 
-        @stores[store] ||= "Ci::BuildTraceChunks::#{store.capitalize}".constantize.new
+        STORE_TYPES[store].new
       end
 
       ##

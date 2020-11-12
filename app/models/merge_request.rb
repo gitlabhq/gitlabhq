@@ -56,6 +56,7 @@ class MergeRequest < ApplicationRecord
 
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+  has_one :cleanup_schedule, inverse_of: :merge_request
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request

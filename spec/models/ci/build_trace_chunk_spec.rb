@@ -100,15 +100,15 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     subject { described_class.all_stores }
 
     it 'returns a correctly ordered array' do
-      is_expected.to eq(%w[redis database fog])
+      is_expected.to eq(%i[redis database fog])
     end
 
     it 'returns redis store as the lowest precedence' do
-      expect(subject.first).to eq('redis')
+      expect(subject.first).to eq(:redis)
     end
 
     it 'returns fog store as the highest precedence' do
-      expect(subject.last).to eq('fog')
+      expect(subject.last).to eq(:fog)
     end
   end
 
@@ -160,6 +160,30 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::Fog)
         end
       end
+    end
+  end
+
+  describe '#get_store_class' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:data_store, :expected_store) do
+      :redis | Ci::BuildTraceChunks::Redis
+      :database | Ci::BuildTraceChunks::Database
+      :fog | Ci::BuildTraceChunks::Fog
+    end
+
+    with_them do
+      context "with store" do
+        it 'returns an instance of the right class' do
+          expect(expected_store).to receive(:new).twice.and_call_original
+          expect(described_class.get_store_class(data_store.to_s)).to be_a(expected_store)
+          expect(described_class.get_store_class(data_store.to_sym)).to be_a(expected_store)
+        end
+      end
+    end
+
+    it 'raises an error' do
+      expect { described_class.get_store_class('unknown') }.to raise_error('Unknown store type: unknown')
     end
   end
 

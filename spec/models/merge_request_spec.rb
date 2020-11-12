@@ -30,6 +30,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_many(:draft_notes) }
     it { is_expected.to have_many(:reviews).inverse_of(:merge_request) }
+    it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
 
     context 'for forks' do
       let!(:project) { create(:project) }

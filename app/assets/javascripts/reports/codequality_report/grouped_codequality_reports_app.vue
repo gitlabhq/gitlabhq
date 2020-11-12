@@ -78,6 +78,7 @@ export default {
     :has-issues="hasCodequalityIssues"
     :component="$options.componentNames.CodequalityIssueBody"
     :popover-options="codequalityPopover"
+    :show-report-section-status-icon="false"
     class="js-codequality-widget mr-widget-border-top mr-report"
   />
 </template>

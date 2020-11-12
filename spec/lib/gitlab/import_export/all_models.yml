@@ -179,6 +179,7 @@ merge_requests:
 - user_mentions
 - system_note_metadata
 - note_authors
+- cleanup_schedule
 external_pull_requests:
 - project
 merge_request_diff:
@@ -195,6 +196,8 @@ merge_request_diff_files:
 merge_request_context_commits:
 - merge_request
 - diff_files
+cleanup_schedule:
+- merge_request
 ci_pipelines:
 - project
 - user

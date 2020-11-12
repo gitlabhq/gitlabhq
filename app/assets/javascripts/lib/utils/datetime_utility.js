@@ -206,10 +206,6 @@ export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
     $timeagoEls.each((i, el) => {
       // Recreate with custom template
       el.setAttribute('title', formatDate(el.dateTime));
-      $(el).tooltip({
-        template:
-          '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
-      });
     });
   }
 

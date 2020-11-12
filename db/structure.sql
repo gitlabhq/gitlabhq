@@ -13463,6 +13463,23 @@ CREATE SEQUENCE merge_request_blocks_id_seq
 
 ALTER SEQUENCE merge_request_blocks_id_seq OWNED BY merge_request_blocks.id;
 
+CREATE TABLE merge_request_cleanup_schedules (
+    merge_request_id bigint NOT NULL,
+    scheduled_at timestamp with time zone NOT NULL,
+    completed_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq OWNED BY merge_request_cleanup_schedules.merge_request_id;
+
 CREATE TABLE merge_request_context_commit_diff_files (
     sha bytea NOT NULL,
     relative_order integer NOT NULL,
@@ -17934,6 +17951,8 @@ ALTER TABLE ONLY merge_request_assignees ALTER COLUMN id SET DEFAULT nextval('me
 
 ALTER TABLE ONLY merge_request_blocks ALTER COLUMN id SET DEFAULT nextval('merge_request_blocks_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_cleanup_schedules ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_cleanup_schedules_merge_request_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_context_commits ALTER COLUMN id SET DEFAULT nextval('merge_request_context_commits_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_diff_details ALTER COLUMN merge_request_diff_id SET DEFAULT nextval('merge_request_diff_details_merge_request_diff_id_seq'::regclass);
@@ -19145,6 +19164,9 @@ ALTER TABLE ONLY merge_request_assignees
 
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT merge_request_blocks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_request_cleanup_schedules
+    ADD CONSTRAINT merge_request_cleanup_schedules_pkey PRIMARY KEY (merge_request_id);
 
 ALTER TABLE ONLY merge_request_context_commits
     ADD CONSTRAINT merge_request_context_commits_pkey PRIMARY KEY (id);
@@ -21086,6 +21108,8 @@ CREATE INDEX index_merge_request_assignees_on_user_id ON merge_request_assignees
 
 CREATE INDEX index_merge_request_blocks_on_blocked_merge_request_id ON merge_request_blocks USING btree (blocked_merge_request_id);
 
+CREATE UNIQUE INDEX index_merge_request_cleanup_schedules_on_merge_request_id ON merge_request_cleanup_schedules USING btree (merge_request_id);
+
 CREATE INDEX index_merge_request_diff_commits_on_sha ON merge_request_diff_commits USING btree (sha);
 
 CREATE INDEX index_merge_request_diff_details_on_merge_request_diff_id ON merge_request_diff_details USING btree (merge_request_diff_id);
@@ -21199,6 +21223,8 @@ CREATE INDEX index_milestones_on_title_trigram ON milestones USING gin (title gi
 CREATE INDEX index_mirror_data_on_next_execution_and_retry_count ON project_mirror_data USING btree (next_execution_timestamp, retry_count);
 
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);
+
+CREATE INDEX index_mr_cleanup_schedules_timestamps ON merge_request_cleanup_schedules USING btree (scheduled_at) WHERE (completed_at IS NULL);
 
 CREATE UNIQUE INDEX index_mr_context_commits_on_merge_request_id_and_sha ON merge_request_context_commits USING btree (merge_request_id, sha);
 
@@ -23960,6 +23986,9 @@ ALTER TABLE ONLY project_error_tracking_settings
 
 ALTER TABLE ONLY list_user_preferences
     ADD CONSTRAINT fk_rails_916d72cafd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_cleanup_schedules
+    ADD CONSTRAINT fk_rails_92dd0e705c FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_labels
     ADD CONSTRAINT fk_rails_9374a16edd FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;

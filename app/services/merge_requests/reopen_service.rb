@@ -15,6 +15,7 @@ module MergeRequests
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
         merge_request.update_project_counter_caches
         merge_request.cache_merge_request_closes_issues!(current_user)
+        merge_request.cleanup_schedule&.destroy
       end
 
       merge_request

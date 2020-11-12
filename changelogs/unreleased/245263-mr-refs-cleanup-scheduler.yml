@@ -1,0 +1,5 @@
+---
+title: Schedule clean up of merge request refs efficiently
+merge_request: 46758
+author:
+type: performance

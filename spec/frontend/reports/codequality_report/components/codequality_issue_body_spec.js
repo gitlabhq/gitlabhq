@@ -1,9 +1,14 @@
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import component from '~/reports/codequality_report/components/codequality_issue_body.vue';
 import { STATUS_FAILED, STATUS_NEUTRAL, STATUS_SUCCESS } from '~/reports/constants';
 
 describe('code quality issue body issue body', () => {
   let wrapper;
+
+  const findSeverityIcon = () => wrapper.findByTestId('codequality-severity-icon');
+  const findGlIcon = () => wrapper.find(GlIcon);
 
   const codequalityIssue = {
     name:
@@ -14,13 +19,15 @@ describe('code quality issue body issue body', () => {
     urlPath: '/Gemfile.lock#L22',
   };
 
-  const mountWithStatus = initialStatus => {
-    wrapper = shallowMount(component, {
-      propsData: {
-        issue: codequalityIssue,
-        status: initialStatus,
-      },
-    });
+  const createComponent = (initialStatus, issue = codequalityIssue) => {
+    wrapper = extendedWrapper(
+      shallowMount(component, {
+        propsData: {
+          issue,
+          status: initialStatus,
+        },
+      }),
+    );
   };
 
   afterEach(() => {
@@ -28,17 +35,43 @@ describe('code quality issue body issue body', () => {
     wrapper = null;
   });
 
+  describe('severity rating', () => {
+    it.each`
+      severity      | iconClass               | iconName
+      ${'info'}     | ${'text-primary-400'}   | ${'severity-info'}
+      ${'minor'}    | ${'text-warning-200'}   | ${'severity-low'}
+      ${'major'}    | ${'text-warning-400'}   | ${'severity-medium'}
+      ${'critical'} | ${'text-danger-600'}    | ${'severity-high'}
+      ${'blocker'}  | ${'text-danger-800'}    | ${'severity-critical'}
+      ${'unknown'}  | ${'text-secondary-400'} | ${'severity-unknown'}
+      ${'invalid'}  | ${'text-secondary-400'} | ${'severity-unknown'}
+    `(
+      'renders correct icon for "$severity" severity rating',
+      ({ severity, iconClass, iconName }) => {
+        createComponent(STATUS_FAILED, {
+          ...codequalityIssue,
+          severity,
+        });
+        const icon = findGlIcon();
+
+        expect(findSeverityIcon().classes()).toContain(iconClass);
+        expect(icon.exists()).toBe(true);
+        expect(icon.props('name')).toBe(iconName);
+      },
+    );
+  });
+
   describe('with success', () => {
     it('renders fixed label', () => {
-      mountWithStatus(STATUS_SUCCESS);
+      createComponent(STATUS_SUCCESS);
 
       expect(wrapper.text()).toContain('Fixed');
     });
   });
 
   describe('without success', () => {
-    it('renders fixed label', () => {
-      mountWithStatus(STATUS_FAILED);
+    it('does not render fixed label', () => {
+      createComponent(STATUS_FAILED);
 
       expect(wrapper.text()).not.toContain('Fixed');
     });
@@ -46,7 +79,7 @@ describe('code quality issue body issue body', () => {
 
   describe('name', () => {
     it('renders name', () => {
-      mountWithStatus(STATUS_NEUTRAL);
+      createComponent(STATUS_NEUTRAL);
 
       expect(wrapper.text()).toContain(codequalityIssue.name);
     });
@@ -54,7 +87,7 @@ describe('code quality issue body issue body', () => {
 
   describe('path', () => {
     it('renders the report-link path using the correct code quality issue', () => {
-      mountWithStatus(STATUS_NEUTRAL);
+      createComponent(STATUS_NEUTRAL);
 
       expect(wrapper.find('report-link-stub').props('issue')).toBe(codequalityIssue);
     });

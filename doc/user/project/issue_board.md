@@ -307,6 +307,30 @@ As in other list types, click the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v13_6.png)
 
+### Group issues in swimlanes **(PREMIUM)**
+
+> Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+
+With swimlanes you can visualize issues grouped by epic.
+Your issue board keeps all the other features, but with a different visual organization of issues.
+This feature is available both at the project and group level.
+
+To group issues by epic in an issue board:
+
+1. Select the **Group by** dropdown button.
+1. Select **Epic**.
+
+![Epics Swimlanes](img/epics_swimlanes_v13.6.png)
+
+You can also [drag issues](#drag-issues-between-lists) to change their position and epic assignment:
+
+- To reorder an issue, drag it to the new position within a list.
+- To assign an issue to another epic, drag it to the epic's horizontal lane.
+- To unassign an issue from an epic, drag it to the **Issues with no epic assigned** lane.
+- To move an issue to another epic _and_ another list, at the same time, drag the issue diagonally.
+
+![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
+
 ## Work In Progress limits **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11403) in GitLab 12.7

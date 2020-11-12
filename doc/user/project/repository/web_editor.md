@@ -29,6 +29,11 @@ When you are satisfied with your new file, click **Commit Changes** at the botto
 
 ![Create file editor](img/web_editor_new_file_editor.png)
 
+### Shortcuts
+
+You can use handy shortcuts when editing a file through the Web Editor, which are the same as
+the WEB IDE's. For details, see the documentation for [Command Palette](../web_ide/index.md#command-palette).
+
 ### Template dropdowns
 
 When starting a new project, there are some common files that the new project

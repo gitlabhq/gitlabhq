@@ -3,14 +3,20 @@
  * Renders Code quality body text
  * Fixed: [name] in [link]:[line]
  */
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import ReportLink from '~/reports/components/report_link.vue';
 import { STATUS_SUCCESS } from '~/reports/constants';
+import { s__ } from '~/locale';
+import { SEVERITY_CLASSES, SEVERITY_ICONS } from '../constants';
 
 export default {
   name: 'CodequalityIssueBody',
-
   components: {
+    GlIcon,
     ReportLink,
+  },
+  directives: {
+    tooltip: GlTooltipDirective,
   },
   props: {
     status: {
@@ -23,20 +29,44 @@ export default {
     },
   },
   computed: {
+    issueName() {
+      return `${this.severityLabel} - ${this.issue.name}`;
+    },
     isStatusSuccess() {
       return this.status === STATUS_SUCCESS;
     },
+    severityClass() {
+      return SEVERITY_CLASSES[this.issue.severity] || SEVERITY_CLASSES.unknown;
+    },
+    severityIcon() {
+      return SEVERITY_ICONS[this.issue.severity] || SEVERITY_ICONS.unknown;
+    },
+    severityLabel() {
+      return this.$options.severityText[this.issue.severity] || this.$options.severityText.unknown;
+    },
+  },
+  severityText: {
+    info: s__('severity|Info'),
+    minor: s__('severity|Minor'),
+    major: s__('severity|Major'),
+    critical: s__('severity|Critical'),
+    blocker: s__('severity|Blocker'),
+    unknown: s__('severity|Unknown'),
   },
 };
 </script>
 <template>
-  <div class="report-block-list-issue-description gl-mt-2 gl-mb-2">
-    <div class="report-block-list-issue-description-text">
-      <template v-if="isStatusSuccess">{{ s__('ciReport|Fixed:') }}</template>
+  <div class="gl-display-flex gl-mt-2 gl-mb-2 gl-w-full">
+    <span :class="severityClass" class="gl-mr-5" data-testid="codequality-severity-icon">
+      <gl-icon v-tooltip="severityLabel" :name="severityIcon" :size="12" />
+    </span>
+    <div class="gl-flex-fill-1">
+      <div>
+        <strong v-if="isStatusSuccess">{{ s__('ciReport|Fixed:') }}</strong>
+        {{ issueName }}
+      </div>
 
-      {{ issue.name }}
+      <report-link v-if="issue.path" :issue="issue" />
     </div>
-
-    <report-link v-if="issue.path" :issue="issue" />
   </div>
 </template>

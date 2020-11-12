@@ -32648,6 +32648,9 @@ msgstr ""
 msgid "security Reports|There was an error creating the merge request"
 msgstr ""
 
+msgid "severity|Blocker"
+msgstr ""
+
 msgid "severity|Critical"
 msgstr ""
 
@@ -32660,7 +32663,13 @@ msgstr ""
 msgid "severity|Low"
 msgstr ""
 
+msgid "severity|Major"
+msgstr ""
+
 msgid "severity|Medium"
+msgstr ""
+
+msgid "severity|Minor"
 msgstr ""
 
 msgid "severity|None"

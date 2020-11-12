@@ -23,6 +23,7 @@ RSpec.describe MergeRequests::ReopenService do
 
       before do
         allow(service).to receive(:execute_hooks)
+        merge_request.create_cleanup_schedule(scheduled_at: Time.current)
 
         perform_enqueued_jobs do
           service.execute(merge_request)
@@ -41,6 +42,10 @@ RSpec.describe MergeRequests::ReopenService do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)
+      end
+
+      it 'destroys cleanup schedule record' do
+        expect(merge_request.reload.cleanup_schedule).to be_nil
       end
 
       context 'note creation' do
