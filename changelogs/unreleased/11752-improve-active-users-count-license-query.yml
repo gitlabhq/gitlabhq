@@ -1,0 +1,5 @@
+---
+title: Resolve admin/license timeout on large instances
+merge_request: 46336
+author:
+type: performance

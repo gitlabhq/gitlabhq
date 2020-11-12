@@ -42,5 +42,40 @@ RSpec.describe Gitlab::Analytics::InstanceStatistics::WorkersArgumentBuilder do
         ])
       end
     end
+
+    context 'when custom min and max queries are present' do
+      let(:min_id) { User.second.id }
+      let(:max_id) { User.maximum(:id) }
+      let(:users_measurement_identifier) { ::Analytics::InstanceStatistics::Measurement.identifiers.fetch(:users) }
+
+      before do
+        create_list(:user, 2)
+
+        min_max_queries = {
+          ::Analytics::InstanceStatistics::Measurement.identifiers[:users] => {
+            minimum_query: -> { min_id },
+            maximum_query: -> { max_id }
+          }
+        }
+
+        allow(::Analytics::InstanceStatistics::Measurement).to receive(:identifier_min_max_queries) { min_max_queries }
+      end
+
+      subject do
+        described_class.new(measurement_identifiers: [users_measurement_identifier], recorded_at: recorded_at)
+          .execute
+      end
+
+      it 'uses custom min/max for ids' do
+        expect(subject).to eq([
+                                [
+                                  users_measurement_identifier,
+                                  min_id,
+                                  max_id,
+                                  recorded_at
+                                ]
+                              ])
+      end
+    end
   end
 end

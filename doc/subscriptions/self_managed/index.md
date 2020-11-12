@@ -157,7 +157,7 @@ We recommend following these steps during renewal:
    | Field | Description |
    |:------|:------------|
    | Users in License | The number of users you've paid for in the current license loaded on the system. This does not include the amount you've paid for `Users over license` during renewal. |
-   | Active users | The number of current active users on your system. |
+   | Active users | The daily count of active users on your system. |
    | Maximum users | The highest number of active users on your system during the term of the loaded license. If this number exceeds your users in license count at any point, you incur users over license. |
    | Users over license | The number of users that exceed the `Users in License` for the current license term. Charges for this number of users will be incurred at the next renewal. |
 

@@ -84,18 +84,8 @@ module ProjectsHelper
   end
 
   def project_title(project)
-    namespace_link =
-      if project.group
-        group_title(project.group, nil, nil)
-      else
-        owner = project.namespace.owner
-        link_to(simple_sanitize(owner.name), user_path(owner))
-      end
-
-    project_link = link_to project_path(project) do
-      icon = project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15) if project.avatar_url && !Rails.env.test?
-      [icon, content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
-    end
+    namespace_link = build_namespace_breadcrumb_link(project)
+    project_link = build_project_breadcrumb_link(project)
 
     namespace_link = breadcrumb_list_item(namespace_link) unless project.group
     project_link = breadcrumb_list_item project_link
@@ -786,6 +776,30 @@ module ProjectsHelper
 
   def project_access_token_available?(project)
     can?(current_user, :admin_resource_access_tokens, project)
+  end
+
+  def build_project_breadcrumb_link(project)
+    project_name = simple_sanitize(project.name)
+
+    push_to_schema_breadcrumb(project_name, project_path(project))
+
+    link_to project_path(project) do
+      icon = project_icon(project, alt: project_name, class: 'avatar-tile', width: 15, height: 15) if project.avatar_url && !Rails.env.test?
+      [icon, content_tag("span", project_name, class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
+    end
+  end
+
+  def build_namespace_breadcrumb_link(project)
+    if project.group
+      group_title(project.group, nil, nil)
+    else
+      owner = project.namespace.owner
+      name = simple_sanitize(owner.name)
+      url = user_path(owner)
+
+      push_to_schema_breadcrumb(name, url)
+      link_to(name, url)
+    end
   end
 end
 

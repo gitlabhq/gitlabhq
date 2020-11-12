@@ -14,7 +14,7 @@ RSpec.describe Analytics::InstanceStatistics::Measurement, type: :model do
 
   describe 'identifiers enum' do
     it 'maps to the correct values' do
-      expect(described_class.identifiers).to eq({
+      identifiers = {
         projects: 1,
         users: 2,
         issues: 3,
@@ -24,8 +24,11 @@ RSpec.describe Analytics::InstanceStatistics::Measurement, type: :model do
         pipelines_succeeded: 7,
         pipelines_failed: 8,
         pipelines_canceled: 9,
-        pipelines_skipped: 10
-      }.with_indifferent_access)
+        pipelines_skipped: 10,
+        billable_users: 11
+      }
+
+      expect(described_class.identifiers).to eq(identifiers.with_indifferent_access)
     end
   end
 
@@ -75,11 +78,41 @@ RSpec.describe Analytics::InstanceStatistics::Measurement, type: :model do
     end
   end
 
-  describe '#measurement_identifier_values' do
-    let(:expected_count) { Analytics::InstanceStatistics::Measurement.identifiers.size }
+  describe '.identifier_query_mapping' do
+    subject { described_class.identifier_query_mapping }
+
+    it { is_expected.to be_a Hash }
+  end
+
+  describe '.identifier_min_max_queries' do
+    subject { described_class.identifier_min_max_queries }
+
+    it { is_expected.to be_a Hash }
+  end
+
+  describe '.measurement_identifier_values' do
+    let(:expected_count) { described_class.identifiers.size }
 
     subject { described_class.measurement_identifier_values.count }
 
     it { is_expected.to eq(expected_count) }
+  end
+
+  describe '.find_latest_or_fallback' do
+    subject(:count) { described_class.find_latest_or_fallback(:pipelines_skipped).count }
+
+    context 'with instance statistics' do
+      let!(:measurement) { create(:instance_statistics_measurement, :pipelines_skipped_count) }
+
+      it 'returns the latest stored measurement' do
+        expect(count).to eq measurement.count
+      end
+    end
+
+    context 'without instance statistics' do
+      it 'returns the realtime query of the measurement' do
+        expect(count).to eq 0
+      end
+    end
   end
 end
