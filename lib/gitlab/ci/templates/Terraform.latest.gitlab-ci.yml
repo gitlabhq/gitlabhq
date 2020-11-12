@@ -6,6 +6,7 @@ stages:
   - validate
   - build
   - deploy
+  - cleanup
 
 init:
   extends: .init

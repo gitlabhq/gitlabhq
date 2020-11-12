@@ -7,7 +7,7 @@ module Admin
     def propagate
       if integration.instance?
         update_inherited_integrations
-        create_integration_for_groups_without_integration if Feature.enabled?(:group_level_integrations)
+        create_integration_for_groups_without_integration if Feature.enabled?(:group_level_integrations, default_enabled: true)
         create_integration_for_projects_without_integration
       else
         update_inherited_descendant_integrations

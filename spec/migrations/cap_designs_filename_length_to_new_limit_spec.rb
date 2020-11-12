@@ -32,17 +32,19 @@ RSpec.describe CapDesignsFilenameLengthToNewLimit, :migration, schema: 202005281
   end
 
   it 'correctly sets filenames that are above the limit' do
-    [
+    designs = [
       filename_below_limit,
       filename_at_limit,
       filename_above_limit
-    ].each(&method(:create_design))
+    ].map(&method(:create_design))
 
     migrate!
 
-    expect(designs.find(1).filename).to eq(filename_below_limit)
-    expect(designs.find(2).filename).to eq(filename_at_limit)
-    expect(designs.find(3).filename).to eq([described_class::MODIFIED_NAME, 3, described_class::MODIFIED_EXTENSION].join)
+    designs.each(&:reload)
+
+    expect(designs[0].filename).to eq(filename_below_limit)
+    expect(designs[1].filename).to eq(filename_at_limit)
+    expect(designs[2].filename).to eq([described_class::MODIFIED_NAME, designs[2].id, described_class::MODIFIED_EXTENSION].join)
   end
 
   it 'runs after filename limit has been set' do

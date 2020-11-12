@@ -52,3 +52,9 @@ cache:
   when: manual
   only:
     - master
+
+.destroy: &destroy
+  stage: cleanup
+  script:
+    - gitlab-terraform destroy
+  when: manual

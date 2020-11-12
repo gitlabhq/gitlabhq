@@ -82,18 +82,20 @@ only the graph for vulnerabilities with **high** severity.
 
 The vulnerabilities that exist in your project's
 [default branch](../../project/repository/branches/index.md#default-branch) are accessed by navigating to
-**Security & Compliance > Vulnerability Report**. By default, the Security Dashboard is filtered to
+**Security & Compliance > Vulnerability Report**. By default, the Vulnerability Report is filtered to
 display all detected and confirmed vulnerabilities.
 
-The Security Dashboard first displays the time at which the last pipeline completed on the project's
-default branch. There's also a link to view this in more detail.
+The Vulnerability Report first displays the time at which the last pipeline completed on the project's
+default branch. There's also a link to view this in more detail. In the case of any pipeline failures,
+you will see the number of failures clearly indicated. The failure notification takes you directly to
+the **Failed jobs** tab of the pipeline page.
 
-The Security Dashboard next displays the total number of vulnerabilities by severity (for example,
+The Vulnerability Report next displays the total number of vulnerabilities by severity (for example,
 Critical, High, Medium, Low, Info, Unknown). Below this, a table shows each vulnerability's status, severity,
 and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
 page to view more information about that vulnerability.
 
-![Project Security Dashboard](img/project_security_dashboard_v13_5.png)
+![Project Vulnerability Report](img/project_security_dashboard_v13_5.png)
 
 You can filter the vulnerabilities by one or more of the following:
 
@@ -108,7 +110,7 @@ You can also dismiss vulnerabilities in the table:
 1. Select the checkbox for each vulnerability you want to dismiss.
 1. In the menu that appears, select the reason for dismissal and click **Dismiss Selected**.
 
-![Project Security Dashboard](img/project_security_dashboard_dismissal_v13_4.png)
+![Project Vulnerability Report](img/project_security_dashboard_dismissal_v13_4.png)
 
 ## Group Security Dashboard
 
@@ -143,7 +145,7 @@ Next to the timeline chart is a list of projects, grouped and sorted by the seve
 Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
 vulnerabilities are excluded.
 
-Navigate to the group's [vulnerability report](#vulnerability-report) to view the vulnerabilities found.
+Navigate to the group's [vulnerability report](#vulnerability-report-1) to view the vulnerabilities found.
 
 ## Instance Security Center
 
