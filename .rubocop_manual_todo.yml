@@ -45,6 +45,35 @@ Graphql/IDType:
     - 'app/graphql/resolvers/snippets_resolver.rb'
     - 'app/graphql/resolvers/user_merge_requests_resolver.rb'
 
+Graphql/ResolverType:
+  Exclude:
+    - 'app/graphql/resolvers/assigned_merge_requests_resolver.rb'
+    - 'app/graphql/resolvers/authored_merge_requests_resolver.rb'
+    - 'app/graphql/resolvers/base_resolver.rb'
+    - 'app/graphql/resolvers/ci/pipeline_stages_resolver.rb'
+    - 'app/graphql/resolvers/commit_pipelines_resolver.rb'
+    - 'app/graphql/resolvers/error_tracking/sentry_error_stack_trace_resolver.rb'
+    - 'app/graphql/resolvers/group_issues_resolver.rb'
+    - 'app/graphql/resolvers/group_merge_requests_resolver.rb'
+    - 'app/graphql/resolvers/group_milestones_resolver.rb'
+    - 'app/graphql/resolvers/members_resolver.rb'
+    - 'app/graphql/resolvers/merge_request_pipelines_resolver.rb'
+    - 'app/graphql/resolvers/merge_request_resolver.rb'
+    - 'app/graphql/resolvers/merge_requests_resolver.rb'
+    - 'app/graphql/resolvers/project_merge_requests_resolver.rb'
+    - 'app/graphql/resolvers/project_milestones_resolver.rb'
+    - 'app/graphql/resolvers/project_pipelines_resolver.rb'
+    - 'app/graphql/resolvers/projects/snippets_resolver.rb'
+    - 'app/graphql/resolvers/snippets_resolver.rb'
+    - 'app/graphql/resolvers/user_merge_requests_resolver.rb'
+    - 'app/graphql/resolvers/users/group_count_resolver.rb'
+    - 'app/graphql/resolvers/users/snippets_resolver.rb'
+    - 'ee/app/graphql/resolvers/ci/jobs_resolver.rb'
+    - 'ee/app/graphql/resolvers/geo/merge_request_diff_registries_resolver.rb'
+    - 'ee/app/graphql/resolvers/geo/package_file_registries_resolver.rb'
+    - 'ee/app/graphql/resolvers/geo/terraform_state_version_registries_resolver.rb'
+    - 'ee/app/graphql/resolvers/vulnerabilities_base_resolver.rb'
+
 Rails/SaveBang:
   Exclude:
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'

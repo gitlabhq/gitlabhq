@@ -7,10 +7,10 @@ module Clusters
 
       MissingRoleError = Class.new(StandardError)
 
-      def initialize(provision_role, provider: nil, region: nil)
+      def initialize(provision_role, provider: nil)
         @provision_role = provision_role
         @provider = provider
-        @region = provider&.region || region
+        @region = provider&.region || provision_role&.region || Clusters::Providers::Aws::DEFAULT_REGION
       end
 
       def execute

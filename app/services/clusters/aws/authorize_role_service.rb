@@ -41,11 +41,11 @@ module Clusters
       end
 
       def update_role_arn!
-        role.update!(role_arn: role_arn)
+        role.update!(role_arn: role_arn, region: region)
       end
 
       def credentials
-        Clusters::Aws::FetchCredentialsService.new(role, region: region).execute
+        Clusters::Aws::FetchCredentialsService.new(role).execute
       end
     end
   end

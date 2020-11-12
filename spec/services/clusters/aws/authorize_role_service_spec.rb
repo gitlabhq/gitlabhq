@@ -25,7 +25,7 @@ RSpec.describe Clusters::Aws::AuthorizeRoleService do
 
   before do
     allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
-      .with(instance_of(Aws::Role), region: region).and_return(credentials_service)
+      .with(instance_of(Aws::Role)).and_return(credentials_service)
   end
 
   context 'role exists' do

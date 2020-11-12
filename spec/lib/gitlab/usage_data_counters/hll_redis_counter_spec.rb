@@ -21,8 +21,26 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   describe '.categories' do
     it 'gets all unique category names' do
       expect(described_class.categories).to contain_exactly(
-        'analytics', 'compliance', 'ide_edit', 'search', 'source_code',
-        'incident_management', 'issues_edit', 'testing', 'ci_secrets_management'
+        'compliance',
+        'analytics',
+        'ide_edit',
+        'search',
+        'source_code',
+        'incident_management',
+        'testing',
+        'issues_edit',
+        'ci_secrets_management',
+        'maven_packages',
+        'npm_packages',
+        'conan_packages',
+        'nuget_packages',
+        'pypi_packages',
+        'composer_packages',
+        'generic_packages',
+        'golang_packages',
+        'debian_packages',
+        'container_packages',
+        'tag_packages'
       )
     end
   end

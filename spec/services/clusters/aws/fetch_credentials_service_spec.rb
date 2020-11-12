@@ -19,7 +19,7 @@ RSpec.describe Clusters::Aws::FetchCredentialsService do
     subject { described_class.new(provision_role, provider: provider).execute }
 
     context 'provision role is configured' do
-      let(:provision_role) { create(:aws_role, user: user) }
+      let(:provision_role) { create(:aws_role, user: user, region: 'custom-region') }
 
       before do
         stub_application_setting(eks_access_key_id: gitlab_access_key_id)
@@ -53,11 +53,11 @@ RSpec.describe Clusters::Aws::FetchCredentialsService do
 
       context 'provider is not specifed' do
         let(:provider) { nil }
-        let(:region) { 'custom-region' }
+        let(:region) { provision_role.region }
         let(:session_name) { "gitlab-eks-autofill-user-#{user.id}" }
         let(:session_policy) { 'policy-document' }
 
-        subject { described_class.new(provision_role, provider: provider, region: region).execute }
+        subject { described_class.new(provision_role, provider: provider).execute }
 
         before do
           allow(File).to receive(:read)
@@ -66,6 +66,13 @@ RSpec.describe Clusters::Aws::FetchCredentialsService do
         end
 
         it { is_expected.to eq assumed_role_credentials }
+
+        context 'region is not specifed' do
+          let(:region) { Clusters::Providers::Aws::DEFAULT_REGION }
+          let(:provision_role) { create(:aws_role, user: user, region: nil) }
+
+          it { is_expected.to eq assumed_role_credentials }
+        end
       end
     end
 
