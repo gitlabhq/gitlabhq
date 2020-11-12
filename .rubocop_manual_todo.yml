@@ -30,9 +30,6 @@ Graphql/IDType:
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
     - 'app/graphql/mutations/issues/update.rb'
     - 'app/graphql/mutations/metrics/dashboard/annotations/delete.rb'
-    - 'app/graphql/mutations/snippets/destroy.rb'
-    - 'app/graphql/mutations/snippets/mark_as_spam.rb'
-    - 'app/graphql/mutations/snippets/update.rb'
     - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'
     - 'app/graphql/resolvers/design_management/design_resolver.rb'
     - 'app/graphql/resolvers/design_management/designs_resolver.rb'
@@ -42,7 +39,6 @@ Graphql/IDType:
     - 'app/graphql/resolvers/design_management/versions_resolver.rb'
     - 'app/graphql/resolvers/error_tracking/sentry_detailed_error_resolver.rb'
     - 'app/graphql/resolvers/error_tracking/sentry_error_stack_trace_resolver.rb'
-    - 'app/graphql/resolvers/snippets_resolver.rb'
     - 'app/graphql/resolvers/user_merge_requests_resolver.rb'
 
 Graphql/ResolverType:

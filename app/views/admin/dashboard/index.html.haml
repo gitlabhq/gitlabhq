@@ -140,6 +140,10 @@
             %span.float-right
               = Gitlab::Database.version
           %p
+            = _('Redis')
+            %span.float-right
+              = @redis_versions&.join(", ")
+          %p
             = link_to _("Gitaly Servers"), admin_gitaly_servers_path
   .row
     .col-md-4

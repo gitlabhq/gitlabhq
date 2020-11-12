@@ -8,6 +8,9 @@ module Gitlab
       PUSH_ACTION = :project_action
       MERGE_REQUEST_ACTION = :merge_request_action
 
+      GIT_WRITE_ACTIONS = [WIKI_ACTION, DESIGN_ACTION, PUSH_ACTION].freeze
+      GIT_WRITE_ACTION = :git_write_action
+
       ACTION_TRANSFORMATIONS = HashWithIndifferentAccess.new({
         wiki: {
           created: WIKI_ACTION,
@@ -41,6 +44,8 @@ module Gitlab
           return unless Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(transformed_action.to_s)
 
           Gitlab::UsageDataCounters::HLLRedisCounter.track_event(author_id, transformed_action.to_s, time)
+
+          track_git_write_action(author_id, transformed_action, time)
         end
 
         def count_unique_events(event_action:, date_from:, date_to:)
@@ -63,6 +68,12 @@ module Gitlab
 
         def valid_action?(action)
           Event.actions.key?(action)
+        end
+
+        def track_git_write_action(author_id, transformed_action, time)
+          return unless GIT_WRITE_ACTIONS.include?(transformed_action)
+
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(author_id, GIT_WRITE_ACTION, time)
         end
       end
     end

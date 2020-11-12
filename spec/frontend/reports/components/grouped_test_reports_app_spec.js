@@ -7,6 +7,7 @@ import { getStoreConfig } from '~/reports/store';
 import { failedReport } from '../mock_data/mock_data';
 import successTestReports from '../mock_data/no_failures_report.json';
 import newFailedTestReports from '../mock_data/new_failures_report.json';
+import recentFailuresTestReports from '../mock_data/recent_failures_report.json';
 import newErrorsTestReports from '../mock_data/new_errors_report.json';
 import mixedResultsTestReports from '../mock_data/new_and_fixed_failures_report.json';
 import resolvedFailures from '../mock_data/resolved_failures.json';
@@ -21,7 +22,7 @@ describe('Grouped test reports app', () => {
   let wrapper;
   let mockStore;
 
-  const mountComponent = ({ props = { pipelinePath } } = {}) => {
+  const mountComponent = ({ props = { pipelinePath }, testFailureHistory = false } = {}) => {
     wrapper = mount(Component, {
       store: mockStore,
       localVue,
@@ -29,6 +30,11 @@ describe('Grouped test reports app', () => {
         endpoint,
         pipelinePath,
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          testFailureHistory,
+        },
       },
     });
   };
@@ -231,6 +237,77 @@ describe('Grouped test reports app', () => {
           .at(2)
           .text(),
       ).toContain(resolvedFailures.suites[0].resolved_errors[0].name);
+    });
+  });
+
+  describe('recent failures counts', () => {
+    describe('with recent failures counts', () => {
+      beforeEach(() => {
+        setReports(recentFailuresTestReports);
+      });
+
+      describe('with feature flag enabled', () => {
+        beforeEach(() => {
+          mountComponent({ testFailureHistory: true });
+        });
+
+        it('renders the recently failed tests summary', () => {
+          expect(findHeader().text()).toContain(
+            '2 out of 3 failed tests have failed more than once in the last 14 days',
+          );
+        });
+
+        it('renders the recently failed count on the test suite', () => {
+          expect(findSummaryDescription().text()).toContain(
+            '1 out of 2 failed tests has failed more than once in the last 14 days',
+          );
+        });
+
+        it('renders the recent failures count on the test case', () => {
+          expect(findIssueDescription().text()).toContain('Failed 8 times in the last 14 days');
+        });
+      });
+
+      describe('with feature flag disabled', () => {
+        beforeEach(() => {
+          mountComponent({ testFailureHistory: false });
+        });
+
+        it('does not render the recently failed tests summary', () => {
+          expect(findHeader().text()).not.toContain('failed more than once in the last 14 days');
+        });
+
+        it('does not render the recently failed count on the test suite', () => {
+          expect(findSummaryDescription().text()).not.toContain(
+            'failed more than once in the last 14 days',
+          );
+        });
+
+        it('renders the recent failures count on the test case', () => {
+          expect(findIssueDescription().text()).not.toContain('in the last 14 days');
+        });
+      });
+    });
+
+    describe('without recent failures counts', () => {
+      beforeEach(() => {
+        setReports(mixedResultsTestReports);
+        mountComponent();
+      });
+
+      it('does not render the recently failed tests summary', () => {
+        expect(findHeader().text()).not.toContain('failed more than once in the last 14 days');
+      });
+
+      it('does not render the recently failed count on the test suite', () => {
+        expect(findSummaryDescription().text()).not.toContain(
+          'failed more than once in the last 14 days',
+        );
+      });
+
+      it('does not render the recent failures count on the test case', () => {
+        expect(findIssueDescription().text()).not.toContain('in the last 14 days');
+      });
     });
   });
 

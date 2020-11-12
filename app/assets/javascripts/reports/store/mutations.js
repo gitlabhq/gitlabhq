@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import { countRecentlyFailedTests } from './utils';
 
 export default {
   [types.SET_ENDPOINT](state, endpoint) {
@@ -16,9 +17,15 @@ export default {
     state.summary.resolved = response.summary.resolved;
     state.summary.failed = response.summary.failed;
     state.summary.errored = response.summary.errored;
+    state.summary.recentlyFailed = countRecentlyFailedTests(response.suites);
 
     state.status = response.status;
     state.reports = response.suites;
+
+    state.reports.forEach((report, i) => {
+      if (!state.reports[i].summary) return;
+      state.reports[i].summary.recentlyFailed = countRecentlyFailedTests(report);
+    });
   },
   [types.RECEIVE_REPORTS_ERROR](state) {
     state.isLoading = false;
@@ -30,6 +37,7 @@ export default {
       resolved: 0,
       failed: 0,
       errored: 0,
+      recentlyFailed: 0,
     };
     state.status = null;
   },

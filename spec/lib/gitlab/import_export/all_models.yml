@@ -243,6 +243,7 @@ ci_pipelines:
 - vulnerability_findings
 - pipeline_config
 - security_scans
+- security_findings
 - daily_build_group_report_results
 - latest_builds
 - daily_report_results

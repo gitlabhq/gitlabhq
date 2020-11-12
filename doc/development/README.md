@@ -173,7 +173,7 @@ See [database guidelines](database/index.md).
 ## Documentation guides
 
 - [Writing documentation](documentation/index.md)
-- [Documentation style guide](documentation/styleguide.md)
+- [Documentation style guide](documentation/styleguide/index.md)
 - [Markdown](../user/markdown.md)
 
 ## Internationalization (i18n) guides

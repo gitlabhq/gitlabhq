@@ -122,7 +122,7 @@ and you should make sure your version matches the version used by GitLab.
 
 ## Local linters
 
-To help adhere to the [documentation style guidelines](styleguide.md), and improve the content
+To help adhere to the [documentation style guidelines](styleguide/index.md), and improve the content
 added to documentation, [install documentation linters](#install-linters) and
 [integrate them with your code editor](#configure-editors).
 
@@ -137,7 +137,7 @@ At GitLab, we mostly use:
 [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules), and is
 used by the `docs-lint` test.
 
-Our [Documentation Style Guide](styleguide.md#markdown) and
+Our [Documentation Style Guide](styleguide/index.md#markdown) and
 [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/) elaborate on which choices must
 be made when selecting Markdown syntax for GitLab documentation. This tool helps catch deviations
 from those guidelines.

@@ -58,7 +58,7 @@ To update GitLab documentation:
      [GitLab Documentation guidelines](index.md) page.
 1. Follow the described standards and processes listed on the page, including:
    - The [Structure and template](structure.md) page.
-   - The [Style Guide](styleguide.md).
+   - The [Style Guide](styleguide/index.md).
    - The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
@@ -87,7 +87,7 @@ Anyone with Maintainer access to the relevant GitLab project can merge documenta
 Maintainers must make a good-faith effort to ensure that the content:
 
 - Is clear and sufficiently easy for the intended audience to navigate and understand.
-- Meets the [Documentation Guidelines](index.md) and [Style Guide](styleguide.md).
+- Meets the [Documentation Guidelines](index.md) and [Style Guide](styleguide/index.md).
 
 If the author or reviewer has any questions, they can mention the writer who is assigned to the relevant
 [DevOps stage group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
@@ -154,15 +154,15 @@ Remember:
 
 Ensure the following if skipping an initial Technical Writer review:
 
-- That [product badges](styleguide.md#product-badges) are applied.
-- That the GitLab [version](styleguide.md#text-for-documentation-requiring-version-text) that
+- That [product badges](styleguide/index.md#product-badges) are applied.
+- That the GitLab [version](styleguide/index.md#text-for-documentation-requiring-version-text) that
   introduced the feature has been included.
 - That changes to headings don't affect in-app hyperlinks.
 - Specific [user permissions](../../user/permissions.md) are documented.
 - That new documents are linked from higher-level indexes, for discoverability.
 - Style guide is followed:
-  - For [directories and files](styleguide.md#work-with-directories-and-files).
-  - For [images](styleguide.md#images).
+  - For [directories and files](styleguide/index.md#work-with-directories-and-files).
+  - For [images](styleguide/index.md#images).
 
 Merge requests that change the location of documentation must always be reviewed by a Technical
 Writer prior to merging.

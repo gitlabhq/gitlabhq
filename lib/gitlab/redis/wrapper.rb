@@ -18,6 +18,10 @@ module Gitlab
           pool.with { |redis| yield redis }
         end
 
+        def version
+          with { |redis| redis.info['redis_version'] }
+        end
+
         def pool
           @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }
         end

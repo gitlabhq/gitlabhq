@@ -48,6 +48,48 @@ export const reportTextBuilder = (name = '', results = {}) => {
   return sprintf(__('%{name} found %{resultsString}'), { name, resultsString });
 };
 
+export const recentFailuresTextBuilder = (summary = {}) => {
+  const { failed, recentlyFailed } = summary;
+  if (!failed || !recentlyFailed) return '';
+
+  if (failed < 2) {
+    return sprintf(
+      s__(
+        'Reports|%{recentlyFailed} out of %{failed} failed test has failed more than once in the last 14 days',
+      ),
+      { recentlyFailed, failed },
+    );
+  }
+  return sprintf(
+    n__(
+      s__(
+        'Reports|%{recentlyFailed} out of %{failed} failed tests has failed more than once in the last 14 days',
+      ),
+      s__(
+        'Reports|%{recentlyFailed} out of %{failed} failed tests have failed more than once in the last 14 days',
+      ),
+      recentlyFailed,
+    ),
+    { recentlyFailed, failed },
+  );
+};
+
+export const countRecentlyFailedTests = subject => {
+  // handle either a single report or an array of reports
+  const reports = !subject.length ? [subject] : subject;
+
+  return reports
+    .map(report => {
+      return (
+        [report.new_failures, report.existing_failures, report.resolved_failures]
+          // only count tests which have failed more than once
+          .map(failureArray => failureArray.filter(failure => failure.recent_failures > 1).length)
+          .reduce((total, count) => total + count, 0)
+      );
+    })
+    .reduce((total, count) => total + count, 0);
+};
+
 export const statusIcon = status => {
   if (status === STATUS_FAILED) {
     return ICON_WARNING;

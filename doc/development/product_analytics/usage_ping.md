@@ -312,6 +312,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    - `aggregation`: aggregation `:daily` or `:weekly`. The argument defines how we build the Redis
      keys for data storage. For `daily` we keep a key for metric per day of the year, for `weekly` we
      keep a key for metric per week of the year.
+   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](../feature_flags/) documentation.
 
 1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
 
@@ -402,7 +403,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    | `event` | string | yes | The event name it should be tracked |
 
    Response
-w
+
    Return 200 if tracking failed for any reason.
 
    - `200` if event was tracked or any errors
@@ -453,6 +454,20 @@ Recommendations:
   metric's name and week of the year, `2020-33-{metric_name}`.
 - Use a [feature flag](../../operations/feature_flags.md) to have a control over the impact when
   adding new metrics.
+
+##### Enable/Disable Redis HLL tracking
+
+Events are tracked behind [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
+
+For a full list of events and coresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
+
+To enable or disable tracking for specific event within <https://gitlab.com> or <https://staging.gitlab.com>, run commands such as the following to
+[enable or disable the corresponding feature](../feature_flags/index.md).
+
+```shell
+/chatops run feature set <feature_name> true
+/chatops run feature set <feature_name> false
+```
 
 ##### Known events in usage data payload
 

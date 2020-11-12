@@ -61,6 +61,11 @@ RSpec.describe Users::ApproveService do
           expect(user.reload).to be_active
         end
 
+        it 'emails the user on approval' do
+          expect(DeviseMailer).to receive(:user_admin_approval).with(user).and_call_original
+          expect { subject }.to have_enqueued_mail(DeviseMailer, :user_admin_approval)
+        end
+
         context 'email confirmation status' do
           context 'user is unconfirmed' do
             let(:user) { create(:user, :blocked_pending_approval, :unconfirmed) }

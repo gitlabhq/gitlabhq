@@ -146,7 +146,7 @@ Keep the following in mind when submitting merge requests:
   reviewers.
 - If the code quality is found to not meet GitLab’s standards, the merge request reviewer will
   provide guidance and refer the author to our:
-  - [Documentation](../documentation/styleguide.md) style guide.
+  - [Documentation](../documentation/styleguide/index.md) style guide.
   - Code style guides.
 - Sometimes style guides will be followed but the code will lack structural integrity, or the
   reviewer will have reservations about the code’s overall quality. When there is a reservation,

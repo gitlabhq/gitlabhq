@@ -26,6 +26,12 @@ RSpec.describe Gitlab::Redis::Wrapper do
     end
   end
 
+  describe '.version' do
+    it 'returns a version' do
+      expect(described_class.version).to be_present
+    end
+  end
+
   describe '.instrumentation_class' do
     it 'raises a NotImplementedError' do
       expect(described_class).to receive(:instrumentation_class).and_call_original

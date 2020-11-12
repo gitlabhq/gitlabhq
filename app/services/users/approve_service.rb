@@ -15,6 +15,7 @@ module Users
         # Please see Devise's implementation of `resend_confirmation_instructions` for detail.
         user.resend_confirmation_instructions
         user.accept_pending_invitations! if user.active_for_authentication?
+        DeviseMailer.user_admin_approval(user).deliver_later
 
         success
       else

@@ -12,6 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Available action types for the `action` parameter are:
 
+- `approved`
 - `created`
 - `updated`
 - `closed`

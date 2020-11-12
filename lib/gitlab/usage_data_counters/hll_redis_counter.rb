@@ -35,6 +35,7 @@ module Gitlab
       #   category: compliance         # Group events in categories
       #   expiry: 29                   # Optional expiration time in days, default value 29 days for daily and 6.weeks for weekly
       #   aggregation: daily           # Aggregation level, keys are stored daily or weekly
+      #   feature_flag:                # The event feature flag
       #
       # Usage:
       #

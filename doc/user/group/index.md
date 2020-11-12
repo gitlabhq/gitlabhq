@@ -745,6 +745,7 @@ To enable prevent project forking:
 - **Audit Events**: View [Audit Events](../../administration/audit_events.md)
   for the group. **(STARTER ONLY)**
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
+- **Integrations**: Configure [integrations](../admin_area/settings/project_integration_management.md) for your group.
 
 #### Storage usage quota **(STARTER)**
 

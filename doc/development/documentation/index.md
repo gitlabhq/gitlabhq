@@ -11,7 +11,7 @@ GitLab's documentation is [intended as the single source of truth (SSOT)](https:
 
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
-- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
+- [Style Guide](styleguide/index.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
@@ -64,11 +64,11 @@ However, anyone can contribute [documentation improvements](workflow.md) that ar
 [GitLab docs](https://gitlab.com/gitlab-org/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
 as its Markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/) for a complete Kramdown reference.
 
-Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
+Adhere to the [Documentation Style Guide](styleguide/index.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
 ## Folder structure and files
 
-See the [Structure](styleguide.md#structure) section of the [Documentation Style Guide](styleguide.md).
+See the [Structure](styleguide/index.md#structure) section of the [Documentation Style Guide](styleguide/index.md).
 
 ## Metadata
 
@@ -229,7 +229,7 @@ Things to note:
   it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
   and will print the file and the line where this file is mentioned.
   You may ask why the two greps. Since [we use relative paths to link to
-  documentation](styleguide.md#links), sometimes it might be useful to search a path deeper.
+  documentation](styleguide/index.md#links), sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, which is why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.

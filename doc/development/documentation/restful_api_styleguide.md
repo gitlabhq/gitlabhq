@@ -105,8 +105,8 @@ you can use in the API documentation.
 
 CAUTION: **Caution:**
 Do not use information for real users, URLs, or tokens. For documentation, refer to our
-relevant style guide sections on [Fake user information](styleguide.md#fake-user-information),
-[Fake URLs](styleguide.md#fake-urls), and [Fake tokens](styleguide.md#fake-tokens).
+relevant style guide sections on [Fake user information](styleguide/index.md#fake-user-information),
+[Fake URLs](styleguide/index.md#fake-urls), and [Fake tokens](styleguide/index.md#fake-tokens).
 
 ### Simple cURL command
 
