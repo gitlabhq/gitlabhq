@@ -665,6 +665,20 @@ RSpec.describe ApplicationSetting do
           end
         end
       end
+
+      describe '#cloud_license_auth_token' do
+        it { is_expected.to allow_value(nil).for(:cloud_license_auth_token) }
+
+        it 'is encrypted' do
+          subject.cloud_license_auth_token = 'token-from-customers-dot'
+
+          aggregate_failures do
+            expect(subject.encrypted_cloud_license_auth_token).to be_present
+            expect(subject.encrypted_cloud_license_auth_token_iv).to be_present
+            expect(subject.encrypted_cloud_license_auth_token).not_to eq(subject.cloud_license_auth_token)
+          end
+        end
+      end
     end
 
     context 'static objects external storage' do

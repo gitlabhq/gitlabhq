@@ -38,7 +38,7 @@ describe('Issuable component', () => {
   let DateOrig;
   let wrapper;
 
-  const factory = (props = {}, scopedLabels = false) => {
+  const factory = (props = {}, scopedLabelsAvailable = false) => {
     wrapper = shallowMount(Issuable, {
       propsData: {
         issuable: simpleIssue,
@@ -46,9 +46,7 @@ describe('Issuable component', () => {
         ...props,
       },
       provide: {
-        glFeatures: {
-          scopedLabels,
-        },
+        scopedLabelsAvailable,
       },
       stubs: {
         'gl-sprintf': GlSprintf,

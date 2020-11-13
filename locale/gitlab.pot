@@ -24036,9 +24036,6 @@ msgstr ""
 msgid "SecurityReports|Scan details"
 msgstr ""
 
-msgid "SecurityReports|Scanner"
-msgstr ""
-
 msgid "SecurityReports|Security Dashboard"
 msgstr ""
 

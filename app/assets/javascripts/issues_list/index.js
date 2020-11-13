@@ -41,10 +41,13 @@ function mountIssuablesListApp() {
   }
 
   document.querySelectorAll('.js-issuables-list').forEach(el => {
-    const { canBulkEdit, emptyStateMeta = {}, ...data } = el.dataset;
+    const { canBulkEdit, emptyStateMeta = {}, scopedLabelsAvailable, ...data } = el.dataset;
 
     return new Vue({
       el,
+      provide: {
+        scopedLabelsAvailable: parseBoolean(scopedLabelsAvailable),
+      },
       render(createElement) {
         return createElement(IssuablesListApp, {
           props: {

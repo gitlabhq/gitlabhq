@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ListConfigVariablesService do
-  let_it_be(:project) { create(:project, :repository) }
-  let(:service) { described_class.new(project) }
+  let(:project) { create(:project, :repository) }
+  let(:user) { project.creator }
+  let(:service) { described_class.new(project, user) }
   let(:result) { YAML.dump(ci_config) }
 
   subject { service.execute(sha) }
@@ -35,6 +36,40 @@ RSpec.describe Ci::ListConfigVariablesService do
       expect(subject['KEY2']).to eq({ value: 'val 2', description: '' })
       expect(subject['KEY3']).to eq({ value: 'val 3', description: nil })
       expect(subject['KEY4']).to eq({ value: 'val 4', description: nil })
+    end
+  end
+
+  context 'when config has includes' do
+    let(:sha) { 'master' }
+    let(:ci_config) do
+      {
+        include: [{ local: 'other_file.yml' }],
+        variables: {
+          KEY1: { value: 'val 1', description: 'description 1' }
+        },
+        test: {
+          stage: 'test',
+          script: 'echo'
+        }
+      }
+    end
+
+    before do
+      allow_next_instance_of(Repository) do |repository|
+        allow(repository).to receive(:blob_data_at).with(sha, 'other_file.yml') do
+          <<~HEREDOC
+            variables:
+              KEY2:
+                value: 'val 2'
+                description: 'description 2'
+          HEREDOC
+        end
+      end
+    end
+
+    it 'returns variable list' do
+      expect(subject['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
+      expect(subject['KEY2']).to eq({ value: 'val 2', description: 'description 2' })
     end
   end
 

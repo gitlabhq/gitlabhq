@@ -57,10 +57,6 @@ class Projects::IssuesController < Projects::ApplicationController
     record_experiment_user(:invite_members_version_b)
   end
 
-  before_action only: :index do
-    push_frontend_feature_flag(:scoped_labels, @project, type: :licensed)
-  end
-
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
   respond_to :html

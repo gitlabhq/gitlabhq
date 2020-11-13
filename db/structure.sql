@@ -9342,6 +9342,8 @@ CREATE TABLE application_settings (
     domain_denylist text,
     domain_allowlist text,
     new_user_signups_cap integer,
+    encrypted_cloud_license_auth_token text,
+    encrypted_cloud_license_auth_token_iv text,
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
@@ -9351,7 +9353,8 @@ CREATE TABLE application_settings (
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
-    CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
+    CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
+    CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255))
 );
 
 CREATE SEQUENCE application_settings_id_seq
@@ -13192,6 +13195,9 @@ CREATE TABLE jira_tracker_data (
     project_key text,
     issues_enabled boolean DEFAULT false NOT NULL,
     deployment_type smallint DEFAULT 0 NOT NULL,
+    vulnerabilities_issuetype text,
+    vulnerabilities_enabled boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
 );
 
@@ -20734,6 +20740,8 @@ CREATE INDEX index_epics_on_end_date ON epics USING btree (end_date);
 CREATE INDEX index_epics_on_group_id ON epics USING btree (group_id);
 
 CREATE UNIQUE INDEX index_epics_on_group_id_and_external_key ON epics USING btree (group_id, external_key) WHERE (external_key IS NOT NULL);
+
+CREATE UNIQUE INDEX index_epics_on_group_id_and_iid ON epics USING btree (group_id, iid);
 
 CREATE INDEX index_epics_on_group_id_and_iid_varchar_pattern ON epics USING btree (group_id, ((iid)::character varying) varchar_pattern_ops);
 
