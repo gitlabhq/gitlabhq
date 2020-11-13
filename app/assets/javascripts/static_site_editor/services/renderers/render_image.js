@@ -4,6 +4,8 @@ const canRender = ({ type }) => type === 'image';
 
 let metadata;
 
+const getCachedContent = basePath => metadata.imageRepository.get(basePath);
+
 const isRelativeToCurrentDirectory = basePath => !basePath.startsWith('/');
 
 const extractSourceDirectory = url => {
@@ -46,7 +48,11 @@ const generateSourceDirectory = basePath => {
   return sourceDir || defaultSourceDir;
 };
 
-const resolveFullPath = originalSrc => {
+const resolveFullPath = (originalSrc, cachedContent) => {
+  if (cachedContent) {
+    return `data:image;base64,${cachedContent}`;
+  }
+
   if (isAbsolute(originalSrc)) {
     return originalSrc;
   }
@@ -61,20 +67,22 @@ const resolveFullPath = originalSrc => {
 const render = ({ destination: originalSrc, firstChild }, { skipChildren }) => {
   skipChildren();
 
+  const cachedContent = getCachedContent(originalSrc);
+
   return {
     type: 'openTag',
     tagName: 'img',
     selfClose: true,
     attributes: {
-      'data-original-src': !isAbsolute(originalSrc) ? originalSrc : '',
-      src: resolveFullPath(originalSrc),
+      'data-original-src': !isAbsolute(originalSrc) || cachedContent ? originalSrc : '',
+      src: resolveFullPath(originalSrc, cachedContent),
       alt: firstChild.literal,
     },
   };
 };
 
-const build = (mounts = [], project, branch, baseUrl) => {
-  metadata = { mounts, project, branch, baseUrl };
+const build = (mounts = [], project, branch, baseUrl, imageRepository) => {
+  metadata = { mounts, project, branch, baseUrl, imageRepository };
   return { canRender, render };
 };
 

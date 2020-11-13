@@ -1,4 +1,9 @@
 # frozen_string_literal: true
+module SidekiqLogArguments
+  def self.enabled?
+    Gitlab::Utils.to_boolean(ENV['SIDEKIQ_LOG_ARGUMENTS'], default: true)
+  end
+end
 
 def enable_reliable_fetch?
   return true unless Feature::FlipperFeature.table_exists?
@@ -35,7 +40,7 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator({
     metrics: Settings.monitoring.sidekiq_exporter,
-    arguments_logger: ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs,
+    arguments_logger: SidekiqLogArguments.enabled? && !enable_json_logs,
     memory_killer: enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer
   }))
 

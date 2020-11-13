@@ -1,0 +1,5 @@
+---
+title: Only set an ETag for the notes endpoint after all notes have been sent
+merge_request: 46810
+author:
+type: performance

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Graphql/ResolverType
 
 module Resolvers
   module Projects

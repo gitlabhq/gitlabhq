@@ -83,7 +83,13 @@ export default {
       return this.editorMode === EDITOR_TYPES.wysiwyg;
     },
     customRenderers() {
-      const imageRenderer = renderImage.build(this.mounts, this.project, this.branch, this.baseUrl);
+      const imageRenderer = renderImage.build(
+        this.mounts,
+        this.project,
+        this.branch,
+        this.baseUrl,
+        this.$options.imageRepository,
+      );
       return {
         image: [imageRenderer],
       };

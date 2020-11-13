@@ -26,19 +26,11 @@ preventing other threads from continuing.
 
 ## Log arguments to Sidekiq jobs
 
-If you want to see what arguments are being passed to Sidekiq jobs you can set
-the `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html) to `1` (true).
-
-Example:
-
-```ruby
-gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "1"}
-```
-
-This does not log all job arguments. To avoid logging sensitive
-information (for instance, password reset tokens), it logs numeric
-arguments for all workers, with overrides for some specific workers
-where their arguments are not sensitive.
+[In GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44853)
+some arguments passed to Sidekiq jobs are logged by default.
+To avoid logging sensitive information (for instance, password reset tokens),
+GitLab logs numeric arguments for all workers, with overrides for some specific
+workers where their arguments are not sensitive.
 
 Example log output:
 
@@ -52,6 +44,17 @@ When using [Sidekiq JSON logging](../logs.md#sidekiqlog),
 arguments logs are limited to a maximum size of 10 kilobytes of text;
 any arguments after this limit will be discarded and replaced with a
 single argument containing the string `"..."`.
+
+You can set `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+to `0` (false) to disable argument logging.
+
+Example:
+
+```ruby
+gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "0"}
+```
+
+In GitLab 13.5 and earlier, set `SIDEKIQ_LOG_ARGUMENTS` to `1` to start logging arguments passed to Sidekiq.
 
 ## Thread dump
 

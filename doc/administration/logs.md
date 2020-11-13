@@ -856,7 +856,9 @@ This file is stored in:
 - `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log` for Omnibus GitLab installations.
 - `/home/git/gitlab/log/update_mirror_service_json.log` for installations from source.
 
-This file contains information about any errors that occurred during project mirroring.
+This file contains information about LFS errors that occurred during project mirroring.
+While we work to move other project mirroring errors into this log, the [general log](#productionlog)
+can be used.
 
 ```json
 {

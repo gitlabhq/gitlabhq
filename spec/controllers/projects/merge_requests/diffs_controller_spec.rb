@@ -383,6 +383,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
         environment: nil,
         merge_request: merge_request,
         diff_view: :inline,
+        merge_ref_head_diff: nil,
         pagination_data: {
           current_page: nil,
           next_page: nil,

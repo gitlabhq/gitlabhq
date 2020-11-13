@@ -240,6 +240,14 @@ For users without permissions to view the project's code:
 - The wiki homepage is displayed, if any.
 - The list of issues within the project is displayed.
 
+## GitLab Workflow - VS Code extension
+
+To avoid switching from the GitLab UI and VS Code while working in GitLab repositories, you can integrate
+the [VS Code](https://code.visualstudio.com/) editor with GitLab through the
+[GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+
+To review or contribute to the extension's code, visit [its codebase in GitLab](https://gitlab.com/gitlab-org/gitlab-vscode-extension/).
+
 ## Redirects when changing repository paths
 
 When a repository path changes, it is essential to smoothly transition from the

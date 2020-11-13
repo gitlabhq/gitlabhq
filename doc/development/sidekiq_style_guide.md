@@ -696,8 +696,8 @@ blocks:
 
 ## Arguments logging
 
-When [`SIDEKIQ_LOG_ARGUMENTS`](../administration/troubleshooting/sidekiq.md#log-arguments-to-sidekiq-jobs)
-is enabled, Sidekiq job arguments will be logged.
+As of GitLab 13.6, Sidekiq job arguments will be logged by default, unless [`SIDEKIQ_LOG_ARGUMENTS`](../administration/troubleshooting/sidekiq.md#log-arguments-to-sidekiq-jobs)
+is disabled.
 
 By default, the only arguments logged are numeric arguments, because
 arguments of other types could contain sensitive information. To

@@ -4,7 +4,7 @@ module ResolvesSnippets
   extend ActiveSupport::Concern
 
   included do
-    type Types::SnippetType, null: false
+    type Types::SnippetType.connection_type, null: false
 
     argument :ids, [::Types::GlobalIDType[::Snippet]],
              required: false,

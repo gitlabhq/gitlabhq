@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IntegrationHelpText component should not render the link when start and end is not provided 1`] = `
+<span>
+  Click nowhere!
+</span>
+`;
+
+exports[`IntegrationHelpText component should render the help text 1`] = `
+<span>
+  Click 
+  <gl-link-stub
+    href="http://bar.com"
+    target="_blank"
+  >
+    
+        Bar
+        
+    <gl-icon-stub
+      class="gl-vertical-align-middle"
+      name="external-link"
+      size="12"
+    />
+  </gl-link-stub>
+  !
+</span>
+`;

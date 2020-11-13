@@ -16,9 +16,6 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
   prepend_before_action :authenticate_user!, only: [:show]
   before_action :assign_ref_and_path, only: [:show]
   before_action :authorize_edit_tree!, only: [:show]
-  before_action do
-    push_frontend_feature_flag(:sse_image_uploads)
-  end
 
   feature_category :static_site_editor
 

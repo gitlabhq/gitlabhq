@@ -5112,6 +5112,16 @@
               "defaultValue": null
             },
             {
+              "name": "iterationTitle",
+              "description": "Filter by iteration title",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "weight",
               "description": "Filter by weight",
               "type": {
@@ -5147,6 +5157,16 @@
               "type": {
                 "kind": "ENUM",
                 "name": "EpicWildcardId",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iterationWildcardId",
+              "description": "Filter by iteration ID wildcard",
+              "type": {
+                "kind": "ENUM",
+                "name": "IterationWildcardId",
                 "ofType": null
               },
               "defaultValue": null
@@ -30697,28 +30717,6 @@
           "description": "Represents an iteration object",
           "fields": [
             {
-              "name": "burnupTimeSeries",
-              "description": "Daily scope and completed totals for burnup charts",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "BurnupChartDailyTotals",
-                    "ofType": null
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "createdAt",
               "description": "Timestamp of iteration creation",
               "args": [
@@ -31129,6 +31127,29 @@
             {
               "name": "all",
               "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "IterationWildcardId",
+          "description": "Iteration ID wildcard values",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NONE",
+              "description": "No iteration is assigned",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANY",
+              "description": "An iteration is assigned",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -36634,28 +36655,6 @@
           "description": "Represents a milestone",
           "fields": [
             {
-              "name": "burnupTimeSeries",
-              "description": "Daily scope and completed totals for burnup charts",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "BurnupChartDailyTotals",
-                    "ofType": null
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "createdAt",
               "description": "Timestamp of milestone creation",
               "args": [
@@ -41112,6 +41111,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "EpicID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iterationTitle",
+              "description": "Filter by iteration title",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null
@@ -60920,28 +60929,6 @@
           "name": "TimeboxReportInterface",
           "description": null,
           "fields": [
-            {
-              "name": "burnupTimeSeries",
-              "description": "Daily scope and completed totals for burnup charts",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "BurnupChartDailyTotals",
-                    "ofType": null
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
             {
               "name": "report",
               "description": "Historically accurate report about the timebox",

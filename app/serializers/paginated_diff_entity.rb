@@ -7,6 +7,7 @@
 #
 class PaginatedDiffEntity < Grape::Entity
   include RequestAwareEntity
+  include DiffHelper
 
   expose :diff_files do |diffs, options|
     submodule_links = Gitlab::SubmoduleLinks.new(merge_request.project.repository)
@@ -15,7 +16,8 @@ class PaginatedDiffEntity < Grape::Entity
       diffs.diff_files,
       options.merge(
         submodule_links: submodule_links,
-        code_navigation_path: code_navigation_path(diffs)
+        code_navigation_path: code_navigation_path(diffs),
+        conflicts: conflicts
       )
     )
   end
@@ -40,10 +42,6 @@ class PaginatedDiffEntity < Grape::Entity
   end
 
   private
-
-  def code_navigation_path(diffs)
-    Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs&.head_sha)
-  end
 
   %i[current_page next_page total_pages].each do |method|
     define_method method do

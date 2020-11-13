@@ -8,7 +8,7 @@
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = gitpod_enable_description
+      %integration-help-text{ "id" => "js-gitpod-settings-help-text", "message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" }
       = link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
 
 

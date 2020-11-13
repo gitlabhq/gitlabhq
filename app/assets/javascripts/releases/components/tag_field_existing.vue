@@ -1,14 +1,14 @@
 <script>
 import { mapState } from 'vuex';
 import { uniqueId } from 'lodash';
-import { GlFormGroup, GlFormInput, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import FormFieldContainer from './form_field_container.vue';
 
 export default {
   name: 'TagFieldExisting',
-  components: { GlFormGroup, GlFormInput, GlSprintf, GlLink, FormFieldContainer },
+  components: { GlFormGroup, GlFormInput, FormFieldContainer },
   computed: {
-    ...mapState('detail', ['release', 'updateReleaseApiDocsPath']),
+    ...mapState('detail', ['release']),
     inputId() {
       return uniqueId('tag-name-input-');
     },
@@ -32,19 +32,7 @@ export default {
     </form-field-container>
     <template #description>
       <div :id="helpId" data-testid="tag-name-help">
-        <gl-sprintf
-          :message="
-            __(
-              'Changing a Release tag is only supported via Releases API. %{linkStart}More information%{linkEnd}',
-            )
-          "
-        >
-          <template #link="{ content }">
-            <gl-link :href="updateReleaseApiDocsPath" target="_blank">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
+        {{ __("The tag name can't be changed for an existing release.") }}
       </div>
     </template>
   </gl-form-group>

@@ -447,6 +447,23 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    - `end_date`: end date of the period for which we want to get event data.
    - `context`: context of the event. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`.
 
+1. Testing tracking and getting unique events
+
+Trigger events in rails console by using `track_event` method
+
+   ```ruby
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event(1, 'g_compliance_audit_events')
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event(2, 'g_compliance_audit_events')
+   ```
+
+Next, get the unique events for the current week.
+
+   ```ruby
+   # Get unique events for metric for current_week
+   Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_audit_events',
+   start_date: Date.current.beginning_of_week, end_date: Date.current.end_of_week)
+   ```
+
 Recommendations:
 
 - Key should expire in 29 days for daily and 42 days for weekly.

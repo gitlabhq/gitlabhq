@@ -20,7 +20,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
     changes = Base64.decode64(changes) unless changes.include?(' ')
     # Use Sidekiq.logger so arguments can be correlated with execution
     # time and thread ID's.
-    Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
+    Sidekiq.logger.info "changes: #{changes.inspect}" if SidekiqLogArguments.enabled?
     post_received = Gitlab::GitPostReceive.new(container, identifier, changes, push_options)
 
     if repo_type.wiki?

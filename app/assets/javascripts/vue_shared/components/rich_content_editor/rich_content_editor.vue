@@ -114,10 +114,9 @@ export default {
 
       if (file) {
         this.$emit('uploadImage', { file, imageUrl });
-        // TODO - ensure that the actual repo URL for the image is used in Markdown mode
       }
 
-      addImage(this.editorInstance, image);
+      addImage(this.editorInstance, image, file);
     },
     onOpenInsertVideoModal() {
       this.$refs.insertVideoModal.show();

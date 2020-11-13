@@ -252,4 +252,18 @@ module DiffHelper
 
     "...#{path[-(max - 3)..-1]}"
   end
+
+  def code_navigation_path(diffs)
+    Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs&.head_sha)
+  end
+
+  def conflicts
+    return unless options[:merge_ref_head_diff]
+
+    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request) # rubocop:disable CodeReuse/ServiceClass
+
+    return unless conflicts_service.can_be_resolved_in_ui?
+
+    conflicts_service.conflicts.files.index_by(&:our_path)
+  end
 end

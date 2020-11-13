@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IntegrationView component should render IntegrationView properly 1`] = `
+<div
+  name="sourcegraph"
+>
+  <label
+    class="label-bold"
+  >
+    
+    Foo
+  
+  </label>
+   
+  <gl-link-stub
+    class="has-tooltip"
+    href="http://foo.com/help"
+    title="More information"
+  >
+    <gl-icon-stub
+      class="vertical-align-middle"
+      name="question-o"
+      size="16"
+    />
+  </gl-link-stub>
+   
+  <div
+    class="form-group form-check"
+    data-testid="profile-preferences-integration-form-group"
+  >
+    <input
+      data-testid="profile-preferences-integration-hidden-field"
+      name="user[foo_enabled]"
+      type="hidden"
+      value="0"
+    />
+     
+    <input
+      class="form-check-input"
+      data-testid="profile-preferences-integration-checkbox"
+      id="user_foo_enabled"
+      name="user[foo_enabled]"
+      type="checkbox"
+      value="1"
+    />
+     
+    <label
+      class="form-check-label"
+      for="user_foo_enabled"
+    >
+      
+      Enable foo
+    
+    </label>
+     
+    <gl-form-text-stub
+      tag="div"
+      textvariant="muted"
+    >
+      <integration-help-text-stub
+        message="Click %{linkStart}Foo%{linkEnd}!"
+        messageurl="http://foo.com"
+      />
+    </gl-form-text-stub>
+  </div>
+</div>
+`;

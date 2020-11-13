@@ -4,6 +4,8 @@ module Gitlab
   module Graphql
     module Present
       class Instrumentation
+        SAFE_CONTEXT_KEYS = %i[current_user].freeze
+
         def instrument(type, field)
           return field unless field.metadata[:type_class]
 
@@ -22,7 +24,8 @@ module Gitlab
               next old_resolver.call(presented_type, args, context)
             end
 
-            presenter = presented_in.presenter_class.new(object, **context.to_h)
+            attrs = safe_context_values(context)
+            presenter = presented_in.presenter_class.new(object, **attrs)
 
             # we have to use the new `authorized_new` method, as `new` is protected
             wrapped = presented_type.class.authorized_new(presenter, context)
@@ -33,6 +36,12 @@ module Gitlab
           field.redefine do
             resolve(resolve_with_presenter)
           end
+        end
+
+        private
+
+        def safe_context_values(context)
+          context.to_h.slice(*SAFE_CONTEXT_KEYS)
         end
       end
     end

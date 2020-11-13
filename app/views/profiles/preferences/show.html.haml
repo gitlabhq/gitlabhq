@@ -1,146 +1,151 @@
 - page_title _('Preferences')
 - @content_class = "limit-container-width" unless fluid_layout
+- user_fields = { gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }
+- user_theme_id = Gitlab::Themes.for_user(@user).id
+- data_attributes = { integration_views: integration_views.to_json, user_fields: user_fields.to_json }
 
 - Gitlab::Themes.each do |theme|
   = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename
 
-= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row gl-mt-3 js-preferences-form' } do |f|
-  .col-lg-4.application-theme#navigation-theme
-    %h4.gl-mt-0
-      = s_('Preferences|Navigation theme')
-    %p
-      = s_('Preferences|Customize the appearance of the application header and navigation sidebar.')
-  .col-lg-8.application-theme
-    .row
-      - Gitlab::Themes.each do |theme|
-        %label.col-6.col-sm-4.col-md-3.gl-mb-5.gl-text-center
-          .preview{ class: theme.css_class }
-          = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
-          = theme.name
+= form_for @user, url: profile_preferences_path, remote: true, method: :put do |f|
+  .row.gl-mt-3.js-preferences-form
+    .col-lg-4.application-theme#navigation-theme
+      %h4.gl-mt-0
+        = s_('Preferences|Navigation theme')
+      %p
+        = s_('Preferences|Customize the appearance of the application header and navigation sidebar.')
+    .col-lg-8.application-theme
+      .row
+        - Gitlab::Themes.each do |theme|
+          %label.col-6.col-sm-4.col-md-3.gl-mb-5.gl-text-center
+            .preview{ class: theme.css_class }
+            = f.radio_button :theme_id, theme.id, checked: user_theme_id == theme.id
+            = theme.name
 
-  .col-sm-12
-    %hr
-
-  .col-lg-4.profile-settings-sidebar#syntax-highlighting-theme
-    %h4.gl-mt-0
-      = s_('Preferences|Syntax highlighting theme')
-    %p
-      = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
-      = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
-  .col-lg-8.syntax-theme
-    - Gitlab::ColorSchemes.each do |scheme|
-      = label_tag do
-        .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
-        = f.radio_button :color_scheme_id, scheme.id
-        = scheme.name
-
-  .col-sm-12
-    %hr
-
-  .col-lg-4.profile-settings-sidebar#behavior
-    %h4.gl-mt-0
-      = s_('Preferences|Behavior')
-    %p
-      = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
-      = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
-  .col-lg-8
-    .form-group
-      = f.label :layout, class: 'label-bold' do
-        = s_('Preferences|Layout width')
-      = f.select :layout, layout_choices, {}, class: 'select2'
-      .form-text.text-muted
-        = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
-    .form-group
-      = f.label :dashboard, class: 'label-bold' do
-        = s_('Preferences|Homepage content')
-      = f.select :dashboard, dashboard_choices, {}, class: 'select2'
-      .form-text.text-muted
-        = s_('Preferences|Choose what content you want to see on your homepage.')
-
-    = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
-
-    .form-group
-      = f.label :project_view, class: 'label-bold' do
-        = s_('Preferences|Project overview content')
-      = f.select :project_view, project_view_choices, {}, class: 'select2'
-      .form-text.text-muted
-        = s_('Preferences|Choose what content you want to see on a project’s overview page.')
-    .form-group.form-check
-      = f.check_box :render_whitespace_in_code, class: 'form-check-input'
-      = f.label :render_whitespace_in_code, class: 'form-check-label' do
-        = s_('Preferences|Render whitespace characters in the Web IDE')
-    .form-group.form-check
-      = f.check_box :show_whitespace_in_diffs, class: 'form-check-input'
-      = f.label :show_whitespace_in_diffs, class: 'form-check-label' do
-        = s_('Preferences|Show whitespace changes in diffs')
-    - if Feature.enabled?(:view_diffs_file_by_file, default_enabled: true)
-      .form-group.form-check
-        = f.check_box :view_diffs_file_by_file, class: 'form-check-input'
-        = f.label :view_diffs_file_by_file, class: 'form-check-label' do
-          = s_("Preferences|Show one file at a time on merge request's Changes tab")
-        .form-text.text-muted
-          = s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
-    .form-group
-      = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
-      = f.number_field :tab_width,
-                       class: 'form-control',
-                       min: Gitlab::TabWidth::MIN,
-                       max: Gitlab::TabWidth::MAX,
-                       required: true
-      .form-text.text-muted
-        = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }
-
-  .col-sm-12
-    %hr
-
-  .col-lg-4.profile-settings-sidebar#localization
-    %h4.gl-mt-0
-      = _('Localization')
-    %p
-      = _('Customize language and region related settings.')
-      = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
-  .col-lg-8
-    .form-group
-      = f.label :preferred_language, class: 'label-bold' do
-        = _('Language')
-      = f.select :preferred_language, language_choices, {}, class: 'select2'
-      .form-text.text-muted
-        = s_('Preferences|This feature is experimental and translations are not complete yet')
-    .form-group
-      = f.label :first_day_of_week, class: 'label-bold' do
-        = _('First day of the week')
-      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'select2'
-  - if Feature.enabled?(:user_time_settings)
     .col-sm-12
       %hr
-    .col-lg-4.profile-settings-sidebar
-      %h4.gl-mt-0= s_('Preferences|Time preferences')
-      %p= s_('Preferences|These settings will update how dates and times are displayed for you.')
+
+    .col-lg-4.profile-settings-sidebar#syntax-highlighting-theme
+      %h4.gl-mt-0
+        = s_('Preferences|Syntax highlighting theme')
+      %p
+        = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
+        = succeed '.' do
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
+    .col-lg-8.syntax-theme
+      - Gitlab::ColorSchemes.each do |scheme|
+        = label_tag do
+          .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
+          = f.radio_button :color_scheme_id, scheme.id
+          = scheme.name
+
+    .col-sm-12
+      %hr
+
+    .col-lg-4.profile-settings-sidebar#behavior
+      %h4.gl-mt-0
+        = s_('Preferences|Behavior')
+      %p
+        = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
+        = succeed '.' do
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
     .col-lg-8
       .form-group
-        %h5= s_('Preferences|Time format')
-        .checkbox-icon-inline-wrapper
-          - time_format_label = capture do
-            = s_('Preferences|Display time in 24-hour format')
-          = f.check_box :time_format_in_24h
-          = f.label :time_format_in_24h do
-            = time_format_label
-        %h5= s_('Preferences|Time display')
-        .checkbox-icon-inline-wrapper
-          - time_display_label = capture do
-            = s_('Preferences|Use relative times')
-          = f.check_box :time_display_relative
-          = f.label :time_display_relative do
-            = time_display_label
+        = f.label :layout, class: 'label-bold' do
+          = s_('Preferences|Layout width')
+        = f.select :layout, layout_choices, {}, class: 'select2'
+        .form-text.text-muted
+          = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
+      .form-group
+        = f.label :dashboard, class: 'label-bold' do
+          = s_('Preferences|Homepage content')
+        = f.select :dashboard, dashboard_choices, {}, class: 'select2'
+        .form-text.text-muted
+          = s_('Preferences|Choose what content you want to see on your homepage.')
+
+      = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
+
+      .form-group
+        = f.label :project_view, class: 'label-bold' do
+          = s_('Preferences|Project overview content')
+        = f.select :project_view, project_view_choices, {}, class: 'select2'
+        .form-text.text-muted
+          = s_('Preferences|Choose what content you want to see on a project’s overview page.')
+      .form-group.form-check
+        = f.check_box :render_whitespace_in_code, class: 'form-check-input'
+        = f.label :render_whitespace_in_code, class: 'form-check-label' do
+          = s_('Preferences|Render whitespace characters in the Web IDE')
+      .form-group.form-check
+        = f.check_box :show_whitespace_in_diffs, class: 'form-check-input'
+        = f.label :show_whitespace_in_diffs, class: 'form-check-label' do
+          = s_('Preferences|Show whitespace changes in diffs')
+      - if Feature.enabled?(:view_diffs_file_by_file, default_enabled: true)
+        .form-group.form-check
+          = f.check_box :view_diffs_file_by_file, class: 'form-check-input'
+          = f.label :view_diffs_file_by_file, class: 'form-check-label' do
+            = s_("Preferences|Show one file at a time on merge request's Changes tab")
           .form-text.text-muted
-            = s_('Preferences|For example: 30 mins ago.')
+            = s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
+      .form-group
+        = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
+        = f.number_field :tab_width,
+                         class: 'form-control',
+                         min: Gitlab::TabWidth::MIN,
+                         max: Gitlab::TabWidth::MAX,
+                         required: true
+        .form-text.text-muted
+          = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }
 
-  = render 'integrations', f: f
+    .col-sm-12
+      %hr
 
-  .col-lg-4.profile-settings-sidebar
-  .col-lg-8
-    .form-group
-      = f.submit _('Save changes'), class: 'gl-button btn btn-success'
+    .col-lg-4.profile-settings-sidebar#localization
+      %h4.gl-mt-0
+        = _('Localization')
+      %p
+        = _('Customize language and region related settings.')
+        = succeed '.' do
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
+    .col-lg-8
+      .form-group
+        = f.label :preferred_language, class: 'label-bold' do
+          = _('Language')
+        = f.select :preferred_language, language_choices, {}, class: 'select2'
+        .form-text.text-muted
+          = s_('Preferences|This feature is experimental and translations are not complete yet')
+      .form-group
+        = f.label :first_day_of_week, class: 'label-bold' do
+          = _('First day of the week')
+        = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'select2'
+    - if Feature.enabled?(:user_time_settings)
+      .col-sm-12
+        %hr
+      .col-lg-4.profile-settings-sidebar
+        %h4.gl-mt-0= s_('Preferences|Time preferences')
+        %p= s_('Preferences|These settings will update how dates and times are displayed for you.')
+      .col-lg-8
+        .form-group
+          %h5= s_('Preferences|Time format')
+          .checkbox-icon-inline-wrapper
+            - time_format_label = capture do
+              = s_('Preferences|Display time in 24-hour format')
+            = f.check_box :time_format_in_24h
+            = f.label :time_format_in_24h do
+              = time_format_label
+          %h5= s_('Preferences|Time display')
+          .checkbox-icon-inline-wrapper
+            - time_display_label = capture do
+              = s_('Preferences|Use relative times')
+            = f.check_box :time_display_relative
+            = f.label :time_display_relative do
+              = time_display_label
+            .form-text.text-muted
+              = s_('Preferences|For example: 30 mins ago.')
+
+  #js-profile-preferences-app{ data: data_attributes, user_fields: user_fields.to_json }
+
+  .row.gl-mt-3.js-preferences-form
+    .col-lg-4.profile-settings-sidebar
+    .col-lg-8
+      .form-group
+        = f.submit _('Save changes'), class: 'gl-button btn btn-success'

@@ -4696,9 +4696,6 @@ msgstr ""
 msgid "By %{user_name}"
 msgstr ""
 
-msgid "By URL"
-msgstr ""
-
 msgid "By clicking Register, I agree that I have read and accepted the %{company_name} %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
 msgstr ""
 
@@ -5051,9 +5048,6 @@ msgid "Changes were successfully made."
 msgstr ""
 
 msgid "Changes won't take place until the index is %{link_start}recreated%{link_end}."
-msgstr ""
-
-msgid "Changing a Release tag is only supported via Releases API. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "Changing group URL can have unintended side effects."
@@ -6985,9 +6979,6 @@ msgid "Compliance Dashboard"
 msgstr ""
 
 msgid "Compliance framework (optional)"
-msgstr ""
-
-msgid "Compliance frameworks"
 msgstr ""
 
 msgid "ComplianceDashboard|created by:"
@@ -10113,7 +10104,7 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-msgid "Enable %{link_start}Gitpod%{link_end} integration to launch a development environment in your browser directly from GitLab."
+msgid "Enable %{linkStart}Gitpod%{linkEnd} integration to launch a development environment in your browser directly from GitLab."
 msgstr ""
 
 msgid "Enable Auto DevOps"
@@ -16149,6 +16140,9 @@ msgstr ""
 msgid "Link title is required"
 msgstr ""
 
+msgid "Link to an image"
+msgstr ""
+
 msgid "Link to go to GitLab pipeline documentation"
 msgstr ""
 
@@ -20313,16 +20307,10 @@ msgstr ""
 msgid "Preferences|Choose what content you want to see on your homepage."
 msgstr ""
 
-msgid "Preferences|Customize integrations with third party services."
-msgstr ""
-
 msgid "Preferences|Customize the appearance of the application header and navigation sidebar."
 msgstr ""
 
 msgid "Preferences|Display time in 24-hour format"
-msgstr ""
-
-msgid "Preferences|Enable integrated code intelligence on code views"
 msgstr ""
 
 msgid "Preferences|For example: 30 mins ago."
@@ -20332,9 +20320,6 @@ msgid "Preferences|Homepage content"
 msgstr ""
 
 msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
-msgstr ""
-
-msgid "Preferences|Integrations"
 msgstr ""
 
 msgid "Preferences|Layout width"
@@ -20356,9 +20341,6 @@ msgid "Preferences|Show one file at a time on merge request's Changes tab"
 msgstr ""
 
 msgid "Preferences|Show whitespace changes in diffs"
-msgstr ""
-
-msgid "Preferences|Sourcegraph"
 msgstr ""
 
 msgid "Preferences|Syntax highlighting theme"
@@ -20413,6 +20395,9 @@ msgid "Prevent project forking outside current group"
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
+msgstr ""
+
+msgid "Prevent users from modifying merge request approvers list"
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -20542,6 +20527,24 @@ msgid "Profile"
 msgstr ""
 
 msgid "Profile Settings"
+msgstr ""
+
+msgid "ProfilePreferences|Customize integrations with third party services."
+msgstr ""
+
+msgid "ProfilePreferences|Enable Gitpod integration"
+msgstr ""
+
+msgid "ProfilePreferences|Enable integrated code intelligence on code views"
+msgstr ""
+
+msgid "ProfilePreferences|Gitpod"
+msgstr ""
+
+msgid "ProfilePreferences|Integrations"
+msgstr ""
+
+msgid "ProfilePreferences|Sourcegraph"
 msgstr ""
 
 msgid "ProfileSession|on"
@@ -22329,9 +22332,6 @@ msgid "Registration|Your profile"
 msgstr ""
 
 msgid "Registry setup"
-msgstr ""
-
-msgid "Regulate approvals by authors/committers, based on compliance frameworks. Can be changed only at the instance level."
 msgstr ""
 
 msgid "Reindexing status"
@@ -25593,10 +25593,10 @@ msgstr ""
 msgid "SourcegraphPreferences|This feature is experimental."
 msgstr ""
 
-msgid "SourcegraphPreferences|Uses %{link_start}Sourcegraph.com%{link_end}."
+msgid "SourcegraphPreferences|Uses %{linkStart}Sourcegraph.com%{linkEnd}."
 msgstr ""
 
-msgid "SourcegraphPreferences|Uses a custom %{link_start}Sourcegraph instance%{link_end}."
+msgid "SourcegraphPreferences|Uses a custom %{linkStart}Sourcegraph instance%{linkEnd}."
 msgstr ""
 
 msgid "Spam Logs"
@@ -26765,9 +26765,6 @@ msgstr ""
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
 msgstr ""
 
-msgid "The above settings apply to all projects with the selected compliance framework(s)."
-msgstr ""
-
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."
 msgstr ""
 
@@ -27083,6 +27080,9 @@ msgid "The staging stage shows the time between merging the MR and deploying cod
 msgstr ""
 
 msgid "The status of the table below only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}. Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan."
+msgstr ""
+
+msgid "The tag name can't be changed for an existing release."
 msgstr ""
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
@@ -29178,6 +29178,9 @@ msgid "Upload a certificate for your domain with all intermediates"
 msgstr ""
 
 msgid "Upload a private key for your certificate"
+msgstr ""
+
+msgid "Upload an image"
 msgstr ""
 
 msgid "Upload file"

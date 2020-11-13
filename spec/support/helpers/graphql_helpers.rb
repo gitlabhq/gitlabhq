@@ -17,13 +17,22 @@ module GraphqlHelpers
   # ready, then the early return is returned instead.
   #
   # Then the resolve method is called.
-  def resolve(resolver_class, obj: nil, args: {}, ctx: {}, field: nil)
-    resolver = resolver_class.new(object: obj, context: ctx, field: field)
+  def resolve(resolver_class, args: {}, **resolver_args)
+    resolver = resolver_instance(resolver_class, **resolver_args)
     ready, early_return = sync_all { resolver.ready?(**args) }
 
     return early_return unless ready
 
     resolver.resolve(**args)
+  end
+
+  def resolver_instance(resolver_class, obj: nil, ctx: {}, field: nil, schema: GitlabSchema)
+    if ctx.is_a?(Hash)
+      q = double('Query', schema: schema)
+      ctx = GraphQL::Query::Context.new(query: q, object: obj, values: ctx)
+    end
+
+    resolver_class.new(object: obj, context: ctx, field: field)
   end
 
   # Eagerly run a loader's named resolver

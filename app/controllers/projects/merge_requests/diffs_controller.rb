@@ -34,6 +34,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       environment: environment,
       merge_request: @merge_request,
       diff_view: diff_view,
+      merge_ref_head_diff: render_merge_ref_head_diff?,
       pagination_data: diffs.pagination_data
     }
 
@@ -67,7 +68,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       render: ->(partial, locals) { view_to_html_string(partial, locals) }
     }
 
-    options = additional_attributes.merge(diff_view: Feature.enabled?(:unified_diff_lines, @merge_request.project, default_enabled: true) ? "inline" : diff_view)
+    options = additional_attributes.merge(
+      diff_view: Feature.enabled?(:unified_diff_lines, @merge_request.project, default_enabled: true) ? "inline" : diff_view,
+      merge_ref_head_diff: render_merge_ref_head_diff?
+    )
 
     if @merge_request.project.context_commits_enabled?
       options[:context_commits] = @merge_request.recent_context_commits
@@ -116,7 +120,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       end
     end
 
-    if Gitlab::Utils.to_boolean(params[:diff_head]) && @merge_request.diffable_merge_ref?
+    if render_merge_ref_head_diff?
       return CompareService.new(@project, @merge_request.merge_ref_head.sha)
         .execute(@project, @merge_request.target_branch)
     end
@@ -156,6 +160,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     @grouped_diff_discussions = @merge_request.grouped_diff_discussions(@compare.diff_refs)
     @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes), @merge_request)
+  end
+
+  def render_merge_ref_head_diff?
+    Gitlab::Utils.to_boolean(params[:diff_head]) && @merge_request.diffable_merge_ref?
   end
 
   def note_positions

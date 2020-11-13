@@ -10,6 +10,17 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
   let(:enabled_path) { '/gitlab-org/gitlab-foss/noteable/issue/1/notes' }
   let(:endpoint) { 'issue_notes' }
 
+  describe '.skip!' do
+    it 'sets the skip header on the response' do
+      rsp = ActionDispatch::Response.new
+      rsp.set_header('Anything', 'Else')
+
+      described_class.skip!(rsp)
+
+      expect(rsp.headers.to_h).to eq(described_class::SKIP_HEADER_KEY => '1', 'Anything' => 'Else')
+    end
+  end
+
   context 'when ETag caching is not enabled for current route' do
     let(:path) { '/gitlab-org/gitlab-foss/tree/master/noteable/issue/1/notes' }
 
@@ -74,6 +85,28 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
       _, headers, _ = middleware.call(build_request(path, if_none_match))
 
       expect(headers['ETag']).to eq 'W/"123"'
+    end
+  end
+
+  context 'when the matching route requests that the ETag is skipped' do
+    let(:path) { enabled_path }
+    let(:app) do
+      proc do |_env|
+        response = ActionDispatch::Response.new
+
+        described_class.skip!(response)
+
+        [200, response.headers.to_h, '']
+      end
+    end
+
+    it 'returns the correct headers' do
+      expect(app).to receive(:call).and_call_original
+
+      _, headers, _ = middleware.call(build_request(path, if_none_match))
+
+      expect(headers).not_to have_key('ETag')
+      expect(headers).not_to have_key(described_class::SKIP_HEADER_KEY)
     end
   end
 

@@ -432,7 +432,7 @@ and the following environment variables:
 | `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`     | -          | `3`       |
 | `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`         | -          | `900`     |
 | `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`      | -          | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | -         |
+| `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | `1`       |
 
 NOTE: **Note:**
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import

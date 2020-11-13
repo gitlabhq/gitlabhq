@@ -2,7 +2,6 @@
 import { GlModal, GlFormGroup, GlFormInput, GlTabs, GlTab } from '@gitlab/ui';
 import { isSafeURL, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_TABS } from '../../constants';
 import UploadImageTab from './upload_image_tab.vue';
 
@@ -15,7 +14,6 @@ export default {
     GlTabs,
     GlTab,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     imageRoot: {
       type: String,
@@ -34,10 +32,10 @@ export default {
   },
   modalTitle: __('Image details'),
   okTitle: __('Insert image'),
-  urlTabTitle: __('By URL'),
+  urlTabTitle: __('Link to an image'),
   urlLabel: __('Image URL'),
   descriptionLabel: __('Description'),
-  uploadTabTitle: __('Upload file'),
+  uploadTabTitle: __('Upload an image'),
   computed: {
     altText() {
       return this.description;
@@ -54,7 +52,7 @@ export default {
       this.$refs.modal.show();
     },
     onOk(event) {
-      if (this.glFeatures.sseImageUploads && this.tabIndex === IMAGE_TABS.UPLOAD_TAB) {
+      if (this.tabIndex === IMAGE_TABS.UPLOAD_TAB) {
         this.submitFile(event);
         return;
       }
@@ -108,7 +106,7 @@ export default {
     :ok-title="$options.okTitle"
     @ok="onOk"
   >
-    <gl-tabs v-if="glFeatures.sseImageUploads" v-model="tabIndex">
+    <gl-tabs v-model="tabIndex">
       <!-- Upload file Tab -->
       <gl-tab :title="$options.uploadTabTitle">
         <upload-image-tab ref="uploadImageTab" @input="setFile" />
@@ -127,17 +125,6 @@ export default {
         </gl-form-group>
       </gl-tab>
     </gl-tabs>
-
-    <gl-form-group
-      v-else
-      class="gl-mt-5 gl-mb-3"
-      :label="$options.urlLabel"
-      label-for="url-input"
-      :state="!Boolean(urlError)"
-      :invalid-feedback="urlError"
-    >
-      <gl-form-input id="url-input" ref="urlInput" v-model="imageUrl" />
-    </gl-form-group>
 
     <!-- Description Input -->
     <gl-form-group :label="$options.descriptionLabel" label-for="description-input">

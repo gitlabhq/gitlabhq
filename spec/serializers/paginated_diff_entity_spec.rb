@@ -31,4 +31,50 @@ RSpec.describe PaginatedDiffEntity do
       total_pages: 7
     )
   end
+
+  context 'when there are conflicts' do
+    let(:diff_batch) { merge_request.merge_request_diff.diffs_in_batch(7, 3, diff_options: nil) }
+    let(:diff_files) { diff_batch.diff_files.to_a }
+    let(:diff_file_with_conflict) { diff_files.last }
+    let(:diff_file_without_conflict) { diff_files.first }
+
+    let(:resolvable_conflicts) { true }
+    let(:conflict_file) { double(our_path: diff_file_with_conflict.new_path) }
+    let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: resolvable_conflicts) }
+
+    let(:merge_ref_head_diff) { true }
+    let(:options) { super().merge(merge_ref_head_diff: merge_ref_head_diff) }
+
+    before do
+      allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
+    end
+
+    it 'conflicts are highlighted' do
+      expect(conflict_file).to receive(:diff_lines_for_serializer)
+      expect(diff_file_with_conflict).not_to receive(:diff_lines_for_serializer)
+      expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
+
+      subject
+    end
+
+    context 'merge ref head diff is not chosen to be displayed' do
+      let(:merge_ref_head_diff) { false }
+
+      it 'conflicts are not calculated' do
+        expect(MergeRequests::Conflicts::ListService).not_to receive(:new)
+      end
+    end
+
+    context 'when conflicts cannot be resolved' do
+      let(:resolvable_conflicts) { false }
+
+      it 'conflicts are not highlighted' do
+        expect(conflict_file).not_to receive(:diff_lines_for_serializer)
+        expect(diff_file_with_conflict).to receive(:diff_lines_for_serializer).twice  # for highlighted_diff_lines and is_fully_expanded
+        expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
+
+        subject
+      end
+    end
+  end
 end

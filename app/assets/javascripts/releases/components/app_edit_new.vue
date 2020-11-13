@@ -29,7 +29,6 @@ export default {
       'markdownDocsPath',
       'markdownPreviewPath',
       'releasesPagePath',
-      'updateReleaseApiDocsPath',
       'release',
       'newMilestonePath',
       'manageMilestonesPath',

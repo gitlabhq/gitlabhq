@@ -1905,6 +1905,16 @@ input BoardIssueInput {
   epicWildcardId: EpicWildcardId
 
   """
+  Filter by iteration title
+  """
+  iterationTitle: String
+
+  """
+  Filter by iteration ID wildcard
+  """
+  iterationWildcardId: IterationWildcardId
+
+  """
   Filter by label name
   """
   labelName: [String]
@@ -11240,11 +11250,6 @@ Represents an iteration object
 """
 type Iteration implements TimeboxReportInterface {
   """
-  Daily scope and completed totals for burnup charts
-  """
-  burnupTimeSeries: [BurnupChartDailyTotals!]
-
-  """
   Timestamp of iteration creation
   """
   createdAt: Time!
@@ -11369,6 +11374,21 @@ enum IterationState {
   opened
   started
   upcoming
+}
+
+"""
+Iteration ID wildcard values
+"""
+enum IterationWildcardId {
+  """
+  An iteration is assigned
+  """
+  ANY
+
+  """
+  No iteration is assigned
+  """
+  NONE
 }
 
 """
@@ -13315,11 +13335,6 @@ Represents a milestone
 """
 type Milestone implements TimeboxReportInterface {
   """
-  Daily scope and completed totals for burnup charts
-  """
-  burnupTimeSeries: [BurnupChartDailyTotals!]
-
-  """
   Timestamp of milestone creation
   """
   createdAt: Time!
@@ -13882,6 +13897,11 @@ input NegatedBoardIssueInput {
   Filter by epic ID. Incompatible with epicWildcardId
   """
   epicId: EpicID
+
+  """
+  Filter by iteration title
+  """
+  iterationTitle: String
 
   """
   Filter by label name
@@ -20948,11 +20968,6 @@ type TimeboxReport {
 }
 
 interface TimeboxReportInterface {
-  """
-  Daily scope and completed totals for burnup charts
-  """
-  burnupTimeSeries: [BurnupChartDailyTotals!]
-
   """
   Historically accurate report about the timebox
   """

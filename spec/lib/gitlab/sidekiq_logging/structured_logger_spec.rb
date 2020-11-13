@@ -119,6 +119,10 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     context 'with SIDEKIQ_LOG_ARGUMENTS disabled' do
+      before do
+        stub_env('SIDEKIQ_LOG_ARGUMENTS', '0')
+      end
+
       it 'logs start and end of job without args' do
         Timecop.freeze(timestamp) do
           expect(logger).to receive(:info).with(start_payload.except('args')).ordered
@@ -150,8 +154,8 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
       it 'logs with scheduling latency' do
         Timecop.freeze(timestamp) do
-          expect(logger).to receive(:info).with(start_payload.except('args')).ordered
-          expect(logger).to receive(:info).with(end_payload.except('args')).ordered
+          expect(logger).to receive(:info).with(start_payload).ordered
+          expect(logger).to receive(:info).with(end_payload).ordered
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
@@ -173,12 +177,12 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       let(:expected_end_payload) do
-        end_payload.except('args').merge(timing_data)
+        end_payload.merge(timing_data)
       end
 
       it 'logs with Gitaly and Rugged timing data' do
         Timecop.freeze(timestamp) do
-          expect(logger).to receive(:info).with(start_payload.except('args')).ordered
+          expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
           subject.call(job, 'test_queue') do
@@ -194,10 +198,10 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         allow(Process).to receive(:clock_gettime).and_call_original
       end
 
-      let(:expected_start_payload) { start_payload.except('args') }
+      let(:expected_start_payload) { start_payload }
 
       let(:expected_end_payload) do
-        end_payload.except('args').merge('cpu_s' => a_value >= 0)
+        end_payload.merge('cpu_s' => a_value >= 0)
       end
 
       let(:expected_end_payload_with_db) do
@@ -228,10 +232,10 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     context 'when there is extra metadata set for the done log' do
-      let(:expected_start_payload) { start_payload.except('args') }
+      let(:expected_start_payload) { start_payload }
 
       let(:expected_end_payload) do
-        end_payload.except('args').merge("#{ApplicationWorker::LOGGING_EXTRA_KEY}.key1" => 15, "#{ApplicationWorker::LOGGING_EXTRA_KEY}.key2" => 16)
+        end_payload.merge("#{ApplicationWorker::LOGGING_EXTRA_KEY}.key1" => 15, "#{ApplicationWorker::LOGGING_EXTRA_KEY}.key2" => 16)
       end
 
       it 'logs it in the done log' do

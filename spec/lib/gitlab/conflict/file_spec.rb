@@ -93,6 +93,51 @@ RSpec.describe Gitlab::Conflict::File do
     end
   end
 
+  describe '#diff_lines_for_serializer' do
+    let(:diff_line_types) { conflict_file.diff_lines_for_serializer.map(&:type) }
+
+    it 'assigns conflict types to the diff lines' do
+      expect(diff_line_types[4]).to eq('conflict_marker')
+      expect(diff_line_types[5..10]).to eq(['conflict_marker_our'] * 6)
+      expect(diff_line_types[11]).to eq('conflict_marker')
+      expect(diff_line_types[12..17]).to eq(['conflict_marker_their'] * 6)
+      expect(diff_line_types[18]).to eq('conflict_marker')
+
+      expect(diff_line_types[19..24]).to eq([nil] * 6)
+
+      expect(diff_line_types[25]).to eq('conflict_marker')
+      expect(diff_line_types[26..27]).to eq(['conflict_marker_our'] * 2)
+      expect(diff_line_types[28]).to eq('conflict_marker')
+      expect(diff_line_types[29..30]).to eq(['conflict_marker_their'] * 2)
+      expect(diff_line_types[31]).to eq('conflict_marker')
+    end
+
+    it 'does not add a match line to the end of the section' do
+      expect(diff_line_types.last).to eq(nil)
+    end
+
+    context 'when there are unchanged trailing lines' do
+      let(:rugged_conflict) { index.conflicts.first }
+      let(:raw_conflict_content) { index.merge_file('files/ruby/popen.rb')[:data] }
+
+      it 'assign conflict types and adds match line to the end of the section' do
+        expect(diff_line_types).to eq([
+          'match',
+          nil, nil, nil,
+          "conflict_marker",
+          "conflict_marker_our",
+          "conflict_marker",
+          "conflict_marker_their",
+          "conflict_marker_their",
+          "conflict_marker_their",
+          "conflict_marker",
+          nil, nil, nil,
+          "match"
+        ])
+      end
+    end
+  end
+
   describe '#sections' do
     it 'only inserts match lines when there is a gap between sections' do
       conflict_file.sections.each_with_index do |section, i|
