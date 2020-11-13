@@ -32,7 +32,7 @@ const handleStartupEvents = () => {
     action();
 -*/
 export const waitForCSSLoaded = (action = () => {}) => {
-  if (!gon.features.startupCss || allLinksLoaded()) {
+  if (!gon?.features?.startupCss || allLinksLoaded()) {
     return new Promise(resolve => {
       action();
       resolve();

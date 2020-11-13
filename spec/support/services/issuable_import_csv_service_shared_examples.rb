@@ -19,12 +19,10 @@ RSpec.shared_examples 'issuable import csv service' do |issuable_type|
   end
 
   shared_examples_for 'importer with email notification' do
-    if issuable_type == 'issue'
-      it 'notifies user of import result' do
-        expect(Notify).to receive_message_chain(email_method, :deliver_later)
+    it 'notifies user of import result' do
+      expect(Notify).to receive_message_chain(email_method, :deliver_later)
 
-        subject
-      end
+      subject
     end
   end
 

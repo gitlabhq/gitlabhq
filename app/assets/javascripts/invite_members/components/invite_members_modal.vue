@@ -10,7 +10,7 @@ import {
   GlFormInput,
 } from '@gitlab/ui';
 import eventHub from '../event_hub';
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import Api from '~/api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 
@@ -28,11 +28,15 @@ export default {
     MembersTokenSelect,
   },
   props: {
-    groupId: {
+    id: {
       type: String,
       required: true,
     },
-    groupName: {
+    isProject: {
+      type: Boolean,
+      required: true,
+    },
+    name: {
       type: String,
       required: true,
     },
@@ -59,9 +63,16 @@ export default {
     };
   },
   computed: {
+    inviteToName() {
+      return this.name.toUpperCase();
+    },
+    inviteToType() {
+      return this.isProject ? __('project') : __('group');
+    },
     introText() {
-      return sprintf(s__("InviteMembersModal|You're inviting members to the %{group_name} group"), {
-        group_name: this.groupName,
+      return sprintf(s__("InviteMembersModal|You're inviting members to the %{name} %{type}"), {
+        name: this.inviteToName,
+        type: this.inviteToType,
       });
     },
     toastOptions() {
@@ -110,13 +121,14 @@ export default {
       this.selectedAccessLevel = item;
     },
     submitForm(formData) {
-      return Api.inviteGroupMember(this.groupId, formData)
-        .then(() => {
-          this.showToastMessageSuccess();
-        })
-        .catch(error => {
-          this.showToastMessageError(error);
-        });
+      if (this.isProject) {
+        return Api.inviteProjectMembers(this.id, formData)
+          .then(this.showToastMessageSuccess)
+          .catch(this.showToastMessageError);
+      }
+      return Api.inviteGroupMember(this.id, formData)
+        .then(this.showToastMessageSuccess)
+        .catch(this.showToastMessageError);
     },
     showToastMessageSuccess() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);

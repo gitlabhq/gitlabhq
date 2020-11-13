@@ -1,6 +1,6 @@
 %tr
   %td
-    #{Gitlab::Auth::OAuth::Provider.label_for(identity.provider)} (#{identity.provider}) #{identity.saml_provider_id.present? ? "ID: #{identity.saml_provider_id}" : ""}
+    #{Gitlab::Auth::OAuth::Provider.label_for(identity.provider)} (#{identity.provider}) #{identity.saml_provider_id.present? ? "for #{link_to identity.saml_provider.group.path, identity.saml_provider.group} ID: #{identity.saml_provider_id}".html_safe : ""}
   %td
     = identity.extern_uid
   %td

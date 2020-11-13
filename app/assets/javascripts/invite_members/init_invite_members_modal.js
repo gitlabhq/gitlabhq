@@ -18,7 +18,6 @@ export default function initInviteMembersModal() {
         props: {
           ...el.dataset,
           accessLevels: JSON.parse(el.dataset.accessLevels),
-          groupName: el.dataset.groupName.toUpperCase(),
         },
       }),
   });

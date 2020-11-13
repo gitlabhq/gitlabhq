@@ -3,8 +3,9 @@ import { GlDropdown, GlDropdownItem, GlDatepicker, GlSprintf, GlLink } from '@gi
 import Api from '~/api';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 
-const groupId = '1';
-const groupName = 'testgroup';
+const id = '1';
+const name = 'testgroup';
+const isProject = false;
 const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
 const defaultAccessLevel = '10';
 const helpLink = 'https://example.com';
@@ -12,8 +13,9 @@ const helpLink = 'https://example.com';
 const createComponent = (data = {}) => {
   return shallowMount(InviteMembersModal, {
     propsData: {
-      groupId,
-      groupName,
+      id,
+      name,
+      isProject,
       accessLevels,
       defaultAccessLevel,
       helpLink,
@@ -113,7 +115,7 @@ describe('InviteMembersModal', () => {
       });
 
       it('calls Api inviteGroupMember with the correct params', () => {
-        expect(Api.inviteGroupMember).toHaveBeenCalledWith(groupId, postData);
+        expect(Api.inviteGroupMember).toHaveBeenCalledWith(id, postData);
       });
     });
 
