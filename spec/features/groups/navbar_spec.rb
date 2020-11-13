@@ -50,6 +50,8 @@ RSpec.describe 'Group navbar' do
     insert_package_nav(_('Kubernetes'))
 
     stub_feature_flags(group_iterations: false)
+    stub_config(dependency_proxy: { enabled: false })
+    stub_config(registry: { enabled: false })
     stub_group_wikis(false)
     group.add_maintainer(user)
     sign_in(user)
@@ -66,6 +68,18 @@ RSpec.describe 'Group navbar' do
       stub_config(registry: { enabled: true })
 
       insert_container_nav(_('Kubernetes'))
+
+      visit group_path(group)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when dependency proxy is available' do
+    before do
+      stub_config(dependency_proxy: { enabled: true })
+
+      insert_dependency_proxy_nav(_('Dependency Proxy'))
 
       visit group_path(group)
     end

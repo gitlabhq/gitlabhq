@@ -383,7 +383,7 @@ export default {
         @toggleResolvedComments="toggleResolvedComments"
         @todoError="onTodoError"
       >
-        <template #replyForm>
+        <template #reply-form>
           <apollo-mutation
             v-if="isAnnotating"
             #default="{ mutate, loading }"

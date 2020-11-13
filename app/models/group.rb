@@ -71,6 +71,9 @@ class Group < Namespace
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
 
+  has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
+  has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -201,6 +204,10 @@ class Group < Namespace
 
   def packages_feature_enabled?
     ::Gitlab.config.packages.enabled
+  end
+
+  def dependency_proxy_feature_available?
+    ::Gitlab.config.dependency_proxy.enabled
   end
 
   def notification_email_for(user)

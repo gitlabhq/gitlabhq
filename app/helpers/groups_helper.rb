@@ -170,6 +170,10 @@ module GroupsHelper
       group_container_registry_nav?
   end
 
+  def group_dependency_proxy_nav?
+    @group.dependency_proxy_feature_available?
+  end
+
   def group_packages_list_nav?
     @group.packages_feature_enabled?
   end

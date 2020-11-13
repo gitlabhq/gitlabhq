@@ -69,6 +69,7 @@ describe('import_projects store actions', () => {
           importStatus: STATUSES.NONE,
         },
       ],
+      provider: 'provider',
     };
 
     localState.getImportTarget = getImportTarget(localState);
@@ -150,7 +151,28 @@ describe('import_projects store actions', () => {
       );
     });
 
-    describe('when /home/xanf/projects/gdk/gitlab/spec/frontend/import_projects/store/actions_spec.jsfiltered', () => {
+    describe('when rate limited', () => {
+      it('commits RECEIVE_REPOS_ERROR and shows rate limited error message', async () => {
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(429);
+
+        await testAction(
+          fetchRepos,
+          null,
+          { ...localState, filter: 'filter' },
+          [
+            { type: SET_PAGE, payload: 1 },
+            { type: REQUEST_REPOS },
+            { type: SET_PAGE, payload: 0 },
+            { type: RECEIVE_REPOS_ERROR },
+          ],
+          [],
+        );
+
+        expect(createFlash).toHaveBeenCalledWith('Provider rate limit exceeded. Try again later');
+      });
+    });
+
+    describe('when filtered', () => {
       it('fetches repos with filter applied', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, payload);
 

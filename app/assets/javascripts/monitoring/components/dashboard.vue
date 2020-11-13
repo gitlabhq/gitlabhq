@@ -423,7 +423,7 @@ export default {
         :prometheus-alerts-available="prometheusAlertsAvailable"
         @timerangezoom="onTimeRangeZoom"
       >
-        <template #topLeft>
+        <template #top-left>
           <gl-button
             ref="goBackBtn"
             v-gl-tooltip

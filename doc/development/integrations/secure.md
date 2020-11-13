@@ -181,7 +181,9 @@ SAST and Dependency Scanning scanners must scan the files in the project directo
 
 In order to be consistent with the official Container Scanning for GitLab,
 scanners must scan the Docker image whose name and tag are given by
-`CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG`, respectively.
+`CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG`, respectively. If the `DOCKER_IMAGE`
+variable is provided, then the `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` variables
+are ignored, and the image specified in the `DOCKER_IMAGE` variable is scanned instead.
 
 If not provided, `CI_APPLICATION_REPOSITORY` should default to
 `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG`, which is a combination of predefined CI variables.

@@ -138,7 +138,7 @@ export default {
             href="#related-issues"
             aria-hidden="true"
           />
-          <slot name="headerText">{{ __('Linked issues') }}</slot>
+          <slot name="header-text">{{ __('Linked issues') }}</slot>
           <gl-link
             v-if="hasHelpPath"
             :href="helpPath"
@@ -167,7 +167,7 @@ export default {
             />
           </div>
         </h3>
-        <slot name="headerActions"></slot>
+        <slot name="header-actions"></slot>
       </div>
       <div
         class="linked-issues-card-body bg-gray-light"

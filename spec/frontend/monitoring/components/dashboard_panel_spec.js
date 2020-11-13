@@ -106,7 +106,7 @@ describe('Dashboard Panel', () => {
         {},
         {
           slots: {
-            topLeft: `<div class="top-left-content">OK</div>`,
+            'top-left': `<div class="top-left-content">OK</div>`,
           },
         },
       );

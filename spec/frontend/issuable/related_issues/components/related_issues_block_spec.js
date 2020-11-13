@@ -56,7 +56,7 @@ describe('RelatedIssuesBlock', () => {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
         },
-        slots: { headerText },
+        slots: { 'header-text': headerText },
       });
 
       expect(wrapper.find('.card-title').html()).toContain(headerText);
@@ -72,7 +72,7 @@ describe('RelatedIssuesBlock', () => {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
         },
-        slots: { headerActions },
+        slots: { 'header-actions': headerActions },
       });
 
       expect(wrapper.find('[data-testid="custom-button"]').html()).toBe(headerActions);

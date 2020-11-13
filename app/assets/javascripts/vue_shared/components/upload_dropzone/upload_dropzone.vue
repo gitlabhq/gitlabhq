@@ -147,7 +147,7 @@ export default {
         class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
       >
         <div v-show="!isDragDataValid" class="mw-50 gl-text-center">
-          <slot name="invalidDragDataSlot">
+          <slot name="invalid-drag-data-slot">
             <h3 :class="{ 'gl-font-base gl-display-inline': !displayAsCard }">
               {{ __('Oh no!') }}
             </h3>
@@ -159,7 +159,7 @@ export default {
           </slot>
         </div>
         <div v-show="isDragDataValid" class="mw-50 gl-text-center">
-          <slot name="validDragDataSlot">
+          <slot name="valid-drag-data-slot">
             <h3 :class="{ 'gl-font-base gl-display-inline': !displayAsCard }">
               {{ __('Incoming!') }}
             </h3>

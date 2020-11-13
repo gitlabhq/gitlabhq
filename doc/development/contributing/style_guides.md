@@ -48,14 +48,16 @@ for changed files. This saves you time as you don't have to wait for the same er
 by CI/CD.
 
 Lefthook relies on a pre-push hook to prevent commits that violate its ruleset.
-If you wish to override this behavior, pass the environment variable `LEFTHOOK=0`.
-That is, `LEFTHOOK=0 git push`.
+To override this behavior, pass the environment variable `LEFTHOOK=0`. That is,
+`LEFTHOOK=0 git push`.
 
 You can also:
 
 - Define [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
-- Skip [checks per tag on the fly](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly), e.g. `LEFTHOOK_EXCLUDE=frontend git push origin`.
-- Run [hooks manually](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly), e.g. `lefthook run pre-push`.
+- Skip [checks per tag on the fly](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
+  For example, `LEFTHOOK_EXCLUDE=frontend git push origin`.
+- Run [hooks manually](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly).
+  For example, `lefthook run pre-push`.
 
 ## Ruby, Rails, RSpec
 

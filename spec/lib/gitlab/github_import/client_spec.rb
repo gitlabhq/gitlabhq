@@ -203,16 +203,40 @@ RSpec.describe Gitlab::GithubImport::Client do
   describe '#requests_remaining?' do
     let(:client) { described_class.new('foo') }
 
-    it 'returns true if enough requests remain' do
-      expect(client).to receive(:remaining_requests).and_return(9000)
+    context 'when default requests limit is set' do
+      before do
+        allow(client).to receive(:requests_limit).and_return(5000)
+      end
 
-      expect(client.requests_remaining?).to eq(true)
+      it 'returns true if enough requests remain' do
+        expect(client).to receive(:remaining_requests).and_return(9000)
+
+        expect(client.requests_remaining?).to eq(true)
+      end
+
+      it 'returns false if not enough requests remain' do
+        expect(client).to receive(:remaining_requests).and_return(1)
+
+        expect(client.requests_remaining?).to eq(false)
+      end
     end
 
-    it 'returns false if not enough requests remain' do
-      expect(client).to receive(:remaining_requests).and_return(1)
+    context 'when search requests limit is set' do
+      before do
+        allow(client).to receive(:requests_limit).and_return(described_class::SEARCH_MAX_REQUESTS_PER_MINUTE)
+      end
 
-      expect(client.requests_remaining?).to eq(false)
+      it 'returns true if enough requests remain' do
+        expect(client).to receive(:remaining_requests).and_return(described_class::SEARCH_RATE_LIMIT_THRESHOLD + 1)
+
+        expect(client.requests_remaining?).to eq(true)
+      end
+
+      it 'returns false if not enough requests remain' do
+        expect(client).to receive(:remaining_requests).and_return(described_class::SEARCH_RATE_LIMIT_THRESHOLD - 1)
+
+        expect(client.requests_remaining?).to eq(false)
+      end
     end
   end
 
@@ -259,6 +283,16 @@ RSpec.describe Gitlab::GithubImport::Client do
 
       expect(client.octokit).to receive(:rate_limit).and_return(rate_limit)
       expect(client.remaining_requests).to eq(1)
+    end
+  end
+
+  describe '#requests_limit' do
+    it 'returns requests limit' do
+      client = described_class.new('foo')
+      rate_limit = double(limit: 1)
+
+      expect(client.octokit).to receive(:rate_limit).and_return(rate_limit)
+      expect(client.requests_limit).to eq(1)
     end
   end
 
@@ -415,6 +449,63 @@ RSpec.describe Gitlab::GithubImport::Client do
         .and_return('https://github.kittens.com/')
 
       expect(client.rate_limiting_enabled?).to eq(false)
+    end
+  end
+
+  describe 'search' do
+    let(:client) { described_class.new('foo') }
+    let(:user) { double(:user, login: 'user') }
+    let(:org1) { double(:org, login: 'org1') }
+    let(:org2) { double(:org, login: 'org2') }
+    let(:repo1) { double(:repo, full_name: 'repo1') }
+    let(:repo2) { double(:repo, full_name: 'repo2') }
+
+    before do
+      allow(client)
+        .to receive(:each_object)
+        .with(:repos, nil, { affiliation: 'collaborator' })
+        .and_return([repo1, repo2].to_enum)
+
+      allow(client)
+        .to receive(:each_object)
+        .with(:organizations)
+        .and_return([org1, org2].to_enum)
+
+      allow(client.octokit).to receive(:user).and_return(user)
+    end
+
+    describe '#search_repos_by_name' do
+      it 'searches for repositories based on name' do
+        expected_search_query = 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2'
+
+        expect(client).to receive(:each_page).with(:search_repositories, expected_search_query)
+
+        client.search_repos_by_name('test')
+      end
+    end
+
+    describe '#search_query' do
+      it 'returns base search query' do
+        result = client.search_query(str: 'test', type: :test, include_collaborations: false, include_orgs: false)
+
+        expect(result).to eq('test in:test is:public,private user:user')
+      end
+
+      context 'when include_collaborations is true' do
+        it 'returns search query including users' do
+          result = client.search_query(str: 'test', type: :test, include_collaborations: true, include_orgs: false)
+
+          expect(result).to eq('test in:test is:public,private user:user repo:repo1 repo:repo2')
+        end
+      end
+
+      context 'when include_orgs is true' do
+        it 'returns search query including users' do
+          result = client.search_query(str: 'test', type: :test, include_collaborations: false, include_orgs: true)
+
+          expect(result).to eq('test in:test is:public,private user:user org:org1 org:org2')
+        end
+      end
     end
   end
 end

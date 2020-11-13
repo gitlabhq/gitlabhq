@@ -1,0 +1,12 @@
+- proxy_url = "#{group_url(@group)}/dependency_proxy/containers"
+
+%h5.prepend-top-20= _('Dependency proxy URL')
+
+.row
+  .col-lg-8.col-md-12.input-group
+    = text_field_tag :url, "#{proxy_url}", class: 'js-dependency-proxy-url form-control', readonly: true
+    = clipboard_button(text: "#{proxy_url}", title: _("Copy %{proxy_url}") % { proxy_url: proxy_url })
+
+.row
+  .col-12.help-block.gl-mt-3
+    = _('Contains %{count} blobs of images (%{size})') % { count: @blobs_count, size: number_to_human_size(@blobs_total_size) }

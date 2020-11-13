@@ -1,5 +1,0 @@
----
-title: "Hashed Storage: make migration and rollback resilient to exceptions"
-merge_request: 46178
-author:
-type: fixed

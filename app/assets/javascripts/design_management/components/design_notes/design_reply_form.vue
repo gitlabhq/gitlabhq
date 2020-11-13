@@ -110,7 +110,7 @@ export default {
         </textarea>
       </template>
     </markdown-field>
-    <slot name="resolveCheckbox"></slot>
+    <slot name="resolve-checkbox"></slot>
     <div class="note-form-actions gl-display-flex gl-justify-content-space-between">
       <gl-button
         ref="submitButton"

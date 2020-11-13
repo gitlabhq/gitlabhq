@@ -108,7 +108,7 @@ export default {
         </span>
       </div>
       <div class="gl-display-flex gl-align-items-baseline">
-        <slot name="resolveDiscussion"></slot>
+        <slot name="resolve-discussion"></slot>
         <button
           v-if="isEditButtonVisible"
           v-gl-tooltip
@@ -127,7 +127,7 @@ export default {
         class="note-text js-note-text md"
         data-qa-selector="note_content"
       ></div>
-      <slot name="resolvedStatus"></slot>
+      <slot name="resolved-status"></slot>
     </template>
     <apollo-mutation
       v-else

@@ -419,7 +419,7 @@ export default {
           </template>
         </gl-table>
       </template>
-      <template #emtpy-state>
+      <template #empty-state>
         <gl-empty-state
           :title="emptyStateData.title"
           :svg-path="emptyListSvgPath"

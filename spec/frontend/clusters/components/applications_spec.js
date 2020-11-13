@@ -429,7 +429,7 @@ describe('Applications', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(findByTestId('installedVia').element).toMatchSnapshot();
+      expect(findByTestId('installed-via').element).toMatchSnapshot();
     });
 
     it('emits saveKnativeDomain event when knative domain editor emits save event', () => {

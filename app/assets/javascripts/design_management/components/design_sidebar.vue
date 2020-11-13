@@ -207,6 +207,6 @@ export default {
         />
       </gl-collapse>
     </template>
-    <slot name="replyForm"></slot>
+    <slot name="reply-form"></slot>
   </div>
 </template>

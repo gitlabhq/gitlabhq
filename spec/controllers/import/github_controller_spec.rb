@@ -144,6 +144,58 @@ RSpec.describe Import::GithubController do
         expect(json_response.dig('provider_repos', 0, 'id')).to eq(repo_1.id)
         expect(json_response.dig('provider_repos', 1, 'id')).to eq(repo_2.id)
       end
+
+      context 'when filtering' do
+        let(:filter) { 'test' }
+        let(:user_login) { 'user' }
+        let(:collaborations_subquery) { 'repo:repo1 repo:repo2' }
+        let(:organizations_subquery) { 'org:org1 org:org2' }
+
+        before do
+          allow_next_instance_of(Octokit::Client) do |client|
+            allow(client).to receive(:user).and_return(double(login: user_login))
+          end
+        end
+
+        it 'makes request to github search api' do
+          expected_query = "test in:name is:public,private user:#{user_login} #{collaborations_subquery} #{organizations_subquery}"
+
+          expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
+            expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
+            expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
+            expect(client).to receive(:each_page).with(:search_repositories, expected_query).and_return([].to_enum)
+          end
+
+          get :status, params: { filter: filter }, format: :json
+        end
+
+        context 'when user input contains colons and spaces' do
+          before do
+            stub_client(search_repos_by_name: [])
+          end
+
+          it 'sanitizes user input' do
+            filter = ' test1:test2 test3 : test4 '
+            expected_filter = 'test1test2test3test4'
+
+            get :status, params: { filter: filter }, format: :json
+
+            expect(assigns(:filter)).to eq(expected_filter)
+          end
+        end
+
+        context 'when rate limit threshold is exceeded' do
+          before do
+            allow(controller).to receive(:status).and_raise(Gitlab::GithubImport::RateLimitError)
+          end
+
+          it 'returns 429' do
+            get :status, params: { filter: 'test' }, format: :json
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+        end
+      end
     end
   end
 

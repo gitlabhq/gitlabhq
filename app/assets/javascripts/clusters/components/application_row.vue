@@ -343,7 +343,7 @@ export default {
           >
           <span v-else class="js-cluster-application-title">{{ title }}</span>
         </strong>
-        <slot name="installedVia"></slot>
+        <slot name="installed-via"></slot>
         <div>
           <slot name="description"></slot>
         </div>

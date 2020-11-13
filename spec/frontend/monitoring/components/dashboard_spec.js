@@ -508,7 +508,7 @@ describe('Dashboard', () => {
       const mockKeyup = key => window.dispatchEvent(new KeyboardEvent('keyup', { key }));
 
       const MockPanel = {
-        template: `<div><slot name="topLeft"/></div>`,
+        template: `<div><slot name="top-left"/></div>`,
       };
 
       beforeEach(() => {

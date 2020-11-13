@@ -73,7 +73,7 @@ exports[`Applications Ingress application shows the correct warning message 1`] 
 
 exports[`Applications Knative application shows the correct description 1`] = `
 <span
-  data-testid="installedVia"
+  data-testid="installed-via"
 >
   installed via 
   <a

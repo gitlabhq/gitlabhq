@@ -103,6 +103,10 @@ module Ci
       )
     end
 
+    scope :in_pipelines, ->(pipelines) do
+      where(pipeline: pipelines)
+    end
+
     scope :with_existing_job_artifacts, ->(query) do
       where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
     end

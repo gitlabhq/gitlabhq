@@ -181,10 +181,10 @@ export default {
             <slot :name="slotName"></slot>
             <popover v-if="hasPopover" :options="popoverOptions" class="gl-ml-2" />
           </div>
-          <slot name="subHeading"></slot>
+          <slot name="sub-heading"></slot>
         </div>
 
-        <slot name="actionButtons"></slot>
+        <slot name="action-buttons"></slot>
 
         <button
           v-if="isCollapsible"

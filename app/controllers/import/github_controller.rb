@@ -15,6 +15,7 @@ class Import::GithubController < Import::BaseController
   rescue_from OAuthConfigMissingError, with: :missing_oauth_config
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
+  rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
 
   def new
     if !ci_cd_only? && github_import_configured? && logged_in_with_provider?
@@ -114,7 +115,7 @@ class Import::GithubController < Import::BaseController
 
   def client_repos
     @client_repos ||= if Feature.enabled?(:remove_legacy_github_client)
-                        filtered(concatenated_repos)
+                        concatenated_repos
                       else
                         filtered(client.repos)
                       end
@@ -122,8 +123,15 @@ class Import::GithubController < Import::BaseController
 
   def concatenated_repos
     return [] unless client.respond_to?(:each_page)
+    return client.each_page(:repos).flat_map(&:objects) unless sanitized_filter_param
 
-    client.each_page(:repos).flat_map(&:objects)
+    client.search_repos_by_name(sanitized_filter_param).flat_map(&:objects).flat_map(&:items)
+  end
+
+  def sanitized_filter_param
+    super
+
+    @filter = @filter&.tr(' ', '')&.tr(':', '')
   end
 
   def oauth_client
@@ -244,6 +252,10 @@ class Import::GithubController < Import::BaseController
 
   def extra_import_params
     {}
+  end
+
+  def rate_limit_threshold_exceeded
+    head :too_many_requests
   end
 end
 

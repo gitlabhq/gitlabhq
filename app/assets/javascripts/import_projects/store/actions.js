@@ -7,11 +7,14 @@ import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 let eTagPoll;
 
 const hasRedirectInError = e => e?.response?.data?.error?.redirect;
 const redirectToUrlInError = e => visitUrl(e.response.data.error.redirect);
+const tooManyRequests = e => e.response.status === httpStatusCodes.TOO_MANY_REQUESTS;
 const pathWithParams = ({ path, ...params }) => {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== ''),
@@ -71,6 +74,14 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
 
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
+      } else if (tooManyRequests(e)) {
+        createFlash(
+          sprintf(s__('ImportProjects|%{provider} rate limit exceeded. Try again later'), {
+            provider: capitalizeFirstCharacter(provider),
+          }),
+        );
+
+        commit(types.RECEIVE_REPOS_ERROR);
       } else {
         createFlash(
           sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {

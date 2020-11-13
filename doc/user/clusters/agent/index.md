@@ -412,11 +412,56 @@ spec:
 
 ## Example projects
 
+The following example projects can help you get started with the Kubernetes Agent.
+
+### Simple NGINX deployment
+
 This basic GitOps example deploys NGINX:
 
 - [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
 - [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
-- [Install GitLab Runner](https://gitlab.com/gitlab-examples/install-runner-via-k8s-agent)
+
+### Deploying GitLab Runner with the Agent
+
+These instructions assume that the Agent is already set up as described in the
+[Get started with GitOps](#get-started-with-gitops-and-the-gitlab-agent):
+
+1. Check the possible
+   [Runner chart YAML values](https://gitlab.com/gitlab-org/charts/gitlab-runner/blob/master/values.yaml)
+   on the Runner chart documentation, and create a `runner-chart-values.yaml` file
+   with the configuration that fits your needs, such as:
+
+    ```yaml
+    ## The GitLab Server URL (with protocol) that want to register the runner against
+    ## ref: https://docs.gitlab.com/runner/commands/README.html#gitlab-runner-register
+    ##
+    gitlabUrl: https://gitlab.my.domain.com/
+
+    ## The Registration Token for adding new Runners to the GitLab Server. This must
+    ## be retrieved from your GitLab Instance.
+    ## ref: https://docs.gitlab.com/ce/ci/runners/README.html
+    ##
+    runnerRegistrationToken: "XXXXXXYYYYYYZZZZZZ"
+
+    ## For RBAC support:
+    rbac:
+      create: true
+
+    ## Run all containers with the privileged flag enabled
+    ## This will allow the docker:dind image to run if you need to run Docker
+    ## commands. Please read the docs before turning this on:
+    ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#using-dockerdind
+    runners:
+      privileged: true
+    ```
+
+1. Create a single manifest file to install the Runner chart with your cluster agent:
+
+   ```shell
+   helm template --namespace gitlab gitlab-runner -f runner-chart-values.yaml gitlab/gitlab-runner > manifest.yaml
+   ```
+
+1. Push your `manifest.yaml` to your manifest repository.
 
 ## Troubleshooting
 
@@ -479,7 +524,7 @@ but KAS on the server side is not available via `wss`. To fix it, make sure the
 same schemes are configured on both sides.
 
 It's not possible to set the `grpc` scheme due to the issue
-[It is not possible to configure KAS to work with grpc without directly editing GitLab KAS deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/276888). To use `grpc` while the
+[It is not possible to configure KAS to work with `grpc` without directly editing GitLab KAS deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/276888). To use `grpc` while the
 issue is in progress, directly edit the deployment with the
 `kubectl edit deployment gitlab-kas` command, and change `--listen-websocket=true` to `--listen-websocket=false`. After running that command, you should be able to use
 `grpc://gitlab-kas.<YOUR-NAMESPACE>:5005`.

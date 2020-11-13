@@ -355,6 +355,14 @@ module Ci
       end
     end
 
+    def self.latest_running_for_ref(ref)
+      newest_first(ref: ref).running.take
+    end
+
+    def self.latest_failed_for_ref(ref)
+      newest_first(ref: ref).failed.take
+    end
+
     # Returns a Hash containing the latest pipeline for every given
     # commit.
     #

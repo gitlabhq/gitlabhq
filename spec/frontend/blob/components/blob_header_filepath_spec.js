@@ -65,7 +65,7 @@ describe('Blob Header Filepath', () => {
         {},
         {
           scopedSlots: {
-            filepathPrepend: `<span>${slotContent}</span>`,
+            'filepath-prepend': `<span>${slotContent}</span>`,
           },
         },
       );

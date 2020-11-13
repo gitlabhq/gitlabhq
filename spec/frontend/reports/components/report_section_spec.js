@@ -244,7 +244,7 @@ describe('Report section', () => {
           hasIssues: true,
         },
         slots: {
-          actionButtons: ['Action!'],
+          'action-buttons': ['Action!'],
         },
       });
     });

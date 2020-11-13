@@ -40,23 +40,35 @@ module Gitlab
 
         private
 
-        def pipeline
-          @pipeline ||= @project.ci_pipelines.latest_successful_for_ref(@ref)
+        def successful_pipeline
+          @successful_pipeline ||= @project.ci_pipelines.latest_successful_for_ref(@ref)
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
+        def failed_pipeline
+          @failed_pipeline ||= @project.ci_pipelines.latest_failed_for_ref(@ref)
+        end
+
+        def running_pipeline
+          @running_pipeline ||= @project.ci_pipelines.latest_running_for_ref(@ref)
+        end
+
         def raw_coverage
-          return unless pipeline
+          latest =
+            if @job.present?
+              builds = ::Ci::Build
+                .in_pipelines([successful_pipeline, running_pipeline, failed_pipeline])
+                .latest
+                .success
+                .for_ref(@ref)
+                .by_name(@job)
 
-          if @job.blank?
-            pipeline.coverage
-          else
-            pipeline.builds
-              .find_by(name: @job)
-              .try(:coverage)
-          end
+              builds.max_by(&:created_at)
+            else
+              successful_pipeline
+            end
+
+          latest&.coverage
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

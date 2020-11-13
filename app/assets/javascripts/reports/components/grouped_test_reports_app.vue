@@ -134,7 +134,7 @@ export default {
     class="mr-widget-section grouped-security-reports mr-report"
     @toggleEvent="handleToggleEvent"
   >
-    <template v-if="showViewFullReport" #actionButtons>
+    <template v-if="showViewFullReport" #action-buttons>
       <gl-button
         :href="testTabURL"
         target="_blank"
@@ -145,7 +145,7 @@ export default {
         {{ s__('ciReport|View full report') }}
       </gl-button>
     </template>
-    <template v-if="hasRecentFailures(summary)" #subHeading>
+    <template v-if="hasRecentFailures(summary)" #sub-heading>
       {{ recentFailuresText(summary) }}
     </template>
     <template #body>

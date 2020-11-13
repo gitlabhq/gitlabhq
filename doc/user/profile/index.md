@@ -188,16 +188,21 @@ To set your current status:
 1. Set the desired emoji and/or status message.
 1. Click **Set status**. Alternatively, you can click **Remove status** to remove your user status entirely.
 
+![Busy status indicator](img/busy_status_indicator_v13_6.png)
+
 or
 
 1. Click your avatar.
 1. Select **Profile**.
 1. Click **Edit profile** (pencil icon).
 1. Enter your status message in the **Your status** text field.
+   1. Alternatively, select the **Busy** checkbox ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259649) in GitLab 13.6}.
 1. Click **Add status emoji** (smiley face), and select the desired emoji.
 1. Click **Update profile settings**.
 
 You can also set your current status [using the API](../../api/users.md#user-status).
+
+If you previously selected the "Busy" checkbox, remember to deselect it when you become available again.
 
 ## Commit email
 

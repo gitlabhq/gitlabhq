@@ -15,21 +15,11 @@ This feature might not be available to you. Check the **version history** note a
 ## Latest project test coverage list
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267624) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com
-> - It can be enabled or disabled per-group.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-latest-project-test-coverage).
 
 To see the latest code coverage for each project in your group:
 
 1. Go to **Analytics > Repositories** in the group (not from a project).
 1. In the **Latest test coverage results** section, use the **Select projects** dropdown to choose the projects you want to check.
-
-### Enable or disable latest project test coverage
-
-This feature comes with the `:group_coverage_data_report` feature flag disabled by default. It is disabled on GitLab.com.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it for your instance.
-The group test coverage table can be enabled or disabled per-group.
 
 ## Download historic test coverage data
 

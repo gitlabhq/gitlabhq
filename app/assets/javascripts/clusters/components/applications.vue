@@ -549,8 +549,8 @@ export default {
             @set="setKnativeDomain"
           />
         </template>
-        <template v-if="cloudRun" #installedVia>
-          <span data-testid="installedVia">
+        <template v-if="cloudRun" #installed-via>
+          <span data-testid="installed-via">
             <gl-sprintf
               :message="s__('ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}')"
             >

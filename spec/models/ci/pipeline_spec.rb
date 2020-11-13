@@ -1972,6 +1972,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.latest_running_for_ref' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_running_pipeline) do
+      create_pipeline(:running, 'ref', 'D', project)
+    end
+
+    it 'returns the latest running pipeline' do
+      expect(described_class.latest_running_for_ref('ref'))
+        .to eq(latest_running_pipeline)
+    end
+  end
+
+  describe '.latest_failed_for_ref' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_failed_pipeline) do
+      create_pipeline(:failed, 'ref', 'D', project)
+    end
+
+    it 'returns the latest failed pipeline' do
+      expect(described_class.latest_failed_for_ref('ref'))
+        .to eq(latest_failed_pipeline)
+    end
+  end
+
   describe '.latest_successful_for_sha' do
     include_context 'with some outdated pipelines'
 

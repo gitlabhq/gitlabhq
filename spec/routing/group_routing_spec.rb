@@ -79,4 +79,40 @@ RSpec.describe "Groups", "routing" do
       let(:group_path) { 'projects.abc123' }
     end
   end
+
+  describe 'dependency proxy for containers' do
+    context 'image name without namespace' do
+      it 'routes to #manifest' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/ruby/manifests/2.3.6'))
+          .to route_to('groups/dependency_proxy_for_containers#manifest', group_id: 'gitlabhq', image: 'ruby', tag: '2.3.6')
+      end
+
+      it 'routes to #blob' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/ruby/blobs/abc12345'))
+          .to route_to('groups/dependency_proxy_for_containers#blob', group_id: 'gitlabhq', image: 'ruby', sha: 'abc12345')
+      end
+
+      it 'does not route to #blob with an invalid sha' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/ruby/blobs/sha256:asdf1234%2f%2e%2e'))
+          .not_to route_to(group_id: 'gitlabhq', image: 'ruby', sha: 'sha256:asdf1234%2f%2e%2e')
+      end
+
+      it 'does not route to #blob with an invalid image' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/ru*by/blobs/abc12345'))
+          .not_to route_to('groups/dependency_proxy_for_containers#blob', group_id: 'gitlabhq', image: 'ru*by', sha: 'abc12345')
+      end
+    end
+
+    context 'image name with namespace' do
+      it 'routes to #manifest' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/foo/bar/manifests/2.3.6'))
+          .to route_to('groups/dependency_proxy_for_containers#manifest', group_id: 'gitlabhq', image: 'foo/bar', tag: '2.3.6')
+      end
+
+      it 'routes to #blob' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/foo/bar/blobs/abc12345'))
+          .to route_to('groups/dependency_proxy_for_containers#blob', group_id: 'gitlabhq', image: 'foo/bar', sha: 'abc12345')
+      end
+    end
+  end
 end

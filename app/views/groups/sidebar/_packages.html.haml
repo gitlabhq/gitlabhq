@@ -1,7 +1,7 @@
 - packages_link = group_packages_list_nav? ? group_packages_path(@group) : group_container_registries_path(@group)
 
 - if group_packages_nav?
-  = nav_link(controller: ['groups/packages', 'groups/registry/repositories']) do
+  = nav_link(controller: ['groups/packages', 'groups/registry/repositories', 'groups/dependency_proxies']) do
     = link_to packages_link, title: _('Packages') do
       .nav-icon-container
         = sprite_icon('package')
@@ -21,3 +21,7 @@
         = nav_link(controller: 'groups/registry/repositories') do
           = link_to group_container_registries_path(@group), title: _('Container Registry') do
             %span= _('Container Registry')
+      - if group_dependency_proxy_nav?
+        = nav_link(controller: 'groups/dependency_proxies') do
+          = link_to group_dependency_proxy_path(@group), title: _('Dependency Proxy') do
+            %span= _('Dependency Proxy')

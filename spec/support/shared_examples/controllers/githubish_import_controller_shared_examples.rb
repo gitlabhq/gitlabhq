@@ -145,6 +145,8 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
       group.add_owner(user)
       client = stub_client(repos: repos, orgs: [org], org_repos: [org_repo])
       allow(client).to receive(:each_page).and_return([OpenStruct.new(objects: repos)].to_enum)
+      # GitHub controller has filtering done using GitHub Search API
+      stub_feature_flags(remove_legacy_github_client: false)
     end
 
     it 'filters list of repositories by name' do

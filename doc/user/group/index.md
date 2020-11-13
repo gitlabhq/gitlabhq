@@ -798,7 +798,7 @@ With [GitLab Issue Analytics](issues_analytics/index.md), you can see a bar char
 
 With [GitLab Repositories Analytics](repositories_analytics/index.md), you can download a CSV of the latest coverage data for all the projects in your group.
 
-## Dependency Proxy **(PREMIUM)**
+## Dependency Proxy
 
 Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.
 

@@ -162,6 +162,7 @@ module API
       mount ::API::CommitStatuses
       mount ::API::ContainerRegistryEvent
       mount ::API::ContainerRepositories
+      mount ::API::DependencyProxy
       mount ::API::DeployKeys
       mount ::API::DeployTokens
       mount ::API::Deployments

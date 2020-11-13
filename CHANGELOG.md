@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.5.4 (2020-11-13)
+
+### Fixed (4 changes)
+
+- Fix Vue Labels Select dropdown keyboard scroll. !43874
+- Hashed Storage: make migration and rollback resilient to exceptions. !46178
+- Fix compliance framework database migration on CE instances. !46761
+- Resolve problem when namespace_settings were not created for groups created via admin panel. !46875
+
+
 ## 13.5.3 (2020-11-03)
 
 ### Fixed (3 changes)

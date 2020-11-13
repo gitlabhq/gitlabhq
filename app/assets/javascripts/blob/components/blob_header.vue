@@ -66,7 +66,7 @@ export default {
 <template>
   <div class="js-file-title file-title-flex-parent">
     <blob-filepath :blob="blob">
-      <template #filepathPrepend>
+      <template #filepath-prepend>
         <slot name="prepend"></slot>
       </template>
     </blob-filepath>

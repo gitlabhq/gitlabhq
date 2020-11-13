@@ -451,6 +451,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: dependency_proxy:purge_dependency_proxy_cache
+  :feature_category: :dependency_proxy
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: deployment:deployments_drop_older_deployments
   :feature_category: :continuous_delivery
   :has_external_dependencies:
