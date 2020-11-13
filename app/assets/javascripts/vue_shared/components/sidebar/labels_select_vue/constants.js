@@ -3,5 +3,3 @@ export const DropdownVariant = {
   Standalone: 'standalone',
   Embedded: 'embedded',
 };
-
-export const LIST_BUFFER_SIZE = 5;

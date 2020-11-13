@@ -52,8 +52,6 @@ class MigrateComplianceFrameworkEnumToDatabaseFrameworkRecord < ActiveRecord::Mi
   end
 
   def up
-    return unless Gitlab.ee?
-
     TmpComplianceFramework.reset_column_information
     TmpProjectSettings.reset_column_information
 

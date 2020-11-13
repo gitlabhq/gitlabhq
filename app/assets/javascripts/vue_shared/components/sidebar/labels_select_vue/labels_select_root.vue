@@ -266,7 +266,7 @@ export default {
       </dropdown-value>
       <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
       <dropdown-contents
-        v-if="dropdownButtonVisible && showDropdownContents"
+        v-show="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
       />
     </template>

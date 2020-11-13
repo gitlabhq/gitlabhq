@@ -30,41 +30,23 @@ RSpec.describe MigrateComplianceFrameworkEnumToDatabaseFrameworkRecord, schema: 
 
   subject { described_class.new.up }
 
-  context 'when Gitlab.ee? is true' do
-    before do
-      expect(Gitlab).to receive(:ee?).and_return(true)
-    end
+  it 'updates the project settings' do
+    subject
 
-    it 'updates the project settings' do
-      subject
+    gdpr_framework = compliance_management_frameworks.find_by(namespace_id: root_group.id, name: 'GDPR')
+    expect(project_on_root_level_compliance_setting.reload.framework_id).to eq(gdpr_framework.id)
+    expect(project_on_sub_sub_level_compliance_setting_2.reload.framework_id).to eq(gdpr_framework.id)
 
-      gdpr_framework = compliance_management_frameworks.find_by(namespace_id: root_group.id, name: 'GDPR')
-      expect(project_on_root_level_compliance_setting.reload.framework_id).to eq(gdpr_framework.id)
-      expect(project_on_sub_sub_level_compliance_setting_2.reload.framework_id).to eq(gdpr_framework.id)
+    sox_framework = compliance_management_frameworks.find_by(namespace_id: root_group.id, name: 'SOX')
+    expect(project_on_sub_sub_level_compliance_setting_1.reload.framework_id).to eq(sox_framework.id)
 
-      sox_framework = compliance_management_frameworks.find_by(namespace_id: root_group.id, name: 'SOX')
-      expect(project_on_sub_sub_level_compliance_setting_1.reload.framework_id).to eq(sox_framework.id)
-
-      gdpr_framework = compliance_management_frameworks.find_by(namespace_id: namespace.id, name: 'GDPR')
-      expect(project_on_namespace_level_compliance_setting.reload.framework_id).to eq(gdpr_framework.id)
-    end
-
-    it 'adds two framework records' do
-      subject
-
-      expect(compliance_management_frameworks.count).to eq(3)
-    end
+    gdpr_framework = compliance_management_frameworks.find_by(namespace_id: namespace.id, name: 'GDPR')
+    expect(project_on_namespace_level_compliance_setting.reload.framework_id).to eq(gdpr_framework.id)
   end
 
-  context 'when Gitlab.ee? is false' do
-    before do
-      expect(Gitlab).to receive(:ee?).and_return(false)
-    end
+  it 'adds two framework records' do
+    subject
 
-    it 'does nothing' do
-      subject
-
-      expect(compliance_management_frameworks.count).to eq(0)
-    end
+    expect(compliance_management_frameworks.count).to eq(3)
   end
 end
