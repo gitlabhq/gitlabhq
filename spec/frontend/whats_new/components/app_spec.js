@@ -107,7 +107,7 @@ describe('App', () => {
   it('send an event when feature item is clicked', () => {
     trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
 
-    const link = wrapper.find('[data-testid="whats-new-title-link"]');
+    const link = wrapper.find('.whats-new-item-title-link');
     triggerEvent(link.element);
 
     expect(trackingSpy.mock.calls[1]).toMatchObject([

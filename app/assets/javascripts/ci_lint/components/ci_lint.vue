@@ -19,7 +19,11 @@ export default {
       type: String,
       required: true,
     },
-    helpPagePath: {
+    lintHelpPagePath: {
+      type: String,
+      required: true,
+    },
+    pipelineSimulationHelpPagePath: {
       type: String,
       required: true,
     },
@@ -106,7 +110,7 @@ export default {
         >
         <gl-form-checkbox v-model="dryRun"
           >{{ __('Simulate a pipeline created for the default branch') }}
-          <gl-link :href="helpPagePath" target="_blank"
+          <gl-link :href="pipelineSimulationHelpPagePath" target="_blank"
             ><gl-icon class="gl-text-blue-600" name="question-o"/></gl-link
         ></gl-form-checkbox>
       </div>
@@ -120,6 +124,7 @@ export default {
       :errors="errors"
       :warnings="warnings"
       :dry-run="dryRun"
+      :lint-help-page-path="lintHelpPagePath"
     />
   </div>
 </template>

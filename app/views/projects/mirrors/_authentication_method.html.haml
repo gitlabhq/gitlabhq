@@ -7,7 +7,7 @@
     = f.select :auth_method,
         options_for_select(auth_options, mirror.auth_method),
         {}, { class: "form-control select-control js-mirror-auth-type qa-authentication-method" }
-    = icon('chevron-down')
+    = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
     = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group

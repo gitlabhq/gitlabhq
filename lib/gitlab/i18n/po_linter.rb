@@ -24,7 +24,9 @@ module Gitlab
           return 'PO-syntax errors' => [parse_error]
         end
 
-        validate_entries
+        Gitlab::I18n.with_locale(locale) do
+          validate_entries
+        end
       end
 
       def parse_po
@@ -156,12 +158,10 @@ module Gitlab
       end
 
       def validate_translation(errors, entry)
-        Gitlab::I18n.with_locale(locale) do
-          if entry.has_plural?
-            translate_plural(entry)
-          else
-            translate_singular(entry)
-          end
+        if entry.has_plural?
+          translate_plural(entry)
+        else
+          translate_singular(entry)
         end
 
       # `sprintf` could raise an `ArgumentError` when invalid passing something
@@ -230,9 +230,7 @@ module Gitlab
         # This calls the C function that defines the pluralization rule, it can
         # return a boolean (`false` represents 0, `true` represents 1) or an integer
         # that specifies the plural form to be used for the given number
-        pluralization_result = Gitlab::I18n.with_locale(locale) do
-          FastGettext.pluralisation_rule.call(counter)
-        end
+        pluralization_result = FastGettext.pluralisation_rule.call(counter)
 
         case pluralization_result
         when false

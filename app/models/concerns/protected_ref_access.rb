@@ -36,10 +36,12 @@ module ProtectedRefAccess
     HUMAN_ACCESS_LEVELS[self.access_level]
   end
 
-  # CE access levels are always role-based,
-  # where as EE allows groups and users too
+  def type
+    :role
+  end
+
   def role?
-    true
+    type == :role
   end
 
   def check_access(user)

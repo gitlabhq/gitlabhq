@@ -6,6 +6,8 @@ module Resolvers
              required: false,
              description: 'Also return milestones in all subgroups and subprojects'
 
+    type Types::MilestoneType.connection_type, null: true
+
     private
 
     def parent_id_parameters(args)

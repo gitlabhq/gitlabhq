@@ -461,9 +461,10 @@ RSpec.describe Gitlab::I18n::PoLinter do
       fake_metadata = double
       allow(fake_metadata).to receive(:forms_to_test).and_return(4)
       allow(linter).to receive(:metadata_entry).and_return(fake_metadata)
-      allow(linter).to receive(:locale).and_return('pl_PL')
 
-      numbers = linter.numbers_covering_all_plurals
+      numbers = Gitlab::I18n.with_locale('pl_PL') do
+        linter.numbers_covering_all_plurals
+      end
 
       expect(numbers).to contain_exactly(0, 1, 2)
     end

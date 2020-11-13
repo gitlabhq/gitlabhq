@@ -2336,6 +2336,11 @@ type CiJob {
   ): CiJobConnection
 
   """
+  Pipeline the job belongs to
+  """
+  pipeline: Pipeline!
+
+  """
   Schedule for the build
   """
   scheduledAt: Time
@@ -4483,14 +4488,14 @@ type DastScannerProfile {
   editPath: String
 
   """
-  ID of the DAST scanner profile
+  ID of the DAST scanner profile. Deprecated in 13.6: Use `id`
   """
-  globalId: DastScannerProfileID!
+  globalId: DastScannerProfileID! @deprecated(reason: "Use `id`. Deprecated in 13.6")
 
   """
-  ID of the DAST scanner profile. Deprecated in 13.4: Use `global_id`
+  ID of the DAST scanner profile
   """
-  id: ID! @deprecated(reason: "Use `global_id`. Deprecated in 13.4")
+  id: DastScannerProfileID!
 
   """
   Name of the DAST scanner profile
@@ -4607,14 +4612,14 @@ type DastScannerProfileCreatePayload {
   errors: [String!]!
 
   """
-  ID of the scanner profile.
+  ID of the scanner profile.. Deprecated in 13.6: Use `id`
   """
-  globalId: DastScannerProfileID
+  globalId: DastScannerProfileID @deprecated(reason: "Use `id`. Deprecated in 13.6")
 
   """
-  ID of the scanner profile.. Deprecated in 13.4: Use `global_id`
+  ID of the scanner profile.
   """
-  id: ID @deprecated(reason: "Use `global_id`. Deprecated in 13.4")
+  id: DastScannerProfileID
 }
 
 """

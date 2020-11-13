@@ -18,6 +18,14 @@
   @include gl-font-weight-bold;
 }
 
+.whats-new-item-title-link {
+  &:hover,
+  &:focus,
+  &:active {
+    @include gl-text-gray-900;
+  }
+}
+
 .whats-new-item-image {
   border-color: $gray-50;
 }

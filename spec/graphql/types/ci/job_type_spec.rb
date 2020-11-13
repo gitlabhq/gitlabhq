@@ -7,6 +7,7 @@ RSpec.describe Types::Ci::JobType do
 
   it 'exposes the expected fields' do
     expected_fields = %i[
+      pipeline
       name
       needs
       detailedStatus

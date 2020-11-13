@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlLoadingIcon, GlTab } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
@@ -39,6 +39,7 @@ describe('TerraformList', () => {
 
   const findBadge = () => wrapper.find(GlBadge);
   const findEmptyState = () => wrapper.find(EmptyState);
+  const findPaginationButtons = () => wrapper.find(GlKeysetPagination);
   const findStatesTable = () => wrapper.find(StatesTable);
   const findTab = () => wrapper.find(GlTab);
 
@@ -73,6 +74,12 @@ describe('TerraformList', () => {
           terraformStates: {
             nodes: states,
             count: states.length,
+            pageInfo: {
+              hasNextPage: true,
+              hasPreviousPage: false,
+              startCursor: 'prev',
+              endCursor: 'next',
+            },
           },
         });
 
@@ -84,8 +91,33 @@ describe('TerraformList', () => {
         expect(findBadge().text()).toBe('2');
       });
 
-      it('renders the states table', () => {
+      it('renders the states table and pagination buttons', () => {
         expect(findStatesTable().exists()).toBe(true);
+        expect(findPaginationButtons().exists()).toBe(true);
+      });
+
+      describe('when list has no additional pages', () => {
+        beforeEach(() => {
+          createWrapper({
+            terraformStates: {
+              nodes: states,
+              count: states.length,
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: '',
+                endCursor: '',
+              },
+            },
+          });
+
+          return wrapper.vm.$nextTick();
+        });
+
+        it('renders the states table without pagination buttons', () => {
+          expect(findStatesTable().exists()).toBe(true);
+          expect(findPaginationButtons().exists()).toBe(false);
+        });
       });
     });
 
@@ -95,6 +127,7 @@ describe('TerraformList', () => {
           terraformStates: {
             nodes: [],
             count: 0,
+            pageInfo: null,
           },
         });
 

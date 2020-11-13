@@ -4,16 +4,49 @@ require 'spec_helper'
 
 RSpec.describe BreadcrumbsHelper do
   describe '#push_to_schema_breadcrumb' do
-    it 'enqueue element name, link and position' do
-      element = %w(element1 link1)
-      helper.push_to_schema_breadcrumb(element[0], element[1])
+    let(:element_name) { 'BreadCrumbElement' }
+    let(:link) { 'http://test.host/foo' }
+    let(:breadcrumb_list) { helper.instance_variable_get(:@schema_breadcrumb_list) }
 
-      list = helper.instance_variable_get(:@schema_breadcrumb_list)
+    subject { helper.push_to_schema_breadcrumb(element_name, link) }
+
+    it 'enqueue element name, link and position' do
+      subject
 
       aggregate_failures do
-        expect(list[0]['name']).to eq element[0]
-        expect(list[0]['item']).to eq element[1]
-        expect(list[0]['position']).to eq(1)
+        expect(breadcrumb_list[0]['name']).to eq element_name
+        expect(breadcrumb_list[0]['item']).to eq link
+        expect(breadcrumb_list[0]['position']).to eq(1)
+      end
+    end
+
+    context 'when link is relative' do
+      let(:link) { '/foo' }
+
+      it 'converts the url into absolute' do
+        subject
+
+        expect(breadcrumb_list[0]['item']).to eq "http://test.host#{link}"
+      end
+    end
+
+    describe 'when link is invalid' do
+      let(:link) { 'invalid://foo[]' }
+
+      it 'returns the current url' do
+        subject
+
+        expect(breadcrumb_list[0]['item']).to eq 'http://test.host'
+      end
+    end
+
+    describe 'when link is nil' do
+      let(:link) { nil }
+
+      it 'returns the current url' do
+        subject
+
+        expect(breadcrumb_list[0]['item']).to eq 'http://test.host'
       end
     end
   end
@@ -21,8 +54,8 @@ RSpec.describe BreadcrumbsHelper do
   describe '#schema_breadcrumb_json' do
     let(:elements) do
       [
-        %w(element1 link1),
-        %w(element2 link2)
+        %w(element1 http://test.host/link1),
+        %w(element2 http://test.host/link2)
       ]
     end
 
@@ -56,8 +89,8 @@ RSpec.describe BreadcrumbsHelper do
     context 'when extra breadcrumb element is added' do
       let(:extra_elements) do
         [
-          %w(extra_element1 extra_link1),
-          %w(extra_element2 extra_link2)
+          %w(extra_element1 http://test.host/extra_link1),
+          %w(extra_element2 http://test.host/extra_link2)
         ]
       end
 

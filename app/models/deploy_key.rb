@@ -6,6 +6,7 @@ class DeployKey < Key
 
   has_many :deploy_keys_projects, inverse_of: :deploy_key, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :deploy_keys_projects
+  has_many :protected_branch_push_access_levels, class_name: '::ProtectedBranch::PushAccessLevel'
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where(deploy_keys_projects: { project_id: projects }) }
   scope :with_write_access, -> { joins(:deploy_keys_projects).merge(DeployKeysProject.with_write_access) }

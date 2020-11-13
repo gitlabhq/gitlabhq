@@ -6277,6 +6277,24 @@
               "deprecationReason": null
             },
             {
+              "name": "pipeline",
+              "description": "Pipeline the job belongs to",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Pipeline",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "scheduledAt",
               "description": "Schedule for the build",
               "args": [
@@ -12232,6 +12250,24 @@
             },
             {
               "name": "globalId",
+              "description": "ID of the DAST scanner profile. Deprecated in 13.6: Use `id`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DastScannerProfileID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use `id`. Deprecated in 13.6"
+            },
+            {
+              "name": "id",
               "description": "ID of the DAST scanner profile",
               "args": [
 
@@ -12247,24 +12283,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "ID of the DAST scanner profile. Deprecated in 13.4: Use `global_id`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `global_id`. Deprecated in 13.4"
             },
             {
               "name": "profileName",
@@ -12579,6 +12597,20 @@
             },
             {
               "name": "globalId",
+              "description": "ID of the scanner profile.. Deprecated in 13.6: Use `id`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "DastScannerProfileID",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Use `id`. Deprecated in 13.6"
+            },
+            {
+              "name": "id",
               "description": "ID of the scanner profile.",
               "args": [
 
@@ -12590,20 +12622,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "ID of the scanner profile.. Deprecated in 13.4: Use `global_id`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `global_id`. Deprecated in 13.4"
             }
           ],
           "inputFields": null,

@@ -1,0 +1,5 @@
+---
+title: Match Jira users by email, username or name on jira issues import
+merge_request: 33883
+author:
+type: changed

@@ -1,20 +1,24 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { GlTable } from '@gitlab/ui';
+import { GlTable, GlLink } from '@gitlab/ui';
 import CiLintResults from '~/ci_lint/components/ci_lint_results.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { mockJobs, mockErrors, mockWarnings } from '../mock_data';
 
 describe('CI Lint Results', () => {
   let wrapper;
+  const defaultProps = {
+    valid: true,
+    jobs: mockJobs,
+    errors: [],
+    warnings: [],
+    dryRun: false,
+    lintHelpPagePath: '/help',
+  };
 
   const createComponent = (props = {}, mountFn = shallowMount) => {
     wrapper = mountFn(CiLintResults, {
       propsData: {
-        valid: true,
-        jobs: mockJobs,
-        errors: [],
-        warnings: [],
-        dryRun: false,
+        ...defaultProps,
         ...props,
       },
     });
@@ -23,6 +27,7 @@ describe('CI Lint Results', () => {
   const findTable = () => wrapper.find(GlTable);
   const findByTestId = selector => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
   const findAllByTestId = selector => () => wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);
+  const findLinkToDoc = () => wrapper.find(GlLink);
   const findErrors = findByTestId('errors');
   const findWarnings = findByTestId('warnings');
   const findStatus = findByTestId('status');
@@ -48,8 +53,13 @@ describe('CI Lint Results', () => {
     });
 
     it('displays the invalid status', () => {
-      expect(findStatus().text()).toBe(`Status: ${wrapper.vm.$options.incorrect.text}`);
+      expect(findStatus().text()).toContain(`Status: ${wrapper.vm.$options.incorrect.text}`);
       expect(findStatus().props('variant')).toBe(wrapper.vm.$options.incorrect.variant);
+    });
+
+    it('contains the link to documentation', () => {
+      expect(findLinkToDoc().text()).toBe('More information');
+      expect(findLinkToDoc().attributes('href')).toBe(defaultProps.lintHelpPagePath);
     });
 
     it('displays the error message', () => {
@@ -66,9 +76,9 @@ describe('CI Lint Results', () => {
     });
   });
 
-  describe('Valid results', () => {
+  describe('Valid results with dry run', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ dryRun: true }, mount);
     });
 
     it('displays table', () => {
@@ -76,12 +86,17 @@ describe('CI Lint Results', () => {
     });
 
     it('displays the valid status', () => {
-      expect(findStatus().text()).toBe(wrapper.vm.$options.correct.text);
+      expect(findStatus().text()).toContain(wrapper.vm.$options.correct.text);
       expect(findStatus().props('variant')).toBe(wrapper.vm.$options.correct.variant);
     });
 
     it('does not display only/expect values with dry run', () => {
       expect(findOnlyExcept().exists()).toBe(false);
+    });
+
+    it('contains the link to documentation', () => {
+      expect(findLinkToDoc().text()).toBe('More information');
+      expect(findLinkToDoc().attributes('href')).toBe(defaultProps.lintHelpPagePath);
     });
   });
 

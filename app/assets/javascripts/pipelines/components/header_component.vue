@@ -16,6 +16,7 @@ export default {
   name: 'PipelineHeaderSection',
   pipelineCancel: 'pipelineCancel',
   pipelineRetry: 'pipelineRetry',
+  finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
   components: {
     ciHeader,
     GlAlert,
@@ -95,6 +96,9 @@ export default {
     status() {
       return this.pipeline?.status;
     },
+    isFinished() {
+      return this.$options.finishedStatuses.includes(this.status);
+    },
     shouldRenderContent() {
       return !this.isLoadingInitialQuery && this.hasPipelineData;
     },
@@ -123,6 +127,13 @@ export default {
       }
     },
   },
+  watch: {
+    isFinished(finished) {
+      if (finished) {
+        this.$apollo.queries.pipeline.stopPolling();
+      }
+    },
+  },
   methods: {
     reportFailure(errorType) {
       this.failureType = errorType;
@@ -141,7 +152,10 @@ export default {
         if (errors.length > 0) {
           this.reportFailure(POST_FAILURE);
         } else {
-          this.$apollo.queries.pipeline.refetch();
+          await this.$apollo.queries.pipeline.refetch();
+          if (!this.isFinished) {
+            this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
+          }
         }
       } catch {
         this.reportFailure(POST_FAILURE);

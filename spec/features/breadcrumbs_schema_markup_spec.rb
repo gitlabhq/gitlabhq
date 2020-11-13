@@ -17,13 +17,13 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     expect(item_list.size).to eq 3
     expect(item_list[0]['name']).to eq project.namespace.name
-    expect(item_list[0]['item']).to eq user_path(project.owner)
+    expect(item_list[0]['item']).to eq user_url(project.owner)
 
     expect(item_list[1]['name']).to eq project.name
-    expect(item_list[1]['item']).to eq project_path(project)
+    expect(item_list[1]['item']).to eq project_url(project)
 
     expect(item_list[2]['name']).to eq 'Details'
-    expect(item_list[2]['item']).to eq project_path(project)
+    expect(item_list[2]['item']).to eq project_url(project)
   end
 
   it 'generates the breadcrumb schema for group projects' do
@@ -33,16 +33,16 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     expect(item_list.size).to eq 4
     expect(item_list[0]['name']).to eq group.name
-    expect(item_list[0]['item']).to eq group_path(group)
+    expect(item_list[0]['item']).to eq group_url(group)
 
     expect(item_list[1]['name']).to eq subgroup.name
-    expect(item_list[1]['item']).to eq group_path(subgroup)
+    expect(item_list[1]['item']).to eq group_url(subgroup)
 
     expect(item_list[2]['name']).to eq group_project.name
-    expect(item_list[2]['item']).to eq project_path(group_project)
+    expect(item_list[2]['item']).to eq project_url(group_project)
 
     expect(item_list[3]['name']).to eq 'Details'
-    expect(item_list[3]['item']).to eq project_path(group_project)
+    expect(item_list[3]['item']).to eq project_url(group_project)
   end
 
   it 'generates the breadcrumb schema for group' do
@@ -52,13 +52,13 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     expect(item_list.size).to eq 3
     expect(item_list[0]['name']).to eq group.name
-    expect(item_list[0]['item']).to eq group_path(group)
+    expect(item_list[0]['item']).to eq group_url(group)
 
     expect(item_list[1]['name']).to eq subgroup.name
-    expect(item_list[1]['item']).to eq group_path(subgroup)
+    expect(item_list[1]['item']).to eq group_url(subgroup)
 
     expect(item_list[2]['name']).to eq 'Details'
-    expect(item_list[2]['item']).to eq group_path(subgroup)
+    expect(item_list[2]['item']).to eq group_url(subgroup)
   end
 
   it 'generates the breadcrumb schema for issues' do
@@ -68,13 +68,13 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     expect(item_list.size).to eq 3
     expect(item_list[0]['name']).to eq project.namespace.name
-    expect(item_list[0]['item']).to eq user_path(project.owner)
+    expect(item_list[0]['item']).to eq user_url(project.owner)
 
     expect(item_list[1]['name']).to eq project.name
-    expect(item_list[1]['item']).to eq project_path(project)
+    expect(item_list[1]['item']).to eq project_url(project)
 
     expect(item_list[2]['name']).to eq 'Issues'
-    expect(item_list[2]['item']).to eq project_issues_path(project)
+    expect(item_list[2]['item']).to eq project_issues_url(project)
   end
 
   it 'generates the breadcrumb schema for specific issue' do
@@ -84,16 +84,16 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     expect(item_list.size).to eq 4
     expect(item_list[0]['name']).to eq project.namespace.name
-    expect(item_list[0]['item']).to eq user_path(project.owner)
+    expect(item_list[0]['item']).to eq user_url(project.owner)
 
     expect(item_list[1]['name']).to eq project.name
-    expect(item_list[1]['item']).to eq project_path(project)
+    expect(item_list[1]['item']).to eq project_url(project)
 
     expect(item_list[2]['name']).to eq 'Issues'
-    expect(item_list[2]['item']).to eq project_issues_path(project)
+    expect(item_list[2]['item']).to eq project_issues_url(project)
 
     expect(item_list[3]['name']).to eq issue.to_reference
-    expect(item_list[3]['item']).to eq project_issue_path(project, issue)
+    expect(item_list[3]['item']).to eq project_issue_url(project, issue)
   end
 
   def get_schema_content

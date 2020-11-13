@@ -12,7 +12,7 @@ const apolloProvider = new VueApollo({
 
 export default (containerId = '#js-ci-lint') => {
   const containerEl = document.querySelector(containerId);
-  const { endpoint, helpPagePath } = containerEl.dataset;
+  const { endpoint, lintHelpPagePath, pipelineSimulationHelpPagePath } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -21,7 +21,8 @@ export default (containerId = '#js-ci-lint') => {
       return createElement(CiLint, {
         props: {
           endpoint,
-          helpPagePath,
+          lintHelpPagePath,
+          pipelineSimulationHelpPagePath,
         },
       });
     },

@@ -1,11 +1,17 @@
 #import "../fragments/state.fragment.graphql"
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 
-query getStates($projectPath: ID!) {
+query getStates($projectPath: ID!, $first: Int, $last: Int, $before: String, $after: String) {
   project(fullPath: $projectPath) {
-    terraformStates {
+    terraformStates(first: $first, last: $last, before: $before, after: $after) {
       count
+
       nodes {
         ...State
+      }
+
+      pageInfo {
+        ...PageInfo
       }
     }
   }

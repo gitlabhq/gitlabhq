@@ -6,6 +6,7 @@ RSpec.describe DeployKey, :mailer do
   describe "Associations" do
     it { is_expected.to have_many(:deploy_keys_projects) }
     it { is_expected.to have_many(:projects) }
+    it { is_expected.to have_many(:protected_branch_push_access_levels) }
   end
 
   describe 'notification' do

@@ -24,7 +24,8 @@ describe('CI Lint', () => {
       },
       propsData: {
         endpoint,
-        helpPagePath: '/help/ci/lint#pipeline-simulation',
+        pipelineSimulationHelpPagePath: '/help/ci/lint#pipeline-simulation',
+        lintHelpPagePath: '/help/ci/lint#anchor',
       },
       mocks: {
         $apollo: {

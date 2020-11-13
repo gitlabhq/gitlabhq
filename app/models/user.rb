@@ -353,6 +353,9 @@ class User < ApplicationRecord
   scope :deactivated, -> { with_state(:deactivated).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
+  scope :by_name, -> (names) { iwhere(name: Array(names)) }
+  scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
+  scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
@@ -517,17 +520,15 @@ class User < ApplicationRecord
     # @param emails [String, Array<String>] email addresses to check
     # @param confirmed [Boolean] Only return users where the email is confirmed
     def by_any_email(emails, confirmed: false)
-      emails = Array(emails).map(&:downcase)
-
-      from_users = where(email: emails)
+      from_users = by_user_email(emails)
       from_users = from_users.confirmed if confirmed
 
-      from_emails = joins(:emails).where(emails: { email: emails })
+      from_emails = by_emails(emails)
       from_emails = from_emails.confirmed.merge(Email.confirmed) if confirmed
 
       items = [from_users, from_emails]
 
-      user_ids = Gitlab::PrivateCommitEmail.user_ids_for_emails(emails)
+      user_ids = Gitlab::PrivateCommitEmail.user_ids_for_emails(Array(emails).map(&:downcase))
       items << where(id: user_ids) if user_ids.present?
 
       from_union(items)

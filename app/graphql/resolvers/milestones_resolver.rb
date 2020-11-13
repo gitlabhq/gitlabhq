@@ -25,7 +25,7 @@ module Resolvers
              required: false,
              description: 'A date that the milestone contains'
 
-    type Types::MilestoneType, null: true
+    type Types::MilestoneType.connection_type, null: true
 
     def resolve(**args)
       validate_timeframe_params!(args)

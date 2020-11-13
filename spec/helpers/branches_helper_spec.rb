@@ -28,5 +28,23 @@ RSpec.describe BranchesHelper do
         expect(subject).to eq(expected_array)
       end
     end
+
+    context 'when an access level tied to a deploy key is provided' do
+      let!(:protected_branch) { create(:protected_branch, :no_one_can_push) }
+      let!(:deploy_key) { create(:deploy_key, deploy_keys_projects: [create(:deploy_keys_project, :write_access, project: protected_branch.project)]) }
+
+      let(:push_level) { protected_branch.push_access_levels.first }
+      let(:deploy_key_push_level) { create(:protected_branch_push_access_level, protected_branch: protected_branch, deploy_key: deploy_key) }
+      let(:access_levels) { [push_level, deploy_key_push_level] }
+
+      it 'returns the correct array' do
+        expected_array = [
+          { id: push_level.id, type: :role, access_level: Gitlab::Access::NO_ACCESS },
+          { id: deploy_key_push_level.id, type: :deploy_key, deploy_key_id: deploy_key.id }
+        ]
+
+        expect(subject).to eq(expected_array)
+      end
+    end
   end
 end

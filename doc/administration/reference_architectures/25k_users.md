@@ -836,6 +836,12 @@ a node and change its status from primary to replica (and vice versa).
    # Set up password authentication for Redis (use the same password in all nodes).
    redis['password'] = 'REDIS_PRIMARY_PASSWORD_OF_FIRST_CLUSTER'
 
+   # Set the Redis Cache instance as an LRU
+   # 90% of available RAM in MB
+   redis['maxmemory'] = '13500mb'
+   redis['maxmemory_policy'] = "allkeys-lru"
+   redis['maxmemory_samples'] = 5
+
    ## Enable service discovery for Prometheus
    consul['enable'] = true
    consul['monitoring_service_discovery'] =  true
@@ -896,6 +902,12 @@ You can specify multiple roles, like sentinel and Redis, as:
    # Port of primary Redis server, uncomment to change to non default. Defaults
    # to `6379`.
    #redis['master_port'] = 6379
+
+   # Set the Redis Cache instance as an LRU
+   # 90% of available RAM in MB
+   redis['maxmemory'] = '13500mb'
+   redis['maxmemory_policy'] = "allkeys-lru"
+   redis['maxmemory_samples'] = 5
 
    ## Enable service discovery for Prometheus
    consul['enable'] = true
@@ -1225,7 +1237,7 @@ To configure the Sentinel Queues server:
 1. SSH in to the server that will host Sentinel.
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus package, with the same version
+   on the page, and to select the correct Omnibus GitLab package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 

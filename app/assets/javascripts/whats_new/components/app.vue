@@ -71,7 +71,7 @@ export default {
       @close="closeDrawer"
     >
       <template #header>
-        <h4 class="page-title gl-my-3">{{ __("What's new at GitLab") }}</h4>
+        <h4 class="page-title gl-my-2">{{ __("What's new at GitLab") }}</h4>
       </template>
       <gl-infinite-scroll
         v-if="features.length"
@@ -81,16 +81,20 @@ export default {
         @bottomReached="bottomReached"
       >
         <template #items>
-          <div v-for="feature in features" :key="feature.title" class="gl-mb-7 gl-px-5 gl-pt-5">
+          <div
+            v-for="feature in features"
+            :key="feature.title"
+            class="gl-pb-7 gl-pt-5 gl-px-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+          >
             <gl-link
               :href="feature.url"
               target="_blank"
-              data-testid="whats-new-title-link"
+              class="whats-new-item-title-link"
               data-track-event="click_whats_new_item"
               :data-track-label="feature.title"
               :data-track-property="feature.url"
             >
-              <h5 class="gl-font-base">{{ feature.title }}</h5>
+              <h5 class="gl-font-lg">{{ feature.title }}</h5>
             </gl-link>
             <div v-if="feature.packages" class="gl-mb-3">
               <gl-badge

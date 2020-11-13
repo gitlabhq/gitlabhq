@@ -97,6 +97,24 @@ describe('Pipeline details header', () => {
     );
   });
 
+  describe('polling', () => {
+    it('is stopped when pipeline is finished', async () => {
+      wrapper = createComponent({ ...mockRunningPipelineHeader });
+
+      await wrapper.setData({
+        pipeline: { ...mockCancelledPipelineHeader },
+      });
+
+      expect(wrapper.vm.$apollo.queries.pipeline.stopPolling).toHaveBeenCalled();
+    });
+
+    it('is not stopped when pipeline is not finished', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.vm.$apollo.queries.pipeline.stopPolling).not.toHaveBeenCalled();
+    });
+  });
+
   describe('actions', () => {
     describe('Retry action', () => {
       beforeEach(() => {

@@ -664,18 +664,14 @@ it('calls mutation on submitting form ', () => {
 
 ### Testing with mocked Apollo Client
 
-To test the logic of Apollo cache updates, we might want to mock an Apollo Client in our unit tests. To separate tests with mocked client from 'usual' unit tests, it's recommended to create an additional component factory. This way we only create Apollo Client instance when it's necessary:
+To test the logic of Apollo cache updates, we might want to mock an Apollo Client in our unit tests. We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client and [`createMockApollo` helper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/helpers/mock_apollo_helper.js) we created on top of it.
+
+To separate tests with mocked client from 'usual' unit tests, it's recommended to create an additional component factory. This way we only create Apollo Client instance when it's necessary:
 
 ```javascript
 function createComponent() {...}
 
 function createComponentWithApollo() {...}
-```
-
-We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client in tests.
-
-```javascript
-import { createMockClient } from 'mock-apollo-client';
 ```
 
 Then we need to inject `VueApollo` to Vue local instance (`localVue.use()` can also be called within `createComponentWithApollo()`)
@@ -828,6 +824,53 @@ it('calls a mutation with correct parameters and reorders designs', async () => 
       .props('id'),
   ).toBe('2');
 });
+```
+
+#### Testing `@client` queries
+
+If your application contains `@client` queries, most probably you will have an Apollo Client warning saying that you have a local query but no resolvers are defined. In order to fix it, you need to pass resolvers to the mocked client with a second parameter (bare minimum is an empty object):
+
+```javascript
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
+...
+fakeApollo = createMockApollo(requestHandlers, {});
+```
+
+Sometimes we want to test a `result` hook of the local query. In order to have it triggered, we need to populate a cache with correct data to be fetched with this query:
+
+```javascript
+query fetchLocalUser {
+  fetchLocalUser @client {
+    name
+  }
+}
+```
+
+```javascript
+import fetchLocalUserQuery from '~/design_management/graphql/queries/fetch_local_user.query.graphql';
+
+function createComponentWithApollo() {
+  const requestHandlers = [
+    [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+    [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+  ];
+
+  fakeApollo = createMockApollo(requestHandlers, {});
+  fakeApollo.clients.defaultClient.cache.writeQuery({
+    query: fetchLocalUserQuery,
+    data: {
+      fetchLocalUser: {
+        __typename: 'User',
+        name: 'Test',
+      },
+    },
+  })
+
+  wrapper = shallowMount(Index, {
+    localVue,
+    apolloProvider: fakeApollo,
+  });
+}
 ```
 
 ## Handling errors

@@ -4726,6 +4726,9 @@ msgstr ""
 msgid "CI Lint"
 msgstr ""
 
+msgid "CI configuration validated, including all configuration added with the %{codeStart}includes%{codeEnd} keyword. %{link}"
+msgstr ""
+
 msgid "CI settings"
 msgstr ""
 
@@ -9485,6 +9488,9 @@ msgid "DevopsAdoption|Scanning"
 msgstr ""
 
 msgid "DevopsAdoption|Segment"
+msgstr ""
+
+msgid "DevopsAdoption|There was an error fetching Groups"
 msgstr ""
 
 msgid "DevopsReport|Adoption"
@@ -14820,6 +14826,9 @@ msgid "Invalid two-factor code."
 msgstr ""
 
 msgid "Invalid yaml"
+msgstr ""
+
+msgid "Investigate vulnerability: %{title}"
 msgstr ""
 
 msgid "Invitation"
@@ -24173,6 +24182,12 @@ msgstr ""
 msgid "See the affected projects in the GitLab admin panel"
 msgstr ""
 
+msgid "See vulnerability %{vulnerability_link} for any Remediation details."
+msgstr ""
+
+msgid "See vulnerability %{vulnerability_link} for any Solution details."
+msgstr ""
+
 msgid "See what's new at GitLab"
 msgstr ""
 
@@ -32842,10 +32857,10 @@ msgstr ""
 msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
 msgstr ""
 
-msgid "syntax is correct"
+msgid "syntax is correct."
 msgstr ""
 
-msgid "syntax is incorrect"
+msgid "syntax is incorrect."
 msgstr ""
 
 msgid "tag name"

@@ -1,0 +1,5 @@
+---
+title: Fix issues list when due date parameter is invalid
+merge_request: 47524
+author:
+type: fixed

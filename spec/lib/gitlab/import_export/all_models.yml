@@ -321,6 +321,7 @@ push_access_levels:
 - protected_branch
 - user
 - group
+- deploy_key
 create_access_levels:
 - user
 - protected_tag

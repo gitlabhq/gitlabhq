@@ -831,6 +831,46 @@ RSpec.describe IssuesFinder do
         let(:project_params) { { project_id: project.id } }
       end
     end
+
+    context 'filtering by due date' do
+      let_it_be(:issue_overdue) { create(:issue, project: project1, due_date: 2.days.ago) }
+      let_it_be(:issue_due_soon) { create(:issue, project: project1, due_date: 2.days.from_now) }
+
+      let(:scope) { 'all' }
+      let(:base_params) { { project_id: project1.id } }
+
+      context 'with param set to no due date' do
+        let(:params) { base_params.merge(due_date: Issue::NoDueDate.name) }
+
+        it 'returns issues with no due date' do
+          expect(issues).to contain_exactly(issue1)
+        end
+      end
+
+      context 'with param set to overdue' do
+        let(:params) { base_params.merge(due_date: Issue::Overdue.name) }
+
+        it 'returns overdue issues' do
+          expect(issues).to contain_exactly(issue_overdue)
+        end
+      end
+
+      context 'with param set to next month and previous two weeks' do
+        let(:params) { base_params.merge(due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name) }
+
+        it 'returns issues from the previous two weeks and next month' do
+          expect(issues).to contain_exactly(issue_overdue, issue_due_soon)
+        end
+      end
+
+      context 'with invalid param' do
+        let(:params) { base_params.merge(due_date: 'foo') }
+
+        it 'returns no issues' do
+          expect(issues).to be_empty
+        end
+      end
+    end
   end
 
   describe '#row_count', :request_store do

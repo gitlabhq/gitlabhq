@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 const DEFAULT_PER_PAGE = 20;
 
 const Api = {
+  DEFAULT_PER_PAGE,
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
   groupMembersPath: '/api/:version/groups/:id/members',

@@ -3,4 +3,4 @@
 
 %h2.pt-3.pb-3= _("Validate your GitLab CI configuration")
 
-#js-ci-lint{ data: { endpoint: project_ci_lint_path(@project), help_page_path: help_page_path('ci/lint', anchor: 'pipeline-simulation') } }
+#js-ci-lint{ data: { endpoint: project_ci_lint_path(@project), pipeline_simulation_help_page_path: help_page_path('ci/lint', anchor: 'pipeline-simulation') , lint_help_page_path: help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax') } }
