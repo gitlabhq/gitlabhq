@@ -1740,6 +1740,16 @@ RSpec.describe User do
     end
   end
 
+  describe '.instance_access_request_approvers_to_be_notified' do
+    let_it_be(:admin_list) { create_list(:user, 12, :admin, :with_sign_ins) }
+
+    it 'returns up to the ten most recently active instance admins' do
+      active_admins_in_recent_sign_in_desc_order = User.admins.active.order_recent_sign_in.limit(10)
+
+      expect(User.instance_access_request_approvers_to_be_notified).to eq(active_admins_in_recent_sign_in_desc_order)
+    end
+  end
+
   describe '.filter_items' do
     let(:user) { double }
 

@@ -1469,11 +1469,6 @@ class Project < ApplicationRecord
     services.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  # Is overridden in EE
-  def lfs_http_url_to_repo(_)
-    http_url_to_repo
-  end
-
   def feature_usage
     super.presence || build_feature_usage
   end

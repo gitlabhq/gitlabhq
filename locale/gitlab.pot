@@ -879,6 +879,9 @@ msgstr ""
 msgid "%{user_name} profile page"
 msgstr ""
 
+msgid "%{username} has asked for a GitLab account on your instance %{host}:"
+msgstr ""
+
 msgid "%{username}'s avatar"
 msgstr ""
 
@@ -5551,6 +5554,12 @@ msgstr ""
 msgid "Clears weight."
 msgstr ""
 
+msgid "Click %{link_start}here%{link_end} to view the request."
+msgstr ""
+
+msgid "Click %{link_to} to view the request."
+msgstr ""
+
 msgid "Click the %{strong_open}Download%{strong_close} button and wait for downloading to complete."
 msgstr ""
 
@@ -9993,6 +10002,9 @@ msgstr ""
 msgid "Email updates (optional)"
 msgstr ""
 
+msgid "Email: %{email}"
+msgstr ""
+
 msgid "EmailError|It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."
 msgstr ""
 
@@ -12578,6 +12590,9 @@ msgid "GitLab / Unsubscribe"
 msgstr ""
 
 msgid "GitLab API"
+msgstr ""
+
+msgid "GitLab Account Request"
 msgstr ""
 
 msgid "GitLab Billing Team."
@@ -29562,6 +29577,9 @@ msgid "Username is available."
 msgstr ""
 
 msgid "Username or email"
+msgstr ""
+
+msgid "Username: %{username}"
 msgstr ""
 
 msgid "Users"

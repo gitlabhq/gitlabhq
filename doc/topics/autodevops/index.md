@@ -166,7 +166,7 @@ a base domain of `example.com`, you'd need a DNS entry like:
 ```
 
 In this case, the deployed applications are served from `example.com`, and `1.2.3.4`
-is the IP address of your load balancer; generally NGINX ([see requirements](#requirements)).
+is the IP address of your load balancer; generally NGINX ([see requirements](requirements.md)).
 Setting up the DNS record is beyond the scope of this document; check with your
 DNS provider for information.
 
@@ -183,7 +183,7 @@ See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requir
 
 ## Enabling/Disabling Auto DevOps
 
-When first using Auto DevOps, review the [requirements](#requirements) to ensure
+When first using Auto DevOps, review the [requirements](requirements.md) to ensure
 all the necessary components to make full use of Auto DevOps are available. First-time
 users should follow the [quick start guide](quick_start_guide.md).
 

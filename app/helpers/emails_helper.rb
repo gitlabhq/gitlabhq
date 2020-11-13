@@ -214,6 +214,24 @@ module EmailsHelper
     end
   end
 
+  def instance_access_request_text(user, format: nil)
+    gitlab_host = Gitlab.config.gitlab.host
+
+    _('%{username} has asked for a GitLab account on your instance %{host}:') % { username: sanitize_name(user.name), host: gitlab_host }
+  end
+
+  def instance_access_request_link(user, format: nil)
+    url = admin_user_url(user)
+
+    case format
+    when :html
+      user_page = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: url }
+      _("Click %{link_start}here%{link_end} to view the request.").html_safe % { link_start: user_page, link_end: '</a>'.html_safe }
+    else
+      _('Click %{link_to} to view the request.') % { link_to: url }
+    end
+  end
+
   def contact_your_administrator_text
     _('Please contact your administrator with any questions.')
   end

@@ -2305,6 +2305,26 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  describe '#new_instance_access_request', :deliver_mails_inline do
+    let_it_be(:user) { create(:user, :blocked_pending_approval) }
+    let_it_be(:admins) { create_list(:admin, 12, :with_sign_ins) }
+
+    subject { notification.new_instance_access_request(user) }
+
+    before do
+      reset_delivered_emails!
+      stub_application_setting(require_admin_approval_after_user_signup: true)
+    end
+
+    it 'sends notification only to a maximum of ten most recently active instance admins' do
+      ten_most_recently_active_instance_admins = User.admins.active.sort_by(&:current_sign_in_at).last(10)
+
+      subject
+
+      should_only_email(*ten_most_recently_active_instance_admins)
+    end
+  end
+
   describe 'GroupMember', :deliver_mails_inline do
     let(:added_user) { create(:user) }
 

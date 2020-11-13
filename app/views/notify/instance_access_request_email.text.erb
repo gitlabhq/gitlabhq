@@ -1,0 +1,8 @@
+<%= say_hello(@recipient) %>
+
+<%= instance_access_request_text(@user) %>
+
+<%= _("Username: %{username}") % { username: @user.username } %>
+<%= _("Email: %{email}") % { email: @user.email } %>
+
+<%= instance_access_request_link(@user) %>

@@ -65,10 +65,15 @@ To add a broadcast message:
 
 1. Navigate to the **Admin Area > Messages** page.
 1. Add the text for the message to the **Message** field. Markdown and emoji are supported.
-1. If required, click the **Customize colors** link to edit the background color and font color of the message.
+1. Select one of the suggested background colors, or add the hex code of a different color. The default color is orange.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `/users/*/issues`.
 1. Select a date for the message to start and end.
 1. Click the **Add broadcast message** button.
+
+NOTE: **Note:**
+The **Background color** field expects the value to be a hexadecimal code because
+the form uses the [color_field](https://api.rubyonrails.org/v6.0.3.4/classes/ActionView/Helpers/FormHelper.html#method-i-color_field)
+helper method, which generates the proper HTML to render. 
 
 NOTE: **Note:**
 Once a broadcast message has expired, it is no longer displayed in the UI but is still listed in the

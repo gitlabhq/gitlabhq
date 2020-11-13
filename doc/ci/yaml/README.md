@@ -3837,8 +3837,8 @@ For more information, see [Deployments Safety](../environments/deployment_safety
 These methods are supported:
 
 - [`tag_name`](#releasetag_name)
+- [`description`](#releasedescription)
 - [`name`](#releasename) (optional)
-- [`description`](#releasedescription) (optional)
 - [`ref`](#releaseref) (optional)
 - [`milestones`](#releasemilestones) (optional)
 - [`released_at`](#releasereleased_at) (optional)

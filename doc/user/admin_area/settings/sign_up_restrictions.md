@@ -46,6 +46,22 @@ To enforce confirmation of the email address used for new sign ups:
 1. Go to **Admin Area > Settings > General** and expand **Sign-up restrictions**.
 1. Select the **Enable email restrictions for sign ups** checkbox, then select **Save changes**.
 
+## Soft email confirmation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47003) in GitLab 12.2.
+> - It's [deployed behind a feature flag](../../..//user/feature_flags.md), disabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-soft-email-confirmation).
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+The soft email confirmation improves the signup experience for new users by allowing
+them to sign in without an immediate confirmation when an email confirmation is required.
+GitLab shows the user a reminder to confirm their email address, and the user can't
+create or update pipelines until their email address is confirmed.
+
 ## Minimum password length limit
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
@@ -89,6 +105,25 @@ domains ending in `.io`. Domains must be separated by a whitespace,
 semicolon, comma, or a new line.
 
    ![Domain Denylist](img/domain_denylist.png)
+
+### Enable or disable soft email confirmation
+
+Soft email confirmation is under development but ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:soft_email_confirmation)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:soft_email_confirmation)
+```
 
 <!-- ## Troubleshooting
 

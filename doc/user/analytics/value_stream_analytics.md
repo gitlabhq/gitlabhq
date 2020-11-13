@@ -299,7 +299,7 @@ To recover a default stage that was previously hidden:
 
 A default value stream is readily available for each group. You can create additional value streams based on the different areas of work that you would like to measure.
 
-Once created, a new value stream includes the [seven stages](#overview) that follow
+Once created, a new value stream includes the [seven stages](#default-stages) that follow
 [GitLab workflow](../../topics/gitlab_flow.md)
 best practices. You can customize this flow by adding, hiding or re-ordering stages.
 

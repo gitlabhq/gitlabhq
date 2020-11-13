@@ -609,7 +609,7 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 
 This is the current default behavior, because the job's status indicates success or failure of the analyzer itself.
 Analyzer results are displayed in the [job logs](../../ci/pipelines/#expand-and-collapse-job-log-sections),
-[Merge Request widget](sast/index.md#overview)
+[Merge Request widget](sast/index.md)
 or [Security Dashboard](security_dashboard/index.md).
 There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.
 

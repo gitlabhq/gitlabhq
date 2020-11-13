@@ -53,6 +53,14 @@ RSpec.describe RegistrationsController do
             .to eq('You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator.')
         end
 
+        it 'emails the access request to approvers' do
+          expect_next_instance_of(NotificationService) do |notification|
+            allow(notification).to receive(:new_instance_access_request).with(User.find_by(email: 'new@user.com'))
+          end
+
+          subject
+        end
+
         context 'email confirmation' do
           context 'when `send_user_confirmation_email` is true' do
             before do
@@ -84,6 +92,12 @@ RSpec.describe RegistrationsController do
           subject
 
           expect(flash[:notice]).to be_nil
+        end
+
+        it 'does not email the approvers' do
+          expect(NotificationService).not_to receive(:new)
+
+          subject
         end
 
         context 'email confirmation' do

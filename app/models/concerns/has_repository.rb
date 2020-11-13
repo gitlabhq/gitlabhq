@@ -109,6 +109,11 @@ module HasRepository
     Gitlab::RepositoryUrlBuilder.build(repository.full_path, protocol: :http)
   end
 
+  # Is overridden in EE::Project for Geo support
+  def lfs_http_url_to_repo(_operation = nil)
+    http_url_to_repo
+  end
+
   def web_url(only_path: nil)
     Gitlab::UrlBuilder.build(self, only_path: only_path)
   end

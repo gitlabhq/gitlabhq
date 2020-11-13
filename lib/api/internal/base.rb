@@ -34,10 +34,10 @@ module API
           { status: success, message: message }.merge(extra_options).compact
         end
 
-        def lfs_authentication_url(project)
+        def lfs_authentication_url(container)
           # This is a separate method so that EE can alter its behaviour more
           # easily.
-          project.http_url_to_repo
+          container.lfs_http_url_to_repo
         end
 
         def check_allowed(params)
@@ -135,6 +135,8 @@ module API
         end
 
         post "/lfs_authenticate", feature_category: :source_code_management do
+          not_found! unless container&.lfs_enabled?
+
           status 200
 
           unless actor.key_or_user
@@ -145,7 +147,7 @@ module API
 
           Gitlab::LfsToken
             .new(actor.key_or_user)
-            .authentication_payload(lfs_authentication_url(project))
+            .authentication_payload(lfs_authentication_url(container))
         end
 
         #

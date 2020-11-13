@@ -69,10 +69,10 @@ options = {
     # :filter is optional
     # 'cn' looks for all "cn"s under :base
     # '*' is the search string - here, it's a wildcard
-    filter: Net::Ldap::Filter.eq('cn', '*'),
+    filter: Net::LDAP::Filter.eq('cn', '*'),
 
     # :attributes is optional
-    # the attributes we want to get returned
+    # the attributes we want to get returnedk
     attributes: %w(dn cn memberuid member submember uniquemember memberof)
 }
 adapter.ldap_search(options)

@@ -1,0 +1,5 @@
+---
+title: Fix internal lfs_authenticate API for non-project repositories
+merge_request: 47404
+author:
+type: fixed

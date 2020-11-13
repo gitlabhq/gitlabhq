@@ -397,6 +397,20 @@ To configure the `s3` storage driver in Omnibus:
    }
    ```
 
+   To avoid using static credentials, use an
+   [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
+   and omit `accesskey` and `secretkey`. Make sure that your IAM profile follows
+   [the permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).
+
+   ```ruby
+   registry['storage'] = {
+     's3' => {
+       'bucket' => 'your-s3-bucket',
+       'region' => 'your-s3-region'
+     }
+   }
+   ```
+
    - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
    - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 
@@ -412,8 +426,8 @@ when you [deployed your Docker registry](https://docs.docker.com/registry/deploy
 ```yaml
 storage:
   s3:
-    accesskey: 's3-access-key'
-    secretkey: 's3-secret-key-for-access-key'
+    accesskey: 's3-access-key'                # Not needed if IAM role used
+    secretkey: 's3-secret-key-for-access-key' # Not needed if IAM role used
     bucket: 'your-s3-bucket'
     region: 'your-s3-region'
     regionendpoint: 'your-s3-regionendpoint'
