@@ -2558,7 +2558,7 @@ In the example above, if the configuration is not identical:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
 
-The `auto_stop_in` keyword is for specifying life period of the environment,
+The `auto_stop_in` keyword is for specifying the lifetime of the environment,
 that when expired, GitLab automatically stops them.
 
 For example,
@@ -2571,8 +2571,8 @@ review_app:
     auto_stop_in: 1 day
 ```
 
-When `review_app` job is executed and a review app is created, a life period of
-the environment is set to `1 day`.
+When the environment for `review_app` is created, the environment's lifetime is set to `1 day`.
+Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
 For more information, see
 [the environments auto-stop documentation](../environments/index.md#environments-auto-stop)

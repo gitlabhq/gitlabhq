@@ -49,23 +49,26 @@ module QA
       end
 
       def verify_repository_import
-        expect(page).to have_content('This test project is used for automated GitHub import by GitLab QA.')
-        expect(page).to have_content(imported_project.name)
+        Page::Project::Show.perform do |project|
+          expect(project).to have_content('This test project is used for automated GitHub import by GitLab QA.')
+          expect(project).to have_content(imported_project.name)
+        end
       end
 
       def verify_issues_import
         QA::Support::Retrier.retry_on_exception do
           Page::Project::Menu.perform(&:click_issues)
-          expect(page).to have_content('This is a sample issue')
-
-          click_link 'This is a sample issue'
-
-          expect(page).to have_content('This is a sample first comment')
-
-          # Comments
-          comment_text = 'This is a comment from @sliaquat'
 
           Page::Project::Issue::Show.perform do |issue_page|
+            expect(issue_page).to have_content('This is a sample issue')
+
+            click_link 'This is a sample issue'
+
+            expect(issue_page).to have_content('This is a sample first comment')
+
+            # Comments
+            comment_text = 'This is a comment from @sliaquat'
+
             expect(issue_page).to have_comment(comment_text)
             expect(issue_page).to have_label('custom new label')
             expect(issue_page).to have_label('help wanted')
@@ -76,20 +79,21 @@ module QA
 
       def verify_merge_requests_import
         Page::Project::Menu.perform(&:click_merge_requests)
-        expect(page).to have_content('Improve readme')
-
-        click_link 'Improve readme'
-
-        expect(page).to have_content('This improves the README file a bit.')
-
-        # Comments
-        expect(page).to have_content('[PR comment by @sliaquat] Nice work!')
-
-        # Diff comments
-        expect(page).to have_content('[Single diff comment] Good riddance')
-        expect(page).to have_content('[Single diff comment] Nice addition')
 
         Page::MergeRequest::Show.perform do |merge_request|
+          expect(merge_request).to have_content('Improve readme')
+
+          click_link 'Improve readme'
+
+          expect(merge_request).to have_content('This improves the README file a bit.')
+
+          # Comments
+          expect(merge_request).to have_content('[PR comment by @sliaquat] Nice work!')
+
+          # Diff comments
+          expect(merge_request).to have_content('[Single diff comment] Good riddance')
+          expect(merge_request).to have_content('[Single diff comment] Nice addition')
+
           expect(merge_request).to have_label('bug')
           expect(merge_request).to have_label('documentation')
         end
@@ -108,7 +112,9 @@ module QA
       def verify_wiki_import
         Page::Project::Menu.perform(&:click_wiki)
 
-        expect(page).to have_content('Welcome to the test-project wiki!')
+        Page::Project::Wiki::Show.perform do |wiki|
+          expect(wiki).to have_content('Welcome to the test-project wiki!')
+        end
       end
     end
   end

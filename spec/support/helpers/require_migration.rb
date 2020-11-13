@@ -14,8 +14,7 @@ class RequireMigration
     end
   end
 
-  FOSS_MIGRATION_FOLDERS = %w[db/migrate db/post_migrate].freeze
-  ALL_MIGRATION_FOLDERS = (FOSS_MIGRATION_FOLDERS + %w[ee/db/geo/migrate ee/db/geo/post_migrate]).freeze
+  MIGRATION_FOLDERS = %w[db/migrate db/post_migrate].freeze
   SPEC_FILE_PATTERN = /.+\/(?<file_name>.+)_spec\.rb/.freeze
 
   class << self
@@ -37,10 +36,12 @@ class RequireMigration
     private
 
     def migration_folders
-      Gitlab.ee? ? ALL_MIGRATION_FOLDERS : FOSS_MIGRATION_FOLDERS
+      MIGRATION_FOLDERS
     end
   end
 end
+
+RequireMigration.prepend_if_ee('EE::RequireMigration')
 
 def require_migration!(file_name = nil)
   location_info = caller_locations.first.path.match(RequireMigration::SPEC_FILE_PATTERN)

@@ -758,6 +758,141 @@ See the [Mutation arguments](#object-identifier-arguments) section.
 
 To limit the amount of queries performed, we can use `BatchLoader`.
 
+### Writing resolvers
+
+Our code should aim to be thin declarative wrappers around finders and services. You can
+repeat lists of arguments, or extract them to concerns. Composition is preferred over
+inheritance in most cases. Treat resolvers like controllers: resolvers should be a DSL
+that compose other application abstractions.
+
+For example:
+
+```ruby
+class PostResolver < BaseResolver
+  type Post.connection_type, null: true
+  authorize :read_blog
+  description 'Blog posts, optionally filtered by name'
+
+  argument :name, [::GraphQL::STRING_TYPE], required: false, as: :slug
+
+  alias_method :blog, :object
+
+  def resolve(**args)
+    PostFinder.new(blog, current_user, args).execute
+  end
+end
+```
+
+You should never re-use resolvers directly. Resolvers have a complex life-cycle, with
+authorization, readiness and resolution orchestrated by the framework, and at
+each stage lazy values can be returned to take advantage of batching
+opportunities. Never instantiate a resolver or a mutation in application code.
+
+Instead, the units of code reuse are much the same as in the rest of the
+application:
+
+- Finders in queries to look up data.
+- Services in mutations to apply operations.
+- Loaders (batch-aware finders) specific to queries.
+
+Note that there is never any reason to use batching in a mutation. Mutations are
+executed in series, so there are no batching opportunities. All values are
+evaluated eagerly as soon as they are requested, so batching is unnecessary
+overhead. If you are writing:
+
+- A `Mutation`, feel free to lookup objects directly.
+- A `Resolver` or methods on a `BaseObject`, then you want to allow for batching.
+
+### Deriving resolvers (`BaseResolver.single` and `BaseResolver.last`)
+
+For some simple use cases, we can derive resolvers from others.
+The main use case for this is one resolver to find all items, and another to
+find one specific one. For this, we supply convenience methods:
+
+- `BaseResolver.single`, which constructs a new resolver that selects the first item.
+- `BaseResolver.last`, with constructs a resolver that selects the last item.
+
+The correct singular type is inferred from the collection type, so we don't have
+to define the `type` here.
+
+Before you make use of these methods, consider if it would be simpler to either:
+
+- Write another resolver that defines its own arguments.
+- Write a concern that abstracts out the query.
+
+Using `BaseResolver.single` too freely is an anti-pattern. It can lead to
+non-sensical fields, such as a `Project.mergeRequest` field that just returns
+the first MR if no arguments are given. Whenever we derive a single resolver
+from a collection resolver, it must have more restrictive arguments.
+
+To make this possible, use the `when_single` block to customize the single
+resolver. Every `when_single` block must:
+
+- Define (or re-define) at least one argument.
+- Make optional filters required.
+
+For example, we can do this by redefining an existing optional argument,
+changing its type and making it required:
+
+```ruby
+class JobsResolver < BaseResolver
+  type JobType.connection_type, null: true
+  authorize :read_pipeline
+
+  argument :name, [::GraphQL::STRING_TYPE], required: false
+
+  when_single do
+    argument :name, ::GraphQL::STRING_TYPE, required: true
+  end
+
+  def resolve(**args)
+    JobsFinder.new(pipeline, current_user, args.compact).execute
+  end
+```
+
+Here we have a simple resolver for getting pipeline jobs. The `name` argument is
+optional when getting a list, but required when getting a single job.
+
+If there are multiple arguments, and neither can be made required, we can use
+the block to add a ready condition:
+
+```ruby
+class JobsResolver < BaseResolver
+  alias_method :pipeline, :object
+
+  type JobType.connection_type, null: true
+  authorize :read_pipeline
+
+  argument :name, [::GraphQL::STRING_TYPE], required: false
+  argument :id, [::Types::GlobalIDType[::Job]],
+           required: false,
+           prepare: ->(ids, ctx) { ids.map(&:model_id) }
+
+  when_single do
+    argument :name, ::GraphQL::STRING_TYPE, required: false
+    argument :id, ::Types::GlobalIDType[::Job],
+             required: false
+             prepare: ->(id, ctx) { id.model_id }
+
+    def ready?(**args)
+      raise ::Gitlab::Graphql::Errors::ArgumentError, 'Only one argument may be provided' unless args.size == 1
+    end
+  end
+
+  def resolve(**args)
+    JobsFinder.new(pipeline, current_user, args.compact).execute
+  end
+```
+
+Then we can use these resolver on fields:
+
+```ruby
+# In PipelineType
+
+field :jobs, resolver: JobsResolver, description: 'All jobs'
+field :job, resolver: JobsResolver.single, description: 'A single job'
+```
+
 ### Correct use of `Resolver#ready?`
 
 Resolvers have two public API methods as part of the framework: `#ready?(**args)` and `#resolve(**args)`.
@@ -855,7 +990,29 @@ To avoid duplicated argument definitions, you can place these arguments in a reu
 class, if the arguments are nested). Alternatively, you can consider to add a
 [helper resolver method](https://gitlab.com/gitlab-org/gitlab/-/issues/258969).
 
-## Pass a parent object into a child Presenter
+### Metadata
+
+When using resolvers, they can and should serve as the SSoT for field metadata.
+All field options (apart from the field name) can be declared on the resolver.
+These include:
+
+- `type` (this is particularly important, and will soon be mandatory)
+- `extras`
+- `description`
+
+Example:
+
+```ruby
+module Resolvers
+  MyResolver < BaseResolver
+    type Types::MyType, null: true
+    extras [:lookahead]
+    description 'Retrieve a single MyType'
+  end
+end
+```
+
+### Pass a parent object into a child Presenter
 
 Sometimes you need to access the resolved query parent in a child context to compute fields. Usually the parent is only
 available in the `Resolver` class as `parent`.
@@ -870,7 +1027,7 @@ To find the parent object in your `Presenter` class:
      end
    ```
 
-1. Declare that your fields require the `parent` field context. For example:
+1. Declare that your resolver or fields require the `parent` field context. For example:
 
    ```ruby
      # in ChildType
@@ -878,6 +1035,14 @@ To find the parent object in your `Presenter` class:
            method: :my_computing_method,
            extras: [:parent], # Necessary
            description: 'My field description'
+
+     field :resolver_field, resolver: SomeTypeResolver
+
+     # In SomeTypeResolver
+
+     extras [:parent]
+     type SomeType, null: true
+     description 'My field description'
    ```
 
 1. Declare your field's method in your Presenter class and have it accept the `parent` keyword argument.
@@ -888,6 +1053,12 @@ This argument contains the parent **GraphQL context**, so you have to access the
      # in ChildPresenter
      def my_computing_method(parent:)
        # do something with `parent[:parent_object]` here
+     end
+
+     # In SomeTypeResolver
+
+     def resolve(parent:)
+       # ...
      end
    ```
 

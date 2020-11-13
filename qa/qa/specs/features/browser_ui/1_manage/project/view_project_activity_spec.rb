@@ -13,9 +13,11 @@ module QA
         end.project.visit!
 
         Page::Project::Menu.perform(&:click_activity)
-        Page::Project::Activity.perform(&:click_push_events)
+        Page::Project::Activity.perform do |activity|
+          activity.click_push_events
 
-        expect(page).to have_content('pushed new branch master')
+          expect(activity).to have_content('pushed new branch master')
+        end
       end
     end
   end

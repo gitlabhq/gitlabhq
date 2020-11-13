@@ -35,8 +35,11 @@ module QA
 
         # Check that the target project has the commit from the source
         target_project.visit!
-        expect(page).to have_content('README.md')
-        expect(page).to have_content('This is a test project')
+
+        Page::Project::Show.perform do |project|
+          expect(project).to have_content('README.md')
+          expect(project).to have_content('This is a test project')
+        end
       end
     end
   end

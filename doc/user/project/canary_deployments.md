@@ -67,3 +67,74 @@ Canary deployments are marked with a yellow dot in the Deploy Board so that you
 can easily notice them.
 
 ![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
+
+### Advanced traffic control with Canary Ingress **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215501) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+
+Canary deployments can be more strategic with [Canary Ingress](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#canary),
+which is an advanced traffic routing service that controls incoming HTTP
+requests between stable and canary deployments based on factors such as weight, sessions, cookies,
+and others. GitLab uses this service in its [Auto Deploy architecture](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#v2-chart-resource-architecture)
+to let users easily and safely roll out their new deployments.
+
+#### How to set up a Canary Ingress in a canary deployment
+
+A Canary Ingress is installed by default if your Auto DevOps pipeline uses
+[`v2.0.0+` of `auto-deploy-image`](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).
+A Canary Ingress becomes available when you create a new canary deployment and is destroyed when the
+canary deployment is promoted to production.
+
+Here's an example setup flow from scratch:
+
+1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/index.md) project.
+1. Set up a [Kubernetes Cluster](../../user/project/clusters/index.md) in your project.
+1. Install [Ingress](../../user/clusters/applications.md#ingress) as a GitLab Managed App.
+1. Set up [the base domain](../../user/project/clusters/index.md#base-domain) based on the Ingress
+   Endpoint assigned above.
+1. Check if [`v2.0.0+` of `auto-deploy-image` is used in your Auto DevOps pipelines](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).
+   If it isn't, follow the documentation to specify the image version.
+1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
+   and make sure that the `production` job succeeds and creates a production environment.
+1. Configure a [`canary` deployment job for Auto DevOps pipelines](../../topics/autodevops/customize.md#deploy-policy-for-canary-environments).
+1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
+   and make sure that the `canary` job succeeds and creates a canary deployment with Canary Ingress.
+
+#### How to check the current traffic weight on a Canary Ingress
+
+1. Visit [Deploy Board](../../user/project/deploy_boards.md).
+1. Open your browser's inspection tool and examine a response from the `environments.json` endpoint.
+   You can find the current weight under `rollout_status`.
+
+   ![Rollout Status Canary Ingress](img/rollout_status_canary_ingress.png)
+
+   Note that we have [a plan](https://gitlab.com/gitlab-org/gitlab/-/issues/218139)
+   to visualize this information in a [Deploy Board](../../user/project/deploy_boards.md)
+   without needing a browser's inspection tool.
+
+#### How to change the traffic weight on a Canary Ingress
+
+You can change the traffic weight by using [GraphiQL](../../api/graphql/getting_started.md#graphiql)
+or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).
+
+Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql):
+
+1. Visit [GraphiQL Explorer](https://gitlab.com/-/graphql-explorer).
+1. Execute the `environmentsCanaryIngressUpdate` GraphQL mutation:
+
+   ```shell
+   mutation {
+     environmentsCanaryIngressUpdate(input:{
+       id: "gid://gitlab/Environment/29",              # Your Environment ID. You can get the ID from the URL of the environment page.
+       weight: 45                                      # The new traffic weight. e.g. If you set `45`, 45% of traffic goes to a canary deployment and 55% of traffic goes to a stable deployment.
+     }) {
+       errors
+     }
+   }
+   ```
+
+1. If the request succeeds, the `errors` response contains an empty array. GitLab sends a `PATCH`
+   request to your Kubernetes cluster for updating the weight parameter on a Canary Ingress.
+
+Note that there's [a plan](https://gitlab.com/gitlab-org/gitlab/-/issues/218139)
+to control the weight from a [Deploy Board](../../user/project/deploy_boards.md).

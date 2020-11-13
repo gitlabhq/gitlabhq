@@ -11,12 +11,14 @@ module QA
           project.description = 'create awesome project test'
         end
 
-        expect(page).to have_content(created_project.name)
-        expect(page).to have_content(
-          /Project \S?awesome-project\S+ was successfully created/
-        )
-        expect(page).to have_content('create awesome project test')
-        expect(page).to have_content('The repository for this project is empty')
+        Page::Project::Show.perform do |project|
+          expect(project).to have_content(created_project.name)
+          expect(project).to have_content(
+            /Project \S?awesome-project\S+ was successfully created/
+          )
+          expect(project).to have_content('create awesome project test')
+          expect(project).to have_content('The repository for this project is empty')
+        end
       end
     end
   end

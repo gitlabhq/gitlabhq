@@ -19,6 +19,8 @@ Dir[::File.join(__dir__, "support/shared_contexts/*.rb")].sort.each { |f| requir
 Dir[::File.join(__dir__, "support/shared_examples/*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
+  config.include ::Matchers
+
   QA::Specs::Helpers::Quarantine.configure_rspec
 
   config.before do |example|

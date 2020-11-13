@@ -15,9 +15,9 @@ module QA
         Page::Project::Menu.perform(&:click_members)
         Page::Project::Members.perform do |members|
           members.add_member(user.username)
-        end
 
-        expect(page).to have_content(/@#{user.username}( Is using seat)?(\n| )?Given access/)
+          expect(members).to have_content(/@#{user.username}( Is using seat)?(\n| )?Given access/)
+        end
       end
     end
   end
