@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class UserMergeRequestsResolver < MergeRequestsResolver
+  class UserMergeRequestsResolverBase < MergeRequestsResolver
     include ResolvesProject
 
     argument :project_path, GraphQL::STRING_TYPE,

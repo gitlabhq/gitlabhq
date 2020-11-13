@@ -543,6 +543,12 @@ msgstr ""
 msgid "%{issuesSize} with a limit of %{maxIssueCount}"
 msgstr ""
 
+msgid "%{labelStart}Actual response:%{labelEnd} %{headers}"
+msgstr ""
+
+msgid "%{labelStart}Assert:%{labelEnd} %{assertion}"
+msgstr ""
+
 msgid "%{labelStart}Class:%{labelEnd} %{class}"
 msgstr ""
 
@@ -556,9 +562,6 @@ msgid "%{labelStart}Evidence:%{labelEnd} %{evidence}"
 msgstr ""
 
 msgid "%{labelStart}File:%{labelEnd} %{file}"
-msgstr ""
-
-msgid "%{labelStart}Headers:%{labelEnd} %{headers}"
 msgstr ""
 
 msgid "%{labelStart}Image:%{labelEnd} %{image}"
@@ -576,13 +579,13 @@ msgstr ""
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr ""
 
+msgid "%{labelStart}Sent request:%{labelEnd} %{headers}"
+msgstr ""
+
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
 msgstr ""
 
-msgid "%{labelStart}Status:%{labelEnd} %{status}"
-msgstr ""
-
-msgid "%{labelStart}URL:%{labelEnd} %{url}"
+msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
 msgstr ""
 
 msgid "%{label_for_message} unavailable"
@@ -9457,7 +9460,31 @@ msgstr ""
 msgid "DevopsAdoption|Add new segment"
 msgstr ""
 
+msgid "DevopsAdoption|Approvals"
+msgstr ""
+
+msgid "DevopsAdoption|Deploys"
+msgstr ""
+
 msgid "DevopsAdoption|DevOps adoption uses segments to track adoption across key features. Segments are a way to track multiple related projects and groups at once. For example, you could create a segment for the engineering department or a particular product team."
+msgstr ""
+
+msgid "DevopsAdoption|Issues"
+msgstr ""
+
+msgid "DevopsAdoption|MRs"
+msgstr ""
+
+msgid "DevopsAdoption|Pipelines"
+msgstr ""
+
+msgid "DevopsAdoption|Runners"
+msgstr ""
+
+msgid "DevopsAdoption|Scanning"
+msgstr ""
+
+msgid "DevopsAdoption|Segment"
 msgstr ""
 
 msgid "DevopsReport|Adoption"
@@ -11948,9 +11975,6 @@ msgid "First day of the week"
 msgstr ""
 
 msgid "First name"
-msgstr ""
-
-msgid "First name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "First seen"
@@ -15697,9 +15721,6 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-msgid "Last name is too long (maximum is %{max_length} characters)."
-msgstr ""
-
 msgid "Last reply by"
 msgstr ""
 
@@ -17570,12 +17591,6 @@ msgid "Minimum capacity to be available before we schedule more mirrors preempti
 msgstr ""
 
 msgid "Minimum interval in days"
-msgstr ""
-
-msgid "Minimum length is %{minimum_password_length} characters"
-msgstr ""
-
-msgid "Minimum length is %{minimum_password_length} characters."
 msgstr ""
 
 msgid "Minimum password length (number of characters)"
@@ -22414,9 +22429,6 @@ msgstr ""
 msgid "Remediations"
 msgstr ""
 
-msgid "Remember me"
-msgstr ""
-
 msgid "Remind later"
 msgstr ""
 
@@ -24984,10 +24996,13 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
-msgid "SignUp|First Name is too long (maximum is %{max_length} characters)."
+msgid "SignUp|First name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
-msgid "SignUp|Last Name is too long (maximum is %{max_length} characters)."
+msgid "SignUp|Last name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
+msgid "SignUp|Minimum length is %{minimum_password_length} characters."
 msgstr ""
 
 msgid "SignUp|Username is too long (maximum is %{max_length} characters)."
@@ -30051,6 +30066,12 @@ msgstr ""
 msgid "Vulnerability|Activity"
 msgstr ""
 
+msgid "Vulnerability|Actual received response is the one received when this fault was detected"
+msgstr ""
+
+msgid "Vulnerability|Additional Info"
+msgstr ""
+
 msgid "Vulnerability|Class"
 msgstr ""
 
@@ -30099,10 +30120,7 @@ msgstr ""
 msgid "Vulnerability|Project"
 msgstr ""
 
-msgid "Vulnerability|Request"
-msgstr ""
-
-msgid "Vulnerability|Response"
+msgid "Vulnerability|Request/Response"
 msgstr ""
 
 msgid "Vulnerability|Scanner"
@@ -30115,6 +30133,9 @@ msgid "Vulnerability|Severity"
 msgstr ""
 
 msgid "Vulnerability|Status"
+msgstr ""
+
+msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"
 msgstr ""
 
 msgid "Wait for the file to load to copy its contents"
@@ -31625,6 +31646,9 @@ msgid "ciReport|%{sameNum} same"
 msgstr ""
 
 msgid "ciReport|: Loading resulted in an error"
+msgstr ""
+
+msgid "ciReport|API Fuzzing"
 msgstr ""
 
 msgid "ciReport|All projects"

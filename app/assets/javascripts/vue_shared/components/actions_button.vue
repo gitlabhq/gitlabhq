@@ -61,7 +61,6 @@ export default {
   <gl-dropdown
     v-if="hasMultipleActions"
     v-gl-tooltip="selectedAction.tooltip"
-    class="gl-button-deprecated-adapter"
     :text="selectedAction.text"
     :split-href="selectedAction.href"
     :variant="variant"

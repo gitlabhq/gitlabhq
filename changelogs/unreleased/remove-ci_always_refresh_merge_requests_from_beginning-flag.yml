@@ -1,0 +1,6 @@
+---
+title: Make the Merge Train process flow more resilient by always refreshing merge
+  requests from beginning
+merge_request: 46768
+author:
+type: fixed

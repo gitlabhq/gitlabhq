@@ -269,6 +269,9 @@ export default {
           <template #author>
             <slot name="author" :author="issuable.author"></slot>
           </template>
+          <template #timeframe>
+            <slot name="timeframe" :issuable="issuable"></slot>
+          </template>
           <template #status>
             <slot name="status" :issuable="issuable"></slot>
           </template>

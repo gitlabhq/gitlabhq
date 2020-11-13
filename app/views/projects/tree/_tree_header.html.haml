@@ -13,7 +13,7 @@
     = render 'shared/web_ide_button', blob: nil
 
     - if show_xcode_link?(@project)
-      .project-action-button.project-xcode.inline<
+      .project-action-button.project-xcode<
         = render "projects/buttons/xcode_link"
 
     = render 'projects/buttons/download', project: @project, ref: @ref

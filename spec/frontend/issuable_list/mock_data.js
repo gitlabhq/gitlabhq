@@ -52,6 +52,7 @@ export const mockIssuable = {
     nodes: mockLabels,
   },
   assignees: [mockAuthor],
+  userDiscussionsCount: 2,
 };
 
 export const mockIssuables = [

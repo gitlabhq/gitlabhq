@@ -54,9 +54,6 @@ module Ci
 
         raise "Unknown store type: #{store}" unless STORE_TYPES.key?(store)
 
-        # Can't memoize this because the feature flag may alter this
-        return fog_store_class.new if store == :fog
-
         STORE_TYPES[store].new
       end
 
@@ -85,14 +82,6 @@ module Ci
       #
       def metadata_attributes
         attribute_names - %w[raw_data]
-      end
-
-      def fog_store_class
-        if Feature.enabled?(:ci_trace_new_fog_store, default_enabled: true)
-          Ci::BuildTraceChunks::Fog
-        else
-          Ci::BuildTraceChunks::LegacyFog
-        end
       end
     end
 

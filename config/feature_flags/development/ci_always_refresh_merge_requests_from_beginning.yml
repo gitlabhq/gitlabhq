@@ -1,8 +1,0 @@
----
-name: ci_always_refresh_merge_requests_from_beginning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45232
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/268215
-milestone: '13.5'
-type: development
-group: group::continuous integration
-default_enabled: false

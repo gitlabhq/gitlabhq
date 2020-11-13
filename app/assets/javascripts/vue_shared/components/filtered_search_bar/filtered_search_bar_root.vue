@@ -75,6 +75,11 @@ export default {
       type: String,
       required: true,
     },
+    suggestionsListClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     let selectedSortOption = this.sortOptions[0]?.sortDirection?.descending;
@@ -315,6 +320,7 @@ export default {
       :placeholder="searchInputPlaceholder"
       :available-tokens="tokens"
       :history-items="filteredRecentSearches"
+      :suggestions-list-class="suggestionsListClass"
       class="flex-grow-1"
       @history-item-selected="handleHistoryItemSelected"
       @clear-history="handleClearHistory"

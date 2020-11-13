@@ -33,6 +33,7 @@ Example response:
 [
   {
     "id" : 1,
+    "name": "board1",
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",

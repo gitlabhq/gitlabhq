@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink, GlLabel, GlFormCheckbox } from '@gitlab/ui';
+import { GlLink, GlLabel, GlIcon, GlFormCheckbox } from '@gitlab/ui';
 
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
 import IssuableAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
@@ -12,6 +12,7 @@ const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable, slots 
       issuableSymbol,
       issuable,
       enableLabelPermalinks: true,
+      showDiscussions: true,
       showCheckbox: false,
     },
     slots,
@@ -141,6 +142,31 @@ describe('IssuableItem', () => {
         expect(wrapper.vm.updatedAt).toContain('updated');
         expect(wrapper.vm.updatedAt).toContain('ago');
       });
+    });
+
+    describe('showDiscussions', () => {
+      it.each`
+        userDiscussionsCount | returnValue
+        ${0}                 | ${true}
+        ${1}                 | ${true}
+        ${undefined}         | ${false}
+        ${null}              | ${false}
+      `(
+        'returns $returnValue when issuable.userDiscussionsCount is $userDiscussionsCount',
+        ({ userDiscussionsCount, returnValue }) => {
+          const wrapperWithDiscussions = createComponent({
+            issuableSymbol: '#',
+            issuable: {
+              ...mockIssuable,
+              userDiscussionsCount,
+            },
+          });
+
+          expect(wrapperWithDiscussions.vm.showDiscussions).toBe(returnValue);
+
+          wrapperWithDiscussions.destroy();
+        },
+      );
     });
   });
 
@@ -299,6 +325,24 @@ describe('IssuableItem', () => {
       wrapperWithAuthorSlot.destroy();
     });
 
+    it('renders timeframe via slot', () => {
+      const wrapperWithTimeframeSlot = createComponent({
+        issuableSymbol: '#',
+        issuable: mockIssuable,
+        slots: {
+          timeframe: `
+            <b class="js-timeframe">Jan 1, 2020 - Mar 31, 2020</b>
+          `,
+        },
+      });
+      const timeframeEl = wrapperWithTimeframeSlot.find('.js-timeframe');
+
+      expect(timeframeEl.exists()).toBe(true);
+      expect(timeframeEl.text()).toBe('Jan 1, 2020 - Mar 31, 2020');
+
+      wrapperWithTimeframeSlot.destroy();
+    });
+
     it('renders gl-label component for each label present within `issuable` prop', () => {
       const labelsEl = wrapper.findAll(GlLabel);
 
@@ -330,6 +374,18 @@ describe('IssuableItem', () => {
       expect(statusEl.text()).toBe(`${mockIssuable.state}`);
 
       wrapperWithStatusSlot.destroy();
+    });
+
+    it('renders discussions count', () => {
+      const discussionsEl = wrapper.find('[data-testid="issuable-discussions"]');
+
+      expect(discussionsEl.exists()).toBe(true);
+      expect(discussionsEl.find(GlLink).attributes()).toMatchObject({
+        title: 'Comments',
+        href: `${mockIssuable.webUrl}#notes`,
+      });
+      expect(discussionsEl.find(GlIcon).props('name')).toBe('comments');
+      expect(discussionsEl.find(GlLink).text()).toContain('2');
     });
 
     it('renders issuable-assignees component', () => {

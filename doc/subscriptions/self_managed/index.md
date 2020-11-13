@@ -52,8 +52,23 @@ and blocked, go to **Admin Area > Overview > Dashboard** and select **Users stat
 in the **Users** section. For more details, see
 [Users statistics](../../user/admin_area/index.md#users-statistics).
 
-NOTE: **Note:**
-If you have LDAP integration enabled, anyone in the configured domain can sign up for a GitLab account. This can result in an unexpected bill at time of renewal. Consider [disabling new signups](../../user/admin_area/settings/sign_up_restrictions.md) and managing new users manually instead.
+### Tips for managing users and subscription seats
+
+Managing the number of users against the number of subscription seats can be a challenge:
+
+- If LDAP integration is enabled, anyone in the configured domain can sign up for a GitLab account.
+  This can result in an unexpected bill at time of renewal.
+- If sign-up is enabled on your instance, anyone who can access the instance can sign up for an
+  account.
+
+GitLab has several features which can help you manage the number of users:
+
+- Enable the [**Require administrator approval for new sign ups**](../../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
+  option.
+- Enable the [User cap](../../user/admin_area/settings/sign_up_restrictions.md#user-cap)
+  option. **Available in GitLab 13.6 and later**.
+- [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
+  users manually.
 
 ## Obtain a subscription
 

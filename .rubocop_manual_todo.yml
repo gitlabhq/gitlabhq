@@ -43,8 +43,6 @@ Graphql/IDType:
 
 Graphql/ResolverType:
   Exclude:
-    - 'app/graphql/resolvers/assigned_merge_requests_resolver.rb'
-    - 'app/graphql/resolvers/authored_merge_requests_resolver.rb'
     - 'app/graphql/resolvers/base_resolver.rb'
     - 'app/graphql/resolvers/ci/pipeline_stages_resolver.rb'
     - 'app/graphql/resolvers/commit_pipelines_resolver.rb'
@@ -61,7 +59,6 @@ Graphql/ResolverType:
     - 'app/graphql/resolvers/project_pipelines_resolver.rb'
     - 'app/graphql/resolvers/projects/snippets_resolver.rb'
     - 'app/graphql/resolvers/snippets_resolver.rb'
-    - 'app/graphql/resolvers/user_merge_requests_resolver.rb'
     - 'app/graphql/resolvers/users/group_count_resolver.rb'
     - 'app/graphql/resolvers/users/snippets_resolver.rb'
     - 'ee/app/graphql/resolvers/ci/jobs_resolver.rb'

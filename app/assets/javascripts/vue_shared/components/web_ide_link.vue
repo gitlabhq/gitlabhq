@@ -169,7 +169,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-inline-block gl-ml-3">
+  <div class="gl-sm-ml-3">
     <actions-button
       :actions="actions"
       :selected-key="selection"
