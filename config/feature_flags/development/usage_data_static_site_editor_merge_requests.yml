@@ -1,0 +1,8 @@
+---
+name: usage_data_static_site_editor_merge_requests
+introduced_by_url:
+rollout_issue_url:
+milestone:
+type: development
+group: group::static_site_editor
+default_enabled: false
