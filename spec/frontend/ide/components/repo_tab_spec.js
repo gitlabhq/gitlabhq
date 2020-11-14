@@ -134,9 +134,7 @@ describe('RepoTab', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(wrapper.find('span:nth-child(2)').attributes('data-original-title')).toContain(
-        'Locked by testuser',
-      );
+      expect(wrapper.find('span:nth-child(2)').attributes('title')).toBe('Locked by testuser');
     });
   });
 

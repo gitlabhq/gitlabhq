@@ -11,6 +11,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
     packages_size
     #{SNIPPETS_SIZE_STAT_NAME}
     pipeline_artifacts_size
+    uploads_size
   ).freeze
 
   self.primary_key = :namespace_id
@@ -50,7 +51,8 @@ class Namespace::RootStorageStatistics < ApplicationRecord
         'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
         "COALESCE(SUM(ps.snippets_size), 0) AS #{SNIPPETS_SIZE_STAT_NAME}",
-        'COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size'
+        'COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size',
+        'COALESCE(SUM(ps.uploads_size), 0) AS uploads_size'
       )
   end
 

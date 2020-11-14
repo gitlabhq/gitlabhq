@@ -345,9 +345,9 @@ location. You can then go back to running it from within GitLab CI.
 ## Managing state files
 
 NOTE: **Note:**
-We are currently working on [providing a graphical for managing state files](https://gitlab.com/groups/gitlab-org/-/epics/4563).
+We are currently working on [providing a graphical interface for managing state files](https://gitlab.com/groups/gitlab-org/-/epics/4563).
 
-![Terraform state list](img/terraform_list_view.png)
+![Terraform state list](img/terraform_list_view_v13_5.png)
 
 The state files attached to a project can be found under Operations / Terraform.
 

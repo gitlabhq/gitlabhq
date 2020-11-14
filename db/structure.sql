@@ -13876,7 +13876,8 @@ CREATE TABLE namespace_root_storage_statistics (
     storage_size bigint DEFAULT 0 NOT NULL,
     packages_size bigint DEFAULT 0 NOT NULL,
     snippets_size bigint DEFAULT 0 NOT NULL,
-    pipeline_artifacts_size bigint DEFAULT 0 NOT NULL
+    pipeline_artifacts_size bigint DEFAULT 0 NOT NULL,
+    uploads_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE namespace_settings (
@@ -15260,7 +15261,8 @@ CREATE TABLE project_statistics (
     packages_size bigint DEFAULT 0 NOT NULL,
     wiki_size bigint,
     snippets_size bigint,
-    pipeline_artifacts_size bigint DEFAULT 0 NOT NULL
+    pipeline_artifacts_size bigint DEFAULT 0 NOT NULL,
+    uploads_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE project_statistics_id_seq
