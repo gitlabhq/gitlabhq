@@ -1,128 +1,154 @@
-import Vue from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import waitForPromises from 'helpers/wait_for_promises';
+import Vuex from 'vuex';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { createStore } from '~/ide/stores';
+import ErrorMessage from '~/ide/components/error_message.vue';
 import ide from '~/ide/components/ide.vue';
 import { file } from '../helpers';
 import { projectData } from '../mock_data';
-import extendStore from '~/ide/stores/extend';
 
-let store;
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-function bootstrap(projData) {
-  store = createStore();
+describe('WebIDE', () => {
+  const emptyProjData = { ...projectData, empty_repo: true, branches: {} };
 
-  extendStore(store, document.createElement('div'));
+  let wrapper;
 
-  const Component = Vue.extend(ide);
+  function createComponent({ projData = emptyProjData, state = {}, mockStubs = {} } = {}) {
+    const store = createStore();
 
-  store.state.currentProjectId = 'abcproject';
-  store.state.currentBranchId = 'master';
-  store.state.projects.abcproject = { ...projData };
-  Vue.set(store.state.trees, 'abcproject/master', {
-    tree: [],
-    loading: false,
-  });
-
-  return createComponentWithStore(Component, store, {
-    emptyStateSvgPath: 'svg',
-    noChangesStateSvgPath: 'svg',
-    committedStateSvgPath: 'svg',
-  });
-}
-
-describe('ide component, empty repo', () => {
-  let vm;
-
-  beforeEach(() => {
-    const emptyProjData = { ...projectData, empty_repo: true, branches: {} };
-    vm = bootstrap(emptyProjData);
-    vm.$mount();
-  });
-
-  afterEach(() => {
-    vm.$destroy();
-  });
-
-  it('renders "New file" button in empty repo', async () => {
-    await waitForPromises();
-    await vm.$nextTick();
-
-    expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).not.toBeNull();
-  });
-});
-
-describe('ide component, non-empty repo', () => {
-  let vm;
-
-  beforeEach(() => {
-    vm = bootstrap(projectData);
-    vm.$mount();
-  });
-
-  afterEach(() => {
-    vm.$destroy();
-  });
-
-  it('shows error message when set', async () => {
-    expect(vm.$el.querySelector('.gl-alert')).toBe(null);
-
-    vm.$store.state.errorMessage = {
-      text: 'error',
+    store.state.currentProjectId = 'abcproject';
+    store.state.currentBranchId = 'master';
+    store.state.projects.abcproject = { ...projData };
+    store.state.trees['abcproject/master'] = {
+      tree: [],
+      loading: false,
     };
+    Object.keys(state).forEach(key => {
+      store.state[key] = state[key];
+    });
 
-    await waitForPromises();
-    await vm.$nextTick();
+    return shallowMount(ide, {
+      store,
+      localVue,
+      stubs: mockStubs,
+    });
+  }
 
-    expect(vm.$el.querySelector('.gl-alert')).not.toBe(null);
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('onBeforeUnload', () => {
-    it('returns undefined when no staged files or changed files', () => {
-      expect(vm.onBeforeUnload()).toBe(undefined);
-    });
-
-    it('returns warning text when their are changed files', () => {
-      vm.$store.state.changedFiles.push(file());
-
-      expect(vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
-    });
-
-    it('returns warning text when their are staged files', () => {
-      vm.$store.state.stagedFiles.push(file());
-
-      expect(vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
-    });
-
-    it('updates event object', () => {
-      const event = {};
-      vm.$store.state.stagedFiles.push(file());
-
-      vm.onBeforeUnload(event);
-
-      expect(event.returnValue).toBe('Are you sure you want to lose unsaved changes?');
-    });
-  });
-
-  describe('non-existent branch', () => {
-    it('does not render "New file" button for non-existent branch when repo is not empty', async () => {
-      await waitForPromises();
-      await vm.$nextTick();
-
-      expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
-    });
-  });
-
-  describe('branch with files', () => {
+  describe('ide component, empty repo', () => {
     beforeEach(() => {
-      store.state.trees['abcproject/master'].tree = [file()];
+      wrapper = createComponent({
+        projData: {
+          empty_repo: true,
+        },
+      });
     });
 
-    it('does not render "New file" button', async () => {
-      await waitForPromises();
-      await vm.$nextTick();
+    it('renders "New file" button in empty repo', async () => {
+      expect(wrapper.find('[title="New file"]').exists()).toBe(true);
+    });
+  });
 
-      expect(vm.$el.querySelector('.ide-empty-state button[title="New file"]')).toBeNull();
+  describe('ide component, non-empty repo', () => {
+    describe('error message', () => {
+      it('does not show error message when it is not set', () => {
+        wrapper = createComponent({
+          state: {
+            errorMessage: null,
+          },
+          mockStubs: {
+            ErrorMessage,
+          },
+        });
+
+        expect(wrapper.find(ErrorMessage).exists()).toBe(false);
+      });
+
+      it('shows error message when set', () => {
+        wrapper = createComponent({
+          state: {
+            errorMessage: {
+              text: 'error',
+            },
+          },
+          mockStubs: {
+            ErrorMessage,
+          },
+        });
+
+        expect(wrapper.find(ErrorMessage).exists()).toBe(true);
+      });
+    });
+
+    describe('onBeforeUnload', () => {
+      it('returns undefined when no staged files or changed files', () => {
+        wrapper = createComponent();
+        expect(wrapper.vm.onBeforeUnload()).toBe(undefined);
+      });
+
+      it('returns warning text when their are changed files', () => {
+        wrapper = createComponent({
+          state: {
+            changedFiles: [file()],
+          },
+        });
+
+        expect(wrapper.vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
+      });
+
+      it('returns warning text when their are staged files', () => {
+        wrapper = createComponent({
+          state: {
+            stagedFiles: [file()],
+          },
+        });
+
+        expect(wrapper.vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
+      });
+
+      it('updates event object', () => {
+        const event = {};
+        wrapper = createComponent({
+          state: {
+            stagedFiles: [file()],
+          },
+        });
+
+        wrapper.vm.onBeforeUnload(event);
+
+        expect(event.returnValue).toBe('Are you sure you want to lose unsaved changes?');
+      });
+    });
+
+    describe('non-existent branch', () => {
+      it('does not render "New file" button for non-existent branch when repo is not empty', () => {
+        wrapper = createComponent({
+          state: {
+            projects: {},
+          },
+        });
+
+        expect(wrapper.find('[title="New file"]').exists()).toBe(false);
+      });
+    });
+
+    describe('branch with files', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          projData: {
+            empty_repo: false,
+          },
+        });
+      });
+
+      it('does not render "New file" button', () => {
+        expect(wrapper.find('[title="New file"]').exists()).toBe(false);
+      });
     });
   });
 });
