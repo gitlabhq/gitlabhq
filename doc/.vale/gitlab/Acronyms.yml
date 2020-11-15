@@ -28,6 +28,7 @@ exceptions:
   - DAG
   - DAST
   - DNS
+  - DVCS
   - EKS
   - FAQ
   - FOSS

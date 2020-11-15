@@ -9,9 +9,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.4.
 
-The Jira Development Panel integration allows you to reference Jira issues within GitLab, displaying activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/) in the issue. It complements the [GitLab Jira integration](../user/project/integrations/jira.md). You may choose to configure both integrations to take advantage of both sets of features. (See a [feature comparison](../user/project/integrations/jira_integrations.md#feature-comparison)).
+The Jira Development Panel integration allows you to reference Jira issues within GitLab, displaying
+activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
+in the issue.
 
-Depending on your environment, you can enable this integration by configuring the Jira DVCS connector or by using the GitLab for Jira app in the Atlassian Marketplace. See the [Configuration](#configuration) section for details.
+It complements the [GitLab Jira integration](../user/project/integrations/jira.md). You may choose
+to configure both integrations to take advantage of both sets of features. See a
+[feature comparison](../user/project/integrations/jira_integrations.md#feature-comparison).
+
+Depending on your environment, you can enable this integration by either:
+
+- Configuring the Jira DVCS connector.
+- Using the GitLab for Jira app in the Atlassian Marketplace.
+
+See the [Configuration](#configuration) section for details.
 
 ## Features
 
@@ -24,10 +35,12 @@ Depending on your environment, you can enable this integration by configuring th
 
 With this integration, you can access related GitLab merge requests, branches, and commits directly from a Jira issue, reflecting your work in GitLab. From the Development panel, you can open a detailed view and take actions including creating a new merge request from a branch. For more information, see [Usage](#usage).
 
-This integration connects all GitLab projects within a top-level group or a personal namespace to projects in the Jira instance.
-A top-level GitLab group is one that does not have any parent group itself. All the projects of that top-level group,
-as well as projects of the top-level group's subgroups nesting down, are connected. Alternatively, you can specify
-a GitLab personal namespace in the Jira configuration, which will then connect the projects in that personal namespace to Jira.
+This integration connects all GitLab projects to projects in the Jira instance within either:
+
+- A top-level group. A top-level GitLab group is one that does not have any parent group itself. All
+  the projects of that top-level group, as well as projects of the top-level group's subgroups nesting
+  down, are connected.
+- A personal namespace, which then connects the projects in that personal namespace to Jira.
 
 This differs from the [Jira integration](../user/project/integrations/jira.md), where the mapping is between one GitLab project and the entire Jira instance.
 
@@ -36,17 +49,23 @@ This differs from the [Jira integration](../user/project/integrations/jira.md), 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Agile Management - GitLab-Jira Development Panel Integration](https://www.youtube.com/watch?v=VjVTOmMl85M&feature=youtu.be).
 
-- If you're using GitLab.com and Jira Cloud, the recommended method to enable this integration is to install the [GitLab for Jira app](#gitlab-for-jira-app) from the Atlassian Marketplace, which offers a real-time sync between GitLab and Jira.
-- If you're using self-managed GitLab, self-managed Jira, or both, configure the integration using [Jira's DVCS Connector](#jira-dvcs-configuration), which syncs data hourly.
+If you're using:
 
-We recommend that a GitLab group admin
-or instance admin (in the case of self-managed GitLab) set up the integration,
-in order to simplify administration.
+- GitLab.com and Jira Cloud, we recommend you enable this integration by installing the
+  [GitLab for Jira app](#gitlab-for-jira-app) from the Atlassian Marketplace, which offers a real-time
+  sync between GitLab and Jira.
+- Self-managed GitLab, self-managed Jira, or both, configure the integration using
+  [Jira's DVCS Connector](#jira-dvcs-configuration), which syncs data hourly.
+
+We recommend that a GitLab group administrator or instance administrator (in the case of
+self-managed GitLab) set up the integration to simplify administration.
 
 ### Jira DVCS configuration
 
-NOTE: **Note:**
-If you're using GitLab.com and Jira Cloud, we recommend you use the [GitLab for Jira app](#gitlab-for-jira-app), unless you have a specific need for the DVCS Connector.
+If you're using GitLab.com and Jira Cloud, we recommend you use the
+[GitLab for Jira app](#gitlab-for-jira-app), unless you have a specific need for the DVCS Connector.
+
+When configuring Jira DVCS Connector:
 
 - If you are using self-managed GitLab, make sure your GitLab instance is accessible by Jira.
 - If you're connecting to Jira Cloud, ensure your instance is accessible through the internet.
@@ -85,8 +104,8 @@ create and use a single-purpose `jira` user in GitLab.
 
 #### Jira DVCS Connector setup
 
-NOTE: **Note:**
-If you're using GitLab.com and Jira Cloud, we recommend you use the [GitLab for Jira app](#gitlab-for-jira-app), unless you have a specific need for the DVCS Connector.
+If you're using GitLab.com and Jira Cloud, we recommend you use the
+[GitLab for Jira app](#gitlab-for-jira-app), unless you have a specific need for the DVCS Connector.
 
 1. Ensure you have completed the [GitLab configuration](#gitlab-account-configuration-for-dvcs).
 1. If you're using Jira Server, go to **Settings (gear) > Applications > DVCS accounts**.
@@ -288,14 +307,6 @@ For more information on using Jira Smart Commits to track time against an issue,
 
 ## Limitations
 
-- This integration is currently not supported on GitLab instances under a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab) (for example, `http://example.com/gitlab`).
-
-## Changelog
-
-### 11.10
-
-- [Instance admins can now setup integration for all namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/8902)
-
-### 11.1
-
-- [Support GitLab subgroups in Jira development panel](https://gitlab.com/gitlab-org/gitlab/-/issues/3561)
+This integration is currently not supported on GitLab instances under a
+[relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
+For example, `http://example.com/gitlab`.
