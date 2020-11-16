@@ -239,7 +239,7 @@ The first row contains the headers, which are listed in the following table alon
 
 ### Limitation
 
-The Audit Log CSV file size is limited to a maximum of `15 MB`.
+The Audit Log CSV file size is limited to a maximum of `100,000` events.
 The remaining records are truncated when this limit is reached.
 
 ### Enable or disable Audit Log Export to CSV

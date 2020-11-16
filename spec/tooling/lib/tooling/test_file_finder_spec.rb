@@ -63,14 +63,6 @@ RSpec.describe Tooling::TestFileFinder do
       end
     end
 
-    context 'when given a lib file in ee/' do
-      let(:file) { 'ee/lib/flipper_session.rb' }
-
-      it 'returns the matching ee/ lib test file' do
-        expect(subject.test_files).to contain_exactly('ee/spec/lib/flipper_session_spec.rb')
-      end
-    end
-
     context 'when given a test file in ee/' do
       let(:file) { 'ee/spec/models/container_registry/event_spec.rb' }
 

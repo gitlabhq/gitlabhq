@@ -1441,7 +1441,54 @@ Parameters:
 | `user_id`                | integer | yes      | The ID of the user                |
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
-### Get user activities (admin only)
+## Create a personal access token (admin only)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17176) in GitLab 13.6.
+> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-an-administrators-ability-to-use-the-api-to-create-personal-access-tokens). **(CORE)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+> Requires admin permissions.
+> Token values are returned once. Make sure you save it - you won't be able to access it again.
+
+It creates a new personal access token.
+
+```plaintext
+POST /users/:user_id/personal_access_tokens
+```
+
+| Attribute    | Type    | Required | Description                                                                                                              |
+| ------------ | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `user_id`    | integer | yes      | The ID of the user                                                                                                       |
+| `name`       | string  | yes      | The name of the personal access token                                                                                    |
+| `expires_at` | date    | no       | The expiration date of the personal access token in ISO format (`YYYY-MM-DD`)                                            |
+| `scopes`     | array   | yes      | The array of scopes of the personal access token (`api`, `read_user`, `read_api`, `read_repository`, `write_repository`) |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
+```
+
+Example response:
+
+```json
+{
+    "id": 3,
+    "name": "mytoken",
+    "revoked": false,
+    "created_at": "2020-10-14T11:58:53.526Z",
+    "scopes": [
+        "api"
+    ],
+    "user_id": 42,
+    "active": true,
+    "expires_at": "2020-12-31",
+    "token": "ggbfKkC4n-Lujy8jwCR2"
+}
+```
+
+## Get user activities (admin only)
 
 NOTE: **Note:**
 This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
@@ -1545,4 +1592,23 @@ Example response:
     "access_level": "20"
   },
 ]
+```
+
+## Enable or disable an administrator's ability to use the API to create personal access tokens **(CORE)**
+
+An administrator's ability to create personal access tokens through the API is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:pat_creation_api_for_admin)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:pat_creation_api_for_admin)
 ```

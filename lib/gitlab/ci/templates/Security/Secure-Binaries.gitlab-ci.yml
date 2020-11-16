@@ -131,6 +131,8 @@ secrets:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
 
 sobelow:
   extends: .download_images
@@ -162,6 +164,8 @@ klar:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bklar\b/
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
 
 clair-vulnerabilities-db:
   extends: .download_images

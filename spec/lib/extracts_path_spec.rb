@@ -112,6 +112,19 @@ RSpec.describe ExtractsPath do
         end
       end
     end
+
+    context 'ref and path are nil' do
+      let(:params) { { path: nil, ref: nil } }
+
+      it 'does not set commit' do
+        expect(container.repository).not_to receive(:commit).with('')
+        expect(self).to receive(:render_404)
+
+        assign_ref_vars
+
+        expect(@commit).to be_nil
+      end
+    end
   end
 
   it_behaves_like 'extracts refs'

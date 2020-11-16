@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     factory :conan_package_file do
-      package { create(:conan_package, without_package_files: true) }
+      package { association(:conan_package, without_package_files: true) }
 
       transient do
         without_loaded_metadatum { false }

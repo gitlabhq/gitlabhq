@@ -3,7 +3,7 @@
 class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
-  include RecaptchaExperimentHelper
+  include RecaptchaHelper
   include InvisibleCaptchaOnSignup
 
   BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'.freeze
@@ -176,5 +176,3 @@ class RegistrationsController < Devise::RegistrationsController
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
 end
-
-RegistrationsController.prepend_if_ee('EE::RegistrationsController')

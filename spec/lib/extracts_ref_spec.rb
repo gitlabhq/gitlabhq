@@ -18,6 +18,21 @@ RSpec.describe ExtractsRef do
     allow_any_instance_of(described_class).to receive(:repository_container).and_return(container)
   end
 
-  it_behaves_like 'assigns ref vars'
+  describe '#assign_ref_vars' do
+    it_behaves_like 'assigns ref vars'
+
+    context 'ref and path are nil' do
+      let(:params) { { path: nil, ref: nil } }
+
+      it 'does not set commit' do
+        expect(container.repository).not_to receive(:commit).with('')
+
+        assign_ref_vars
+
+        expect(@commit).to be_nil
+      end
+    end
+  end
+
   it_behaves_like 'extracts refs'
 end

@@ -93,3 +93,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 - `204: No Content` if successfully revoked.
 - `400 Bad Request` if not revoked successfully.
+
+## Create a personal access token (admin only)
+
+See the [Users API documentation](users.md#create-a-personal-access-token-admin-only) for information on creating a personal access token.

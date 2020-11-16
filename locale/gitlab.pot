@@ -16536,6 +16536,9 @@ msgstr ""
 msgid "MattermostService|This service allows users to perform common operations on this project by entering slash commands in Mattermost."
 msgstr ""
 
+msgid "Max 100,000 events"
+msgstr ""
+
 msgid "Max Group Export Download requests per minute per user"
 msgstr ""
 
@@ -16558,9 +16561,6 @@ msgid "Max access level"
 msgstr ""
 
 msgid "Max role"
-msgstr ""
-
-msgid "Max size 15 MB"
 msgstr ""
 
 msgid "MaxBuilds"

@@ -3,5 +3,5 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::IssueCreated do
-  it_behaves_like 'cycle analytics event'
+  it_behaves_like 'value stream analytics event'
 end

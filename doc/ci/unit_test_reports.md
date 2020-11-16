@@ -244,6 +244,27 @@ Test:
         - ./**/*test-result.xml
 ```
 
+### JavaScript example
+
+There are a few tools that can produce JUnit report format XML files in JavaScript.
+
+#### Jest
+
+The [jest-junit](https://github.com/jest-community/jest-junit) npm package can generate test reports for JavaScript applications.
+In the following `.gitlab-ci.yml` example, the `javascript` job uses Jest to generate the test reports:
+
+```yaml
+javascript:
+  stage: test
+  script:
+    - 'jest --ci --reporters=default --reporters=jest-junit'
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+```
+
 ## Viewing Unit test reports on GitLab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.

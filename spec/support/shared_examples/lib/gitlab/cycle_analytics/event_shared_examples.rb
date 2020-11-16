@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples_for 'cycle analytics event' do
+RSpec.shared_examples_for 'value stream analytics event' do
   let(:params) { {} }
   let(:instance) { described_class.new(params) }
 

@@ -65,9 +65,9 @@ module API
 
         params :sort_params do
           optional :order_by, type: String, values: %w[id name username created_at updated_at],
-                              default: 'id', desc: 'Return users ordered by a field'
+            default: 'id', desc: 'Return users ordered by a field'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                          desc: 'Return users sorted in ascending and descending order'
+            desc: 'Return users sorted in ascending and descending order'
         end
       end
 
@@ -703,6 +703,40 @@ module API
 
             destroy_conditionally!(token) do
               token.revoke!
+            end
+          end
+        end
+
+        resource :personal_access_tokens do
+          helpers do
+            def target_user
+              find_user_by_id(params)
+            end
+          end
+
+          before { authenticated_as_admin! }
+
+          desc 'Create a personal access token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 13.6'
+            success Entities::PersonalAccessTokenWithToken
+          end
+          params do
+            requires :name, type: String, desc: 'The name of the personal access token'
+            requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
+              desc: 'The array of scopes of the personal access token'
+            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
+          end
+          post feature_category: :authentication_and_authorization do
+            not_found! unless Feature.enabled?(:pat_creation_api_for_admin)
+
+            response = ::PersonalAccessTokens::CreateService.new(
+              current_user: current_user, target_user: target_user, params: declared_params(include_missing: false)
+            ).execute
+
+            if response.success?
+              present response.payload[:personal_access_token], with: Entities::PersonalAccessTokenWithToken
+            else
+              render_api_error!(response.message, response.http_status || :unprocessable_entity)
             end
           end
         end

@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Visibility and access controls')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
@@ -17,7 +17,7 @@
   .settings-header
     %h4
       = _('Account and limit')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan.')
@@ -28,7 +28,7 @@
   .settings-header
     %h4
       = _('Diff limits')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Diff content limits')
@@ -39,7 +39,7 @@
   .settings-header
     %h4
       = _('Sign-up restrictions')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure the way a user creates a new account.')
@@ -50,7 +50,7 @@
   .settings-header
     %h4
       = _('Sign-in restrictions')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set requirements for a user to sign-in. Enable mandatory two-factor authentication.')
@@ -61,7 +61,7 @@
   .settings-header
     %h4
       = _('Terms of Service and Privacy Policy')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Include a Terms of Service agreement and Privacy Policy that all users must accept.')
@@ -74,7 +74,7 @@
   .settings-header
     %h4
       = _('Web terminal')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set max session time for web terminal.')
@@ -85,7 +85,7 @@
   .settings-header
     %h4
       = _('Web IDE')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Manage Web IDE features')
@@ -108,7 +108,7 @@
     .settings-header
       %h4
         = _('Maintenance mode')
-      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
         = expanded_by_default? ? _('Collapse') : _('Expand')
       %p
         = _('Prevent users from performing write operations on GitLab while performing maintenance.')

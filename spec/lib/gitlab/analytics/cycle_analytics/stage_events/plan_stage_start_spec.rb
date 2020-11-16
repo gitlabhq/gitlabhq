@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::PlanStageStart do
   let(:subject) { described_class.new({}) }
   let(:project) { create(:project) }
 
-  it_behaves_like 'cycle analytics event'
+  it_behaves_like 'value stream analytics event'
 
   it 'filters issues where first_associated_with_milestone_at or first_added_to_board_at is filled' do
     issue1 = create(:issue, project: project)

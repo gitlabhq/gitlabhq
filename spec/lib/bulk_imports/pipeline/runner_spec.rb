@@ -39,7 +39,10 @@ RSpec.describe BulkImports::Pipeline::Runner do
     end
 
     it 'runs pipeline extractor, transformer, loader' do
-      context = instance_double(BulkImports::Pipeline::Context)
+      context = instance_double(
+        BulkImports::Pipeline::Context,
+        entity: instance_double(BulkImports::Entity, id: 1, source_type: 'group')
+      )
       entries = [{ foo: :bar }]
 
       expect_next_instance_of(BulkImports::Extractor) do |extractor|
@@ -52,6 +55,17 @@ RSpec.describe BulkImports::Pipeline::Runner do
 
       expect_next_instance_of(BulkImports::Loader) do |loader|
         expect(loader).to receive(:load).with(context, entries.first)
+      end
+
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger).to receive(:info)
+          .with(message: "Pipeline started", pipeline: 'BulkImports::MyPipeline', entity: 1, entity_type: 'group')
+        expect(logger).to receive(:info)
+          .with(entity: 1, entity_type: 'group', extractor: 'BulkImports::Extractor')
+        expect(logger).to receive(:info)
+          .with(entity: 1, entity_type: 'group', transformer: 'BulkImports::Transformer')
+        expect(logger).to receive(:info)
+          .with(entity: 1, entity_type: 'group', loader: 'BulkImports::Loader')
       end
 
       BulkImports::MyPipeline.new.run(context)

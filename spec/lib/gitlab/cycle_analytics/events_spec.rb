@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'cycle analytics events', :aggregate_failures do
+RSpec.describe 'value stream analytics events', :aggregate_failures do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, :admin) }
   let(:from_date) { 10.days.ago }

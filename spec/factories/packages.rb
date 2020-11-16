@@ -129,7 +129,7 @@ FactoryBot.define do
       end
 
       trait(:without_loaded_metadatum) do
-        conan_metadatum { build(:conan_metadatum, package: nil) }
+        conan_metadatum { build(:conan_metadatum, package: nil) } # rubocop:disable FactoryBot/InlineAssociation
       end
     end
 
@@ -141,7 +141,7 @@ FactoryBot.define do
   end
 
   factory :composer_metadatum, class: 'Packages::Composer::Metadatum' do
-    package { create(:composer_package) }
+    package { association(:composer_package) }
 
     target_sha { '123' }
     composer_json { { name: 'foo' } }
@@ -166,12 +166,12 @@ FactoryBot.define do
   end
 
   factory :pypi_metadatum, class: 'Packages::Pypi::Metadatum' do
-    package { create(:pypi_package, without_loaded_metadatum: true) }
+    package { association(:pypi_package, without_loaded_metadatum: true) }
     required_python { '>=2.7' }
   end
 
   factory :nuget_metadatum, class: 'Packages::Nuget::Metadatum' do
-    package { create(:nuget_package) }
+    package { association(:nuget_package) }
 
     license_url { 'http://www.gitlab.com' }
     project_url { 'http://www.gitlab.com' }
@@ -179,7 +179,7 @@ FactoryBot.define do
   end
 
   factory :conan_file_metadatum, class: 'Packages::Conan::FileMetadatum' do
-    package_file { create(:conan_package_file, :conan_recipe_file, without_loaded_metadatum: true) }
+    package_file { association(:conan_package_file, :conan_recipe_file, without_loaded_metadatum: true) }
     recipe_revision { '0' }
     conan_file_type { 'recipe_file' }
 
@@ -188,7 +188,7 @@ FactoryBot.define do
     end
 
     trait(:package_file) do
-      package_file { create(:conan_package_file, :conan_package, without_loaded_metadatum: true) }
+      package_file { association(:conan_package_file, :conan_package, without_loaded_metadatum: true) }
       conan_file_type { 'package_file' }
       package_revision { '0' }
       conan_package_reference { '123456789' }
@@ -201,8 +201,8 @@ FactoryBot.define do
   end
 
   factory :packages_dependency_link, class: 'Packages::DependencyLink' do
-    package { create(:nuget_package) }
-    dependency { create(:packages_dependency) }
+    package { association(:nuget_package) }
+    dependency { association(:packages_dependency) }
     dependency_type { :dependencies }
 
     trait(:with_nuget_metadatum) do
@@ -213,7 +213,7 @@ FactoryBot.define do
   end
 
   factory :nuget_dependency_link_metadatum, class: 'Packages::Nuget::DependencyLinkMetadatum' do
-    dependency_link { create(:packages_dependency_link) }
+    dependency_link { association(:packages_dependency_link) }
     target_framework { '.NETStandard2.0' }
   end
 
