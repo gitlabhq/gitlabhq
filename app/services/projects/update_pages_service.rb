@@ -125,7 +125,7 @@ module Projects
     end
 
     def create_pages_deployment(artifacts_path, build)
-      return unless Feature.enabled?(:zip_pages_deployments, project)
+      return unless Feature.enabled?(:zip_pages_deployments, project, default_enabled: true)
 
       # we're using the full archive and pages daemon needs to read it
       # so we want the total count from entries, not only "public/" directory
@@ -146,10 +146,6 @@ module Projects
         project.id,
         deployment.id
       )
-    rescue => e
-      # we don't want to break current pages deployment process if something goes wrong
-      # TODO: remove this rescue as part of https://gitlab.com/gitlab-org/gitlab/-/issues/245308
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
     end
 
     def latest?

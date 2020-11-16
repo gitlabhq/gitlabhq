@@ -17,6 +17,10 @@ module Types
             group.avatar_url(only_path: false)
           end
 
+    field :custom_emoji, Types::CustomEmojiType.connection_type, null: true,
+          description: 'Custom emoji within this namespace',
+          feature_flag: :custom_emoji
+
     field :share_with_group_lock, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if sharing a project with another group within this group is prevented'
 

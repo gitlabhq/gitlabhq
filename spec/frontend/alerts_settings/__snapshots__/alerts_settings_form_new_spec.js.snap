@@ -80,9 +80,9 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
           <!---->
           <!---->
           <!---->
-          <!---->
         </div>
       </div>
+      <!---->
       <!---->
     </div>
     <div class=\\"gl-display-flex gl-justify-content-end\\"><button type=\\"reset\\" class=\\"btn gl-mr-3 js-no-auto-disable btn-default btn-md gl-button\\">

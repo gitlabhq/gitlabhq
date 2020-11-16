@@ -1,5 +1,8 @@
 - page_title _("Sign up")
 - add_page_specific_style 'page_bundles/signup'
+- content_for :page_specific_javascripts do
+  = render "layouts/google_tag_manager_head"
+= render "layouts/google_tag_manager_body"
 
 .signup-page
   = render 'devise/shared/signup_box',

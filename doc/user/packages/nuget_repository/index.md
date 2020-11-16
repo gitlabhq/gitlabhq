@@ -248,7 +248,7 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 
 - `<package_id>` is the package ID.
 - `<output_directory>` is the output directory, where the package is installed.
-- `<package_version>` The package version. Optional. 
+- `<package_version>` The package version. Optional.
 - `<source_name>` The source name. Optional.
 
 ### Install a package with the .NET CLI

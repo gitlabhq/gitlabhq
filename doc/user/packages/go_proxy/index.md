@@ -94,7 +94,7 @@ following steps work only if GitLab is configured for HTTPS:
 ### Enable request authentication
 
 Create a [personal access token](../../profile/personal_access_tokens.md) with
-the scope set to `api` or `read_api`. 
+the scope set to `api` or `read_api`.
 
 Add it to [`~/.netrc`](https://ec.haxx.se/usingcurl/usingcurl-netrc):
 
@@ -112,7 +112,7 @@ When downloading dependencies with Go 1.13 and later, fetched sources are
 validated against the checksum database `sum.golang.org`.
 
 If the checksum of the fetched sources doesn't match the checksum from the
-database, Go doesn't build the dependency. 
+database, Go doesn't build the dependency.
 
 Private modules fail to build because `sum.golang.org` can't fetch the source
 of private modules, and so it cannot provide a checksum.

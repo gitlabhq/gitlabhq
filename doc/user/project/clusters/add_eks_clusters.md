@@ -139,7 +139,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    1. Enter a role name and optional description into the fields provided.
    1. Click **Create role**, the new role name will appear at the top. Click on its name and copy the `Role ARN` from the newly created role.
 1. In GitLab, enter the copied role ARN into the `Role ARN` field.
-1. In the **Cluster Region** field, enter the [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) you plan to use for your new cluster. GitLab will authenticate you have access to this region when authenticating your role. 
+1. In the **Cluster Region** field, enter the [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) you plan to use for your new cluster. GitLab will authenticate you have access to this region when authenticating your role.
 1. Click **Authenticate with AWS**.
 1. Choose your cluster's settings:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
@@ -184,7 +184,7 @@ The following errors are commonly encountered when creating a new cluster.
 When submitting the initial authentication form, GitLab returns a status code 422
 error when it can't determine the role or region you've provided. Make sure you've
 correctly configured your role with the **Account ID** and **External ID**
-provided by GitLab. In GitLab, make sure to enter the correct **Role ARN**. 
+provided by GitLab. In GitLab, make sure to enter the correct **Role ARN**.
 Make sure you also have access to the chosen region.
 
 #### Could not load Security Groups for this VPC

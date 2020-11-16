@@ -26,6 +26,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :revoked, -> { where(revoked: true) }
   scope :not_revoked, -> { where(revoked: [false, nil]) }
   scope :for_user, -> (user) { where(user: user) }
+  scope :for_users, -> (users) { where(user: users) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }
   scope :order_expires_at_desc, -> { reorder(expires_at: :desc) }

@@ -1213,6 +1213,9 @@ production: &base
     ## Google analytics. Uncomment if you want it
     # google_analytics_id: '_your_tracking_id'
 
+    ## Google tag manager
+    # google_tag_manager_id: '_your_tracking_id'
+
     ## Piwik analytics.
     # piwik_url: '_your_piwik_url'
     # piwik_site_id: '_your_piwik_site_id'

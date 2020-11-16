@@ -23,7 +23,7 @@ sequenceDiagram
         Note right of RailsApp: Width Allowlist: https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/avatarable.rb#L10
         RailsApp->>Workhorse: `send-scaled-img:` request
         Note right of RailsApp: Set `send-scaled-img:` Header
-        Workhorse->>Workhorse: Image resizing using Go lib 
+        Workhorse->>Workhorse: Image resizing using Go lib
         Workhorse->>Requester: Serve the resized image
     else All other cases
         RailsApp->>Workhorse: Usual request scenario

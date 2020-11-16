@@ -2574,6 +2574,9 @@ msgstr ""
 msgid "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields."
 msgstr ""
 
+msgid "AlertSettings|If you've provided a sample alert payload, you can create a custom mapping for your endpoint. The default GitLab alert keys are listed below. Please define which payload key should map to the specified GitLab key."
+msgstr ""
+
 msgid "AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations."
 msgstr ""
 
@@ -2613,6 +2616,9 @@ msgstr ""
 msgid "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
+msgid "AlertSettings|Sample payload has been parsed. You can now map the fields."
+msgstr ""
+
 msgid "AlertSettings|Save and test payload"
 msgstr ""
 
@@ -2632,9 +2638,6 @@ msgid "AlertSettings|Test alert sent successfully. If you have made other change
 msgstr ""
 
 msgid "AlertSettings|Test failed. Do you still want to save your changes anyway?"
-msgstr ""
-
-msgid "AlertSettings|The default GitLab alert keys are listed below. In the event an exact match could be found in the sample payload provided, that key will be mapped automatically. In all other cases, please define which payload key should map to the specified GitLab key. Any payload keys not shown in this list will not display in the alert list, but will display on the alert details page."
 msgstr ""
 
 msgid "AlertSettings|There was an error updating the alert settings."

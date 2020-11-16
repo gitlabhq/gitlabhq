@@ -73,7 +73,7 @@ To add a broadcast message:
 NOTE: **Note:**
 The **Background color** field expects the value to be a hexadecimal code because
 the form uses the [color_field](https://api.rubyonrails.org/v6.0.3.4/classes/ActionView/Helpers/FormHelper.html#method-i-color_field)
-helper method, which generates the proper HTML to render. 
+helper method, which generates the proper HTML to render.
 
 NOTE: **Note:**
 Once a broadcast message has expired, it is no longer displayed in the UI but is still listed in the

@@ -207,14 +207,14 @@ These types of queries are not supported. In these instances, you can use offset
 
 ### Offset pagination
 
-There are times when the [complexity of sorting](#limitations-of-query-complexity) 
+There are times when the [complexity of sorting](#limitations-of-query-complexity)
 is more than our keyset pagination can handle.
 
 For example, in [`IssuesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/issues_resolver.rb),
 when sorting by `priority_asc`, we can't use keyset pagination as the ordering is much
 too complex. For more information, read [`issuable.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/issuable.rb).
 
-In cases like this, we can fall back to regular offset pagination by returning a 
+In cases like this, we can fall back to regular offset pagination by returning a
 [`Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/graphql/pagination/offset_active_record_relation_connection.rb)
 instead of an `ActiveRecord::Relation`:
 

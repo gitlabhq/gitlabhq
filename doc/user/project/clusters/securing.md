@@ -42,7 +42,7 @@ Minimum requirements (depending on the GitLab Manage Application you want to ins
 
 NOTE: **Note:**
 These diagrams use the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
-Tiller daemon running in a pod in the cluster.
+command runner pod in the cluster.
 
 You install GitLab Managed Apps from the GitLab web interface with a one-click setup process. GitLab
 uses Sidekiq (a background processing service) to facilitate this.

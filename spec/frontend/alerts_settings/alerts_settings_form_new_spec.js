@@ -6,14 +6,15 @@ import {
   GlFormInput,
   GlToggle,
   GlFormTextarea,
-  GlButton,
 } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form_new.vue';
 import { defaultAlertSettingsConfig } from './util';
 import { typeSet } from '~/alerts_settings/constants';
 
 describe('AlertsSettingsFormNew', () => {
   let wrapper;
+  const mockToastShow = jest.fn();
 
   const createComponent = ({
     data = {},
@@ -34,6 +35,11 @@ describe('AlertsSettingsFormNew', () => {
         glFeatures: { multipleHttpIntegrationsCustomMapping },
         ...defaultAlertSettingsConfig,
       },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
+      },
     });
   };
 
@@ -49,6 +55,7 @@ describe('AlertsSettingsFormNew', () => {
     wrapper.find(`[data-testid="multi-integrations-not-supported"]`);
   const findJsonTestSubmit = () => wrapper.find(`[data-testid="integration-test-and-submit"]`);
   const findJsonTextArea = () => wrapper.find(`[id = "test-payload"]`);
+  const findActionBtn = () => wrapper.find(`[data-testid="payload-action-btn"]`);
 
   afterEach(() => {
     if (wrapper) {
@@ -307,12 +314,28 @@ describe('AlertsSettingsFormNew', () => {
             resetSamplePayloadConfirmed,
           });
           await wrapper.vm.$nextTick();
-          expect(
-            findTestPayloadSection()
-              .find(GlButton)
-              .text(),
-          ).toBe(caption);
+          expect(findActionBtn().text()).toBe(caption);
         });
+      });
+    });
+
+    describe('Parsing payload', () => {
+      it('displays a toast message on successful parse', async () => {
+        jest.useFakeTimers();
+        wrapper.setData({
+          selectedIntegration: typeSet.http,
+          customMapping: { samplePayload: false },
+        });
+        await wrapper.vm.$nextTick();
+
+        findActionBtn().vm.$emit('click');
+        jest.advanceTimersByTime(1000);
+
+        await waitForPromises();
+
+        expect(mockToastShow).toHaveBeenCalledWith(
+          'Sample payload has been parsed. You can now map the fields.',
+        );
       });
     });
   });

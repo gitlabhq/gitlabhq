@@ -113,7 +113,7 @@ After you create a project, you can create a package.
 
    ```python
    import setuptools
-   
+
    setuptools.setup(
        name="mypypipackage",
        version="0.0.1",
@@ -333,7 +333,7 @@ Successfully installed mypypipackage-0.0.1
 ### Package names
 
 GitLab looks for packages that use
-[Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names). 
+[Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names).
 The characters `-`, `_`, and `.` are all treated the same, and repeated
 characters are removed.
 

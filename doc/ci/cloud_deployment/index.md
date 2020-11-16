@@ -311,7 +311,7 @@ build_artifact:
       - <built artifact>
 ```
 
-### Deploy to Amazon EKS 
+### Deploy to Amazon EKS
 
 - [How to deploy your application to a GitLab-managed Amazon EKS cluster with Auto DevOps](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/)
 

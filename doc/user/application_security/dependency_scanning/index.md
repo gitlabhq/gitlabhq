@@ -356,7 +356,7 @@ Here are the requirements for using dependency scanning in an offline environmen
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
-- If you have a limited access environment you will need to allow access, such as using a proxy, to the advisory database: `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`. 
+- If you have a limited access environment you will need to allow access, such as using a proxy, to the advisory database: `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`.
   If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` variable to the URL of this repository. For more information on configuration variables, see [Dependency Scanning](#configuring-dependency-scanning).
 
   This advisory database is constantly being updated, so you will need to periodically sync your local copy with GitLab's.

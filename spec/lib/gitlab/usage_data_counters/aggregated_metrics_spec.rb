@@ -33,7 +33,7 @@ RSpec.describe 'aggregated metrics' do
         end
 
         it "has expected structure" do
-          expect(aggregate.keys).to match_array(%w[name operator events])
+          expect(aggregate.keys).to include(*%w[name operator events])
         end
 
         it "uses allowed aggregation operators" do

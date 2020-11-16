@@ -737,13 +737,20 @@ In order to add data for aggregated metrics into Usage Ping payload you should a
 - operator: operator that defines how aggregated metric data will be counted. Available operators are:
   - `ANY`: removes duplicates and counts all entries that triggered any of listed events
 - events: list of events names (from [`known_events.yml`](#known-events-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
+- feature_flag: name of [development feature flag](../feature_flags/development.md#development-type) that will be checked before
+metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`. 
+`feature_flag` attribute is **OPTIONAL**  and can be omitted, when `feature_flag` is missing no feature flag will be checked.
 
-Example aggregated metric entry:
+Example aggregated metric entries:
 
 ```yaml
 - name: example_aggregated_metric
   operator: ANY
+  events: ['i_search_advanced', 'i_search_paid']
+- name: example_aggregated_metric_with_feautre_flag
+  operator: ANY
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  feature_flag: example_aggregated_metric
 ```
 
 Aggregated metrics will be added under `aggregated_metrics` key in both `counts_weekly` and `counts_monthly` top level keys in Usage Ping payload.

@@ -73,11 +73,14 @@ export default {
         resetOk: s__('AlertSettings|Proceed with editing'),
         editPayload: s__('AlertSettings|Edit payload'),
         submitPayload: s__('AlertSettings|Submit payload'),
+        payloadParsedSucessMsg: s__(
+          'AlertSettings|Sample payload has been parsed. You can now map the fields.',
+        ),
       },
       step5: {
         label: s__('AlertSettings|5. Map fields (optional)'),
         intro: s__(
-          'AlertSettings|The default GitLab alert keys are listed below. In the event an exact match could be found in the sample payload provided, that key will be mapped automatically. In all other cases, please define which payload key should map to the specified GitLab key. Any payload keys not shown in this list will not display in the alert list, but will display on the alert details page.',
+          "AlertSettings|If you've provided a sample alert payload, you can create a custom mapping for your endpoint. The default GitLab alert keys are listed below. Please define which payload key should map to the specified GitLab key.",
         ),
       },
       prometheusFormUrl: {
@@ -211,10 +214,10 @@ export default {
       );
     },
     mappingBuilderFields() {
-      return this.customMapping?.samplePayload?.payloadAlerFields?.nodes || [];
+      return this.customMapping?.samplePayload?.payloadAlerFields?.nodes;
     },
     mappingBuilderMapping() {
-      return this.customMapping?.storedMapping?.nodes || [];
+      return this.customMapping?.storedMapping?.nodes;
     },
     hasSamplePayload() {
       return Boolean(this.customMapping?.samplePayload);
@@ -352,6 +355,8 @@ export default {
           this.customMapping = res;
           this.integrationTestPayload.json = res?.samplePayload.body;
           this.resetSamplePayloadConfirmed = false;
+
+          this.$toast.show(this.$options.i18n.integrationFormSteps.step4.payloadParsedSucessMsg);
         })
         .finally(() => {
           this.parsingPayload = false;
@@ -528,6 +533,7 @@ export default {
           id="test-integration"
           :label="$options.i18n.integrationFormSteps.step4.label"
           label-for="test-integration"
+          :class="{ 'gl-mb-0!': showMappingBuilder }"
           :invalid-feedback="integrationTestPayload.error"
         >
           <alert-settings-form-help-block
@@ -547,41 +553,44 @@ export default {
             max-rows="10"
             @input="validateJson"
           />
-
-          <template v-if="showMappingBuilder">
-            <gl-button
-              v-if="canEditPayload"
-              v-gl-modal.resetPayloadModal
-              :disabled="!active"
-              class="gl-mt-3"
-            >
-              {{ $options.i18n.integrationFormSteps.step4.editPayload }}
-            </gl-button>
-
-            <gl-button
-              v-else
-              :disabled="!active"
-              :loading="parsingPayload"
-              class="gl-mt-3"
-              @click="parseMapping"
-            >
-              {{ $options.i18n.integrationFormSteps.step4.submitPayload }}
-            </gl-button>
-            <gl-modal
-              modal-id="resetPayloadModal"
-              :title="$options.i18n.integrationFormSteps.step4.resetHeader"
-              :ok-title="$options.i18n.integrationFormSteps.step4.resetOk"
-              ok-variant="danger"
-              @ok="resetSamplePayloadConfirmed = true"
-            >
-              {{ $options.i18n.integrationFormSteps.step4.resetBody }}
-            </gl-modal>
-          </template>
         </gl-form-group>
+
+        <template v-if="showMappingBuilder">
+          <gl-button
+            v-if="canEditPayload"
+            v-gl-modal.resetPayloadModal
+            data-testid="payload-action-btn"
+            :disabled="!active"
+            class="gl-mt-3"
+          >
+            {{ $options.i18n.integrationFormSteps.step4.editPayload }}
+          </gl-button>
+
+          <gl-button
+            v-else
+            data-testid="payload-action-btn"
+            :class="{ 'gl-mt-3': integrationTestPayload.error }"
+            :disabled="!active"
+            :loading="parsingPayload"
+            @click="parseMapping"
+          >
+            {{ $options.i18n.integrationFormSteps.step4.submitPayload }}
+          </gl-button>
+          <gl-modal
+            modal-id="resetPayloadModal"
+            :title="$options.i18n.integrationFormSteps.step4.resetHeader"
+            :ok-title="$options.i18n.integrationFormSteps.step4.resetOk"
+            ok-variant="danger"
+            @ok="resetSamplePayloadConfirmed = true"
+          >
+            {{ $options.i18n.integrationFormSteps.step4.resetBody }}
+          </gl-modal>
+        </template>
 
         <gl-form-group
           v-if="showMappingBuilder"
           id="mapping-builder"
+          class="gl-mt-5"
           :label="$options.i18n.integrationFormSteps.step5.label"
           label-for="mapping-builder"
         >

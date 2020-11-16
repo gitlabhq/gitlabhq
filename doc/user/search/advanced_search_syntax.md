@@ -65,7 +65,7 @@ The Advanced Search Syntax also supports the use of filters. The available filte
 - blob: Filters by Git `object ID`. Exact match only.
 
 To use them, add them to your keyword in the format `<filter_name>:<value>` without
-any spaces between the colon (`:`) and the value. A keyword or an asterisk (`*`) is required for filter searches and has to be added in front of the filter separated by a space. 
+any spaces between the colon (`:`) and the value. A keyword or an asterisk (`*`) is required for filter searches and has to be added in front of the filter separated by a space.
 
 Examples:
 

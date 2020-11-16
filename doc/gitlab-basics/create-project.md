@@ -128,10 +128,10 @@ To use a custom project template on the **New project** page:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
-When you create a new repository locally, instead of manually creating a new project in GitLab 
+When you create a new repository locally, instead of manually creating a new project in GitLab
 and then [cloning the repository](start-using-git.md#clone-a-repository)
 locally, you can directly push it to GitLab to create the new project, all without leaving
-your terminal. If you have access rights to the associated namespace, GitLab 
+your terminal. If you have access rights to the associated namespace, GitLab
 automatically creates a new project under that GitLab namespace with its visibility
 set to Private by default (you can later change it in the [project's settings](../public_access/public_access.md#how-to-change-project-visibility)).
 

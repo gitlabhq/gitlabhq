@@ -20,7 +20,7 @@ module Gitlab
         end
 
         def expand_globs(pipeline, context)
-          return @globs unless ::Feature.enabled?(:ci_variable_expansion_in_rules_changes, pipeline.project)
+          return @globs unless ::Feature.enabled?(:ci_variable_expansion_in_rules_changes, pipeline.project, default_enabled: true)
           return @globs unless context
 
           @globs.map do |glob|

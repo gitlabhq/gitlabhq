@@ -14,6 +14,7 @@ class PersonalAccessTokensFinder
     tokens = PersonalAccessToken.all
     tokens = by_current_user(tokens)
     tokens = by_user(tokens)
+    tokens = by_users(tokens)
     tokens = by_impersonation(tokens)
     tokens = by_state(tokens)
 
@@ -35,6 +36,12 @@ class PersonalAccessTokensFinder
     return tokens unless @params[:user]
 
     tokens.for_user(@params[:user])
+  end
+
+  def by_users(tokens)
+    return tokens unless @params[:users]
+
+    tokens.for_users(@params[:users])
   end
 
   def sort(tokens)

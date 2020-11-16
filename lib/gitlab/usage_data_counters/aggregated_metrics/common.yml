@@ -4,10 +4,15 @@
 #             - "ALL": counts unique elements that were observed triggering all of following events
 #  events: list of events names to aggregate into metric. All events in this list must have the same 'redis_slot' and 'aggregation' attributes
 #           see from lib/gitlab/usage_data_counters/known_events/ for the list of valid events.
+#  feature_flag: name of development feature flag that will be checked before metrics aggregation is performed.
+#                Corresponding feature flag should have `default_enabled` attribute set to `false`.
+#                This attribute is OPTIONAL and can be omitted, when `feature_flag` is missing no feature flag will be checked.
 ---
 - name: product_analytics_test_aggregated_metrics
   operator: ANY
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  feature_flag: product_analytics_aggregated_metrics
 - name: product_analytics_test_combined_events
   operator: ALL
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  feature_flag: product_analytics_aggregated_metrics

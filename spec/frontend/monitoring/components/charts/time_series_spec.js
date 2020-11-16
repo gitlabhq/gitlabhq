@@ -226,7 +226,7 @@ describe('Time series component', () => {
               ]);
 
               expect(
-                shallowWrapperContainsSlotText(wrapper.find(GlLineChart), 'tooltipContent', value),
+                shallowWrapperContainsSlotText(wrapper.find(GlLineChart), 'tooltip-content', value),
               ).toBe(true);
             });
 
@@ -651,7 +651,7 @@ describe('Time series component', () => {
 
             return wrapper.vm.$nextTick(() => {
               expect(
-                shallowWrapperContainsSlotText(findChartComponent(), 'tooltipTitle', mockTitle),
+                shallowWrapperContainsSlotText(findChartComponent(), 'tooltip-title', mockTitle),
               ).toBe(true);
             });
           });
@@ -671,7 +671,7 @@ describe('Time series component', () => {
 
             it('uses deployment title', () => {
               expect(
-                shallowWrapperContainsSlotText(findChartComponent(), 'tooltipTitle', 'Deployed'),
+                shallowWrapperContainsSlotText(findChartComponent(), 'tooltip-title', 'Deployed'),
               ).toBe(true);
             });
 

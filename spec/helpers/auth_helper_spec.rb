@@ -260,4 +260,41 @@ RSpec.describe AuthHelper do
       end
     end
   end
+
+  describe '#google_tag_manager_enabled?' do
+    let(:is_gitlab_com) { true }
+    let(:user) { nil }
+
+    before do
+      allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
+      stub_config(extra: { google_tag_manager_id: 'key' })
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    subject(:google_tag_manager_enabled?) { helper.google_tag_manager_enabled? }
+
+    context 'on gitlab.com and a key set without a current user' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when not on gitlab.com' do
+      let(:is_gitlab_com) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when current user is set' do
+      let(:user) { instance_double('User') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when no key is set' do
+      before do
+        stub_config(extra: {})
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

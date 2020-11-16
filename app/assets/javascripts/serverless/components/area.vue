@@ -138,8 +138,8 @@ export default {
       :width="width"
       :include-legend-avg-max="false"
     >
-      <template #tooltipTitle>{{ tooltipPopoverTitle }}</template>
-      <template #tooltipContent>{{ tooltipPopoverContent }}</template>
+      <template #tooltip-title>{{ tooltipPopoverTitle }}</template>
+      <template #tooltip-content>{{ tooltipPopoverContent }}</template>
     </gl-area-chart>
   </div>
 </template>

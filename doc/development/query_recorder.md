@@ -31,8 +31,8 @@ In some cases the query count might change slightly between runs for unrelated r
 ## Cached queries
 
 By default, QueryRecorder will ignore [cached queries](merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
-all queries to avoid introducing an N+1 query that may be masked by the statement cache. 
-To do this, this requires the `:use_sql_query_cache` flag to be set. 
+all queries to avoid introducing an N+1 query that may be masked by the statement cache.
+To do this, this requires the `:use_sql_query_cache` flag to be set.
 You should pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
 
 ```ruby

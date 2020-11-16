@@ -107,7 +107,7 @@ browser's developer console while on any page within GitLab.
 - **JavaScript that relies on CSS for calculations should use [`waitForCSSLoaded()`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/helpers/startup_css_helper.js#L34):**
   GitLab uses [Startup.css](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38052)
   to improve page performance. This can cause issues if JavaScript relies on CSS
-  for calculations. To fix this the JavaScript can be wrapped in the 
+  for calculations. To fix this the JavaScript can be wrapped in the
   [`waitForCSSLoaded()`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/helpers/startup_css_helper.js#L34)
   helper function.
 

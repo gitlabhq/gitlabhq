@@ -31,6 +31,18 @@ RSpec.describe PersonalAccessToken do
         expect(described_class.for_user(user_1)).to contain_exactly(token_of_user_1)
       end
     end
+
+    describe '.for_users' do
+      it 'returns personal access tokens for the specified users only' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        token_of_user_1 = create(:personal_access_token, user: user_1)
+        token_of_user_2 = create(:personal_access_token, user: user_2)
+        create_list(:personal_access_token, 3)
+
+        expect(described_class.for_users([user_1, user_2])).to contain_exactly(token_of_user_1, token_of_user_2)
+      end
+    end
   end
 
   describe ".active?" do

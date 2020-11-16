@@ -51,7 +51,7 @@ All users will be redirect to the page represented by the configured "After sign
 after sign out if value is not empty.
 
 In the Sign-in restrictions section, scroll to the "Sign-in text" text box. You can add a
-custom message for your users in Markdown format. 
+custom message for your users in Markdown format.
 
 For example, if you include the following information in the noted text box:
 

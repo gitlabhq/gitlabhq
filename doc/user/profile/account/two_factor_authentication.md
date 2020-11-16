@@ -124,9 +124,9 @@ First configure FortiAuthenticator in GitLab. On your GitLab server:
    ```
 
 1. Save the configuration file.
-1. [Reconfigure](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) 
+1. [Reconfigure](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    or [restart GitLab](../../../administration/restart_gitlab.md#installations-from-source)
-   for the changes to take effect if you installed GitLab via Omnibus or from 
+   for the changes to take effect if you installed GitLab via Omnibus or from
    source respectively.
 
 #### Enable FortiAuthenticator integration
@@ -376,7 +376,7 @@ Sign in and re-enable two-factor authentication as soon as possible.
   you may have cases where authorization always fails because of time differences.
 - The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from
   multiple hostnames, or FQDNs. Each U2F registration is linked to the _current hostname_ at
-  the time of registration, and cannot be used for other hostnames/FQDNs. The same applies to 
+  the time of registration, and cannot be used for other hostnames/FQDNs. The same applies to
   WebAuthn registrations.
 
   For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:

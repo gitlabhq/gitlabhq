@@ -390,7 +390,7 @@ you must have Owner [permissions](../../user/permissions.md#project-members-perm
 
 You must set up a runner to be able to run all the different types of jobs
 that it may encounter on the projects it's shared over. This would be
-problematic for large amounts of projects, if it weren't for tags. 
+problematic for large amounts of projects, if it weren't for tags.
 
 GitLab CI tags are not the same as Git tags. GitLab CI tags are associated with runners.
 Git tags are associated with commits.

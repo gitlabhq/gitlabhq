@@ -876,6 +876,7 @@ RSpec.describe GroupPolicy do
       let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
 
       it { is_expected.to be_allowed(:create_package) }
+      it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
       it { is_expected.to be_disallowed(:destroy_package) }
     end

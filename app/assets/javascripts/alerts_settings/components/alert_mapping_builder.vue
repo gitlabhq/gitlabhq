@@ -124,14 +124,14 @@ export default {
 <template>
   <div class="gl-display-table gl-w-full gl-mt-5">
     <div class="gl-display-table-row">
-      <h5 class="gl-display-table-cell gl-py-3 gl-pr-3">
+      <h5 id="gitlabFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
         {{ $options.i18n.columns.gitlabKeyTitle }}
       </h5>
       <h5 class="gl-display-table-cell gl-py-3 gl-pr-3">&nbsp;</h5>
-      <h5 class="gl-display-table-cell gl-py-3 gl-pr-3">
+      <h5 id="parsedFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
         {{ $options.i18n.columns.payloadKeyTitle }}
       </h5>
-      <h5 class="gl-display-table-cell gl-py-3 gl-pr-3">
+      <h5 id="fallbackFieldsHeader" class="gl-display-table-cell gl-py-3 gl-pr-3">
         {{ $options.i18n.columns.fallbackKeyTitle }}
         <gl-icon
           v-gl-tooltip
@@ -144,22 +144,24 @@ export default {
     <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-display-table-row">
       <div class="gl-display-table-cell gl-py-3 gl-pr-3 w-30p">
         <gl-form-input
+          aria-labelledby="gitlabFieldsHeader"
           disabled
           :value="getFieldValue(gitlabField)"
-          class="gl-bg-transparent! gl-text-gray-900!"
         />
       </div>
 
       <div class="gl-display-table-cell gl-py-3 gl-pr-3">
-        <div class="right-arrow">
+        <div class="right-arrow gl-vertical-align-middle gl-mt-n1">
           <i class="right-arrow-head"></i>
         </div>
       </div>
 
       <div class="gl-display-table-cell gl-py-3 gl-pr-3 w-30p">
         <gl-dropdown
+          :disabled="!gitlabField.mappingFields.length"
+          aria-labelledby="parsedFieldsHeader"
           :text="selectedValue(gitlabField.mapping)"
-          class="gl-w-full"
+          class="gl-w-full gl-vertical-align-baseline!"
           :header-text="$options.i18n.selectMappingKey"
         >
           <gl-search-box-by-type @input="setSearchTerm($event, 'searchTerm', gitlabField.name)" />
@@ -181,8 +183,10 @@ export default {
       <div class="gl-display-table-cell gl-py-3 w-30p">
         <gl-dropdown
           v-if="Boolean(gitlabField.numberOfFallbacks)"
+          :disabled="!gitlabField.mappingFields.length"
+          aria-labelledby="fallbackFieldsHeader"
           :text="selectedValue(gitlabField.fallback)"
-          class="gl-w-full"
+          class="gl-w-full gl-vertical-align-baseline!"
           :header-text="$options.i18n.selectMappingKey"
         >
           <gl-search-box-by-type

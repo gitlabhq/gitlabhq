@@ -41,7 +41,7 @@ For example, the class
 is responsible for handling references to issues, such as
 `gitlab-org/gitlab#123` and `https://gitlab.com/gitlab-org/gitlab/-/issues/200048`.
 
-All reference filters are instances of [`HTML::Pipeline::Filter`](https://www.rubydoc.info/github/jch/html-pipeline/v1.11.0/HTML/Pipeline/Filter),
+All reference filters are instances of [`HTML::Pipeline::Filter`](https://www.rubydoc.info/github/jch/html-pipeline/HTML/Pipeline/Filter),
 and inherit (often indirectly) from [`Banzai::Filter::ReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/reference_filter.rb).
 
 `HTML::Pipeline::Filter` has a simple interface consisting of `#call`, a void

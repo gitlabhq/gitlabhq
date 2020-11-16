@@ -4,4 +4,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45037
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267192
 type: development
 group: group::pipeline authoring
-default_enabled: false
+default_enabled: true

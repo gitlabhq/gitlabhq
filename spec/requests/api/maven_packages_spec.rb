@@ -92,15 +92,30 @@ RSpec.describe API::MavenPackages do
   end
 
   shared_examples 'downloads with a deploy token' do
-    it 'allows download with deploy token' do
-      download_file(
-        package_file.file_name,
-        {},
-        Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
-      )
+    context 'successful download' do
+      subject do
+        download_file(
+          package_file.file_name,
+          {},
+          Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
+        )
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.media_type).to eq('application/octet-stream')
+      it 'allows download with deploy token' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+      end
+
+      it 'allows download with deploy token with only write_package_registry scope' do
+        deploy_token.update!(read_package_registry: false)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+      end
     end
   end
 
@@ -350,6 +365,15 @@ RSpec.describe API::MavenPackages do
         subject { download_file_with_token(package_file.file_name, {}, group_deploy_token_headers) }
 
         it 'returns the file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+
+        it 'returns the file with only write_package_registry scope' do
+          deploy_token_for_group.update!(read_package_registry: false)
+
           subject
 
           expect(response).to have_gitlab_http_status(:ok)

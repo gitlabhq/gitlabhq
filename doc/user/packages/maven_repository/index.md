@@ -614,7 +614,7 @@ When this is completed, there are two ways to install a package.
 
 To install a package by using `mvn install`:
 
-1. Add the dependency manually to your project `pom.xml` file. 
+1. Add the dependency manually to your project `pom.xml` file.
    To add the example created earlier, the XML would be:
 
    ```xml
@@ -705,7 +705,7 @@ You can create a new package each time the `master` branch is updated.
    </settings>
    ```
 
-1. Make sure your `pom.xml` file includes the following. 
+1. Make sure your `pom.xml` file includes the following.
    You can either let Maven use the CI environment variables, as shown in this example,
    or you can hard code your project's ID.
 

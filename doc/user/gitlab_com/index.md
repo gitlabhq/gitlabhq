@@ -635,7 +635,7 @@ You can view more information in our runbooks such as:
 By default, GitLab does not expire job logs. Job logs are retained indefinitely,
 and can't be configured on GitLab.com to expire. You can erase job logs
 [manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
-[deleting a pipeline](../../ci/pipelines/index.md#delete-a-pipeline). 
+[deleting a pipeline](../../ci/pipelines/index.md#delete-a-pipeline).
 
 ## GitLab.com at scale
 
