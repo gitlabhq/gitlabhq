@@ -253,23 +253,6 @@ RSpec.describe Projects::Alerting::NotifyService do
       end
     end
 
-    context 'with an Alerts Service' do
-      let_it_be_with_reload(:integration) { create(:alerts_service, project: project) }
-
-      it_behaves_like 'notifcations are handled correctly' do
-        let(:source) { 'Generic Alert Endpoint' }
-      end
-
-      context 'with deactivated Alerts Service' do
-        before do
-          integration.update!(active: false)
-        end
-
-        it_behaves_like 'does not process incident issues due to error', http_status: :forbidden
-        it_behaves_like 'does not an create alert management alert'
-      end
-    end
-
     context 'with an HTTP Integration' do
       let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project) }
 
@@ -284,7 +267,7 @@ RSpec.describe Projects::Alerting::NotifyService do
           integration.update!(active: false)
         end
 
-        it_behaves_like 'does not process incident issues due to error', http_status: :unauthorized
+        it_behaves_like 'does not process incident issues due to error', http_status: :forbidden
         it_behaves_like 'does not an create alert management alert'
       end
     end

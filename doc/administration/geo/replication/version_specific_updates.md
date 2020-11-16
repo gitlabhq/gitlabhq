@@ -325,7 +325,7 @@ In GitLab 10.2, synchronizing secondaries over SSH was deprecated. In 10.3,
 support is removed entirely. All installations will switch to the HTTP/HTTPS
 cloning method instead. Before updating, ensure that all your Geo nodes are
 configured to use this method and that it works for your installation. In
-particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-6-enable-git-access-over-httphttps).
+particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-5-enable-git-access-over-httphttps).
 
 Synchronizing repositories over the public Internet using HTTP is insecure, so
 you should ensure that you have HTTPS configured before updating. Note that

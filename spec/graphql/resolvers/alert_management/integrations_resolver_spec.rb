@@ -28,14 +28,6 @@ RSpec.describe Resolvers::AlertManagement::IntegrationsResolver do
     end
 
     it { is_expected.to contain_exactly(active_http_integration, prometheus_integration) }
-
-    context 'feature flag is not enabled' do
-      before do
-        stub_feature_flags(multiple_http_integrations: false)
-      end
-
-      it { is_expected.to be_empty }
-    end
   end
 
   private

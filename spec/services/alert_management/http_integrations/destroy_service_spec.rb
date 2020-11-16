@@ -38,14 +38,6 @@ RSpec.describe AlertManagement::HttpIntegrations::DestroyService do
       it_behaves_like 'error response', 'You have insufficient permissions to remove this HTTP integration'
     end
 
-    context 'when feature flag is not enabled' do
-      before do
-        stub_feature_flags(multiple_http_integrations: false)
-      end
-
-      it_behaves_like 'error response', 'Removing integrations is not supported for this project'
-    end
-
     context 'when an error occurs during removal' do
       before do
         allow(integration).to receive(:destroy).and_return(false)

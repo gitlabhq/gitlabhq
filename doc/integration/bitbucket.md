@@ -8,33 +8,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 NOTE: **Note:**
 Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
-earlier version, you'll need to explicitly enable it.
-
-Import projects from Bitbucket.org and login to your GitLab instance with your
-Bitbucket.org account.
-
-## Overview
+earlier version, you must explicitly enable it.
 
 You can set up Bitbucket.org as an OAuth2 provider so that you can use your
-credentials to authenticate into GitLab or import your projects from
+Bitbucket.org account credentials to sign into GitLab or import your projects from
 Bitbucket.org.
 
-- To use Bitbucket.org as an OmniAuth provider, follow the [Bitbucket OmniAuth
-  provider](#bitbucket-omniauth-provider) section.
+- To use Bitbucket.org as an OmniAuth provider, follow the
+  [Bitbucket OmniAuth provider](#bitbucket-omniauth-provider) section.
 - To import projects from Bitbucket, follow both the
   [Bitbucket OmniAuth provider](#bitbucket-omniauth-provider) and
   [Bitbucket project import](#bitbucket-project-import) sections.
 
 ## Bitbucket OmniAuth provider
 
-NOTE: **Note:**
-GitLab 8.15 significantly simplified the way to integrate Bitbucket.org with
-GitLab. You are encouraged to upgrade your GitLab instance if you haven't done so
-already. If you're using GitLab 8.14 or below, [use the previous integration
-docs](https://gitlab.com/gitlab-org/gitlab/blob/8-14-stable-ee/doc/integration/bitbucket.md).
-
 To enable the Bitbucket OmniAuth provider you must register your application
-with Bitbucket.org. Bitbucket will generate an application ID and secret key for
+with Bitbucket.org. Bitbucket generates an application ID and secret key for
 you to use.
 
 1. Sign in to [Bitbucket.org](https://bitbucket.org).
@@ -42,26 +31,23 @@ you to use.
    settings (**Manage team**), depending on how you want the application registered.
    It does not matter if the application is registered as an individual or a
    team, that is entirely up to you.
-1. Select **OAuth** in the left menu under "Access Management".
+1. In the left menu under **Access Management**, select **OAuth**.
 1. Select **Add consumer**.
 1. Provide the required details:
 
-   | Item | Description |
-   | :--- | :---------- |
-   | **Name** | This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive. |
-   | **Application description** | Fill this in if you wish. |
-   | **Callback URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com/users/auth`. |
-   | **URL** | The URL to your GitLab installation, e.g., `https://gitlab.example.com`. |
+   - **Name:** This can be anything. Consider something like `<Organization>'s GitLab`
+     or `<Your Name>'s GitLab` or something else descriptive.
+   - **Application description:** *(Optional)* Fill this in if you wish.
+   - **Callback URL:** (Required in GitLab versions 8.15 and greater)
+     The URL to your GitLab installation, such as
+     `https://gitlab.example.com/users/auth`. Be sure to append `/users/auth` to
+     the end of the callback URL to prevent an
+     [OAuth2 convert redirect](http://tetraph.com/covert_redirect/) vulnerability.
+     Leaving this field empty
+     [results in an `Invalid redirect_uri` message](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
+   - **URL:** The URL to your GitLab installation, such as `https://gitlab.example.com`.
 
-   NOTE: Be sure to append `/users/auth` to the end of the callback URL
-   to prevent a [OAuth2 convert
-   redirect](http://tetraph.com/covert_redirect/) vulnerability.
-
-   NOTE: Starting in GitLab 8.15, you MUST specify a callback URL, or you will
-   see an "Invalid redirect_uri" message. For more details, see [the
-   Bitbucket documentation](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
-
-   And grant at least the following permissions:
+1. Grant at least the following permissions:
 
    ```plaintext
    Account: Email, Read
@@ -75,8 +61,8 @@ you to use.
    ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page.png)
 
 1. Select **Save**.
-1. Select your newly created OAuth consumer and you should now see a Key and
-   Secret in the list of OAuth consumers. Keep this page open as you continue
+1. Select your newly created OAuth consumer, and you should now see a **Key** and
+   **Secret** in the list of OAuth consumers. Keep this page open as you continue
    the configuration.
 
    ![Bitbucket OAuth key](img/bitbucket_oauth_keys.png)
@@ -125,16 +111,16 @@ you to use.
 
 1. Save the configuration file.
 1. For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed via
-   Omnibus, or [restart](../administration/restart_gitlab.md#installations-from-source) if installed from source.
+   Omnibus GitLab, or [restart](../administration/restart_gitlab.md#installations-from-source) if installed from source.
 
-On the sign in page there should now be a Bitbucket icon below the regular sign
-in form. Click the icon to begin the authentication process. Bitbucket will ask
-the user to sign in and authorize the GitLab application. If everything goes
-well, the user will be returned to GitLab and will be signed in.
+On the sign-in page there should now be a Bitbucket icon below the regular
+sign-in form. Click the icon to begin the authentication process. Bitbucket asks
+the user to sign in and authorize the GitLab application. If successful, the user
+is returned to GitLab and signed in.
 
 ## Bitbucket project import
 
-Once the above configuration is set up, you can use Bitbucket to sign into
+After the above configuration is set up, you can use Bitbucket to sign into
 GitLab and [start importing your projects](../user/project/import/bitbucket.md).
 
 If you want to import projects from Bitbucket, but don't want to enable signing in,

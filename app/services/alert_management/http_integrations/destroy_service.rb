@@ -12,7 +12,6 @@ module AlertManagement
 
       def execute
         return error_no_permissions unless allowed?
-        return error_multiple_integrations unless Feature.enabled?(:multiple_http_integrations, integration.project)
 
         if integration.destroy
           success
@@ -39,10 +38,6 @@ module AlertManagement
 
       def error_no_permissions
         error(_('You have insufficient permissions to remove this HTTP integration'))
-      end
-
-      def error_multiple_integrations
-        error(_('Removing integrations is not supported for this project'))
       end
     end
   end

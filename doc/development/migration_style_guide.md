@@ -478,6 +478,12 @@ For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `remove_index` in a single-transaction migration,
 combining it with other operations that don't require `disable_ddl_transaction!`.
 
+### Disabling an index
+
+There are certain situations in which you might want to disable an index before removing it.
+See the [maintenance operations guide](database/maintenance_operations.md#disabling-an-index)
+for more details.
+
 ## Adding indexes
 
 Before adding an index, consider if this one is necessary. There are situations in which an index

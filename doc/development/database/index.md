@@ -63,3 +63,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 - [Database case study: Filtering by label](../filtering_by_label.md)
 - [Database case study: Namespaces storage statistics](../namespaces_storage_statistics.md)
+
+## Miscellaneous
+
+- [Maintenance operations](maintenance_operations.md)

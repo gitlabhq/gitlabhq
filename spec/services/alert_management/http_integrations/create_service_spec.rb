@@ -38,14 +38,6 @@ RSpec.describe AlertManagement::HttpIntegrations::CreateService do
       it_behaves_like 'error response', 'You have insufficient permissions to create an HTTP integration for this project'
     end
 
-    context 'when feature flag is not enabled' do
-      before do
-        stub_feature_flags(multiple_http_integrations: false)
-      end
-
-      it_behaves_like 'error response', 'Multiple HTTP integrations are not supported for this project'
-    end
-
     context 'when an integration already exists' do
       let_it_be(:existing_integration) { create(:alert_management_http_integration, project: project) }
 

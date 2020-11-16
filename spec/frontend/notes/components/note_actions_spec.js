@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
 import { TEST_HOST } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import createStore from '~/notes/stores';
@@ -14,9 +14,9 @@ describe('noteActions', () => {
   let actions;
   let axiosMock;
 
-  const shallowMountNoteActions = (propsData, computed) => {
+  const mountNoteActions = (propsData, computed) => {
     const localVue = createLocalVue();
-    return shallowMount(localVue.extend(noteActions), {
+    return mount(localVue.extend(noteActions), {
       store,
       propsData,
       localVue,
@@ -61,7 +61,7 @@ describe('noteActions', () => {
     beforeEach(() => {
       store.dispatch('setUserData', userDataMock);
 
-      wrapper = shallowMountNoteActions(props);
+      wrapper = mountNoteActions(props);
     });
 
     it('should render noteable author badge', () => {
@@ -178,7 +178,7 @@ describe('noteActions', () => {
     };
 
     beforeEach(() => {
-      wrapper = shallowMountNoteActions(props, {
+      wrapper = mountNoteActions(props, {
         targetType: () => 'issue',
       });
       store.state.noteableData = {
@@ -205,7 +205,7 @@ describe('noteActions', () => {
     };
 
     beforeEach(() => {
-      wrapper = shallowMountNoteActions(props, {
+      wrapper = mountNoteActions(props, {
         targetType: () => 'issue',
       });
     });
@@ -221,7 +221,7 @@ describe('noteActions', () => {
   describe('user is not logged in', () => {
     beforeEach(() => {
       store.dispatch('setUserData', {});
-      wrapper = shallowMountNoteActions({
+      wrapper = mountNoteActions({
         ...props,
         canDelete: false,
         canEdit: false,
@@ -241,7 +241,7 @@ describe('noteActions', () => {
 
   describe('for showReply = true', () => {
     beforeEach(() => {
-      wrapper = shallowMountNoteActions({
+      wrapper = mountNoteActions({
         ...props,
         showReply: true,
       });
@@ -256,7 +256,7 @@ describe('noteActions', () => {
 
   describe('for showReply = false', () => {
     beforeEach(() => {
-      wrapper = shallowMountNoteActions({
+      wrapper = mountNoteActions({
         ...props,
         showReply: false,
       });
@@ -273,7 +273,7 @@ describe('noteActions', () => {
     beforeEach(() => {
       store.dispatch('setUserData', userDataMock);
 
-      wrapper = shallowMountNoteActions({ ...props, canResolve: true, isDraft: true });
+      wrapper = mountNoteActions({ ...props, canResolve: true, isDraft: true });
     });
 
     it('should render the right resolve button title', () => {

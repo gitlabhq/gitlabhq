@@ -3,7 +3,7 @@
 - show_invited_members = can_manage_members && @invited_members.exists?
 - show_access_requests = can_manage_members && @requesters.exists?
 - invited_active = params[:search_invited].present? || params[:invited_members_page].present?
-- vue_members_list_enabled = Feature.enabled?(:vue_group_members_list, @group)
+- vue_members_list_enabled = Feature.enabled?(:vue_group_members_list, @group, default_enabled: true)
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
 - form_item_label_css_class = 'label-bold gl-mr-2 gl-mb-0 gl-py-2 align-self-md-center'

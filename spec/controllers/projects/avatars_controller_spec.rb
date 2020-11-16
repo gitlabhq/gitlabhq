@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AvatarsController do
-  let_it_be(:project) { create(:project, :repository) }
-
-  before do
-    controller.instance_variable_set(:@project, project)
-  end
-
   describe 'GET #show' do
-    subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
+    let_it_be(:project) { create(:project, :public, :repository) }
+
+    before do
+      controller.instance_variable_set(:@project, project)
+    end
+
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project.path } }
 
     context 'when repository has no avatar' do
       it 'shows 404' do
@@ -37,6 +37,15 @@ RSpec.describe Projects::AvatarsController do
           expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
         end
 
+        it 'sets appropriate caching headers' do
+          sign_in(project.owner)
+          subject
+
+          expect(response.cache_control[:public]).to eq(true)
+          expect(response.cache_control[:max_age]).to eq(60)
+          expect(response.cache_control[:no_store]).to be_nil
+        end
+
         it_behaves_like 'project cache control headers'
       end
 
@@ -51,9 +60,16 @@ RSpec.describe Projects::AvatarsController do
   end
 
   describe 'DELETE #destroy' do
-    it 'removes avatar from DB by calling destroy' do
-      delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id }
+    let(:project) { create(:project, :repository, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
+    before do
+      sign_in(project.owner)
+    end
+
+    it 'removes avatar from DB by calling destroy' do
+      delete :destroy, params: { namespace_id: project.namespace.path, project_id: project.path }
+
+      expect(response).to redirect_to(edit_project_path(project, anchor: 'js-general-project-settings'))
       expect(project.avatar.present?).to be_falsey
       expect(project).to be_valid
     end

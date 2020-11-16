@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-  <div class="note-actions-item">
+  <div class="gl-ml-2">
     <gl-button
       ref="button"
       v-gl-tooltip

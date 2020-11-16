@@ -349,6 +349,40 @@ issues in our code.
 
 ## Memory profiling
 
+We can use two approaches, often in combination, to track down memory issues:
+
+- Leaving the code intact and wrapping a profiler around it.
+- Monitor memory usage of the process while disabling/enabling different parts of the code we suspect could be problematic.
+
+### Using Memory Profiler
+
+We can use `memory_profiler` for profiling.
+
+The [`memory_profiler`](https://github.com/SamSaffron/memory_profiler) gem is already present in GitLab's `Gemfile`,
+you just need to require it:
+
+```ruby
+require 'sidekiq/testing'
+
+report = MemoryProfiler.report do
+  # Code you want to profile
+end
+
+output = File.open('/tmp/profile.txt','w')
+report.pretty_print(output)
+```
+
+The report breaks down 2 key concepts:
+
+- Retained: long lived memory use and object count retained due to the execution of the code block.
+- Allocated: all object allocation and memory allocation during code block.
+
+As a general rule, **retained** will always be smaller than or equal to allocated.
+
+The actual RSS cost will always be slightly higher as MRI heaps are not squashed to size and memory fragments.
+
+### Rbtrace
+
 One of the reasons of the increased memory footprint could be Ruby memory fragmentation.
 
 To diagnose it, you can visualize Ruby heap as described in [this post by Aaron Patterson](https://tenderlovemaking.com/2017/09/27/visualizing-your-ruby-heap.html).

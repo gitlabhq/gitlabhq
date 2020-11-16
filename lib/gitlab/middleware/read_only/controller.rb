@@ -10,7 +10,7 @@ module Gitlab
         ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 
         ALLOWLISTED_GIT_ROUTES = {
-          'repositories/git_http' => %w{git_upload_pack git_receive_pack}
+          'repositories/git_http' => %w{git_upload_pack}
         }.freeze
 
         ALLOWLISTED_GIT_LFS_ROUTES = {
@@ -96,7 +96,7 @@ module Gitlab
         def workhorse_passthrough_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           return false unless request.post? &&
-            request.path.end_with?('.git/git-upload-pack', '.git/git-receive-pack')
+            request.path.end_with?('.git/git-upload-pack')
 
           ALLOWLISTED_GIT_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end

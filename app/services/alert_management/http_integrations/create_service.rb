@@ -14,7 +14,7 @@ module AlertManagement
 
       def execute
         return error_no_permissions unless allowed?
-        return error_multiple_integrations unless creation_allowed? && Feature.enabled?(:multiple_http_integrations, project)
+        return error_multiple_integrations unless creation_allowed?
 
         integration = project.alert_management_http_integrations.create(params)
         return error_in_create(integration) unless integration.valid?

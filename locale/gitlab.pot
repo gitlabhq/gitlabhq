@@ -8356,9 +8356,6 @@ msgstr ""
 msgid "CycleAnalytics|stage dropdown"
 msgstr ""
 
-msgid "DAG"
-msgstr ""
-
 msgid "DAG visualization requires at least 3 dependent jobs."
 msgstr ""
 
@@ -13985,6 +13982,9 @@ msgstr ""
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
 msgstr ""
 
+msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}."
+msgstr ""
+
 msgid "If you did not recently sign in, you should immediately %{password_link_start}change your password%{password_link_end}."
 msgstr ""
 
@@ -15829,6 +15829,9 @@ msgstr ""
 msgid "Learn more about License-Check"
 msgstr ""
 
+msgid "Learn more about Needs relationships"
+msgstr ""
+
 msgid "Learn more about Vulnerability-Check"
 msgstr ""
 
@@ -15854,9 +15857,6 @@ msgid "Learn more about deploying to a cluster"
 msgstr ""
 
 msgid "Learn more about group-level project templates"
-msgstr ""
-
-msgid "Learn more about job dependencies"
 msgstr ""
 
 msgid "Learn more about signing commits"
@@ -17928,6 +17928,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Need help?"
+msgstr ""
+
+msgid "Needs"
 msgstr ""
 
 msgid "Needs attention"
@@ -22663,9 +22666,6 @@ msgstr ""
 msgid "Removes time estimate."
 msgstr ""
 
-msgid "Removing integrations is not supported for this project"
-msgstr ""
-
 msgid "Removing this group also removes all child projects, including archived projects, and their resources."
 msgstr ""
 
@@ -25644,6 +25644,9 @@ msgstr ""
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
+msgid "Speed up your pipelines with Needs relationships"
+msgstr ""
+
 msgid "Squash commit message"
 msgstr ""
 
@@ -25759,9 +25762,6 @@ msgid "Start thread & close %{noteable_name}"
 msgstr ""
 
 msgid "Start thread & reopen %{noteable_name}"
-msgstr ""
-
-msgid "Start using Directed Acyclic Graphs (DAG)"
 msgstr ""
 
 msgid "Start your Free Gold Trial"
@@ -27826,9 +27826,6 @@ msgstr ""
 msgid "This page sends a payload. Go back to the events page to see a newly created event."
 msgstr ""
 
-msgid "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph."
-msgstr ""
-
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{b_open}Auto DevOps.%{b_close}"
 msgstr ""
 
@@ -29582,6 +29579,9 @@ msgstr ""
 msgid "UserProfile|Report abuse"
 msgstr ""
 
+msgid "UserProfile|Retry"
+msgstr ""
+
 msgid "UserProfile|Snippets"
 msgstr ""
 
@@ -29693,13 +29693,13 @@ msgstr ""
 msgid "UsersSelect|Unassigned"
 msgstr ""
 
-msgid "Using %{codeStart}needs%{codeEnd} allows jobs to run before their stage is reached, as soon as their individual dependencies are met, which speeds up your pipelines."
-msgstr ""
-
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"
+msgstr ""
+
+msgid "Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines."
 msgstr ""
 
 msgid "Valid from"

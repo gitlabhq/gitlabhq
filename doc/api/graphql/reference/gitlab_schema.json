@@ -21191,7 +21191,7 @@
             },
             {
               "name": "emailsDisabled",
-              "description": "Indicates if a project has email notifications disabled",
+              "description": "Indicates if a project has email notifications disabled: `true` if email notifications are disabled",
               "args": [
 
               ],
@@ -27886,7 +27886,7 @@
             },
             {
               "name": "emailsDisabled",
-              "description": "Indicates if a project has email notifications disabled",
+              "description": "Indicates if a project has email notifications disabled: `true` if email notifications are disabled",
               "args": [
 
               ],

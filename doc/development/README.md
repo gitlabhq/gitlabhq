@@ -134,17 +134,20 @@ from:
 - [Feature categorization](feature_categorization/index.md)
 - [Wikis development guide](wikis.md)
 - [Newlines style guide](newlines_styleguide.md)
+- [Image scaling guide](image_scaling.md)
 
 ## Performance guides
 
 - [Instrumentation](instrumentation.md) for Ruby code running in production
-  environments
+  environments.
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
-  certain patterns to avoid
+  certain patterns to avoid.
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL, measuring performance using Sherlock, or
-  tracking down N+1 queries using Bullet
+  tracking down N+1 queries using Bullet.
+- [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries masked by query caching, memory profiling and why should
+  we avoid cached queries.
 
 ## Database guides
 

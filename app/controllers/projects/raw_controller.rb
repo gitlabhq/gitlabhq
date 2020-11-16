@@ -6,6 +6,8 @@ class Projects::RawController < Projects::ApplicationController
   include SendsBlob
   include StaticObjectExternalStorage
 
+  skip_before_action :default_cache_headers, only: :show
+
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:blob) }
 
   before_action :require_non_empty_project

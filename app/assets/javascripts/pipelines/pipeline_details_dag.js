@@ -16,7 +16,13 @@ const createDagApp = () => {
     return;
   }
 
-  const { pipelineProjectPath, pipelineIid, emptySvgPath, dagDocPath } = el?.dataset;
+  const {
+    aboutDagDocPath,
+    dagDocPath,
+    emptySvgPath,
+    pipelineProjectPath,
+    pipelineIid,
+  } = el?.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -26,10 +32,11 @@ const createDagApp = () => {
     },
     apolloProvider,
     provide: {
+      aboutDagDocPath,
+      dagDocPath,
+      emptySvgPath,
       pipelineProjectPath,
       pipelineIid,
-      emptySvgPath,
-      dagDocPath,
     },
     render(createElement) {
       return createElement('dag', {});

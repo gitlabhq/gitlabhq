@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlEmptyState, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
@@ -17,11 +17,15 @@ export default {
     DagAnnotations,
     DagGraph,
     GlAlert,
-    GlSprintf,
-    GlEmptyState,
     GlButton,
+    GlEmptyState,
+    GlLink,
+    GlSprintf,
   },
   inject: {
+    aboutDagDocPath: {
+      default: null,
+    },
     dagDocPath: {
       default: null,
     },
@@ -89,14 +93,14 @@ export default {
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
   emptyStateTexts: {
-    title: __('Start using Directed Acyclic Graphs (DAG)'),
+    title: __('Speed up your pipelines with Needs relationships'),
     firstDescription: __(
-      "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph.",
+      'Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines.',
     ),
     secondDescription: __(
-      'Using %{codeStart}needs%{codeEnd} allows jobs to run before their stage is reached, as soon as their individual dependencies are met, which speeds up your pipelines.',
+      "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}.",
     ),
-    button: __('Learn more about job dependencies'),
+    button: __('Learn more about Needs relationships'),
   },
   computed: {
     failure() {
@@ -221,6 +225,9 @@ export default {
               <gl-sprintf :message="$options.emptyStateTexts.secondDescription">
                 <template #code="{ content }">
                   <code>{{ content }}</code>
+                </template>
+                <template #link="{ content }">
+                  <gl-link :href="aboutDagDocPath">{{ content }}</gl-link>
                 </template>
               </gl-sprintf>
             </p>

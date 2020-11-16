@@ -46,8 +46,6 @@ module Projects
       end
 
       def integration
-        return unless Feature.enabled?(:multiple_http_integrations, project)
-
         AlertManagement::HttpIntegrationsFinder.new(
           project,
           endpoint_identifier: endpoint_identifier,

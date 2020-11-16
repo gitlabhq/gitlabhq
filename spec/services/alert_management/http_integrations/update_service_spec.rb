@@ -39,14 +39,6 @@ RSpec.describe AlertManagement::HttpIntegrations::UpdateService do
       it_behaves_like 'error response', 'You have insufficient permissions to update this HTTP integration'
     end
 
-    context 'when feature flag is not enabled' do
-      before do
-        stub_feature_flags(multiple_http_integrations: false)
-      end
-
-      it_behaves_like 'error response', 'Multiple HTTP integrations are not supported for this project'
-    end
-
     context 'when an error occurs during update' do
       let(:params) { { name: '' } }
 

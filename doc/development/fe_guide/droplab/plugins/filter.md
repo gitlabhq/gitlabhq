@@ -4,18 +4,19 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Filter
+# Filter plugin
 
-`Filter` is a plugin that allows for filtering data that has been added
+`Filter` is a DropLab plugin that allows for filtering data that has been added
 to the dropdown using a simple fuzzy string search of an input value.
 
 ## Usage
 
-Add the `Filter` object to the plugins array of a `DropLab.prototype.init` or `DropLab.prototype.addHook` call.
+Add the `Filter` object to the plugins array of a `DropLab.prototype.init` or
+`DropLab.prototype.addHook` call.
 
-- `Filter` requires a configuration value for `template`.
-- `template` should be the key of the objects within your data array that you want to compare
-  to the user input string, for filtering.
+- `Filter`: Requires a configuration value for `template`.
+- `template`: Should be the key of the objects within your data array that you
+  want to compare to the user input string, for filtering.
 
 ```html
 <input href="#" id="trigger" data-dropdown-trigger="#list">
@@ -45,8 +46,10 @@ droplab.addData('trigger', [{
 }]);
 ```
 
-Above, the input string will be compared against the `test` key of the passed data objects.
+In the previous code, the input string is compared against the `test` key of the
+passed data objects.
 
-Optionally you can set `filterFunction` to a function. This function will be used instead
-of `Filter`'s built in string search. `filterFunction` is passed 2 arguments, the first
-is one of the data objects, the second is the current input value.
+Optionally you can set `filterFunction` to a function. This function will be
+used instead of `Filter`'s built-in string search. `filterFunction` is passed
+two arguments: the first is one of the data objects, and the second is the
+current input value.

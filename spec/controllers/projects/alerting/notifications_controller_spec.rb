@@ -89,18 +89,6 @@ RSpec.describe Projects::Alerting::NotificationsController do
                     make_request
                   end
                 end
-
-                context 'when multiple endpoints are disabled' do
-                  before do
-                    stub_feature_flags(multiple_http_integrations: false)
-                  end
-
-                  it 'does not find an integration' do
-                    expect(notify_service).to receive(:execute).with('some token', nil)
-
-                    make_request
-                  end
-                end
               end
 
               context 'without integration parameters specified' do

@@ -14,7 +14,6 @@ module AlertManagement
 
       def execute
         return error_no_permissions unless allowed?
-        return error_multiple_integrations unless Feature.enabled?(:multiple_http_integrations, integration.project)
 
         params[:token] = nil if params.delete(:regenerate_token)
 
@@ -43,10 +42,6 @@ module AlertManagement
 
       def error_no_permissions
         error(_('You have insufficient permissions to update this HTTP integration'))
-      end
-
-      def error_multiple_integrations
-        error(_('Multiple HTTP integrations are not supported for this project'))
       end
     end
   end

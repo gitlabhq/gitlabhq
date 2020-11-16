@@ -1272,7 +1272,7 @@ Relationship between an epic and an issue.
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
 | `downvotes` | Int! | Number of downvotes the issue has received |
 | `dueDate` | Time | Due date of the issue |
-| `emailsDisabled` | Boolean! | Indicates if a project has email notifications disabled |
+| `emailsDisabled` | Boolean! | Indicates if a project has email notifications disabled: `true` if email notifications are disabled |
 | `epic` | Epic | Epic to which this issue belongs |
 | `epicIssueId` | ID! | ID of the epic-issue relation |
 | `healthStatus` | HealthStatus | Current health status. Returns null if `save_issuable_health_status` feature flag is disabled. |
@@ -1541,7 +1541,7 @@ Represents a recorded measurement (object count) for the Admins.
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
 | `downvotes` | Int! | Number of downvotes the issue has received |
 | `dueDate` | Time | Due date of the issue |
-| `emailsDisabled` | Boolean! | Indicates if a project has email notifications disabled |
+| `emailsDisabled` | Boolean! | Indicates if a project has email notifications disabled: `true` if email notifications are disabled |
 | `epic` | Epic | Epic to which this issue belongs |
 | `healthStatus` | HealthStatus | Current health status. Returns null if `save_issuable_health_status` feature flag is disabled. |
 | `humanTimeEstimate` | String | Human-readable time estimate of the issue |

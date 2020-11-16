@@ -232,16 +232,7 @@ that the **secondary** node can act on those notifications immediately.
 Be sure the _secondary_ node is running and accessible. You can sign in to the
 _secondary_ node with the same credentials as were used with the _primary_ node.
 
-### Step 4. Enabling Hashed Storage
-
-Using Hashed Storage significantly improves Geo replication. Project and group
-renames no longer require synchronization between nodes.
-
-1. Visit the **primary** node's **Admin Area > Settings > Repository**
-   (`/admin/application_settings/repository`) in your browser.
-1. In the **Repository storage** section, check **Use hashed storage paths for newly created and renamed projects**.
-
-### Step 5. (Optional) Configuring the **secondary** node to trust the **primary** node
+### Step 4. (Optional) Configuring the **secondary** node to trust the **primary** node
 
 You can safely skip this step if your **primary** node uses a CA-issued HTTPS certificate.
 
@@ -251,14 +242,16 @@ certificate from the **primary** node and follow
 [these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html)
 on the **secondary** node.
 
-### Step 6. Enable Git access over HTTP/HTTPS
+### Step 5. Enable Git access over HTTP/HTTPS
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. Navigate to **Admin Area > Settings**
-(`/admin/application_settings/general`) on the **primary** node, and set
-`Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
+method to be enabled. This is enabled by default, but if converting an existing node to Geo it should be checked:
 
-### Step 7. Verify proper functioning of the **secondary** node
+1. Navigate to **Admin Area > Settings** (`/admin/application_settings/general`) on the **primary** node.
+1. Expand "Visibility and access controls".
+1. Ensure "Enabled Git access protocols" is set to either "Both SSH and HTTP(S)" or "Only HTTP(S)".
+
+### Step 6. Verify proper functioning of the **secondary** node
 
 Your **secondary** node is now configured!
 

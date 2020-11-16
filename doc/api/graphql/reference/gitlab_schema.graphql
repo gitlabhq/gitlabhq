@@ -7646,7 +7646,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   dueDate: Time
 
   """
-  Indicates if a project has email notifications disabled
+  Indicates if a project has email notifications disabled: `true` if email notifications are disabled
   """
   emailsDisabled: Boolean!
 
@@ -10185,7 +10185,7 @@ type Issue implements CurrentUserTodos & Noteable {
   dueDate: Time
 
   """
-  Indicates if a project has email notifications disabled
+  Indicates if a project has email notifications disabled: `true` if email notifications are disabled
   """
   emailsDisabled: Boolean!
 

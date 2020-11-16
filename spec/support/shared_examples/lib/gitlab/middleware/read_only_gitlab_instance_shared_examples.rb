@@ -128,7 +128,6 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
         'LFS request to locks create' | '/root/rouge.git/info/lfs/locks'
         'LFS request to locks unlock' | '/root/rouge.git/info/lfs/locks/1/unlock'
         'request to git-upload-pack'  | '/root/rouge.git/git-upload-pack'
-        'request to git-receive-pack' | '/root/rouge.git/git-receive-pack'
       end
 
       with_them do

@@ -122,7 +122,9 @@ RSpec.describe Projects::RepositoriesController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.header['ETag']).to be_present
-          expect(response.header['Cache-Control']).to include('max-age=60, private')
+          expect(response.cache_control[:public]).to eq(false)
+          expect(response.cache_control[:max_age]).to eq(60)
+          expect(response.cache_control[:no_store]).to be_nil
         end
 
         context 'when project is public' do

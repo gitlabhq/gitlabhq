@@ -71,6 +71,10 @@ The v2 auto-deploy-image contains multiple dependency and architectural changes.
 If your Auto DevOps project has an active environment deployed with the v1 `auto-deploy-image`,
 please proceed with the following upgrade guide. Otherwise, you can skip this process.
 
+#### Kubernetes 1.16+
+
+The v2 auto-deploy-image also drops support for Kubernetes 1.15 and lower.
+
 #### Helm 3
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228609) in GitLab 13.4.

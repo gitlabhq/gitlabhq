@@ -14,14 +14,11 @@
   .str-truncated {
     max-width: 70%;
   }
-
-  .user-calendar-activities-loading {
-    font-size: 24px;
-  }
 }
 
 .user-calendar {
   text-align: center;
+  min-height: 172px;
 
   .calendar {
     display: inline-block;
@@ -42,12 +39,9 @@
 
 .calendar-hint {
   font-size: 12px;
-
-  &.bottom-right {
-    direction: ltr;
-    margin-top: -23px;
-    float: right;
-  }
+  direction: ltr;
+  margin-top: -23px;
+  float: right;
 }
 
 .pika-single.gitlab-theme {

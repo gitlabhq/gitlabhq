@@ -1,12 +1,14 @@
 - activity_pane_class = Feature.enabled?(:security_auto_fix) && @user.bot? ? "col-12" : "col-md-12 col-lg-6"
 
-.row
-  .col-12
-    .calendar-block.gl-mt-3.gl-mb-3
-      .user-calendar.d-none.d-sm-block{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
-        %h4.center.light
-          .spinner.spinner-md
-      .user-calendar-activities.d-none.d-sm-block
+.row.d-none.d-sm-flex
+  .col-12.calendar-block.gl-my-3
+    .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
+      .spinner.spinner-md.gl-my-8
+      .user-calendar-error.invisible
+        = _('There was an error loading users activity calendar.')
+        %a.js-retry-load{ href: '#' }
+          = s_('UserProfile|Retry')
+    .user-calendar-activities
 .row
   %div{ class: activity_pane_class }
     - if can?(current_user, :read_cross_project)
