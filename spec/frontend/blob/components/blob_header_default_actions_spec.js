@@ -14,8 +14,13 @@ describe('Blob Header Default Actions', () => {
   let btnGroup;
   let buttons;
 
+  const blobHash = 'foo-bar';
+
   function createComponent(propsData = {}) {
     wrapper = mount(BlobHeaderActions, {
+      provide: {
+        blobHash,
+      },
       propsData: {
         rawPath: Blob.rawPath,
         ...propsData,

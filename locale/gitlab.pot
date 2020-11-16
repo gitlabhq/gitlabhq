@@ -356,6 +356,9 @@ msgstr ""
 msgid "%{address} is an invalid IP address range"
 msgstr ""
 
+msgid "%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance."
+msgstr ""
+
 msgid "%{author_link} wrote:"
 msgstr ""
 
@@ -8410,9 +8413,6 @@ msgstr ""
 msgid "DastProfiles|Copy HTTP header to clipboard"
 msgstr ""
 
-msgid "DastProfiles|Could not create site validation token. Please refresh the page, or try again later."
-msgstr ""
-
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
 msgstr ""
 
@@ -8435,9 +8435,6 @@ msgid "DastProfiles|Could not fetch scanner profiles. Please refresh the page, o
 msgstr ""
 
 msgid "DastProfiles|Could not fetch site profiles. Please refresh the page, or try again later."
-msgstr ""
-
-msgid "DastProfiles|Could not retrieve site validation status. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "DastProfiles|Could not update the scanner profile. Please try again."
@@ -8554,9 +8551,6 @@ msgstr ""
 msgid "DastProfiles|Site is not validated yet, please follow the steps."
 msgstr ""
 
-msgid "DastProfiles|Site must be validated to run an active scan."
-msgstr ""
-
 msgid "DastProfiles|Spider timeout"
 msgstr ""
 
@@ -8602,25 +8596,10 @@ msgstr ""
 msgid "DastProfiles|Validate"
 msgstr ""
 
-msgid "DastProfiles|Validate target site"
-msgstr ""
-
 msgid "DastProfiles|Validating..."
 msgstr ""
 
 msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the chosen method."
-msgstr ""
-
-msgid "DastProfiles|Validation failed. Please try again."
-msgstr ""
-
-msgid "DastProfiles|Validation is in progress..."
-msgstr ""
-
-msgid "DastProfiles|Validation must be turned off to change the target URL"
-msgstr ""
-
-msgid "DastProfiles|Validation succeeded. Both active and passive scans can be run against the target site."
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -15098,6 +15077,9 @@ msgstr ""
 msgid "IssueAnalytics|Weight"
 msgstr ""
 
+msgid "IssueBoards|An error occurred while setting notifications status."
+msgstr ""
+
 msgid "IssueBoards|Board"
 msgstr ""
 
@@ -19066,6 +19048,9 @@ msgid "Open issues"
 msgstr ""
 
 msgid "Open raw"
+msgstr ""
+
+msgid "Open registration is enabled on your instance."
 msgstr ""
 
 msgid "Open sidebar"
@@ -29893,6 +29878,9 @@ msgid "View project labels"
 msgstr ""
 
 msgid "View replaced file @ "
+msgstr ""
+
+msgid "View setting"
 msgstr ""
 
 msgid "View supported languages and frameworks"

@@ -67,6 +67,7 @@ module NotificationsHelper
     when :custom
       _('You will only receive notifications for the events you choose')
     when :owner_disabled
+      # Any change must be reflected in board_sidebar_subscription.vue
       _('Notifications have been disabled by the project or group owner')
     end
   end

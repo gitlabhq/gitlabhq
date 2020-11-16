@@ -31,7 +31,7 @@ module MergeRequests
       return error('Failed to create keep around refs.') unless kept_around?
       return error('Failed to cache merge ref sha.') unless cache_merge_ref_sha
 
-      delete_refs
+      delete_refs if repository.exists?
 
       return error('Failed to update schedule.') unless update_schedule
 

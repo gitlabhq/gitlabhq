@@ -14,7 +14,7 @@
 - if @project.last_repository_check_failed?
   .row
     .col-md-12
-      .gl-alert.gl-alert-danger.gl-mb-5
+      .gl-alert.gl-alert-danger.gl-mb-5{ data: { testid: 'last-repository-check-failed-alert' } }
         = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
         .gl-alert-body
           - last_check_message = _("Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages.")

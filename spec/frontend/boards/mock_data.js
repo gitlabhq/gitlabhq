@@ -176,6 +176,14 @@ export const mockIssue = {
   },
 };
 
+export const mockActiveIssue = {
+  ...mockIssue,
+  id: 436,
+  iid: '27',
+  subscribed: false,
+  emailsDisabled: false,
+};
+
 export const mockIssueWithModel = new ListIssue(mockIssue);
 
 export const mockIssue2 = {

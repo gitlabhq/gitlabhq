@@ -1,0 +1,15 @@
+- return unless show_registration_enabled_user_callout?
+
+%div{ class: [container_class, @content_class, 'gl-pt-5!'] }
+  .gl-alert.gl-alert-warning.js-registration-enabled-callout{ role: 'alert', data: { feature_id: UserCalloutsHelper::REGISTRATION_ENABLED_CALLOUT, dismiss_endpoint: user_callouts_path } }
+    = sprite_icon('warning', size: 16, css_class: 'gl-alert-icon')
+    %button.gl-alert-dismiss.js-close{ type: 'button', aria: { label: _('Close') }, data: { testid: 'close-registration-enabled-callout' } }
+      = sprite_icon('close', size: 16)
+    .gl-alert-title
+      = _('Open registration is enabled on your instance.')
+    .gl-alert-body
+      = html_escape(_('%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance.')) % { anchorOpen: "<a href=\"#{help_page_path('user/admin_area/settings/sign_up_restrictions')}\">".html_safe, anchorClose: '</a>'.html_safe }
+    .gl-alert-actions
+      = link_to general_admin_application_settings_path(anchor: 'js-signup-settings'), class: 'btn gl-alert-action btn-info btn-md gl-button' do
+        %span.gl-button-text
+          = _('View setting')

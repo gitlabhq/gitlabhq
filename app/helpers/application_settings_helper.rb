@@ -394,6 +394,10 @@ module ApplicationSettingsHelper
   def show_documentation_base_url_field?
     Feature.enabled?(:help_page_documentation_redirect)
   end
+
+  def signup_enabled?
+    !!Gitlab::CurrentSettings.signup_enabled
+  end
 end
 
 ApplicationSettingsHelper.prepend_if_ee('EE::ApplicationSettingsHelper')

@@ -105,7 +105,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset < 0 || offset > size
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      in_lock(*lock_params) { unsafe_append_data!(new_data, offset) }
+      in_lock(lock_key, **lock_params) { unsafe_append_data!(new_data, offset) }
 
       schedule_to_persist! if full?
     end
@@ -151,7 +151,7 @@ module Ci
     # acquired
     #
     def persist_data!
-      in_lock(*lock_params) do         # exclusive Redis lock is acquired first
+      in_lock(lock_key, **lock_params) do # exclusive Redis lock is acquired first
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
         self.reset.then do |chunk|     # we ensure having latest lock_version
@@ -289,11 +289,16 @@ module Ci
       build.trace_chunks.maximum(:chunk_index).to_i
     end
 
+    def lock_key
+      "trace_write:#{build_id}:chunks:#{chunk_index}"
+    end
+
     def lock_params
-      ["trace_write:#{build_id}:chunks:#{chunk_index}",
-       { ttl: WRITE_LOCK_TTL,
-         retries: WRITE_LOCK_RETRY,
-         sleep_sec: WRITE_LOCK_SLEEP }]
+      {
+        ttl: WRITE_LOCK_TTL,
+        retries: WRITE_LOCK_RETRY,
+        sleep_sec: WRITE_LOCK_SLEEP
+      }
     end
 
     def metrics

@@ -161,4 +161,50 @@ RSpec.describe UserCalloutsHelper do
       it { is_expected.to be_falsy }
     end
   end
+
+  describe '.show_registration_enabled_user_callout?' do
+    let_it_be(:admin) { create(:user, :admin) }
+
+    subject { helper.show_registration_enabled_user_callout? }
+
+    context 'when `current_user` is not an admin' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        stub_application_setting(signup_enabled: true)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when signup is disabled' do
+      before do
+        allow(helper).to receive(:current_user).and_return(admin)
+        stub_application_setting(signup_enabled: false)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has dismissed callout' do
+      before do
+        allow(helper).to receive(:current_user).and_return(admin)
+        stub_application_setting(signup_enabled: true)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { true }
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when `current_user` is an admin, signup is enabled, and user has not dismissed callout' do
+      before do
+        allow(helper).to receive(:current_user).and_return(admin)
+        stub_application_setting(signup_enabled: true)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+      end
+
+      it { is_expected.to be true }
+    end
+  end
 end

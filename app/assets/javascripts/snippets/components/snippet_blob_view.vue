@@ -51,6 +51,13 @@ export default {
       required: true,
     },
   },
+  provide() {
+    return {
+      blobHash: Math.random()
+        .toString()
+        .split('.')[1],
+    };
+  },
   data() {
     return {
       blobContent: '',

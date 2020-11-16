@@ -115,6 +115,19 @@ RSpec.describe MergeRequests::CleanupRefsService do
 
         it_behaves_like 'service that does not clean up merge request refs'
       end
+
+      context 'when repository no longer exists' do
+        before do
+          Repositories::DestroyService.new(merge_request.project.repository).execute
+        end
+
+        it 'does not fail and still mark schedule as complete' do
+          aggregate_failures do
+            expect(result[:status]).to eq(:success)
+            expect(merge_request.cleanup_schedule.completed_at).to be_present
+          end
+        end
+      end
     end
 
     shared_examples_for 'service that does not clean up merge request refs' do

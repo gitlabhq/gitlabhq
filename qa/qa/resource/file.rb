@@ -5,10 +5,10 @@ module QA
     class File < Base
       attr_accessor :author_email,
                     :author_name,
-                    :branch,
                     :content,
                     :commit_message,
                     :name
+      attr_writer :branch
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -29,6 +29,10 @@ module QA
         @commit_message = 'QA Test - Commit message'
       end
 
+      def branch
+        @branch ||= "master"
+      end
+
       def fabricate!
         project.visit!
 
@@ -42,12 +46,6 @@ module QA
         end
       end
 
-      def resource_web_url(resource)
-        super
-      rescue ResourceURLMissingError
-        # this particular resource does not expose a web_url property
-      end
-
       def api_get_path
         "/projects/#{CGI.escape(project.path_with_namespace)}/repository/files/#{CGI.escape(@name)}"
       end
@@ -58,12 +56,19 @@ module QA
 
       def api_post_body
         {
-          branch: @branch || "master",
+          branch: branch,
           author_email: @author_email || Runtime::User.default_email,
           author_name: @author_name || Runtime::User.username,
           content: content,
           commit_message: commit_message
         }
+      end
+
+      private
+
+      def transform_api_resource(api_resource)
+        api_resource[:web_url] = "#{Runtime::Scenario.gitlab_address}/#{project.full_path}/-/tree/#{branch}/#{api_resource[:file_path]}"
+        api_resource
       end
     end
   end

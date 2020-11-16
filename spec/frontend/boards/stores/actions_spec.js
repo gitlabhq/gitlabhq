@@ -9,6 +9,7 @@ import {
   rawIssue,
   mockIssues,
   labels,
+  mockActiveIssue,
 } from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
@@ -830,6 +831,57 @@ describe('setActiveIssueDueDate', () => {
       .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
 
     await expect(actions.setActiveIssueDueDate({ getters }, input)).rejects.toThrow(Error);
+  });
+});
+
+describe('setActiveIssueSubscribed', () => {
+  const state = { issues: { [mockActiveIssue.id]: mockActiveIssue } };
+  const getters = { activeIssue: mockActiveIssue };
+  const subscribedState = true;
+  const input = {
+    subscribedState,
+    projectPath: 'gitlab-org/gitlab-test',
+  };
+
+  it('should commit subscribed status', done => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        issueSetSubscription: {
+          issue: {
+            subscribed: subscribedState,
+          },
+          errors: [],
+        },
+      },
+    });
+
+    const payload = {
+      issueId: getters.activeIssue.id,
+      prop: 'subscribed',
+      value: subscribedState,
+    };
+
+    testAction(
+      actions.setActiveIssueSubscribed,
+      input,
+      { ...state, ...getters },
+      [
+        {
+          type: types.UPDATE_ISSUE_BY_ID,
+          payload,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('throws error if fails', async () => {
+    jest
+      .spyOn(gqlClient, 'mutate')
+      .mockResolvedValue({ data: { issueSetSubscription: { errors: ['failed mutation'] } } });
+
+    await expect(actions.setActiveIssueSubscribed({ getters }, input)).rejects.toThrow(Error);
   });
 });
 

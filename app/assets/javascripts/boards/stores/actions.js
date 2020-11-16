@@ -24,6 +24,7 @@ import destroyBoardListMutation from '../queries/board_list_destroy.mutation.gra
 import issueCreateMutation from '../queries/issue_create.mutation.graphql';
 import issueSetLabels from '../queries/issue_set_labels.mutation.graphql';
 import issueSetDueDate from '../queries/issue_set_due_date.mutation.graphql';
+import issueSetSubscriptionMutation from '../graphql/mutations/issue_set_subscription.mutation.graphql';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -420,6 +421,29 @@ export default {
       issueId: activeIssue.id,
       prop: 'dueDate',
       value: data.updateIssue.issue.dueDate,
+    });
+  },
+
+  setActiveIssueSubscribed: async ({ commit, getters }, input) => {
+    const { data } = await gqlClient.mutate({
+      mutation: issueSetSubscriptionMutation,
+      variables: {
+        input: {
+          iid: String(getters.activeIssue.iid),
+          projectPath: input.projectPath,
+          subscribedState: input.subscribed,
+        },
+      },
+    });
+
+    if (data.issueSetSubscription?.errors?.length > 0) {
+      throw new Error(data.issueSetSubscription.errors);
+    }
+
+    commit(types.UPDATE_ISSUE_BY_ID, {
+      issueId: getters.activeIssue.id,
+      prop: 'subscribed',
+      value: data.issueSetSubscription.issue.subscribed,
     });
   },
 
