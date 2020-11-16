@@ -9324,7 +9324,7 @@ CREATE TABLE application_settings (
     gitpod_enabled boolean DEFAULT false NOT NULL,
     gitpod_url text DEFAULT 'https://gitpod.io/'::text,
     abuse_notification_email character varying,
-    require_admin_approval_after_user_signup boolean DEFAULT false NOT NULL,
+    require_admin_approval_after_user_signup boolean DEFAULT true NOT NULL,
     help_page_documentation_base_url text,
     automatic_purchased_storage_allocation boolean DEFAULT false NOT NULL,
     encrypted_ci_jwt_signing_key text,

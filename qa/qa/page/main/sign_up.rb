@@ -18,15 +18,13 @@ module QA
         end
 
         def sign_up!(user)
-          fill_element :new_user_first_name_field, user.first_name
-          fill_element :new_user_last_name_field, user.last_name
-          fill_element :new_user_username_field, user.username
-          fill_element :new_user_email_field, user.email
-          fill_element :new_user_password_field, user.password
-
-          signed_in = retry_until do
+          signed_in = retry_until(raise_on_failure: false) do
+            fill_element :new_user_first_name_field, user.first_name
+            fill_element :new_user_last_name_field, user.last_name
+            fill_element :new_user_username_field, user.username
+            fill_element :new_user_email_field, user.email
+            fill_element :new_user_password_field, user.password
             click_element :new_user_register_button if has_element?(:new_user_register_button)
-
             click_element :get_started_button if has_element?(:get_started_button)
 
             Page::Main::Menu.perform(&:has_personal_area?)

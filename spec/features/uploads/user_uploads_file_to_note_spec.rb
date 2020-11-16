@@ -78,7 +78,7 @@ RSpec.describe 'User uploads file to note' do
       click_button 'Comment'
       wait_for_requests
 
-      expect(find('a.no-attachment-icon img[alt="dk"]')['src'])
+      expect(find('a.no-attachment-icon img.js-lazy-loaded[alt="dk"]')['src'])
         .to match(%r{/#{project.full_path}/uploads/\h{32}/dk\.png$})
     end
   end

@@ -8,7 +8,8 @@ module API
       expose :expires_at
       expose :invite_email
       expose :invite_token
-      expose :user_id
+      expose :user_name, if: -> (member, _) { member.user.present? }
+      expose :created_by_name
     end
   end
 end

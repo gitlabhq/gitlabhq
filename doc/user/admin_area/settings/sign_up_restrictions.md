@@ -27,9 +27,10 @@ To disable sign ups:
 
 ## Require administrator approval for new sign ups
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/267568) in GitLab 13.6.
 
-When this setting is enabled, any user visiting your GitLab domain and signing up for a new account must be explicitly [approved](../approving_users.md#approving-a-user) by an administrator before they can start using their account. This setting is only applicable if sign ups are enabled.
+When this setting is enabled, any user visiting your GitLab domain and signing up for a new account must be explicitly [approved](../approving_users.md#approving-a-user) by an administrator before they can start using their account. This setting is enabled by default for newly created instances. This setting is only applicable if sign ups are enabled.
 
 To require administrator approval for new sign ups:
 

@@ -38,11 +38,15 @@ The following can be used as a template to get started:
 ````markdown
 ## Descriptive title
 
+> Version history note.
+
 One or two sentence description of what endpoint does.
 
 ```plaintext
 METHOD /endpoint
 ```
+
+Supported attributes:
 
 | Attribute   | Type     | Required | Description           |
 |:------------|:---------|:---------|:----------------------|
@@ -64,6 +68,9 @@ Example response:
 ]
 ```
 ````
+
+Adjust the [version history note accordingly](styleguide/index.md#version-text-in-the-version-history)
+to describe the GitLab release that introduced the API call.
 
 ## Method description
 

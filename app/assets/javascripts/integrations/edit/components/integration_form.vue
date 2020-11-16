@@ -12,6 +12,7 @@ import JiraIssuesFields from './jira_issues_fields.vue';
 import TriggerFields from './trigger_fields.vue';
 import DynamicField from './dynamic_field.vue';
 import ConfirmationModal from './confirmation_modal.vue';
+import ResetConfirmationModal from './reset_confirmation_modal.vue';
 
 export default {
   name: 'IntegrationForm',
@@ -23,6 +24,7 @@ export default {
     TriggerFields,
     DynamicField,
     ConfirmationModal,
+    ResetConfirmationModal,
     GlButton,
   },
   directives: {
@@ -30,8 +32,8 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapGetters(['currentKey', 'propsSource', 'isSavingOrTesting']),
-    ...mapState(['defaultState', 'override', 'isSaving', 'isTesting']),
+    ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
+    ...mapState(['defaultState', 'override', 'isSaving', 'isTesting', 'isResetting']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -47,9 +49,12 @@ export default {
     showJiraIssuesFields() {
       return this.isJira && this.glFeatures.jiraIssuesIntegration;
     },
+    showReset() {
+      return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
+    },
   },
   methods: {
-    ...mapActions(['setOverride', 'setIsSaving', 'setIsTesting']),
+    ...mapActions(['setOverride', 'setIsSaving', 'setIsTesting', 'setIsResetting']),
     onSaveClick() {
       this.setIsSaving(true);
       eventHub.$emit('saveIntegration');
@@ -58,6 +63,7 @@ export default {
       this.setIsTesting(true);
       eventHub.$emit('testIntegration');
     },
+    onResetClick() {},
   },
 };
 </script>
@@ -100,7 +106,7 @@ export default {
           category="primary"
           variant="success"
           :loading="isSaving"
-          :disabled="isSavingOrTesting"
+          :disabled="isDisabled"
           data-qa-selector="save_changes_button"
         >
           {{ __('Save changes') }}
@@ -113,7 +119,7 @@ export default {
         variant="success"
         type="submit"
         :loading="isSaving"
-        :disabled="isSavingOrTesting"
+        :disabled="isDisabled"
         data-qa-selector="save_changes_button"
         @click.prevent="onSaveClick"
       >
@@ -123,12 +129,26 @@ export default {
       <gl-button
         v-if="propsSource.canTest"
         :loading="isTesting"
-        :disabled="isSavingOrTesting"
+        :disabled="isDisabled"
         :href="propsSource.testPath"
         @click.prevent="onTestClick"
       >
         {{ __('Test settings') }}
       </gl-button>
+
+      <template v-if="showReset">
+        <gl-button
+          v-gl-modal.confirmResetIntegration
+          category="secondary"
+          variant="default"
+          :loading="isResetting"
+          :disabled="isDisabled"
+          data-testid="reset-button"
+        >
+          {{ __('Reset') }}
+        </gl-button>
+        <reset-confirmation-modal @reset="onResetClick" />
+      </template>
 
       <gl-button class="btn-cancel" :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
     </div>

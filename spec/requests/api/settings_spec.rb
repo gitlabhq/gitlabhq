@@ -41,7 +41,7 @@ RSpec.describe API::Settings, 'Settings' do
       expect(json_response['spam_check_endpoint_enabled']).to be_falsey
       expect(json_response['spam_check_endpoint_url']).to be_nil
       expect(json_response['wiki_page_max_content_bytes']).to be_a(Integer)
-      expect(json_response['require_admin_approval_after_user_signup']).to eq(false)
+      expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
     end
   end
 

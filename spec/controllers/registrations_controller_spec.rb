@@ -7,6 +7,7 @@ RSpec.describe RegistrationsController do
 
   before do
     stub_feature_flags(invisible_captcha: false)
+    stub_application_setting(require_admin_approval_after_user_signup: false)
   end
 
   describe '#new' do
@@ -76,10 +77,6 @@ RSpec.describe RegistrationsController do
       end
 
       context 'when the `require_admin_approval_after_user_signup` setting is turned off' do
-        before do
-          stub_application_setting(require_admin_approval_after_user_signup: false)
-        end
-
         it 'signs up the user in `active` state' do
           subject
           created_user = User.find_by(email: 'new@user.com')

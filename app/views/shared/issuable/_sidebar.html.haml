@@ -96,7 +96,7 @@
                 %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable_type}[due_date]", ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], display: 'static' } }
                   %span.dropdown-toggle-text
                     = _('Due date')
-                  = icon('chevron-down', 'aria-hidden': 'true')
+                  = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
                 .dropdown-menu.dropdown-menu-due-date
                   = dropdown_title(_('Due date'))
                   = dropdown_content do

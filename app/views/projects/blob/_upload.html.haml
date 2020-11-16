@@ -21,7 +21,7 @@
 
           .form-actions
             = button_tag class: 'btn gl-button btn-success btn-upload-file', id: 'submit-all', type: 'button' do
-              = icon('spin spinner', class: 'js-loading-icon hidden' )
+              .spinner.spinner-sm.gl-mr-2.js-loading-icon.hidden
               = button_title
             = link_to _("Cancel"), '#', class: "btn gl-button btn-cancel", "data-dismiss" => "modal"
 

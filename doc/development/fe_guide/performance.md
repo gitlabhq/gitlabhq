@@ -115,8 +115,36 @@ browser's developer console while on any page within GitLab.
   import initMyWidget from './my_widget';
   import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 
+  waitForCSSLoaded(initMyWidget);
+  ```
+
+  Note that `waitForCSSLoaded()` methods supports receiving the action in different ways:
+    
+  - With a callback:
+  
+    ```javascript
+      waitForCSSLoaded(action)
+    ```
+    
+  - With `then()`:
+  
+    ```javascript
+      waitForCSSLoaded().then(action);
+    ```
+    
+  - With `await` followed by `action`:
+  
+    ```javascript
+      await waitForCSSLoaded;
+      action();
+    ```
+
+  For example, see how we use this in [app/assets/javascripts/pages/projects/graphs/charts/index.js](https://gitlab.com/gitlab-org/gitlab/-/commit/5e90885d6afd4497002df55bf015b338efcfc3c5#02e81de37f5b1716a3ef3222fa7f7edf22c40969_9_8):
+
+  ```javascript
   waitForCSSLoaded(() => {
-    initMyWidget();
+    const languagesContainer = document.getElementById('js-languages-chart');
+    //...
   });
   ```
 

@@ -5725,6 +5725,9 @@ msgstr ""
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|%{boldStart}Note:%{boldEnd} Requires Ingress to be installed."
+msgstr ""
+
 msgid "ClusterIntegration|%{externalIp}.nip.io"
 msgstr ""
 
@@ -11172,6 +11175,9 @@ msgstr ""
 msgid "Export as CSV"
 msgstr ""
 
+msgid "Export commit custody report"
+msgstr ""
+
 msgid "Export group"
 msgstr ""
 
@@ -14621,6 +14627,9 @@ msgstr ""
 msgid "Integrations|All details"
 msgstr ""
 
+msgid "Integrations|All projects inheriting these settings will also be reset."
+msgstr ""
+
 msgid "Integrations|Comment detail:"
 msgstr ""
 
@@ -14654,7 +14663,16 @@ msgstr ""
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr ""
 
+msgid "Integrations|Projects using custom settings will not be affected."
+msgstr ""
+
 msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use parent level defaults."
+msgstr ""
+
+msgid "Integrations|Reset integration?"
+msgstr ""
+
+msgid "Integrations|Resetting this integration will clear the settings and deactivate this integration."
 msgstr ""
 
 msgid "Integrations|Return to GitLab for Jira"
@@ -14766,6 +14784,9 @@ msgid "Invalid file format with specified file type"
 msgstr ""
 
 msgid "Invalid file."
+msgstr ""
+
+msgid "Invalid hash"
 msgstr ""
 
 msgid "Invalid import params"
@@ -16840,6 +16861,9 @@ msgid "Merge Requests merged"
 msgstr ""
 
 msgid "Merge automatically (%{strategy})"
+msgstr ""
+
+msgid "Merge commit SHA"
 msgstr ""
 
 msgid "Merge commit message"
@@ -23060,6 +23084,9 @@ msgid "Resend invite"
 msgstr ""
 
 msgid "Resend it"
+msgstr ""
+
+msgid "Reset"
 msgstr ""
 
 msgid "Reset authorization key"

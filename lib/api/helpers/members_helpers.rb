@@ -27,6 +27,13 @@ module API
         members
       end
 
+      def retrieve_member_invitations(source, query = nil)
+        members = source_members(source).where.not(invite_token: nil)
+        members = members.includes(:user)
+        members = members.where(invite_email: query) if query.present?
+        members
+      end
+
       def source_members(source)
         source.members
       end
@@ -51,6 +58,10 @@ module API
 
       def present_members(members)
         present members, with: Entities::Member, current_user: current_user, show_seat_info: params[:show_seat_info]
+      end
+
+      def present_member_invitations(invitations)
+        present invitations, with: Entities::Invitation, current_user: current_user
       end
     end
   end

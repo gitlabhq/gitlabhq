@@ -33,7 +33,7 @@ module QA
 
         def api_client
           @api_client ||= Runtime::API::Client.as_admin
-        rescue AuthorizationError => e
+        rescue API::Client::AuthorizationError => e
           raise "Administrator access is required to set application settings. #{e.message}"
         end
       end

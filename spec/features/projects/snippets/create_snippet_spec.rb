@@ -62,7 +62,7 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js do
     click_button('Create snippet')
     wait_for_requests
 
-    link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
+    link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
     expect(link).to match(%r{/#{Regexp.escape(project.full_path)}/uploads/\h{32}/banana_sample\.gif\z})
   end
 

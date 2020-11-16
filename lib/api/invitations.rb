@@ -2,6 +2,8 @@
 
 module API
   class Invitations < ::API::Base
+    include PaginationParams
+
     feature_category :users
 
     before { authenticate! }
@@ -28,6 +30,23 @@ module API
           authorize_admin_source!(source_type, source)
 
           ::Members::InviteService.new(current_user, params).execute(source)
+        end
+
+        desc 'Get a list of group or project invitations viewable by the authenticated user' do
+          detail 'This feature was introduced in GitLab 13.6'
+          success Entities::Invitation
+        end
+        params do
+          optional :query, type: String, desc: 'A query string to search for members'
+          use :pagination
+        end
+        get ":id/invitations" do
+          source = find_source(source_type, params[:id])
+          query = params[:query]
+
+          invitations = paginate(retrieve_member_invitations(source, query))
+
+          present_member_invitations invitations
         end
       end
     end

@@ -7,7 +7,8 @@ RSpec.describe API::Invitations do
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }
   let(:stranger) { create(:user) }
-  let(:email) { 'email@example.org' }
+  let(:email) { 'email1@example.com' }
+  let(:email2) { 'email2@example.com' }
 
   let(:project) do
     create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
@@ -75,7 +76,7 @@ RSpec.describe API::Invitations do
 
         it 'invites a list of new email addresses' do
           expect do
-            email_list = 'email1@example.com,email2@example.com'
+            email_list = [email, email2].join(',')
 
             post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
                  params: { email: email_list, access_level: Member::DEVELOPER }
@@ -201,6 +202,99 @@ RSpec.describe API::Invitations do
 
   describe 'POST /groups/:id/invitations' do
     it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
+      let(:source) { group }
+    end
+  end
+
+  shared_examples 'GET /:source_type/:id/invitations' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
+      it_behaves_like 'a 404 response when source is private' do
+        let(:route) { get invitations_url(source, stranger) }
+      end
+
+      %i[maintainer developer access_requester stranger].each do |type|
+        context "when authenticated as a #{type}" do
+          it 'returns 200' do
+            user = public_send(type)
+
+            get invitations_url(source, user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(0)
+          end
+        end
+      end
+
+      it 'avoids N+1 queries' do
+        # Establish baseline
+        get invitations_url(source, maintainer)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get invitations_url(source, maintainer)
+        end
+
+        invite_member_by_email(source, source_type, email, maintainer)
+
+        expect do
+          get invitations_url(source, maintainer)
+        end.not_to exceed_query_limit(control)
+      end
+
+      it 'does not find confirmed members' do
+        get invitations_url(source, developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(0)
+        expect(json_response.map { |u| u['id'] }).not_to match_array [maintainer.id, developer.id]
+      end
+
+      it 'finds all members with no query string specified' do
+        invite_member_by_email(source, source_type, email, developer)
+        invite_member_by_email(source, source_type, email2, developer)
+
+        get invitations_url(source, developer), params: { query: '' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+
+        expect(json_response).to be_an Array
+        expect(json_response.count).to eq(2)
+        expect(json_response.map { |u| u['invite_email'] }).to match_array [email, email2]
+      end
+
+      it 'finds the invitation by invite_email with query string' do
+        invite_member_by_email(source, source_type, email, developer)
+        invite_member_by_email(source, source_type, email2, developer)
+
+        get invitations_url(source, developer), params: { query: email }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['invite_email']).to eq(email)
+        expect(json_response.first['created_by_name']).to eq(developer.name)
+        expect(json_response.first['user_name']).to eq(nil)
+      end
+
+      def invite_member_by_email(source, source_type, email, created_by)
+        create(:"#{source_type}_member", invite_token: '123', invite_email: email, source: source, user: nil, created_by: created_by)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/invitations' do
+    it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
+      let(:source) { project }
+    end
+  end
+
+  describe 'GET /groups/:id/invitations' do
+    it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
       let(:source) { group }
     end
   end

@@ -325,4 +325,19 @@ describe('text_utility', () => {
       expect(textUtils.hasContent(txt)).toEqual(result);
     });
   });
+
+  describe('isValidSha1Hash', () => {
+    const validSha1Hash = '92d10c15';
+    const stringOver40 = new Array(42).join('a');
+
+    it.each`
+      hash              | valid
+      ${validSha1Hash}  | ${true}
+      ${'__characters'} | ${false}
+      ${'abc'}          | ${false}
+      ${stringOver40}   | ${false}
+    `(`returns $valid for $hash`, ({ hash, valid }) => {
+      expect(textUtils.isValidSha1Hash(hash)).toBe(valid);
+    });
+  });
 });

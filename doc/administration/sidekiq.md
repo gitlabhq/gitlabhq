@@ -113,7 +113,6 @@ prometheus['enable'] = false
 gitlab_rails['auto_migrate'] = false
 alertmanager['enable'] = false
 gitaly['enable'] = false
-gitlab_monitor['enable'] = false
 gitlab_workhorse['enable'] = false
 nginx['enable'] = false
 postgres_exporter['enable'] = false

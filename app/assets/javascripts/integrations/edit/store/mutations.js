@@ -10,4 +10,7 @@ export default {
   [types.SET_IS_TESTING](state, isTesting) {
     state.isTesting = isTesting;
   },
+  [types.SET_IS_RESETTING](state, isResetting) {
+    state.isResetting = isResetting;
+  },
 };

@@ -208,9 +208,9 @@
   display: inline-flex;
 
   .label,
-  .btn {
+  .btn:not(.gl-button) {
     padding: $gl-vert-padding $gl-btn-padding;
-    border: 1px $border-color solid;
+    border: 1px $gray-200 solid;
     font-size: $gl-font-size;
     line-height: $line-height-base;
     border-radius: 0;

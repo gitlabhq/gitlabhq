@@ -419,6 +419,10 @@ class Member < ApplicationRecord
     invite? && user_id.nil?
   end
 
+  def created_by_name
+    created_by&.name
+  end
+
   private
 
   def send_invite

@@ -16,4 +16,28 @@ describe('Integration form store mutations', () => {
       expect(state.override).toBe(true);
     });
   });
+
+  describe(`${types.SET_IS_SAVING}`, () => {
+    it('sets isSaving', () => {
+      mutations[types.SET_IS_SAVING](state, true);
+
+      expect(state.isSaving).toBe(true);
+    });
+  });
+
+  describe(`${types.SET_IS_TESTING}`, () => {
+    it('sets isTesting', () => {
+      mutations[types.SET_IS_TESTING](state, true);
+
+      expect(state.isTesting).toBe(true);
+    });
+  });
+
+  describe(`${types.SET_IS_RESETTING}`, () => {
+    it('sets isResetting', () => {
+      mutations[types.SET_IS_RESETTING](state, true);
+
+      expect(state.isResetting).toBe(true);
+    });
+  });
 });

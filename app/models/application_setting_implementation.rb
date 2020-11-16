@@ -120,7 +120,7 @@ module ApplicationSettingImplementation
         repository_checks_enabled: true,
         repository_storages_weighted: { default: 100 },
         repository_storages: ['default'],
-        require_admin_approval_after_user_signup: false,
+        require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: 0,

@@ -399,3 +399,15 @@ export const truncateNamespace = (string = '') => {
  * @returns {Boolean}
  */
 export const hasContent = obj => isString(obj) && obj.trim() !== '';
+
+/**
+ * A utility function that validates if a
+ * string is valid SHA1 hash format.
+ *
+ * @param {String} hash to validate
+ *
+ * @return {Boolean} true if valid
+ */
+export const isValidSha1Hash = str => {
+  return /^[0-9a-f]{5,40}$/.test(str);
+};

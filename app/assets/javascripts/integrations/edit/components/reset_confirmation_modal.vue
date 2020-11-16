@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { GlModal } from '@gitlab/ui';
+
 import { __ } from '~/locale';
 
 export default {
@@ -11,9 +12,9 @@ export default {
     ...mapGetters(['isDisabled']),
     primaryProps() {
       return {
-        text: __('Save'),
+        text: __('Reset'),
         attributes: [
-          { variant: 'success' },
+          { variant: 'warning' },
           { category: 'primary' },
           { disabled: this.isDisabled },
         ],
@@ -26,8 +27,8 @@ export default {
     },
   },
   methods: {
-    onSubmit() {
-      this.$emit('submit');
+    onReset() {
+      this.$emit('reset');
     },
   },
 };
@@ -35,26 +36,26 @@ export default {
 
 <template>
   <gl-modal
-    modal-id="confirmSaveIntegration"
+    modal-id="confirmResetIntegration"
     size="sm"
-    :title="s__('Integrations|Save settings?')"
+    :title="s__('Integrations|Reset integration?')"
     :action-primary="primaryProps"
     :action-cancel="cancelProps"
-    @primary="onSubmit"
+    @primary="onReset"
   >
     <p>
       {{
         s__(
-          'Integrations|Saving will update the default settings for all projects that are not using custom settings.',
+          'Integrations|Resetting this integration will clear the settings and deactivate this integration.',
         )
       }}
     </p>
+    <p>
+      {{ s__('Integrations|All projects inheriting these settings will also be reset.') }}
+    </p>
+
     <p class="gl-mb-0">
-      {{
-        s__(
-          'Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use parent level defaults.',
-        )
-      }}
+      {{ s__('Integrations|Projects using custom settings will not be affected.') }}
     </p>
   </gl-modal>
 </template>

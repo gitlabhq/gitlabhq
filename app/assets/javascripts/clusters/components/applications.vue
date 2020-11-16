@@ -467,6 +467,17 @@ export default {
                         notebooks to a class of students, a corporate data science group,
                         or a scientific research group.`)
             }}
+            <gl-sprintf
+              :message="
+                s__(
+                  'ClusterIntegration|%{boldStart}Note:%{boldEnd} Requires Ingress to be installed.',
+                )
+              "
+            >
+              <template #bold="{ content }">
+                <b>{{ content }}</b>
+              </template>
+            </gl-sprintf>
           </p>
 
           <template v-if="ingressExternalEndpoint">

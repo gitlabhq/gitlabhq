@@ -3,6 +3,7 @@ extends:
   - plugin:@gitlab/i18n
   - plugin:no-jquery/slim
   - plugin:no-jquery/deprecated-3.4
+  - ./tooling/eslint-config/conditionally_ignore_ee.js
 globals:
   __webpack_public_path__: true
   gl: false
