@@ -1,37 +1,21 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 
-import { TEST_HOST } from 'helpers/test_constants';
 import { listObj } from 'jest/boards/mock_data';
-import Board from '~/boards/components/board_column.vue';
+import BoardColumn from '~/boards/components/board_column_new.vue';
 import List from '~/boards/models/list';
 import { ListType } from '~/boards/constants';
-import axios from '~/lib/utils/axios_utils';
+import { createStore } from '~/boards/stores';
 
 describe('Board Column Component', () => {
   let wrapper;
-  let axiosMock;
-
-  beforeEach(() => {
-    window.gon = {};
-    axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet(`${TEST_HOST}/lists/1/issues`).reply(200, { issues: [] });
-  });
+  let store;
 
   afterEach(() => {
-    axiosMock.restore();
-
     wrapper.destroy();
-
-    localStorage.clear();
+    wrapper = null;
   });
 
-  const createComponent = ({
-    listType = ListType.backlog,
-    collapsed = false,
-    withLocalStorage = true,
-  } = {}) => {
+  const createComponent = ({ listType = ListType.backlog, collapsed = false } = {}) => {
     const boardId = '1';
 
     const listMock = {
@@ -45,19 +29,13 @@ describe('Board Column Component', () => {
       listMock.user = {};
     }
 
-    // Making List reactive
-    const list = Vue.observable(new List(listMock));
+    const list = new List({ ...listMock, doNotFetchIssues: true });
 
-    if (withLocalStorage) {
-      localStorage.setItem(
-        `boards.${boardId}.${list.type}.${list.id}.expanded`,
-        (!collapsed).toString(),
-      );
-    }
+    store = createStore();
 
-    wrapper = shallowMount(Board, {
+    wrapper = shallowMount(BoardColumn, {
+      store,
       propsData: {
-        boardId,
         disabled: false,
         list,
       },

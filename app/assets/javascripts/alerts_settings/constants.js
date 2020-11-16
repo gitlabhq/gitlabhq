@@ -55,6 +55,7 @@ export const integrationTypesNew = [
 export const typeSet = {
   http: 'HTTP',
   prometheus: 'PROMETHEUS',
+  opsgenie: 'OPSGENIE',
 };
 
 export const integrationToDeleteDefault = { id: null, name: '' };

@@ -1,16 +1,13 @@
 <script>
-// This component is being replaced in favor of './board_column_new.vue' for GraphQL boards
-import Sortable from 'sortablejs';
-import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
-import EmptyComponent from '~/vue_shared/components/empty_component';
-import BoardList from './board_list.vue';
-import boardsStore from '../stores/boards_store';
-import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import BoardListHeader from 'ee_else_ce/boards/components/board_list_header_new.vue';
+import BoardPromotionState from 'ee_else_ce/boards/components/board_promotion_state';
+import BoardList from './board_list_new.vue';
 import { ListType } from '../constants';
 
 export default {
   components: {
-    BoardPromotionState: EmptyComponent,
+    BoardPromotionState,
     BoardListHeader,
     BoardList,
   },
@@ -35,56 +32,33 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      detailIssue: boardsStore.detail,
-      filter: boardsStore.filter,
-    };
-  },
   computed: {
+    ...mapState(['filterParams']),
+    ...mapGetters(['getIssuesByList']),
     showBoardListAndBoardInfo() {
       return this.list.type !== ListType.promotion;
     },
     listIssues() {
-      return this.list.issues;
+      return this.getIssuesByList(this.list.id);
+    },
+    shouldFetchIssues() {
+      return this.list.type !== ListType.blank;
     },
   },
   watch: {
-    filter: {
+    filterParams: {
       handler() {
-        this.list.page = 1;
-        this.list.getIssues(true).catch(() => {
-          // TODO: handle request error
-        });
-      },
-      deep: true,
-    },
-  },
-  mounted() {
-    const instance = this;
-
-    const sortableOptions = getBoardSortableDefaultOptions({
-      disabled: this.disabled,
-      group: 'boards',
-      draggable: '.is-draggable',
-      handle: '.js-board-handle',
-      onEnd(e) {
-        sortableEnd();
-
-        const sortable = this;
-
-        if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
-          const order = sortable.toArray();
-          const list = boardsStore.findList('id', parseInt(e.item.dataset.id, 10));
-
-          instance.$nextTick(() => {
-            boardsStore.moveList(list, order);
-          });
+        if (this.shouldFetchIssues) {
+          this.fetchIssuesForList({ listId: this.list.id });
         }
       },
-    });
-
-    Sortable.create(this.$el.parentNode, sortableOptions);
+      deep: true,
+      immediate: true,
+    },
+  },
+  methods: {
+    ...mapActions(['fetchIssuesForList']),
+    // TODO: Reordering of lists https://gitlab.com/gitlab-org/gitlab/-/issues/280515
   },
 };
 </script>

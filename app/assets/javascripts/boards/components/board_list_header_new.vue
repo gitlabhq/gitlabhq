@@ -12,7 +12,6 @@ import {
 import { n__, s__ } from '~/locale';
 import AccessorUtilities from '../../lib/utils/accessor';
 import IssueCount from './issue_count.vue';
-import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
 import { inactiveId, LIST, ListType } from '../constants';
@@ -51,16 +50,20 @@ export default {
     boardId: {
       default: '',
     },
-  },
-  data() {
-    return {
-      weightFeatureAvailable: false,
-    };
+    weightFeatureAvailable: {
+      default: false,
+    },
+    scopedLabelsAvailable: {
+      default: false,
+    },
+    currentUserId: {
+      default: null,
+    },
   },
   computed: {
     ...mapState(['activeId']),
     isLoggedIn() {
-      return Boolean(gon.current_user_id);
+      return Boolean(this.currentUserId);
     },
     listType() {
       return this.list.type;
@@ -81,13 +84,15 @@ export default {
     },
     showMilestoneListDetails() {
       return (
-        this.list.type === 'milestone' &&
+        this.list.type === ListType.milestone &&
         this.list.milestone &&
         (this.list.isExpanded || !this.isSwimlanesHeader)
       );
     },
     showAssigneeListDetails() {
-      return this.list.type === 'assignee' && (this.list.isExpanded || !this.isSwimlanesHeader);
+      return (
+        this.list.type === ListType.assignee && (this.list.isExpanded || !this.isSwimlanesHeader)
+      );
     },
     issuesCount() {
       return this.list.issuesSize;
@@ -119,9 +124,12 @@ export default {
     collapsedTooltipTitle() {
       return this.listTitle || this.listAssignee;
     },
+    headerStyle() {
+      return { borderTopColor: this.list?.label?.color };
+    },
   },
   methods: {
-    ...mapActions(['setActiveId']),
+    ...mapActions(['updateList', 'setActiveId']),
     openSidebarSettings() {
       if (this.activeId === inactiveId) {
         sidebarEventHub.$emit('sidebar.closeAll');
@@ -130,7 +138,7 @@ export default {
       this.setActiveId({ id: this.list.id, sidebarType: LIST });
     },
     showScopedLabels(label) {
-      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+      return this.scopedLabelsAvailable && isScopedLabel(label);
     },
 
     showNewIssueForm() {
@@ -155,7 +163,7 @@ export default {
       }
     },
     updateListFunction() {
-      this.list.update();
+      this.updateList({ listId: this.list.id, collapsed: !this.list.isExpanded });
     },
   },
 };
@@ -168,7 +176,7 @@ export default {
       'gl-h-full': !list.isExpanded,
       'board-inner gl-rounded-top-left-base gl-rounded-top-right-base': isSwimlanesHeader,
     }"
-    :style="{ borderTopColor: list.label && list.label.color ? list.label.color : null }"
+    :style="headerStyle"
     class="board-header gl-relative"
     data-qa-selector="board_list_header"
     data-testid="board-list-header"
@@ -193,7 +201,7 @@ export default {
         variant="link"
         @click="toggleExpanded"
       />
-      <!-- The following is only true in EE and if it is a milestone -->
+      <!-- EE start -->
       <span
         v-if="showMilestoneListDetails"
         aria-hidden="true"
@@ -224,6 +232,7 @@ export default {
           width="20"
         />
       </a>
+      <!-- EE end -->
       <div
         class="board-title-text"
         :class="{
@@ -232,11 +241,12 @@ export default {
           'gl-flex-grow-1': list.isExpanded,
         }"
       >
+        <!-- EE start -->
         <span
-          v-if="list.type !== 'label'"
+          v-if="listType !== 'label'"
           v-gl-tooltip.hover
           :class="{
-            'gl-display-block': !list.isExpanded || list.type === 'milestone',
+            'gl-display-block': !list.isExpanded || listType === 'milestone',
           }"
           :title="listTitle"
           class="board-title-main-text gl-text-truncate"
@@ -244,14 +254,15 @@ export default {
           {{ list.title }}
         </span>
         <span
-          v-if="list.type === 'assignee'"
+          v-if="listType === 'assignee'"
+          v-show="list.isExpanded"
           class="gl-ml-2 gl-font-weight-normal gl-text-gray-500"
-          :class="{ 'gl-display-none': !list.isExpanded }"
         >
           @{{ listAssignee }}
         </span>
+        <!-- EE end -->
         <gl-label
-          v-if="list.type === 'label'"
+          v-if="listType === 'label'"
           v-gl-tooltip.hover.bottom
           :background-color="list.label.color"
           :description="list.label.description"
@@ -261,6 +272,7 @@ export default {
         />
       </div>
 
+      <!-- EE start -->
       <span
         v-if="isSwimlanesHeader && !list.isExpanded"
         ref="collapsedInfo"
@@ -272,24 +284,25 @@ export default {
       <gl-tooltip v-if="isSwimlanesHeader && !list.isExpanded" :target="() => $refs.collapsedInfo">
         <div class="gl-font-weight-bold gl-pb-2">{{ collapsedTooltipTitle }}</div>
         <div v-if="list.maxIssueCount !== 0">
-          &#8226;
+          •
           <gl-sprintf :message="__('%{issuesSize} with a limit of %{maxIssueCount}')">
             <template #issuesSize>{{ issuesTooltipLabel }}</template>
             <template #maxIssueCount>{{ list.maxIssueCount }}</template>
           </gl-sprintf>
         </div>
-        <div v-else>&#8226; {{ issuesTooltipLabel }}</div>
+        <div v-else>• {{ issuesTooltipLabel }}</div>
         <div v-if="weightFeatureAvailable">
-          &#8226;
+          •
           <gl-sprintf :message="__('%{totalWeight} total weight')">
             <template #totalWeight>{{ list.totalWeight }}</template>
           </gl-sprintf>
         </div>
       </gl-tooltip>
+      <!-- EE end -->
 
       <div
         v-if="showBoardListAndBoardInfo"
-        class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag text-secondary"
+        class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag gl-text-gray-500"
         :class="{
           'gl-display-none!': !list.isExpanded && isSwimlanesHeader,
           'gl-p-0': !list.isExpanded,
@@ -301,7 +314,7 @@ export default {
             <gl-icon class="gl-mr-2" name="issues" />
             <issue-count :issues-size="issuesCount" :max-issue-count="list.maxIssueCount" />
           </span>
-          <!-- The following is only true in EE. -->
+          <!-- EE start -->
           <template v-if="weightFeatureAvailable">
             <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
             <span ref="weightTooltip" class="gl-display-inline-flex gl-ml-3">
@@ -309,6 +322,7 @@ export default {
               {{ list.totalWeight }}
             </span>
           </template>
+          <!-- EE end -->
         </span>
       </div>
       <gl-button-group
@@ -317,11 +331,9 @@ export default {
       >
         <gl-button
           v-if="isNewIssueShown"
+          v-show="list.isExpanded"
           ref="newIssueBtn"
           v-gl-tooltip.hover
-          :class="{
-            'gl-display-none': !list.isExpanded,
-          }"
           :aria-label="__('New issue')"
           :title="__('New issue')"
           class="issue-count-badge-add-button no-drag"

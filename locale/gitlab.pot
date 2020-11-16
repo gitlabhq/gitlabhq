@@ -2508,6 +2508,9 @@ msgstr ""
 msgid "AlertSettings|1. Select integration type"
 msgstr ""
 
+msgid "AlertSettings|2. Add link to your Opsgenie alert list"
+msgstr ""
+
 msgid "AlertSettings|2. Name integration"
 msgstr ""
 
@@ -2641,6 +2644,12 @@ msgid "AlertSettings|URL cannot be blank and must start with http or https"
 msgstr ""
 
 msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send Alerts to GitLab. Review your chosen services documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgstr ""
+
+msgid "AlertSettings|Utilizing this option will link the GitLab Alerts navigation item to your exisiting Opsgenie instance. By selecting this option, you cannot recieve alerts from any other source in GitLab; it will effectivley be turing Alerts within GitLab off as a feature."
+msgstr ""
+
+msgid "AlertSettings|We will soon be introducing the ability to create multiple unique HTTP endpoints. When this functionality is live,  you will be able to configure an integration with Opsgenie to surface Opsgenie alerts in GitLab. This will replace the current Opsgenie integration which will be deprecated. %{linkStart}More Information%{linkEnd}"
 msgstr ""
 
 msgid "AlertSettings|Webhook URL"

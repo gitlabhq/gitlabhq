@@ -1,4 +1,5 @@
 <script>
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
@@ -38,6 +39,10 @@ export default {
     integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
   },
   components: {
+    // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
+    GlAlert,
+    GlLink,
+    GlSprintf,
     IntegrationsList,
     SettingsFormOld,
     SettingsFormNew,
@@ -48,6 +53,10 @@ export default {
       default: {},
     },
     prometheus: {
+      default: {},
+    },
+    // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
+    opsgenie: {
       default: {},
     },
     projectPath: {
@@ -274,7 +283,27 @@ export default {
 
 <template>
   <div>
+    <!-- TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657 -->
+    <gl-alert v-if="opsgenie.active" :dismissible="false" variant="tip">
+      <gl-sprintf
+        :message="
+          s__(
+            'AlertSettings|We will soon be introducing the ability to create multiple unique HTTP endpoints. When this functionality is live,  you will be able to configure an integration with Opsgenie to surface Opsgenie alerts in GitLab. This will replace the current Opsgenie integration which will be deprecated. %{linkStart}More Information%{linkEnd}',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link
+            class="gl-display-inline-block"
+            href="https://gitlab.com/gitlab-org/gitlab/-/issues/273657"
+            target="_blank"
+            >{{ content }}</gl-link
+          >
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <integrations-list
+      v-else
       :integrations="glFeatures.httpIntegrationsList ? integrations.list : integrationsOptionsOld"
       :loading="loading"
       @edit-integration="editIntegration"

@@ -11,6 +11,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
 import { trackAlertIntegrationsViewsOptions, integrationToDeleteDefault } from '../constants';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
@@ -48,6 +49,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     integrations: {
       type: Array,
@@ -96,7 +98,7 @@ export default {
     tbodyTrClass(item) {
       return {
         [bodyTrClass]: this.integrations.length,
-        'gl-bg-blue-50': item?.id === this.currentIntegration?.id,
+        'gl-bg-blue-50': (item !== null && item.id) === this.currentIntegration?.id,
       };
     },
     trackPageViews() {
@@ -150,7 +152,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-button-group>
+        <gl-button-group v-if="glFeatures.httpIntegrationsList">
           <gl-button icon="pencil" @click="$emit('edit-integration', { id: item.id })" />
           <gl-button
             v-gl-modal.deleteIntegration

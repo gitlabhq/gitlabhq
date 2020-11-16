@@ -365,7 +365,10 @@ export default {
 
     dispatch('createNewIssue', issueInput)
       .then(res => {
-        commit(types.ADD_ISSUE_TO_LIST, { list, issue: formatIssue(res) });
+        commit(types.ADD_ISSUE_TO_LIST, {
+          list,
+          issue: formatIssue({ ...res, id: getIdFromGraphQLId(res.id) }),
+        });
         commit(types.REMOVE_ISSUE_FROM_LIST, { list, issue });
       })
       .catch(() => commit(types.ADD_ISSUE_TO_LIST_FAILURE, { list, issueId: issueInput.id }));

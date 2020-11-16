@@ -29,10 +29,12 @@ RSpec.describe 'sentry errors requests' do
 
     let(:error_data) { graphql_data.dig('project', 'sentryErrors', 'detailedError') }
 
-    it_behaves_like 'a working graphql query' do
-      before do
-        post_graphql(query, current_user: current_user)
-      end
+    it 'returns a successful response', :aggregate_failures, :quarantine do
+      post_graphql(query, current_user: current_user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(graphql_errors).to be_nil
+      expect(json_response.keys).to include('data')
     end
 
     context 'when data is loading via reactive cache' do

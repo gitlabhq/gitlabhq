@@ -34,6 +34,13 @@ module QA
         @retry_later_backoff = QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
       end
 
+      def inspect
+        # For prettier failure messages
+        # Eg.: "expected QA::Page::File::Show not to have file "QA Test - File name"
+        # Instead of "expected #<QA::Page::File::Show:0x000055c6511e07b8 @retry_later_backoff=60> not to have file "QA Test - File name"
+        self.class.to_s
+      end
+
       def assert_no_element(name)
         assert_no_selector(element_selector_css(name))
       end
