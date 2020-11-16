@@ -608,7 +608,7 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 #### Vulnerabilities are found, but the job succeeds. How can I have a pipeline fail instead?
 
 This is the current default behavior, because the job's status indicates success or failure of the analyzer itself.
-Analyzer results are displayed in the [job logs](../../ci/pipelines/#expand-and-collapse-job-log-sections),
+Analyzer results are displayed in the [job logs](../../ci/jobs/index.md#expand-and-collapse-job-log-sections),
 [Merge Request widget](sast/index.md)
 or [Security Dashboard](security_dashboard/index.md).
 There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.

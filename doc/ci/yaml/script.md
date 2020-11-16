@@ -11,7 +11,7 @@ You can use special syntax in [`script`](README.md#script) sections to:
 
 - [Split long commands](#split-long-commands) into multiline commands.
 - [Use color codes](#add-color-codes-to-script-output) to make job logs easier to review.
-- [Create custom collapsible sections](../pipelines/index.md#custom-collapsible-sections)
+- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
 ## Split long commands

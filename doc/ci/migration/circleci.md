@@ -27,7 +27,7 @@ CircleCI's `config.yml` configuration file defines scripts, jobs, and workflows 
 
 ### Jobs
 
-In CircleCI, jobs are a collection of steps to perform a specific task. In GitLab, [jobs](../pipelines/index.md#about-jobs) are also a fundamental element in the configuration file. The `checkout` keyword is not necessary in GitLab CI/CD as the repository is automatically fetched.
+In CircleCI, jobs are a collection of steps to perform a specific task. In GitLab, [jobs](../jobs/index.md) are also a fundamental element in the configuration file. The `checkout` keyword is not necessary in GitLab CI/CD as the repository is automatically fetched.
 
 CircleCI example job definition:
 

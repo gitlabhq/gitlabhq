@@ -70,7 +70,7 @@ When you need a specific custom environment variable, you can
 or directly [in the `.gitlab-ci.yml` file](#create-a-custom-variable-in-gitlab-ciyml).
 
 The variables are used by the runner any time the pipeline runs.
-You can also [override variable values manually for a specific pipeline](../pipelines/index.md#specifying-variables-when-running-manual-jobs).
+You can also [override variable values manually for a specific pipeline](../jobs/index.md#specifying-variables-when-running-manual-jobs).
 
 There are two types of variables: **Variable** and **File**. You cannot set types in
 the `.gitlab-ci.yml` file, but you can set them in the UI and API.
@@ -841,7 +841,7 @@ Available on GitLab Runner v1.7+, this feature enables the shell's execution log
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines/index.md#view-jobs-in-a-pipeline) all generated job logs
+also [erase](../jobs/index.md#view-jobs-in-a-pipeline) all generated job logs
 before making them visible again.
 
 To enable debug logs (traces), set the `CI_DEBUG_TRACE` variable to `true`:
