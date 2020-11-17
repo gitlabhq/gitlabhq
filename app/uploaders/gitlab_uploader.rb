@@ -118,6 +118,14 @@ class GitlabUploader < CarrierWave::Uploader::Base
     storage.store!(file)
   end
 
+  def url_or_file_path(url_options = {})
+    if file_storage?
+      'file://' + path
+    else
+      url(url_options)
+    end
+  end
+
   private
 
   # Designed to be overridden by child uploaders that have a dynamic path

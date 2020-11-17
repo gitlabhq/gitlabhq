@@ -45,7 +45,8 @@ module Users
         type: user.class.name,
         username: user.username,
         name: user.name,
-        avatar_url: user.avatar_url
+        avatar_url: user.avatar_url,
+        availability: user&.status&.availability
       }
     end
 

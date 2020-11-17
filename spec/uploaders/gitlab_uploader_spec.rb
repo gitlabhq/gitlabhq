@@ -141,5 +141,23 @@ RSpec.describe GitlabUploader do
         end
       end
     end
+
+    describe '#url_or_file_path' do
+      let(:options) { { expire_at: 1.day.from_now } }
+
+      it 'returns url when in remote storage' do
+        expect(subject).to receive(:file_storage?).and_return(false)
+        expect(subject).to receive(:url).with(options).and_return("http://example.com")
+
+        expect(subject.url_or_file_path(options)).to eq("http://example.com")
+      end
+
+      it 'returns url when in remote storage' do
+        expect(subject).to receive(:file_storage?).and_return(true)
+        expect(subject).to receive(:path).and_return("/tmp/file")
+
+        expect(subject.url_or_file_path(options)).to eq("file:///tmp/file")
+      end
+    end
   end
 end

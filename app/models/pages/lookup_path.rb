@@ -40,37 +40,35 @@ module Pages
     def artifacts_archive
       return unless Feature.enabled?(:pages_serve_from_artifacts_archive, project)
 
-      archive = project.pages_metadatum.artifacts_archive
-
-      archive&.file
+      project.pages_metadatum.artifacts_archive
     end
 
     def deployment
       return unless Feature.enabled?(:pages_serve_from_deployments, project)
 
-      deployment = project.pages_metadatum.pages_deployment
-
-      deployment&.file
+      project.pages_metadatum.pages_deployment
     end
 
     def zip_source
       source = deployment || artifacts_archive
 
-      return unless source
+      return unless source&.file
 
-      if source.file_storage?
-        return unless Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
+      return if source.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
 
-        {
-          type: 'zip',
-          path: 'file://' + source.path
-        }
-      else
-        {
-          type: 'zip',
-          path: source.url(expire_at: 1.day.from_now)
-        }
-      end
+      # artifacts archive doesn't support this
+      file_count = source.file_count if source.respond_to?(:file_count)
+
+      global_id = ::Gitlab::GlobalId.build(source, id: source.id).to_s
+
+      {
+        type: 'zip',
+        path: source.file.url_or_file_path(expire_at: 1.day.from_now),
+        global_id: global_id,
+        sha256: source.file_sha256,
+        file_size: source.size,
+        file_count: file_count
+      }
     end
 
     def file_source

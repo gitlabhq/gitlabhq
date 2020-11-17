@@ -19,6 +19,7 @@ RSpec.describe 'ProjectMember' do
       }
     HEREDOC
   end
+
   let_it_be(:query) do
     graphql_query_for('user', { id: member.user.to_global_id.to_s }, query_graphql_field("projectMemberships", {}, fields))
   end

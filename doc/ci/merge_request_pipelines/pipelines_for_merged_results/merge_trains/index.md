@@ -82,9 +82,13 @@ To enable merge trains for your project:
 1. If you are on a self-managed GitLab instance, ensure the [feature flag](#merge-trains-feature-flag) is set correctly.
 1. [Configure your CI/CD configuration file](../../index.md#configuring-pipelines-for-merge-requests)
    so that the pipeline or individual jobs run for merge requests.
-1. Visit your project's **Settings > General** and expand **Merge requests**.
-1. Check **Enable merge trains and pipelines for merged results**.
-1. Click **Save changes**.
+1. Visit your project's **Settings > General** and expand **Merge requests**
+1. Check **Enable merged results pipelines.** (if not enabled)
+1. Check **Enable merge trains.**
+1. Click **Save changes**
+
+In GitLab 13.5 and earlier, there is only one checkbox, named
+**Enable merge trains and pipelines for merged results**.
 
 CAUTION: **Caution:**
 If you select the check box but don't configure your CI/CD to use
@@ -200,10 +204,13 @@ for more information.
 
 ### Merge Trains feature flag **(PREMIUM ONLY)**
 
-Merge trains are automatically enabled when [pipelines for merged results](../index.md#pipelines-for-merged-results)
-are enabled. To use pipelines for merged results without using merge trains, you must
-enable a [feature flag](../../../../user/feature_flags.md) that blocks the merge trains
-feature.
+In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/244831),
+you can [enable or disable merge trains in the project settings](#enable-merge-trains).
+
+In GitLab 13.5 and earlier, merge trains are automatically enabled when
+[pipelines for merged results](../index.md#pipelines-for-merged-results) are enabled.
+To use pipelines for merged results without using merge trains, you can enable a
+[feature flag](../../../../user/feature_flags.md) that blocks the merge trains feature.
 
 [GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
 can enable the feature flag to disable merge trains:

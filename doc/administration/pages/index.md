@@ -415,9 +415,6 @@ internet connectivity is gated by a proxy. To use a proxy for GitLab Pages:
 
 ### Using a custom Certificate Authority (CA)
 
-NOTE: **Note:**
-[Before 13.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4411), when using Omnibus, a [workaround was required](https://docs.gitlab.com/13.1/ee/administration/pages/index.html#using-a-custom-certificate-authority-ca).
-
 When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md#gitlab-pages-access-control) and
 the [online view of HTML job artifacts](../../ci/pipelines/job_artifacts.md#browsing-artifacts)
 will fail to work if the custom CA is not recognized.

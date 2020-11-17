@@ -191,6 +191,7 @@ RSpec.describe API::Internal::Pages do
             expect(json_response['certificate']).to eq(pages_domain.certificate)
             expect(json_response['key']).to eq(pages_domain.key)
 
+            deployment = project.pages_metadatum.pages_deployment
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -200,7 +201,11 @@ RSpec.describe API::Internal::Pages do
                   'prefix' => '/',
                   'source' => {
                     'type' => 'zip',
-                    'path' => project.pages_metadatum.pages_deployment.file.url(expire_at: 1.day.from_now)
+                    'path' => deployment.file.url(expire_at: 1.day.from_now),
+                    'global_id' => "gid://gitlab/PagesDeployment/#{deployment.id}",
+                    'sha256' => deployment.file_sha256,
+                    'file_size' => deployment.size,
+                    'file_count' => deployment.file_count
                   }
                 }
               ]
@@ -227,6 +232,7 @@ RSpec.describe API::Internal::Pages do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('internal/pages/virtual_domain')
 
+            deployment = project.pages_metadatum.pages_deployment
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -236,7 +242,11 @@ RSpec.describe API::Internal::Pages do
                   'prefix' => '/myproject/',
                   'source' => {
                     'type' => 'zip',
-                    'path' => project.pages_metadatum.pages_deployment.file.url(expire_at: 1.day.from_now)
+                    'path' => deployment.file.url(expire_at: 1.day.from_now),
+                    'global_id' => "gid://gitlab/PagesDeployment/#{deployment.id}",
+                    'sha256' => deployment.file_sha256,
+                    'file_size' => deployment.size,
+                    'file_count' => deployment.file_count
                   }
                 }
               ]
@@ -268,6 +278,7 @@ RSpec.describe API::Internal::Pages do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('internal/pages/virtual_domain')
 
+            deployment = project.pages_metadatum.pages_deployment
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -277,7 +288,11 @@ RSpec.describe API::Internal::Pages do
                   'prefix' => '/',
                   'source' => {
                     'type' => 'zip',
-                    'path' => project.pages_metadatum.pages_deployment.file.url(expire_at: 1.day.from_now)
+                    'path' => deployment.file.url(expire_at: 1.day.from_now),
+                    'global_id' => "gid://gitlab/PagesDeployment/#{deployment.id}",
+                    'sha256' => deployment.file_sha256,
+                    'file_size' => deployment.size,
+                    'file_count' => deployment.file_count
                   }
                 }
               ]

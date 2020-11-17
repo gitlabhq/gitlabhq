@@ -1,5 +1,6 @@
 import { GlTable, GlIcon, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import Tracking from '~/tracking';
 import AlertIntegrationsList, {
   i18n,
@@ -23,6 +24,7 @@ const mockIntegrations = [
 
 describe('AlertIntegrationsList', () => {
   let wrapper;
+  const { trigger: triggerIntersection } = useMockIntersectionObserver();
 
   function mountComponent({ data = {}, props = {} } = {}) {
     wrapper = mount(AlertIntegrationsList, {
@@ -100,12 +102,23 @@ describe('AlertIntegrationsList', () => {
 
   describe('Snowplow tracking', () => {
     beforeEach(() => {
-      jest.spyOn(Tracking, 'event');
       mountComponent();
+      jest.spyOn(Tracking, 'event');
     });
 
-    it('should track alert list page views', () => {
+    it('should NOT track alert list page views when list is collapsed', () => {
+      triggerIntersection(wrapper.vm.$el, { entry: { isIntersecting: false } });
+
+      expect(Tracking.event).not.toHaveBeenCalled();
+    });
+
+    it('should track alert list page views only once when list is expanded', () => {
+      triggerIntersection(wrapper.vm.$el, { entry: { isIntersecting: true } });
+      triggerIntersection(wrapper.vm.$el, { entry: { isIntersecting: true } });
+      triggerIntersection(wrapper.vm.$el, { entry: { isIntersecting: true } });
+
       const { category, action } = trackAlertIntegrationsViewsOptions;
+      expect(Tracking.event).toHaveBeenCalledTimes(1);
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
   });

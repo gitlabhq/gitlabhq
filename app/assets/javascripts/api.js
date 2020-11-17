@@ -566,12 +566,13 @@ const Api = {
     });
   },
 
-  postUserStatus({ emoji, message }) {
+  postUserStatus({ emoji, message, availability }) {
     const url = Api.buildUrl(this.userPostStatusPath);
 
     return axios.put(url, {
       emoji,
       message,
+      availability,
     });
   },
 

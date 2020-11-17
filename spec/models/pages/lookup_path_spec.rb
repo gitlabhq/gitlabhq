@@ -65,11 +65,18 @@ RSpec.describe Pages::LookupPath do
         project.pages_metadatum.update!(pages_deployment: deployment)
       end
 
-      it 'uses deployment from object storage', :aggregate_failures do
+      it 'uses deployment from object storage' do
         Timecop.freeze do
-          expect(source[:type]).to eq('zip')
-          expect(source[:path]).to eq(deployment.file.url(expire_at: 1.day.from_now))
-          expect(source[:path]).to include("Expires=86400")
+          expect(source).to(
+            eq({
+                 type: 'zip',
+                 path: deployment.file.url(expire_at: 1.day.from_now),
+                 global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+                 sha256: deployment.file_sha256,
+                 file_size: deployment.size,
+                 file_count: deployment.file_count
+               })
+          )
         end
       end
 
@@ -78,10 +85,18 @@ RSpec.describe Pages::LookupPath do
           deployment.file.migrate!(::ObjectStorage::Store::LOCAL)
         end
 
-        it 'uses file protocol', :aggregate_failures do
+        it 'uses file protocol' do
           Timecop.freeze do
-            expect(source[:type]).to eq('zip')
-            expect(source[:path]).to eq('file://' + deployment.file.path)
+            expect(source).to(
+              eq({
+                   type: 'zip',
+                   path: 'file://' + deployment.file.path,
+                   global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
+                   sha256: deployment.file_sha256,
+                   file_size: deployment.size,
+                   file_count: deployment.file_count
+                 })
+            )
           end
         end
 
@@ -110,11 +125,18 @@ RSpec.describe Pages::LookupPath do
         project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
       end
 
-      it 'uses artifacts object storage', :aggregate_failures do
+      it 'uses artifacts object storage' do
         Timecop.freeze do
-          expect(source[:type]).to eq('zip')
-          expect(source[:path]).to eq(artifacts_archive.file.url(expire_at: 1.day.from_now))
-          expect(source[:path]).to include("Expires=86400")
+          expect(source).to(
+            eq({
+                 type: 'zip',
+                 path: artifacts_archive.file.url(expire_at: 1.day.from_now),
+                 global_id: "gid://gitlab/Ci::JobArtifact/#{artifacts_archive.id}",
+                 sha256: artifacts_archive.file_sha256,
+                 file_size: artifacts_archive.size,
+                 file_count: nil
+               })
+          )
         end
       end
 
@@ -123,8 +145,16 @@ RSpec.describe Pages::LookupPath do
 
         it 'uses file protocol', :aggregate_failures do
           Timecop.freeze do
-            expect(source[:type]).to eq('zip')
-            expect(source[:path]).to eq('file://' + artifacts_archive.file.path)
+            expect(source).to(
+              eq({
+                   type: 'zip',
+                   path: 'file://' + artifacts_archive.file.path,
+                   global_id: "gid://gitlab/Ci::JobArtifact/#{artifacts_archive.id}",
+                   sha256: artifacts_archive.file_sha256,
+                   file_size: artifacts_archive.size,
+                   file_count: nil
+                 })
+            )
           end
         end
 

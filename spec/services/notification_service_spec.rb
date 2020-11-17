@@ -848,6 +848,7 @@ RSpec.describe NotificationService, :mailer do
            noteable: design,
            note: "Hello #{member_and_mentioned.to_reference}, G'day #{non_member_and_mentioned.to_reference}")
       end
+
       let_it_be(:note_2) do
         create(:diff_note_on_design, noteable: design, author: member_and_author_of_second_note)
       end

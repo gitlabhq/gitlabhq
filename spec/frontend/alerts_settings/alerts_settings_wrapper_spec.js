@@ -3,6 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
 import AlertsSettingsFormOld from '~/alerts_settings/components/alerts_settings_form_old.vue';
 import AlertsSettingsFormNew from '~/alerts_settings/components/alerts_settings_form_new.vue';
@@ -47,6 +48,7 @@ describe('AlertsSettingsWrapper', () => {
   let wrapper;
   let fakeApollo;
   let destroyIntegrationHandler;
+  useMockIntersectionObserver();
 
   const findLoader = () => wrapper.find(IntegrationsList).find(GlLoadingIcon);
   const findIntegrations = () => wrapper.find(IntegrationsList).findAll('table tbody tr');

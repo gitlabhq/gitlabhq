@@ -20577,6 +20577,9 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
+msgid "Profiles|\"Busy\" will be shown next to your name"
+msgstr ""
+
 msgid "Profiles|%{provider} Active"
 msgstr ""
 
@@ -20605,6 +20608,9 @@ msgid "Profiles|Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Profiles|Bio"
+msgstr ""
+
+msgid "Profiles|Busy"
 msgstr ""
 
 msgid "Profiles|Change username"
@@ -21219,7 +21225,10 @@ msgstr ""
 msgid "ProjectSettings|Enable 'Delete source branch' option by default"
 msgstr ""
 
-msgid "ProjectSettings|Enable merge trains and pipelines for merged results"
+msgid "ProjectSettings|Enable merge trains."
+msgstr ""
+
+msgid "ProjectSettings|Enable merged results pipelines."
 msgstr ""
 
 msgid "ProjectSettings|Encourage"
@@ -21259,6 +21268,9 @@ msgid "ProjectSettings|Git Large File Storage (LFS)"
 msgstr ""
 
 msgid "ProjectSettings|Global"
+msgstr ""
+
+msgid "ProjectSettings|If pipelines for merge requests are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches."
 msgstr ""
 
 msgid "ProjectSettings|Internal"
@@ -21319,9 +21331,6 @@ msgid "ProjectSettings|Pages for project documentation"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines"
-msgstr ""
-
-msgid "ProjectSettings|Pipelines for merge requests must be enabled in the CI/CD configuration file, or pipelines could be unresolvable or dropped"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines must succeed"
@@ -21418,6 +21427,9 @@ msgid "ProjectSettings|View and edit files in this project"
 msgstr ""
 
 msgid "ProjectSettings|View and edit files in this project. Non-project members will only have read access"
+msgstr ""
+
+msgid "ProjectSettings|When approved for merge, merge requests are queued and pipelines validate the combined results of the source and target branches before merge."
 msgstr ""
 
 msgid "ProjectSettings|When conflicts arise the user is given the option to rebase"
@@ -24734,7 +24746,13 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
+msgid "SetStatusModal|\"Busy\" will be shown next to your name"
+msgstr ""
+
 msgid "SetStatusModal|Add status emoji"
+msgstr ""
+
+msgid "SetStatusModal|Busy"
 msgstr ""
 
 msgid "SetStatusModal|Clear status"
@@ -24753,6 +24771,9 @@ msgid "SetStatusModal|Set status"
 msgstr ""
 
 msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
+msgstr ""
+
+msgid "SetStatusModal|Status updated"
 msgstr ""
 
 msgid "SetStatusModal|What's your status?"
@@ -29489,6 +29510,12 @@ msgstr ""
 msgid "User was successfully updated."
 msgstr ""
 
+msgid "UserAvailability|%{author} (Busy)"
+msgstr ""
+
+msgid "UserAvailability|(Busy)"
+msgstr ""
+
 msgid "UserLists|Add"
 msgstr ""
 
@@ -29544,6 +29571,9 @@ msgid "UserList|Delete %{name}?"
 msgstr ""
 
 msgid "UserList|created %{timeago}"
+msgstr ""
+
+msgid "UserProfile|(Busy)"
 msgstr ""
 
 msgid "UserProfile|Activity"

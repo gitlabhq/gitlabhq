@@ -973,6 +973,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
         create(:project, :builds_disabled, :issues_disabled,
                { name: 'project', path: 'project' })
       end
+
       let(:shared) { project.import_export_shared }
       let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
 

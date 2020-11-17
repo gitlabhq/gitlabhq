@@ -1,7 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { GlSprintf } from '@gitlab/ui';
 import NoteHeader from '~/notes/components/note_header.vue';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -28,6 +30,9 @@ describe('NoteHeader component', () => {
     path: '/root',
     state: 'active',
     username: 'root',
+    status: {
+      availability: '',
+    },
   };
 
   const createComponent = props => {
@@ -37,6 +42,7 @@ describe('NoteHeader component', () => {
         actions,
       }),
       propsData: { ...props },
+      stubs: { GlSprintf },
     });
   };
 
@@ -95,6 +101,12 @@ describe('NoteHeader component', () => {
     createComponent({ author });
 
     expect(wrapper.find('.js-user-link').exists()).toBe(true);
+  });
+
+  it('renders busy status if author availability is set', () => {
+    createComponent({ author: { ...author, status: { availability: AVAILABILITY_STATUS.BUSY } } });
+
+    expect(wrapper.find('.js-user-link').text()).toContain('(Busy)');
   });
 
   it('renders deleted user text if author is not passed as a prop', () => {

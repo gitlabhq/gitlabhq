@@ -265,6 +265,23 @@ javascript:
         - junit.xml
 ```
 
+#### Karma
+
+The [Karma-junit-reporter](https://github.com/karma-runner/karma-junit-reporter) npm package can generate test reports for JavaScript applications.
+In the following `.gitlab-ci.yml` example, the `javascript` job uses Karma to generate the test reports:
+
+```yaml
+javascript:
+  stage: test
+  script:
+    - karma start --reporters junit
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+```
+
 ## Viewing Unit test reports on GitLab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.

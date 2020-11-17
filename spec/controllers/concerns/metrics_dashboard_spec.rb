@@ -155,6 +155,7 @@ RSpec.describe MetricsDashboard do
                 '.gitlab/dashboards/errors.yml' => dashboard_yml
               }
             end
+
             let_it_be(:project) { create(:project, :custom_repo, files: dashboards) }
 
             before do

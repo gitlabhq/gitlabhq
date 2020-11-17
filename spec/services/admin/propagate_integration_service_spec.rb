@@ -18,6 +18,7 @@ RSpec.describe Admin::PropagateIntegrationService do
     let_it_be(:inherited_integration) do
       create(:jira_service, project: create(:project), inherit_from_id: instance_integration.id)
     end
+
     let_it_be(:different_type_inherited_integration) do
       create(:redmine_service, project: project, inherit_from_id: instance_integration.id)
     end

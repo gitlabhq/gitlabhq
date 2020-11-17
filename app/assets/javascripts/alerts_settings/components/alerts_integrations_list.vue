@@ -99,7 +99,17 @@ export default {
     };
   },
   mounted() {
-    this.trackPageViews();
+    const callback = entries => {
+      const isVisible = entries.some(entry => entry.isIntersecting);
+
+      if (isVisible) {
+        this.trackPageViews();
+        this.observer.disconnect();
+      }
+    };
+
+    this.observer = new IntersectionObserver(callback);
+    this.observer.observe(this.$el);
   },
   methods: {
     tbodyTrClass(item) {

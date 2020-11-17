@@ -10,9 +10,9 @@ You can configure GitLab to send notifications to a Webex Teams space.
 
 ## Create a webhook for the space
 
-1. Go to the [Incoming Webhooks app page](https://apphub.webex.com/teams/applications/incoming-webhooks-cisco-systems).
+1. Go to the [Incoming Webhooks app page](https://apphub.webex.com/teams/applications/incoming-webhooks-cisco-systems-38054).
 1. Click **Connect** and log in to Webex Teams, if required.
-1. Enter a name for the webhook and select the space that will receive the notifications.
+1. Enter a name for the webhook and select the space to receive the notifications.
 1. Click **ADD**.
 1. Copy the **Webhook URL**.
 
@@ -27,4 +27,4 @@ Once you have a webhook URL for your Webex Teams space, you can configure GitLab
 1. Paste the **Webhook** URL for the Webex Teams space.
 1. Configure the remaining options and then click **Test settings and save changes**.
 
-The Webex Teams space will begin to receive all applicable GitLab events.
+The Webex Teams space now begins to receive all applicable GitLab events.

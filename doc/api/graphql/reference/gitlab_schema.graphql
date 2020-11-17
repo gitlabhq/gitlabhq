@@ -9455,6 +9455,11 @@ type Group {
   shareWithGroupLock: Boolean
 
   """
+  Group statistics
+  """
+  stats: GroupStats
+
+  """
   Total storage limit of the root namespace in bytes
   """
   storageSizeLimit: Float
@@ -9876,6 +9881,33 @@ type GroupPermissions {
   Indicates the user can perform `read_group` on this resource
   """
   readGroup: Boolean!
+}
+
+"""
+Contains release-related statistics about a group
+"""
+type GroupReleaseStats {
+  """
+  Total number of releases in all descendant projects of the group. Will always
+  return `null` if `group_level_release_statistics` feature flag is disabled
+  """
+  releasesCount: Int
+
+  """
+  Percentage of the group's descendant projects that have at least one release.
+  Will always return `null` if `group_level_release_statistics` feature flag is disabled
+  """
+  releasesPercentage: Int
+}
+
+"""
+Contains statistics about a group
+"""
+type GroupStats {
+  """
+  Statistics related to releases within the group
+  """
+  releaseStats: GroupReleaseStats
 }
 
 """

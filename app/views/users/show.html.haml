@@ -47,8 +47,10 @@
         .user-info
           .cover-title{ itemprop: 'name' }
             = @user.name
+            - if @user&.status && user_status_set_to_busy?(@user.status)
+              %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
 
-          - if @user.status
+          - if show_status_emoji?(@user.status)
             .cover-status
               = emoji_icon(@user.status.emoji)
               = markdown_field(@user.status, :message)

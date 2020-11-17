@@ -12,7 +12,10 @@ module Gitlab
       PRIMARY_SECTION = 'chat_reply'
 
       # The backup trace section in case the primary one could not be found.
-      FALLBACK_SECTION = 'build_script'
+      FALLBACK_SECTION = 'step_script'
+
+      # `step_script` used to be `build_script` before runner 13.1
+      LEGACY_SECTION = 'build_script'
 
       # build - The `Ci::Build` to obtain the output from.
       def initialize(build)
@@ -35,24 +38,6 @@ module Gitlab
 
           without_executed_command_line(output)
         end
-      end
-
-      # Returns the offset to seek to and the number of bytes to read relative
-      # to the offset.
-      def read_offset_and_length
-        section = find_build_trace_section(PRIMARY_SECTION) ||
-          find_build_trace_section(FALLBACK_SECTION)
-
-        unless section
-          raise(
-            MissingBuildSectionError,
-            "The build_script trace section could not be found for build #{build.id}"
-          )
-        end
-
-        length = section[:byte_end] - section[:byte_start]
-
-        [section[:byte_start], length]
       end
 
       # Removes the line containing the executed command from the build output.
@@ -87,6 +72,27 @@ module Gitlab
 
       def trace
         @trace ||= build.trace
+      end
+
+      private
+
+      # Returns the offset to seek to and the number of bytes to read relative
+      # to the offset.
+      def read_offset_and_length
+        section = find_build_trace_section(PRIMARY_SECTION) ||
+          find_build_trace_section(FALLBACK_SECTION) ||
+          find_build_trace_section(LEGACY_SECTION)
+
+        unless section
+          raise(
+            MissingBuildSectionError,
+            "The build_script trace section could not be found for build #{build.id}"
+          )
+        end
+
+        length = section[:byte_end] - section[:byte_start]
+
+        [section[:byte_start], length]
       end
     end
   end

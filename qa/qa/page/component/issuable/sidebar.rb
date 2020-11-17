@@ -65,15 +65,13 @@ module QA
 
           def has_assignee?(username)
             within_element(:assignee_block) do
-              wait_until(reload: false) do
-                has_text?(username)
-              end
+              has_text?(username, wait: 120)
             end
           end
 
           def has_no_assignee_named?(username)
             within_element(:assignee_block) do
-              has_no_text?(username, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+              has_no_text?(username, wait: 120)
             end
           end
 

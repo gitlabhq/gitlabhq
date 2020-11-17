@@ -378,6 +378,7 @@ describe('GfmAutoComplete', () => {
           username: 'my-group',
           title: '',
           icon: '',
+          availabilityStatus: '',
         }),
       ).toBe('<li>IMG my-group <small></small> </li>');
     });
@@ -389,6 +390,7 @@ describe('GfmAutoComplete', () => {
           username: 'my-group',
           title: '',
           icon: '<i class="icon"/>',
+          availabilityStatus: '',
         }),
       ).toBe('<li>IMG my-group <small></small> <i class="icon"/></li>');
     });
@@ -400,8 +402,23 @@ describe('GfmAutoComplete', () => {
           username: 'my-group',
           title: 'MyGroup+',
           icon: '<i class="icon"/>',
+          availabilityStatus: '',
         }),
       ).toBe('<li>IMG my-group <small>MyGroup+</small> <i class="icon"/></li>');
+    });
+
+    it('should add user availability status if availabilityStatus is set', () => {
+      expect(
+        GfmAutoComplete.Members.templateFunction({
+          avatarTag: 'IMG',
+          username: 'my-group',
+          title: '',
+          icon: '<i class="icon"/>',
+          availabilityStatus: '<span class="gl-text-gray-500"> (Busy)</span>',
+        }),
+      ).toBe(
+        '<li>IMG my-group <small><span class="gl-text-gray-500"> (Busy)</span></small> <i class="icon"/></li>',
+      );
     });
   });
 

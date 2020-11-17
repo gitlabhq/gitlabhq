@@ -116,6 +116,7 @@ RSpec.shared_context 'Jira projects request context' do
       "uuid": "14935009-f8aa-481e-94bc-f7251f320b0e"
     }]'
   end
+
   let_it_be(:empty_jira_projects_json) do
     '{
           "self": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=0&maxResults=2",

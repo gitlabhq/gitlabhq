@@ -15,7 +15,11 @@
       "required": ["type", "path"],
       "properties" : {
         "type": { "type": "string", "enum": ["file", "zip"] },
-        "path": { "type": "string" }
+        "path": { "type": "string" },
+        "global_id": { "type": "string" },
+        "sha256": { "type": "string" },
+        "file_size": { "type": "integer" },
+        "file_count": { "type": ["integer", "null"] }
       },
       "additionalProperties": false
     },

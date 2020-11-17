@@ -12,6 +12,7 @@ RSpec.describe TodosHelper do
            project: issue.project,
            note: 'I am note, hear me roar')
   end
+
   let_it_be(:design_todo) do
     create(:todo, :mentioned,
            user: user,
@@ -20,6 +21,7 @@ RSpec.describe TodosHelper do
            author: author,
            note: note)
   end
+
   let_it_be(:alert_todo) do
     alert = create(:alert_management_alert, iid: 1001)
     create(:todo, target: alert)

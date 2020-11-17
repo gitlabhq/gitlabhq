@@ -11,12 +11,15 @@ RSpec.describe 'Getting versions related to an issue' do
   let_it_be(:version_a) do
     create(:design_version, issue: issue)
   end
+
   let_it_be(:version_b) do
     create(:design_version, issue: issue)
   end
+
   let_it_be(:version_c) do
     create(:design_version, issue: issue)
   end
+
   let_it_be(:version_d) do
     create(:design_version, issue: issue)
   end

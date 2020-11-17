@@ -221,4 +221,42 @@ RSpec.describe PageLayoutHelper do
       end
     end
   end
+
+  describe '#user_status_properties' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build(:user) }
+
+    availability_types = Types::AvailabilityEnum.enum
+
+    where(:message, :emoji, :availability) do
+      "Some message" | UserStatus::DEFAULT_EMOJI | availability_types[:busy]
+      "Some message" | UserStatus::DEFAULT_EMOJI | availability_types[:not_set]
+      "Some message" | "basketball"              | availability_types[:busy]
+      "Some message" | "basketball"              | availability_types[:not_set]
+      "Some message" | ""                        | availability_types[:busy]
+      "Some message" | ""                        | availability_types[:not_set]
+      ""             | UserStatus::DEFAULT_EMOJI | availability_types[:busy]
+      ""             | UserStatus::DEFAULT_EMOJI | availability_types[:not_set]
+      ""             | "basketball"              | availability_types[:busy]
+      ""             | "basketball"              | availability_types[:not_set]
+      ""             | ""                        | availability_types[:busy]
+      ""             | ""                        | availability_types[:not_set]
+    end
+
+    with_them do
+      it "sets the default user status fields" do
+        user.status = UserStatus.new(message: message, emoji: emoji, availability: availability)
+        result = {
+          can_set_user_availability: true,
+          current_availability: availability,
+          current_emoji: emoji,
+          current_message: message,
+          default_emoji: UserStatus::DEFAULT_EMOJI
+        }
+
+        expect(helper.user_status_properties(user)).to eq(result)
+      end
+    end
+  end
 end

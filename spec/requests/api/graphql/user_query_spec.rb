@@ -32,22 +32,27 @@ RSpec.describe 'getting user information' do
       create(:merge_request, :unique_branches, :unique_author,
              source_project: project_a, assignees: [user])
     end
+
     let_it_be(:assigned_mr_b) do
       create(:merge_request, :unique_branches, :unique_author,
              source_project: project_b, assignees: [user])
     end
+
     let_it_be(:assigned_mr_c) do
       create(:merge_request, :unique_branches, :unique_author,
              source_project: project_b, assignees: [user])
     end
+
     let_it_be(:authored_mr) do
       create(:merge_request, :unique_branches,
              source_project: project_a, author: user)
     end
+
     let_it_be(:authored_mr_b) do
       create(:merge_request, :unique_branches,
              source_project: project_b, author: user)
     end
+
     let_it_be(:authored_mr_c) do
       create(:merge_request, :unique_branches,
              source_project: project_b, author: user)

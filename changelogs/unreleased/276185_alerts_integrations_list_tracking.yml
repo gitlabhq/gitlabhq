@@ -1,0 +1,5 @@
+---
+title: Fix alerts integration list Snowplow tracking event
+merge_request: 47413
+author:
+type: fixed

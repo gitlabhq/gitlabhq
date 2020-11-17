@@ -1,7 +1,8 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { mapActions } from 'vuex';
-import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
+import { isUserBusy } from '~/set_status_modal/utils';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -11,6 +12,7 @@ export default {
       import('ee_component/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue'),
     GlIcon,
     GlLoadingIcon,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -85,8 +87,15 @@ export default {
     authorStatus() {
       return this.author.status_tooltip_html;
     },
+    authorIsBusy() {
+      const { status } = this.author;
+      return status?.availability && isUserBusy(status.availability);
+    },
     emojiElement() {
       return this.$refs?.authorStatus?.querySelector('gl-emoji');
+    },
+    authorName() {
+      return this.author.name;
     },
   },
   mounted() {
@@ -146,7 +155,12 @@ export default {
         :data-username="author.username"
       >
         <slot name="note-header-info"></slot>
-        <span class="note-header-author-name bold">{{ author.name }}</span>
+        <span class="note-header-author-name gl-font-weight-bold">
+          <gl-sprintf v-if="authorIsBusy" :message="s__('UserAvailability|%{author} (Busy)')">
+            <template #author>{{ authorName }}</template>
+          </gl-sprintf>
+          <template v-else>{{ authorName }}</template>
+        </span>
       </a>
       <span
         v-if="authorStatus"

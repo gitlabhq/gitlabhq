@@ -41,6 +41,7 @@ RSpec.describe Notes::DestroyService do
         create(:merge_request, source_project: repo_project,
                target_project: repo_project)
       end
+
       let_it_be(:note) do
         create(:diff_note_on_merge_request, project: repo_project,
                noteable: merge_request)

@@ -56,7 +56,7 @@ To enable pipelines for merged results for your project:
 1. [Configure your CI/CD configuration file](../index.md#configuring-pipelines-for-merge-requests)
    so that the pipeline or individual jobs run for merge requests.
 1. Visit your project's **Settings > General** and expand **Merge requests**.
-1. Check **Enable merge trains and pipelines for merged results**.
+1. Check **Enable merged results pipelines.**.
 1. Click **Save changes**.
 
 CAUTION: **Caution:**

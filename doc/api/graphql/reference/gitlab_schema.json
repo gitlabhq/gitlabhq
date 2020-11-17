@@ -25804,6 +25804,20 @@
               "deprecationReason": null
             },
             {
+              "name": "stats",
+              "description": "Group statistics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "GroupStats",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "storageSizeLimit",
               "description": "Total storage limit of the root namespace in bytes",
               "args": [
@@ -26976,6 +26990,74 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GroupReleaseStats",
+          "description": "Contains release-related statistics about a group",
+          "fields": [
+            {
+              "name": "releasesCount",
+              "description": "Total number of releases in all descendant projects of the group. Will always return `null` if `group_level_release_statistics` feature flag is disabled",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "releasesPercentage",
+              "description": "Percentage of the group's descendant projects that have at least one release. Will always return `null` if `group_level_release_statistics` feature flag is disabled",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GroupStats",
+          "description": "Contains statistics about a group",
+          "fields": [
+            {
+              "name": "releaseStats",
+              "description": "Statistics related to releases within the group",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "GroupReleaseStats",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

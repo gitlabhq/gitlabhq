@@ -9,6 +9,7 @@ RSpec.describe MarkupHelper do
     project.add_maintainer(user)
     user
   end
+
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:snippet) { create(:project_snippet, project: project) }
