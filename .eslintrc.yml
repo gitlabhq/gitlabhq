@@ -26,9 +26,6 @@ rules:
         - _links
   import/no-unresolved:
     - error
-    - ignore:
-        # https://gitlab.com/gitlab-org/gitlab/issues/38226
-        - '^ee_component/'
   # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
   no-else-return:
     - error

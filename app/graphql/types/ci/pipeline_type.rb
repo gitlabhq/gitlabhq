@@ -13,65 +13,87 @@ module Types
 
       field :id, GraphQL::ID_TYPE, null: false,
             description: 'ID of the pipeline'
+
       field :iid, GraphQL::STRING_TYPE, null: false,
             description: 'Internal ID of the pipeline'
 
       field :sha, GraphQL::STRING_TYPE, null: false,
             description: "SHA of the pipeline's commit"
+
       field :before_sha, GraphQL::STRING_TYPE, null: true,
             description: 'Base SHA of the source branch'
+
       field :status, PipelineStatusEnum, null: false,
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
+
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
             description: 'Detailed status of the pipeline',
             resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
+
       field :config_source, PipelineConfigSourceEnum, null: true,
             description: "Config source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
+
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the pipeline in seconds'
+
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
             description: 'Coverage percentage'
+
       field :created_at, Types::TimeType, null: false,
             description: "Timestamp of the pipeline's creation"
+
       field :updated_at, Types::TimeType, null: false,
             description: "Timestamp of the pipeline's last activity"
+
       field :started_at, Types::TimeType, null: true,
             description: 'Timestamp when the pipeline was started'
+
       field :finished_at, Types::TimeType, null: true,
             description: "Timestamp of the pipeline's completion"
+
       field :committed_at, Types::TimeType, null: true,
             description: "Timestamp of the pipeline's commit"
+
       field :stages, Types::Ci::StageType.connection_type, null: true,
             description: 'Stages of the pipeline',
             extras: [:lookahead],
             resolver: Resolvers::Ci::PipelineStagesResolver
+
       field :user, Types::UserType, null: true,
             description: 'Pipeline user',
             resolve: -> (pipeline, _args, _context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, pipeline.user_id).find }
+
       field :retryable, GraphQL::BOOLEAN_TYPE,
             description: 'Specifies if a pipeline can be retried',
             method: :retryable?,
             null: false
+
       field :cancelable, GraphQL::BOOLEAN_TYPE,
             description: 'Specifies if a pipeline can be canceled',
             method: :cancelable?,
             null: false
+
       field :jobs,
             ::Types::Ci::JobType.connection_type,
             null: true,
             description: 'Jobs belonging to the pipeline',
-            method: :statuses
+            resolver: ::Resolvers::Ci::JobsResolver
+
       field :source_job, Types::Ci::JobType, null: true,
             description: 'Job where pipeline was triggered from'
+
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,
             description: 'Pipelines this pipeline will trigger',
             method: :triggered_pipelines_with_preloads
+
       field :upstream, Types::Ci::PipelineType, null: true,
             description: 'Pipeline that triggered the pipeline',
             method: :triggered_by_pipeline
+
       field :path, GraphQL::STRING_TYPE, null: true,
             description: "Relative path to the pipeline's page",
             resolve: -> (obj, _args, _ctx) { ::Gitlab::Routing.url_helpers.project_pipeline_path(obj.project, obj) }
+
       field :project, Types::ProjectType, null: true,
             description: 'Project the pipeline belongs to'
     end

@@ -8,15 +8,226 @@ import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete
 import { TEST_HOST } from 'helpers/test_constants';
 import { getJSONFixture } from 'helpers/fixtures';
 
+import waitForPromises from 'jest/helpers/wait_for_promises';
+
+import MockAdapter from 'axios-mock-adapter';
+import AjaxCache from '~/lib/utils/ajax_cache';
+import axios from '~/lib/utils/axios_utils';
+
 const labelsFixture = getJSONFixture('autocomplete_sources/labels.json');
 
 describe('GfmAutoComplete', () => {
-  const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
-    fetchData: () => {},
-  });
+  const fetchDataMock = { fetchData: jest.fn() };
+  let gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call(fetchDataMock);
 
   let atwhoInstance;
   let sorterValue;
+  let filterValue;
+
+  describe('DefaultOptions.filter', () => {
+    let items;
+
+    beforeEach(() => {
+      jest.spyOn(fetchDataMock, 'fetchData');
+      jest.spyOn($.fn.atwho.default.callbacks, 'filter').mockImplementation(() => {});
+    });
+
+    describe('assets loading', () => {
+      beforeEach(() => {
+        atwhoInstance = { setting: {}, $inputor: 'inputor', at: '[vulnerability:' };
+        items = ['loading'];
+
+        filterValue = gfmAutoCompleteCallbacks.filter.call(atwhoInstance, '', items);
+      });
+
+      it('should call the fetchData function without query', () => {
+        expect(fetchDataMock.fetchData).toHaveBeenCalledWith('inputor', '[vulnerability:');
+      });
+
+      it('should not call the default atwho filter', () => {
+        expect($.fn.atwho.default.callbacks.filter).not.toHaveBeenCalled();
+      });
+
+      it('should return the passed unfiltered items', () => {
+        expect(filterValue).toEqual(items);
+      });
+    });
+
+    describe('backend filtering', () => {
+      beforeEach(() => {
+        atwhoInstance = { setting: {}, $inputor: 'inputor', at: '[vulnerability:' };
+        items = [];
+      });
+
+      describe('when previous query is different from current one', () => {
+        beforeEach(() => {
+          gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
+            previousQuery: 'oldquery',
+            ...fetchDataMock,
+          });
+          filterValue = gfmAutoCompleteCallbacks.filter.call(atwhoInstance, 'newquery', items);
+        });
+
+        it('should call the fetchData function with query', () => {
+          expect(fetchDataMock.fetchData).toHaveBeenCalledWith(
+            'inputor',
+            '[vulnerability:',
+            'newquery',
+          );
+        });
+
+        it('should not call the default atwho filter', () => {
+          expect($.fn.atwho.default.callbacks.filter).not.toHaveBeenCalled();
+        });
+
+        it('should return the passed unfiltered items', () => {
+          expect(filterValue).toEqual(items);
+        });
+      });
+
+      describe('when previous query is not different from current one', () => {
+        beforeEach(() => {
+          gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
+            previousQuery: 'oldquery',
+            ...fetchDataMock,
+          });
+          filterValue = gfmAutoCompleteCallbacks.filter.call(
+            atwhoInstance,
+            'oldquery',
+            items,
+            'searchKey',
+          );
+        });
+
+        it('should not call the fetchData function', () => {
+          expect(fetchDataMock.fetchData).not.toHaveBeenCalled();
+        });
+
+        it('should call the default atwho filter', () => {
+          expect($.fn.atwho.default.callbacks.filter).toHaveBeenCalledWith(
+            'oldquery',
+            items,
+            'searchKey',
+          );
+        });
+      });
+    });
+  });
+
+  describe('fetchData', () => {
+    const { fetchData } = GfmAutoComplete.prototype;
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      jest.spyOn(axios, 'get');
+      jest.spyOn(AjaxCache, 'retrieve');
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    describe('already loading data', () => {
+      beforeEach(() => {
+        const context = {
+          isLoadingData: { '[vulnerability:': true },
+          dataSources: {},
+          cachedData: {},
+        };
+        fetchData.call(context, {}, '[vulnerability:', '');
+      });
+
+      it('should not call either axios nor AjaxCache', () => {
+        expect(axios.get).not.toHaveBeenCalled();
+        expect(AjaxCache.retrieve).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('backend filtering', () => {
+      describe('data is not in cache', () => {
+        let context;
+
+        beforeEach(() => {
+          context = {
+            isLoadingData: { '[vulnerability:': false },
+            dataSources: { vulnerabilities: 'vulnerabilities_autocomplete_url' },
+            cachedData: {},
+          };
+        });
+
+        it('should call axios with query', () => {
+          fetchData.call(context, {}, '[vulnerability:', 'query');
+
+          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
+            params: { search: 'query' },
+          });
+        });
+
+        it.each([200, 500])('should set the loading state', async responseStatus => {
+          mock.onGet('vulnerabilities_autocomplete_url').replyOnce(responseStatus);
+
+          fetchData.call(context, {}, '[vulnerability:', 'query');
+
+          expect(context.isLoadingData['[vulnerability:']).toBe(true);
+
+          await waitForPromises();
+
+          expect(context.isLoadingData['[vulnerability:']).toBe(false);
+        });
+      });
+
+      describe('data is in cache', () => {
+        beforeEach(() => {
+          const context = {
+            isLoadingData: { '[vulnerability:': false },
+            dataSources: { vulnerabilities: 'vulnerabilities_autocomplete_url' },
+            cachedData: { '[vulnerability:': [{}] },
+          };
+          fetchData.call(context, {}, '[vulnerability:', 'query');
+        });
+
+        it('should anyway call axios with query ignoring cache', () => {
+          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
+            params: { search: 'query' },
+          });
+        });
+      });
+    });
+
+    describe('frontend filtering', () => {
+      describe('data is not in cache', () => {
+        beforeEach(() => {
+          const context = {
+            isLoadingData: { '#': false },
+            dataSources: { issues: 'issues_autocomplete_url' },
+            cachedData: {},
+          };
+          fetchData.call(context, {}, '#', 'query');
+        });
+
+        it('should call AjaxCache', () => {
+          expect(AjaxCache.retrieve).toHaveBeenCalledWith('issues_autocomplete_url', true);
+        });
+      });
+
+      describe('data is in cache', () => {
+        beforeEach(() => {
+          const context = {
+            isLoadingData: { '#': false },
+            dataSources: { issues: 'issues_autocomplete_url' },
+            cachedData: { '#': [{}] },
+            loadData: () => {},
+          };
+          fetchData.call(context, {}, '#', 'query');
+        });
+
+        it('should not call AjaxCache', () => {
+          expect(AjaxCache.retrieve).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
 
   describe('DefaultOptions.sorter', () => {
     describe('assets loading', () => {
@@ -154,7 +365,6 @@ describe('GfmAutoComplete', () => {
       'я',
       '.',
       "'",
-      '+',
       '-',
       '_',
     ];

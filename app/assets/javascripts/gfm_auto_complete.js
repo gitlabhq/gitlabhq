@@ -6,6 +6,7 @@ import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { isUserBusy } from '~/set_status_modal/utils';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
+import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from './lib/utils/common_utils';
 import * as Emoji from '~/emoji';
 
@@ -55,6 +56,7 @@ export const defaultAutocompleteConfig = {
   milestones: true,
   labels: true,
   snippets: true,
+  vulnerabilities: true,
 };
 
 class GfmAutoComplete {
@@ -62,6 +64,7 @@ class GfmAutoComplete {
     this.dataSources = dataSources;
     this.cachedData = {};
     this.isLoadingData = {};
+    this.previousQuery = '';
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
@@ -561,7 +564,7 @@ class GfmAutoComplete {
   }
 
   getDefaultCallbacks() {
-    const fetchData = this.fetchData.bind(this);
+    const self = this;
 
     return {
       sorter(query, items, searchKey) {
@@ -574,7 +577,14 @@ class GfmAutoComplete {
       },
       filter(query, data, searchKey) {
         if (GfmAutoComplete.isLoading(data)) {
-          fetchData(this.$inputor, this.at);
+          self.fetchData(this.$inputor, this.at);
+          return data;
+        } else if (
+          GfmAutoComplete.isTypeWithBackendFiltering(this.at) &&
+          self.previousQuery !== query
+        ) {
+          self.fetchData(this.$inputor, this.at, query);
+          self.previousQuery = query;
           return data;
         }
         return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
@@ -622,13 +632,22 @@ class GfmAutoComplete {
     };
   }
 
-  fetchData($input, at) {
+  fetchData($input, at, search) {
     if (this.isLoadingData[at]) return;
 
     this.isLoadingData[at] = true;
     const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
 
-    if (this.cachedData[at]) {
+    if (GfmAutoComplete.isTypeWithBackendFiltering(at)) {
+      axios
+        .get(dataSource, { params: { search } })
+        .then(({ data }) => {
+          this.loadData($input, at, data);
+        })
+        .catch(() => {
+          this.isLoadingData[at] = false;
+        });
+    } else if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
       this.loadEmojiData($input, at).catch(() => {});
@@ -714,7 +733,9 @@ class GfmAutoComplete {
     // https://github.com/ichord/At.js
     const atSymbolsWithBar = Object.keys(controllers)
       .join('|')
-      .replace(/[$]/, '\\$&');
+      .replace(/[$]/, '\\$&')
+      .replace(/([[\]:])/g, '\\$1');
+
     const atSymbolsWithoutBar = Object.keys(controllers).join('');
     const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
     const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
@@ -745,8 +766,13 @@ GfmAutoComplete.atTypeMap = {
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',
+  '[vulnerability:': 'vulnerabilities',
   $: 'snippets',
 };
+
+GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
+GfmAutoComplete.isTypeWithBackendFiltering = type =>
+  GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);
 
 function findEmoji(name) {
   return Emoji.searchEmoji(name, { match: 'contains', raw: true }).sort((a, b) => {

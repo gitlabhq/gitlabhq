@@ -111,6 +111,7 @@ as shown in the following table:
 | [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](#security-dashboard)                       | **{dotted-circle}** | **{check-circle}** |
 | [Configure SAST in the UI](#configure-sast-in-the-ui)                     | **{dotted-circle}** | **{check-circle}** |
+| [Customize SAST Rulesets](#customize-rulesets)                            | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -205,21 +206,46 @@ spotbugs-sast:
     FAIL_NEVER: 1
 ```
 
-### Custom rulesets **(ULTIMATE)**
+### Customize rulesets **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
 
-You can customize the default scanning rules provided with SAST's NodeJS-Scan and Gosec analyzers.
-Customization allows you to exclude rules and modify the behavior of existing rules.
+You can customize the default scanning rules provided by our SAST analyzers.
+
+Ruleset customization supports two capabilities:
+
+1. Disabling predefined rules
+1. Modifying the default behavior of a given analyzer
+
+These capabilities can be used simultaneously.
 
 To customize the default scanning rules, create a file containing custom rules. These rules
-are passed through to the analyzer's underlying scanner tool.
+are passed through to the analyzer's underlying scanner tools.
 
 To create a custom ruleset:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory.
 1. In the `sast-ruleset.toml` file, do one of the following:
+
+   - Disable predefined rules belonging to SAST analyzers. In this example, the disabled rules
+     belong to `eslint` and `sobelow` and have the corresponding identifiers `type` and `value`:
+
+     ```toml
+     [eslint]
+       [[eslint.ruleset]]
+         disable = true
+         [eslint.ruleset.identifier]
+           type = "eslint_rule_id"
+           value = "security/detect-object-injection"
+
+     [sobelow]
+       [[sobelow.ruleset]]
+         disable = true
+         [sobelow.ruleset.identifier]
+           type = "sobelow_rule_id"
+           value = "sql_injection"
+     ```
 
    - Define a custom analyzer configuration. In this example, customized rules are defined for the
      `nodejs-scan` scanner:

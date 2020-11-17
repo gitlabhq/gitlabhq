@@ -172,6 +172,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         omniauth:
           { providers: omniauth_providers }
       )
+      allow(Devise).to receive(:omniauth_providers).and_return(%w(ldapmain ldapsecondary group_saml))
 
       for_defined_days_back do
         user = create(:user)
@@ -190,14 +191,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         groups: 2,
         users_created: 6,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4 }
+        user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
         events: 1,
         groups: 1,
         users_created: 3,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2 }
+        user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
     end
 

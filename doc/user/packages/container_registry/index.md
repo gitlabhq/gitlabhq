@@ -447,7 +447,7 @@ For the project where it's defined, tags matching the regex pattern are removed.
 The underlying layers and images remain.
 
 To delete the underlying layers and images that aren't associated with any tags, administrators can use
-[garbage collection](../../../administration/packages/container_registry.md#removing-unused-layers-not-referenced-by-manifests) with the `-m` switch.
+[garbage collection](../../../administration/packages/container_registry.md#removing-untagged-manifests-and-unreferenced-layers) with the `-m` switch.
 
 ### Enable the cleanup policy
 

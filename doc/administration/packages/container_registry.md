@@ -829,11 +829,11 @@ If you changed the location of the Container Registry `config.yml`:
 sudo gitlab-ctl registry-garbage-collect /path/to/config.yml
 ```
 
-You may also [remove all unreferenced manifests](#removing-unused-layers-not-referenced-by-manifests),
+You may also [remove all untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers),
 although this is a way more destructive operation, and you should first
 understand the implications.
 
-### Removing unused layers not referenced by manifests
+### Removing untagged manifests and unreferenced layers
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3097) in Omnibus GitLab 11.10.
 
@@ -841,17 +841,19 @@ DANGER: **Warning:**
 This is a destructive operation.
 
 The GitLab Container Registry follows the same default workflow as Docker Distribution:
-retain all layers, even ones that are unreferenced directly to allow all content
-to be accessed using context addressable identifiers.
+retain untagged manifests and all layers, even ones that are not referenced directly. All content
+can be accessed by using context addressable identifiers.
 
-However, in most workflows, you don't care about old layers if they are not directly
-referenced by the registry tag. The `registry-garbage-collect` command supports the
+However, in most workflows, you don't care about untagged manifests and old layers if they are not directly
+referenced by a tagged manifest. The `registry-garbage-collect` command supports the
 `-m` switch to allow you to remove all unreferenced manifests and layers that are
 not directly accessible via `tag`:
 
 ```shell
 sudo gitlab-ctl registry-garbage-collect -m
 ```
+
+Without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
 
 Since this is a way more destructive operation, this behavior is disabled by default.
 You are likely expecting this way of operation, but before doing that, ensure
@@ -945,6 +947,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # Run every Sunday at 04:05am
 5 4 * * 0  root gitlab-ctl registry-garbage-collect
 ```
+
+You may want to add the `-m` flag to [remove untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers).
 
 ## Troubleshooting
 

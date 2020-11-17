@@ -199,6 +199,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/terminal.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/reports.css"
+    config.assets.precompile << "page_bundles/roadmap.css"
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "page_bundles/alert_management_settings.css"

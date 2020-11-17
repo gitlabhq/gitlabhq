@@ -296,7 +296,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
     end
 
     it 'returns all supported prefixes' do
-      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ & *iteration:))
+      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ & [vulnerability: *iteration:))
     end
 
     it 'does not allow one prefix for multiple referables if not allowed specificly' do

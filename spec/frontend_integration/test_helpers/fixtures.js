@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+/* eslint-disable global-require, import/no-unresolved */
 import { memoize } from 'lodash';
 
 export const getProject = () => require('test_fixtures/api/projects/get.json');

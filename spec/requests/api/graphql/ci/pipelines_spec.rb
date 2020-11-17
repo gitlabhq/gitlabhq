@@ -56,6 +56,45 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
     end
   end
 
+  describe '.jobs(securityReportTypes)' do
+    let_it_be(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines {
+              nodes {
+                jobs(securityReportTypes: [SAST]) {
+                  nodes {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'fetches the jobs matching the report type filter' do
+      pipeline = create(:ci_pipeline, project: project)
+      create(:ci_build, :dast, name: 'DAST Job 1', pipeline: pipeline)
+      create(:ci_build, :sast, name: 'SAST Job 1', pipeline: pipeline)
+
+      post_graphql(query, current_user: first_user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      pipelines_data = graphql_data.dig('project', 'pipelines', 'nodes')
+
+      job_names = pipelines_data.map do |pipeline_data|
+        jobs_data = pipeline_data.dig('jobs', 'nodes')
+        jobs_data.map { |job_data| job_data['name'] }
+      end.flatten
+
+      expect(job_names).to contain_exactly('SAST Job 1')
+    end
+  end
+
   describe 'upstream' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: first_user) }
     let_it_be(:upstream_project) { create(:project, :repository, :public) }
@@ -176,8 +215,6 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
         expect do
           post_graphql(query, current_user: second_user)
         end.not_to exceed_query_limit(control_count)
-
-        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
