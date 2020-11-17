@@ -6,7 +6,7 @@
   = s_('Pipeline|Run Pipeline')
 %hr
 
-- if Feature.enabled?(:new_pipeline_form, @project)
+- if Feature.enabled?(:new_pipeline_form, @project, default_enabled: true)
   #js-new-pipeline{ data: { project_id: @project.id,
     pipelines_path: project_pipelines_path(@project),
     config_variables_path: config_variables_namespace_project_pipelines_path(@project.namespace, @project),

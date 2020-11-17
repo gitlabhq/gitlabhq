@@ -397,7 +397,7 @@ field :foo, GraphQL::STRING_TYPE,
                    'if `my_feature_flag` feature flag is disabled'
 
 def foo
-  object.foo unless Feature.enabled?(:my_feature_flag, object)
+  object.foo if Feature.enabled?(:my_feature_flag, object)
 end
 ```
 

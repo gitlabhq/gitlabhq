@@ -1,0 +1,12 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["node"],
+    "properties": {
+      "node": {
+        "$ref": "./container_repository.json"
+      }
+    }
+  }
+}

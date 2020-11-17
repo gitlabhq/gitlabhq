@@ -535,6 +535,7 @@ A container repository.
 | ----- | ---- | ----------- |
 | `canDelete` | Boolean! | Can the current user delete the container repository. |
 | `createdAt` | Time! | Timestamp when the container repository was created. |
+| `expirationPolicyCleanupStatus` | ContainerRepositoryCleanupStatus | The tags cleanup status for the container repository. |
 | `expirationPolicyStartedAt` | Time | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
 | `id` | ID! | ID of the container repository. |
 | `location` | String! | URL of the container repository. |
@@ -552,6 +553,7 @@ Details of a container repository.
 | ----- | ---- | ----------- |
 | `canDelete` | Boolean! | Can the current user delete the container repository. |
 | `createdAt` | Time! | Timestamp when the container repository was created. |
+| `expirationPolicyCleanupStatus` | ContainerRepositoryCleanupStatus | The tags cleanup status for the container repository. |
 | `expirationPolicyStartedAt` | Time | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
 | `id` | ID! | ID of the container repository. |
 | `location` | String! | URL of the container repository. |
@@ -3811,6 +3813,17 @@ Mode of a commit action.
 | `NINETY_DAYS` | 90 days until tags are automatically removed |
 | `SEVEN_DAYS` | 7 days until tags are automatically removed |
 | `THIRTY_DAYS` | 30 days until tags are automatically removed |
+
+### ContainerRepositoryCleanupStatus
+
+Status of the tags cleanup of a container repository.
+
+| Value | Description |
+| ----- | ----------- |
+| `ONGOING` | The tags cleanup is ongoing. |
+| `SCHEDULED` | The tags cleanup is scheduled and is going to be executed shortly. |
+| `UNFINISHED` | The tags cleanup has been partially executed. There are still remaining tags to delete. |
+| `UNSCHEDULED` | The tags cleanup is not scheduled. This is the default state. |
 
 ### ContainerRepositoryStatus
 

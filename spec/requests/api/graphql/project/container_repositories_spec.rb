@@ -47,6 +47,10 @@ RSpec.describe 'getting container repositories in a project' do
     before do
       subject
     end
+
+    it 'matches the JSON schema' do
+      expect(container_repositories_response).to match_schema('graphql/container_repositories')
+    end
   end
 
   context 'with different permissions' do

@@ -34,7 +34,7 @@ RSpec.describe 'container repository details' do
       subject
     end
 
-    it 'matches the expected schema' do
+    it 'matches the JSON schema' do
       expect(container_repository_details_response).to match_schema('graphql/container_repository_details')
     end
   end

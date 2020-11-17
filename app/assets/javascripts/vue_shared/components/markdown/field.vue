@@ -141,10 +141,9 @@ export default {
     addMultipleToDiscussionWarning() {
       return sprintf(
         __(
-          '%{icon}You are about to add %{usersTag} people to the discussion. They will all receive a notification.',
+          'You are about to add %{usersTag} people to the discussion. They will all receive a notification.',
         ),
         {
-          icon: '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
           usersTag: `<strong><span class="js-referenced-users-count">${this.referencedUsers.length}</span></strong>`,
         },
         false,
@@ -293,6 +292,7 @@ export default {
     <template v-if="previewMarkdown && !markdownPreviewLoading">
       <div v-if="referencedCommands" class="referenced-commands" v-html="referencedCommands"></div>
       <div v-if="shouldShowReferencedUsers" class="referenced-users">
+        <gl-icon name="warning-solid" />
         <span v-html="addMultipleToDiscussionWarning"></span>
       </div>
     </template>

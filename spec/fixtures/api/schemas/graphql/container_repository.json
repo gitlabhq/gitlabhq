@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete"],
+  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus"],
   "properties": {
     "id": {
       "type": "string"
@@ -31,6 +31,10 @@
     },
     "canDelete": {
       "type": "boolean"
+    },
+    "expirationPolicyCleanupStatus": {
+      "type": "string",
+      "enum": ["UNSCHEDULED", "SCHEDULED", "UNFINISHED", "ONGOING"]
     }
   }
 }

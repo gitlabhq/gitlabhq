@@ -14,7 +14,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:dag_pipeline_tab, project, default_enabled: true)
     push_frontend_feature_flag(:pipelines_security_report_summary, project)
-    push_frontend_feature_flag(:new_pipeline_form, project)
+    push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_pipeline_header, project, type: :development, default_enabled: false)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: false)
     push_frontend_feature_flag(:new_pipeline_form_prefilled_vars, project, type: :development)

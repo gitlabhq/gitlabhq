@@ -22,7 +22,7 @@
           .dropdown.inline.js-ca-dropdown
             %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
               %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
-              %i.fa.fa-chevron-down
+              = sprite_icon("chevron-down", css_class: "dropdown-menu-toggle-icon gl-top-3")
             %ul.dropdown-menu.dropdown-menu-right
               %li
                 %a{ "href" => "#", "data-value" => "7" }

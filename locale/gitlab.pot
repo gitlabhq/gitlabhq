@@ -528,9 +528,6 @@ msgstr ""
 msgid "%{host} sign-in from new location"
 msgstr ""
 
-msgid "%{icon}You are about to add %{usersTag} people to the discussion. They will all receive a notification."
-msgstr ""
-
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr ""
 
@@ -7705,6 +7702,9 @@ msgid "Could not remove the trigger."
 msgstr ""
 
 msgid "Could not restore the group"
+msgstr ""
+
+msgid "Could not retrieve custom scanners for scanner filter. Please try again later."
 msgstr ""
 
 msgid "Could not revoke impersonation token %{token_name}."
@@ -21810,6 +21810,9 @@ msgstr ""
 msgid "Promote issue to an epic"
 msgstr ""
 
+msgid "Promote to epic"
+msgstr ""
+
 msgid "Promote to group label"
 msgstr ""
 
@@ -25341,6 +25344,9 @@ msgstr ""
 msgid "Something went wrong while performing the action."
 msgstr ""
 
+msgid "Something went wrong while promoting the issue to an epic. Please try again."
+msgstr ""
+
 msgid "Something went wrong while reopening a requirement."
 msgstr ""
 
@@ -26954,6 +26960,9 @@ msgid "The invitation was successfully resent."
 msgstr ""
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr ""
+
+msgid "The issue was successfully promoted to an epic. Redirecting to epic..."
 msgstr ""
 
 msgid "The license for Deploy Board is required to use this feature."
@@ -30762,6 +30771,9 @@ msgid "You"
 msgstr ""
 
 msgid "You already have pending todo for this alert"
+msgstr ""
+
+msgid "You are about to add %{usersTag} people to the discussion. They will all receive a notification."
 msgstr ""
 
 msgid "You are about to delete %{domain} from your instance. This domain will no longer be available to any Knative application."

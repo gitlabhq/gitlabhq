@@ -15,9 +15,6 @@ tasks:
         cd /workspace/gitlab-development-kit
         [[ ! -L /workspace/gitlab-development-kit/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
         mv /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
-        # make webpack static, prevents that GitLab tries to connect to localhost webpack from browser outside the workspace
-        echo "webpack:" >> gdk.yml
-        echo "  static: true" >> gdk.yml
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure
@@ -43,6 +40,7 @@ tasks:
         fi
         # start GDK
         echo "$(date) – Starting GDK" | tee -a /workspace/startup.log
+        export DEV_SERVER_PUBLIC_ADDR=$(gp url 3808)
         export RAILS_HOSTS=$(gp url 3000 | sed -e 's+^http[s]*://++')
         gdk start
         # Run DB migrations

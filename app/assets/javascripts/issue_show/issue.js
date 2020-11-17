@@ -45,6 +45,7 @@ export function initIssueHeaderActions(store) {
     store,
     provide: {
       canCreateIssue: parseBoolean(el.dataset.canCreateIssue),
+      canPromoteToEpic: parseBoolean(el.dataset.canPromoteToEpic),
       canReopenIssue: parseBoolean(el.dataset.canReopenIssue),
       canReportSpam: parseBoolean(el.dataset.canReportSpam),
       canUpdateIssue: parseBoolean(el.dataset.canUpdateIssue),

@@ -1,0 +1,8 @@
+mutation promoteToEpic($input: PromoteToEpicInput!) {
+  promoteToEpic(input: $input) {
+    epic {
+      webPath
+    }
+    errors
+  }
+}
