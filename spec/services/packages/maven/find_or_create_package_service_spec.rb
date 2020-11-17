@@ -10,11 +10,12 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
   let(:version) { '1.0.0' }
   let(:file_name) { 'test.jar' }
   let(:param_path) { "#{path}/#{version}" }
+  let(:params) { { path: param_path, file_name: file_name } }
 
   describe '#execute' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { described_class.new(project, user, { path: param_path, file_name: file_name }).execute }
+    subject { described_class.new(project, user, params).execute }
 
     RSpec.shared_examples 'reuse existing package' do
       it { expect { subject}.not_to change { Packages::Package.count } }
@@ -23,7 +24,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
     end
 
     RSpec.shared_examples 'create package' do
-      it { expect { subject}.to change { Packages::Package.count }.by(1) }
+      it { expect { subject }.to change { Packages::Package.count }.by(1) }
 
       it 'sets the proper name and version' do
         pkg = subject
@@ -31,6 +32,8 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
         expect(pkg.name).to eq(path)
         expect(pkg.version).to eq(version)
       end
+
+      it_behaves_like 'assigns build to package'
     end
 
     context 'path with version' do
@@ -75,6 +78,16 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
         context 'without existing package' do
           it_behaves_like 'create package'
         end
+      end
+    end
+
+    context 'with a build' do
+      let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
+      let(:build) { double('build', pipeline: pipeline) }
+      let(:params) { { path: param_path, file_name: file_name, build: build } }
+
+      it 'creates a build_info' do
+        expect { subject }.to change { Packages::BuildInfo.count }.by(1)
       end
     end
   end

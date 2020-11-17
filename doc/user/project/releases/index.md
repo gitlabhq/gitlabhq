@@ -455,17 +455,17 @@ In the API:
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.
 
-## GitLab Releaser
+## Release Command Line
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-releaser/-/merge_requests/6) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/6) in GitLab 12.10.
 
-GitLab Releaser is a CLI tool for managing GitLab Releases from the command line or from
+The Release CLI is a command-line tool for managing GitLab Releases from the command line or from
 GitLab's CI/CD configuration file, `.gitlab-ci.yml`.
 
 With it, you can create, update, modify, and delete releases right through the
 terminal.
 
-Read the [GitLab Releaser documentation](https://gitlab.com/gitlab-org/gitlab-releaser/-/tree/master/docs/index.md)
+Read the [Release CLI documentation](https://gitlab.com/gitlab-org/release-cli/-/blob/master/docs/index.md)
 for details.
 
 <!-- ## Troubleshooting

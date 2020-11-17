@@ -33,8 +33,6 @@ RSpec.describe Packages::Maven::CreatePackageService do
         expect(package.maven_metadatum.app_version).to eq(version)
       end
 
-      it_behaves_like 'assigns build to package'
-
       it_behaves_like 'assigns the package creator'
     end
 

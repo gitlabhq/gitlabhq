@@ -195,7 +195,7 @@ RSpec.describe API::GenericPackages do
           package = project.packages.generic.last
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.build_info).to be_nil
+          expect(package.original_build_info).to be_nil
 
           package_file = package.package_files.last
           expect(package_file.file_name).to eq('myfile.tar.gz')
@@ -215,7 +215,7 @@ RSpec.describe API::GenericPackages do
           package = project.packages.generic.last
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.build_info.pipeline).to eq(ci_build.pipeline)
+          expect(package.original_build_info.pipeline).to eq(ci_build.pipeline)
 
           package_file = package.package_files.last
           expect(package_file.file_name).to eq('myfile.tar.gz')

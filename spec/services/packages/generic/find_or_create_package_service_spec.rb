@@ -27,7 +27,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService do
           expect(package.creator).to eq(user)
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.build_info).to be_nil
+          expect(package.original_build_info).to be_nil
         end
       end
 
@@ -42,7 +42,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService do
           expect(package.creator).to eq(user)
           expect(package.name).to eq('mypackage')
           expect(package.version).to eq('0.0.1')
-          expect(package.build_info.pipeline).to eq(ci_build.pipeline)
+          expect(package.original_build_info.pipeline).to eq(ci_build.pipeline)
         end
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService do
             expect(found_package).to eq(package)
           end.not_to change { project.packages.generic.count }
 
-          expect(package.reload.build_info).to be_nil
+          expect(package.reload.original_build_info).to be_nil
         end
       end
 
@@ -68,7 +68,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService do
         let(:pipeline) { create(:ci_pipeline, project: project) }
 
         before do
-          package.create_build_info!(pipeline: pipeline)
+          package.build_infos.create!(pipeline: pipeline)
         end
 
         it 'finds the package and does not change package build info even if build is provided' do
@@ -80,7 +80,7 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService do
             expect(found_package).to eq(package)
           end.not_to change { project.packages.generic.count }
 
-          expect(package.reload.build_info.pipeline).to eq(pipeline)
+          expect(package.reload.original_build_info.pipeline).to eq(pipeline)
         end
       end
     end

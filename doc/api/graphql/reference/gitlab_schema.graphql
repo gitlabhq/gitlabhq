@@ -5265,7 +5265,7 @@ input DeleteAnnotationInput {
   """
   The global ID of the annotation to delete
   """
-  id: ID!
+  id: MetricsDashboardAnnotationID!
 }
 
 """
@@ -13464,6 +13464,11 @@ type MetricsDashboardAnnotationEdge {
   """
   node: MetricsDashboardAnnotation
 }
+
+"""
+Identifier of Metrics::Dashboard::Annotation
+"""
+scalar MetricsDashboardAnnotationID
 
 """
 Represents a milestone

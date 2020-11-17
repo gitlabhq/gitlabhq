@@ -6,7 +6,7 @@ module Packages
       def execute
         find_or_create_package!(::Packages::Package.package_types['generic']) do |package|
           if params[:build].present?
-            package.build_info = Packages::BuildInfo.new(pipeline: params[:build].pipeline)
+            package.build_infos.new(pipeline: params[:build].pipeline)
           end
         end
       end

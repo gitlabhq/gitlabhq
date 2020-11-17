@@ -6,6 +6,7 @@ module API
       expose :id, :package_id, :created_at
       expose :file_name, :size
       expose :file_md5, :file_sha1
+      expose :pipelines, if: ->(package_file) { package_file.pipelines.present? }, using: Package::Pipeline
     end
   end
 end

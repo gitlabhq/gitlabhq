@@ -36,7 +36,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete do
       let(:variables) { { id: GitlabSchema.id_from_object(project).to_s } }
 
       it_behaves_like 'a mutation that returns top-level errors' do
-        let(:match_errors) { eq(["#{variables[:id]} is not a valid ID for #{annotation.class}."]) }
+        let(:match_errors) { contain_exactly(include('invalid value for id')) }
       end
     end
 

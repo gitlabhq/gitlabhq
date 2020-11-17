@@ -28,10 +28,10 @@ There are many ways to get to the New Issue form from within a project:
 
   ![New issue from the issue list view](img/new_issue_from_tracker_list.png)
 
-- From an **opened issue** in your project, click **New Issue** to create a new
-  issue in the same project:
+- From an **open issue** in your project, click the vertical ellipsis (**{ellipsis_v}**) button
+  to open a dropdown menu, and then click **New Issue** to create a new issue in the same project:
 
-  ![New issue from an open issue](img/new_issue_from_open_issue.png)
+  ![New issue from an open issue](img/new_issue_from_open_issue_v13_6.png)
 
 - From your **Project's Dashboard**, click the plus sign (**+**) to open a dropdown
   menu with a few options. Select **New Issue** to create an issue in that project:
@@ -178,7 +178,7 @@ end; nil
 When you decide that an issue is resolved, or no longer needed, you can close the issue
 using the close button:
 
-![close issue - button](img/button_close_issue.png)
+![close issue - button](img/button_close_issue_v13_6.png)
 
 You can also close an issue from the [Issue Boards](../issue_board.md) by dragging an issue card
 from its list and dropping it into the **Closed** list.

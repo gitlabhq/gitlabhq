@@ -1,3 +1,3 @@
 ---
-redirect_to: 'https://design.gitlab.com/components/dropdowns/'
+redirect_to: 'https://design.gitlab.com/components/dropdown/'
 ---

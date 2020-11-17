@@ -62,16 +62,36 @@ RSpec.describe Gitlab::Middleware::HandleMalformedStrings do
   context 'in authorization headers' do
     let(:problematic_input) { null_byte }
 
-    it 'rejects problematic input in the password' do
-      env = env_for.merge(auth_env("username", "password#{problematic_input}encoded", nil))
+    shared_examples 'rejecting invalid input' do
+      it 'rejects problematic input in the password' do
+        env = env_for.merge(auth_env("username", "password#{problematic_input}encoded", nil))
 
-      expect(subject.call(env)).to eq error_400
+        expect(subject.call(env)).to eq error_400
+      end
+
+      it 'rejects problematic input in the username' do
+        env = env_for.merge(auth_env("username#{problematic_input}", "passwordencoded", nil))
+
+        expect(subject.call(env)).to eq error_400
+      end
+
+      it 'rejects problematic input in non-basic-auth tokens' do
+        env = env_for.merge('HTTP_AUTHORIZATION' => "GL-Geo hello#{problematic_input}world")
+
+        expect(subject.call(env)).to eq error_400
+      end
     end
 
-    it 'rejects problematic input in the password' do
-      env = env_for.merge(auth_env("username#{problematic_input}", "password#{problematic_input}encoded", nil))
+    it_behaves_like 'rejecting invalid input' do
+      let(:problematic_input) { null_byte }
+    end
 
-      expect(subject.call(env)).to eq error_400
+    it_behaves_like 'rejecting invalid input' do
+      let(:problematic_input) { invalid_string }
+    end
+
+    it_behaves_like 'rejecting invalid input' do
+      let(:problematic_input) { "\xC3" }
     end
 
     it 'does not reject correct non-basic-auth tokens' do
@@ -83,12 +103,6 @@ RSpec.describe Gitlab::Middleware::HandleMalformedStrings do
       env = env_for.merge('HTTP_AUTHORIZATION' => special_token)
 
       expect(subject.call(env)).not_to eq error_400
-    end
-
-    it 'rejects problematic input in non-basic-auth tokens' do
-      env = env_for.merge('HTTP_AUTHORIZATION' => "GL-Geo hello#{problematic_input}world")
-
-      expect(subject.call(env)).to eq error_400
     end
   end
 

@@ -8,7 +8,7 @@ module API
       expose :created_at
       expose :tags
 
-      expose :pipeline, if: ->(package) { package.build_info }, using: Package::Pipeline
+      expose :pipeline, if: ->(package) { package.original_build_info }, using: Package::Pipeline
     end
   end
 end

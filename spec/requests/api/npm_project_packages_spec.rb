@@ -211,7 +211,7 @@ RSpec.describe API::NpmProjectPackages do
             upload_package_with_token(package_name, params)
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(project.reload.packages.find(json_response['id']).build_info.pipeline).to eq job.pipeline
+            expect(project.reload.packages.find(json_response['id']).original_build_info.pipeline).to eq job.pipeline
           end
         end
       end

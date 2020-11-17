@@ -18,7 +18,7 @@ You can find all the information for that issue on one screen.
 
 ![Issue view](img/issues_main_view_numbered.png)
 
-- **1.** [New Issue, close issue (reopen issue, report issue)](#new-issue-close-issue-reopen-issue-report-issue)
+- **1.** [Issue actions](#issue-actions)
 - **2.** [To Do](#to-do)
 - **3.** [Assignee](#assignee)
   - **3.1.** [Multiple Assignees **(STARTER)**](#multiple-assignees)
@@ -55,22 +55,21 @@ Many of the elements of the issue screen refresh automatically, such as the titl
 description, when they are changed by another user. Comments and system notes also
 update automatically in response to various actions and content updates.
 
-### New Issue, close issue (reopen issue, report issue)
+### Issue actions
 
-Clicking on **New issue** will open a new window to create a new issue in the same project.
-Clicking on **Close issue** will close this issue, but it will not be deleted. If the
-issue is already closed, you can still access it and the button will show **Reopen issue**, as shown below,
-which you can click to reopen the issue. A reopened issue is no different from any
-other issue.
+In an open issue, you can close it by selecting the **Close issue** button.
+The issue is marked as closed but is not deleted.
 
-![Reopen Issue](img/reopen-issue.png)
+To reopen a closed issue, select the **Reopen issue** button.
+A reopened issue is no different from any other open issue.
 
-If you do not have rights to modify the issue, the **close issue** button will be
-replaced with **report issue**, which you can click to [submit an abuse report](../../abuse_reports.md)
-about the issue. It will also appear if you have rights to modify the issue, but only
-after it is closed.
+To access additional actions, select the vertical ellipsis
+(**{ellipsis_v}**) button:
 
-![Report Abuse](img/report-abuse.png)
+- To create a new issue in the same project, select **New issue** in the dropdown menu.
+
+- If you are not the issue author, you can [submit an abuse report](../../abuse_reports.md).
+  Select **Report abuse** in the dropdown menu.
 
 ### To Do
 

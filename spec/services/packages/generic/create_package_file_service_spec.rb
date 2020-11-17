@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Packages::Generic::CreatePackageFileService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
+  let(:build) { double('build', pipeline: pipeline) }
 
   describe '#execute' do
     let(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
@@ -16,7 +18,8 @@ RSpec.describe Packages::Generic::CreatePackageFileService do
         package_name: 'mypackage',
         package_version: '0.0.1',
         file: file,
-        file_name: 'myfile.tar.gz.1'
+        file_name: 'myfile.tar.gz.1',
+        build: build
       }
     end
 
@@ -41,6 +44,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService do
       service = described_class.new(project, user, params)
 
       expect { service.execute }.to change { package.package_files.count }.by(1)
+        .and change { Packages::PackageFileBuildInfo.count }.by(1)
 
       package_file = package.package_files.last
       aggregate_failures do

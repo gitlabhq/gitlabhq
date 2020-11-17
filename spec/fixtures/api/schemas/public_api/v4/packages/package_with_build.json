@@ -5,6 +5,9 @@
     "name": { "type": "string" },
     "version": { "type": "string" },
     "package_type": { "type": "string" },
-    "pipeline": { "$ref": "../pipeline.json" }
+    "pipeline": { "$ref": "../pipeline.json" },
+    "pipelines": {
+      "items": { "$ref": "../pipeline.json" }
+    }
   }
 }

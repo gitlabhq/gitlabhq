@@ -3897,7 +3897,7 @@ For example, when creating a Release from a Git tag:
 job:
   release:
     tag_name: $CI_COMMIT_TAG
-    description: changelog.txt
+    description: 'Release description'
 ```
 
 It is also possible to create any unique tag, in which case `only: tags` is not mandatory.
@@ -3907,7 +3907,7 @@ A semantic versioning example:
 job:
   release:
     tag_name: ${MAJOR}_${MINOR}_${REVISION}
-    description: changelog.txt
+    description: 'Release description'
 ```
 
 - The Release is created only if the job's main script succeeds.

@@ -89,8 +89,12 @@ module Gitlab
       def string_malformed?(string)
         # We're using match rather than include, because that will raise an ArgumentError
         # when  the string contains invalid UTF8
-        string.match?(NULL_BYTE_REGEX)
-      rescue ArgumentError
+        #
+        # We try to encode the string from ASCII-8BIT to UTF8. If we failed to do
+        # so for certain characters in the string, those chars are probably incomplete
+        # multibyte characters.
+        string.encode(Encoding::UTF_8).match?(NULL_BYTE_REGEX)
+      rescue ArgumentError, Encoding::UndefinedConversionError
         # If we're here, we caught a malformed string. Return true
         true
       end

@@ -38,7 +38,8 @@ module API
       expose :project_path, if: ->(obj, opts) { opts[:group] && Ability.allowed?(opts[:user], :read_project, obj.project) }
       expose :tags
 
-      expose :pipeline, if: ->(package) { package.build_info }, using: Package::Pipeline
+      expose :pipeline, if: ->(package) { package.original_build_info }, using: Package::Pipeline
+      expose :pipelines, if: ->(package) { package.pipelines.present? }, using: Package::Pipeline
 
       expose :versions, using: ::API::Entities::PackageVersion, unless: ->(_, opts) { opts[:collection] }
 

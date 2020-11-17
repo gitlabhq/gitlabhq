@@ -10,6 +10,8 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_many(:package_files).dependent(:destroy) }
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
+    it { is_expected.to have_many(:build_infos).inverse_of(:package) }
+    it { is_expected.to have_many(:pipelines).through(:build_infos) }
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
@@ -580,7 +582,7 @@ RSpec.describe Packages::Package, type: :model do
   end
 
   describe '#pipeline' do
-    let_it_be(:package) { create(:maven_package) }
+    let_it_be_with_refind(:package) { create(:maven_package) }
 
     context 'package without pipeline' do
       it 'returns nil if there is no pipeline' do
@@ -592,7 +594,7 @@ RSpec.describe Packages::Package, type: :model do
       let_it_be(:pipeline) { create(:ci_pipeline) }
 
       before do
-        package.create_build_info!(pipeline: pipeline)
+        package.build_infos.create!(pipeline: pipeline)
       end
 
       it 'returns the pipeline' do
@@ -634,6 +636,25 @@ RSpec.describe Packages::Package, type: :model do
           expect { package.project.actual_limits.send(plan_limit_name) }
             .not_to raise_error(NoMethodError)
         end
+      end
+    end
+  end
+
+  describe '#original_build_info' do
+    let_it_be_with_refind(:package) { create(:npm_package) }
+
+    context 'without build_infos' do
+      it 'returns nil' do
+        expect(package.original_build_info).to be_nil
+      end
+    end
+
+    context 'with build_infos' do
+      let_it_be(:first_build_info) { create(:package_build_info, :with_pipeline, package: package) }
+      let_it_be(:second_build_info) { create(:package_build_info, :with_pipeline, package: package) }
+
+      it 'returns the first build info' do
+        expect(package.original_build_info).to eq(first_build_info)
       end
     end
   end

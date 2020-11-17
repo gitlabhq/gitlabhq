@@ -8,8 +8,8 @@ RSpec.shared_examples 'assigns build to package' do
     it 'assigns the pipeline to the package' do
       package = subject
 
-      expect(package.build_info).to be_present
-      expect(package.build_info.pipeline).to eq job.pipeline
+      expect(package.original_build_info).to be_present
+      expect(package.original_build_info.pipeline).to eq job.pipeline
     end
   end
 end

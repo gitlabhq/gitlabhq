@@ -147,10 +147,6 @@ FactoryBot.define do
     composer_json { { name: 'foo' } }
   end
 
-  factory :package_build_info, class: 'Packages::BuildInfo' do
-    package
-  end
-
   factory :maven_metadatum, class: 'Packages::Maven::Metadatum' do
     association :package, package_type: :maven
     path { 'my/company/app/my-app/1.0-SNAPSHOT' }
