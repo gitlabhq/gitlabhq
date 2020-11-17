@@ -1,9 +1,8 @@
 # frozen_string_literal: true
+# rubocop:disable Graphql/ResolverType (inherited from MembersResolver)
 
 module Resolvers
   class ProjectMembersResolver < MembersResolver
-    type Types::MemberInterface, null: true
-
     authorize :read_project_member
 
     private

@@ -49615,7 +49615,7 @@
           "fields": [
             {
               "name": "buildArtifactsSize",
-              "description": "Build artifacts size of the project",
+              "description": "Build artifacts size of the project in bytes",
               "args": [
 
               ],
@@ -49651,7 +49651,7 @@
             },
             {
               "name": "lfsObjectsSize",
-              "description": "Large File Storage (LFS) object size of the project",
+              "description": "Large File Storage (LFS) object size of the project in bytes",
               "args": [
 
               ],
@@ -49669,7 +49669,7 @@
             },
             {
               "name": "packagesSize",
-              "description": "Packages size of the project",
+              "description": "Packages size of the project in bytes",
               "args": [
 
               ],
@@ -49687,7 +49687,7 @@
             },
             {
               "name": "repositorySize",
-              "description": "Repository size of the project",
+              "description": "Repository size of the project in bytes",
               "args": [
 
               ],
@@ -49705,7 +49705,7 @@
             },
             {
               "name": "snippetsSize",
-              "description": "Snippets size of the project",
+              "description": "Snippets size of the project in bytes",
               "args": [
 
               ],
@@ -49719,7 +49719,7 @@
             },
             {
               "name": "storageSize",
-              "description": "Storage size of the project",
+              "description": "Storage size of the project in bytes",
               "args": [
 
               ],
@@ -49736,8 +49736,22 @@
               "deprecationReason": null
             },
             {
+              "name": "uploadsSize",
+              "description": "Uploads size of the project in bytes",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "wikiSize",
-              "description": "Wiki size of the project",
+              "description": "Wiki size of the project in bytes",
               "args": [
 
               ],
@@ -54518,6 +54532,24 @@
             {
               "name": "storageSize",
               "description": "The total storage in bytes",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "uploadsSize",
+              "description": "The uploads size in bytes",
               "args": [
 
               ],

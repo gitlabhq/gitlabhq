@@ -18,7 +18,13 @@ When a test frequently fails in `master`,
 should be created.
 If the test cannot be fixed in a timely fashion, there is an impact on the
 productivity of all the developers, so it should be placed in quarantine by
-assigning the `:quarantine` metadata.
+assigning the `:quarantine` metadata with the issue URL.
+
+```ruby
+it 'should succeed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
+  expect(response).to have_gitlab_http_status(:ok)
+end
+```
 
 This means it will be skipped unless run with `--tag quarantine`:
 

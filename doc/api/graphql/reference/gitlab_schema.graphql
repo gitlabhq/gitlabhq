@@ -17066,7 +17066,7 @@ type ProjectPermissions {
 
 type ProjectStatistics {
   """
-  Build artifacts size of the project
+  Build artifacts size of the project in bytes
   """
   buildArtifactsSize: Float!
 
@@ -17076,32 +17076,37 @@ type ProjectStatistics {
   commitCount: Float!
 
   """
-  Large File Storage (LFS) object size of the project
+  Large File Storage (LFS) object size of the project in bytes
   """
   lfsObjectsSize: Float!
 
   """
-  Packages size of the project
+  Packages size of the project in bytes
   """
   packagesSize: Float!
 
   """
-  Repository size of the project
+  Repository size of the project in bytes
   """
   repositorySize: Float!
 
   """
-  Snippets size of the project
+  Snippets size of the project in bytes
   """
   snippetsSize: Float
 
   """
-  Storage size of the project
+  Storage size of the project in bytes
   """
   storageSize: Float!
 
   """
-  Wiki size of the project
+  Uploads size of the project in bytes
+  """
+  uploadsSize: Float
+
+  """
+  Wiki size of the project in bytes
   """
   wikiSize: Float
 }
@@ -18884,6 +18889,11 @@ type RootStorageStatistics {
   The total storage in bytes
   """
   storageSize: Float!
+
+  """
+  The uploads size in bytes
+  """
+  uploadsSize: Float!
 
   """
   The wiki size in bytes

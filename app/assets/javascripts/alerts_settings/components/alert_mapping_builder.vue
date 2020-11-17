@@ -141,8 +141,13 @@ export default {
         />
       </h5>
     </div>
-    <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-display-table-row">
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 w-30p">
+
+    <div
+      v-for="(gitlabField, index) in mappingData"
+      :key="gitlabField.name"
+      class="gl-display-table-row"
+    >
+      <div class="gl-display-table-cell gl-py-3 gl-pr-3 w-30p gl-vertical-align-middle">
         <gl-form-input
           aria-labelledby="gitlabFieldsHeader"
           disabled
@@ -151,17 +156,17 @@ export default {
       </div>
 
       <div class="gl-display-table-cell gl-py-3 gl-pr-3">
-        <div class="right-arrow gl-vertical-align-middle gl-mt-n1">
+        <div class="right-arrow" :class="{ 'gl-vertical-align-middle': index === 0 }">
           <i class="right-arrow-head"></i>
         </div>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 w-30p">
+      <div class="gl-display-table-cell gl-py-3 gl-pr-3 w-30p gl-vertical-align-middle">
         <gl-dropdown
           :disabled="!gitlabField.mappingFields.length"
           aria-labelledby="parsedFieldsHeader"
           :text="selectedValue(gitlabField.mapping)"
-          class="gl-w-full gl-vertical-align-baseline!"
+          class="gl-w-full"
           :header-text="$options.i18n.selectMappingKey"
         >
           <gl-search-box-by-type @input="setSearchTerm($event, 'searchTerm', gitlabField.name)" />
@@ -186,7 +191,7 @@ export default {
           :disabled="!gitlabField.mappingFields.length"
           aria-labelledby="fallbackFieldsHeader"
           :text="selectedValue(gitlabField.fallback)"
-          class="gl-w-full gl-vertical-align-baseline!"
+          class="gl-w-full"
           :header-text="$options.i18n.selectMappingKey"
         >
           <gl-search-box-by-type

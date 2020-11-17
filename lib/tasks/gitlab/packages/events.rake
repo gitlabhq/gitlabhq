@@ -24,9 +24,9 @@ namespace :gitlab do
       def generate_unique_events_list
         ::Packages::Event::EVENT_SCOPES.keys.each_with_object([]) do |event_scope, events|
           event_pairs.each do |event_type, originator|
-            if ::Packages::Event.event_allowed?(event_scope, event_type, originator)
+            if name = ::Packages::Event.allowed_event_name(event_scope, event_type, originator)
               events << {
-                "name" => ::Packages::Event.event_name(event_scope, originator, event_type),
+                "name" => name,
                 "category" => "#{event_scope}_packages",
                 "aggregation" => "weekly",
                 "redis_slot" => "package"

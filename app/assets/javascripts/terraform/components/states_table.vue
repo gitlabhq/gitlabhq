@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlIcon, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -34,6 +35,17 @@ export default {
       ];
     },
   },
+  methods: {
+    createdByUserName(item) {
+      return item.latestVersion?.createdByUser?.name;
+    },
+    lockedByUserName(item) {
+      return item.lockedByUser?.name || s__('Terraform|Unknown User');
+    },
+    updatedTime(item) {
+      return item.latestVersion?.updatedAt || item.updatedAt;
+    },
+  },
 };
 </script>
 
@@ -58,7 +70,7 @@ export default {
           >
             <gl-sprintf :message="s__('Terraform|Locked by %{user} %{timeAgo}')">
               <template #user>
-                {{ item.lockedByUser.name }}
+                {{ lockedByUserName(item) }}
               </template>
 
               <template #timeAgo>
@@ -75,18 +87,12 @@ export default {
         <gl-sprintf :message="s__('Terraform|%{user} updated %{timeAgo}')">
           <template #user>
             <span v-if="item.latestVersion">
-              {{ item.latestVersion.createdByUser.name }}
+              {{ createdByUserName(item) }}
             </span>
           </template>
 
           <template #timeAgo>
-            <span v-if="item.latestVersion">
-              <time-ago-tooltip :time="item.latestVersion.updatedAt" />
-            </span>
-
-            <span v-else>
-              <time-ago-tooltip :time="item.updatedAt" />
-            </span>
+            <time-ago-tooltip :time="updatedTime(item)" />
           </template>
         </gl-sprintf>
       </p>

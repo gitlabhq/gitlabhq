@@ -38,6 +38,16 @@ module QA
           select_item(item_text)
         end
 
+        def search_and_select_exact(item_text)
+          QA::Runtime::Logger.info "Searching and selecting: #{item_text}"
+
+          search_item(item_text)
+
+          raise QA::Page::Base::ElementNotFound, %Q(Couldn't find option named "#{item_text}") unless has_item?(item_text)
+
+          find('.select2-result-label', text: item_text, exact_text: true).click
+        end
+
         def expand_select_list
           find('span.select2-arrow').click
         end

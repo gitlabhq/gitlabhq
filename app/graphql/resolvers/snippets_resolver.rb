@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:disable Graphql/ResolverType
+# rubocop:disable Graphql/ResolverType (inherited from ResolvesSnippets)
 
 module Resolvers
   class SnippetsResolver < BaseResolver

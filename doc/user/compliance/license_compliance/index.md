@@ -37,10 +37,7 @@ compliance report will be shown properly.
 
 ![License Compliance Widget](img/license_compliance_v13_0.png)
 
-If you are a project or group Maintainer, you can click on a license to be given
-the choice to allow it or deny it.
-
-![License approval decision](img/license_compliance_decision_v13_0.png)
+You can click on a license to see more information.
 
 When GitLab detects a **Denied** license, you can view it in the [license list](#license-list).
 

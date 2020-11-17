@@ -118,6 +118,12 @@ export default {
     canAddIntegration() {
       return this.multiIntegrations || this.integrations?.list?.length < 2;
     },
+    canManageOpsgenie() {
+      return (
+        this.integrations?.list?.every(({ active }) => active === false) ||
+        this.integrations?.list?.length === 0
+      );
+    },
   },
   methods: {
     createNewIntegration({ type, variables }) {
@@ -313,6 +319,7 @@ export default {
       v-if="glFeatures.httpIntegrationsList"
       :loading="isUpdating"
       :can-add-integration="canAddIntegration"
+      :can-manage-opsgenie="canManageOpsgenie"
       @create-new-integration="createNewIntegration"
       @update-integration="updateIntegration"
       @reset-token="resetToken"

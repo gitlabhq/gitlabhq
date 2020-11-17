@@ -6,6 +6,8 @@ module Resolvers
 
     alias_method :group, :synchronized_object
 
+    type Types::MergeRequestType.connection_type, null: true
+
     include_subgroups 'merge requests'
     accept_assignee
     accept_author

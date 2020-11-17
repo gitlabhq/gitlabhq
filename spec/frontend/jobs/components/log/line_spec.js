@@ -131,6 +131,12 @@ describe('Job Log Line', () => {
       expect(findLink().attributes().rel).toBe('nofollow noopener noreferrer');
     });
 
+    it('renders a link with corresponding styles', () => {
+      createComponent(mockProps({ text: httpsUrl }));
+
+      expect(findLink().classes()).toEqual(['gl-reset-color!', 'gl-text-decoration-underline']);
+    });
+
     it('render links surrounded by text', () => {
       createComponent(
         mockProps({ text: `My HTTP url: ${httpUrl} and my HTTPS url: ${httpsUrl} are here.` }),

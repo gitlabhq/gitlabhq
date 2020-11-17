@@ -39,6 +39,16 @@ describe('StatesTable', () => {
           },
         },
       },
+      {
+        name: 'state-4',
+        lockedAt: '2020-10-10T00:00:00Z',
+        lockedByUser: null,
+        updatedAt: '2020-10-10T00:00:00Z',
+        latestVersion: {
+          updatedAt: '2020-10-09T00:00:00Z',
+          createdByUser: null,
+        },
+      },
     ],
   };
 
@@ -53,10 +63,11 @@ describe('StatesTable', () => {
   });
 
   it.each`
-    name         | toolTipText                      | locked   | lineNumber
-    ${'state-1'} | ${'Locked by user-1 2 days ago'} | ${true}  | ${0}
-    ${'state-2'} | ${null}                          | ${false} | ${1}
-    ${'state-3'} | ${'Locked by user-2 5 days ago'} | ${true}  | ${2}
+    name         | toolTipText                            | locked   | lineNumber
+    ${'state-1'} | ${'Locked by user-1 2 days ago'}       | ${true}  | ${0}
+    ${'state-2'} | ${null}                                | ${false} | ${1}
+    ${'state-3'} | ${'Locked by user-2 5 days ago'}       | ${true}  | ${2}
+    ${'state-4'} | ${'Locked by Unknown User 5 days ago'} | ${true}  | ${3}
   `(
     'displays the name and locked information "$name" for line "$lineNumber"',
     ({ name, toolTipText, locked, lineNumber }) => {
@@ -80,6 +91,7 @@ describe('StatesTable', () => {
     ${'updated 2 days ago'}        | ${0}
     ${'updated 5 days ago'}        | ${1}
     ${'user-3 updated 4 days ago'} | ${2}
+    ${'updated 6 days ago'}        | ${3}
   `('displays the time "$updateTime" for line "$lineNumber"', ({ updateTime, lineNumber }) => {
     const states = wrapper.findAll('[data-testid="terraform-states-table-updated"]');
 

@@ -24,7 +24,9 @@ class Packages::Event < ApplicationRecord
 
   enum originator_type: { user: 0, deploy_token: 1, guest: 2 }
 
-  def self.event_name(event_scope, originator, event_type)
+  def self.allowed_event_name(event_scope, event_type, originator)
+    return unless event_allowed?(event_scope, event_type, originator)
+
     # remove `package` from the event name to avoid issues with HLLRedisCounter class parsing
     "i_package_#{event_scope}_#{originator}_#{event_type.gsub(/_packages?/, "")}"
   end

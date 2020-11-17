@@ -9,18 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
 
-![burndown and burnup chart](img/burndown_and_burnup_charts_v13_5.png)
+![burndown and burnup chart](img/burndown_and_burnup_charts_v13_6.png)
 
 ## Burndown charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1540) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1 for project milestones.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5354) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.8 for group milestones.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6495) to [GitLab Starter](https://about.gitlab.com/pricing/) 11.2 for group milestones.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6.
 
 Burndown charts show the number of issues over the course of a milestone.
 
-![burndown chart](img/burndown_chart_v13_5.png)
+![burndown chart](img/burndown_chart_v13_6.png)
 
 At a glance, you see the current state for the completion a given milestone.
 Without them, you would have to organize the data from the milestone and plot it
@@ -81,12 +81,12 @@ cumulative value.
 
 ### Fixed burndown charts
 
-For milestones created before GitLab 13.5, burndown charts have an additional toggle to
+For milestones created before GitLab 13.6, burndown charts have an additional toggle to
 switch between Legacy and Fixed views.
 
 | Legacy | Fixed |
 | ----- | ----- |
-| ![Legacy burndown chart, ](img/burndown_chart_legacy_v13_5.png) | ![Fixed burndown chart, showing a jump when a lot of issues were added to the milestone](img/burndown_chart_fixed_v13_5.png) |
+| ![Legacy burndown chart](img/burndown_chart_legacy_v13_6.png) | ![Fixed burndown chart, showing a jump when a lot of issues were added to the milestone](img/burndown_chart_fixed_v13_6.png) |
 
 **Fixed burndown** charts track the full history of milestone activity, from its creation until the
 milestone expires. After the milestone due date passes, issues removed from the milestone no longer
@@ -103,7 +103,7 @@ Reopened issues are considered as having been opened on the day after they were 
 
 ## Burnup charts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6.
 > - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
@@ -114,7 +114,7 @@ This feature might not be available to you. Check the **version history** note a
 
 Burnup charts show the assigned and completed work for a milestone.
 
-![burnup chart](img/burnup_chart_v13_5.png)
+![burnup chart](img/burnup_chart_v13_6.png)
 
 To view a project's burnup chart:
 

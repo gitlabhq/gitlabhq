@@ -86,9 +86,7 @@ module Types
           end
 
     field :group_members,
-          Types::GroupMemberType.connection_type,
           description: 'A membership of a user within this group',
-          extras: [:lookahead],
           resolver: Resolvers::GroupMembersResolver
 
     field :container_repositories,

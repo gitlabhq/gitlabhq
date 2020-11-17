@@ -20,7 +20,7 @@ export default {
 </script>
 
 <template>
-  <span class="gl-text-gray-500">
+  <span>
     <gl-sprintf :message="message">
       <template #link="{ content }">
         <gl-link class="gl-display-inline-block" :href="link" target="_blank">{{

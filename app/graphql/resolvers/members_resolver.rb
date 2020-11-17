@@ -5,6 +5,8 @@ module Resolvers
     include Gitlab::Graphql::Authorize::AuthorizeResource
     include LooksAhead
 
+    type Types::MemberInterface.connection_type, null: true
+
     argument :search, GraphQL::STRING_TYPE,
               required: false,
               description: 'Search query'

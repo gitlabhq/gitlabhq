@@ -139,4 +139,12 @@
       @include gl-w-full;
     }
   }
+
+  .integration-list {
+    .b-table-empty-row {
+      td {
+        @include gl-px-0;
+      }
+    }
+  }
 }

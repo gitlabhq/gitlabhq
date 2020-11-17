@@ -2517,7 +2517,7 @@ msgstr ""
 msgid "AlertSettings|3. Set up webhook"
 msgstr ""
 
-msgid "AlertSettings|4. Test integration(optional)"
+msgid "AlertSettings|4. Sample alert payload (optional)"
 msgstr ""
 
 msgid "AlertSettings|5. Map fields (optional)"
@@ -2583,9 +2583,6 @@ msgstr ""
 msgid "AlertSettings|Learn more about our our upcoming %{linkStart}integrations%{linkEnd}"
 msgstr ""
 
-msgid "AlertSettings|Learn more about our upcoming %{linkStart}integrations%{linkEnd}"
-msgstr ""
-
 msgid "AlertSettings|Opsgenie"
 msgstr ""
 
@@ -2595,7 +2592,10 @@ msgstr ""
 msgid "AlertSettings|Prometheus API base URL"
 msgstr ""
 
-msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with to send a test alert to the %{linkStart}alerts page%{linkEnd}. This payload can be used to test the integration using the \"save and test payload\" button."
+msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to create a custom mapping (optional), or to test the integration (also optional)."
+msgstr ""
+
+msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to test the integration (optional)."
 msgstr ""
 
 msgid "AlertSettings|Reset Key"
@@ -2646,10 +2646,13 @@ msgstr ""
 msgid "AlertSettings|URL cannot be blank and must start with http or https"
 msgstr ""
 
-msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send Alerts to GitLab. Review your chosen services documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgid "AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
-msgid "AlertSettings|Utilizing this option will link the GitLab Alerts navigation item to your exisiting Opsgenie instance. By selecting this option, you cannot recieve alerts from any other source in GitLab; it will effectivley be turing Alerts within GitLab off as a feature."
+msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgstr ""
+
+msgid "AlertSettings|Utilizing this option will link the GitLab Alerts navigation item to your existing Opsgenie instance. By selecting this option, you cannot receive alerts from any other source in GitLab; it will effectively be turning Alerts within GitLab off as a feature."
 msgstr ""
 
 msgid "AlertSettings|We will soon be introducing the ability to create multiple unique HTTP endpoints. When this functionality is live,  you will be able to configure an integration with Opsgenie to surface Opsgenie alerts in GitLab. This will replace the current Opsgenie integration which will be deprecated. %{linkStart}More Information%{linkEnd}"
@@ -2665,6 +2668,9 @@ msgid "AlertSettings|You must provide this URL and authorization key to authoriz
 msgstr ""
 
 msgid "AlertSettings|Your integration was successfully updated."
+msgstr ""
+
+msgid "AlertSettings|{ \"events\": [{ \"application\": \"Name of application\" }] }"
 msgstr ""
 
 msgid "Alerts"
@@ -15958,9 +15964,6 @@ msgstr ""
 msgid "LicenseCompliance|Learn more about %{linkStart}License Approvals%{linkEnd}"
 msgstr ""
 
-msgid "LicenseCompliance|License"
-msgstr ""
-
 msgid "LicenseCompliance|License Approvals"
 msgstr ""
 
@@ -16000,16 +16003,7 @@ msgstr ""
 msgid "LicenseCompliance|License Compliance detected no new licenses"
 msgstr ""
 
-msgid "LicenseCompliance|License details"
-msgstr ""
-
 msgid "LicenseCompliance|License name"
-msgstr ""
-
-msgid "LicenseCompliance|License review"
-msgstr ""
-
-msgid "LicenseCompliance|Packages"
 msgstr ""
 
 msgid "LicenseCompliance|Remove license"
@@ -16025,9 +16019,6 @@ msgid "LicenseCompliance|There are currently no policies that match in this proj
 msgstr ""
 
 msgid "LicenseCompliance|This license already exists in this project."
-msgstr ""
-
-msgid "LicenseCompliance|URL"
 msgstr ""
 
 msgid "LicenseCompliance|You are about to remove the license, %{name}, from this project."
@@ -26603,6 +26594,9 @@ msgid "Terraform|The Terraform report %{name} failed to generate."
 msgstr ""
 
 msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
+msgstr ""
+
+msgid "Terraform|Unknown User"
 msgstr ""
 
 msgid "Test"

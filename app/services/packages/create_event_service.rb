@@ -3,19 +3,29 @@
 module Packages
   class CreateEventService < BaseService
     def execute
-      return unless Feature.enabled?(:collect_package_events, default_enabled: false)
+      if Feature.enabled?(:collect_package_events_redis) && redis_event_name
+        ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(current_user.id, redis_event_name)
+      end
 
-      event_scope = scope.is_a?(::Packages::Package) ? scope.package_type : scope
-
-      ::Packages::Event.create!(
-        event_type: event_name,
-        originator: current_user&.id,
-        originator_type: originator_type,
-        event_scope: event_scope
-      )
+      if Feature.enabled?(:collect_package_events)
+        ::Packages::Event.create!(
+          event_type: event_name,
+          originator: current_user&.id,
+          originator_type: originator_type,
+          event_scope: event_scope
+        )
+      end
     end
 
     private
+
+    def redis_event_name
+      @redis_event_name ||= ::Packages::Event.allowed_event_name(event_scope, event_name, originator_type)
+    end
+
+    def event_scope
+      @event_scope ||= scope.is_a?(::Packages::Package) ? scope.package_type : scope
+    end
 
     def scope
       params[:scope]
