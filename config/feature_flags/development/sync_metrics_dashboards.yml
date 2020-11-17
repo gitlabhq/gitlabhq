@@ -1,8 +1,0 @@
----
-name: sync_metrics_dashboards
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39658
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241793
-milestone: '13.5'
-type: development
-group: group::apm
-default_enabled: false

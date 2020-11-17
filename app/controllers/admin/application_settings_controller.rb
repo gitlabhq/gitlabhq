@@ -53,7 +53,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def integrations
     return not_found unless instance_level_integrations?
 
-    @integrations = Service.find_or_initialize_all(Service.for_instance).sort_by(&:title)
+    @integrations = Service.find_or_initialize_all_non_project_specific(Service.for_instance).sort_by(&:title)
   end
 
   def update

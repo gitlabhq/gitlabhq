@@ -249,7 +249,7 @@ pipeline to include running the tests along with the existing build job.
 
 ## Continuous Integration
 
-To ensure our changes don't break the build and all tests still pass, we utilize
+To ensure our changes don't break the build and all tests still pass, we use
 Continuous Integration (CI) to run these checks automatically for every push.
 Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
 and how these methods are leveraged by GitLab.

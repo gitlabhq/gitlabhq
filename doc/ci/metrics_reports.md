@@ -17,7 +17,7 @@ You can configure your job to use custom Metrics Reports, and GitLab will displa
 
 ## Use cases
 
-Consider the following examples of data that can utilize Metrics Reports:
+Consider the following examples of data that can use Metrics Reports:
 
 1. Memory usage
 1. Load testing results

@@ -14,9 +14,6 @@ includes a few key metrics, but you can also define your own custom dashboards.
 You may create a [new dashboard from scratch](#add-a-new-dashboard-to-your-project)
 or [duplicate a GitLab-defined Prometheus dashboard](#duplicate-a-gitlab-defined-dashboard).
 
-The metrics as defined below do not support alerts, unlike
-[custom metrics](../index.md#adding-custom-metrics).
-
 ## Add a new dashboard to your project
 
 > UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228856) in GitLab 13.3.

@@ -8417,6 +8417,37 @@ type GeoNode {
   selectiveSyncType: String
 
   """
+  Find snippet repository registries on this Geo node. Available only when
+  feature flag `geo_snippet_repository_replication` is enabled
+  """
+  snippetRepositoryRegistries(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters registries by their ID
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): SnippetRepositoryRegistryConnection
+
+  """
   Indicates if this secondary node will replicate blobs in Object Storage
   """
   syncObjectStorage: Boolean
@@ -20543,6 +20574,86 @@ type SnippetPermissions {
   Indicates the user can perform `update_snippet` on this resource
   """
   updateSnippet: Boolean!
+}
+
+"""
+Represents the Geo sync and verification state of a snippet repository
+"""
+type SnippetRepositoryRegistry {
+  """
+  Timestamp when the SnippetRepositoryRegistry was created
+  """
+  createdAt: Time
+
+  """
+  ID of the SnippetRepositoryRegistry
+  """
+  id: ID!
+
+  """
+  Error message during sync of the SnippetRepositoryRegistry
+  """
+  lastSyncFailure: String
+
+  """
+  Timestamp of the most recent successful sync of the SnippetRepositoryRegistry
+  """
+  lastSyncedAt: Time
+
+  """
+  Timestamp after which the SnippetRepositoryRegistry should be resynced
+  """
+  retryAt: Time
+
+  """
+  Number of consecutive failed sync attempts of the SnippetRepositoryRegistry
+  """
+  retryCount: Int
+
+  """
+  ID of the Snippet Repository
+  """
+  snippetRepositoryId: ID!
+
+  """
+  Sync state of the SnippetRepositoryRegistry
+  """
+  state: RegistryState
+}
+
+"""
+The connection type for SnippetRepositoryRegistry.
+"""
+type SnippetRepositoryRegistryConnection {
+  """
+  A list of edges.
+  """
+  edges: [SnippetRepositoryRegistryEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [SnippetRepositoryRegistry]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SnippetRepositoryRegistryEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: SnippetRepositoryRegistry
 }
 
 """

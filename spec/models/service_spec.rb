@@ -208,27 +208,27 @@ RSpec.describe Service do
     end
   end
 
-  describe '.find_or_initialize_integration' do
+  describe '.find_or_initialize_non_project_specific_integration' do
     let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
     let!(:service2) { create(:jira_service) }
 
     it 'returns the right service' do
-      expect(Service.find_or_initialize_integration('jira', group_id: group)).to eq(service1)
+      expect(Service.find_or_initialize_non_project_specific_integration('jira', group_id: group)).to eq(service1)
     end
 
     it 'does not create a new service' do
-      expect { Service.find_or_initialize_integration('redmine', group_id: group) }.not_to change { Service.count }
+      expect { Service.find_or_initialize_non_project_specific_integration('redmine', group_id: group) }.not_to change { Service.count }
     end
   end
 
-  describe '.find_or_initialize_all' do
+  describe '.find_or_initialize_all_non_project_specific' do
     shared_examples 'service instances' do
       it 'returns the available service instances' do
-        expect(Service.find_or_initialize_all(Service.for_instance).pluck(:type)).to match_array(Service.available_services_types)
+        expect(Service.find_or_initialize_all_non_project_specific(Service.for_instance).pluck(:type)).to match_array(Service.available_services_types(include_project_specific: false))
       end
 
       it 'does not create service instances' do
-        expect { Service.find_or_initialize_all(Service.for_instance) }.not_to change { Service.count }
+        expect { Service.find_or_initialize_all_non_project_specific(Service.for_instance) }.not_to change { Service.count }
       end
     end
 
@@ -237,7 +237,7 @@ RSpec.describe Service do
     context 'with all existing instances' do
       before do
         Service.insert_all(
-          Service.available_services_types.map { |type| { instance: true, type: type } }
+          Service.available_services_types(include_project_specific: false).map { |type| { instance: true, type: type } }
         )
       end
 
@@ -265,13 +265,13 @@ RSpec.describe Service do
   describe 'template' do
     shared_examples 'retrieves service templates' do
       it 'returns the available service templates' do
-        expect(Service.find_or_create_templates.pluck(:type)).to match_array(Service.available_services_types)
+        expect(Service.find_or_create_templates.pluck(:type)).to match_array(Service.available_services_types(include_project_specific: false))
       end
     end
 
     describe '.find_or_create_templates' do
       it 'creates service templates' do
-        expect { Service.find_or_create_templates }.to change { Service.count }.from(0).to(Service.available_services_names.size)
+        expect { Service.find_or_create_templates }.to change { Service.count }.from(0).to(Service.available_services_names(include_project_specific: false).size)
       end
 
       it_behaves_like 'retrieves service templates'
@@ -279,7 +279,7 @@ RSpec.describe Service do
       context 'with all existing templates' do
         before do
           Service.insert_all(
-            Service.available_services_types.map { |type| { template: true, type: type } }
+            Service.available_services_types(include_project_specific: false).map { |type| { template: true, type: type } }
           )
         end
 
@@ -305,7 +305,7 @@ RSpec.describe Service do
         end
 
         it 'creates the rest of the service templates' do
-          expect { Service.find_or_create_templates }.to change { Service.count }.from(1).to(Service.available_services_names.size)
+          expect { Service.find_or_create_templates }.to change { Service.count }.from(1).to(Service.available_services_names(include_project_specific: false).size)
         end
 
         it_behaves_like 'retrieves service templates'
@@ -889,6 +889,32 @@ RSpec.describe Service do
       it 'returns the right result' do
         expect(build(:service, type: type, active: active).external_wiki?).to eq(result)
       end
+    end
+  end
+
+  describe '.available_services_names' do
+    it 'calls the right methods' do
+      expect(described_class).to receive(:services_names).and_call_original
+      expect(described_class).to receive(:dev_services_names).and_call_original
+      expect(described_class).to receive(:project_specific_services_names).and_call_original
+
+      described_class.available_services_names
+    end
+
+    it 'does not call project_specific_services_names with include_project_specific false' do
+      expect(described_class).to receive(:services_names).and_call_original
+      expect(described_class).to receive(:dev_services_names).and_call_original
+      expect(described_class).not_to receive(:project_specific_services_names)
+
+      described_class.available_services_names(include_project_specific: false)
+    end
+
+    it 'does not call dev_services_names with include_dev false' do
+      expect(described_class).to receive(:services_names).and_call_original
+      expect(described_class).not_to receive(:dev_services_names)
+      expect(described_class).to receive(:project_specific_services_names).and_call_original
+
+      described_class.available_services_names(include_dev: false)
     end
   end
 end
