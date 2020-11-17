@@ -17900,6 +17900,9 @@ msgid_plural "NamespaceStorageSize|You have reached the free storage limit of %{
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To learn more about reducing storage capacity please visit our docs."
+msgstr ""
+
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
 msgstr ""
 

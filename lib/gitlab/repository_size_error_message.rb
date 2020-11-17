@@ -4,7 +4,7 @@ module Gitlab
   class RepositorySizeErrorMessage
     include ActiveSupport::NumberHelper
 
-    delegate :current_size, :limit, :exceeded_size, to: :@checker
+    delegate :current_size, :limit, :exceeded_size, :additional_repo_storage_available?, to: :@checker
 
     # @param checher [RepositorySizeChecker]
     def initialize(checker)
@@ -24,7 +24,11 @@ module Gitlab
     end
 
     def new_changes_error
-      "Your push to this repository would cause it to exceed the size limit of #{formatted(limit)} so it has been rejected. #{more_info_message}"
+      if additional_repo_storage_available?
+        "Your push to this repository has been rejected because it would exceed storage limits. Please contact your GitLab administrator for more information."
+      else
+        "Your push to this repository would cause it to exceed the size limit of #{formatted(limit)} so it has been rejected. #{more_info_message}"
+      end
     end
 
     def more_info_message

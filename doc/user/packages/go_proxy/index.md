@@ -96,9 +96,10 @@ following steps work only if GitLab is configured for HTTPS:
 Create a [personal access token](../../profile/personal_access_tokens.md) with
 the scope set to `api` or `read_api`.
 
-Add it to [`~/.netrc`](https://ec.haxx.se/usingcurl/usingcurl-netrc):
+Open your [`~/.netrc`](https://ec.haxx.se/usingcurl/usingcurl-netrc) file
+and add the following text. Replace the variables in `< >` with your values.
 
-```shell
+```plaintext
 machine <url> login <username> password <token>
 ```
 

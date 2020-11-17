@@ -53,4 +53,10 @@ RSpec.describe Gitlab::RepositorySizeChecker do
   describe '#exceeded_size' do
     include_examples 'checker size exceeded'
   end
+
+  describe '#additional_repo_storage_available?' do
+    it 'returns false' do
+      expect(subject.additional_repo_storage_available?).to eq(false)
+    end
+  end
 end

@@ -53,8 +53,18 @@ RSpec.describe Gitlab::RepositorySizeErrorMessage do
     end
 
     describe '#new_changes_error' do
-      it 'returns the correct message' do
-        expect(message.new_changes_error).to eq("Your push to this repository would cause it to exceed the size limit of 10 MB so it has been rejected. #{message.more_info_message}")
+      context 'when additional repo storage is available' do
+        it 'returns the correct message' do
+          allow(checker).to receive(:additional_repo_storage_available?).and_return(true)
+
+          expect(message.new_changes_error).to eq('Your push to this repository has been rejected because it would exceed storage limits. Please contact your GitLab administrator for more information.')
+        end
+      end
+
+      context 'when no additional repo storage is available' do
+        it 'returns the correct message' do
+          expect(message.new_changes_error).to eq("Your push to this repository would cause it to exceed the size limit of 10 MB so it has been rejected. #{message.more_info_message}")
+        end
       end
     end
   end

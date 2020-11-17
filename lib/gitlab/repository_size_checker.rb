@@ -46,6 +46,10 @@ module Gitlab
       @error_message_object ||= ::Gitlab::RepositorySizeErrorMessage.new(self)
     end
 
+    def additional_repo_storage_available?
+      false
+    end
+
     private
 
     attr_reader :namespace
