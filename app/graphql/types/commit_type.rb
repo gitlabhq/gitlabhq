@@ -40,7 +40,7 @@ module Types
     field :author, type: Types::UserType, null: true,
           description: 'Author of the commit'
 
-    field :pipelines, Types::Ci::PipelineType.connection_type,
+    field :pipelines,
           null: true,
           description: 'Pipelines of the commit ordered latest first',
           resolver: Resolvers::CommitPipelinesResolver

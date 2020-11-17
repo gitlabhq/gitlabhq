@@ -1,11 +1,14 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlAlert, GlSafeHtmlDirective } from '@gitlab/ui';
 
 export default {
   components: {
     GlLoadingIcon,
     GlButton,
+    GlAlert,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     isLoading: {
@@ -59,7 +62,9 @@ export default {
           {{ __('Start Web Terminal') }}
         </gl-button>
       </p>
-      <div v-if="!isValid && message" class="bs-callout gl-text-left" v-html="message"></div>
+      <gl-alert v-if="!isValid && message" variant="tip" :dismissible="false">
+        <span v-safe-html="message"></span>
+      </gl-alert>
       <p v-else>
         <a
           v-if="helpPath"

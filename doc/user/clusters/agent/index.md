@@ -160,6 +160,25 @@ gitops:
   ...
 ```
 
+GitLab [versions 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) also
+supports manifest projects containing multiple directories (or subdirectories)
+of YAML files. To use multiple YAML files, specify a `paths` attribute:
+
+```yaml
+gitops:
+  manifest_projects:
+  - id: "path-to/your-manifest-project-number1"
+  paths:
+      # Read all .yaml files from team1/app1 directory.
+      # See https://github.com/bmatcuk/doublestar#about and
+      # https://pkg.go.dev/github.com/bmatcuk/doublestar/v2#Match for globbing rules.
+    - glob: '/team1/app1/*.yaml'
+      # Read all .yaml files from team2/apps and all subdirectories
+    - glob: '/team2/apps/**/*.yaml'
+      # If 'paths' is not specified or is an empty list, the configuration below is used
+    - glob: '/**/*.{yaml,yml,json}'
+```
+
 ### Create an Agent record in GitLab
 
 Next, create an GitLab Rails Agent record so the Agent can associate itself with

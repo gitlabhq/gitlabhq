@@ -1,0 +1,5 @@
+---
+title: Added code coverage regex for Scala Scoverage
+merge_request: 46638
+author: opensorceror
+type: changed

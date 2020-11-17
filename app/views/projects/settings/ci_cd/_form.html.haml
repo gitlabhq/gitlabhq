@@ -120,6 +120,9 @@
                 pytest-cov (Python) -
                 %code ^TOTAL.+?(\d+\%)$
               %li
+                Scoverage (Scala) -
+                %code Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)
+              %li
                 phpunit --coverage-text --colors=never (PHP) -
                 %code ^\s*Lines:\s*\d+.\d+\%
               %li

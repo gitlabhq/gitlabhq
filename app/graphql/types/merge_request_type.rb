@@ -114,7 +114,7 @@ module Types
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline,
           description: 'The pipeline running on the branch HEAD of the merge request'
-    field :pipelines, Types::Ci::PipelineType.connection_type,
+    field :pipelines,
           null: true,
           description: 'Pipelines for the merge request',
           resolver: Resolvers::MergeRequestPipelinesResolver

@@ -557,10 +557,6 @@ module.exports = {
     port: DEV_SERVER_PORT,
     public: DEV_SERVER_PUBLIC_ADDR,
     https: DEV_SERVER_HTTPS,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': '*',
-    },
     contentBase: false,
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,

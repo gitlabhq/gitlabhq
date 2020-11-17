@@ -147,9 +147,11 @@ RSpec.describe Snippets::CreateService do
       end
 
       context 'when the commit action fails' do
+        let(:error) { SnippetRepository::CommitError.new('foobar') }
+
         before do
           allow_next_instance_of(SnippetRepository) do |instance|
-            allow(instance).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError.new('foobar'))
+            allow(instance).to receive(:multi_files_action).and_raise(error)
           end
         end
 
@@ -172,7 +174,7 @@ RSpec.describe Snippets::CreateService do
         end
 
         it 'logs the error' do
-          expect(Gitlab::AppLogger).to receive(:error).with('foobar')
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, service: 'Snippets::CreateService')
 
           subject
         end

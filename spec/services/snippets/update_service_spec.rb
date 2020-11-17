@@ -277,14 +277,14 @@ RSpec.describe Snippets::UpdateService do
       end
 
       context 'when an error is raised' do
-        let(:error_message) { 'foobar' }
+        let(:error) { SnippetRepository::CommitError.new('foobar') }
 
         before do
-          allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError, error_message)
+          allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(error)
         end
 
         it 'logs the error' do
-          expect(Gitlab::AppLogger).to receive(:error).with(error_message)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, service: 'Snippets::UpdateService')
 
           subject
         end

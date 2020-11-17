@@ -1,6 +1,6 @@
 export default {
   props: {
-    hasTriggeredBy: {
+    hasUpstream: {
       type: Boolean,
       required: false,
       default: false,
@@ -8,7 +8,7 @@ export default {
   },
   methods: {
     buildConnnectorClass(index) {
-      return index === 0 && (!this.isFirstColumn || this.hasTriggeredBy) ? 'left-connector' : '';
+      return index === 0 && (!this.isFirstColumn || this.hasUpstream) ? 'left-connector' : '';
     },
   },
 };

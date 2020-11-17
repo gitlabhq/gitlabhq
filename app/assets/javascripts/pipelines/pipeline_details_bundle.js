@@ -45,10 +45,10 @@ const createLegacyPipelinesDetailApp = mediator => {
         },
         on: {
           refreshPipelineGraph: this.requestRefreshPipelineGraph,
-          onResetTriggered: (parentPipeline, pipeline) =>
-            this.resetTriggeredPipelines(parentPipeline, pipeline),
-          onClickTriggeredBy: pipeline => this.clickTriggeredByPipeline(pipeline),
-          onClickTriggered: pipeline => this.clickTriggeredPipeline(pipeline),
+          onResetDownstream: (parentPipeline, pipeline) =>
+            this.resetDownstreamPipelines(parentPipeline, pipeline),
+          onClickUpstreamPipeline: pipeline => this.clickUpstreamPipeline(pipeline),
+          onClickDownstreamPipeline: pipeline => this.clickDownstreamPipeline(pipeline),
         },
       });
     },

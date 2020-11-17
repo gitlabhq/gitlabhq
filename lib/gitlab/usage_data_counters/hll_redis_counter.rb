@@ -18,8 +18,8 @@ module Gitlab
 
       KNOWN_EVENTS_PATH = File.expand_path('known_events/*.yml', __dir__)
       ALLOWED_AGGREGATIONS = %i(daily weekly).freeze
-      UNION_OF_AGGREGATED_METRICS = 'ANY'
-      INTERSECTION_OF_AGGREGATED_METRICS = 'ALL'
+      UNION_OF_AGGREGATED_METRICS = 'OR'
+      INTERSECTION_OF_AGGREGATED_METRICS = 'AND'
       ALLOWED_METRICS_AGGREGATIONS = [UNION_OF_AGGREGATED_METRICS, INTERSECTION_OF_AGGREGATED_METRICS].freeze
       AGGREGATED_METRICS_PATH = File.expand_path('aggregated_metrics/*.yml', __dir__)
 

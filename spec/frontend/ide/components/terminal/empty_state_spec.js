@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import TerminalEmptyState from '~/ide/components/terminal/empty_state.vue';
 
@@ -101,6 +101,6 @@ describe('IDE TerminalEmptyState', () => {
     });
 
     expect(wrapper.find(GlButton).props('disabled')).toBe(true);
-    expect(wrapper.find('.bs-callout').element.innerHTML).toBe(TEST_HTML_MESSAGE);
+    expect(wrapper.find(GlAlert).html()).toContain(TEST_HTML_MESSAGE);
   });
 });

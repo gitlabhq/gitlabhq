@@ -18,29 +18,32 @@ export default class PrometheusMetrics {
     this.$monitoredMetricsList = this.$monitoredMetricsPanel.find('.js-metrics-list');
 
     this.$missingEnvVarPanel = this.$wrapper.find('.js-panel-missing-env-vars');
-    this.$panelToggle = this.$missingEnvVarPanel.find('.js-panel-toggle');
+    this.$panelToggleRight = this.$missingEnvVarPanel.find('.js-panel-toggle-right');
+    this.$panelToggleDown = this.$missingEnvVarPanel.find('.js-panel-toggle-down');
     this.$missingEnvVarMetricCount = this.$missingEnvVarPanel.find('.js-env-var-count');
     this.$missingEnvVarMetricsList = this.$missingEnvVarPanel.find('.js-missing-var-metrics-list');
 
     this.activeMetricsEndpoint = this.$monitoredMetricsPanel.data('activeMetrics');
     this.helpMetricsPath = this.$monitoredMetricsPanel.data('metrics-help-path');
 
-    this.$panelToggle.on('click', e => this.handlePanelToggle(e));
+    this.$panelToggleRight.on('click', e => this.handlePanelToggle(e));
+    this.$panelToggleDown.on('click', e => this.handlePanelToggle(e));
   }
 
   init() {
     this.loadActiveMetrics();
   }
 
-  /* eslint-disable class-methods-use-this */
   handlePanelToggle(e) {
     const $toggleBtn = $(e.currentTarget);
     const $currentPanelBody = $toggleBtn.closest('.card').find('.card-body');
     $currentPanelBody.toggleClass('hidden');
-    if ($toggleBtn.hasClass('fa-caret-down')) {
-      $toggleBtn.removeClass('fa-caret-down').addClass('fa-caret-right');
-    } else {
-      $toggleBtn.removeClass('fa-caret-right').addClass('fa-caret-down');
+    if ($toggleBtn.hasClass('js-panel-toggle-right')) {
+      $toggleBtn.addClass('hidden');
+      this.$panelToggleDown.removeClass('hidden');
+    } else if ($toggleBtn.hasClass('js-panel-toggle-down')) {
+      $toggleBtn.addClass('hidden');
+      this.$panelToggleRight.removeClass('hidden');
     }
   }
 

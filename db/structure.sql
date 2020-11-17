@@ -16623,13 +16623,7 @@ CREATE TABLE terraform_states (
     locked_by_user_id bigint,
     uuid character varying(32) NOT NULL,
     name character varying(255),
-    verification_retry_at timestamp with time zone,
-    verified_at timestamp with time zone,
-    verification_retry_count smallint,
-    verification_checksum bytea,
-    verification_failure text,
-    versioning_enabled boolean DEFAULT false NOT NULL,
-    CONSTRAINT check_21a47163ea CHECK ((char_length(verification_failure) <= 255))
+    versioning_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE terraform_states_id_seq

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/269) in GitLab 13.2.
 
-Each Sidekiq worker, controller action, or (eventually) API endpoint
+Each Sidekiq worker, controller action, or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
 of these to a [feature
 category](https://about.gitlab.com/handbook/product/product-categories/). This
@@ -118,3 +118,42 @@ assigned to all actions.
 
 The spec also validates if the used feature categories are known. And if
 the actions used in configuration still exist as routes.
+
+## API endpoints
+
+Grape API endpoints can use the `feature_category` class method, like
+[Rails controllers](#rails-controllers) do:
+
+```ruby
+module API
+  class Issues < ::API::Base
+    feature_category :issue_tracking
+  end
+end
+```
+
+The second argument can be used to specify feature categories for
+specific routes:
+
+```ruby
+module API
+  class Users < ::API::Base
+    feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+  end
+end
+```
+
+Or the feature category can be specified in the action itself:
+
+```ruby
+module API
+  class Users < ::API::Base
+    get ':id', feature_category: :users do
+    end
+  end
+end
+```
+
+As with Rails controllers, an API class must specify the category for
+every single action unless the same category is used for every action
+within that class.

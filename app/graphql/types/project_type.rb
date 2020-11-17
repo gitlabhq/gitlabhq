@@ -187,7 +187,6 @@ module Types
          resolver: Resolvers::PackagesResolver
 
     field :pipelines,
-          Types::Ci::PipelineType.connection_type,
           null: true,
           description: 'Build pipelines of the project',
           extras: [:lookahead],

@@ -159,13 +159,13 @@ describe('graph component', () => {
 
       describe('triggered by', () => {
         describe('on click', () => {
-          it('should emit `onClickTriggeredBy` when triggered by linked pipeline is clicked', () => {
+          it('should emit `onClickUpstreamPipeline` when triggered by linked pipeline is clicked', () => {
             const btnWrapper = findExpandPipelineBtn();
 
             btnWrapper.trigger('click');
 
             btnWrapper.vm.$nextTick(() => {
-              expect(wrapper.emitted().onClickTriggeredBy).toEqual([
+              expect(wrapper.emitted().onClickUpstreamPipeline).toEqual([
                 store.state.pipeline.triggered_by,
               ]);
             });

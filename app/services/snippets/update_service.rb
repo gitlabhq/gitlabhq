@@ -74,7 +74,7 @@ module Snippets
 
       add_snippet_repository_error(snippet: snippet, error: e)
 
-      log_error(e.message)
+      Gitlab::ErrorTracking.log_exception(e, service: 'Snippets::UpdateService')
 
       # If the commit action failed we remove it because
       # we don't want to leave empty repositories

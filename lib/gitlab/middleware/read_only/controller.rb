@@ -13,9 +13,8 @@ module Gitlab
           'repositories/git_http' => %w{git_upload_pack}
         }.freeze
 
-        ALLOWLISTED_GIT_LFS_ROUTES = {
-          'repositories/lfs_api' => %w{batch},
-          'repositories/lfs_locks_api' => %w{verify create unlock}
+        ALLOWLISTED_GIT_LFS_BATCH_ROUTES = {
+          'repositories/lfs_api' => %w{batch}
         }.freeze
 
         ALLOWLISTED_GIT_REVISION_ROUTES = {
@@ -88,7 +87,7 @@ module Gitlab
 
         # Overridden in EE module
         def allowlisted_routes
-          workhorse_passthrough_route? || internal_route? || lfs_route? || compare_git_revisions_route? || sidekiq_route? || session_route? || graphql_query?
+          workhorse_passthrough_route? || internal_route? || lfs_batch_route? || compare_git_revisions_route? || sidekiq_route? || session_route? || graphql_query?
         end
 
         # URL for requests passed through gitlab-workhorse to rails-web
@@ -112,15 +111,13 @@ module Gitlab
           ALLOWLISTED_GIT_REVISION_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
-        def lfs_route?
+        # Batch upload requests are blocked in:
+        # https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/repositories/lfs_api_controller.rb#L106
+        def lfs_batch_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
-          unless request.path.end_with?('/info/lfs/objects/batch',
-            '/info/lfs/locks', '/info/lfs/locks/verify') ||
-              %r{/info/lfs/locks/\d+/unlock\z}.match?(request.path)
-            return false
-          end
+          return unless request.path.end_with?('/info/lfs/objects/batch')
 
-          ALLOWLISTED_GIT_LFS_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
+          ALLOWLISTED_GIT_LFS_BATCH_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
         def session_route?

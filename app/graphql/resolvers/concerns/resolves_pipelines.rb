@@ -4,7 +4,7 @@ module ResolvesPipelines
   extend ActiveSupport::Concern
 
   included do
-    type [Types::Ci::PipelineType], null: false
+    type Types::Ci::PipelineType.connection_type, null: false
     argument :status,
              Types::Ci::PipelineStatusEnum,
              required: false,

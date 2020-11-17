@@ -20,13 +20,21 @@ cp Dockerfile.assets assets_container.build/
 
 COMMIT_REF_SLUG_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
 COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
-COMMIT_REF_NAME_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
 
 DESTINATIONS="--destination=$COMMIT_REF_SLUG_DESTINATION --destination=$COMMIT_SHA_DESTINATION"
+
+# For EE branch builds, add a truncated SHA destination for later use by Omnibus
+# auto-deploy builds
+if [[ "${ASSETS_IMAGE_NAME}" == "gitlab-assets-ee" ]] && [ -n "$CI_COMMIT_BRANCH" ]
+then
+  COMMIT_SHORT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA:0:11}
+  DESTINATIONS="$DESTINATIONS --destination=$COMMIT_SHORT_SHA_DESTINATION"
+fi
 
 # Also tag the image with GitLab version, if running on a tag pipeline, so
 # other projects can simply use that instead of computing the slug.
 if [ -n "$CI_COMMIT_TAG" ]; then
+  COMMIT_REF_NAME_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
   DESTINATIONS="$DESTINATIONS --destination=$COMMIT_REF_NAME_DESTINATION"
 fi
 

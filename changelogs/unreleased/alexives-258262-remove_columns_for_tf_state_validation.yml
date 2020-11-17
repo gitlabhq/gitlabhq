@@ -1,0 +1,5 @@
+---
+title: Remove columns no longer used for replicating terraform state
+merge_request: 46742
+author:
+type: other

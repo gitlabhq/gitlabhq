@@ -2,11 +2,10 @@ import { mount } from '@vue/test-utils';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-
 import mockData from './linked_pipelines_mock_data';
+import { UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 
 const mockPipeline = mockData.triggered[0];
-
 const validTriggeredPipelineId = mockPipeline.project.id;
 const invalidTriggeredPipelineId = mockPipeline.project.id + 5;
 
@@ -40,6 +39,7 @@ describe('Linked pipeline', () => {
       pipeline: mockPipeline,
       projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
+      type: DOWNSTREAM,
     };
 
     beforeEach(() => {
@@ -104,11 +104,13 @@ describe('Linked pipeline', () => {
       pipeline: mockPipeline,
       projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
+      type: DOWNSTREAM,
     };
 
     const upstreamProps = {
       ...downstreamProps,
       columnTitle: 'Upstream',
+      type: UPSTREAM,
     };
 
     it('parent/child label container should exist', () => {
@@ -182,6 +184,7 @@ describe('Linked pipeline', () => {
       pipeline: { ...mockPipeline, isLoading: true },
       projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
+      type: DOWNSTREAM,
     };
 
     beforeEach(() => {
@@ -198,6 +201,7 @@ describe('Linked pipeline', () => {
       pipeline: mockPipeline,
       projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
+      type: DOWNSTREAM,
     };
 
     beforeEach(() => {

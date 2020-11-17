@@ -5,11 +5,6 @@
     action: s_("AdminUsers|Deactivate") } }
     = render partial: 'admin/users/user_deactivation_effects'
 
-  %div{ data: { modal: "block",
-    title: s_("AdminUsers|Block user %{username}?"),
-    action: s_("AdminUsers|Block") } }
-    = render partial: 'admin/users/user_block_effects'
-
   %div{ data: { modal: "delete",
     title: s_("AdminUsers|Delete User %{username}?"),
     action: s_('AdminUsers|Delete user'),

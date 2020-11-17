@@ -735,7 +735,8 @@ In order to add data for aggregated metrics into Usage Ping payload you should a
 
 - name: unique name under which aggregate metric will be added to Usage Ping payload
 - operator: operator that defines how aggregated metric data will be counted. Available operators are:
-  - `ANY`: removes duplicates and counts all entries that triggered any of listed events
+  - `OR`: removes duplicates and counts all entries that triggered any of listed events
+  - `AND`: removes duplicates and counts all elements that were observed triggering all of following events
 - events: list of events names (from [`known_events.yml`](#known-events-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
 - feature_flag: name of [development feature flag](../feature_flags/development.md#development-type) that will be checked before
 metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`. 
@@ -744,11 +745,11 @@ metrics aggregation is performed. Corresponding feature flag should have `defaul
 Example aggregated metric entries:
 
 ```yaml
-- name: example_aggregated_metric
-  operator: ANY
-  events: ['i_search_advanced', 'i_search_paid']
-- name: example_aggregated_metric_with_feautre_flag
-  operator: ANY
+- name: product_analytics_test_metrics_union
+  operator: OR
+  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+- name: product_analytics_test_metrics_intersection_with_feautre_flag
+  operator: AND
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
   feature_flag: example_aggregated_metric
 ```
@@ -766,7 +767,8 @@ Aggregated metrics will be added under `aggregated_metrics` key in both `counts_
     :project_snippets => 407,
     :promoted_issues => 719,
     :aggregated_metrics => {
-      :example_aggregated_metric => 7
+      :product_analytics_test_metrics_union => 7,
+      :product_analytics_test_metrics_intersection_with_feautre_flag => 2
     },
     :snippets => 2513
   }

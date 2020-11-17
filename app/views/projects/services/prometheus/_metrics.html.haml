@@ -25,7 +25,8 @@
 
   .card.hidden.js-panel-missing-env-vars
     .card-header
-      = icon('caret-right lg fw', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
+      = sprite_icon('chevron-lg-right', css_class: 'panel-toggle js-panel-toggle-right' )
+      = sprite_icon('chevron-lg-down', css_class: 'panel-toggle js-panel-toggle-down hidden' )
       = s_('PrometheusService|Missing environment variable')
       %span.badge.badge-pill.js-env-var-count 0
     .card-body.hidden

@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+# The GraphQL type here gets defined in
+# https://gitlab.com/gitlab-org/gitlab/blob/master/app/graphql/resolvers/concerns/resolves_pipelines.rb#L7
+# rubocop: disable Graphql/ResolverType
 
 module Resolvers
   class ProjectPipelinesResolver < BaseResolver
@@ -22,3 +25,4 @@ module Resolvers
     end
   end
 end
+# rubocop: enable Graphql/ResolverType

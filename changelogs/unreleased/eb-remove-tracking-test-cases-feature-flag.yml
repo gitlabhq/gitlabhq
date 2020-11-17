@@ -1,0 +1,5 @@
+---
+title: Remove feature flag to enable tracking unique test cases parsed globally.
+merge_request: 47662
+author:
+type: changed

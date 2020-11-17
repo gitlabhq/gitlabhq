@@ -107,7 +107,7 @@ The chart used to install this application depends on the version of GitLab used
 - GitLab 12.3 and newer, the [`jetstack/cert-manager`](https://github.com/jetstack/cert-manager)
   chart is used with a [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/cert_manager/values.yaml)
   file.
-- GitLab 12.2 and older, the [`stable/cert-manager`](https://gi2wthub.com/helm/charts/tree/master/stable/cert-manager)
+- GitLab 12.2 and older, the [`stable/cert-manager`](https://github.com/helm/charts/tree/master/stable/cert-manager)
   chart was used.
 
 If you installed cert-manager prior to GitLab 12.3, Let's Encrypt
@@ -775,7 +775,7 @@ certManager:
 You can customize the installation of cert-manager by defining a
 `.gitlab/managed-apps/cert-manager/values.yaml` file in your cluster
 management project. Refer to the
-[chart](https://hub.helm.sh/charts/jetstack/cert-manager) for the
+[chart](https://github.com/jetstack/cert-manager) for the
 available configuration options.
 
 Support for installing the Cert Manager managed application is provided by the
@@ -855,7 +855,7 @@ least 2 people from the
 
 ### Install PostHog using GitLab CI/CD
 
-[PostHog](https://www.posthog.com) 🦔 is a developer-friendly, open-source product analytics platform.
+[PostHog](https://posthog.com) 🦔 is a developer-friendly, open-source product analytics platform.
 
 To install PostHog into the `gitlab-managed-apps` namespace of your cluster,
 define the `.gitlab/managed-apps/config.yaml` file with:
@@ -1012,15 +1012,15 @@ CAUTION: **Caution:**
 Installation and removal of the Cilium requires a **manual**
 [restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#restart-unmanaged-pods)
 of all affected pods in all namespaces to ensure that they are
-[managed](https://docs.cilium.io/en/stable/troubleshooting/#ensure-pod-is-managed-by-cilium)
+[managed](https://docs.cilium.io/en/v1.8/operations/troubleshooting/#ensure-managed-pod)
 by the correct networking plugin.
 
 NOTE: **Note:**
 Major upgrades might require additional setup steps. For more information, see
-the official [upgrade guide](https://docs.cilium.io/en/stable/install/upgrade/).
+the official [upgrade guide](https://docs.cilium.io/en/v1.8/operations/upgrade/).
 
 By default, Cilium's
-[audit mode](https://docs.cilium.io/en/v1.8/gettingstarted/policy-creation/?highlight=policy-audit#enable-policy-audit-mode)
+[audit mode](https://docs.cilium.io/en/v1.8/gettingstarted/policy-creation/#enable-policy-audit-mode)
 is enabled. In audit mode, Cilium doesn't drop disallowed packets. You
 can use `policy-verdict` log to observe policy-related decisions. You
 can disable audit mode by adding the following to
