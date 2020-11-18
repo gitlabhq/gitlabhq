@@ -52,8 +52,8 @@ For an overview, see [Parent-Child Pipelines feature demo](https://youtu.be/n8Kp
 ## Examples
 
 The simplest case is [triggering a child pipeline](yaml/README.md#trigger) using a
-local YAML file to define the pipeline configuration. In this case, the parent pipeline will
-trigger the child pipeline, and continue without waiting:
+local YAML file to define the pipeline configuration. In this case, the parent pipeline
+triggers the child pipeline, and continues without waiting:
 
 ```yaml
 microservice_a:

@@ -36,7 +36,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
    `~/.ssh/authorized_keys`) or add it as a [deploy key](../../ssh/README.md#deploy-keys)
    if you are accessing a private GitLab repository.
 
-The private key will not be displayed in the job log, unless you enable
+The private key is displayed in the job log, unless you enable
 [debug logging](../variables/README.md#debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#visibility-of-pipelines).
 
@@ -46,7 +46,7 @@ When your CI/CD jobs run inside Docker containers (meaning the environment is
 contained) and you want to deploy your code in a private server, you need a way
 to access it. This is where an SSH key pair comes in handy.
 
-1. You will first need to create an SSH key pair. For more information, follow
+1. You first need to create an SSH key pair. For more information, follow
    the instructions to [generate an SSH key](../../ssh/README.md#generating-a-new-ssh-key-pair).
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
@@ -144,9 +144,9 @@ For accessing repositories on GitLab.com, you would use `git@gitlab.com`.
 ## Verifying the SSH host keys
 
 It is a good practice to check the private server's own public key to make sure
-you are not being targeted by a man-in-the-middle attack. In case anything
-suspicious happens, you will notice it since the job would fail (the SSH
-connection would fail if the public keys would not match).
+you are not being targeted by a man-in-the-middle attack. If anything
+suspicious happens, you notice it because the job fails (the SSH
+connection fails when the public keys don't match).
 
 To find out the host keys of your server, run the `ssh-keyscan` command from a
 trusted network (ideally, from the private server itself):
@@ -169,8 +169,8 @@ TIP: **Tip:**
 By using a variable instead of `ssh-keyscan` directly inside
 `.gitlab-ci.yml`, it has the benefit that you don't have to change `.gitlab-ci.yml`
 if the host domain name changes for some reason. Also, the values are predefined
-by you, meaning that if the host keys suddenly change, the CI/CD job will fail,
-and you'll know there's something wrong with the server or the network.
+by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
+so there's something wrong with the server or the network.
 
 Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
 [content of `.gitlab-ci.yml`](#ssh-keys-when-using-the-docker-executor)
@@ -209,4 +209,4 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push your changes. Within a few
-moments the changes will be picked by a public runner and the job will begin.
+moments the changes is picked by a public runner and the job starts.

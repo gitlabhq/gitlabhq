@@ -152,14 +152,6 @@ FactoryBot.define do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end
 
-    trait(:checksummed) do
-      verification_checksum { 'abc' }
-    end
-
-    trait(:checksum_failure) do
-      verification_failure { 'Could not calculate the checksum' }
-    end
-
     factory :package_file_with_file, traits: [:jar]
   end
 end

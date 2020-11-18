@@ -11300,6 +11300,9 @@ msgstr ""
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
+msgid "Failed to create framework"
+msgstr ""
+
 msgid "Failed to create import label for jira import."
 msgstr ""
 
@@ -11523,6 +11526,9 @@ msgid "Feature flag was not removed."
 msgstr ""
 
 msgid "Feature flag was successfully removed."
+msgstr ""
+
+msgid "Feature not available"
 msgstr ""
 
 msgid "FeatureFlags|%d user"

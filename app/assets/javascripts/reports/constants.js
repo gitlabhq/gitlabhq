@@ -18,9 +18,9 @@ export const ICON_SUCCESS = 'success';
 export const ICON_NOTFOUND = 'notfound';
 
 export const status = {
-  LOADING: 'LOADING',
-  ERROR: 'ERROR',
-  SUCCESS: 'SUCCESS',
+  LOADING,
+  ERROR,
+  SUCCESS,
 };
 
 export const ACCESSIBILITY_ISSUE_ERROR = 'error';

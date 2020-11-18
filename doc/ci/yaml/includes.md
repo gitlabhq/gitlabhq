@@ -67,7 +67,7 @@ include:
 
 ## Re-using a `before_script` template
 
-In the following example, the content of `.before-script-template.yml` will be
+In the following example, the content of `.before-script-template.yml` is
 automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
 
 Content of `https://gitlab.com/awesome-project/raw/master/.before-script-template.yml`:

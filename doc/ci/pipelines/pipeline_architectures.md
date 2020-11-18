@@ -22,8 +22,8 @@ any of the keywords used below, check out our [CI YAML reference](../yaml/README
 
 ## Basic Pipelines
 
-This is the simplest pipeline in GitLab. It will run everything in the build stage concurrently,
-and once all of those finish, it will run everything in the test stage the same way, and so on.
+This is the simplest pipeline in GitLab. It runs everything in the build stage concurrently,
+and once all of those finish, it runs everything in the test stage the same way, and so on.
 It's not the most efficient, and if you have lots of steps it can grow quite complex, but it's
 easier to maintain:
 
@@ -101,7 +101,7 @@ your jobs. When GitLab knows the relationships between your jobs, it can run eve
 as fast as possible, and even skips into subsequent stages when possible.
 
 In the example below, if `build_a` and `test_a` are much faster than `build_b` and
-`test_b`, GitLab will start `deploy_a` even if `build_b` is still running.
+`test_b`, GitLab starts `deploy_a` even if `build_b` is still running.
 
 ```mermaid
 graph LR
@@ -163,7 +163,7 @@ deploy_b:
 
 In the examples above, it's clear we've got two types of things that could be built independently.
 This is an ideal case for using [Child / Parent Pipelines](../parent_child_pipelines.md)) via
-the [`trigger` keyword](../yaml/README.md#trigger). It will separate out the configuration
+the [`trigger` keyword](../yaml/README.md#trigger). It separates out the configuration
 into multiple files, keeping things very simple. You can also combine this with:
 
 - The [`rules` keyword](../yaml/README.md#rules): For example, have the child pipelines triggered only

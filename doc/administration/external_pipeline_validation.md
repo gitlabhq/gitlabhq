@@ -14,9 +14,9 @@ This is an experimental feature and subject to change without notice.
 
 ## Usage
 
-GitLab will send a POST request to the external service URL with the pipeline
-data as payload. GitLab will then invalidate the pipeline based on the response
-code. If there's an error or the request times out, the pipeline will not be
+GitLab sends a POST request to the external service URL with the pipeline
+data as payload. GitLab then invalidates the pipeline based on the response
+code. If there's an error or the request times out, the pipeline is not
 invalidated.
 
 Response Code Legend:

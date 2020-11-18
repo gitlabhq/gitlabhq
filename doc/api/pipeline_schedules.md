@@ -109,14 +109,14 @@ Create a new pipeline schedule of a project.
 POST /projects/:id/pipeline_schedules
 ```
 
-| Attribute     | Type    | required | Description              |
-|---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `description` | string  | yes      | The description of pipeline schedule         |
-| `ref` | string  | yes      | The branch/tag name will be triggered         |
-| `cron` | string  | yes      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
-| `cron_timezone` | string  | no      | The timezone supported by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) (default: `'UTC'`)     |
-| `active` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially (default: `true`) |
+| Attribute       | Type           | required | Description                                                                                                             |
+|-----------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------|
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.        |
+| `description`   | string         | yes      | The description of the pipeline schedule.                                                                               |
+| `ref`           | string         | yes      | The branch or tag name that is triggered.                                                                               |
+| `cron`          | string         | yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                      |
+| `cron_timezone` | string         | no       | The timezone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `'UTC'`).      |
+| `active`        | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
@@ -147,21 +147,21 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form descrip
 
 ## Edit a pipeline schedule
 
-Updates the pipeline schedule of a project. Once the update is done, it will be rescheduled automatically.
+Updates the pipeline schedule of a project. Once the update is done, it is rescheduled automatically.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
-| Attribute     | Type    | required | Description              |
-|---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`  | integer | yes      | The pipeline schedule ID           |
-| `description` | string  | no      | The description of pipeline schedule         |
-| `ref` | string  | no      | The branch/tag name will be triggered         |
-| `cron` | string  | no      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
-| `cron_timezone` | string  | no      | The timezone supported by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
-| `active` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
+| Attribute              | Type           | required | Description                                                                                                      |
+|------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID.                                                                                        |
+| `description`          | string         | no       | The description of the pipeline schedule.                                                                        |
+| `ref`                  | string         | no       | The branch or tag name that is triggered.                                                                        |
+| `cron`                 | string         | no       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                               |
+| `cron_timezone`        | string         | no       | The timezone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`). |
+| `active`               | boolean        | no       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated.            |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"

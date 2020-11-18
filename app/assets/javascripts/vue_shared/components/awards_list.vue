@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { groupBy } from 'lodash';
-import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { glEmojiTag } from '../../emoji';
 import { __, sprintf } from '~/locale';
 
@@ -10,8 +10,8 @@ const NO_USER_ID = -1;
 
 export default {
   components: {
+    GlButton,
     GlIcon,
-    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -64,7 +64,7 @@ export default {
   methods: {
     getAwardClassBindings(awardList) {
       return {
-        active: this.hasReactionByCurrentUser(awardList),
+        selected: this.hasReactionByCurrentUser(awardList),
         disabled: this.currentUserId === NO_USER_ID,
       };
     },
@@ -150,40 +150,39 @@ export default {
 
 <template>
   <div class="awards js-awards-block">
-    <button
+    <gl-button
       v-for="awardList in groupedAwards"
       :key="awardList.name"
       v-gl-tooltip.viewport
+      class="gl-mr-3"
       :class="awardList.classes"
       :title="awardList.title"
       data-testid="award-button"
-      class="btn award-control"
-      type="button"
       @click="handleAward(awardList.name)"
     >
-      <span data-testid="award-html" v-html="awardList.html"></span>
-      <span class="award-control-text js-counter">{{ awardList.list.length }}</span>
-    </button>
+      <template #emoji>
+        <span class="award-emoji-block" data-testid="award-html" v-html="awardList.html"></span>
+      </template>
+      <span class="js-counter">{{ awardList.list.length }}</span>
+    </gl-button>
     <div v-if="canAwardEmoji" class="award-menu-holder">
-      <button
+      <gl-button
         v-gl-tooltip.viewport
         :class="addButtonClass"
-        class="award-control btn js-add-award"
+        class="add-reaction-button js-add-award"
         title="Add reaction"
         :aria-label="__('Add reaction')"
-        type="button"
       >
-        <span class="award-control-icon award-control-icon-neutral">
+        <span class="reaction-control-icon reaction-control-icon-neutral">
           <gl-icon aria-hidden="true" name="slight-smile" />
         </span>
-        <span class="award-control-icon award-control-icon-positive">
+        <span class="reaction-control-icon reaction-control-icon-positive">
           <gl-icon aria-hidden="true" name="smiley" />
         </span>
-        <span class="award-control-icon award-control-icon-super-positive">
-          <gl-icon aria-hidden="true" name="smiley" />
+        <span class="reaction-control-icon reaction-control-icon-super-positive">
+          <gl-icon aria-hidden="true" name="smile" />
         </span>
-        <gl-loading-icon size="md" color="dark" class="award-control-icon-loading" />
-      </button>
+      </gl-button>
     </div>
   </div>
 </template>

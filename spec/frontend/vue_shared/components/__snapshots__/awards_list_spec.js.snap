@@ -5,12 +5,17 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   class="awards js-awards-block"
 >
   <button
-    class="btn award-control"
+    class="btn gl-mr-3 btn-default btn-md gl-button"
     data-testid="award-button"
     title="Ada, Leonardo, and Marie"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -23,18 +28,28 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      3
+       
+      <span
+        class="js-counter"
+      >
+        3
+      </span>
     </span>
   </button>
   <button
-    class="btn award-control active"
+    class="btn gl-mr-3 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You, Ada, and Marie"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -47,18 +62,28 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      3
+       
+      <span
+        class="js-counter"
+      >
+        3
+      </span>
     </span>
   </button>
   <button
-    class="btn award-control"
+    class="btn gl-mr-3 btn-default btn-md gl-button"
     data-testid="award-button"
     title="Ada and Jane"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -71,18 +96,28 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      2
+       
+      <span
+        class="js-counter"
+      >
+        2
+      </span>
     </span>
   </button>
   <button
-    class="btn award-control active"
+    class="btn gl-mr-3 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You, Ada, Jane, and Leonardo"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -95,18 +130,28 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      4
+       
+      <span
+        class="js-counter"
+      >
+        4
+      </span>
     </span>
   </button>
   <button
-    class="btn award-control active"
+    class="btn gl-mr-3 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -119,18 +164,28 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      1
+       
+      <span
+        class="js-counter"
+      >
+        1
+      </span>
     </span>
   </button>
   <button
-    class="btn award-control"
+    class="btn gl-mr-3 btn-default btn-md gl-button"
     data-testid="award-button"
     title="Marie"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -143,18 +198,28 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      1
+       
+      <span
+        class="js-counter"
+      >
+        1
+      </span>
     </span>
   </button>
   <button
-    class="btn award-control active"
+    class="btn gl-mr-3 btn-default btn-md gl-button selected"
     data-testid="award-button"
     title="You"
     type="button"
   >
+    <!---->
+     
+    <!---->
+     
     <span
+      class="award-emoji-block"
       data-testid="award-html"
     >
       
@@ -167,9 +232,14 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     </span>
      
     <span
-      class="award-control-text js-counter"
+      class="gl-button-text"
     >
-      1
+       
+      <span
+        class="js-counter"
+      >
+        1
+      </span>
     </span>
   </button>
    
@@ -178,46 +248,59 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   >
     <button
       aria-label="Add reaction"
-      class="award-control btn js-add-award js-test-add-button-class"
+      class="btn add-reaction-button js-add-award btn-default btn-md gl-button js-test-add-button-class"
       title="Add reaction"
       type="button"
     >
-      <span
-        class="award-control-icon award-control-icon-neutral"
-      >
-        <gl-icon-stub
-          aria-hidden="true"
-          name="slight-smile"
-          size="16"
-        />
-      </span>
+      <!---->
        
+      <!---->
+        
       <span
-        class="award-control-icon award-control-icon-positive"
+        class="gl-button-text"
       >
-        <gl-icon-stub
-          aria-hidden="true"
-          name="smiley"
-          size="16"
-        />
+        <span
+          class="reaction-control-icon reaction-control-icon-neutral"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-icon s16"
+            data-testid="slight-smile-icon"
+          >
+            <use
+              href="#slight-smile"
+            />
+          </svg>
+        </span>
+         
+        <span
+          class="reaction-control-icon reaction-control-icon-positive"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-icon s16"
+            data-testid="smiley-icon"
+          >
+            <use
+              href="#smiley"
+            />
+          </svg>
+        </span>
+         
+        <span
+          class="reaction-control-icon reaction-control-icon-super-positive"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-icon s16"
+            data-testid="smile-icon"
+          >
+            <use
+              href="#smile"
+            />
+          </svg>
+        </span>
       </span>
-       
-      <span
-        class="award-control-icon award-control-icon-super-positive"
-      >
-        <gl-icon-stub
-          aria-hidden="true"
-          name="smiley"
-          size="16"
-        />
-      </span>
-       
-      <gl-loading-icon-stub
-        class="award-control-icon-loading"
-        color="dark"
-        label="Loading"
-        size="md"
-      />
     </button>
   </div>
 </div>

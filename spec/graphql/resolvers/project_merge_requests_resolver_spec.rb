@@ -50,7 +50,7 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
     end
   end
 
-  def resolve_mr(project, args, resolver: described_class, user: current_user)
+  def resolve_mr(project, resolver: described_class, user: current_user, **args)
     resolve(resolver, obj: project, args: args, ctx: { current_user: user })
   end
 end

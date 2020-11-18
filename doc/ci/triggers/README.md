@@ -268,5 +268,5 @@ This behavior can also be achieved through GitLab's UI with
 Old triggers, created before GitLab 9.0 are marked as legacy.
 
 Triggers with the legacy label do not have an associated user and only have
-access to the current project. They are considered deprecated and will be
+access to the current project. They are considered deprecated and might be
 removed with one of the future versions of GitLab.

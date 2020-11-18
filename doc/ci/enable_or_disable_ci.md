@@ -31,7 +31,7 @@ either:
 - Site-wide by modifying the settings in `gitlab.yml` and `gitlab.rb` for source
   and Omnibus installations respectively.
 
-This only applies to pipelines run as part of GitLab CI/CD. This will not enable or disable
+This only applies to pipelines run as part of GitLab CI/CD. This doesn't enable or disable
 pipelines that are run from an [external integration](../user/project/integrations/overview.md#integrations-listing).
 
 ## Per-project user setting
@@ -42,7 +42,7 @@ To enable or disable GitLab CI/CD Pipelines in your project:
 1. Expand the **Repository** section
 1. Enable or disable the **Pipelines** toggle as required.
 
-**Project visibility** will also affect pipeline visibility. If set to:
+**Project visibility** also affects pipeline visibility. If set to:
 
 - **Private**: Only project members can access pipelines.
 - **Internal** or **Public**: Pipelines can be set to either **Only Project Members**
@@ -57,9 +57,9 @@ for source installations, and `gitlab.rb` for Omnibus installations.
 
 Two things to note:
 
-- Disabling GitLab CI/CD, will affect only newly-created projects. Projects that
-  had it enabled prior to this modification, will work as before.
-- Even if you disable GitLab CI/CD, users will still be able to enable it in the
+- Disabling GitLab CI/CD affects only newly-created projects. Projects that
+  had it enabled prior to this modification work as before.
+- Even if you disable GitLab CI/CD, users can still enable it in the
   project's settings.
 
 For installations from source, open `gitlab.yml` with your editor and set

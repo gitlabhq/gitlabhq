@@ -55,6 +55,7 @@ dependencies, but the UI only shows one of the shortest paths.
 Dependency Paths are supported for the following package managers:
 
 - [NuGet](https://www.nuget.org/)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 
 ## Licenses
 

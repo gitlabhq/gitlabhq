@@ -12,7 +12,10 @@ export default class FileTemplateSelector {
 
     this.$dropdown = $(cfg.dropdown);
     this.$wrapper = $(cfg.wrapper);
-    this.$loadingIcon = this.$wrapper.find('.fa-chevron-down');
+    this.$dropdownIcon = this.$wrapper.find('.dropdown-menu-toggle-icon');
+    this.$loadingIcon = $(
+      '<div class="gl-spinner gl-spinner-orange gl-spinner-sm gl-absolute gl-top-3 gl-right-3 gl-display-none"></div>',
+    ).insertAfter(this.$dropdownIcon);
     this.$dropdownToggleText = this.$wrapper.find('.dropdown-toggle-text');
 
     this.initDropdown();
@@ -45,15 +48,13 @@ export default class FileTemplateSelector {
   }
 
   renderLoading() {
-    this.$loadingIcon
-      .addClass('gl-spinner gl-spinner-orange gl-spinner-sm')
-      .removeClass('fa-chevron-down');
+    this.$loadingIcon.removeClass('gl-display-none');
+    this.$dropdownIcon.addClass('gl-display-none');
   }
 
   renderLoaded() {
-    this.$loadingIcon
-      .addClass('fa-chevron-down')
-      .removeClass('gl-spinner gl-spinner-orange gl-spinner-sm');
+    this.$loadingIcon.addClass('gl-display-none');
+    this.$dropdownIcon.removeClass('gl-display-none');
   }
 
   reportSelection(options) {

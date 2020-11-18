@@ -222,6 +222,7 @@ class Project < ApplicationRecord
   has_many :snippets, class_name: 'ProjectSnippet'
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
+  has_many :exported_protected_branches
   has_many :protected_tags
   has_many :repository_languages, -> { order "share DESC" }
   has_many :designs, inverse_of: :project, class_name: 'DesignManagement::Design'

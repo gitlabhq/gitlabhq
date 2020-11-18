@@ -13,15 +13,14 @@ This document lists the configuration options for your GitLab `.gitlab-ci.yml` f
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
-While you are authoring your `.gitlab-ci.yml` file, you can validate it
-by using the [CI Lint](../lint.md) tool.
-project namespace. For example, `https://gitlab.example.com/gitlab-org/project-123/-/ci/lint`.
+When you are editing your `.gitlab-ci.yml` file, you can validate it with the
+[CI Lint](../lint.md) tool.
 
 ## Job keywords
 
 A job is defined as a list of keywords that define the job's behavior.
 
-The following table lists available keywords for jobs:
+The keywords available for jobs are:
 
 | Keyword                                            | Description                                                                                                                                                                         |
 |:---------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -69,20 +68,20 @@ can't be used as job names**:
 - `cache`
 - `include`
 
-## Global keywords
+### Reserved keywords
 
-Some keywords must be defined at a global level, affecting all jobs in the pipeline.
-
-### Using reserved keywords
-
-If you get validation error when using specific values (for example, `true` or `false`), try to:
+If you get a validation error when using specific values (for example, `true` or `false`), try to:
 
 - Quote them.
 - Change them to a different form. For example, `/bin/true`.
 
+## Global keywords
+
+Some keywords are defined at a global level and affect all jobs in the pipeline.
+
 ### Global defaults
 
-Some keywords can be set globally as the default for all jobs using the
+Some keywords can be set globally as the default for all jobs with the
 `default:` keyword. Default keywords can then be overridden by job-specific
 configuration.
 
@@ -121,7 +120,7 @@ rspec 2.6:
 You can disable inheritance of globally defined defaults
 and variables with the `inherit:` keyword.
 
-To enable or disable the inheritance of all `variables:` or `default:` keywords, use the following format:
+To enable or disable the inheritance of all `default:` or `variables:` keywords, use:
 
 - `default: true` or `default: false`
 - `variables: true` or `variables: false`
@@ -201,14 +200,13 @@ karma:
 `stages` is used to define stages that contain jobs and is defined
 globally for the pipeline.
 
-The specification of `stages` allows for having flexible multi stage pipelines.
-The ordering of elements in `stages` defines the ordering of jobs' execution:
+The order of the `stages` items defines the execution order for jobs:
 
-1. Jobs of the same stage are run in parallel.
-1. Jobs of the next stage are run after the jobs from the previous stage
+1. Jobs in the same stage are run in parallel.
+1. Jobs in the next stage are run after the jobs from the previous stage
    complete successfully.
 
-Let's consider the following example, which defines 3 stages:
+For example:
 
 ```yaml
 stages:
@@ -341,17 +339,17 @@ include:
 > - Available for Starter, Premium, and Ultimate in GitLab 10.6 and later.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Core in 11.4.
 
-Using the `include` keyword allows the inclusion of external YAML files. This helps
-to break down the CI/CD configuration into multiple files and increases readability for long configuration files.
+Use the `include` keyword to include external YAML files in your CI/CD configuration. This
+breaks down the CI/CD configuration into multiple files and increases readability for long configuration files.
 It's also possible to have template files stored in a central repository and projects include their
 configuration files. This helps avoid duplicated configuration, for example, global default variables for all projects.
 
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
 otherwise the external file is not included.
 
-Using [YAML anchors](#anchors) across different YAML files sourced by `include` is not
-supported. You must only refer to anchors in the same file. Instead
-of using YAML anchors, you can use the [`extends` keyword](#extends).
+You can't use [YAML anchors](#anchors) across different YAML files sourced by `include`.
+You can only refer to anchors in the same file. Instead of YAML anchors, you can
+use the [`extends` keyword](#extends).
 
 `include` supports the following inclusion methods:
 
@@ -381,13 +379,13 @@ definitions. Local definitions in `.gitlab-ci.yml` override included definitions
 #### `include:local`
 
 `include:local` includes a file from the same repository as `.gitlab-ci.yml`.
-It's referenced using full paths relative to the root directory (`/`).
+It's referenced with full paths relative to the root directory (`/`).
 
 You can only use files that are tracked by Git on the same branch
-your configuration file is on. In other words, when using a `include:local`, make
+your configuration file is on. If you `include:local`, make
 sure that both `.gitlab-ci.yml` and the local file are on the same branch.
 
-Including local files through Git submodules paths is not supported.
+You can't include local files through Git submodules paths.
 
 All [nested includes](#nested-includes) are executed in the scope of the same project,
 so it's possible to use local, project, remote, or template includes.
@@ -412,7 +410,7 @@ include: '.gitlab-ci-production.yml'
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53903) in GitLab 11.7.
 
 To include files from another private project under the same GitLab instance,
-use `include:file`. This file is referenced using full paths relative to the
+use `include:file`. This file is referenced with full paths relative to the
 root directory (`/`). For example:
 
 ```yaml

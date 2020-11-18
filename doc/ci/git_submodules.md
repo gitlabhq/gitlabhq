@@ -21,7 +21,7 @@ type: reference
 
 ## Configuring the `.gitmodules` file
 
-If dealing with [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), your project will probably have a file
+If dealing with [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), your project probably has a file
 named `.gitmodules`.
 
 Let's consider the following example:
@@ -44,11 +44,11 @@ for all your local checkouts. The `.gitmodules` would look like:
   url = ../../group/project.git
 ```
 
-The above configuration will instruct Git to automatically deduce the URL that
-should be used when cloning sources. Whether you use HTTP(S) or SSH, Git will use
-that same channel and it will allow to make all your CI jobs use HTTP(S)
-(because GitLab CI/CD only uses HTTP(S) for cloning your sources), and all your local
-clones will continue using SSH.
+The above configuration instructs Git to automatically deduce the URL that
+should be used when cloning sources. Whether you use HTTP(S) or SSH, Git uses
+that same channel and it makes all your CI jobs use HTTP(S).
+GitLab CI/CD only uses HTTP(S) for cloning your sources, and all your local
+clones continue using SSH.
 
 For all other submodules not located on the same GitLab server, use the full
 HTTP(S) protocol URL:
@@ -94,7 +94,7 @@ correctly with your CI jobs:
    whether you have recursive submodules.
 
 The rationale to set the `sync` and `update` in `before_script` is because of
-the way Git submodules work. On a fresh runner workspace, Git will set the
+the way Git submodules work. On a fresh runner workspace, Git sets the
 submodule URL including the token in `.git/config`
 (or `.git/modules/<submodule>/config`) based on `.gitmodules` and the current
 remote URL. On subsequent jobs on the same runner, `.git/config` is cached
