@@ -82,6 +82,10 @@ The process is as follows:
    release post (at or prior to X.11 and X.5 releases).
 1. Fields meeting criteria are removed in X.0 or X.6.
 
+### List of removed items
+
+View the [fields, enums, and other items we removed](removed_items.md) from the GraphQL API.
+
 ## Available queries
 
 The GraphQL API includes the following queries at the root level:

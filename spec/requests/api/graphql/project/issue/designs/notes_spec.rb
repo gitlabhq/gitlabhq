@@ -30,7 +30,7 @@ RSpec.describe 'Getting designs related to an issue' do
 
     post_graphql(query(note_fields), current_user: nil)
 
-    designs_data = graphql_data['project']['issue']['designs']['designs']
+    designs_data = graphql_data['project']['issue']['designCollection']['designs']
     design_data = designs_data['nodes'].first
     note_data = design_data['notes']['nodes'].first
 
@@ -56,7 +56,7 @@ RSpec.describe 'Getting designs related to an issue' do
         'issue',
         { iid: design.issue.iid.to_s },
         query_graphql_field(
-          'designs', {}, design_node
+          'designCollection', {}, design_node
         )
       )
     )

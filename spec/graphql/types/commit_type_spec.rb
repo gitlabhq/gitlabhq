@@ -10,7 +10,7 @@ RSpec.describe GitlabSchema.types['Commit'] do
   it 'contains attributes related to commit' do
     expect(described_class).to have_graphql_fields(
       :id, :sha, :title, :description, :description_html, :message, :title_html, :authored_date,
-      :author_name, :author_gravatar, :author, :web_url, :web_path, :latest_pipeline,
+      :author_name, :author_gravatar, :author, :web_url, :web_path,
       :pipelines, :signature_html
     )
   end

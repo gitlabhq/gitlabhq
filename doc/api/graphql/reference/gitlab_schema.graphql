@@ -2849,26 +2849,6 @@ type Commit {
   id: ID!
 
   """
-  Latest pipeline of the commit. Deprecated in 12.5: Use `pipelines`
-  """
-  latestPipeline(
-    """
-    Filter pipelines by the ref they are run for
-    """
-    ref: String
-
-    """
-    Filter pipelines by the sha of the commit they are run for
-    """
-    sha: String
-
-    """
-    Filter pipelines by their status
-    """
-    status: PipelineStatusEnum
-  ): Pipeline @deprecated(reason: "Use `pipelines`. Deprecated in 12.5")
-
-  """
   Raw commit message
   """
   message: String
@@ -7746,11 +7726,6 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   designCollection: DesignCollection
 
   """
-  The designs associated with this issue. Deprecated in 12.2: Use `designCollection`
-  """
-  designs: DesignCollection @deprecated(reason: "Use `designCollection`. Deprecated in 12.2")
-
-  """
   Indicates discussion is locked on the issue
   """
   discussionLocked: Boolean!
@@ -8553,11 +8528,6 @@ type GrafanaIntegration {
   Internal ID of the Grafana integration
   """
   id: ID!
-
-  """
-  API token for the Grafana integration. Deprecated in 12.7: Plain text token has been masked for security reasons
-  """
-  token: String! @deprecated(reason: "Plain text token has been masked for security reasons. Deprecated in 12.7")
 
   """
   Timestamp of the issue's last activity
@@ -10371,11 +10341,6 @@ type Issue implements CurrentUserTodos & Noteable {
   Collection of design images associated with this issue
   """
   designCollection: DesignCollection
-
-  """
-  The designs associated with this issue. Deprecated in 12.2: Use `designCollection`
-  """
-  designs: DesignCollection @deprecated(reason: "Use `designCollection`. Deprecated in 12.2")
 
   """
   Indicates discussion is locked on the issue
@@ -12489,11 +12454,6 @@ type MergeRequest implements CurrentUserTodos & Noteable {
     """
     last: Int
   ): LabelConnection
-
-  """
-  Default merge commit message of the merge request. Deprecated in 11.8: Use `defaultMergeCommitMessage`
-  """
-  mergeCommitMessage: String @deprecated(reason: "Use `defaultMergeCommitMessage`. Deprecated in 11.8")
 
   """
   SHA of the merge request commit (set once merged)
@@ -21322,11 +21282,6 @@ input Timeframe {
 }
 
 type Timelog {
-  """
-  Timestamp of when the time tracked was spent at. Deprecated in 12.10: Use `spentAt`
-  """
-  date: Time! @deprecated(reason: "Use `spentAt`. Deprecated in 12.10")
-
   """
   The issue that logged time was added to
   """

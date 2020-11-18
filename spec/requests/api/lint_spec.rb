@@ -9,12 +9,13 @@ RSpec.describe API::Lint do
         File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
       end
 
-      it 'passes validation' do
+      it 'passes validation without warnings or errors' do
         post api('/ci/lint'), params: { content: yaml_content }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
         expect(json_response['status']).to eq('valid')
+        expect(json_response['warnings']).to eq([])
         expect(json_response['errors']).to eq([])
       end
 
@@ -23,6 +24,20 @@ RSpec.describe API::Lint do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to have_key('merged_yaml')
+      end
+    end
+
+    context 'with valid .gitlab-ci.yaml with warnings' do
+      let(:yaml_content) { { job: { script: 'ls', rules: [{ when: 'always' }] } }.to_yaml }
+
+      it 'passes validation but returns warnings' do
+        post api('/ci/lint'), params: { content: yaml_content }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['status']).to eq('valid')
+        expect(json_response['warnings']).not_to be_empty
+        expect(json_response['status']).to eq('valid')
+        expect(json_response['errors']).to eq([])
       end
     end
 
@@ -35,6 +50,7 @@ RSpec.describe API::Lint do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('invalid')
+          expect(json_response['warnings']).to eq([])
           expect(json_response['errors']).to eq(['Invalid configuration format'])
         end
 
@@ -54,6 +70,7 @@ RSpec.describe API::Lint do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('invalid')
+          expect(json_response['warnings']).to eq([])
           expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
         end
 
@@ -82,7 +99,18 @@ RSpec.describe API::Lint do
     let(:project) { create(:project, :repository) }
     let(:dry_run) { nil }
 
-    RSpec.shared_examples 'valid config' do
+    RSpec.shared_examples 'valid config with warnings' do
+      it 'passes validation with warnings' do
+        ci_lint
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['valid']).to eq(true)
+        expect(json_response['errors']).to eq([])
+        expect(json_response['warnings']).not_to be_empty
+      end
+    end
+
+    RSpec.shared_examples 'valid config without warnings' do
       it 'passes validation' do
         ci_lint
 
@@ -94,6 +122,7 @@ RSpec.describe API::Lint do
         expect(json_response).to be_an Hash
         expect(json_response['merged_yaml']).to eq(expected_yaml)
         expect(json_response['valid']).to eq(true)
+        expect(json_response['warnings']).to eq([])
         expect(json_response['errors']).to eq([])
       end
     end
@@ -105,6 +134,7 @@ RSpec.describe API::Lint do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['merged_yaml']).to eq(yaml_content)
         expect(json_response['valid']).to eq(false)
+        expect(json_response['warnings']).to eq([])
         expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
       end
     end
@@ -157,6 +187,7 @@ RSpec.describe API::Lint do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['merged_yaml']).to eq(nil)
             expect(json_response['valid']).to eq(false)
+            expect(json_response['warnings']).to eq([])
             expect(json_response['errors']).to eq(['Insufficient permissions to create a new pipeline'])
           end
         end
@@ -186,7 +217,7 @@ RSpec.describe API::Lint do
             )
           end
 
-          it_behaves_like 'valid config'
+          it_behaves_like 'valid config without warnings'
         end
       end
     end
@@ -242,13 +273,19 @@ RSpec.describe API::Lint do
         context 'when running as dry run' do
           let(:dry_run) { true }
 
-          it_behaves_like 'valid config'
+          it_behaves_like 'valid config without warnings'
         end
 
         context 'when running static validation' do
           let(:dry_run) { false }
 
-          it_behaves_like 'valid config'
+          it_behaves_like 'valid config without warnings'
+        end
+
+        context 'With warnings' do
+          let(:yaml_content) { { job: { script: 'ls', rules: [{ when: 'always' }] } }.to_yaml }
+
+          it_behaves_like 'valid config with warnings'
         end
       end
 

@@ -1148,10 +1148,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sourcegraph/code-host-integration@0.0.50":
-  version "0.0.50"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.50.tgz#3f91be4c1b117efbf3d49c73033a6b1880db1c70"
-  integrity sha512-Hf4JeXDnqxOpW8lrkmgzKCYKklQhS6f87j4EPxK//UdjV7W7rtBhsxr6RQqdV2VdVaVCLQW2tfA/tkm0zDk8CQ==
+"@sourcegraph/code-host-integration@0.0.52":
+  version "0.0.52"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.52.tgz#3668364647b9248a0c43d738f7b046c551311338"
+  integrity sha512-HYmiGuQ3XOQHJIQaRv63Wcdl6y1rgryBrCLzJd/mG5gkkhydTqBuf3wWFKgfL3PCm026OrjXu4PvOYU1fCTZJQ==
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"

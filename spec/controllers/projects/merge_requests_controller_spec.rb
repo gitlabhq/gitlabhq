@@ -95,7 +95,8 @@ RSpec.describe Projects::MergeRequestsController do
               project,
               merge_request,
               'json',
-              diff_head: true))
+              diff_head: true,
+              view: 'inline'))
         end
       end
 

@@ -7,7 +7,6 @@ RSpec.describe GitlabSchema.types['GrafanaIntegration'] do
     %i[
       id
       grafana_url
-      token
       enabled
       created_at
       updated_at

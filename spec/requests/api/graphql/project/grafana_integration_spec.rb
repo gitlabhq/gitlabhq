@@ -45,7 +45,6 @@ RSpec.describe 'Getting Grafana Integration' do
 
       it_behaves_like 'a working graphql query'
 
-      specify { expect(integration_data['token']).to eql grafana_integration.masked_token }
       specify { expect(integration_data['grafanaUrl']).to eql grafana_integration.grafana_url }
 
       specify do

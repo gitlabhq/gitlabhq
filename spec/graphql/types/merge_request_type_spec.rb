@@ -21,7 +21,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       diff_refs diff_stats diff_stats_summary
       force_remove_source_branch merge_status in_progress_merge_commit_sha
       merge_error allow_collaboration should_be_rebased rebase_commit_sha
-      rebase_in_progress merge_commit_message default_merge_commit_message
+      rebase_in_progress default_merge_commit_message
       merge_ongoing mergeable_discussions_state web_url
       source_branch_exists target_branch_exists
       upvotes downvotes head_pipeline pipelines task_completion_status

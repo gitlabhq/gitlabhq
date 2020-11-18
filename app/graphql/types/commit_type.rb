@@ -44,12 +44,5 @@ module Types
           null: true,
           description: 'Pipelines of the commit ordered latest first',
           resolver: Resolvers::CommitPipelinesResolver
-
-    field :latest_pipeline,
-          type: Types::Ci::PipelineType,
-          null: true,
-          deprecated: { reason: 'Use `pipelines`', milestone: '12.5' },
-          description: 'Latest pipeline of the commit',
-          resolver: Resolvers::CommitPipelinesResolver.last
   end
 end

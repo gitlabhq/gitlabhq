@@ -7793,49 +7793,6 @@
               "deprecationReason": null
             },
             {
-              "name": "latestPipeline",
-              "description": "Latest pipeline of the commit. Deprecated in 12.5: Use `pipelines`",
-              "args": [
-                {
-                  "name": "status",
-                  "description": "Filter pipelines by their status",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "PipelineStatusEnum",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ref",
-                  "description": "Filter pipelines by the ref they are run for",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "sha",
-                  "description": "Filter pipelines by the sha of the commit they are run for",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Pipeline",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `pipelines`. Deprecated in 12.5"
-            },
-            {
               "name": "message",
               "description": "Raw commit message",
               "args": [
@@ -21469,20 +21426,6 @@
               "deprecationReason": null
             },
             {
-              "name": "designs",
-              "description": "The designs associated with this issue. Deprecated in 12.2: Use `designCollection`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "DesignCollection",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `designCollection`. Deprecated in 12.2"
-            },
-            {
               "name": "discussionLocked",
               "description": "Indicates discussion is locked on the issue",
               "args": [
@@ -23702,24 +23645,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "token",
-              "description": "API token for the Grafana integration. Deprecated in 12.7: Plain text token has been masked for security reasons",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Plain text token has been masked for security reasons. Deprecated in 12.7"
             },
             {
               "name": "updatedAt",
@@ -28368,20 +28293,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "designs",
-              "description": "The designs associated with this issue. Deprecated in 12.2: Use `designCollection`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "DesignCollection",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `designCollection`. Deprecated in 12.2"
             },
             {
               "name": "discussionLocked",
@@ -34203,20 +34114,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "mergeCommitMessage",
-              "description": "Default merge commit message of the merge request. Deprecated in 11.8: Use `defaultMergeCommitMessage`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `defaultMergeCommitMessage`. Deprecated in 11.8"
             },
             {
               "name": "mergeCommitSha",
@@ -61924,24 +61821,6 @@
           "name": "Timelog",
           "description": null,
           "fields": [
-            {
-              "name": "date",
-              "description": "Timestamp of when the time tracked was spent at. Deprecated in 12.10: Use `spentAt`",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Use `spentAt`. Deprecated in 12.10"
-            },
             {
               "name": "issue",
               "description": "The issue that logged time was added to",

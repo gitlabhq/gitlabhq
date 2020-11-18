@@ -51,6 +51,14 @@ export default {
       );
     },
   },
+  methods: {
+    showCommentLeft(line) {
+      return !this.inline || line.left;
+    },
+    showCommentRight(line) {
+      return !this.inline || (line.right && !line.left);
+    },
+  },
   userColorScheme: window.gon.user_color_scheme,
 };
 </script>
@@ -93,10 +101,7 @@ export default {
         :class="line.commentRowClasses"
         class="diff-grid-comments diff-tr notes_holder"
       >
-        <div
-          v-if="!inline || (line.left && line.left.discussions.length)"
-          class="diff-td notes-content parallel old"
-        >
+        <div v-if="showCommentLeft(line)" class="diff-td notes-content parallel old">
           <diff-comment-cell
             v-if="line.left"
             :line="line.left"
@@ -106,10 +111,7 @@ export default {
             line-position="left"
           />
         </div>
-        <div
-          v-if="!inline || (line.right && line.right.discussions.length)"
-          class="diff-td notes-content parallel new"
-        >
+        <div v-if="showCommentRight(line)" class="diff-td notes-content parallel new">
           <diff-comment-cell
             v-if="line.right"
             :line="line.right"

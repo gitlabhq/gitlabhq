@@ -49,12 +49,29 @@ describe('DiffView', () => {
     expect(wrapper.find(DiffExpansionCell).exists()).toBe(true);
   });
 
-  it('renders a comment row', () => {
-    const wrapper = createWrapper({
-      diffLines: [{ renderCommentRow: true, left: { lineDraft: {} } }],
-    });
-    expect(wrapper.find(DiffCommentCell).exists()).toBe(true);
-  });
+  it.each`
+    type          | side       | container | sides                                                    | total
+    ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${2}
+    ${'parallel'} | ${'right'} | ${'.new'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${2}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} } }}                           | ${1}
+    ${'inline'}   | ${'right'} | ${'.new'} | ${{ right: { lineDraft: {} } }}                          | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {} }, right: { lineDraft: {} } }} | ${1}
+  `(
+    'renders a $type comment row with comment cell on $side',
+    ({ type, container, sides, total }) => {
+      const wrapper = createWrapper({
+        diffLines: [{ renderCommentRow: true, ...sides }],
+        inline: type === 'inline',
+      });
+      expect(wrapper.findAll(DiffCommentCell).length).toBe(total);
+      expect(
+        wrapper
+          .find(container)
+          .find(DiffCommentCell)
+          .exists(),
+      ).toBe(true);
+    },
+  );
 
   it('renders a draft row', () => {
     const wrapper = createWrapper({
