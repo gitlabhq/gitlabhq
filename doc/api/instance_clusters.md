@@ -35,6 +35,8 @@ Example response:
     "id": 9,
     "name": "cluster-1",
     "created_at": "2020-07-14T18:36:10.440Z",
+    "managed": true,
+    "enabled": true,
     "domain": null,
     "provider_type": "user",
     "platform_type": "kubernetes",
@@ -98,9 +100,9 @@ Returns a single instance cluster.
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `cluster_id` | integer | yes | The ID of the cluster |
+| Attribute    | Type    | Required | Description           |
+| ------------ | ------- | -------- | --------------------- |
+| `cluster_id` | integer | yes      | The ID of the cluster |
 
 ```plaintext
 GET /admin/clusters/:cluster_id
@@ -119,6 +121,8 @@ Example response:
   "id": 9,
   "name": "cluster-1",
   "created_at": "2020-07-14T18:36:10.440Z",
+  "managed": true,
+  "enabled": true,
   "domain": null,
   "provider_type": "user",
   "platform_type": "kubernetes",
@@ -153,19 +157,19 @@ POST /admin/clusters/add
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `name` | string | yes | The name of the cluster |
-| `domain` | string | no | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster |
-| `environment_scope` | string | no | The associated environment to the cluster. Defaults to `*` |
-| `management_project_id` | integer | no | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
-| `enabled` | boolean | no | Determines if cluster is active or not, defaults to true |
-| `managed` | boolean | no | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true |
-| `platform_kubernetes_attributes[api_url]` | string | yes | The URL to access the Kubernetes API |
-| `platform_kubernetes_attributes[token]` | string | yes | The token to authenticate against Kubernetes |
-| `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate. Required if API is using a self-signed TLS certificate. |
-| `platform_kubernetes_attributes[namespace]` | string | no | The unique namespace related to the project |
-| `platform_kubernetes_attributes[authorization_type]` | string | no | The cluster authorization type: `rbac`, `abac` or `unknown_authorization`. Defaults to `rbac`. |
+| Attribute                                            | Type    | Required | Description                                                                                           |
+| ---------------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| `name`                                               | string  | yes      | The name of the cluster                                                                               |
+| `domain`                                             | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster                       |
+| `environment_scope`                                  | string  | no       | The associated environment to the cluster. Defaults to `*`                                            |
+| `management_project_id`                              | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster            |
+| `enabled`                                            | boolean | no       | Determines if cluster is active or not, defaults to `true`                                            |
+| `managed`                                            | boolean | no       | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to `true` |
+| `platform_kubernetes_attributes[api_url]`            | string  | yes      | The URL to access the Kubernetes API                                                                  |
+| `platform_kubernetes_attributes[token]`              | string  | yes      | The token to authenticate against Kubernetes                                                          |
+| `platform_kubernetes_attributes[ca_cert]`            | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                              |
+| `platform_kubernetes_attributes[namespace]`          | string  | no       | The unique namespace related to the project                                                           |
+| `platform_kubernetes_attributes[authorization_type]` | string  | no       | The cluster authorization type: `rbac`, `abac` or `unknown_authorization`. Defaults to `rbac`.        |
 
 Example request:
 
@@ -184,6 +188,8 @@ Example response:
   "id": 11,
   "name": "cluster-3",
   "created_at": "2020-07-14T18:42:50.805Z",
+  "managed": true,
+  "enabled": true,
   "domain": null,
   "provider_type": "user",
   "platform_type": "kubernetes",
@@ -218,18 +224,19 @@ PUT /admin/clusters/:cluster_id
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `cluster_id` | integer | yes | The ID of the cluster |
-| `name` | string | no | The name of the cluster |
-| `domain` | string | no | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster |
-| `environment_scope` | string | no | The associated environment to the cluster |
-| `management_project_id` | integer | no | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
-| `enabled` | boolean | no | Determines if cluster is active or not, defaults to true |
-| `platform_kubernetes_attributes[api_url]` | string | no | The URL to access the Kubernetes API |
-| `platform_kubernetes_attributes[token]` | string | no | The token to authenticate against Kubernetes |
-| `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate. Required if API is using a self-signed TLS certificate. |
-| `platform_kubernetes_attributes[namespace]` | string | no | The unique namespace related to the project |
+| Attribute                                   | Type    | Required | Description                                                                                |
+| ------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
+| `cluster_id`                                | integer | yes      | The ID of the cluster                                                                      |
+| `name`                                      | string  | no       | The name of the cluster                                                                    |
+| `domain`                                    | string  | no       | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster            |
+| `environment_scope`                         | string  | no       | The associated environment to the cluster                                                  |
+| `management_project_id`                     | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
+| `enabled`                                   | boolean | no       | Determines if cluster is active or not                                                     |
+| `managed`                                   | boolean | no       | Determines if GitLab will manage namespaces and service accounts for this cluster          |
+| `platform_kubernetes_attributes[api_url]`   | string  | no       | The URL to access the Kubernetes API                                                       |
+| `platform_kubernetes_attributes[token]`     | string  | no       | The token to authenticate against Kubernetes                                               |
+| `platform_kubernetes_attributes[ca_cert]`   | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
+| `platform_kubernetes_attributes[namespace]` | string  | no       | The unique namespace related to the project                                                |
 
 NOTE: **Note:**
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
@@ -252,6 +259,8 @@ Example response:
   "id": 9,
   "name": "update-cluster-name",
   "created_at": "2020-07-14T18:36:10.440Z",
+  "managed": true,
+  "enabled": true,
   "domain": null,
   "provider_type": "user",
   "platform_type": "kubernetes",
@@ -288,9 +297,9 @@ DELETE /admin/clusters/:cluster_id
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `cluster_id` | integer | yes | The ID of the cluster |
+| Attribute    | Type    | Required | Description           |
+| ------------ | ------- | -------- | --------------------- |
+| `cluster_id` | integer | yes      | The ID of the cluster |
 
 Example request:
 

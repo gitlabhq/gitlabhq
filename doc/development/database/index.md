@@ -59,6 +59,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Client-side connection-pool](client_side_connection_pool.md)
 - [Updating multiple values](setting_multiple_values.md)
 - [Constraints naming conventions](constraint_naming_convention.md)
+- [Query performance guidelines](../query_performance.md)
 
 ## Case studies
 

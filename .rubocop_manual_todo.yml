@@ -44,7 +44,6 @@ Graphql/ResolverType:
     - 'app/graphql/resolvers/base_resolver.rb'
     - 'app/graphql/resolvers/ci/jobs_resolver.rb'
     - 'app/graphql/resolvers/ci/pipeline_stages_resolver.rb'
-    - 'app/graphql/resolvers/error_tracking/sentry_error_stack_trace_resolver.rb'
     - 'app/graphql/resolvers/merge_requests_resolver.rb'
     - 'app/graphql/resolvers/users/group_count_resolver.rb'
     - 'ee/app/graphql/resolvers/geo/merge_request_diff_registries_resolver.rb'
