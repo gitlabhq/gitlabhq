@@ -58,8 +58,6 @@
   - 1
 - - create_commit_signature
   - 2
-- - create_evidence
-  - 2
 - - create_github_webhook
   - 2
 - - create_note_diff_file

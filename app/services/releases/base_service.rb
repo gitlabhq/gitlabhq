@@ -11,8 +11,6 @@ module Releases
       @project, @current_user, @params = project, user, params.dup
     end
 
-    delegate :repository, to: :project
-
     def tag_name
       params[:tag]
     end
@@ -39,19 +37,15 @@ module Releases
       end
     end
 
-    def existing_tag
-      strong_memoize(:existing_tag) do
-        repository.find_tag(tag_name)
-      end
-    end
-
-    def tag_exist?
-      existing_tag.present?
-    end
-
     def repository
       strong_memoize(:repository) do
         project.repository
+      end
+    end
+
+    def existing_tag
+      strong_memoize(:existing_tag) do
+        repository.find_tag(tag_name)
       end
     end
 

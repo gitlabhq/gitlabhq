@@ -24,19 +24,19 @@ The keywords available for jobs are:
 
 | Keyword                                            | Description                                                                                                                                                                         |
 |:---------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`script`](#script)                                | Shell script that is executed by a runner.                                                                                                                                           |
+| [`script`](#script)                                | Shell script that is executed by a runner.                                                                                                                                          |
 | [`after_script`](#after_script)                    | Override a set of commands that are executed after job.                                                                                                                             |
-| [`allow_failure`](#allow_failure)                  | Allow job to fail. Failed job does not contribute to commit status.                                                                                                                 |
+| [`allow_failure`](#allow_failure)                  | Allow job to fail. A failed job does not cause the pipeline to fail.                                                                                                                                          |
 | [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:exclude`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, and `artifacts:reports`. |
 | [`before_script`](#before_script)                  | Override a set of commands that are executed before job.                                                                                                                            |
-| [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, `cache:when`, and `cache:policy`.                                     |
+| [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, `cache:when`, and `cache:policy`.                       |
 | [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                             |
 | [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                          |
 | [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, `environment:auto_stop_in`, and `environment:action`. |
 | [`except`](#onlyexcept-basic)                      | Limit when jobs are not created. Also available: [`except:refs`, `except:kubernetes`, `except:variables`, and `except:changes`](#onlyexcept-advanced).                              |
-| [`extends`](#extends)                              | Configuration entries that this job inherits from.                                                                                                                       |
+| [`extends`](#extends)                              | Configuration entries that this job inherits from.                                                                                                                                  |
 | [`image`](#image)                                  | Use Docker images. Also available: `image:name` and `image:entrypoint`.                                                                                                             |
-| [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                          |
+| [`include`](#include)                              | Include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                             |
 | [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                |
 | [`only`](#onlyexcept-basic)                        | Limit when jobs are created. Also available: [`only:refs`, `only:kubernetes`, `only:variables`, and `only:changes`](#onlyexcept-advanced).                                          |
 | [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                |
@@ -47,7 +47,7 @@ The keywords available for jobs are:
 | [`rules`](#rules)                                  | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. May not be used alongside `only`/`except`.                              |
 | [`services`](#services)                            | Use Docker services images. Also available: `services:name`, `services:alias`, `services:entrypoint`, and `services:command`.                                                       |
 | [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                              |
-| [`tags`](#tags)                                    | List of tags that are used to select a runner.                                                                                                                                       |
+| [`tags`](#tags)                                    | List of tags that are used to select a runner.                                                                                                                                      |
 | [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                              |
 | [`trigger`](#trigger)                              | Defines a downstream pipeline trigger.                                                                                                                                              |
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                |
@@ -225,7 +225,7 @@ stages:
 There are also two edge cases worth mentioning:
 
 1. If no `stages` are defined in `.gitlab-ci.yml`, then the `build`,
-   `test` and `deploy` are allowed to be used as job's stage by default.
+   `test` and `deploy` can be used as job's stage by default.
 1. If a job does not specify a `stage`, the job is assigned the `test` stage.
 
 ### `workflow:rules`
@@ -488,8 +488,8 @@ include:
   - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
 ```
 
-All [nested includes](#nested-includes) are executed without context as public user, so only another remote
-or public project, or template, is allowed.
+All [nested includes](#nested-includes) are executed without context as a public user,
+so you can only `include` public projects or templates.
 
 #### `include:template`
 
@@ -521,9 +521,9 @@ so it's possible to use project, remote or template includes.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56836) in GitLab 11.9.
 
-Nested includes allow you to compose a set of includes.
+Use nested includes to compose a set of includes.
 
-A total of 100 includes is allowed, but duplicate includes are considered a configuration error.
+You can have up to 100 includes, but you can't have duplicate includes.
 
 In [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/28212) and later, the time limit
 to resolve all files is 30 seconds.
@@ -713,7 +713,7 @@ You can use special syntax in [`script`](README.md#script) sections to:
 ### `stage`
 
 `stage` is defined per-job and relies on [`stages`](#stages), which is defined
-globally. It allows to group jobs into different stages, and jobs of the same
+globally. Use `stage` to define which stage a job runs in, and jobs of the same
 `stage` are executed in parallel (subject to [certain conditions](#using-your-own-runners)). For example:
 
 ```yaml
@@ -989,7 +989,7 @@ If you attempt to use both keywords in the same job, the linter returns a
 
 #### Rules attributes
 
-The job attributes allowed by `rules` are:
+The job attributes you can use with `rules` are:
 
 - [`when`](#when): If not defined, defaults to `when: on_success`.
   - If used as `when: delayed`, `start_in` is also required.
@@ -1059,7 +1059,7 @@ In this example:
   is added to the [merge request pipeline](../merge_request_pipelines/index.md)
   with attributes of:
   - `when: manual` (manual job)
-  - `allow_failure: true` (allows the pipeline to continue running even if the manual job is not run)
+  - `allow_failure: true` (the pipeline continues running even if the manual job is not run)
 - If the pipeline is **not** for a merge request, the first rule doesn't match, and the
   second rule is evaluated.
 - If the pipeline is a scheduled pipeline, the second rule matches, and the job
@@ -1098,8 +1098,8 @@ for more details.
 
 Jobs defined with `rules` can trigger multiple pipelines with the same action. You
 don't have to explicitly configure rules for each type of pipeline to trigger them
-accidentally. Rules that are too loose (allowing too many types of pipelines) could
-cause a second pipeline to run unexpectedly.
+accidentally. Rules that are too broad could cause simultaneous pipelines of a different
+type to run unexpectedly.
 
 Some configurations that have the potential to cause duplicate pipelines cause a
 [pipeline warning](../troubleshooting.md#pipeline-warnings) to be displayed.
@@ -1124,8 +1124,8 @@ causes duplicated pipelines.
 There are multiple ways to avoid this:
 
 - Use [`workflow: rules`](#workflowrules) to specify which types of pipelines
-  can run. To eliminate duplicate pipelines, allow only merge request pipelines
-  or push (branch) pipelines.
+  can run. To eliminate duplicate pipelines, use merge request pipelines only
+  or push (branch) pipelines only.
 
 - Rewrite the rules to run the job only in very specific cases,
   and avoid using a final `when:` rule:
@@ -1323,8 +1323,8 @@ docker build:
 In this example:
 
 - If the pipeline is a merge request pipeline, check `Dockerfile` for changes.
-- If `Dockerfile` has changed, add the job to the pipeline as a manual job, and allow the pipeline
-  to continue running even if the job is not triggered (`allow_failure: true`).
+- If `Dockerfile` has changed, add the job to the pipeline as a manual job, and the pipeline
+  continues running even if the job is not triggered (`allow_failure: true`).
 - If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
 
 To use `rules: changes` with branch pipelines instead of merge request pipelines,
@@ -1511,11 +1511,10 @@ There are a few rules that apply to the usage of job policy:
 
 - `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
-- `only` and `except` allow the use of regular expressions ([supported regexp syntax](#supported-onlyexcept-regexp-syntax)).
-- `only` and `except` allow to specify a repository path to filter jobs for
-   forks.
+- `only` and `except` can use regular expressions ([supported regexp syntax](#supported-onlyexcept-regexp-syntax)).
+- `only` and `except` can specify a repository path to filter jobs for forks.
 
-In addition, `only` and `except` allow the use of special keywords:
+In addition, `only` and `except` can use special keywords:
 
 | **Value**                | **Description**                                                                                                                                                                                                                  |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1636,8 +1635,8 @@ Only a subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Re
 are now supported.
 
 From GitLab 11.9.7 to GitLab 12.0, GitLab provided a feature flag to
-let you use the unsafe regexp syntax. This flag allowed
-compatibility with the previous syntax version so you could gracefully migrate to the new syntax.
+let you use unsafe regexp syntax. After migrating to safe syntax, you should disable
+this feature flag again:
 
 ```ruby
 Feature.enable(:allow_unsafe_ruby_regexp)
@@ -1935,8 +1934,8 @@ runs.
 > - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30631) in GitLab 12.8, `needs: []` lets jobs start immediately.
 
-The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
-a [directed acyclic graph](../directed_acyclic_graph/index.md) in your `.gitlab-ci.yml`.
+Use the `needs:` keyword to execute jobs out-of-order. Relationships between jobs
+that use `needs` can be visualized as a [directed acyclic graph](../directed_acyclic_graph/index.md).
 
 This lets you run some jobs without waiting for other ones, disregarding stage ordering
 so you can have multiple stages running concurrently.
@@ -2179,7 +2178,7 @@ The default value is `false`, except for [manual](#whenmanual) jobs using the
 `when: manual` syntax, unless using [`rules:`](#rules) syntax, where all jobs
 default to false, *including* `when: manual` jobs.
 
-When `allow_failure` is enabled and the job fails, the job shows an orange warning in the UI.
+When `allow_failure` is set to `true` and the job fails, the job shows an orange warning in the UI.
 However, the logical flow of the pipeline considers the job a
 success/passed, and is not blocked.
 
@@ -2320,13 +2319,12 @@ can opt to disable it.
 
 ##### Protecting manual jobs **(PREMIUM)**
 
-It's possible to use [protected environments](../environments/protected_environments.md)
-to define a precise list of users authorized to run a manual job. By allowing only
-users associated with a protected environment to trigger manual jobs, it's possible
-to implement some special use cases, such as:
+Use [protected environments](../environments/protected_environments.md)
+to define a list of users authorized to run a manual job. You can authorize only
+the users associated with a protected environment to trigger manual jobs, which can:
 
-- More precisely limiting who can deploy to an environment.
-- Enabling a pipeline to be blocked until an approved user "approves" it.
+- More precisely limit who can deploy to an environment.
+- Block a pipeline until an approved user "approves" it.
 
 To do this, you must:
 
@@ -2808,7 +2806,7 @@ If neither file was changed in any commits, the prefix is added to `default`, so
 key in the example would be `test-default`.
 
 Like `cache:key`, `prefix` can use any of the [predefined variables](../variables/README.md),
-but the following are not allowed:
+but cannot include:
 
 - the `/` character (or the equivalent URI-encoded `%2F`)
 - a value made only of `.` (or the equivalent URI-encoded `%2E`)
@@ -4353,8 +4351,8 @@ job_name:
 
 #### YAML anchors for variables
 
-[YAML anchors](#anchors) can be used with `variables`, to easily repeat assignment
-of variables across multiple jobs. It can also enable more flexibility when a job
+[YAML anchors](#anchors) can be used with `variables`, to repeat assignment
+of variables across multiple jobs. Use can also use YAML anchors when a job
 requires a specific `variables` block that would otherwise override the global variables.
 
 In the example below, we override the `GIT_STRATEGY` variable without affecting

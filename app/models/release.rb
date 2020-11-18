@@ -29,6 +29,8 @@ class Release < ApplicationRecord
   scope :preloaded, -> { includes(:evidences, :milestones, project: [:project_feature, :route, { namespace: :route }]) }
   scope :with_project_and_namespace, -> { includes(project: :namespace) }
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
+  scope :without_evidence, -> { left_joins(:evidences).where(::Releases::Evidence.arel_table[:id].eq(nil)) }
+  scope :released_within_2hrs, -> { where(released_at: Time.zone.now - 1.hour..Time.zone.now + 1.hour) }
 
   # Sorting
   scope :order_created, -> { reorder('created_at ASC') }

@@ -189,7 +189,51 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       end
     end
 
-    context "when the model doesn't have an ID column" do
+    context 'when the model specifies a primary_column_name' do
+      let!(:id1) { create(:container_expiration_policy).id }
+      let!(:id2) { create(:container_expiration_policy).id }
+      let!(:id3) { create(:container_expiration_policy).id }
+
+      around do |example|
+        freeze_time { example.run }
+      end
+
+      before do
+        ContainerExpirationPolicy.class_eval do
+          include EachBatch
+        end
+      end
+
+      it 'returns the final expected delay', :aggregate_failures do
+        Sidekiq::Testing.fake! do
+          final_delay = model.queue_background_migration_jobs_by_range_at_intervals(ContainerExpirationPolicy, 'FooJob', 10.minutes, batch_size: 2, primary_column_name: :project_id)
+
+          expect(final_delay.to_f).to eq(20.minutes.to_f)
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+          expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.minutes.from_now.to_f)
+        end
+      end
+
+      context "when the primary_column_name is not an integer" do
+        it 'raises error' do
+          expect do
+            model.queue_background_migration_jobs_by_range_at_intervals(ContainerExpirationPolicy, 'FooJob', 10.minutes, primary_column_name: :enabled)
+          end.to raise_error(StandardError, /is not an integer column/)
+        end
+      end
+
+      context "when the primary_column_name does not exist" do
+        it 'raises error' do
+          expect do
+            model.queue_background_migration_jobs_by_range_at_intervals(ContainerExpirationPolicy, 'FooJob', 10.minutes, primary_column_name: :foo)
+          end.to raise_error(StandardError, /does not have an ID column of foo/)
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID or primary_column_name column" do
       it 'raises error (for now)' do
         expect do
           model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)

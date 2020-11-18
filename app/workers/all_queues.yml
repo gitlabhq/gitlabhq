@@ -323,6 +323,22 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:releases_create_evidence
+  :feature_category: :release_evidence
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: cronjob:releases_manage_evidence
+  :feature_category: :release_evidence
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:remove_expired_group_links
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
@@ -1376,14 +1392,6 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: true
-  :tags: []
-- :name: create_evidence
-  :feature_category: :release_evidence
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent:
   :tags: []
 - :name: create_note_diff_file
   :feature_category: :source_code_management

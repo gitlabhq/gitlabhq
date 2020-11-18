@@ -65,6 +65,9 @@ module QA
             deleted_pipeline = pipeline
             !pipeline.empty?
           end
+
+          raise "Pipeline response does not have a 'message' key: #{deleted_pipeline}" unless deleted_pipeline&.key?('message')
+
           expect(deleted_pipeline['message'].downcase).to have_content('404 not found')
         end
       end
