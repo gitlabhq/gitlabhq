@@ -19,12 +19,12 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
    ![Create project](img/external_repository.png)
 
-   GitLab will import the repository and enable [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository).
+   GitLab imports the repository and enables [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository).
 
 1. In GitLab create a
    [Personal Access Token](../../user/profile/personal_access_tokens.md)
-   with `api` scope. This will be used to authenticate requests from the web
-   hook that will be created in Bitbucket to notify GitLab of new commits.
+   with `api` scope. This is used to authenticate requests from the web
+   hook that is created in Bitbucket to notify GitLab of new commits.
 
 1. In Bitbucket, from **Settings > Webhooks**, create a new web hook to notify
    GitLab of new commits.
@@ -62,7 +62,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In Bitbucket, add a script to push the pipeline status to Bitbucket.
 
-   > Note: changes made in GitLab will be overwritten by any changes made
+   > Note: changes made in GitLab are overwritten by any changes made
    > upstream in Bitbucket.
 
    Create a file `build_status` and insert the script below and run

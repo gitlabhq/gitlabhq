@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Alerts
 
-Alerts are a critical entity in your incident managment workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
+Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
 ## Alert List
 
@@ -84,7 +84,7 @@ The **Alert details** tab has two sections. The top section provides a short lis
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
 
-The **Metrics** tab will display a metrics chart for alerts coming from Prometheus. If the alert originated from any other tool, the **Metrics** tab will be empty. To set up alerts for GitLab-managed Prometheus instances, see [Managed Prometheus instances](../metrics/alerts.md#managed-prometheus-instances). For externally-managed Prometheus instances, you will need to configure your alerting
+The **Metrics** tab displays a metrics chart for alerts coming from Prometheus. If the alert originated from any other tool, the **Metrics** tab is empty. To set up alerts for GitLab-managed Prometheus instances, see [Managed Prometheus instances](../metrics/alerts.md#managed-prometheus-instances). For externally-managed Prometheus instances, you must configure your alerting
 rules to display a chart in the alert. For information about how to configure
 your alerting rules, see [Embedding metrics based on alerts in incident issues](../metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues). See
 [External Prometheus instances](../metrics/alerts.md#external-prometheus-instances)
@@ -127,7 +127,7 @@ To view the logs for an alert:
 The **Activity feed** tab is a log of activity on the alert. When you take action on an alert, this is logged as a system note. This gives you a linear
 timeline of the alert's investigation and assignment history.
 
-The following actions will result in a system note:
+The following actions result in a system note:
 
 - [Updating the status of an alert](#update-an-alerts-status)
 - [Creating an incident based on an alert](#create-an-incident-from-an-alert)
@@ -137,7 +137,7 @@ The following actions will result in a system note:
 
 ## Alert actions
 
-There are different actions avilable in GitLab to help triage and respond to alerts.
+There are different actions available in GitLab to help triage and respond to alerts.
 
 ### Update an alert's status
 

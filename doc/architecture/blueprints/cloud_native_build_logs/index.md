@@ -109,15 +109,21 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 1. ✓ Evaluate performance and edge-cases, iterate to improve the new architecture
 1. ✓ Design cloud native build logs correctness verification mechanisms
 1. ✓ Build observability mechanisms around performance and correctness
-1. Rollout the feature into production environment incrementally
+1. ✓ Rollout the feature into production environment incrementally
 
 The work needed to make the new architecture production ready and enabled on
-GitLab.com is being tracked in [Cloud Native Build Logs on
+GitLab.com had been tracked in [Cloud Native Build Logs on
 GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/4275) epic.
 
 Enabling this feature on GitLab.com is a subtask of [making the new
 architecture generally
 available](https://gitlab.com/groups/gitlab-org/-/epics/3791) for everyone.
+
+## Status
+
+This change has been implemented and enabled on GitLab.com.
+
+We are working on [an epic to make this feature more resilient and observable](https://gitlab.com/groups/gitlab-org/-/epics/4860).
 
 ## Who
 
@@ -137,7 +143,7 @@ DRIs:
 
 | Role                         | Who
 |------------------------------|------------------------|
-| Product                      |     Jason Yavorska     |
+| Product                      |      Thao Yeager       |
 | Leadership                   |       Darby Frey       |
 | Engineering                  |     Grzegorz Bizon     |
 

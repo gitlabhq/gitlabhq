@@ -434,8 +434,8 @@ server (with `gitaly_address`) unless you setup with special
    ```
 
    NOTE: **Note:**
-   `/some/local/path` should be set to a local folder that exists, however no data will be stored in
-   this folder. This will no longer be necessary after
+   `/some/local/path` should be set to a local folder that exists, however no data is stored in
+   this folder. This requirement is scheduled to be removed when
    [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
@@ -461,7 +461,7 @@ GitLab can reside on the same server as one of many Gitaly servers, but doesn't 
 configuration that mixes local and remote configuration. The following setup is incorrect, because:
 
 - All addresses must be reachable from the other Gitaly servers.
-- `storage1` will be assigned a Unix socket for `gitaly_address` which is
+- `storage1` is assigned a Unix socket for `gitaly_address` which is
   invalid for some of the Gitaly servers.
 
 ```ruby
@@ -493,7 +493,7 @@ gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
 ```
 
 `path` can only be included for storage shards on the local Gitaly server.
-If it's excluded, default Git storage directory will be used for that storage shard.
+If it's excluded, default Git storage directory is used for that storage shard.
 
 ### Disable Gitaly where not required (optional)
 
@@ -590,7 +590,7 @@ To configure Gitaly with TLS:
    ```
 
 1. Copy all Gitaly server certificates (or their certificate authority) to
-   `/etc/gitlab/trusted-certs` so that Gitaly servers will trust the certificate when calling into themselves
+   `/etc/gitlab/trusted-certs` so that Gitaly servers trust the certificate when calling into themselves
    or other Gitaly servers:
 
    ```shell
@@ -647,8 +647,8 @@ To configure Gitaly with TLS:
    ```
 
    NOTE: **Note:**
-   `/some/local/path` should be set to a local folder that exists, however no data will be stored
-   in this folder. This will no longer be necessary after
+   `/some/local/path` should be set to a local folder that exists, however no data is stored
+   in this folder. This requirement is scheduled to be removed when
    [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
@@ -668,7 +668,7 @@ To configure Gitaly with TLS:
    ```
 
 1. Copy all Gitaly server certificates (or their certificate authority) to the system trusted
-   certificates folder so Gitaly server will trust the certificate when calling into itself or other Gitaly
+   certificates folder so Gitaly server trusts the certificate when calling into itself or other Gitaly
    servers.
 
    ```shell
@@ -806,7 +806,7 @@ You can observe the behavior of this queue using the Gitaly logs and Prometheus:
 
 NOTE: **Note:**
 Though the name of the Prometheus metric contains `rate_limiting`, it is a concurrency limiter, not
-a rate limiter. If a Gitaly client makes 1000 requests in a row very quickly, concurrency will not
+a rate limiter. If a Gitaly client makes 1000 requests in a row very quickly, concurrency does not
 exceed 1 and the concurrency limiter has no effect.
 
 ## Rotate Gitaly authentication token
@@ -835,7 +835,7 @@ behavior of your GitLab installation using Prometheus. Use the following Prometh
 sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
 ```
 
-In a system where authentication is configured correctly and where you have live traffic, you will
+In a system where authentication is configured correctly and where you have live traffic, you
 see something like this:
 
 ```prometheus
@@ -891,7 +891,7 @@ To update to a new Gitaly authentication token, on each Gitaly client **and** Gi
    ```
 
 If you run your [Prometheus query](#verify-authentication-monitoring) while this change is
-being rolled out, you will see non-zero values for the `enforced="false",status="denied"` counter.
+being rolled out, you see non-zero values for the `enforced="false",status="denied"` counter.
 
 ### Ensure there are no authentication failures
 
@@ -1003,7 +1003,7 @@ When GitLab calls a function that has a "Rugged patch", it performs two checks:
 - Is the feature flag for this patch set in the database? If so, the feature flag setting controls
   GitLab's use of "Rugged patch" code.
 - If the feature flag is not set, GitLab tries accessing the filesystem underneath the
-  Gitaly server directly. If it can, it will use the "Rugged patch":
+  Gitaly server directly. If it can, it uses the "Rugged patch":
   - If using Unicorn.
   - If using Puma and [thread count](../../install/requirements.md#puma-threads) is set
     to `1`.
@@ -1076,7 +1076,7 @@ gitaly-debug -h
 remote: GitLab: 401 Unauthorized
 ```
 
-You will need to sync your `gitlab-secrets.json` file with your Gitaly clients (GitLab
+You need to sync your `gitlab-secrets.json` file with your Gitaly clients (GitLab
 app nodes).
 
 ### Client side gRPC logs

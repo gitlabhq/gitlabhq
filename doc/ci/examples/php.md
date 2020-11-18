@@ -15,17 +15,17 @@ using the Shell executor.
 ## Test PHP projects using the Docker executor
 
 While it is possible to test PHP apps on any system, this would require manual
-configuration from the developer. To overcome this we will be using the
+configuration from the developer. To overcome this we use the
 official [PHP Docker image](https://hub.docker.com/_/php) that can be found in Docker Hub.
 
-This will allow us to test PHP projects against different versions of PHP.
+This allows us to test PHP projects against different versions of PHP.
 However, not everything is plug 'n' play, you still need to configure some
 things manually.
 
 As with every job, you need to create a valid `.gitlab-ci.yml` describing the
 build environment.
 
-Let's first specify the PHP image that will be used for the job process
+Let's first specify the PHP image that is used for the job process
 (you can read more about what an image means in the runner's lingo reading
 about [Using Docker images](../docker/using_docker_images.md#what-is-an-image)).
 
@@ -106,7 +106,7 @@ test:app:
 ### Test against different PHP versions in Docker builds
 
 Testing against multiple versions of PHP is super easy. Just add another job
-with a different Docker image version and the runner will do the rest:
+with a different Docker image version and the runner does the rest:
 
 ```yaml
 before_script:
@@ -128,7 +128,7 @@ test:7.0:
 
 ### Custom PHP configuration in Docker builds
 
-There are times where you will need to customise your PHP environment by
+There are times where you need to customise your PHP environment by
 putting your `.ini` file into `/usr/local/etc/php/conf.d/`. For that purpose
 add a `before_script` action:
 
@@ -168,7 +168,7 @@ The [phpenv](https://github.com/phpenv/phpenv) project allows you to easily mana
 each with its own configuration. This is especially useful when testing PHP projects
 with the Shell executor.
 
-You will have to install it on your build machine under the `gitlab-runner`
+You have to install it on your build machine under the `gitlab-runner`
 user following [the upstream installation guide](https://github.com/phpenv/phpenv#installation).
 
 Using phpenv also allows to easily configure the PHP environment with:
@@ -181,7 +181,7 @@ phpenv config-add my_config.ini
  [is abandoned](https://github.com/phpenv/phpenv/issues/57). There is a fork
  at [madumlao/phpenv](https://github.com/madumlao/phpenv) that tries to bring
  the project back to life. [CHH/phpenv](https://github.com/CHH/phpenv) also
- seems like a good alternative. Picking any of the mentioned tools will work
+ seems like a good alternative. Picking any of the mentioned tools works
  with the basic phpenv commands. Guiding you to choose the right phpenv is out
  of the scope of this tutorial.*
 
@@ -274,4 +274,4 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit, and push your changes. Within a few
-moments the changes will be picked by a public runner and the job will begin.
+moments the changes are picked by a public runner and the job begins.

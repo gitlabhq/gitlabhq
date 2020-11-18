@@ -379,8 +379,16 @@ module Ci
         Ci::BuildRunnerSession.where(build: build).delete_all
       end
 
-      after_transition any => [:skipped, :canceled] do |build|
-        build.deployment&.cancel
+      after_transition any => [:skipped, :canceled] do |build, transition|
+        if Feature.enabled?(:cd_skipped_deployment_status, build.project)
+          if transition.to_name == :skipped
+            build.deployment&.skip
+          else
+            build.deployment&.cancel
+          end
+        else
+          build.deployment&.cancel
+        end
       end
     end
 

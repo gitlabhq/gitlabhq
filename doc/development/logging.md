@@ -35,14 +35,14 @@ Completed 200 OK in 166ms (Views: 117.4ms | ActiveRecord: 27.2ms)
 
 These logs suffer from a number of problems:
 
-1. They often lack timestamps or other contextual information (e.g. project ID, user)
+1. They often lack timestamps or other contextual information (for example, project ID or user)
 1. They may span multiple lines, which make them hard to find via Elasticsearch.
 1. They lack a common structure, which make them hard to parse by log
    forwarders, such as Logstash or Fluentd. This also makes them hard to
    search.
 
-Note that currently on GitLab.com, any messages in `production.log` will
-NOT get indexed by Elasticsearch due to the sheer volume and noise. They
+Note that currently on GitLab.com, any messages in `production.log` aren't
+indexed by Elasticsearch due to the sheer volume and noise. They
 do end up in Google Stackdriver, but it is still harder to search for
 logs there. See the [GitLab.com logging
 documentation](https://gitlab.com/gitlab-com/runbooks/blob/master/logging/doc/README.md)
@@ -73,7 +73,7 @@ importer progresses. Here's what to do:
    make it easy for people to search pertinent logs in one place. For
    example, `geo.log` contains all logs pertaining to GitLab Geo.
    To create a new file:
-   1. Choose a filename (e.g. `importer_json.log`).
+   1. Choose a filename (for example, `importer_json.log`).
    1. Create a new subclass of `Gitlab::JsonLogger`:
 
       ```ruby
@@ -99,7 +99,7 @@ importer progresses. Here's what to do:
       ```
 
       Note that it's useful to memoize this because creating a new logger
-      each time you log will open a file, adding unnecessary overhead.
+      each time you log opens a file, adding unnecessary overhead.
 
 1. Now insert log messages into your code. When adding logs,
    make sure to include all the context as key-value pairs:
@@ -129,7 +129,7 @@ an Elasticsearch-specific way, the concepts should translate to many systems you
 might use to index structured logs. GitLab.com uses Elasticsearch to index log
 data.
 
-Unless a field type is explicitly mapped, Elasticsearch will infer the type from
+Unless a field type is explicitly mapped, Elasticsearch infers the type from
 the first instance of that field value it sees. Subsequent instances of that
 field value with different types will either fail to be indexed, or in some
 cases (scalar/object conflict), the whole log line will be dropped.
@@ -138,7 +138,7 @@ GitLab.com's logging Elasticsearch sets
 [`ignore_malformed`](https://www.elastic.co/guide/en/elasticsearch/reference/current/ignore-malformed.html),
 which allows documents to be indexed even when there are simpler sorts of
 mapping conflict (for example, number / string), although indexing on the affected fields
-will break.
+breaks.
 
 Examples:
 
@@ -177,17 +177,24 @@ challenged to choose between seconds, milliseconds or any other unit, lean towar
 (with microseconds precision, i.e. `Gitlab::InstrumentationHelper::DURATION_PRECISION`).
 
 In order to make it easier to track timings in the logs, make sure the log key has `_s` as
-suffix and `duration` within its name (e.g., `view_duration_s`).
+suffix and `duration` within its name (for example, `view_duration_s`).
 
 ## Multi-destination Logging
 
-GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs will be recorded in multiple formats through multi-destination logging.
+GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs are recorded in multiple formats through multi-destination logging.
 
 ### How to use multi-destination logging
 
-Create a new logger class, inheriting from `MultiDestinationLogger` and add an array of loggers to a `LOGGERS` constant. The loggers should be classes that descend from `Gitlab::Logger`. e.g. the user defined loggers in the following examples, could be inheriting from `Gitlab::Logger` and `Gitlab::JsonLogger`, respectively.
+Create a new logger class, inheriting from `MultiDestinationLogger` and add an
+array of loggers to a `LOGGERS` constant. The loggers should be classes that
+descend from `Gitlab::Logger`. For example, the user-defined loggers in the
+following examples could be inheriting from `Gitlab::Logger` and
+`Gitlab::JsonLogger`, respectively.
 
-You must specify one of the loggers as the `primary_logger`. The `primary_logger` will be used when information about this multi-destination logger is displayed in the app, e.g. using the `Gitlab::Logger.read_latest` method.
+You must specify one of the loggers as the `primary_logger`. The
+`primary_logger` is used when information about this multi-destination logger is
+displayed in the application (for example, using the `Gitlab::Logger.read_latest`
+method).
 
 The following example sets one of the defined `LOGGERS` as a `primary_logger`.
 
@@ -207,19 +214,19 @@ module Gitlab
 end
 ```
 
-You can now call the usual logging methods on this multi-logger, e.g.
+You can now call the usual logging methods on this multi-logger. For example:
 
 ```ruby
 FancyMultiLogger.info(message: "Information")
 ```
 
-This message will be logged by each logger registered in `FancyMultiLogger.loggers`.
+This message is logged by each logger registered in `FancyMultiLogger.loggers`.
 
 ### Passing a string or hash for logging
 
 When passing a string or hash to a `MultiDestinationLogger`, the log lines could be formatted differently, depending on the kinds of `LOGGERS` set.
 
-e.g. let's partially define the loggers from the previous example:
+For example, let's partially define the loggers from the previous example:
 
 ```ruby
 module Gitlab
@@ -356,7 +363,7 @@ end
 
 ## Additional steps with new log files
 
-1. Consider log retention settings. By default, Omnibus will rotate any
+1. Consider log retention settings. By default, Omnibus rotates any
    logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and [keep at
    most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
    On GitLab.com, that setting is only 6 compressed files. These settings should suffice

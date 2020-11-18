@@ -14,13 +14,13 @@ health of their GitLab instance. To surface this experience in a native way
 (similar to how you would interact with an application deployed using GitLab),
 a base project called "GitLab self monitoring" with
 [internal visibility](../../../public_access/public_access.md#internal-projects)
-will be added under a group called "GitLab Instance Administrators"
+is added under a group called "GitLab Instance Administrators"
 specifically created for visualizing and configuring the monitoring of your
 GitLab instance.
 
-All administrators at the time of creation of the project and group will be
-added as maintainers of the group and project, and as an admin, you'll be able
-to add new members to the group to give them maintainer access to the project.
+All administrators at the time of creation of the project and group are
+added as maintainers of the group and project, and as an admin, you can
+add new members to the group to give them maintainer access to the project.
 
 This project is used to self monitor your GitLab instance. The metrics dashboard
 of the project shows some basic resource usage charts, such as CPU and memory usage
@@ -34,13 +34,13 @@ metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button on.
-1. Once your GitLab instance creates the project, you'll see a link to the project in the text above the **Create Project** toggle. You can also find it under **Projects > Your projects**.
+1. Once your GitLab instance creates the project, GitLab displays a link to the project in the text above the **Create Project** toggle. You can also find it under **Projects > Your projects**.
 
 ## Deleting the self monitoring project
 
 CAUTION: **Warning:**
 If you delete the self monitoring project, you will lose any changes made to the
-project. If you create the project again, it will be created in its default state.
+project. If you create the project again, it is created in its default state.
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button off.
@@ -63,7 +63,7 @@ You can also
 
 ## Connection to Prometheus
 
-The project will be automatically configured to connect to the
+The project is automatically configured to connect to the
 [internal Prometheus](../prometheus/index.md) instance if the Prometheus
 instance is present (should be the case if GitLab was installed via Omnibus
 and you haven't disabled it).

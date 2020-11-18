@@ -53,7 +53,7 @@ is no longer used.
 | `group` | string | required | Heading for the panel group. |
 | `panels` | array | required | The panels which should be in the panel group. |
 
-Panels in a panel group are laid out in rows consisting of two panels per row. An exception to this rule are single panels on a row: these panels will take the full width of their containing row.
+Panels in a panel group are laid out in rows consisting of two panels per row. An exception to this rule are single panels on a row: these panels take the full width of their containing row.
 
 ## **Panel (`panels`) properties**
 
@@ -87,15 +87,15 @@ is no longer used.
 | `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](../alerts.md) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/27980)). |
 | `unit` | string | yes | Defines the unit of the query's return data. |
 | `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. Can contain time series labels as interpolated variables. |
-| `query` | string/number | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be used. |
-| `query_range` | string/number | yes if `query` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be used. |
+| `query` | string/number | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) is used. |
+| `query_range` | string/number | yes if `query` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) is used. |
 | `step` | number | no, value is calculated if not defined | Defines query resolution step width in float number of seconds. Metrics on the same panel should use the same `step` value. |
 
 ## Dynamic labels
 
 Dynamic labels are useful when multiple time series are returned from a Prometheus query.
 
-When a static label is used and a query returns multiple time series, then all the legend items will be labeled the same, which makes identifying each time series difficult:
+When a static label is used and a query returns multiple time series, then all the legend items are labeled the same, which makes identifying each time series difficult:
 
 ```yaml
 metrics:
@@ -109,7 +109,7 @@ This may render a legend like this:
 
 ![repeated legend label chart](img/prometheus_dashboard_repeated_label.png)
 
-For labels to be more explicit, using variables that reflect time series labels is a good practice. The variables will be replaced by the values of the time series labels when the legend is rendered:
+For labels to be more explicit, using variables that reflect time series labels is a good practice. The variables are replaced by the values of the time series labels when the legend is rendered:
 
 ```yaml
 metrics:
@@ -119,7 +119,7 @@ metrics:
     unit: 'count'
 ```
 
-The resulting rendered legend will look like this:
+The resulting rendered legend looks like this:
 
 ![legend with label variables](img/prometheus_dashboard_label_variables.png)
 
@@ -133,7 +133,7 @@ metrics:
     unit: 'count'
 ```
 
-This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value will be used and rendered in the legend like this:
+This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value renders in the legend like this:
 
 ![legend with label shorthand variable](img/prometheus_dashboard_label_variable_shorthand.png)
 

@@ -128,11 +128,11 @@ To publish an incident:
    issue to the GitLab Status Page. Confidential issues can't be published.
 
 A background worker publishes the issue onto the Status Page using the credentials
-you provided during setup. As part of publication, GitLab will:
+you provided during setup. As part of publication, GitLab:
 
-- Anonymize user and group mentions with `Incident Responder`.
-- Remove titles of non-public [GitLab references](../../user/markdown.md#special-gitlab-references).
-- Publish any files attached to incident issue descriptions, up to 5000 per issue.
+- Anonymizes user and group mentions with `Incident Responder`.
+- Removes titles of non-public [GitLab references](../../user/markdown.md#special-gitlab-references).
+- Publishes any files attached to incident issue descriptions, up to 5000 per issue.
   ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/205166).)
 
 After publication, you can access the incident's details page by clicking the

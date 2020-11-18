@@ -25,8 +25,8 @@ CAUTION: **Warning:**
 This variable type is an _alpha_ feature, and is subject to change at any time
 without prior notice!
 
-For each `text` variable defined in the dashboard YAML, there will be a free text
-box on the dashboard UI, allowing you to enter a value for each variable.
+For each `text` variable defined in the dashboard YAML, a free text field displays
+on the dashboard UI, allowing you to enter a value for each variable.
 
 The `text` variable type supports a simple and a full syntax.
 
@@ -44,7 +44,7 @@ templating:
 ### Full syntax
 
 This example creates a variable called `variable1`, with a default value of `default`.
-The label for the text box on the UI will be the value of the `label` key:
+The label for the text box on the UI is the value of the `label` key:
 
 ```yaml
 templating:
@@ -70,7 +70,7 @@ The `custom` variable type supports a simple and a full syntax.
 ### Simple syntax
 
 This example creates a variable called `variable1`, with a default value of `value1`.
-The dashboard UI will display a dropdown with `value1`, `value2` and `value3`
+The dashboard UI displays a dropdown with `value1`, `value2` and `value3`
 as the choices.
 
 ```yaml
@@ -82,12 +82,12 @@ templating:
 ### Full syntax
 
 This example creates a variable called `variable1`, with a default value of `value_option_2`.
-The label for the text box on the UI will be the value of the `label` key.
-The dashboard UI will display a dropdown with `Option 1` and `Option 2`
+The label for the text box on the UI is the value of the `label` key.
+The dashboard UI displays a dropdown with `Option 1` and `Option 2`
 as the choices.
 
-If you select `Option 1` from the dropdown, the variable will be replaced with `value option 1`.
-Similarly, if you select `Option 2`, the variable will be replaced with `value_option_2`:
+If you select `Option 1` from the dropdown, the variable is replaced with `value option 1`.
+Similarly, if you select `Option 2`, the variable is replaced with `value_option_2`:
 
 ```yaml
 templating:
@@ -112,8 +112,8 @@ without prior notice!
 
 ### Full syntax
 
-This example creates a variable called `variable2`. The values of the dropdown will
-be all the different values of the `backend` label in the Prometheus series described by
+This example creates a variable called `variable2`. The values of the dropdown are
+all the different values of the `backend` label in the Prometheus series described by
 `up{env="production"}`.
 
 ```yaml

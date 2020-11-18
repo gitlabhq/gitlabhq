@@ -38,8 +38,8 @@ Documentation issues and merge requests are part of their respective repositorie
 
 The [CI pipeline for the main GitLab project](../pipelines.md) is configured to automatically
 run only the jobs that match the type of contribution. If your contribution contains
-**only** documentation changes, then only documentation-related jobs will be run, and
-the pipeline will complete much faster than a code contribution.
+**only** documentation changes, then only documentation-related jobs run, and
+the pipeline completes much faster than a code contribution.
 
 If you are submitting documentation-only changes to Runner, Omnibus, or Charts,
 the fast pipeline is not determined automatically. Instead, create branches for
@@ -152,7 +152,7 @@ comments: false
 
 Each page can have additional, optional metadata (set in the
 [default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
-Nanoc layout), which will be displayed at the top of the page if defined:
+Nanoc layout), which is displayed at the top of the page if defined:
 
 - `reading_time`: If you want to add an indication of the approximate reading
   time of a page, you can set `reading_time` to `true`. This uses a simple
@@ -225,9 +225,9 @@ Things to note:
   the document might also be referenced in the views of GitLab (`app/`) which will
   render when visiting `/help`, and sometimes in the testing suite (`spec/`).
   You must search these paths for references to the doc and update them as well.
-- The above `git grep` command will search recursively in the directory you run
+- The above `git grep` command searches recursively in the directory you run
   it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
-  and will print the file and the line where this file is mentioned.
+  and prints the file and the line where this file is mentioned.
   You may ask why the two greps. Since [we use relative paths to link to
   documentation](styleguide/index.md#links), sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
@@ -267,7 +267,7 @@ Before getting started, make sure you read the introductory section
 - Label the MR `Documentation` (can only be done by people with `developer` access, for example, GitLab team members)
 - Assign the correct milestone per note below (can only be done by people with `developer` access, for example, GitLab team members)
 
-Documentation will be merged if it is an improvement on existing content,
+Documentation is merged if it is an improvement on existing content,
 represents a good-faith effort to follow the template and style standards,
 and is believed to be accurate.
 
@@ -285,16 +285,16 @@ Every GitLab instance includes the documentation, which is available at `/help`
 (`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
 
 The documentation available online on <https://docs.gitlab.com> is deployed every four hours from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
-after a merge request gets merged, it will be available online on the same day.
-However, it will be shipped (and available on `/help`) within the milestone assigned
+after a merge request gets merged, it is available online on the same day.
+However, it's shipped (and available on `/help`) within the milestone assigned
 to the MR.
 
 For example, let's say your merge request has a milestone set to 11.3, which
-will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
+a release date of 2018-09-22. If it gets merged on 2018-09-15, it is
 available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a `~"Pick into 11.3"` label, the milestone has to be changed
-to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
-with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
+to 11.4 and it ships with all GitLab packages only on 2018-10-22,
+with GitLab 11.4. Meaning, it's available only with `/help` from GitLab
 11.4 onward, but available on <https://docs.gitlab.com/> on the same day it was merged.
 
 ### Linking to `/help`
@@ -365,7 +365,7 @@ You can combine one or more of the following:
 ### GitLab `/help` tests
 
 Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
-are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) will work correctly from `/help`.
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) works correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
 ## Docs site architecture
@@ -392,20 +392,20 @@ The live preview is currently enabled for the following projects:
 
 If your merge request has docs changes, you can use the manual `review-docs-deploy` job
 to deploy the docs review app for your merge request.
-You will need at least Maintainer permissions to be able to run it.
+You need at least Maintainer permissions to be able to run it.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
 You must push a branch to those repositories, as it doesn't work for forks.
 
-The `review-docs-deploy*` job will:
+The `review-docs-deploy*` job:
 
-1. Create a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
+1. Creates a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
    project named after the scheme: `docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID`,
    where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ee` for
    EE, `omnibus` for Omnibus GitLab, etc, and `CI_MERGE_REQUEST_IID` is the ID
    of the respective merge request.
-1. Trigger a cross project pipeline and build the docs site with your changes.
+1. Triggers a cross project pipeline and build the docs site with your changes.
 
 In case the review app URL returns 404, this means that either the site is not
 yet deployed, or something went wrong with the remote pipeline. Give it a few
@@ -414,8 +414,8 @@ remote pipeline from the link in the merge request's job output.
 If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
 
 Make sure that you always delete the branch of the merge request you were
-working on. If you don't, the remote docs branch won't be removed either,
-and the server where the Review Apps are hosted will eventually be out of
+working on. If you don't, the remote docs branch isn't removed either,
+and the server where the Review Apps are hosted can eventually run out of
 disk space.
 
 TIP: **Tip:**
@@ -449,7 +449,7 @@ If you want to know the in-depth details, here's what's really happening:
       - The number of the merge request is added so that you can know by the
         `gitlab-docs` branch name the merge request it originated from.
    1. The remote branch is then created if it doesn't exist (meaning you can
-      re-run the manual job as many times as you want and this step will be skipped).
+      re-run the manual job as many times as you want and this step is skipped).
    1. A new cross-project pipeline is triggered in the docs project.
    1. The preview URL is shown both at the job output and in the merge request
       widget. You also get the link to the remote pipeline.
@@ -537,7 +537,8 @@ To have the screenshot focuses few more steps are needed:
 - **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
 - **set the crop area**: `set_crop_data(screenshot_area, 20)`
 
-In particular `set_crop_data` accepts as arguments: a `DOM` element and a padding, the padding will be added around the element enlarging the screenshot area.
+In particular, `set_crop_data` accepts as arguments: a `DOM` element and a
+padding. The padding is added around the element, enlarging the screenshot area.
 
 #### Live example
 

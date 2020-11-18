@@ -19,8 +19,8 @@ the source branch have already been merged into the target branch.
 
 If the pipeline fails due to a problem in the target branch, you can wait until the
 target is fixed and re-run the pipeline.
-This new pipeline will run as if the source is merged with the updated target, and you
-will not need to rebase.
+This new pipeline runs as if the source is merged with the updated target, and you
+don't need to rebase.
 
 The pipeline does not automatically run when the target branch changes. Only changes
 to the source branch trigger a new pipeline. If a long time has passed since the last successful
@@ -33,7 +33,7 @@ When the merge request can't be merged, the pipeline runs against the source bra
 - The merge request is a [**Draft** merge request](../../../user/project/merge_requests/work_in_progress_merge_requests.md).
 
 In these cases, the pipeline runs as a [pipeline for merge requests](../index.md)
-and is labeled as `detached`. If these cases no longer exist, new pipelines will
+and is labeled as `detached`. If these cases no longer exist, new pipelines
 again run against the merged results.
 
 Any user who has developer [permissions](../../../user/permissions.md) can run a
@@ -71,7 +71,7 @@ GitLab [automatically displays](merge_trains/index.md#add-a-merge-request-to-a-m
 a **Start/Add Merge Train button**.
 
 Generally, this is a safer option than merging merge requests immediately, because your
-merge request will be evaluated with an expected post-merge result before the actual
+merge request is evaluated with an expected post-merge result before the actual
 merge happens.
 
 For more information, read the [documentation on Merge Trains](merge_trains/index.md).
@@ -84,10 +84,10 @@ GitLab CI/CD can detect the presence of redundant pipelines, and cancels them
 to conserve CI resources.
 
 When a user merges a merge request immediately within an ongoing merge
-train, the train will be reconstructed, as it will recreate the expected
+train, the train is reconstructed, because it recreates the expected
 post-merge commit and pipeline. In this case, the merge train may already
 have pipelines running against the previous expected post-merge commit.
-These pipelines are considered redundant and will be automatically
+These pipelines are considered redundant and are automatically
 canceled.
 
 ## Troubleshooting

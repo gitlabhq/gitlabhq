@@ -97,7 +97,7 @@ HTTP/2 200
 
 This can help you investigate an unexpected response.
 
-### API Request that includes the exit code
+### API request that includes the exit code
 
 If you want to expose the HTTP exit code, include the `--fail` option:
 
@@ -110,8 +110,8 @@ The HTTP exit code can help you diagnose the success or failure of your REST cal
   
 ## Authentication
 
-Most API requests require authentication, or will return public data only when
-authentication isn't provided. For cases where it isn't required, this will be
+Most API requests require authentication, or only return public data when
+authentication isn't provided. For cases where it isn't required, this is
 mentioned in the documentation for each individual endpoint (for example, the
 [`/projects/:id` endpoint](projects.md#get-single-project)).
 
@@ -133,7 +133,7 @@ to build applications or scripts that do so, the following options are available
 - [Impersonation tokens](#impersonation-tokens)
 - [Sudo](#sudo)
 
-If authentication information is invalid or omitted, GitLab will return an error
+If authentication information is invalid or omitted, GitLab returns an error
 message with a status code of `401`:
 
 ```json
@@ -221,13 +221,13 @@ The token is valid as long as the job is running.
 ### Impersonation tokens
 
 Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md)
-that can only be created by an admin for a specific user. They are a great fit
+that can only be created by an administrator for a specific user. They are a great fit
 if you want to build applications or scripts that authenticate with the API as a
 specific user.
 
 They're an alternative to directly using the user's password or one of their
 personal access tokens, and to using the [Sudo](#sudo) feature, as the user's
-(or admin's, in the case of Sudo) password or token may not be known, or may
+(or administrator's in the case of Sudo) password or token may not be known, or may
 change over time.
 
 For more information, see the [users API](users.md#create-an-impersonation-token)
@@ -292,7 +292,7 @@ message with a status code of `403`:
 }
 ```
 
-If an access token without the `sudo` scope is provided, an error message will
+If an access token without the `sudo` scope is provided, an error message is
 be returned with a status code of `403`:
 
 ```json
@@ -303,7 +303,7 @@ be returned with a status code of `403`:
 }
 ```
 
-If the sudo user ID or username cannot be found, an error message will be
+If the sudo user ID or username cannot be found, an error message is
 returned with a status code of `404`:
 
 ```json
@@ -357,7 +357,7 @@ The following table shows the possible return codes for API requests.
 | `204 No Content`         | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
 | `201 Created`            | The `POST` request was successful and the resource is returned as JSON. |
 | `304 Not Modified`       | Indicates that the resource has not been modified since the last request. |
-| `400 Bad Request`        | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
+| `400 Bad Request`        | A required attribute of the API request is missing. For example, the title of an issue is not given. |
 | `401 Unauthorized`       | The user is not authenticated, a valid [user token](#authentication) is necessary. |
 | `403 Forbidden`          | The request is not allowed. For example, the user is not allowed to delete a project. |
 | `404 Not Found`          | A resource could not be accessed. For example, an ID for a resource could not be found. |
@@ -411,7 +411,7 @@ of the issue with ID `8` which belongs to the project with ID `9`:
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
 ```
 
-The response will then be:
+The response is:
 
 ```http
 HTTP/2 200 OK
@@ -479,7 +479,7 @@ Status: 200 OK
 ```
 
 CAUTION: **Deprecation:**
-The `Links` header will be removed in GitLab 14.0 to be aligned with the
+The `Links` header is scheduled to be removed in GitLab 14.0 to be aligned with the
 [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
 header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
 and should be used instead.
@@ -525,8 +525,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ```
 
 Path parameters that are required to be URL-encoded must be followed. If not,
-it won't match an API endpoint, and will respond with a 404. If there's
-something in front of the API (for example, Apache), ensure that it won't decode
+it doesn't match an API endpoint and responds with a 404. If there's
+something in front of the API (for example, Apache), ensure that it doesn't decode
 the URL-encoded path parameters.
 
 ## Namespaced path encoding
@@ -657,7 +657,7 @@ Such errors appear in the following cases:
 - An attribute did not pass the validation (for example, the user bio is too
   long).
 
-When an attribute is missing, you will get something like:
+When an attribute is missing, you receive something like:
 
 ```http
 HTTP/1.1 400 Bad Request
@@ -667,7 +667,7 @@ Content-Type: application/json
 }
 ```
 
-When a validation error occurs, error messages will be different. They will hold
+When a validation error occurs, error messages are different. They hold
 all details of validation errors:
 
 ```http
@@ -706,7 +706,7 @@ follows:
 
 ## Unknown route
 
-When you attempt to access an API URL that doesn't exist, you will receive
+When you attempt to access an API URL that doesn't exist, you receive a
 404 Not Found message.
 
 ```http

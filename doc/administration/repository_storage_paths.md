@@ -50,7 +50,7 @@ storage2:
 > structure than Omnibus. In `gitlab.yml` you indicate the path for the
 > repositories, for example `/home/git/repositories`, while in Omnibus you
 > indicate `git_data_dirs`, which for the example above would be `/home/git`.
-> Then, Omnibus will create a `repositories` directory under that path to use with
+> Then, Omnibus creates a `repositories` directory under that path to use with
 > `gitlab.yml`.
 >
 > This little detail matters because while restoring a backup, the current
@@ -90,8 +90,7 @@ This example uses NFS. We do not recommend using EFS for storage as it may impac
 1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 NOTE: **Note:**
-The [`gitlab_shell: repos_path` entry](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/8-9-stable/config/gitlab.yml.example#L457) in `gitlab.yml` will be
-deprecated and replaced by `repositories: storages` in the future, so if you
+We plan to replace [`gitlab_shell: repos_path` entry](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/8-9-stable/config/gitlab.yml.example#L457) in `gitlab.yml` with `repositories: storages`. If you
 are upgrading from a version prior to 8.10, make sure to add the configuration
 as described in the step above. After you make the changes and confirm they are
 working, you can remove the `repos_path` line.
@@ -112,16 +111,15 @@ working, you can remove the `repos_path` line.
    Note that Omnibus stores the repositories in a `repositories` subdirectory
    of the `git-data` directory.
 
-## Choose where new repositories will be stored
+## Choose where new repositories are stored
 
 Once you set the multiple storage paths, you can choose where new repositories
-will be stored under **Admin Area > Settings > Repository >
-Repository storage > Storage nodes for new repositories**.
+are stored in the Admin Area under **Settings > Repository > Repository storage > Storage nodes for new repositories**.
 
 Each storage can be assigned a weight from 0-100. When a new project is created, these
-weights are used to determine the storage location the repository will be created on.
+weights are used to determine the storage location the repository is created on.
 
 ![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v13_1.png)
 
 Beginning with GitLab 8.13.4, multiple paths can be chosen. New repositories
-will be randomly placed on one of the selected paths.
+are randomly placed on one of the selected paths.

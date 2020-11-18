@@ -66,8 +66,8 @@ To create a new dashboard from the command line:
 Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.
 
 NOTE: **Note:**
-Configuration files nested under subdirectories of `.gitlab/dashboards` are not
-supported and won't be available in the UI.
+Configuration files nested under subdirectories of `.gitlab/dashboards` aren't
+supported or available in the UI.
 
 ## Add a new metrics panel to a dashboard
 
@@ -156,7 +156,7 @@ and end times to the URL, enabling you to share specific timeframes more easily.
 
 You can use **Metrics Dashboard Annotations** to mark any important events on
 every metrics dashboard by adding annotations to it. While viewing a dashboard,
-annotation entries assigned to the selected time range will be automatically
+annotation entries assigned to the selected time range are automatically
 fetched and displayed on every chart within that dashboard. On mouse hover, each
 annotation presents additional details, including the exact time of an event and
 its description.

@@ -216,7 +216,7 @@ jsdom
 JupyterHub
 kanban
 kanbans
-Kaniko
+kaniko
 Karma
 Kerberos
 keyset
@@ -317,6 +317,7 @@ PgBouncer
 Phabricator
 phaser
 phasers
+phpenv
 Pipfile
 Pipfiles
 Piwik

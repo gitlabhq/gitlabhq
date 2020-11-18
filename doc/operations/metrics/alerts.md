@@ -53,8 +53,8 @@ as soon as the alert fires:
 For manually configured Prometheus servers, GitLab provides a notify endpoint for
 use with Prometheus webhooks. If you have manual configuration enabled, an
 **Alerts** section is added to **Settings > Integrations > Prometheus**.
-This section contains the **URL** and **Authorization Key** you will need. The
-**Reset Key** button will invalidate the key and generate a new one.
+This section contains the needed **URL** and **Authorization Key**. The
+**Reset Key** button invalidates the key and generates a new one.
 
 ![Prometheus service configuration of Alerts](img/prometheus_service_alerts.png)
 
@@ -85,7 +85,7 @@ Prometheus server to use the
 ## Trigger actions from alerts **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
-> - [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
+> - [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it automatically closes the associated issue.
 
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:

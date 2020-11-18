@@ -147,7 +147,7 @@ After saving them, they display on the environment metrics dashboard provided th
 A few fields are required:
 
 - **Name**: Chart title
-- **Type**: Type of metric. Metrics of the same type will be shown together.
+- **Type**: Type of metric. Metrics of the same type are shown together.
 - **Query**: Valid [PromQL query](https://prometheus.io/docs/prometheus/latest/querying/basics/).
 - **Y-axis label**: Y axis title to display on the dashboard.
 - **Unit label**: Query units, for example `req / sec`. Shown next to the value.

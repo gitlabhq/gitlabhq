@@ -21,12 +21,12 @@ To enable the PostgreSQL Server Exporter:
 
    If PostgreSQL Server Exporter is configured on a separate node, make sure that the local
    address is [listed in `trust_auth_cidr_addresses`](../../postgresql/replication_and_failover.md#network-information) or the
-   exporter will not be able to connect to the database.
+   exporter can't connect to the database.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
 
-Prometheus will now automatically begin collecting performance data from
+Prometheus begins collecting performance data from
 the PostgreSQL Server Exporter exposed under `localhost:9187`.
 
 ## Advanced configuration

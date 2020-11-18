@@ -25,5 +25,5 @@ To enable the Redis exporter:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-Prometheus will now begin collecting performance data from
+Prometheus begins collecting performance data from
 the Redis exporter exposed at `localhost:9121`.

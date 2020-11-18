@@ -84,8 +84,8 @@ include:
   - template: Code-Quality.gitlab-ci.yml
 ```
 
-The above example will create a `code_quality` job in your CI/CD pipeline which
-will scan your source code for code quality issues. The report will be saved as a
+The above example creates a `code_quality` job in your CI/CD pipeline which
+scans your source code for code quality issues. The report is saved as a
 [Code Quality report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscodequality)
 that you can later download and analyze.
 
@@ -132,17 +132,17 @@ stages:
 ```
 
 TIP: **Tip:**
-This information will be automatically extracted and shown right in the merge request widget.
+This information is automatically extracted and shown right in the merge request widget.
 
 CAUTION: **Caution:**
 On self-managed instances, if a malicious actor compromises the Code Quality job
-definition they will be able to execute privileged Docker commands on the runner
+definition they could execute privileged Docker commands on the runner
 host. Having proper access control policies mitigates this attack vector by
 allowing access only to trusted actors.
 
 ### Disabling the code quality job
 
-The `code_quality` job will not run if the `$CODE_QUALITY_DISABLED` environment
+The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` environment
 variable is present. Please refer to the environment variables [documentation](../../../ci/variables/README.md)
 to learn more about how to define one.
 
@@ -185,7 +185,7 @@ job1:
     - if: '$CI_COMMIT_TAG'                               # Run job1 in pipelines for tags
 ```
 
-To make these work together, you will need to overwrite the code quality `rules`
+To make these work together, you need to overwrite the code quality `rules`
 so that they match your current `rules`. From the example above, it could look like:
 
 ```yaml
@@ -260,7 +260,7 @@ Once the Code Quality job has completed:
   Code Quality tab of the Pipeline Details page.
 - Potential changes to code quality are shown directly in the merge request.
   The Code Quality widget in the merge request compares the reports from the base and head of the branch,
-  then lists any violations that will be resolved or created when the branch is merged.
+  then lists any violations that are resolved or created when the branch is merged.
 - The full JSON report is available as a
   [downloadable artifact](../../../ci/pipelines/job_artifacts.md#downloading-artifacts)
   for the `code_quality` job.
@@ -341,11 +341,11 @@ is still used.
 This can be due to multiple reasons:
 
 - You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not
-  have anything to compare to yet, so no information can be displayed. Future merge
-  requests will have something to compare to.
+  have anything to compare to yet, so no information can be displayed. It only displays
+  after future merge requests have something to compare to.
 - Your pipeline is not set to run the code quality job on your default branch. If there is no report generated from the default branch, your MR branch reports will not have anything to compare to.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
-  nothing will be displayed.
+  nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD
   setting can cause the Code Quality artifact(s) to expire faster than desired.
 - Large `codeclimate.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).

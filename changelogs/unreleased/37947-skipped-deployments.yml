@@ -1,0 +1,5 @@
+---
+title: Skipped jobs no longer trigger a cancelled deployment
+merge_request: 46614
+author: David Barr @davebarr
+type: fixed

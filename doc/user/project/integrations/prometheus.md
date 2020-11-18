@@ -19,7 +19,7 @@ There are two ways to set up Prometheus integration, depending on where your app
 - For deployments on Kubernetes, GitLab can automatically [deploy and manage Prometheus](#managed-prometheus-on-kubernetes).
 - For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 
-Once enabled, GitLab will automatically detect metrics from known services in the [metric library](prometheus_library/index.md). You can also [add your own metrics](../../../operations/metrics/index.md#adding-custom-metrics) and create
+Once enabled, GitLab detects metrics from known services in the [metric library](prometheus_library/index.md). You can also [add your own metrics](../../../operations/metrics/index.md#adding-custom-metrics) and create
 [custom dashboards](../../../operations/metrics/dashboards/index.md).
 
 ## Enabling Prometheus Integration
@@ -48,7 +48,7 @@ Once you have a connected Kubernetes cluster, deploying a managed Prometheus is 
 
 Prometheus is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/prometheus). Prometheus is only accessible within the cluster, with GitLab communicating through the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
 
-The Prometheus server will [automatically detect and monitor](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus, simply set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
+The Prometheus server [automatically detects and monitors](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus, simply set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
 
 - `prometheus.io/scrape` to `true` to enable monitoring of the resource.
 - `prometheus.io/port` to define the port of the metrics endpoint.
@@ -165,8 +165,8 @@ Installing and configuring Prometheus to monitor applications is fairly straight
 
 #### Configuration in GitLab
 
-The actual configuration of Prometheus integration within GitLab is very simple.
-All you will need is the domain name or IP address of the Prometheus server you'd like
+The actual configuration of Prometheus integration within GitLab
+requires the domain name or IP address of the Prometheus server you'd like
 to integrate with. If the Prometheus resource is secured with Google's Identity-Aware Proxy (IAP),
 additional information like Client ID and Service Account credentials can be passed which
 GitLab can use to access the resource. More information about authentication from a
@@ -189,7 +189,7 @@ service account can be found at Google's documentation for
 #### Thanos configuration in GitLab
 
 You can configure [Thanos](https://thanos.io/) as a drop-in replacement for Prometheus
-with GitLab. You will need the domain name or IP address of the Thanos server you'd like
+with GitLab, using the domain name or IP address of the Thanos server you'd like
 to integrate with.
 
 1. Navigate to the [Integrations page](overview.md#accessing-integrations).
@@ -199,9 +199,10 @@ to integrate with.
 
 ### Precedence with multiple Prometheus configurations
 
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
 Although you can enable both a [manual configuration](#manual-configuration-of-prometheus)
-and [auto configuration](#managed-prometheus-on-kubernetes) of Prometheus, only
-one of them will be used:
+and [auto configuration](#managed-prometheus-on-kubernetes) of Prometheus, you
+can use only one:
 
 - If you have enabled a
   [Prometheus manual configuration](#manual-configuration-of-prometheus)
@@ -225,16 +226,16 @@ Developers can view the performance impact of their changes within the merge
 request workflow. This feature requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
 
 When a source branch has been deployed to an environment, a sparkline and
-numeric comparison of the average memory consumption will appear. On the
+numeric comparison of the average memory consumption displays. On the
 sparkline, a dot indicates when the current changes were deployed, with up to 30 minutes of
 performance data displayed before and after. The comparison shows the difference
 between the 30 minute average before and after the deployment. This information
 is updated after each commit has been deployed.
 
-Once merged and the target branch has been redeployed, the metrics will switch
+Once merged and the target branch has been redeployed, the metrics switches
 to show the new environments this revision has been deployed to.
 
-Performance data will be available for the duration it is persisted on the
+Performance data is available for the duration it is persisted on the
 Prometheus server.
 
 ![Merge Request with Performance Impact](img/merge_request_performance.png)

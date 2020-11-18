@@ -63,6 +63,10 @@ class Deployment < ApplicationRecord
       transition any - [:canceled] => :canceled
     end
 
+    event :skip do
+      transition any - [:skipped] => :skipped
+    end
+
     before_transition any => FINISHED_STATUSES do |deployment|
       deployment.finished_at = Time.current
     end
@@ -105,7 +109,8 @@ class Deployment < ApplicationRecord
     running: 1,
     success: 2,
     failed: 3,
-    canceled: 4
+    canceled: 4,
+    skipped: 5
   }
 
   def self.last_for_environment(environment)
@@ -297,6 +302,8 @@ class Deployment < ApplicationRecord
       drop
     when 'canceled'
       cancel
+    when 'skipped'
+      skip
     else
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end

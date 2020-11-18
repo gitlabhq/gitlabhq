@@ -381,7 +381,7 @@ content:
 
 Update the `config.toml` file to mount the file to
 `/etc/docker/daemon.json`. This would mount the file for **every**
-container that is created by GitLab Runner. The configuration will be
+container that is created by GitLab Runner. The configuration is
 picked up by the `dind` service.
 
 ```toml

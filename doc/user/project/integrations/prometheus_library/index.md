@@ -21,8 +21,8 @@ Currently supported exporters are:
 - [HAProxy](haproxy.md)
 - [Amazon Cloud Watch](cloudwatch.md)
 
-We have tried to surface the most important metrics for each exporter, and will
-be continuing to add support for additional exporters in future releases. If you
+We have tried to surface the most important metrics for each exporter, and
+continue to add support for additional exporters in future releases. If you
 would like to add support for other official exporters, contributions are welcome.
 
 ## Identifying Environments

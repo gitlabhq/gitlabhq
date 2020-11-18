@@ -202,6 +202,31 @@ RSpec.describe Deployment do
         deployment.cancel!
       end
     end
+
+    context 'when deployment was skipped' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it 'has correct status' do
+        deployment.skip!
+
+        expect(deployment).to be_skipped
+        expect(deployment.finished_at).to be_nil
+      end
+
+      it 'does not execute Deployments::LinkMergeRequestWorker asynchronously' do
+        expect(Deployments::LinkMergeRequestWorker)
+          .not_to receive(:perform_async).with(deployment.id)
+
+        deployment.skip!
+      end
+
+      it 'does not execute Deployments::ExecuteHooksWorker' do
+        expect(Deployments::ExecuteHooksWorker)
+            .not_to receive(:perform_async).with(deployment.id)
+
+        deployment.skip!
+      end
+    end
   end
 
   describe '#success?' do
@@ -320,6 +345,7 @@ RSpec.describe Deployment do
         deployment2 = create(:deployment, status: :running )
         create(:deployment, status: :failed )
         create(:deployment, status: :canceled )
+        create(:deployment, status: :skipped)
 
         is_expected.to contain_exactly(deployment1, deployment2)
       end
@@ -348,6 +374,20 @@ RSpec.describe Deployment do
         create(:deployment, deployable: nil)
 
         is_expected.to contain_exactly(with_deployable)
+      end
+    end
+
+    describe 'visible' do
+      subject { described_class.visible }
+
+      it 'retrieves the visible deployments' do
+        deployment1 = create(:deployment, status: :running)
+        deployment2 = create(:deployment, status: :success)
+        deployment3 = create(:deployment, status: :failed)
+        deployment4 = create(:deployment, status: :canceled)
+        create(:deployment, status: :skipped)
+
+        is_expected.to contain_exactly(deployment1, deployment2, deployment3, deployment4)
       end
     end
   end

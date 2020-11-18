@@ -2943,9 +2943,6 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error has occurred fetching instructions"
-msgstr ""
-
 msgid "An error occured while making the changes: %{error}"
 msgstr ""
 
@@ -9238,6 +9235,9 @@ msgstr ""
 msgid "Deployment|running"
 msgstr ""
 
+msgid "Deployment|skipped"
+msgstr ""
+
 msgid "Deployment|success"
 msgstr ""
 
@@ -14497,9 +14497,6 @@ msgid "Install GitLab Runner"
 msgstr ""
 
 msgid "Install Runner on Kubernetes"
-msgstr ""
-
-msgid "Install a Runner"
 msgstr ""
 
 msgid "Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and use that app to scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}."
@@ -23435,12 +23432,6 @@ msgstr ""
 msgid "Runners|Description"
 msgstr ""
 
-msgid "Runners|Download Latest Binary"
-msgstr ""
-
-msgid "Runners|Download and Install Binary"
-msgstr ""
-
 msgid "Runners|Group"
 msgstr ""
 
@@ -23466,9 +23457,6 @@ msgid "Runners|Property Name"
 msgstr ""
 
 msgid "Runners|Protected"
-msgstr ""
-
-msgid "Runners|Register Runner"
 msgstr ""
 
 msgid "Runners|Revision"
@@ -24878,9 +24866,6 @@ msgstr ""
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account."
 msgstr ""
 
-msgid "Show Runner installation instructions"
-msgstr ""
-
 msgid "Show all activity"
 msgstr ""
 
@@ -25123,6 +25108,9 @@ msgid "Skip outdated deployment jobs"
 msgstr ""
 
 msgid "Skipped"
+msgstr ""
+
+msgid "Skipped deployment to"
 msgstr ""
 
 msgid "Slack application"

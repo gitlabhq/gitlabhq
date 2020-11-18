@@ -79,8 +79,8 @@ project. That way you can have different clusters for different environments,
 like dev, staging, production, and so on.
 
 Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope) that will
-differentiate the new cluster with the rest.
+[set an environment scope](#setting-the-environment-scope) that
+differentiates the new cluster from the rest.
 
 #### Setting the environment scope
 
@@ -89,9 +89,9 @@ them with an environment scope. The environment scope associates clusters with [
 [environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
-environment, will use that cluster. Each scope can only be used by a single
-cluster in a project, and a validation error will occur if otherwise.
-Also, jobs that don't have an environment keyword set will not be able to access any cluster.
+environment, use that cluster. Each scope can be used only by a single cluster
+in a project, and a validation error occurs if otherwise. Also, jobs that don't
+have an environment keyword set can't access any cluster.
 
 For example, let's say the following Kubernetes clusters exist in a project:
 
@@ -127,13 +127,13 @@ deploy to production:
     url: https://example.com/
 ```
 
-The result will then be:
+The results:
 
-- The Development cluster details will be available in the `deploy to staging`
+- The Development cluster details are available in the `deploy to staging`
   job.
-- The production cluster details will be available in the `deploy to production`
+- The production cluster details are available in the `deploy to production`
   job.
-- No cluster details will be available in the `test` job because it doesn't
+- No cluster details are available in the `test` job because it doesn't
   define any environment.
 
 ## Configuring your Kubernetes cluster
@@ -157,15 +157,15 @@ applications running on the cluster.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
 > - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 
-You can choose to allow GitLab to manage your cluster for you. If your cluster is
-managed by GitLab, resources for your projects will be automatically created. See the
-[Access controls](add_remove_clusters.md#access-controls) section for details on which resources will
-be created.
+You can choose to allow GitLab to manage your cluster for you. If your cluster
+is managed by GitLab, resources for your projects are automatically created. See
+the [Access controls](add_remove_clusters.md#access-controls) section for
+details about the created resources.
 
-If you choose to manage your own cluster, project-specific resources will not be created
-automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you will
-need to explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variables)
-that will be used by your deployment jobs, otherwise a namespace will be created for you.
+If you choose to manage your own cluster, project-specific resources aren't created
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you must
+explicitly provide the `KUBE_NAMESPACE` [deployment variable](#deployment-variables)
+for your deployment jobs to use; otherwise a namespace is created for you.
 
 #### Important notes
 
@@ -198,10 +198,10 @@ To clear the cache:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
 You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
-will be specified as part of the Knative installation. See [Installing Applications](#installing-applications).
+is specified as part of the Knative installation. See [Installing Applications](#installing-applications).
 
-Specifying a base domain will automatically set `KUBE_INGRESS_BASE_DOMAIN` as an environment variable.
-If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain will be used for the different
+Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an environment variable.
+If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
 The domain should have a wildcard DNS configured to the Ingress IP address. After Ingress has been installed (see [Installing Applications](#installing-applications)),
@@ -224,7 +224,7 @@ Auto DevOps automatically detects, builds, tests, deploys, and monitors your
 applications.
 
 To make full use of Auto DevOps (Auto Deploy, Auto Review Apps, and
-Auto Monitoring) you will need the Kubernetes project integration enabled, but
+Auto Monitoring) the Kubernetes project integration must be enabled, but
 Kubernetes clusters can be used without Auto DevOps.
 
 [Read more about Auto DevOps](../../../topics/autodevops/index.md)
@@ -238,7 +238,7 @@ A Kubernetes cluster can be the destination for a deployment job. If
   and configuration is not required. You can immediately begin interacting with
   the cluster from your jobs using tools such as `kubectl` or `helm`.
 - You don't use GitLab's cluster integration you can still deploy to your
-  cluster. However, you will need configure Kubernetes tools yourself
+  cluster. However, you must configure Kubernetes tools yourself
   using [environment variables](../../../ci/variables/README.md#custom-environment-variables)
   before you can interact with the cluster from your jobs.
 
@@ -257,14 +257,14 @@ The Kubernetes cluster integration exposes the following
 GitLab CI/CD build environment to deployment jobs, which are jobs that have
 [defined a target environment](../../../ci/environments/index.md#defining-environments).
 
-| Variable | Description |
-| -------- | ----------- |
-| `KUBE_URL` | Equal to the API URL. |
-| `KUBE_TOKEN` | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
-| `KUBE_NAMESPACE` | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
-| `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
-| `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
-| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This configuration also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
+| Variable                   | Description |
+|----------------------------|-------------|
+| `KUBE_URL`                 | Equal to the API URL. |
+| `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](add_remove_clusters.md#access-controls). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
+| `KUBE_NAMESPACE`           | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
+| `KUBE_CA_PEM_FILE`         | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
+| `KUBE_CA_PEM`              | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
+| `KUBECONFIG`               | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This configuration also embeds the same token defined in `KUBE_TOKEN` so you likely need only this variable. This variable name is also automatically picked up by `kubectl` so you don't need to reference it explicitly if using `kubectl`. |
 | `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](#base-domain) for more information. |
 
 ### Custom namespace
@@ -362,7 +362,7 @@ the deployment job:
 - A namespace.
 - A service account.
 
-However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
+However, sometimes GitLab can not create them. In such instances, your job can fail with the message:
 
 ```plaintext
 This job failed because the necessary resources were not successfully created.
@@ -376,7 +376,7 @@ Reasons for failure include:
   privileges required by GitLab.
 - Missing `KUBECONFIG` or `KUBE_TOKEN` variables. To be passed to your job, they must have a matching
   [`environment:name`](../../../ci/environments/index.md#defining-environments). If your job has no
-  `environment:name` set, it will not be passed the Kubernetes credentials.
+  `environment:name` set, the Kubernetes credentials are not passed to it.
 
 NOTE: **Note:**
 Project-level clusters upgraded from GitLab 12.0 or older may be configured
@@ -396,6 +396,6 @@ Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) to GitLab Core in 13.2.
 
-When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
+When [Prometheus is deployed](#installing-applications), GitLab monitors the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 
 ![Cluster Monitoring](img/k8s_cluster_monitoring.png)

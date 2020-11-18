@@ -12,7 +12,7 @@ Variables can be specified using double curly braces, such as `"{{ci_environment
 
 Support for the `"%{ci_environment_slug}"` format was
 [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31581) in GitLab 13.0.
-Queries that continue to use the old format will show no data.
+Queries that continue to use the old format display no data.
 
 ## Predefined variables
 

@@ -1,0 +1,7 @@
+name: cd_skipped_deployment_status
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46614
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/283884
+milestone: '13.6'
+type: development
+group: group::release
+default_enabled: false

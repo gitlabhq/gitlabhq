@@ -60,7 +60,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
    1. In the **Integration** dropdown menu, select **HTTP Endpoint**.
    1. Name the integration.
    1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
-      for the webhook configuration. You will input the URL and Authorization Key
+      for the webhook configuration. You must also input the URL and Authorization Key
       in your external service.
    1. _(Optional)_ To generate a test alert to test the new integration, enter a
       sample payload, then click **Save and test alert payload**.Valid JSON is required.
