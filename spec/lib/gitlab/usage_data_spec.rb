@@ -300,6 +300,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:clusters_applications_prometheus, :installed, cluster: cluster)
         create(:project_tracing_setting)
         create(:project_error_tracking_setting)
+        create(:incident)
+        create(:incident, alert_management_alert: create(:alert_management_alert))
       end
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
@@ -307,7 +309,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         clusters_applications_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
         projects_with_tracing_enabled: 2,
-        projects_with_error_tracking_enabled: 2
+        projects_with_error_tracking_enabled: 2,
+        projects_with_incidents: 4,
+        projects_with_alert_incidents: 2
       )
 
       expect(described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)).to include(
@@ -315,7 +319,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         clusters_applications_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
         projects_with_tracing_enabled: 1,
-        projects_with_error_tracking_enabled: 1
+        projects_with_error_tracking_enabled: 1,
+        projects_with_incidents: 2,
+        projects_with_alert_incidents: 1
       )
     end
   end

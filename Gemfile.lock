@@ -70,7 +70,7 @@ GEM
       memoizable (~> 0.4.0)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    aes_key_wrap (1.0.1)
+    aes_key_wrap (1.1.0)
     akismet (3.0.0)
     android_key_attestation (0.3.0)
     apollo_upload_server (2.0.2)
@@ -132,7 +132,7 @@ GEM
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
-    bindata (2.4.3)
+    bindata (2.4.8)
     binding_ninja (0.2.3)
     bootsnap (1.4.6)
       msgpack (~> 1.0)
@@ -613,7 +613,7 @@ GEM
       regexp_parser (~> 1.5)
       regexp_property_values (~> 0.3)
     json (2.3.0)
-    json-jwt (1.11.0)
+    json-jwt (1.13.0)
       activesupport (>= 4.2)
       aes_key_wrap
       bindata
@@ -874,12 +874,12 @@ GEM
       rack (>= 1.0, < 3)
     rack-cors (1.0.6)
       rack (>= 1.6.0)
-    rack-oauth2 (1.9.3)
+    rack-oauth2 (1.16.0)
       activesupport
       attr_required
       httpclient
-      json-jwt (>= 1.9.0)
-      rack
+      json-jwt (>= 1.11.0)
+      rack (>= 2.1.0)
     rack-protection (2.0.5)
       rack
     rack-proxy (0.6.0)
@@ -1449,7 +1449,7 @@ DEPENDENCIES
   rack (~> 2.2.3)
   rack-attack (~> 6.3.0)
   rack-cors (~> 1.0.6)
-  rack-oauth2 (~> 1.9.3)
+  rack-oauth2 (~> 1.16.0)
   rack-proxy (~> 0.6.0)
   rack-timeout (~> 0.5.1)
   rails (~> 6.0.3.1)

@@ -160,7 +160,7 @@ gitops:
   ...
 ```
 
-GitLab [versions 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) also
+GitLab [versions 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) also
 supports manifest projects containing multiple directories (or subdirectories)
 of YAML files. To use multiple YAML files, specify a `paths` attribute:
 

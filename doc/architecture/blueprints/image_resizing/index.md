@@ -46,14 +46,14 @@ The MVC Avatar resizing implementation is integrated into Workhorse. With the ex
 
 ## Iterations
 
-1. [x] POC on different image resizing solutions
-1. [x] Review solutions with security team
-1. [x] Implement avatar resizing MVC
-1. [ ] Deploy, measure, monitor
-1. [ ] Clarify features for content image resizing
-1. [ ] Weigh options between using current implementation of image resizing vs new solution
-1. [ ] Implement content image resizing MVC
-1. [ ] Deploy, measure, monitor
+1. ✓ POC on different image resizing solutions
+1. ✓ Review solutions with security team
+1. ✓ Implement avatar resizing MVC
+1. Deploy, measure, monitor
+1. Clarify features for content image resizing
+1. Weigh options between using current implementation of image resizing vs new solution
+1. Implement content image resizing MVC
+1. Deploy, measure, monitor
 
 ## Who
 

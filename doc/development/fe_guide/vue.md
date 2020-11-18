@@ -120,7 +120,7 @@ return new Vue({
 Use Vue's [provide/inject](https://vuejs.org/v2/api/#provide-inject) mechanism
 to make feature flags available to any descendant components in a Vue
 application. The `glFeatures` object is already provided in `commons/vue.js`, so
-only the mixin is required to utilize the flags:
+only the mixin is required to use the flags:
 
 ```javascript
 // An arbitrary descendant component

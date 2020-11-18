@@ -573,7 +573,7 @@ constants.
 
 #### EE parameters
 
-We can define `params` and utilize `use` in another `params` definition to
+We can define `params` and use `use` in another `params` definition to
 include parameters defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
 due to `prepend_if_ee`, but Grape is complex internally and we couldn't easily

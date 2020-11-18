@@ -37,10 +37,10 @@ multiple projects.
 
 If you are using a self-managed instance of GitLab:
 
-- Your administrator can install and register shared runners by
-  going to your project's **Settings > CI / CD**, expanding the
-  **Runners** section, and clicking **Show runner installation instructions**.
-  These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).
+- Your administrator can install and register shared runners by [following the documentation](https://docs.gitlab.com/runner/install/index.html).
+  <!-- going to your project's-->
+  <!-- **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show runner installation instructions**.-->
+  <!-- These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).-->
 - The administrator can also configure a maximum number of shared runner [pipeline minutes for
   each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota).
 

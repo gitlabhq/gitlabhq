@@ -821,7 +821,7 @@ This approach requires multiple releases.
 ##### Parameter hash
 
 This approach will not require multiple releases if an existing worker already
-utilizes a parameter hash.
+uses a parameter hash.
 
 1. Use a parameter hash in the worker to allow future flexibility.
 

@@ -73,7 +73,7 @@ An iteration report displays a list of all the issues assigned to an iteration a
 
 To view an iteration report, go to the iterations list page and click an iteration's title.
 
-### Iteration burndown and burnup charts **(STARTER ONLY)**
+### Iteration burndown and burnup charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222750) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
 > - It was deployed behind a feature flag, disabled by default.
@@ -84,9 +84,12 @@ To view an iteration report, go to the iterations list page and click an iterati
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-iteration-charts). **(STARTER ONLY)**
 
 The iteration report includes [burndown and burnup charts](../../project/milestones/burndown_and_burnup_charts.md),
-similar to how they appear when viewing a [milestone](../../project/milestones/index.md)
+similar to how they appear when viewing a [milestone](../../project/milestones/index.md).
 
-## Disable Iterations **(STARTER ONLY)**
+Burndown charts help track completion progress of total scope, and burnup charts track the daily
+total count and weight of issues added to and completed in a given timebox.
+
+## Disable iterations **(STARTER ONLY)**
 
 GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)

@@ -945,7 +945,7 @@ processes: `puma master` (1 process), `puma cluster worker`
 
 ### Repository access
 
-Repositories get accessed via HTTP or SSH. HTTP cloning/push/pull utilizes the GitLab API and SSH cloning is handled by GitLab Shell (previously explained).
+Repositories get accessed via HTTP or SSH. HTTP cloning/push/pull uses the GitLab API and SSH cloning is handled by GitLab Shell (previously explained).
 
 ## Troubleshooting
 

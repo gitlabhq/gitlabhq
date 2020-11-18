@@ -147,7 +147,7 @@ Whenever an approval is given/revoked, a record is created/deleted.
 
 ## Controllers and Services
 
-The following controllers and services below are being utilized for the approval
+The following controllers and services below are being used for the approval
 rules feature to work.
 
 ### `API::ProjectApprovalSettings`

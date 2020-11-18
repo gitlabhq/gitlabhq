@@ -26,7 +26,7 @@ access to high quality time-series monitoring of GitLab services.
 Prometheus works by periodically connecting to data sources and collecting their
 performance metrics through the [various exporters](#bundled-software-metrics). To view
 and work with the monitoring data, you can either
-[connect directly to Prometheus](#viewing-performance-metrics) or utilize a
+[connect directly to Prometheus](#viewing-performance-metrics) or use a
 dashboard tool like [Grafana](https://grafana.com).
 
 ## Configuring Prometheus

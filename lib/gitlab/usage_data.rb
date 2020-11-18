@@ -632,7 +632,9 @@ module Gitlab
                                                         start: user_minimum_id,
                                                         finish: user_maximum_id),
           projects_with_tracing_enabled: distinct_count(::Project.with_tracing_enabled.where(time_period), :creator_id),
-          projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id)
+          projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
+          projects_with_incidents: distinct_count(::Issue.incident.where(time_period), :project_id),
+          projects_with_alert_incidents: distinct_count(::Issue.incident.with_alert_management_alerts.where(time_period), :project_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

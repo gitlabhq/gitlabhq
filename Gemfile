@@ -48,7 +48,7 @@ gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'omniauth_openid_connect', '~> 0.3.5'
 gem 'omniauth-salesforce', '~> 1.0.5'
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0'
-gem 'rack-oauth2', '~> 1.9.3'
+gem 'rack-oauth2', '~> 1.16.0'
 gem 'jwt', '~> 2.1.0'
 
 # Kerberos authentication. EE-only

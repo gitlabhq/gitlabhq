@@ -278,7 +278,7 @@ export default {
           />
         </feature-flags-tab>
         <template #tabs-end>
-          <div
+          <li
             class="gl-display-none gl-display-md-flex gl-align-items-center gl-flex-fill-1 gl-justify-content-end"
           >
             <gl-button
@@ -313,7 +313,7 @@ export default {
             >
               {{ s__('FeatureFlags|New feature flag') }}
             </gl-button>
-          </div>
+          </li>
         </template>
       </gl-tabs>
     </div>

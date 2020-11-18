@@ -85,7 +85,7 @@ GET /-/chaos/cpu_spin?duration_s=50&async=true
 
 | Attribute    | Type    | Required | Description                                                           |
 | ------------ | ------- | -------- | --------------------------------------------------------------------- |
-| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilized. Defaults to 30s |
+| `duration_s` | integer | no       | Duration, in seconds, that the core will be used. Defaults to 30s |
 | `async`      | boolean | no       | Set to true to consume CPU in a Sidekiq background worker process     |
 
 ```shell
@@ -110,7 +110,7 @@ GET /-/chaos/db_spin?duration_s=50&async=true
 | Attribute    | Type    | Required | Description                                                                 |
 | ------------ | ------- | -------- | --------------------------------------------------------------------------- |
 | `interval_s` | float   | no       | Interval, in seconds, for every DB request. Defaults to 1s                  |
-| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilized. Defaults to 30s       |
+| `duration_s` | integer | no       | Duration, in seconds, that the core will be used. Defaults to 30s       |
 | `async`      | boolean | no       | Set to true to perform the operation in a Sidekiq background worker process |
 
 ```shell

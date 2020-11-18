@@ -269,7 +269,7 @@ When user submitted data is included in responses to end users, which is just ab
 
 ### Mitigation
 
-In most situations, a two-step solution can be utilized: input validation and output encoding in the appropriate context.
+In most situations, a two-step solution can be used: input validation and output encoding in the appropriate context.
 
 #### Input validation
 
@@ -505,3 +505,57 @@ out, _ = exec.Command("sh", "-c", "echo 1 | cat /etc/passwd").Output()
 ```
 
 This outputs `1` followed by the content of `/etc/passwd`.
+
+## GitLab Internal Authorization
+
+### Introduction
+
+There are some cases where `users` passed in the code is actually referring to a `DeployToken`/`DeployKey` entity instead of a real `User`, because of the code below in **`/lib/api/api_guard.rb`**
+
+```ruby
+      def find_user_from_sources
+        strong_memoize(:find_user_from_sources) do
+          deploy_token_from_request ||
+            find_user_from_bearer_token ||
+            find_user_from_job_token ||
+            user_from_warden
+        end
+      end
+```
+
+### Past Vulnerable Code
+
+In some scenarios such as [this one](https://gitlab.com/gitlab-org/gitlab/-/issues/237795), user impersonation is possible because a `DeployToken` ID can be used in place of a `User` ID. This happened because there was no check on the line with `Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)`. In this case, the `id` is actually a `DeployToken` ID instead of a `User` ID.
+
+```ruby
+      def find_current_user!
+        user = find_user_from_sources
+        return unless user
+
+        # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
+        Gitlab::Auth::CurrentUserMode.bypass_session!(user.id) if Feature.enabled?(:user_mode_in_session)
+
+        unless api_access_allowed?(user)
+          forbidden!(api_access_denied_message(user))
+        end
+```
+
+### Best Practices
+
+In order to prevent this from happening, it is recommended to use the method `user.is_a?(User)` to make sure it returns `true` when we are expecting to deal with a `User` object. This could prevent the ID confusion from the method `find_user_from_sources` mentioned above. Below code snippet shows the fixed code after applying the best practice to the vulnerable code above.
+
+```ruby
+      def find_current_user!
+        user = find_user_from_sources
+        return unless user
+
+        if user.is_a?(User) && Feature.enabled?(:user_mode_in_session)
+          # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
+          Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)
+        end
+
+        unless api_access_allowed?(user)
+          forbidden!(api_access_denied_message(user))
+        end
+```
+  

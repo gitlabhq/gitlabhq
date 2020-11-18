@@ -58,7 +58,7 @@ A few notes on CPU and storage:
   see boosts in both query and indexing performance.
 
 Keep in mind, these are **minimum requirements** for Elasticsearch.
-Heavily-utilized Elasticsearch clusters will likely require considerably more
+Heavily-used Elasticsearch clusters will likely require considerably more
 resources.
 
 ## Installing Elasticsearch
