@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Tracking do
         .to receive(:self_describing_event)
         .with('iglu:com.gitlab/foo/jsonschema/1-0-0', { foo: 'bar' }, context: nil)
 
-      described_class.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', foo: 'bar')
+      described_class.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', { foo: 'bar' })
     end
   end
 end

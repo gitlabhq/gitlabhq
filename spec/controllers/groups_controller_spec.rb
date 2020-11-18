@@ -400,15 +400,6 @@ RSpec.describe GroupsController, factory_default: :keep do
       sign_in(user)
     end
 
-    it 'lists only incidents and issues' do
-      incident = create(:incident, project: project)
-      create(:quality_test_case, project: project)
-
-      get :issues, params: { id: group.to_param }
-
-      expect(assigns(:issues)).to match_array([issue_1, issue_2, incident])
-    end
-
     context 'sorting by votes' do
       it 'sorts most popular issues' do
         get :issues, params: { id: group.to_param, sort: 'upvotes_desc' }

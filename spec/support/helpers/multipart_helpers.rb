@@ -37,7 +37,7 @@ module MultipartHelpers
     # *without* the "#{key}." prefix
     result.deep_transform_keys! { |k| k.remove("#{key}.") }
     {
-      "#{key}.gitlab-workhorse-upload" => jwt_token('upload' => result)
+      "#{key}.gitlab-workhorse-upload" => jwt_token(data: { 'upload' => result })
     }
   end
 

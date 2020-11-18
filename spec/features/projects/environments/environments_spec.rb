@@ -12,8 +12,16 @@ RSpec.describe 'Environments page', :js do
     sign_in(user)
   end
 
+  def actions_button_selector
+    '[data-testid="environment-actions-button"]'
+  end
+
+  def action_link_selector
+    '[data-testid="manual-action-link"]'
+  end
+
   def stop_button_selector
-    %q{button[title="Stop environment"]}
+    'button[title="Stop environment"]'
   end
 
   describe 'page tabs' do
@@ -187,18 +195,17 @@ RSpec.describe 'Environments page', :js do
         end
 
         it 'shows a play button' do
-          find('.js-environment-actions-dropdown').click
-
+          find(actions_button_selector).click
           expect(page).to have_content(action.name)
         end
 
         it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
-          find('.js-environment-actions-dropdown').click
+          find(actions_button_selector).click
           expect(page).to have_content(action.name)
 
-          expect { find('.js-manual-action-link').click }
+          expect { find(action_link_selector).click }
             .not_to change { Ci::Pipeline.count }
         end
 
@@ -301,11 +308,11 @@ RSpec.describe 'Environments page', :js do
         end
 
         it 'has a dropdown for actionable jobs' do
-          expect(page).to have_selector('.dropdown-new.btn.btn-default [data-testid="play-icon"]')
+          expect(page).to have_selector("#{actions_button_selector} [data-testid=\"play-icon\"]")
         end
 
         it "has link to the delayed job's action" do
-          find('.js-environment-actions-dropdown').click
+          find(actions_button_selector).click
 
           expect(page).to have_button('delayed job')
           expect(page).to have_content(/\d{2}:\d{2}:\d{2}/)
@@ -320,7 +327,7 @@ RSpec.describe 'Environments page', :js do
           end
 
           it "shows 00:00:00 as the remaining time" do
-            find('.js-environment-actions-dropdown').click
+            find(actions_button_selector).click
 
             expect(page).to have_content("00:00:00")
           end
@@ -328,8 +335,8 @@ RSpec.describe 'Environments page', :js do
 
         context 'when user played a delayed job immediately' do
           before do
-            find('.js-environment-actions-dropdown').click
-            page.accept_confirm { click_button('delayed job') }
+            find(actions_button_selector).click
+            accept_confirm { find(action_link_selector).click }
             wait_for_requests
           end
 

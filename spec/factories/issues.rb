@@ -52,9 +52,5 @@ FactoryBot.define do
     factory :incident do
       issue_type { :incident }
     end
-
-    factory :quality_test_case do
-      issue_type { :test_case }
-    end
   end
 end

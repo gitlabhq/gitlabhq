@@ -141,7 +141,6 @@ RSpec.describe Issue do
   describe '.with_issue_type' do
     let_it_be(:issue) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }
-    let_it_be(:test_case) { create(:quality_test_case, project: reusable_project) }
 
     it 'gives issues with the given issue type' do
       expect(described_class.with_issue_type('issue'))
@@ -149,8 +148,8 @@ RSpec.describe Issue do
     end
 
     it 'gives issues with the given issue type' do
-      expect(described_class.with_issue_type(%w(issue incident test_case)))
-        .to contain_exactly(issue, incident, test_case)
+      expect(described_class.with_issue_type(%w(issue incident)))
+        .to contain_exactly(issue, incident)
     end
   end
 

@@ -206,7 +206,7 @@ module Ci
 
     override :dependency_variables
     def dependency_variables
-      return [] unless ::Feature.enabled?(:ci_bridge_dependency_variables, project)
+      return [] unless ::Feature.enabled?(:ci_bridge_dependency_variables, project, default_enabled: true)
 
       super
     end
