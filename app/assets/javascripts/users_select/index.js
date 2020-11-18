@@ -15,6 +15,7 @@ import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { fixTitle, dispose } from '~/tooltips';
+import { loadCSSFile } from '../lib/utils/css_utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -592,92 +593,97 @@ function UsersSelect(currentUser, els, options = {}) {
   if ($('.ajax-users-select').length) {
     import(/* webpackChunkName: 'select2' */ 'select2/select2')
       .then(() => {
-        $('.ajax-users-select').each((i, select) => {
-          const options = getAjaxUsersSelectOptions($(select), AJAX_USERS_SELECT_OPTIONS_MAP);
-          options.skipLdap = $(select).hasClass('skip_ldap');
-          const showNullUser = $(select).data('nullUser');
-          const showAnyUser = $(select).data('anyUser');
-          const showEmailUser = $(select).data('emailUser');
-          const firstUser = $(select).data('firstUser');
-          return $(select).select2({
-            placeholder: __('Search for a user'),
-            multiple: $(select).hasClass('multiselect'),
-            minimumInputLength: 0,
-            query(query) {
-              return userSelect.users(query.term, options, users => {
-                let name;
-                const data = {
-                  results: users,
-                };
-                if (query.term.length === 0) {
-                  if (firstUser) {
-                    // Move current user to the front of the list
-                    const ref = data.results;
+        // eslint-disable-next-line promise/no-nesting
+        loadCSSFile(gon.select2_css_path)
+          .then(() => {
+            $('.ajax-users-select').each((i, select) => {
+              const options = getAjaxUsersSelectOptions($(select), AJAX_USERS_SELECT_OPTIONS_MAP);
+              options.skipLdap = $(select).hasClass('skip_ldap');
+              const showNullUser = $(select).data('nullUser');
+              const showAnyUser = $(select).data('anyUser');
+              const showEmailUser = $(select).data('emailUser');
+              const firstUser = $(select).data('firstUser');
+              return $(select).select2({
+                placeholder: __('Search for a user'),
+                multiple: $(select).hasClass('multiselect'),
+                minimumInputLength: 0,
+                query(query) {
+                  return userSelect.users(query.term, options, users => {
+                    let name;
+                    const data = {
+                      results: users,
+                    };
+                    if (query.term.length === 0) {
+                      if (firstUser) {
+                        // Move current user to the front of the list
+                        const ref = data.results;
 
-                    for (let index = 0, len = ref.length; index < len; index += 1) {
-                      const obj = ref[index];
-                      if (obj.username === firstUser) {
-                        data.results.splice(index, 1);
-                        data.results.unshift(obj);
-                        break;
+                        for (let index = 0, len = ref.length; index < len; index += 1) {
+                          const obj = ref[index];
+                          if (obj.username === firstUser) {
+                            data.results.splice(index, 1);
+                            data.results.unshift(obj);
+                            break;
+                          }
+                        }
+                      }
+                      if (showNullUser) {
+                        const nullUser = {
+                          name: s__('UsersSelect|Unassigned'),
+                          id: 0,
+                        };
+                        data.results.unshift(nullUser);
+                      }
+                      if (showAnyUser) {
+                        name = showAnyUser;
+                        if (name === true) {
+                          name = s__('UsersSelect|Any User');
+                        }
+                        const anyUser = {
+                          name,
+                          id: null,
+                        };
+                        data.results.unshift(anyUser);
                       }
                     }
-                  }
-                  if (showNullUser) {
-                    const nullUser = {
-                      name: s__('UsersSelect|Unassigned'),
-                      id: 0,
-                    };
-                    data.results.unshift(nullUser);
-                  }
-                  if (showAnyUser) {
-                    name = showAnyUser;
-                    if (name === true) {
-                      name = s__('UsersSelect|Any User');
+                    if (
+                      showEmailUser &&
+                      data.results.length === 0 &&
+                      query.term.match(/^[^@]+@[^@]+$/)
+                    ) {
+                      const trimmed = query.term.trim();
+                      const emailUser = {
+                        name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
+                        username: trimmed,
+                        id: trimmed,
+                        invite: true,
+                      };
+                      data.results.unshift(emailUser);
                     }
-                    const anyUser = {
-                      name,
-                      id: null,
-                    };
-                    data.results.unshift(anyUser);
-                  }
-                }
-                if (
-                  showEmailUser &&
-                  data.results.length === 0 &&
-                  query.term.match(/^[^@]+@[^@]+$/)
-                ) {
-                  const trimmed = query.term.trim();
-                  const emailUser = {
-                    name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
-                    username: trimmed,
-                    id: trimmed,
-                    invite: true,
-                  };
-                  data.results.unshift(emailUser);
-                }
-                return query.callback(data);
+                    return query.callback(data);
+                  });
+                },
+                initSelection() {
+                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                  return userSelect.initSelection.apply(userSelect, args);
+                },
+                formatResult() {
+                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                  return userSelect.formatResult.apply(userSelect, args);
+                },
+                formatSelection() {
+                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                  return userSelect.formatSelection.apply(userSelect, args);
+                },
+                dropdownCssClass: 'ajax-users-dropdown',
+                // we do not want to escape markup since we are displaying html in results
+                escapeMarkup(m) {
+                  return m;
+                },
               });
-            },
-            initSelection() {
-              const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-              return userSelect.initSelection.apply(userSelect, args);
-            },
-            formatResult() {
-              const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-              return userSelect.formatResult.apply(userSelect, args);
-            },
-            formatSelection() {
-              const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-              return userSelect.formatSelection.apply(userSelect, args);
-            },
-            dropdownCssClass: 'ajax-users-dropdown',
-            // we do not want to escape markup since we are displaying html in results
-            escapeMarkup(m) {
-              return m;
-            },
-          });
-        });
+            });
+          })
+          .catch(() => {});
       })
       .catch(() => {});
   }

@@ -50,6 +50,7 @@ describe('Clusters Store', () => {
 
       expect(store.state).toEqual({
         helpPath: null,
+        helmHelpPath: null,
         ingressHelpPath: null,
         environmentsHelpPath: null,
         clustersHelpPath: null,
@@ -62,7 +63,7 @@ describe('Clusters Store', () => {
         rbac: false,
         applications: {
           helm: {
-            title: 'Helm Tiller',
+            title: 'Legacy Helm Tiller server',
             status: mockResponseData.applications[0].status,
             statusReason: mockResponseData.applications[0].status_reason,
             requestReason: null,

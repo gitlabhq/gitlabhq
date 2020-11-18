@@ -5842,6 +5842,9 @@ msgstr ""
 msgid "ClusterIntegration|CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Can be safely removed. Prior to GitLab 13.2, GitLab used a remote Tiller server to manage the applications. GitLab no longer uses this server. Uninstalling this server will not affect your other applications. This row will disappear afterwards."
+msgstr ""
+
 msgid "ClusterIntegration|Cert-Manager"
 msgstr ""
 
@@ -6100,9 +6103,6 @@ msgstr ""
 msgid "ClusterIntegration|HTTP Error"
 msgstr ""
 
-msgid "ClusterIntegration|Helm Tiller"
-msgstr ""
-
 msgid "ClusterIntegration|Helm release failed to install"
 msgstr ""
 
@@ -6203,6 +6203,9 @@ msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Legacy Helm Tiller server"
 msgstr ""
 
 msgid "ClusterIntegration|Loading IAM Roles"
@@ -6538,7 +6541,7 @@ msgstr ""
 msgid "ClusterIntegration|The associated IP and all deployed services will be deleted and cannot be restored. Uninstalling Knative will also remove Istio from your cluster. This will not effect any other applications."
 msgstr ""
 
-msgid "ClusterIntegration|The associated Tiller pod, the %{gitlabManagedAppsNamespace} namespace, and all of its resources will be deleted and cannot be restored."
+msgid "ClusterIntegration|The associated Tiller pod will be deleted and cannot be restored. Your other applications will remain unaffected."
 msgstr ""
 
 msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
@@ -9913,6 +9916,9 @@ msgid "Edit in Web IDE"
 msgstr ""
 
 msgid "Edit in single-file editor"
+msgstr ""
+
+msgid "Edit inline"
 msgstr ""
 
 msgid "Edit issues"
@@ -14715,6 +14721,9 @@ msgid "Integrations|When a Jira issue is mentioned in a commit or merge request 
 msgstr ""
 
 msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
+msgstr ""
+
+msgid "Interactive mode"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -24961,6 +24970,9 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Showing %{conflict_start}%{conflicts_text}%{strong_end} between %{ref_start}%{source_branch}%{strong_end} and %{ref_start}%{target_branch}%{strong_end}"
+msgstr ""
+
 msgid "Showing %{count} of %{total} projects"
 msgstr ""
 
@@ -29887,6 +29899,9 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View file @ %{commitSha}"
+msgstr ""
+
+msgid "View file @%{commit_sha}"
 msgstr ""
 
 msgid "View full dashboard"

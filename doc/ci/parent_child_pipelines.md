@@ -158,6 +158,11 @@ For an overview, see [Create child pipelines using dynamically generated configu
 
 We also have an [example project using Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet) which shows how to use a data templating language to generate your `.gitlab-ci.yml` at runtime. You could use a similar process for other templating languages like [Dhall](https://dhall-lang.org/) or [`ytt`](https://get-ytt.io/).
 
+The artifact path is parsed by GitLab, not the runner, so the path must match the
+syntax for the OS running GitLab. If GitLab is running on Linux but using a Windows
+runner for testing, the path separator for the trigger job would be `/`. Other CI/CD
+configuration for jobs, like scripts, that use the Windows runner would use `\`.
+
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
 This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/209070).
 

@@ -20,9 +20,10 @@
   .files-wrapper{ "v-if" => "!isLoading && !hasError" }
     .files
       .diff-file.file-holder.conflict{ "v-for" => "file in conflictsData.files" }
-        .js-file-title.file-title
-          %i.fa.fa-fw{ ":class" => "file.iconClass" }
-          %strong {{file.filePath}}
+        .js-file-title.file-title.file-title-flex-parent.cursor-default
+          .file-header-content
+            %file-icon{ ':file-name': 'file.filePath', ':size': '18', 'css-classes': 'gl-mr-2' }
+            %strong.file-title-name {{file.filePath}}
           = render partial: 'projects/merge_requests/conflicts/file_actions'
         .diff-content.diff-wrap-lines
           .file-content{ "v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }

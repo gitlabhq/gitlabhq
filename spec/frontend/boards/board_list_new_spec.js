@@ -9,7 +9,7 @@ import BoardList from '~/boards/components/board_list_new.vue';
 import BoardCard from '~/boards/components/board_card.vue';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import { listObj, mockIssuesByListId, issues } from './mock_data';
+import { listObj, mockIssuesByListId, issues, mockIssues } from './mock_data';
 import defaultState from '~/boards/stores/state';
 
 const localVue = createLocalVue();
@@ -71,6 +71,7 @@ const createComponent = ({
       disabled: false,
       list,
       issues: [issue],
+      canAdminList: true,
       ...componentProps,
     },
     store,
@@ -87,15 +88,17 @@ const createComponent = ({
 
 describe('Board list component', () => {
   let wrapper;
+  const findByTestId = testId => wrapper.find(`[data-testid="${testId}"]`);
   useFakeRequestAnimationFrame();
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
 
   describe('When Expanded', () => {
     beforeEach(() => {
       wrapper = createComponent();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('renders component', () => {
@@ -107,7 +110,7 @@ describe('Board list component', () => {
         state: { listsFlags: { 'gid://gitlab/List/1': { isLoading: true } } },
       });
 
-      expect(wrapper.find('[data-testid="board_list_loading"').exists()).toBe(true);
+      expect(findByTestId('board_list_loading').exists()).toBe(true);
     });
 
     it('renders issues', () => {
@@ -171,19 +174,15 @@ describe('Board list component', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('loads more issues after scrolling', () => {
-      wrapper.vm.$refs.list.dispatchEvent(new Event('scroll'));
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
       expect(actions.fetchIssuesForList).toHaveBeenCalled();
     });
 
     it('does not load issues if already loading', () => {
-      wrapper.vm.$refs.list.dispatchEvent(new Event('scroll'));
-      wrapper.vm.$refs.list.dispatchEvent(new Event('scroll'));
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
       expect(actions.fetchIssuesForList).toHaveBeenCalledTimes(1);
     });
@@ -202,10 +201,6 @@ describe('Board list component', () => {
       wrapper = createComponent({
         listProps: { issuesSize: 50 },
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     describe('when issue count exceeds max issue count', () => {
@@ -230,6 +225,45 @@ describe('Board list component', () => {
         wrapper.setProps({ list: { maxIssueCount: 0 } });
 
         expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('drag & drop issue', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
+    describe('handleDragOnStart', () => {
+      it('adds a class `is-dragging` to document body', () => {
+        expect(document.body.classList.contains('is-dragging')).toBe(false);
+
+        findByTestId('tree-root-wrapper').vm.$emit('start');
+
+        expect(document.body.classList.contains('is-dragging')).toBe(true);
+      });
+    });
+
+    describe('handleDragOnEnd', () => {
+      it('removes class `is-dragging` from document body', () => {
+        jest.spyOn(wrapper.vm, 'moveIssue').mockImplementation(() => {});
+        document.body.classList.add('is-dragging');
+
+        findByTestId('tree-root-wrapper').vm.$emit('end', {
+          oldIndex: 1,
+          newIndex: 0,
+          item: {
+            dataset: {
+              issueId: mockIssues[0].id,
+              issueIid: mockIssues[0].iid,
+              issuePath: mockIssues[0].referencePath,
+            },
+          },
+          to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
+          from: { dataset: { listId: 'gid://gitlab/List/2' } },
+        });
+
+        expect(document.body.classList.contains('is-dragging')).toBe(false);
       });
     });
   });

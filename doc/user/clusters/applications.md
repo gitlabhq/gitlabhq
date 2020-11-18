@@ -65,6 +65,7 @@ supported by GitLab before installing any of the applications.
 > - Introduced in GitLab 11.6 for group-level clusters.
 > - [Uses a local Tiller](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 and later.
 > - [Uses Helm 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46267) for clusters created with GitLab 13.6 and later.
+> - [Offers legacy Tiller removal](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47457) in GitLab 13.7 and later.
 
 [Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
 used to install the GitLab-managed apps. GitLab runs each `helm` command
@@ -72,12 +73,12 @@ in a pod within the `gitlab-managed-apps` namespace inside the cluster.
 
 - For clusters created on GitLab 13.6 and newer, GitLab uses Helm 3 to manage
   applications.
-- For clusters created on versions of GitLab prior to 13.6, GitLab uses
-  Helm 2 with a local [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server.
-  Prior to [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/209736),
-  GitLab used an in-cluster Tiller server in the `gitlab-managed-apps`
-  namespace. You can safely remove this server after upgrading to GitLab 13.2
-  or newer.
+- For clusters created on versions of GitLab prior to 13.6, GitLab uses Helm 2
+  with a local [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server. Prior
+  to [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/209736), GitLab
+  used an in-cluster Tiller server in the `gitlab-managed-apps` namespace. You
+  can safely uninstall the server from GitLab's application page if you have
+  previously installed it. This will not affect your other applications.
 
 GitLab's Helm integration does not support installing applications behind a proxy,
 but a [workaround](../../topics/autodevops/index.md#install-applications-behind-a-proxy)

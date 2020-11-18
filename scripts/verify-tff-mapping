@@ -28,9 +28,9 @@ tests = [
   },
 
   {
-    explanation: 'Some EE extensions also map to its EE class spec, but this is not recommended: https://docs.gitlab.com/ee/development/ee_features.html#testing-ee-features-based-on-ce-features',
-    source: 'ee/app/models/ee/user.rb',
-    expected: ['ee/spec/models/user_spec.rb', 'spec/models/user_spec.rb']
+    explanation: 'Some EE extensions have specs placement that do not follow the recommendation: https://docs.gitlab.com/ee/development/ee_features.html#testing-ee-features-based-on-ce-features. `tff` should still find these misplaced specs.',
+    source: 'ee/app/models/ee/project.rb',
+    expected: ['ee/spec/models/project_spec.rb', 'spec/models/project_spec.rb']
   },
 
   {
@@ -53,8 +53,8 @@ tests = [
 
   {
     explanation: 'EE spec code should map to itself',
-    source: 'ee/spec/models/user_spec.rb',
-    expected: ['ee/spec/models/user_spec.rb']
+    source: 'ee/spec/models/ee/user_spec.rb',
+    expected: ['ee/spec/models/ee/user_spec.rb', 'spec/models/user_spec.rb']
   },
 
   {

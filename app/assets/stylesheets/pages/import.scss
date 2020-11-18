@@ -17,14 +17,6 @@
   max-width: 300px;
 }
 
-.import-namespace-select {
-  > .select2-choice {
-    border-radius: $border-radius-default 0 0 $border-radius-default;
-    position: relative;
-    left: 1px;
-  }
-}
-
 .import-slash-divider {
   background-color: $gray-lightest;
   border: 1px solid $border-color;

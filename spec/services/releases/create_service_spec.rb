@@ -167,28 +167,47 @@ RSpec.describe Releases::CreateService do
       end
     end
 
-    context 'when no milestone is passed in' do
-      it 'creates a release without a milestone tied to it' do
-        expect(params.key?(:milestones)).to be_falsey
+    context 'no milestone association behavior' do
+      let(:title_1) { 'v1.0' }
+      let(:title_2) { 'v1.0-rc' }
+      let!(:milestone_1) { create(:milestone, :active, project: project, title: title_1) }
+      let!(:milestone_2) { create(:milestone, :active, project: project, title: title_2) }
 
-        service.execute
-        release = project.releases.last
+      context 'when no milestones parameter is passed' do
+        it 'creates a release without a milestone tied to it' do
+          expect(service.param_for_milestone_titles_provided?).to be_falsey
 
-        expect(release.milestones).to be_empty
+          service.execute
+          release = project.releases.last
+
+          expect(release.milestones).to be_empty
+        end
+
+        it 'does not create any new MilestoneRelease object' do
+          expect { service.execute }.not_to change { MilestoneRelease.count }
+        end
       end
 
-      it 'does not create any new MilestoneRelease object' do
-        expect { service.execute }.not_to change { MilestoneRelease.count }
+      context 'when an empty array is passed as the milestones parameter' do
+        it 'creates a release without a milestone tied to it' do
+          service = described_class.new(project, user, params.merge!({ milestones: [] }))
+          service.execute
+          release = project.releases.last
+
+          expect(release.milestones).to be_empty
+        end
       end
-    end
 
-    context 'when an empty value is passed as a milestone' do
-      it 'creates a release without a milestone tied to it' do
-        service = described_class.new(project, user, params.merge!({ milestones: [] }))
-        service.execute
-        release = project.releases.last
+      context 'when nil is passed as the milestones parameter' do
+        it 'creates a release without a milestone tied to it' do
+          expect(service.param_for_milestone_titles_provided?).to be_falsey
 
-        expect(release.milestones).to be_empty
+          service = described_class.new(project, user, params.merge!({ milestones: nil }))
+          service.execute
+          release = project.releases.last
+
+          expect(release.milestones).to be_empty
+        end
       end
     end
   end

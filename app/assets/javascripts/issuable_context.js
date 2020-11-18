@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import UsersSelect from './users_select';
+import { loadCSSFile } from './lib/utils/css_utils';
 
 export default class IssuableContext {
   constructor(currentUser) {
@@ -10,10 +11,15 @@ export default class IssuableContext {
 
     import(/* webpackChunkName: 'select2' */ 'select2/select2')
       .then(() => {
-        $('select.select2').select2({
-          width: 'resolve',
-          dropdownAutoWidth: true,
-        });
+        // eslint-disable-next-line promise/no-nesting
+        loadCSSFile(gon.select2_css_path)
+          .then(() => {
+            $('select.select2').select2({
+              width: 'resolve',
+              dropdownAutoWidth: true,
+            });
+          })
+          .catch(() => {});
       })
       .catch(() => {});
 

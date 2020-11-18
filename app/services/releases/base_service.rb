@@ -78,7 +78,7 @@ module Releases
     end
 
     def param_for_milestone_titles_provided?
-      params.key?(:milestones)
+      !!params[:milestones]
     end
 
     def execute_hooks(release, action = 'create')
