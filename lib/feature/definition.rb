@@ -13,6 +13,12 @@ class Feature
       end
     end
 
+    TYPES.each do |type, _|
+      define_method("#{type}?") do
+        attributes[:type].to_sym == type
+      end
+    end
+
     def initialize(path, opts = {})
       @path = path
       @attributes = {}
@@ -94,6 +100,10 @@ class Feature
         @definitions = load_all!
       end
 
+      def has_definition?(key)
+        definitions.has_key?(key.to_sym)
+      end
+
       def valid_usage!(key, type:, default_enabled:)
         if definition = definitions[key.to_sym]
           definition.valid_usage!(type_in_code: type, default_enabled_in_code: default_enabled)
@@ -119,10 +129,6 @@ class Feature
       private
 
       def load_all!
-        # We currently do not load feature flag definitions
-        # in production environments
-        return [] unless Gitlab.dev_or_test_env?
-
         paths.each_with_object({}) do |glob_path, definitions|
           load_all_from_path!(definitions, glob_path)
         end

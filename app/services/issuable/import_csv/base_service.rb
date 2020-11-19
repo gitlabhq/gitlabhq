@@ -38,7 +38,7 @@ module Issuable
 
       def with_csv_lines
         csv_data = @csv_io.open(&:read).force_encoding(Encoding::UTF_8)
-        verify_headers!(csv_data)
+        validate_headers_presence!(csv_data.lines.first)
 
         csv_parsing_params = {
           col_sep: detect_col_sep(csv_data.lines.first),
@@ -49,9 +49,9 @@ module Issuable
         CSV.new(csv_data, csv_parsing_params).each.with_index(2)
       end
 
-      def verify_headers!(data)
-        headers = data.lines.first.downcase
-        return if headers.include?('title') && headers.include?('description')
+      def validate_headers_presence!(headers)
+        headers.downcase! if headers
+        return if headers && headers.include?('title') && headers.include?('description')
 
         raise CSV::MalformedCSVError
       end

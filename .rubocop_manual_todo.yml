@@ -26,7 +26,6 @@ Graphql/IDType:
     - 'ee/app/graphql/mutations/iterations/update.rb'
     - 'ee/app/graphql/resolvers/iterations_resolver.rb'
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
-    - 'app/graphql/mutations/issues/update.rb'
     - 'app/graphql/mutations/metrics/dashboard/annotations/delete.rb'
     - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'
     - 'app/graphql/resolvers/design_management/design_resolver.rb'

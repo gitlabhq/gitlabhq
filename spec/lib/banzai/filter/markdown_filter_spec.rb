@@ -46,6 +46,12 @@ RSpec.describe Banzai::Filter::MarkdownFilter do
 
         expect(result).to start_with('<pre><code lang="日">')
       end
+
+      it 'works with additional language parameters' do
+        result = filter("```ruby:red gem\nsome code\n```", no_sourcepos: true)
+
+        expect(result).to start_with('<pre><code lang="ruby:red gem">')
+      end
     end
   end
 

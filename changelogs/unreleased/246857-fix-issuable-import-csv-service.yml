@@ -1,0 +1,5 @@
+---
+title: Fix error in Issuable::ImportCsv::BaseService when CSV file is empty
+merge_request: 47918
+author:
+type: fixed

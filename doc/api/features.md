@@ -37,7 +37,8 @@ Example response:
         "key": "boolean",
         "value": false
       }
-    ]
+    ],
+    "definition": null
   },
   {
     "name": "my_user_feature",
@@ -47,7 +48,15 @@ Example response:
         "key": "percentage_of_actors",
         "value": 34
       }
-    ]
+    ],
+    "definition": {
+      "name": "my_user_feature",
+      "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40880",
+      "rollout_issue_url": "https://gitlab.com/gitlab-org/gitlab/-/issues/244905",
+      "group": "group::ci",
+      "type": "development",
+      "default_enabled": false
+    }
   },
   {
     "name": "new_library",
@@ -57,7 +66,45 @@ Example response:
         "key": "boolean",
         "value": true
       }
-    ]
+    ],
+    "definition": null
+  }
+]
+```
+
+## List all feature definitions
+
+Get a list of all feature definitions.
+
+```plaintext
+GET /features/definitions
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/features/definitions"
+```
+
+Example response:
+
+```json
+[
+  {
+    "name": "api_kaminari_count_with_limit",
+    "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931",
+    "rollout_issue_url": null,
+    "milestone": "11.8",
+    "type": "ops",
+    "group": "group::ecosystem",
+    "default_enabled": false
+  },
+  {
+    "name": "marginalia",
+    "introduced_by_url": null,
+    "rollout_issue_url": null,
+    "milestone": null,
+    "type": "ops",
+    "group": null,
+    "default_enabled": false
   }
 ]
 ```
@@ -81,6 +128,7 @@ POST /features/:name
 | `user` | string | no | A GitLab username |
 | `group` | string | no | A GitLab group's path, for example `gitlab-org` |
 | `project` | string | no | A projects path, for example `gitlab-org/gitlab-foss` |
+| `force` | boolean | no | Skip feature flag validation checks, ie. YAML definition |
 
 Note that you can enable or disable a feature for a `feature_group`, a `user`,
 a `group`, and a `project` in a single API call.
@@ -104,7 +152,15 @@ Example response:
       "key": "percentage_of_time",
       "value": 30
     }
-  ]
+  ],
+  "definition": {
+    "name": "my_user_feature",
+    "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40880",
+    "rollout_issue_url": "https://gitlab.com/gitlab-org/gitlab/-/issues/244905",
+    "group": "group::ci",
+    "type": "development",
+    "default_enabled": false
+  }
 }
 ```
 
@@ -133,7 +189,15 @@ Example response:
       "key": "percentage_of_actors",
       "value": 42
     }
-  ]
+  ],
+  "definition": {
+    "name": "my_user_feature",
+    "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40880",
+    "rollout_issue_url": "https://gitlab.com/gitlab-org/gitlab/-/issues/244905",
+    "group": "group::ci",
+    "type": "development",
+    "default_enabled": false
+  }
 }
 ```
 
