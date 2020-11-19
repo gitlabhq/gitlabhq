@@ -34,7 +34,7 @@ must come in through physical media (USB drive, hard drive, writeable DVD, etc.)
 
 ## Overview
 
-GitLab scanners generally will connect to the internet to download the
+GitLab scanners usually connect to the internet to download the
 latest sets of signatures, rules, and patches. A few extra steps are necessary
 to configure the tools to function properly by using resources available on your local network.
 
@@ -73,7 +73,7 @@ hosting the latest versions of that dependency or image.
 
 ### Scanner signature and rule updates
 
-When connected to the internet, some scanners will reference public databases
+When connected to the internet, some scanners reference public databases
 for the latest sets of signatures and rules to check against. Without connectivity,
 this is not possible. Depending on the scanner, you must therefore disable
 these automatic update checks and either use the databases that they came
@@ -131,7 +131,7 @@ a bastion, and used only for this specific project.
 
 #### Scheduling the updates
 
-By default, this project's pipeline will run only once, when the `.gitlab-ci.yml` is added to the
+By default, this project's pipeline runs only once, when the `.gitlab-ci.yml` is added to the
 repo. To update the GitLab security scanners and signatures, it's necessary to run this pipeline
 regularly. GitLab provides a way to [schedule pipelines](../../../ci/pipelines/schedules.md). For
 example, you can set this up to download and store the Docker images every week.
@@ -139,7 +139,7 @@ example, you can set this up to download and store the Docker images every week.
 Some images can be updated more frequently than others. For example, the [vulnerability database](https://hub.docker.com/r/arminc/clair-db/tags)
 for Container Scanning is updated daily. To update this single image, create a new Scheduled
 Pipeline that runs daily and set `SECURE_BINARIES_ANALYZERS` to `clair-vulnerabilities-db`. Only
-this job will be triggered, and the image will be updated daily and made available in the project
+this job is triggered, and the image is updated daily and made available in the project
 registry.
 
 #### Using the secure bundle created

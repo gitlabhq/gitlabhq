@@ -344,10 +344,6 @@ RSpec.describe Projects::ForkService do
     let(:fork_from_project) { create(:project, :public) }
     let(:forker) { create(:user) }
 
-    before do
-      stub_feature_flags(object_pools: true)
-    end
-
     context 'when no pool exists' do
       it 'creates a new object pool' do
         forked_project = fork_project(fork_from_project, forker, using_service: true)

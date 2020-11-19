@@ -69,7 +69,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     }
 
     options = additional_attributes.merge(
-      diff_view: unified_diff_lines_view_type(@merge_request.project),
+      diff_view: "inline",
       merge_ref_head_diff: render_merge_ref_head_diff?
     )
 

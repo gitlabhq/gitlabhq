@@ -152,9 +152,9 @@ Docker-in-Docker service and
 [GitLab.com shared runners](../../user/gitlab_com/index.md#shared-runners)
 support this.
 
-GitLab Runner 11.11 or later is required, but it is not supported if GitLab
-Runner is installed using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html).
-See the [related issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/83) for details.
+##### Docker
+
+> Introduced in GitLab Runner 11.11.
 
 1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. Register GitLab Runner from the command line to use `docker` and `privileged`
@@ -217,6 +217,62 @@ See the [related issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/iss
      # The 'docker' hostname is the alias of the service container as described at
      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
      #
+     # Specify to Docker where to create the certificates, Docker will
+     # create them automatically on boot, and will create
+     # `/certs/client` that will be shared between the service and job
+     # container, thanks to volume mount from config.toml
+     DOCKER_TLS_CERTDIR: "/certs"
+
+   services:
+     - docker:19.03.12-dind
+
+   before_script:
+     - docker info
+
+   build:
+     stage: build
+     script:
+       - docker build -t my-docker-image .
+       - docker run my-docker-image /script/to/run/tests
+   ```
+
+##### Kubernetes
+
+> [Introduced](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/106) in GitLab Runner Helm Chart 0.23.0.
+
+1. Using the
+   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), update the
+   [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137)
+   to specify a volume mount.
+
+   ```yaml
+   runners:
+     config: |
+       [[runners]]
+         [runners.kubernetes]
+           image = "ubuntu:20.04"
+           privileged = true
+         [[runners.kubernetes.volumes.empty_dir]]
+           name = "docker-certs"
+           mount_path = "/certs/client"
+           medium = "Memory"
+   ```
+
+1. You can now use `docker` in the build script (note the inclusion of the
+   `docker:19.03.13-dind` service):
+
+   ```yaml
+   image: docker:19.03.13
+
+   variables:
+     # When using dind service, we need to instruct docker to talk with
+     # the daemon started inside of the service. The daemon is available
+     # with a network connection instead of the default
+     # /var/run/docker.sock socket.
+     DOCKER_HOST: tcp://docker:2376
+     #
+     # The 'docker' hostname is the alias of the service container as described at
+     # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
      # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
      # the variable must be set to tcp://localhost:2376 because of how the
      # Kubernetes executor connects services to the job container
@@ -227,9 +283,14 @@ See the [related issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/iss
      # `/certs/client` that will be shared between the service and job
      # container, thanks to volume mount from config.toml
      DOCKER_TLS_CERTDIR: "/certs"
+     # These are usually specified by the entrypoint, however the
+     # Kubernetes executor doesn't run entrypoints
+     # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4125
+     DOCKER_TLS_VERIFY: 1
+     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
 
    services:
-     - docker:19.03.12-dind
+     - docker:19.03.13-dind
 
    before_script:
      - docker info

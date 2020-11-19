@@ -22998,7 +22998,7 @@ msgstr ""
 msgid "Repository synchronization concurrency limit"
 msgstr ""
 
-msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets}"
+msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
 msgid "RepositorySettingsAccessLevel|Select"
@@ -29373,6 +29373,9 @@ msgid "UsageQuota|Total namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|Unlimited"
+msgstr ""
+
+msgid "UsageQuota|Uploads"
 msgstr ""
 
 msgid "UsageQuota|Usage"

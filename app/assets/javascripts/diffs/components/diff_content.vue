@@ -87,7 +87,7 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      if (this.glFeatures.unifiedDiffLines && this.glFeatures.unifiedDiffComponents) {
+      if (this.glFeatures.unifiedDiffComponents) {
         return this.diffLines(this.diffFile, true).map(mapParallel(this)) || [];
       }
 
@@ -95,9 +95,7 @@ export default {
       if (this.isInlineView) {
         return this.diffFile.highlighted_diff_lines.map(mapInline(this));
       }
-      return this.glFeatures.unifiedDiffLines
-        ? this.diffLines(this.diffFile).map(mapParallel(this))
-        : this.diffFile.parallel_diff_lines.map(mapParallel(this)) || [];
+      return this.diffLines(this.diffFile).map(mapParallel(this));
     },
   },
   updated() {
@@ -129,9 +127,7 @@ export default {
 <template>
   <div class="diff-content">
     <div class="diff-viewer">
-      <template
-        v-if="isTextFile && glFeatures.unifiedDiffLines && glFeatures.unifiedDiffComponents"
-      >
+      <template v-if="isTextFile && glFeatures.unifiedDiffComponents">
         <diff-view
           :diff-file="diffFile"
           :diff-lines="mappedLines"

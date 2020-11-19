@@ -14,7 +14,7 @@ class Analytics::DevopsAdoption::SegmentSelection < ApplicationRecord
   validates :group_id, uniqueness: { scope: :segment_id, if: :group }
 
   validate :exclusive_project_or_group
-  validate :validate_selection_count
+  validate :validate_selection_count, on: :create
 
   private
 
@@ -27,9 +27,9 @@ class Analytics::DevopsAdoption::SegmentSelection < ApplicationRecord
   def validate_selection_count
     return unless segment
 
-    selection_count_for_segment = self.class.where(segment: segment).count
-
-    if selection_count_for_segment >= ALLOWED_SELECTIONS_PER_SEGMENT
+    # handle single model creation and bulk creation from accepts_nested_attributes_for
+    selections = segment.segment_selections + [self]
+    if selections.reject(&:marked_for_destruction?).uniq.size > ALLOWED_SELECTIONS_PER_SEGMENT
       errors.add(:segment, s_('DevopsAdoptionSegmentSelection|The maximum number of selections has been reached'))
     end
   end

@@ -37,11 +37,11 @@ It is possible to create new issue, display issue details and search up to 5 iss
 
 ## Deploy command
 
-In order to deploy to an environment, GitLab will try to find a deployment
+In order to deploy to an environment, GitLab tries to find a deployment
 manual action in the pipeline.
 
-If there is only one action for a given environment, it is going to be triggered.
-If there is more than one action defined, GitLab will try to find an action
+If there is only one action for a given environment, it is triggered.
+If there is more than one action defined, GitLab tries to find an action
 which name equals the environment name we want to deploy to.
 
-Command will return an error when no matching action has been found.
+The command returns an error when no matching action has been found.

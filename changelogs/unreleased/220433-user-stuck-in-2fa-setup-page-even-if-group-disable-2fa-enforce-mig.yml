@@ -1,0 +1,5 @@
+---
+title: Add migration that updated users that don't need to have 2fa established
+merge_request: 47193
+author:
+type: fixed

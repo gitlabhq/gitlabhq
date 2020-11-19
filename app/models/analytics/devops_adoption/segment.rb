@@ -7,7 +7,7 @@ class Analytics::DevopsAdoption::Segment < ApplicationRecord
   has_many :groups, through: :segment_selections
 
   validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
-  validate :validate_segment_count
+  validate :validate_segment_count, on: :create
 
   accepts_nested_attributes_for :segment_selections, allow_destroy: true
 

@@ -1,6 +1,13 @@
 <script>
-import { mapGetters } from 'vuex';
-import { GlModalDirective, GlTooltipDirective, GlFriendlyWrap, GlIcon, GlButton } from '@gitlab/ui';
+import { mapState, mapGetters, mapActions } from 'vuex';
+import {
+  GlModalDirective,
+  GlTooltipDirective,
+  GlFriendlyWrap,
+  GlIcon,
+  GlButton,
+  GlPagination,
+} from '@gitlab/ui';
 import { __ } from '~/locale';
 import TestCaseDetails from './test_case_details.vue';
 
@@ -10,6 +17,7 @@ export default {
     GlIcon,
     GlFriendlyWrap,
     GlButton,
+    GlPagination,
     TestCaseDetails,
   },
   directives: {
@@ -24,10 +32,14 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getSuiteTests']),
+    ...mapState(['pageInfo']),
+    ...mapGetters(['getSuiteTests', 'getSuiteTestCount']),
     hasSuites() {
       return this.getSuiteTests.length > 0;
     },
+  },
+  methods: {
+    ...mapActions(['setPage']),
   },
   wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
 };
@@ -129,6 +141,14 @@ export default {
           </div>
         </div>
       </div>
+
+      <gl-pagination
+        v-model="pageInfo.page"
+        class="gl-display-flex gl-justify-content-center"
+        :per-page="pageInfo.perPage"
+        :total-items="getSuiteTestCount"
+        @input="setPage"
+      />
     </div>
 
     <div v-else>

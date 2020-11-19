@@ -1,80 +1,101 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Cached queries guidelines
 
-Rails provides an [SQL query cache](https://guides.rubyonrails.org/caching_with_rails.html#sql-caching), 
-used to cache the results of database queries for the duration of the request. 
+Rails provides an [SQL query cache](https://guides.rubyonrails.org/caching_with_rails.html#sql-caching)
+which is used to cache the results of database queries for the duration of a request.
+When Rails encounters the same query again within the same request, it uses the cached
+result set instead of running the query against the database again.
 
-If Rails encounters the same query again for that request,
-it will use the cached result set as opposed to running the query against the database again.
-
-The query results are only cached for the duration of that single request, it does not persist across multiple requests.
+The query results are only cached for the duration of that single request, and
+don't persist across multiple requests.
 
 ## Why cached queries are considered bad
 
-The cached queries help with reducing DB load, but they still:
+Cached queries help by reducing the load on the database, but they still:
 
 - Consume memory.
-- Require as to re-instantiate each `ActiveRecord` object.
-- Require as to re-instantiate each relation of the object.
-- Make us spend additional CPU-cycles to look into a list of cached queries.
- 
-The Cached SQL queries are cheaper, but they are not cheap at all from `memory` perspective. 
-They could mask [N+1 query problem](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations),
-so we should threat them the same way we threat regular N+1 queries.
+- Require Rails to re-instantiate each `ActiveRecord` object.
+- Require Rails to re-instantiate each relation of the object.
+- Make us spend additional CPU cycles to look into a list of cached queries.
 
-In case of N+1 queries, masked with cached queries, we are executing the same query N times.
-It will not hit the database N times, it will return the cached results instead.
-This is still expensive since we need to re-initialize objects each time, and this is CPU/Memory expensive.
-Instead, we should use the same in-memory objects, if possible.
+Although cached queries are cheaper from a database perspective, they are potentially
+more expensive from a memory perspective. They could mask
+[N+1 query problems](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations),
+so you should treat them the same way you treat regular N+1 queries.
 
-When we introduce a new feature, we should avoid N+1 problems,
-minimize the [query count](merge_request_performance_guidelines.md#query-counts), and pay special attention that [cached
-queries](merge_request_performance_guidelines.md#cached-queries) are not masking N+1 problems. 
+In cases of N+1 queries masked by cached queries, the same query is executed N times.
+It will not hit the database N times but instead returns the cached results N times.
+This is still expensive because you need to re-initialize objects each time at a
+greater expense to the CPU and memory resources. Instead, you should use the same
+in-memory objects whenever possible.
 
-## How to detect
+When you introduce a new feature, you should:
+
+- Avoid N+1 queries.
+- Minimize the [query count](merge_request_performance_guidelines.md#query-counts).
+- Pay special attention to ensure
+  [cached queries](merge_request_performance_guidelines.md#cached-queries) are not
+  masking N+1 problems.
+
+## How to detect cached queries
 
 ### Detect potential offenders by using Kibana
 
-On GitLab.com, we are logging entries with the number of executed cached queries in the
-`pubsub-redis-inf-gprd*` index with the [`db_cached_count`](https://log.gprd.gitlab.net/goto/77d18d80ad84c5df1bf1da5c2cd35b82).
-We can filter endpoints that have a large number of executed cached queries. For example, if we encounter an endpoint
-that has 100+ `db_cached_count`, this could indicate that there is an N+1 problem masked with cached queries.
-We should probably investigate this endpoint further, to check if we are executing duplicated cached queries.
+GitLab.com, logs entries with the number of executed cached queries in the
+`pubsub-redis-inf-gprd*` index as
+[`db_cached_count`](https://log.gprd.gitlab.net/goto/77d18d80ad84c5df1bf1da5c2cd35b82).
+You can filter by endpoints that have a large number of executed cached queries. For
+example, an endpoint with a `db_cached_count` greater than 100 can indicate an N+1 problem which
+is masked by cached queries. You should investigate this endpoint further to determine
+if it is indeed executing duplicated cached queries.
 
-For more cached queries Kibana visualizations see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/259007).
+For more Kibana visualizations related to cached queries, read
+[issue #259007, 'Provide metrics that would help us to detect the potential N+1 CACHED SQL calls'](https://gitlab.com/gitlab-org/gitlab/-/issues/259007).
 
-### Inspect suspicious endpoint using Performance Bar
+### Inspect suspicious endpoints using the Performance Bar
 
-When building features, you could use the [performance bar](../administration/monitoring/performance/performance_bar.md)
-to list database queries, which will include cached queries as well. The performance bar will show a warning
-when threshold of total executed queries (including cached ones) has exceeded 100 queries.
+When building features, use the
+[performance bar](../administration/monitoring/performance/performance_bar.md)
+to view the list of database queries, including cached queries. The
+performance bar shows a warning when the number of total executed and cached queries is
+greater than 100.
+
+To learn more about the statistics available to you, read the
+[Performance Bar documentation](../administration/monitoring/performance/performance_bar.md).
 
 ## What to look for
 
-Using [Kibana](cached_queries.md#detect-potential-offenders-by-using-kibana), you can look for a large number
-of executed cached queries. End-points with large number of `db_cached_count` could indicate that there
-are probably a lot of duplicated cached queries, which often indicates a masked N+1 problem.
+Using [Kibana](#detect-potential-offenders-by-using-kibana), you can look for a large number
+of executed cached queries. Endpoints with a large `db_cached_count` could suggest a large number
+of duplicated cached queries, which often indicates a masked N+1 problem.
 
-When you investigate specific endpoint, you could use
-the [performance bar](cached_queries.md#inspect-suspicious-endpoint-using-performance-bar).
-If you see a lot of similar queries, this often indicates an N+1 query issue (or a similar kind of query batching problem).
-If you see same cached query executed multiple times, this often indicates a masked N+1 query problem.
+When you investigate a specific endpoint, use
+the [performance bar](#inspect-suspicious-endpoints-using-the-performance-bar)
+to identify similar and cached queries, which may also indicate an N+1 query issue
+(or a similar kind of query batching problem).
 
-For example, let's say you wanted to debug `GroupMembers` page. 
+### An example
 
-In the left corner of the performance bar you could see **Database queries** showing the total number of database queries
+For example, let's debug the "Group Members" page. In the left corner of the
+performance bar, **Database queries** shows the total number of database queries
 and the number of executed cached queries:
 
 ![Performance Bar Database Queries](img/performance_bar_members_page.png)
 
-We can see that there are 55 cached queries. By clicking on the number, a modal window with more details is shown.
-Cached queries are marked with the `cached` label, so they are easy to spot. We can see that there are multiple duplicated
-cached queries:
+The page included 55 cached queries. Clicking the number displays a modal window
+with more details about queries. Cached queries are marked with the `cached` label
+below the query. You can see multiple duplicate cached queries in this modal window:
 
 ![Performance Bar Cached Queries Modal](img/performance_bar_cached_queries.png)
 
-If we click on `...` for one of them, it will expand the actual stack trace:
+Click **...** to expand the actual stack trace:
 
-```shell
+```ruby
 [
   "app/models/group.rb:305:in `has_owner?'",
   "ee/app/views/shared/members/ee/_license_badge.html.haml:1",
@@ -99,24 +120,30 @@ If we click on `...` for one of them, it will expand the actual stack trace:
 ]
 ```
 
-The stack trace, shows us that we obviously have an N+1 problem, since we are repeatably executing for each group member:
+The stack trace shows an N+1 problem, because the code repeatedly executes
+`group.has_owner?(current_user)` for each group member. To solve this issue,
+move the repeated line of code outside of the loop, passing the result to each rendered member instead:
 
-```ruby
-group.has_owner?(current_user)
+```erb
+- current_user_is_group_owner = @group && @group.has_owner?(current_user)
+
+= render  partial: 'shared/members/member',
+          collection: @members, as: :member,
+          locals: { membership_source: @group,
+                    group: @group,
+                    current_user_is_group_owner: current_user_is_group_owner }
 ```
 
-This is easily solvable by extracting this check, above the loop.
-
-After [the fix](https://gitlab.com/gitlab-org/gitlab/-/issues/231468), we now have:
+After [fixing the cached query](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44626/diffs#27c2761d66e496495be07d0925697f7e62b5bd14), the performance bar now shows only
+6 cached queries:
 
 ![Performance Bar Fixed Cached Queries](img/performance_bar_fixed_cached_queries.png)
 
 ## How to measure the impact of the change
 
-We can use the [memory profiler](performance.md#using-memory-profiler) to profile our code. 
-For the previous example, we could wrap the profiler around the `Groups::GroupMembersController#index` action.
-
-We had:
+Use the [memory profiler](performance.md#using-memory-profiler) to profile your code.
+For [this example](#an-example), wrap the profiler around the `Groups::GroupMembersController#index` action. Before the fix, the application had
+the following statistics:
 
 - Total allocated: 7133601 bytes (84858 objects)
 - Total retained: 757595 bytes (6070 objects)
@@ -124,7 +151,8 @@ We had:
 - `db_cached_count`: 55
 - `db_duration`: 303ms
 
-After the fix, we can see that we have reduced the allocated memory as well as the number of cached queries and improved execution time:
+The fix reduced the allocated memory, and the number of cached queries. These
+factors help improve the overall execution time:
 
 - Total allocated: 5313899 bytes (65290 objects), 1810KB (25%) less
 - Total retained: 685593 bytes (5278 objects), 72KB (9%) less
@@ -132,7 +160,7 @@ After the fix, we can see that we have reduced the allocated memory as well as t
 - `db_cached_count`: 6 (89% less)
 - `db_duration`: 162ms (87% faster)
 
-## See also
+## For more information
 
 - [Metrics that would help us detect the potential N+1 Cached SQL calls](https://gitlab.com/gitlab-org/gitlab/-/issues/259007)
 - [Merge Request performance guidelines for cached queries](merge_request_performance_guidelines.md#cached-queries)

@@ -1,6 +1,10 @@
 import { __, n__ } from '~/locale';
 import { parallelizeDiffLines } from './utils';
-import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
+import {
+  PARALLEL_DIFF_VIEW_TYPE,
+  INLINE_DIFF_VIEW_TYPE,
+  INLINE_DIFF_LINES_KEY,
+} from '../constants';
 
 export * from './getters_versions_dropdowns';
 
@@ -54,24 +58,10 @@ export const diffHasAllCollapsedDiscussions = (state, getters) => diff => {
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasExpandedDiscussions = state => diff => {
-  const lines = {
-    [INLINE_DIFF_VIEW_TYPE]: diff.highlighted_diff_lines || [],
-    [PARALLEL_DIFF_VIEW_TYPE]: (diff.parallel_diff_lines || []).reduce((acc, line) => {
-      if (line.left) {
-        acc.push(line.left);
-      }
-
-      if (line.right) {
-        acc.push(line.right);
-      }
-
-      return acc;
-    }, []),
-  };
-  return lines[window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType]
-    .filter(l => l.discussions.length >= 1)
-    .some(l => l.discussionsExpanded);
+export const diffHasExpandedDiscussions = () => diff => {
+  return diff[INLINE_DIFF_LINES_KEY].filter(l => l.discussions.length >= 1).some(
+    l => l.discussionsExpanded,
+  );
 };
 
 /**
@@ -79,24 +69,8 @@ export const diffHasExpandedDiscussions = state => diff => {
  * @param {Boolean} diff
  * @returns {Boolean}
  */
-export const diffHasDiscussions = state => diff => {
-  const lines = {
-    [INLINE_DIFF_VIEW_TYPE]: diff.highlighted_diff_lines || [],
-    [PARALLEL_DIFF_VIEW_TYPE]: (diff.parallel_diff_lines || []).reduce((acc, line) => {
-      if (line.left) {
-        acc.push(line.left);
-      }
-
-      if (line.right) {
-        acc.push(line.right);
-      }
-
-      return acc;
-    }, []),
-  };
-  return lines[window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType].some(
-    l => l.discussions.length >= 1,
-  );
+export const diffHasDiscussions = () => diff => {
+  return diff[INLINE_DIFF_LINES_KEY].some(l => l.discussions.length >= 1);
 };
 
 /**

@@ -51,10 +51,12 @@ RSpec.describe Analytics::DevopsAdoption::SegmentSelection, type: :model do
     context 'limit the number of segment selections' do
       let_it_be(:segment) { create(:devops_adoption_segment) }
 
-      subject { build(:devops_adoption_segment_selection, segment: segment, project: project) }
+      subject { build(:devops_adoption_segment_selection, project: project, segment: segment) }
 
       before do
         create(:devops_adoption_segment_selection, :project, segment: segment)
+
+        segment.reload
 
         stub_const("#{described_class}::ALLOWED_SELECTIONS_PER_SEGMENT", 1)
       end

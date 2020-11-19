@@ -23,7 +23,7 @@ Every API call to vulnerabilities must be [authenticated](README.md#authenticati
 
 Vulnerability permissions inherit permissions from their project. If a project is
 private, and a user isn't a member of the project to which the vulnerability
-belongs, requests to that project will return a `404 Not Found` status code.
+belongs, requests to that project returns a `404 Not Found` status code.
 
 ## Single vulnerability
 
@@ -77,7 +77,7 @@ Confirms a given vulnerability. Returns status code `304` if the vulnerability i
 
 If an authenticated user does not have permission to
 [confirm vulnerabilities](../user/permissions.md#project-members-permissions),
-this request will result in a `403` status code.
+this request results in a `403` status code.
 
 ```plaintext
 POST /vulnerabilities/:id/confirm
@@ -127,7 +127,7 @@ Resolves a given vulnerability. Returns status code `304` if the vulnerability i
 
 If an authenticated user does not have permission to
 [resolve vulnerabilities](../user/permissions.md#project-members-permissions),
-this request will result in a `403` status code.
+this request results in a `403` status code.
 
 ```plaintext
 POST /vulnerabilities/:id/resolve
@@ -177,7 +177,7 @@ Dismisses a given vulnerability. Returns status code `304` if the vulnerability 
 
 If an authenticated user does not have permission to
 [dismiss vulnerabilities](../user/permissions.md#project-members-permissions),
-this request will result in a `403` status code.
+this request results in a `403` status code.
 
 ```plaintext
 POST /vulnerabilities/:id/dismiss
@@ -227,7 +227,7 @@ Reverts a given vulnerability to detected state. Returns status code `304` if th
 
 If an authenticated user does not have permission to
 [revert vulnerability to detected state](../user/permissions.md#project-members-permissions),
-this request will result in a `403` status code.
+this request results in a `403` status code.
 
 ```plaintext
 POST /vulnerabilities/:id/revert

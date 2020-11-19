@@ -14,5 +14,10 @@ export const getSelectedSuite = state =>
 
 export const getSuiteTests = state => {
   const { test_cases: testCases = [] } = getSelectedSuite(state);
-  return testCases.map(addIconStatus);
+  const { page, perPage } = state.pageInfo;
+  const start = (page - 1) * perPage;
+
+  return testCases.map(addIconStatus).slice(start, start + perPage);
 };
+
+export const getSuiteTestCount = state => getSelectedSuite(state)?.test_cases?.length || 0;

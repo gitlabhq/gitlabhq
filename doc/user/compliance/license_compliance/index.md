@@ -21,7 +21,7 @@ that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the License Compliance report, compares the licenses between the
 source and target branches, and shows the information right on the merge request.
-Denied licenses will be clearly visible with an `x` red icon next to them
+Denied licenses are notated with an `x` red icon next to them
 as well as new licenses which need a decision from you. In addition, you can
 [manually allow or deny](#policies)
 licenses in your project's license compliance policy section. If GitLab detects a denied license
@@ -30,10 +30,10 @@ to remove the license.
 
 NOTE: **Note:**
 If the license compliance report doesn't have anything to compare to, no information
-will be displayed in the merge request area. That is the case when you add the
+is displayed in the merge request area. That is the case when you add the
 `license_scanning` job in your `.gitlab-ci.yml` for the first time.
-Consecutive merge requests will have something to compare to and the license
-compliance report will be shown properly.
+Consecutive merge requests have something to compare to and the license
+compliance report is shown properly.
 
 ![License Compliance Widget](img/license_compliance_v13_0.png)
 
@@ -114,7 +114,7 @@ Before GitLab 12.8, the `license_scanning` job was named `license_management`. G
 the `license_management` job, so you must migrate to the `license_scanning` job and use the new
 `License-Scanning.gitlab-ci.yml` template.
 
-The results will be saved as a
+The results are saved as a
 [License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
@@ -160,7 +160,7 @@ in the project automated setup, like the download and installation of a certific
 For that, a `LICENSE_MANAGEMENT_SETUP_CMD` environment variable can be passed to the container,
 with the required commands to run before the license detection.
 
-If present, this variable will override the setup step necessary to install all the packages
+If present, this variable overrides the setup step necessary to install all the packages
 of your application (e.g.: for a project with a `Gemfile`, the setup step could be
 `bundle install`).
 
@@ -695,7 +695,7 @@ requirements must be met:
    [supported languages and package managers](#supported-languages-and-package-managers).
 
 Once everything is set, navigate to **Security & Compliance > License Compliance**
-in your project's sidebar, and you'll see the licenses displayed, where:
+in your project's sidebar, and the licenses are displayed, where:
 
 - **Name:** The name of the license.
 - **Component:** The components which have this license.
@@ -708,8 +708,8 @@ in your project's sidebar, and you'll see the licenses displayed, where:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22465) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 Policies allow you to specify licenses that are `allowed` or `denied` in a project. If a `denied`
-license is newly committed it will disallow a merge request and instruct the developer to remove it.
-Note, the merge request will not be able to be merged until the `denied` license is removed.
+license is newly committed it blocks the merge request and instructs the developer to remove it.
+Note, the merge request is not able to be merged until the `denied` license is removed.
 You may add a [`License-Check` approval rule](#enabling-license-approvals-within-a-project),
 which enables a designated approver that can approve and then merge a merge request with `denied` license.
 
@@ -771,7 +771,7 @@ specify the desired version by adding a
 or using the appropriate [`ASDF_<tool>_VERSION`](https://asdf-vm.com/#/core-configuration?id=environment-variables) environment variable to
 activate the appropriate version.
 
-For example, the following `.tool-versions` file will activate version `12.16.3` of [Node.js](https://nodejs.org/)
+For example, the following `.tool-versions` file activates version `12.16.3` of [Node.js](https://nodejs.org/)
 and version `2.7.2` of [Ruby](https://www.ruby-lang.org/).
 
 ```plaintext

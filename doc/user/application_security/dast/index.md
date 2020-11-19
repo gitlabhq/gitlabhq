@@ -161,8 +161,9 @@ headers whose values you want masked. For details on how to mask headers, see
 
 It's also possible to authenticate the user before performing the DAST checks.
 
-**Important:** It is highly recommended that you configure the scanner to authenticate to the application,
-or it will not be able to check most of the application for security risks, as most
+NOTE: **Note:**
+We highly recommended that you configure the scanner to authenticate to the application,
+otherwise it cannot check most of the application for security risks, as most
 of your application is likely not accessible without authentication. It is also recommended
 that you periodically confirm the scanner's authentication is still working as this tends to break over
 time due to authentication changes to the application.
@@ -488,8 +489,8 @@ variables:
 
 When using `DAST_PATHS` and `DAST_PATHS_FILE`, note the following:
 
-- `DAST_WEBSITE` must be defined when using either `DAST_PATHS_FILE` or `DAST_PATHS`. The paths listed in either will use `DAST_WEBSITE` to build the URLs to scan
-- Spidering is disabed when `DAST_PATHS` or `DAST_PATHS_FILE` are defined
+- `DAST_WEBSITE` must be defined when using either `DAST_PATHS_FILE` or `DAST_PATHS`. The paths listed in either use `DAST_WEBSITE` to build the URLs to scan
+- Spidering is disabled when `DAST_PATHS` or `DAST_PATHS_FILE` are defined
 - `DAST_PATHS_FILE` and `DAST_PATHS` can not be used together
 - The `DAST_PATHS` environment variable has a limit of about 130kb. If you have a list or paths
   greater than this, use `DAST_PATHS_FILE`.
@@ -531,7 +532,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `SECURE_ANALYZERS_PREFIX`   | URL | Set the Docker registry base address from which to download the analyzer. |
 | `DAST_WEBSITE`  | URL | The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
 | `DAST_API_SPECIFICATION`  | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
-| `DAST_SPIDER_START_AT_HOST`  | boolean | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` will be reset to `http://test.site` before scan. Default: `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258805) in GitLab 13.6. |
+| `DAST_SPIDER_START_AT_HOST`  | boolean | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` is reset to `http://test.site` before scan. Default: `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258805) in GitLab 13.6. |
 | `DAST_AUTH_URL` | URL | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Not supported for API scans. |
 | `DAST_USERNAME` | string | The username to authenticate to in the website. |
 | `DAST_PASSWORD` | string | The password to authenticate to in the website. |
@@ -825,8 +826,8 @@ sample reports can be found in the
 
 There are two formats of data in the JSON report that are used side by side:
 
-- The proprietary ZAP format that will be eventually deprecated.
-- A common format that will be the default in the future.
+- The proprietary ZAP format, which is planned to be deprecated.
+- A common format that is planned to the default in the future.
 
 ### Other formats
 

@@ -25,9 +25,9 @@ You can restrict the password authentication for web interface and Git over HTTP
 
 ## Two-factor authentication
 
-When this feature enabled, all users will have to use the [two-factor authentication](../../profile/account/two_factor_authentication.md).
+When this feature enabled, all users must use the [two-factor authentication](../../profile/account/two_factor_authentication.md).
 
-Once the two-factor authentication is configured as mandatory, the users will be allowed
+Once the two-factor authentication is configured as mandatory, the users are allowed
 to skip forced configuration of two-factor authentication for the configurable grace
 period in hours.
 
@@ -44,13 +44,13 @@ see [Email notification for unknown sign-ins](../../profile/unknown_sign_in_noti
 
 ## Sign-in information
 
-All users that are not logged-in will be redirected to the page represented by the configured
-"Home page URL" if value is not empty.
+All users that are not logged in are redirected to the page represented by the configured
+**Home page URL** if value is not empty.
 
-All users will be redirect to the page represented by the configured "After sign out path"
+All users are redirected to the page represented by the configured **After sign out path**
 after sign out if value is not empty.
 
-In the Sign-in restrictions section, scroll to the "Sign-in text" text box. You can add a
+In the **Sign-in restrictions** section, scroll to the **Sign-in text** field. You can add a
 custom message for your users in Markdown format.
 
 For example, if you include the following information in the noted text box:
@@ -61,7 +61,7 @@ For example, if you include the following information in the noted text box:
 To access this text box, navigate to Admin Area > Settings > General, and expand the "Sign-in restrictions" section.
 ```
 
-Your users will see the "Custom sign-in text" when they navigate to the sign-in screen for your
+Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your
 GitLab instance:
 
 ![Sign-in page](img/custom_sign_in_page_v13_6.png)

@@ -27,7 +27,6 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
   before do
     stub_application_setting(auto_devops_enabled: false)
-    stub_feature_flags(ci_merge_request_pipeline: true)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
     project.add_maintainer(user)
     sign_in(user)
