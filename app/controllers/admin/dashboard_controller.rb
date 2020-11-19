@@ -2,7 +2,6 @@
 
 class Admin::DashboardController < Admin::ApplicationController
   include CountHelper
-  helper_method :show_license_breakdown?
 
   COUNTED_ITEMS = [Project, User, Group].freeze
 
@@ -22,10 +21,6 @@ class Admin::DashboardController < Admin::ApplicationController
 
   def stats
     @users_statistics = UsersStatistics.latest
-  end
-
-  def show_license_breakdown?
-    false
   end
 end
 

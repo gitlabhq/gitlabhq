@@ -183,6 +183,8 @@ variables:
   DAST_AUTH_URL: https://example.com/sign-in
   DAST_USERNAME_FIELD: session[user]  # the name of username field at the sign-in HTML form
   DAST_PASSWORD_FIELD: session[password]  # the name of password field at the sign-in HTML form
+  DAST_SUBMIT_FIELD: login # the `id` or `name` of the element that when clicked will submit the login form or the password form of a multi-page login process
+  DAST_FIRST_SUBMIT_FIELD: next # the `id` or `name` of the element that when clicked will submit the username form of a multi-page login process
   DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2  # optional, URLs to skip during the authenticated scan; comma-separated, no spaces in between
 ```
 
@@ -552,6 +554,8 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_USE_AJAX_SPIDER` | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_PATHS` | string | Set to a comma-separated list of URLs for DAST to scan. For example, `/page1.html,/category1/page3.html,/page2.html`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4. |
 | `DAST_PATHS_FILE` | string | The file path containing the paths within `DAST_WEBSITE` to scan. The file must be plain text with one path per line and be within `/zap/wrk`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6. |
+| `DAST_SUBMIT_FIELD` | string | The `id` or `name` of the element that when clicked will submit the login form or the password form of a multi-page login process. |
+| `DAST_FIRST_SUBMIT_FIELD` | string | The `id` or `name` of the element that when clicked will submit the username form of a multi-page login process. |
 | `DAST_ZAP_CLI_OPTIONS` | string | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_ZAP_LOG_CONFIGURATION` | string | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
 

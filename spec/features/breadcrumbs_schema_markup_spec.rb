@@ -15,15 +15,12 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     item_list = get_schema_content
 
-    expect(item_list.size).to eq 3
+    expect(item_list.size).to eq 2
     expect(item_list[0]['name']).to eq project.namespace.name
     expect(item_list[0]['item']).to eq user_url(project.owner)
 
     expect(item_list[1]['name']).to eq project.name
     expect(item_list[1]['item']).to eq project_url(project)
-
-    expect(item_list[2]['name']).to eq 'Details'
-    expect(item_list[2]['item']).to eq project_url(project)
   end
 
   it 'generates the breadcrumb schema for group projects' do
@@ -31,7 +28,7 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     item_list = get_schema_content
 
-    expect(item_list.size).to eq 4
+    expect(item_list.size).to eq 3
     expect(item_list[0]['name']).to eq group.name
     expect(item_list[0]['item']).to eq group_url(group)
 
@@ -40,9 +37,6 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     expect(item_list[2]['name']).to eq group_project.name
     expect(item_list[2]['item']).to eq project_url(group_project)
-
-    expect(item_list[3]['name']).to eq 'Details'
-    expect(item_list[3]['item']).to eq project_url(group_project)
   end
 
   it 'generates the breadcrumb schema for group' do
