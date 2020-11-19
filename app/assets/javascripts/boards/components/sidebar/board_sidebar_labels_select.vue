@@ -92,7 +92,7 @@ export default {
         @close="removeLabel(label.id)"
       />
     </template>
-    <template>
+    <template #default="{ edit }">
       <labels-select
         ref="labelsSelect"
         :allow-label-edit="false"
@@ -105,6 +105,7 @@ export default {
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-list-title="__('Select label')"
         :dropdown-button-text="__('Choose labels')"
+        :is-editing="edit"
         variant="embedded"
         class="gl-display-block labels gl-w-full"
         @updateSelectedLabels="setLabels"

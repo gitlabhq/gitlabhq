@@ -64,9 +64,9 @@ export default {
       <gl-button
         v-if="canUpdate"
         variant="link"
-        class="gl-text-gray-900!"
+        class="gl-text-gray-900! js-sidebar-dropdown-toggle"
         data-testid="edit-button"
-        @click="expand()"
+        @click="expand"
       >
         {{ __('Edit') }}
       </gl-button>
@@ -75,7 +75,7 @@ export default {
       <slot name="collapsed">{{ __('None') }}</slot>
     </div>
     <div v-show="edit" data-testid="expanded-content">
-      <slot></slot>
+      <slot :edit="edit"></slot>
     </div>
   </div>
 </template>

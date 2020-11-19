@@ -2565,9 +2565,6 @@ msgstr ""
 msgid "AlertSettings|HTTP Endpoint"
 msgstr ""
 
-msgid "AlertSettings|HTTP endpoint"
-msgstr ""
-
 msgid "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields."
 msgstr ""
 
@@ -2688,9 +2685,6 @@ msgstr ""
 msgid "AlertsIntegrations|Current integrations"
 msgstr ""
 
-msgid "AlertsIntegrations|HTTP endpoint"
-msgstr ""
-
 msgid "AlertsIntegrations|Integration Name"
 msgstr ""
 
@@ -2698,9 +2692,6 @@ msgid "AlertsIntegrations|Integration payload is invalid. You can still save you
 msgstr ""
 
 msgid "AlertsIntegrations|No integrations have been added yet"
-msgstr ""
-
-msgid "AlertsIntegrations|Prometheus"
 msgstr ""
 
 msgid "AlertsIntegrations|The current integration could not be updated. Please try again."
@@ -9445,6 +9436,12 @@ msgstr ""
 msgid "DevopsAdoptionSegment|The maximum number of segments has been reached"
 msgstr ""
 
+msgid "DevopsAdoption|%{selectedCount} group selected (20 max)"
+msgstr ""
+
+msgid "DevopsAdoption|%{selectedCount} groups selected (20 max)"
+msgstr ""
+
 msgid "DevopsAdoption|Add a segment to get started"
 msgstr ""
 
@@ -9452,6 +9449,9 @@ msgid "DevopsAdoption|Add new segment"
 msgstr ""
 
 msgid "DevopsAdoption|Approvals"
+msgstr ""
+
+msgid "DevopsAdoption|Create new segment"
 msgstr ""
 
 msgid "DevopsAdoption|Deploys"
@@ -9464,6 +9464,15 @@ msgid "DevopsAdoption|Issues"
 msgstr ""
 
 msgid "DevopsAdoption|MRs"
+msgstr ""
+
+msgid "DevopsAdoption|My segment"
+msgstr ""
+
+msgid "DevopsAdoption|Name"
+msgstr ""
+
+msgid "DevopsAdoption|New segment"
 msgstr ""
 
 msgid "DevopsAdoption|Pipelines"
@@ -10825,9 +10834,6 @@ msgid "Error loading template."
 msgstr ""
 
 msgid "Error loading viewer"
-msgstr ""
-
-msgid "Error message:"
 msgstr ""
 
 msgid "Error occurred when fetching sidebar data"
@@ -15254,10 +15260,10 @@ msgstr ""
 msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
-msgid "I’m familiar with the basics of project management and DevOps."
+msgid "I’m familiar with the basics of DevOps."
 msgstr ""
 
-msgid "I’m not very familiar with the basics of project management and DevOps."
+msgid "I’m not familiar with the basics of DevOps."
 msgstr ""
 
 msgid "Jaeger URL"
@@ -18925,9 +18931,6 @@ msgstr ""
 msgid "OnDemandScans|Create a new site profile"
 msgstr ""
 
-msgid "OnDemandScans|Create new DAST scan"
-msgstr ""
-
 msgid "OnDemandScans|Manage profiles"
 msgstr ""
 
@@ -18950,9 +18953,6 @@ msgid "OnDemandScans|Run scan"
 msgstr ""
 
 msgid "OnDemandScans|Scanner profile"
-msgstr ""
-
-msgid "OnDemandScans|Schedule or run scans immediately against target sites. Currently available on-demand scan type: DAST. %{helpLinkStart}More information%{helpLinkEnd}"
 msgstr ""
 
 msgid "OnDemandScans|Select one of the existing profiles"
@@ -23567,9 +23567,6 @@ msgstr ""
 msgid "Save Push Rules"
 msgstr ""
 
-msgid "Save anyway"
-msgstr ""
-
 msgid "Save application"
 msgstr ""
 
@@ -24926,13 +24923,13 @@ msgstr ""
 msgid "Show list"
 msgstr ""
 
-msgid "Show me everything"
+msgid "Show me advanced features"
 msgstr ""
 
 msgid "Show me how to add a pipeline"
 msgstr ""
 
-msgid "Show me more advanced stuff"
+msgid "Show me the basics"
 msgstr ""
 
 msgid "Show only direct members"

@@ -35,9 +35,6 @@ describe('AlertIntegrationsList', () => {
         integrations: mockIntegrations,
         ...props,
       },
-      provide: {
-        glFeatures: { httpIntegrationsList: true },
-      },
       stubs: {
         GlIcon: true,
         GlButton: true,

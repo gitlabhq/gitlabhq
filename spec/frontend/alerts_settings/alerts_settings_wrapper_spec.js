@@ -5,7 +5,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
-import AlertsSettingsFormOld from '~/alerts_settings/components/alerts_settings_form_old.vue';
 import AlertsSettingsFormNew from '~/alerts_settings/components/alerts_settings_form_new.vue';
 import IntegrationsList from '~/alerts_settings/components/alerts_integrations_list.vue';
 import getIntegrationsQuery from '~/alerts_settings/graphql/queries/get_integrations.query.graphql';
@@ -75,7 +74,6 @@ describe('AlertsSettingsWrapper', () => {
       },
       provide: {
         ...defaultAlertSettingsConfig,
-        glFeatures: { httpIntegrationsList: false },
         ...provide,
       },
       mocks: {
@@ -110,7 +108,6 @@ describe('AlertsSettingsWrapper', () => {
       apolloProvider: fakeApollo,
       provide: {
         ...defaultAlertSettingsConfig,
-        glFeatures: { httpIntegrationsList: true },
       },
     });
   }
@@ -122,27 +119,16 @@ describe('AlertsSettingsWrapper', () => {
     }
   });
 
-  describe('with httpIntegrationsList feature flag disabled', () => {
-    it('renders data driven alerts integrations list and old form by default', () => {
+  describe('rendered via default permissions', () => {
+    it('renders the GraphQL alerts integrations list and new form', () => {
       createComponent();
       expect(wrapper.find(IntegrationsList).exists()).toBe(true);
-      expect(wrapper.find(AlertsSettingsFormOld).exists()).toBe(true);
-      expect(wrapper.find(AlertsSettingsFormNew).exists()).toBe(false);
-    });
-  });
-
-  describe('with httpIntegrationsList feature flag enabled', () => {
-    it('renders the GraphQL alerts integrations list and new form', () => {
-      createComponent({ provide: { glFeatures: { httpIntegrationsList: true } } });
-      expect(wrapper.find(IntegrationsList).exists()).toBe(true);
-      expect(wrapper.find(AlertsSettingsFormOld).exists()).toBe(false);
       expect(wrapper.find(AlertsSettingsFormNew).exists()).toBe(true);
     });
 
     it('uses a loading state inside the IntegrationsList table', () => {
       createComponent({
         data: { integrations: {} },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: true,
       });
       expect(wrapper.find(IntegrationsList).exists()).toBe(true);
@@ -152,7 +138,6 @@ describe('AlertsSettingsWrapper', () => {
     it('renders the IntegrationsList table using the API data', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
       expect(findLoader().exists()).toBe(false);
@@ -162,7 +147,6 @@ describe('AlertsSettingsWrapper', () => {
     it('calls `$apollo.mutate` with `createHttpIntegrationMutation`', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -185,7 +169,6 @@ describe('AlertsSettingsWrapper', () => {
     it('calls `$apollo.mutate` with `updateHttpIntegrationMutation`', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -206,7 +189,6 @@ describe('AlertsSettingsWrapper', () => {
     it('calls `$apollo.mutate` with `resetHttpTokenMutation`', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -229,7 +211,6 @@ describe('AlertsSettingsWrapper', () => {
     it('calls `$apollo.mutate` with `createPrometheusIntegrationMutation`', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -252,7 +233,6 @@ describe('AlertsSettingsWrapper', () => {
     it('calls `$apollo.mutate` with `updatePrometheusIntegrationMutation`', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -273,7 +253,6 @@ describe('AlertsSettingsWrapper', () => {
     it('calls `$apollo.mutate` with `resetPrometheusTokenMutation`', () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -296,7 +275,6 @@ describe('AlertsSettingsWrapper', () => {
     it('shows an error alert when integration creation fails ', async () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -311,7 +289,6 @@ describe('AlertsSettingsWrapper', () => {
     it('shows an error alert when integration token reset fails ', async () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -326,7 +303,6 @@ describe('AlertsSettingsWrapper', () => {
     it('shows an error alert when integration update fails ', async () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -341,7 +317,6 @@ describe('AlertsSettingsWrapper', () => {
     it('shows an error alert when integration test payload fails ', async () => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true } },
         loading: false,
       });
 
@@ -405,7 +380,7 @@ describe('AlertsSettingsWrapper', () => {
     it.each([true, false])('it shows/hides the alert when opsgenie is %s', active => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
-        provide: { glFeatures: { httpIntegrationsList: true }, opsgenie: { active } },
+        provide: { opsgenie: { active } },
         loading: false,
       });
 

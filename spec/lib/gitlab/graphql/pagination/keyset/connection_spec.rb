@@ -21,6 +21,13 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
     Gitlab::Json.parse(Base64Bp.urlsafe_decode64(cursor))
   end
 
+  it_behaves_like 'a connection with collection methods'
+
+  it_behaves_like 'a redactable connection' do
+    let_it_be(:projects) { create_list(:project, 2) }
+    let(:unwanted) { projects.second }
+  end
+
   describe '#cursor_for' do
     let(:project) { create(:project) }
     let(:cursor)  { connection.cursor_for(project) }

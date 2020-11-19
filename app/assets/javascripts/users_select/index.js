@@ -796,7 +796,7 @@ UsersSelect.prototype.renderRowAvatar = function(issuableType, user, img) {
 
   const mergeIcon =
     issuableType === 'merge_request' && !user.can_merge
-      ? '<i class="fa fa-exclamation-triangle merge-icon"></i>'
+      ? `${spriteIcon('warning-solid', 's12 merge-icon')}`
       : '';
 
   return `<span class="position-relative mr-2">

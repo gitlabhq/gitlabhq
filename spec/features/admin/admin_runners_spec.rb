@@ -282,6 +282,12 @@ RSpec.describe "Admin Runners" do
       visit admin_runner_path(runner)
     end
 
+    describe 'runner page breadcrumbs' do
+      it 'contains the current runner’s short sha' do
+        expect(page.find('h2')).to have_content(runner.short_sha)
+      end
+    end
+
     describe 'projects' do
       it 'contains project names' do
         expect(page).to have_content(@project1.full_name)

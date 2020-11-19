@@ -1,16 +1,17 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { scrollToElementWithContext } from '~/lib/utils/common_utils';
+import { scrollToElementWithContext, scrollToElement } from '~/lib/utils/common_utils';
 import eventHub from '../event_hub';
 
 /**
  * @param {string} selector
  * @returns {boolean}
  */
-function scrollTo(selector) {
+function scrollTo(selector, { withoutContext = false } = {}) {
   const el = document.querySelector(selector);
+  const scrollFunction = withoutContext ? scrollToElement : scrollToElementWithContext;
 
   if (el) {
-    scrollToElementWithContext(el);
+    scrollFunction(el);
     return true;
   }
 
@@ -35,7 +36,7 @@ function diffsJump({ expandDiscussion }, id) {
 function discussionJump({ expandDiscussion }, id) {
   const selector = `div.discussion[data-discussion-id="${id}"]`;
   expandDiscussion({ discussionId: id });
-  return scrollTo(selector);
+  return scrollTo(selector, { withoutContext: true });
 }
 
 /**
