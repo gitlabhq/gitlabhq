@@ -11,10 +11,13 @@ RSpec.describe 'create_tokens' do
   let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m.freeze }
 
   before do
-    allow(File).to receive(:write)
-    allow(File).to receive(:delete)
     allow(Rails).to receive_message_chain(:application, :secrets).and_return(secrets)
     allow(Rails).to receive_message_chain(:root, :join) { |string| string }
+
+    allow(File).to receive(:write).and_call_original
+    allow(File).to receive(:write).with(Rails.root.join('config/secrets.yml'))
+    allow(File).to receive(:delete).and_call_original
+    allow(File).to receive(:delete).with(Rails.root.join('.secret'))
     allow(self).to receive(:warn)
     allow(self).to receive(:exit)
   end
@@ -105,7 +108,7 @@ RSpec.describe 'create_tokens' do
         secrets.openid_connect_signing_key = 'openid_connect_signing_key'
 
         allow(File).to receive(:exist?).with('.secret').and_return(true)
-        allow(File).to receive(:read).with('.secret').and_return('file_key')
+        stub_file_read('.secret', content: 'file_key')
       end
 
       context 'when secret_key_base exists in the environment and secrets.yml' do

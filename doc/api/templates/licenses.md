@@ -125,7 +125,7 @@ GET /templates/licenses/:key
 
 NOTE: **Note:**
 If you omit the `fullname` parameter but authenticate your request, the name of
-the authenticated user will be used to replace the copyright holder placeholder.
+the authenticated user replaces the copyright holder placeholder.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/templates/licenses/mit?project=My+Cool+Project

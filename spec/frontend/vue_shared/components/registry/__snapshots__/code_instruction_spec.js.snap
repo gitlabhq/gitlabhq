@@ -47,6 +47,7 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
         <!---->
          
         <svg
+          aria-hidden="true"
           class="gl-button-icon gl-icon s16"
           data-testid="copy-to-clipboard-icon"
         >

@@ -1,15 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
 import Tribute from 'tributejs';
-import GlMentions from '~/vue_shared/components/gl_mentions.vue';
+import GfmAutocomplete from '~/vue_shared/components/gfm_autocomplete/gfm_autocomplete.vue';
 
-describe('GlMentions', () => {
+describe('GfmAutocomplete', () => {
   let wrapper;
 
-  describe('Tribute', () => {
+  describe('tribute', () => {
     const mentions = '/gitlab-org/gitlab-test/-/autocomplete_sources/members?type=Issue&type_id=1';
 
     beforeEach(() => {
-      wrapper = shallowMount(GlMentions, {
+      wrapper = shallowMount(GfmAutocomplete, {
         propsData: {
           dataSources: {
             mentions,

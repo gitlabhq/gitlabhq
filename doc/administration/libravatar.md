@@ -41,7 +41,7 @@ the configuration options as follows:
 ### Your own Libravatar server
 
 If you are [running your own Libravatar service](https://wiki.libravatar.org/running_your_own/),
-the URL will be different in the configuration, but you must provide the same
+the URL is different in the configuration, but you must provide the same
 placeholders so GitLab can parse the URL correctly.
 
 For example, you host a service on `http://libravatar.example.com` and the

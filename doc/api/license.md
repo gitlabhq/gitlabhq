@@ -94,7 +94,7 @@ This is calculated differently depending on whether the license has expired or n
 
 Returns:
 
-- `200 OK` with response containing the licenses in JSON format. This will be an empty JSON array if there are no licenses.
+- `200 OK` with response containing the licenses in JSON format. This is an empty JSON array if there are no licenses.
 - `403 Forbidden` if the current user in not permitted to read the licenses.
 
 ## Add a new license

@@ -129,7 +129,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
     let(:output) { StringIO.new }
 
     before do
-      allow(File).to receive(:read).with(structure_file).and_return(input)
+      stub_file_read(structure_file, content: input)
       allow(File).to receive(:open).with(structure_file, any_args).and_yield(output)
     end
 

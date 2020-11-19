@@ -603,6 +603,32 @@ it "really connects to Prometheus", :permit_dns do
 And if you need more specific control, the DNS blocking is implemented in
 `spec/support/helpers/dns_helpers.rb` and these methods can be called elsewhere.
 
+#### Stubbing File methods
+
+In the situations where you need to
+[stub](https://relishapp.com/rspec/rspec-mocks/v/3-9/docs/basics/allowing-messages)
+methods such as `File.read`, make sure to:
+
+1. Stub `File.read` for only the filepath you are interested in.
+1. Call the original implementation for other filepaths.
+
+Otherwise `File.read` calls from other parts of the codebase get
+stubbed incorrectly. You should use the `stub_file_read`, and
+`expect_file_read` helper methods which does the stubbing for
+`File.read` correctly.
+
+```ruby
+# bad, all Files will read and return nothing
+allow(File).to receive(:read)
+
+# good
+stub_file_read(my_filepath)
+
+# also OK
+allow(File).to receive(:read).and_call_original
+allow(File).to receive(:read).with(my_filepath)
+```
+
 #### Filesystem
 
 Filesystem data can be roughly split into "repositories", and "everything else".

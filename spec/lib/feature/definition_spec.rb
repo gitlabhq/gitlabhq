@@ -75,7 +75,7 @@ RSpec.describe Feature::Definition do
 
   describe '.load_from_file' do
     it 'properly loads a definition from file' do
-      expect(File).to receive(:read).with(path) { yaml_content }
+      expect_file_read(path, content: yaml_content)
 
       expect(described_class.send(:load_from_file, path).attributes)
         .to eq(definition.attributes)
@@ -93,7 +93,7 @@ RSpec.describe Feature::Definition do
 
     context 'for invalid definition' do
       it 'raises exception' do
-        expect(File).to receive(:read).with(path) { '{}' }
+        expect_file_read(path, content: '{}')
 
         expect do
           described_class.send(:load_from_file, path)

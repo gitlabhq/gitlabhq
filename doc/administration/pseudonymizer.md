@@ -28,7 +28,7 @@ To configure the pseudonymizer, you need to:
 
 - Provide a manifest file that describes which fields should be included or
   pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/tree/master/config/pseudonymizer.yml)).
-  A default manifest is provided with the GitLab installation. Using a relative file path will be resolved from the Rails root.
+  A default manifest is provided with the GitLab installation, using a relative file path that resolves from the Rails root.
   Alternatively, you can use an absolute file path.
 - Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option.
 
@@ -100,7 +100,7 @@ sudo gitlab-rake gitlab:db:pseudonymizer
 sudo -u git -H bundle exec rake gitlab:db:pseudonymizer RAILS_ENV=production
 ```
 
-This will produce some CSV files that might be very large, so make sure the
+This produces some CSV files that might be very large, so make sure the
 `PSEUDONYMIZER_OUTPUT_DIR` has sufficient space. As a rule of thumb, at least
 10% of the database size is recommended.
 

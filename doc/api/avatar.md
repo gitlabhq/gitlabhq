@@ -16,7 +16,7 @@ If:
 
 - No user with the given public email address is found, results from external avatar services are
   returned.
-- Public visibility is restricted, response will be `403 Forbidden` when unauthenticated.
+- Public visibility is restricted, response is `403 Forbidden` when unauthenticated.
 
 NOTE: **Note:**
 This endpoint can be accessed without authentication.

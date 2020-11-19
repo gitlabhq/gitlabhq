@@ -18,12 +18,12 @@ server's name.
 
 Follow the installation instructions [as outlined in the omnibus install
 guide](https://about.gitlab.com/install/#ubuntu), but make sure to specify an `http`
-URL for the `EXTERNAL_URL` installation step. Once installed, we will manually
+URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
 configure the SSL ourselves.
 
 It is strongly recommended to setup a domain for IP resolution rather than bind
 to the server's IP address. This better ensures a stable target for our certs' CN
-and will make long-term resolution simpler.
+and makes long-term resolution simpler.
 
 ```shell
 sudo EXTERNAL_URL="http://my-host.internal" install gitlab-ee

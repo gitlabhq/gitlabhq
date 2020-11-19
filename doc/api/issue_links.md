@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Get a list of a given issue's [related issues](../user/project/issues/related_issues.md),
 sorted by the relationship creation datetime (ascending).
-Issues will be filtered according to the user authorizations.
+Issues are filtered according to the user authorizations.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/links

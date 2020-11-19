@@ -28,7 +28,7 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
       <div id=\\"integration-webhook\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"integration-webhook__BV_label_\\" for=\\"integration-webhook\\" class=\\"d-block col-form-label\\">3. Set up webhook</label>
         <div class=\\"bv-no-focus-ring\\"><span>Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the <a rel=\\"noopener noreferrer\\" target=\\"_blank\\" href=\\"https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html\\" class=\\"gl-link gl-display-inline-block\\">GitLab documentation</a> to learn more about configuring your endpoint.</span> <label class=\\"gl-display-flex gl-flex-direction-column gl-mb-0 gl-w-max-content gl-my-4 gl-font-weight-normal\\">
             <div class=\\"gl-toggle-wrapper\\"><span class=\\"gl-toggle-label\\">Active</span>
-              <!----> <button aria-label=\\"Active\\" type=\\"button\\" class=\\"gl-toggle\\"><span class=\\"toggle-icon\\"><svg data-testid=\\"close-icon\\" class=\\"gl-icon s16\\"><use href=\\"#close\\"></use></svg></span></button></div>
+              <!----> <button aria-label=\\"Active\\" type=\\"button\\" class=\\"gl-toggle\\"><span class=\\"toggle-icon\\"><svg data-testid=\\"close-icon\\" aria-hidden=\\"true\\" class=\\"gl-icon s16\\"><use href=\\"#close\\"></use></svg></span></button></div>
             <!---->
           </label>
           <!---->
@@ -40,7 +40,7 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
                 <!---->
                 <!----> <input id=\\"url\\" type=\\"text\\" readonly=\\"readonly\\" class=\\"gl-form-input form-control\\">
                 <div class=\\"input-group-append\\"><button title=\\"Copy\\" data-clipboard-text=\\"\\" aria-label=\\"Copy this value\\" type=\\"button\\" class=\\"btn gl-m-0! btn-default btn-md gl-button btn-default-secondary btn-icon\\">
-                    <!----> <svg data-testid=\\"copy-to-clipboard-icon\\" class=\\"gl-button-icon gl-icon s16\\">
+                    <!----> <svg data-testid=\\"copy-to-clipboard-icon\\" aria-hidden=\\"true\\" class=\\"gl-button-icon gl-icon s16\\">
                       <use href=\\"#copy-to-clipboard\\"></use>
                     </svg>
                     <!----></button></div>
@@ -56,7 +56,7 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
                 <!---->
                 <!----> <input id=\\"authorization-key\\" type=\\"text\\" readonly=\\"readonly\\" class=\\"gl-form-input form-control\\">
                 <div class=\\"input-group-append\\"><button title=\\"Copy\\" data-clipboard-text=\\"\\" aria-label=\\"Copy this value\\" type=\\"button\\" class=\\"btn gl-m-0! btn-default btn-md gl-button btn-default-secondary btn-icon\\">
-                    <!----> <svg data-testid=\\"copy-to-clipboard-icon\\" class=\\"gl-button-icon gl-icon s16\\">
+                    <!----> <svg data-testid=\\"copy-to-clipboard-icon\\" aria-hidden=\\"true\\" class=\\"gl-button-icon gl-icon s16\\">
                       <use href=\\"#copy-to-clipboard\\"></use>
                     </svg>
                     <!----></button></div>

@@ -170,7 +170,7 @@ production:
 | `label` | A human-friendly name for your LDAP server. It will be displayed on your sign-in page. | yes | `'Paris'` or `'Acme, Ltd.'` |
 | `host`  | IP address or domain name of your LDAP server. | yes | `'ldap.mydomain.com'` |
 | `port`  | The port to connect with on your LDAP server. Always an integer, not a string. | yes | `389` or `636` (for SSL) |
-| `uid`   | LDAP attribute for username. Should be the attribute, not the value that maps to the `uid`. | yes | `'sAMAccountName'`, `'uid'`, `'userPrincipalName'` |
+| `uid`   | LDAP attribute for username. Should be the attribute, not the value that maps to the `uid`. | yes | `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
 | `bind_dn` | The full DN of the user you will bind with. | no | `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
 | `password` | The password of the bind user. | no | `'your_great_password'` |
 | `encryption` | Encryption method. The `method` key is deprecated in favor of `encryption`. | yes | `'start_tls'` or `'simple_tls'` or `'plain'` |

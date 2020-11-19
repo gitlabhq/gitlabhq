@@ -74,7 +74,7 @@ Asana - Teamwork without email
 
 Set Asana service for a project.
 
-> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it. You can also close a task with a message containing: `fix #123456`. You can find your API Keys here: <https://developers.asana.com/docs/#authentication-basics>.
+> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found gets the commit comment added to it. You can also close a task with a message containing: `fix #123456`. You can find your API Keys here: <https://developers.asana.com/docs/#authentication-basics>.
 
 ```plaintext
 PUT /projects/:id/services/asana
@@ -84,8 +84,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | User API token. User must have access to task, all comments will be attributed to this user. |
-| `restrict_to_branch` | string | false | Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches. |
+| `api_key` | string | true | User API token. User must have access to task, all comments are attributed to this user. |
+| `restrict_to_branch` | string | false | Comma-separated list of branches which are automatically inspected. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Asana service
@@ -237,7 +237,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Buildkite project GitLab token |
 | `project_url` | string | true | Pipeline URL. For example, `https://buildkite.com/example/pipeline` |
-| `enable_ssl_verification` | boolean | false | DEPRECATED: This parameter has no effect since SSL verification will always be enabled |
+| `enable_ssl_verification` | boolean | false | DEPRECATED: This parameter has no effect since SSL verification is always enabled |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Buildkite service
@@ -482,7 +482,7 @@ Parameters:
 | `send_from_committer_email` | boolean | false | Send from committer |
 | `push_events` | boolean | false | Enable notifications for push events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". Notifications will be always fired for tag pushes. The default value is "all" |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". Notifications are always fired for tag pushes. The default value is "all" |
 
 ### Delete Emails on push service
 
@@ -809,7 +809,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url`           | string | yes | The URL to the Jira project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
-| `api_url`   | string | no | The base URL to the Jira instance API. Web URL value will be used if not set. For example, `https://jira-api.example.com`. |
+| `api_url`   | string | no | The base URL to the Jira instance API. Web URL value is used if not set. For example, `https://jira-api.example.com`. |
 | `username`      | string | yes  | The username of the user created to be used with GitLab/Jira. |
 | `password`      | string | yes  | The password of the user created to be used with GitLab/Jira. |
 | `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
@@ -1015,7 +1015,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | The PivotalTracker token |
-| `restrict_to_branch` | boolean | false | Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches. |
+| `restrict_to_branch` | boolean | false | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete PivotalTracker service
@@ -1325,7 +1325,7 @@ A continuous integration and build server
 
 Set JetBrains TeamCity CI service for a project.
 
-> The build configuration in TeamCity must use the build format number `%build.vcs.number%` you will also want to configure monitoring of all branches so merge requests build, that setting is in the VSC root advanced settings.
+> The build configuration in TeamCity must use the build format number `%build.vcs.number%`. Configure monitoring of all branches so merge requests build. That setting is in the VSC root advanced settings.
 
 ```plaintext
 PUT /projects/:id/services/teamcity
@@ -1411,7 +1411,7 @@ Parameters:
 
 - `project_url` (**required**) - Jenkins project URL like `http://jenkins.example.com/job/my-project/`
 - `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
-- `pass_unstable` (optional) - Unstable builds will be treated as passing
+- `pass_unstable` (optional) - Unstable builds are treated as passing
 
 ### Delete Jenkins CI (Deprecated) service
 

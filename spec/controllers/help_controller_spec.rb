@@ -101,7 +101,8 @@ RSpec.describe HelpController do
     context 'for Markdown formats' do
       context 'when requested file exists' do
         before do
-          expect(File).to receive(:read).and_return(fixture_file('blockquote_fence_after.md'))
+          expect_file_read(File.join(Rails.root, 'doc/ssh/README.md'), content: fixture_file('blockquote_fence_after.md'))
+
           get :show, params: { path: 'ssh/README' }, format: :md
         end
 
@@ -213,6 +214,6 @@ RSpec.describe HelpController do
   end
 
   def stub_readme(content)
-    expect(File).to receive(:read).and_return(content)
+    expect_file_read(Rails.root.join('doc', 'README.md'), content: content)
   end
 end

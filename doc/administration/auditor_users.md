@@ -58,7 +58,7 @@ helpful:
 To create a new Auditor user:
 
 1. Create a new user or edit an existing one by navigating to
-   **Admin Area > Users**. You will find the option of the access level in
+   **Admin Area > Users**. The option of the access level is located in
    the 'Access' section.
 
    ![Admin Area Form](img/auditor_access_form.png)
