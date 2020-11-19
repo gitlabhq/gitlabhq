@@ -78,7 +78,7 @@ in a pod within the `gitlab-managed-apps` namespace inside the cluster.
   to [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/209736), GitLab
   used an in-cluster Tiller server in the `gitlab-managed-apps` namespace. You
   can safely uninstall the server from GitLab's application page if you have
-  previously installed it. This will not affect your other applications.
+  previously installed it. This doesn't affect your other applications.
 
 GitLab's Helm integration does not support installing applications behind a proxy,
 but a [workaround](../../topics/autodevops/index.md#install-applications-behind-a-proxy)
@@ -233,7 +233,7 @@ rules that allow external access to your deployed applications.
   ```
 
   If EKS is used, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
-  is also created, which will incur additional AWS costs.
+  is also created, which incurs additional AWS costs.
 
 - For Istio/Knative, the command is different:
 
@@ -258,7 +258,7 @@ a wildcard DNS CNAME record for the desired domain name. For example,
 
 By default, an ephemeral external IP address is associated to the cluster's load
 balancer. If you associate the ephemeral IP with your DNS and the IP changes,
-your apps won't be reachable, and you'd have to change the DNS record again.
+your apps aren't reachable, and you'd have to change the DNS record again.
 To avoid that, change it into a static reserved IP.
 
 Read how to [promote an ephemeral external IP address in GKE](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
@@ -439,7 +439,7 @@ The [`knative/knative`](https://storage.googleapis.com/triggermesh-charts)
 chart is used to install this application.
 
 During installation, you must enter a wildcard domain where your applications
-will be exposed. Configure your DNS server to use the external IP address for that
+are exposed. Configure your DNS server to use the external IP address for that
 domain. Applications created and installed are accessible as
 `<program_name>.<kubernetes_namespace>.<domain_name>`, which requires
 your Kubernetes cluster to have
@@ -668,8 +668,8 @@ is saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 For GitLab versions 13.5 and below, the Ingress, Fluentd, Prometheus,
 and Sentry apps are fetched from the central Helm [stable
 repository](https://kubernetes-charts.storage.googleapis.com/), which
-will be [deleted](https://github.com/helm/charts#deprecation-timeline)
-on November 13, 2020. This will cause the installation CI/CD pipeline to
+is [scheduled for deletion](https://github.com/helm/charts#deprecation-timeline)
+on November 13, 2020. This causes the installation CI/CD pipeline to
 fail. Upgrade to GitLab 13.6, or alternatively, you can
 use the following `.gitlab-ci.yml`, which has been tested on GitLab
 13.5:

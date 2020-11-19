@@ -31,15 +31,15 @@ More useful links:
 - The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product. In addition to counts, other facts
     that help us classify and understand GitLab installations are collected.
 - Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
-- While usage ping is enabled, GitLab will gather data from the other instances and will be able to show usage statistics of your instance to your users.
+- While usage ping is enabled, GitLab gathers data from the other instances and can show usage statistics of your instance to your users.
 
 ### Why should we enable Usage Ping?
 
 - The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
 - As a benefit of having the usage ping active, GitLab lets you analyze the users’ activities over time of your GitLab installation.
 - As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance’s adoption of Concurrent DevOps from planning to monitoring.
-- You will get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
-- You will get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
+- You get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
+- You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
 - Usage Ping is enabled by default. To disable it, see [Disable Usage Ping](#disable-usage-ping).
 
@@ -189,7 +189,7 @@ Arguments:
 - `relation` the ActiveRecord_Relation to perform the count
 - `column` the column to perform the distinct count, by default is the primary key
 - `batch`: default `true` in order to use batch counting
-- `batch_size`: if none set it will use default value 10000 from `Gitlab::Database::BatchCounter`
+- `batch_size`: if none set it uses default value 10000 from `Gitlab::Database::BatchCounter`
 - `start`: custom start of the batch counting in order to avoid complex min calculations
 - `end`: custom end of the batch counting in order to avoid complex min calculations
 
@@ -213,7 +213,7 @@ Arguments:
 
 - `relation` the ActiveRecord_Relation to perform the operation
 - `column` the column to sum on
-- `batch_size`: if none set it will use default value 1000 from `Gitlab::Database::BatchCounter`
+- `batch_size`: if none set it uses default value 1000 from `Gitlab::Database::BatchCounter`
 - `start`: custom start of the batch counting in order to avoid complex min calculations
 - `end`: custom end of the batch counting in order to avoid complex min calculations
 
@@ -304,7 +304,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      access to a group of events.
    - `redis_slot`: optional Redis slot; default value: event name. Used if needed to calculate totals
      for a group of metrics. Ensure keys are in the same slot. For example:
-     `i_compliance_credential_inventory` with `redis_slot: 'compliance'` will build Redis key
+     `i_compliance_credential_inventory` with `redis_slot: 'compliance'` builds Redis key
      `i_{compliance}_credential_inventory-2020-34`. If `redis_slot` is not defined the Redis key will
      be `{i_compliance_credential_inventory}-2020-34`.
    - `expiry`: expiry time in days. Default: 29 days for daily aggregation and 6 weeks for weekly
@@ -574,7 +574,7 @@ NOTE: **Note:**
 Prometheus as a data source for Usage Ping is currently only available for single-node Omnibus installations
 that are running the [bundled Prometheus](../../administration/monitoring/prometheus/index.md) instance.
 
-In order to query Prometheus for metrics, a helper method is available that will `yield` a fully configured
+To query Prometheus for metrics, a helper method is available to `yield` a fully configured
 `PrometheusClient`, given it is available as per the note above:
 
 ```ruby
@@ -613,7 +613,7 @@ Gitlab::UsageData.distinct_count(::Note.with_suggestions.where(time_period), :au
 
 ### 3. Generate the SQL query
 
-Your Rails console will return the generated SQL queries.
+Your Rails console returns the generated SQL queries.
 
 Example:
 
@@ -670,7 +670,7 @@ Ensure you comply with the [Changelog entries guide](../changelog.md).
 
 ### 9. Ask for a Product Analytics Review
 
-On GitLab.com, we have DangerBot setup to monitor Product Analytics related files and DangerBot will recommend a Product Analytics review. Mention `@gitlab-org/growth/product_analytics/engineers` in your MR for a review.
+On GitLab.com, we have DangerBot setup to monitor Product Analytics related files and DangerBot recommends a Product Analytics review. Mention `@gitlab-org/growth/product_analytics/engineers` in your MR for a review.
 
 ### 10. Verify your metric
 
@@ -696,10 +696,10 @@ This is the recommended approach to test Prometheus based Usage Ping.
 The easiest way to verify your changes is to build a new Omnibus image from your code branch via CI, then download the image
 and run a local container instance:
 
-1. From your merge request, click on the `qa` stage, then trigger the `package-and-qa` job. This job will trigger an Omnibus
+1. From your merge request, click on the `qa` stage, then trigger the `package-and-qa` job. This job triggers an Omnibus
 build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/pipelines).
 1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
-1. Open the job logs and locate the full container name including the version. It will take the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
+1. Open the job logs and locate the full container name including the version. It takes the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
 1. On your local machine, make sure you are logged in to the GitLab Docker registry. You can find the instructions for this in
 [Authenticate to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
 1. Once logged in, download the new image via `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
@@ -720,7 +720,7 @@ but with the following limitations:
 - While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it would normally report itself to not be associated
 with any of the other services that are running. That is not how node metrics are reported in a production setup, where `node_exporter`
 always runs as a process alongside other GitLab components on any given node. From Usage Ping's perspective none of the node data would therefore
-appear to be associated to any of the services running, since they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics will appear in Usage Ping.
+appear to be associated to any of the services running, since they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Usage Ping.
 
 ## Aggregated metrics
 
@@ -733,14 +733,14 @@ This feature is intended solely for internal GitLab use.
 
 In order to add data for aggregated metrics into Usage Ping payload you should add corresponding definition into  [`aggregated_metrics.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics.yml) file. Each aggregate definition includes following parts:
 
-- name: unique name under which aggregate metric will be added to Usage Ping payload
-- operator: operator that defines how aggregated metric data will be counted. Available operators are:
+- name: unique name under which aggregate metric is added to Usage Ping payload
+- operator: operator that defines how aggregated metric data is counted. Available operators are:
   - `OR`: removes duplicates and counts all entries that triggered any of listed events
   - `AND`: removes duplicates and counts all elements that were observed triggering all of following events
 - events: list of events names (from [`known_events.yml`](#known-events-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
-- feature_flag: name of [development feature flag](../feature_flags/development.md#development-type) that will be checked before
-metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`. 
-`feature_flag` attribute is **OPTIONAL**  and can be omitted, when `feature_flag` is missing no feature flag will be checked.
+- feature_flag: name of [development feature flag](../feature_flags/development.md#development-type) that is checked before
+metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`.
+`feature_flag` attribute is **OPTIONAL**  and can be omitted, when `feature_flag` is missing no feature flag is checked.
 
 Example aggregated metric entries:
 
@@ -754,7 +754,7 @@ Example aggregated metric entries:
   feature_flag: example_aggregated_metric
 ```
 
-Aggregated metrics will be added under `aggregated_metrics` key in both `counts_weekly` and `counts_monthly` top level keys in Usage Ping payload.
+Aggregated metrics are added under `aggregated_metrics` key in both `counts_weekly` and `counts_monthly` top level keys in Usage Ping payload.
 
 ```ruby
 {

@@ -58,11 +58,11 @@ differentiate the new cluster from your other clusters.
 > - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If GitLab manages
-your cluster, resources for your projects will be automatically created. See the
+your cluster, resources for your projects are automatically created. See the
 [Access controls](../../project/clusters/add_remove_clusters.md#access-controls)
 section for details on which resources GitLab creates for you.
 
-For clusters not managed by GitLab, project-specific resources won't be created
+For clusters not managed by GitLab, project-specific resources aren't created
 automatically. If you're using [Auto DevOps](../../../topics/autodevops/index.md)
 for deployments with a cluster not managed by GitLab, you must ensure:
 
@@ -97,7 +97,7 @@ To clear the cache:
 
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters) When specifying a domain,
-this will be automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
+this is automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
 the [Auto DevOps](../../../topics/autodevops/index.md) stages.
 
 The domain should have a wildcard DNS configured to the Ingress IP address.

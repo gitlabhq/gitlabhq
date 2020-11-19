@@ -6,17 +6,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Experiment Guide
 
-Experiments can be conducted by any GitLab team, most often the teams from the [Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/). Experiments are not tied to releases because they will primarily target GitLab.com.
+Experiments can be conducted by any GitLab team, most often the teams from the [Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/). Experiments are not tied to releases because they primarily target GitLab.com.
 
-Experiments will be run as an A/B test and will be behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team will decide if the experiment had a positive impact and will be the new default or rolled back.
+Experiments are run as an A/B test and are behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team decides if the experiment had a positive impact and should be made the new default or rolled back.
 
 ## Experiment tracking issue
 
 Each experiment should have an [Experiment tracking](https://gitlab.com/groups/gitlab-org/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=growth%20experiment&search=%22Experiment+tracking%22) issue to track the experiment from roll-out through to cleanup/removal. Immediately after an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
 After the deadline, the issue needs to be resolved and either:
 
-- It was successful and the experiment will be the new default.
-- It was not successful and all code related to the experiment will be removed.
+- It was successful and the experiment becomes the new default.
+- It was not successful and all code related to the experiment is removed.
 
 In either case, an outcome of the experiment should be posted to the issue with the reasoning for the decision.
 
@@ -80,7 +80,7 @@ addressed.
       end
       ```
 
-      The above will check whether the experiment is enabled and push the result to the frontend.
+      The above checks whether the experiment is enabled and push the result to the frontend.
 
       You can check the state of the feature flag in JavaScript:
 

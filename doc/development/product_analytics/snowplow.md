@@ -98,7 +98,7 @@ sequenceDiagram
 
 ## Structured event taxonomy
 
-When adding new click events, we should add them in a way that's internally consistent. If we don't, it'll be very painful to perform analysis across features since each feature will be capturing events differently.
+When adding new click events, we should add them in a way that's internally consistent. If we don't, it is very painful to perform analysis across features since each feature captures events differently.
 
 The current method provides several attributes that are sent on each click event. Please try to follow these guidelines when specifying events to capture:
 

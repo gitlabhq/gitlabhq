@@ -6,10 +6,10 @@
   .row.mb-3
     .home-panel-title-row.col-md-12.col-lg-6.d-flex
       .avatar-container.rect-avatar.s64.home-panel-avatar.gl-mr-3.float-none
-        = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64)
+        = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'logo')
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-mt-3.gl-mb-2
+          %h1.home-panel-title.gl-mt-3.gl-mb-2{ itemprop: 'name' }
             = @group.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
               = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
@@ -34,7 +34,7 @@
   - if @group.description.present?
     .group-home-desc.mt-1
       .home-panel-description
-        .home-panel-description-markdown.read-more-container
+        .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@group, :description)
         %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")

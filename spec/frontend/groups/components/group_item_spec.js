@@ -2,6 +2,7 @@ import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
+import { getGroupItemMicrodata } from '~/groups/store/utils';
 import eventHub from '~/groups/event_hub';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
@@ -28,6 +29,11 @@ describe('GroupItemComponent', () => {
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  const withMicrodata = group => ({
+    ...group,
+    microdata: getGroupItemMicrodata(group),
   });
 
   describe('computed', () => {
@@ -210,6 +216,49 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.description')).toBeDefined();
 
       expect(vm.$el.querySelector('.group-list-tree')).toBeDefined();
+    });
+  });
+  describe('schema.org props', () => {
+    describe('when showSchemaMarkup is disabled on the group', () => {
+      it.each(['itemprop', 'itemtype', 'itemscope'], 'it does not set %s', attr => {
+        expect(vm.$el.getAttribute(attr)).toBeNull();
+      });
+      it.each(
+        ['.js-group-avatar', '.js-group-name', '.js-group-description'],
+        'it does not set `itemprop` on sub-nodes',
+        selector => {
+          expect(vm.$el.querySelector(selector).getAttribute('itemprop')).toBeNull();
+        },
+      );
+    });
+    describe('when group has microdata', () => {
+      beforeEach(() => {
+        const group = withMicrodata({
+          ...mockParentGroupItem,
+          avatarUrl: 'http://foo.bar',
+          description: 'Foo Bar',
+        });
+
+        vm = createComponent(group);
+      });
+
+      it.each`
+        attr           | value
+        ${'itemscope'} | ${'itemscope'}
+        ${'itemtype'}  | ${'https://schema.org/Organization'}
+        ${'itemprop'}  | ${'subOrganization'}
+      `('it does set correct $attr', ({ attr, value } = {}) => {
+        expect(vm.$el.getAttribute(attr)).toBe(value);
+      });
+
+      it.each`
+        selector                               | propValue
+        ${'[data-testid="group-avatar"]'}      | ${'logo'}
+        ${'[data-testid="group-name"]'}        | ${'name'}
+        ${'[data-testid="group-description"]'} | ${'description'}
+      `('it does set correct $selector', ({ selector, propValue } = {}) => {
+        expect(vm.$el.querySelector(selector).getAttribute('itemprop')).toBe(propValue);
+      });
     });
   });
 });

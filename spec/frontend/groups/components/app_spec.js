@@ -35,7 +35,7 @@ describe('AppComponent', () => {
   let mock;
   let getGroupsSpy;
 
-  const store = new GroupsStore(false);
+  const store = new GroupsStore({ hideProjects: false });
   const service = new GroupsService(mockEndpoint);
 
   const createShallowComponent = (hideProjects = false) => {

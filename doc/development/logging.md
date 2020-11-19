@@ -131,8 +131,8 @@ data.
 
 Unless a field type is explicitly mapped, Elasticsearch infers the type from
 the first instance of that field value it sees. Subsequent instances of that
-field value with different types will either fail to be indexed, or in some
-cases (scalar/object conflict), the whole log line will be dropped.
+field value with different types either fail to be indexed, or in some
+cases (scalar/object conflict), the whole log line is dropped.
 
 GitLab.com's logging Elasticsearch sets
 [`ignore_malformed`](https://www.elastic.co/guide/en/elasticsearch/reference/current/ignore-malformed.html),
@@ -311,7 +311,7 @@ It should be noted that manual logging of exceptions is not allowed, as:
 1. Very often manually logged exception needs to be tracked to Sentry as well,
 1. Manually logged exceptions does not use `correlation_id`, which makes hard
    to pin them to request, user and context in which this exception was raised,
-1. It is very likely that manually logged exceptions will end-up across
+1. Manually logged exceptions often end up across
    multiple files, which increases burden scraping all logging files.
 
 To avoid duplicating and having consistent behavior the `Gitlab::ErrorTracking`

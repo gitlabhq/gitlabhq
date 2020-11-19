@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
 > - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
-Epics let you manage your portfolio of projects more efficiently by tracking groups of issues that
-share a theme across projects and milestones.
+Epics let you manage your portfolio of projects more efficiently by tracking groups of [issues](../../project/issues/index.md)
+that share a theme across projects and milestones.
 
 An epic's page contains the following tabs:
 

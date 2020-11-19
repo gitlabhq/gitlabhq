@@ -23,9 +23,9 @@ requirements are met:
 ### Additional requirements for self-managed instances **(CORE ONLY)**
 
 If you are using a self-managed GitLab instance, GitLab must first be configured with a set of
-Amazon credentials. These credentials will be used to assume an Amazon IAM role provided by the user
+Amazon credentials. These credentials are used to assume an Amazon IAM role provided by the user
 creating the cluster. Create an IAM user and ensure it has permissions to assume the role(s) that
-your users will use to create EKS clusters.
+your users need to create EKS clusters.
 
 For example, the following policy document allows assuming a role whose name starts with
 `gitlab-eks-` in account `123456789012`:
@@ -60,7 +60,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - Group's **Kubernetes** page, for a group-level cluster.
    - **Admin Area > Kubernetes**, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
-1. Under the **Create new cluster** tab, click **Amazon EKS**. You will be provided with an
+1. Under the **Create new cluster** tab, click **Amazon EKS** to display an
    `Account ID` and `External ID` needed for later steps.
 1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM policy:
    1. From the left panel, select **Policies**.
@@ -137,9 +137,9 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    1. Click **Next: Tags**, and optionally enter any tags you wish to associate with this role.
    1. Click **Next: Review**.
    1. Enter a role name and optional description into the fields provided.
-   1. Click **Create role**, the new role name will appear at the top. Click on its name and copy the `Role ARN` from the newly created role.
+   1. Click **Create role**, the new role name displays at the top. Click on its name and copy the `Role ARN` from the newly created role.
 1. In GitLab, enter the copied role ARN into the `Role ARN` field.
-1. In the **Cluster Region** field, enter the [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) you plan to use for your new cluster. GitLab will authenticate you have access to this region when authenticating your role.
+1. In the **Cluster Region** field, enter the [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) you plan to use for your new cluster. GitLab confirms you have access to this region when authenticating your role.
 1. Click **Authenticate with AWS**.
 1. Choose your cluster's settings:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
@@ -158,7 +158,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **VPC** - Select a [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
      to use for your EKS Cluster resources.
    - **Subnets** - Choose the [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
-     in your VPC where your worker nodes will run. You must select at least two.
+     in your VPC where your worker nodes run. You must select at least two.
    - **Security group** - Choose the [security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
      to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets.
    - **Instance type** - The [instance type](https://aws.amazon.com/ec2/instance-types/) of your worker nodes.
@@ -167,11 +167,11 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After about 10 minutes, your cluster will be ready to go. You can now proceed
+After about 10 minutes, your cluster is ready to go. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
 
 NOTE: **Note:**
-You will need to add your AWS external ID to the
+You must add your AWS external ID to the
 [IAM Role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount)
 to manage your cluster using `kubectl`.
 
@@ -219,9 +219,9 @@ For information on adding an existing EKS cluster, see
 ### Create a default Storage Class
 
 Amazon EKS doesn't have a default Storage Class out of the box, which means
-requests for persistent volumes will not be automatically fulfilled. As part
+requests for persistent volumes are not automatically fulfilled. As part
 of Auto DevOps, the deployed PostgreSQL instance requests persistent storage,
-and without a default storage class it will fail to start.
+and without a default storage class it cannot start.
 
 If a default Storage Class doesn't already exist and is desired, follow Amazon's
 [guide on storage classes](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html)
@@ -239,18 +239,17 @@ to build, test, and deploy the app.
 [Enable Auto DevOps](../../../topics/autodevops/index.md#at-the-project-level)
 if not already enabled. If a wildcard DNS entry was created resolving to the
 Load Balancer, enter it in the `domain` field under the Auto DevOps settings.
-Otherwise, the deployed app will not be externally available outside of the cluster.
+Otherwise, the deployed app isn't externally available outside of the cluster.
 
 ![Deploy Pipeline](img/pipeline.png)
 
-A new pipeline will automatically be created, which will begin to build, test,
-and deploy the app.
+GitLab creates a new pipeline, which begins to build, test, and deploy the app.
 
-After the pipeline has finished, your app will be running in EKS and available
+After the pipeline has finished, your app runs in EKS, and is available
 to users. Click on **CI/CD > Environments**.
 
 ![Deployed Environment](img/environment.png)
 
-You will see a list of the environments and their deploy status, as well as
+GitLab displays a list of the environments and their deploy status, as well as
 options to browse to the app, view monitoring metrics, and even access a shell
 on the running pod.

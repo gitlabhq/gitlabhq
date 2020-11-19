@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36001) in GitLab 13.2.
 
 NOTE: **Note:**
-User will need admin access to use these endpoints.
+Users need admin access to use these endpoints.
 
 Use these API endpoints with your instance clusters, which enable you to use the same cluster across multiple projects. [More information](../user/instance/clusters/index.md)
 
@@ -164,7 +164,7 @@ Parameters:
 | `environment_scope`                                  | string  | no       | The associated environment to the cluster. Defaults to `*`                                            |
 | `management_project_id`                              | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster            |
 | `enabled`                                            | boolean | no       | Determines if cluster is active or not, defaults to `true`                                            |
-| `managed`                                            | boolean | no       | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to `true` |
+| `managed`                                            | boolean | no       | Determines if GitLab manages namespaces and service accounts for this cluster. Defaults to `true` |
 | `platform_kubernetes_attributes[api_url]`            | string  | yes      | The URL to access the Kubernetes API                                                                  |
 | `platform_kubernetes_attributes[token]`              | string  | yes      | The token to authenticate against Kubernetes                                                          |
 | `platform_kubernetes_attributes[ca_cert]`            | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                              |
@@ -232,7 +232,7 @@ Parameters:
 | `environment_scope`                         | string  | no       | The associated environment to the cluster                                                  |
 | `management_project_id`                     | integer | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `enabled`                                   | boolean | no       | Determines if cluster is active or not                                                     |
-| `managed`                                   | boolean | no       | Determines if GitLab will manage namespaces and service accounts for this cluster          |
+| `managed`                                   | boolean | no       | Determines if GitLab manages namespaces and service accounts for this cluster          |
 | `platform_kubernetes_attributes[api_url]`   | string  | no       | The URL to access the Kubernetes API                                                       |
 | `platform_kubernetes_attributes[token]`     | string  | no       | The token to authenticate against Kubernetes                                               |
 | `platform_kubernetes_attributes[ca_cert]`   | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |

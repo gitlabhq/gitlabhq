@@ -51,10 +51,53 @@ To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enter
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of
 the Issue Board feature.
 
+## Multiple issue boards
+
+> - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
+> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
+> - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
+
+Multiple issue boards allow for more than one issue board for a given project **(CORE)** or group **(PREMIUM)**.
+This is great for large projects with more than one team or when a repository hosts the code of multiple products.
+
+Using the search box at the top of the menu, you can filter the listed boards.
+
+When you have ten or more boards available, a **Recent** section is also shown in the menu, with
+shortcuts to your last four visited boards.
+
+![Multiple issue boards](img/issue_boards_multiple_v13_6.png)
+
+When you're revisiting an issue board in a project or group with multiple boards,
+GitLab automatically loads the last board you visited.
+
+### Create an issue board
+
+To create a new issue board:
+
+1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click **Create new board**.
+1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
+
+### Delete an issue board
+
+To delete the currently active issue board:
+
+1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click **Delete board**.
+1. Click **Delete** to confirm.
+
 ## Issue boards use cases
 
 You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
+
+For examples of using issue boards along with [epics](../group/epics/index.md) **(PREMIUM)**,
+[issue health status](issues/index.md#health-status) **(ULTIMATE)**, and
+[scoped labels](labels.md#scoped-labels) **(PREMIUM)** for various Agile frameworks, check:
+
+- The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[Cross-project Agile work management with GitLab](https://www.youtube.com/watch?v=5J0bonGoECs) (15 min, July 2020)
 
 ### Use cases for a single issue board
 
@@ -122,7 +165,10 @@ to improve their workflow with multiple boards.
 
 #### Quick assignments
 
-Create lists for each of your team members and quickly drag issues onto each team member's list.
+To quickly assign issues to your team members:
+
+1. Create [assignee lists](#assignee-lists) for each team member.
+1. Drag an issue onto the team member's list.
 
 ## Issue board terminology
 
@@ -184,41 +230,6 @@ and vice versa.
 
 GitLab issue boards are available on GitLab Core and GitLab.com Free tiers, but some
 advanced functionality is present in [higher tiers only](https://about.gitlab.com/pricing/).
-
-### Multiple issue boards
-
-> - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
-> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
-> - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
-
-Multiple issue boards allow for more than one issue board for a given project or group.
-This is great for large projects with more than one team or when a repository hosts the code of multiple products.
-
-Using the search box at the top of the menu, you can filter the listed boards.
-
-When you have ten or more boards available, a **Recent** section is also shown in the menu, with
-shortcuts to your last four visited boards.
-
-![Multiple issue boards](img/issue_boards_multiple_v13_6.png)
-
-When you're revisiting an issue board in a project or group with multiple boards,
-GitLab automatically loads the last board you visited.
-
-#### Create an issue board
-
-To create a new issue board:
-
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
-1. Click **Create new board**.
-1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
-
-#### Delete an issue board
-
-To delete the currently active issue board:
-
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
-1. Click **Delete board**.
-1. Click **Delete** to confirm.
 
 ### Configurable issue boards **(STARTER)**
 
@@ -314,6 +325,9 @@ As in other list types, click the trash icon to remove a list.
 With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
 This feature is available both at the project and group level.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video overview, see [Epics Swimlanes Walkthrough - 13.6](https://www.youtube.com/watch?v=nHC7-kz5P2g) (November 2020).
 
 To group issues by epic in an issue board:
 
