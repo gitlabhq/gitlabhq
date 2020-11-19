@@ -10,7 +10,7 @@ module Projects
 
       prepend_before_action :repository, :project_without_auth
 
-      feature_category :alert_management
+      feature_category :incident_management
 
       def create
         token = extract_alert_manager_token(request)

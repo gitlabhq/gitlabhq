@@ -4,6 +4,7 @@ module Gitlab
   module UsageDataCounters
     class SearchCounter < BaseCounter
       KNOWN_EVENTS = %w[all_searches navbar_searches].freeze
+      PREFIX = nil
 
       class << self
         def redis_key(event)

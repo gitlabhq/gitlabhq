@@ -5,7 +5,7 @@ class Admin::CohortsController < Admin::ApplicationController
 
   track_unique_visits :index, target_id: 'i_analytics_cohorts'
 
-  feature_category :instance_statistics
+  feature_category :devops_reports
 
   def index
     if Gitlab::CurrentSettings.usage_ping_enabled

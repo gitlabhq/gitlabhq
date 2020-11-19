@@ -20,6 +20,7 @@ UsageData/LargeTable:
     - :Gitlab::Runtime
     - :Gitaly::Server
     - :Gitlab::UsageData
+    - :Gitlab::UsageDataCounters
     - :License
     - :Rails
     - :Time

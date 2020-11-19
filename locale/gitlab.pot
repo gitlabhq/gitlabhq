@@ -906,9 +906,6 @@ msgstr ""
 msgid "&lt;no scopes selected&gt;"
 msgstr ""
 
-msgid "&lt;project name&gt;"
-msgstr ""
-
 msgid "'%{data}' at %{location} does not match format: %{format}"
 msgstr ""
 
@@ -2270,6 +2267,15 @@ msgid "AdminUsers|You must transfer ownership or delete the groups owned by this
 msgstr ""
 
 msgid "Administration"
+msgstr ""
+
+msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
+msgstr ""
+
+msgid "Admin|View pending user approvals"
+msgstr ""
+
+msgid "Admin|Your instance has reached its user cap"
 msgstr ""
 
 msgid "Advanced"
@@ -11442,6 +11448,9 @@ msgid "Failed to remove user key."
 msgstr ""
 
 msgid "Failed to reset key. Please try again."
+msgstr ""
+
+msgid "Failed to retrieve page"
 msgstr ""
 
 msgid "Failed to save merge conflicts resolutions. Please try again!"
@@ -27028,6 +27037,9 @@ msgstr ""
 msgid "The number of times an upload record could not find its file"
 msgstr ""
 
+msgid "The page could not be displayed because it timed out."
+msgstr ""
+
 msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
@@ -30707,6 +30719,9 @@ msgstr ""
 msgid "Wiki|Pages"
 msgstr ""
 
+msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
+msgstr ""
+
 msgid "Wiki|Title"
 msgstr ""
 
@@ -31005,6 +31020,9 @@ msgid "You can specify notification level per group or per project."
 msgstr ""
 
 msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
+msgstr ""
+
+msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr ""
 
 msgid "You cannot access the raw file. Please wait a minute."
@@ -32775,6 +32793,9 @@ msgid "project is read-only"
 msgstr ""
 
 msgid "project members"
+msgstr ""
+
+msgid "project name"
 msgstr ""
 
 msgid "projects"

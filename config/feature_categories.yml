@@ -9,7 +9,6 @@
 ---
 - accessibility_testing
 - advanced_deployments
-- alert_management
 - analysis
 - api
 - attack_emulation
@@ -21,7 +20,7 @@
 - boards
 - chatops
 - cloud_native_installation
-- cluster_cost_optimization
+- cluster_cost_management
 - code_analytics
 - code_quality
 - code_review
@@ -47,6 +46,7 @@
 - epics
 - error_tracking
 - feature_flags
+- five_minute_production_app
 - foundations
 - fuzz_testing
 - gdk
@@ -59,9 +59,10 @@
 - helm_chart_registry
 - importers
 - incident_management
+- infrastructure
 - infrastructure_as_code
+- insider_threat
 - insights
-- instance_statistics
 - integrations
 - interactive_application_security_testing
 - internationalization
@@ -75,8 +76,11 @@
 - load_testing
 - logging
 - malware_scanning
+- memory
 - merge_trains
 - metrics
+- mlops
+- mobile_signing_deployment
 - navigation
 - omnibus_package
 - package_registry
@@ -114,7 +118,7 @@
 - tracing
 - usability_testing
 - users
-- value_stream_analytics
+- value_stream_management
 - vulnerability_database
 - vulnerability_management
 - web_firewall

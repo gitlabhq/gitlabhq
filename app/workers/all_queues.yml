@@ -124,7 +124,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:analytics_instance_statistics_count_job_trigger
-  :feature_category: :instance_statistics
+  :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1329,7 +1329,7 @@
   :idempotent: true
   :tags: []
 - :name: analytics_instance_statistics_counter_job
-  :feature_category: :instance_statistics
+  :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

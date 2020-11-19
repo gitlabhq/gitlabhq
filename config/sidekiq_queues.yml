@@ -288,6 +288,8 @@
   - 1
 - - repository_update_remote_mirror
   - 1
+- - requirements_management_import_requirements_csv
+  - 1
 - - requirements_management_process_requirements_reports
   - 1
 - - security_scans

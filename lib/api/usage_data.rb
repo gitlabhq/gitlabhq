@@ -20,6 +20,18 @@ module API
         requires :event, type: String, desc: 'The event name that should be tracked'
       end
 
+      post 'increment_counter' do
+        event_name = params[:event]
+
+        increment_counter(event_name)
+
+        status :ok
+      end
+
+      params do
+        requires :event, type: String, desc: 'The event name that should be tracked'
+      end
+
       post 'increment_unique_users' do
         event_name = params[:event]
 

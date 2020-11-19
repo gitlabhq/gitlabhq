@@ -1,0 +1,8 @@
+---
+name: usage_data_static_site_editor_commits
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47309
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/284082
+milestone: '13.6'
+type: development
+group: group::static_site_editor
+default_enabled: false
