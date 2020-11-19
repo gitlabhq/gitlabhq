@@ -228,6 +228,7 @@ with the following properties:
 | ---------------------- | -------------------------------------------------------------------------------------- |
 | `description`          | A description of the code quality violation.                                           |
 | `fingerprint`          | A unique fingerprint to identify the code quality violation. For example, an MD5 hash. |
+| `severity`             | A severity string (can be `info`, `minor`, `major`, `critical`, or `blocker`).                          |
 | `location.path`        | The relative path to the file containing the code quality violation.                   |
 | `location.lines.begin` | The line on which the code quality violation occurred.                                 |
 
@@ -238,6 +239,7 @@ Example:
   {
     "description": "'unused' is assigned a value but never used.",
     "fingerprint": "7815696ecbf1c96e6894b779456d330e",
+    "severity": "minor",
     "location": {
       "path": "lib/index.js",
       "lines": {

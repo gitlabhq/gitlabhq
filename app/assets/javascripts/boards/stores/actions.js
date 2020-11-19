@@ -325,11 +325,15 @@ export default {
         },
       })
       .then(({ data }) => {
+        const { nodes } = data.issueSetAssignees?.issue?.assignees || [];
+
         commit('UPDATE_ISSUE_BY_ID', {
           issueId: getters.activeIssue.id,
           prop: 'assignees',
-          value: data.issueSetAssignees.issue.assignees.nodes,
+          value: nodes,
         });
+
+        return nodes;
       });
   },
 

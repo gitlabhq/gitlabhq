@@ -143,6 +143,7 @@ export default {
         :style="levelIndentation"
         class="file-row-name"
         data-qa-selector="file_name_content"
+        data-testid="file-row-name-container"
         :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"
       >
         <file-icon

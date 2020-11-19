@@ -1,4 +1,8 @@
+import { TEST_HOST } from 'helpers/test_constants';
 import { findAllByText, fireEvent, getByLabelText, screen } from '@testing-library/dom';
+import { initIde } from '~/ide';
+import extendStore from '~/ide/stores/extend';
+import { IDE_DATASET } from './mock_data';
 
 const isFolderRowOpen = row => row.matches('.folder.is-open');
 
@@ -12,14 +16,21 @@ const clickOnLeftSidebarTab = name => {
   button.click();
 };
 
-const findMonacoEditor = () =>
+export const findMonacoEditor = () =>
   screen.findByLabelText(/Editor content;/).then(x => x.closest('.monaco-editor'));
 
-const findAndSetEditorValue = async value => {
+export const findAndSetEditorValue = async value => {
   const editor = await findMonacoEditor();
   const uri = editor.getAttribute('data-uri');
 
   window.monaco.editor.getModel(uri).setValue(value);
+};
+
+export const getEditorValue = async () => {
+  const editor = await findMonacoEditor();
+  const uri = editor.getAttribute('data-uri');
+
+  return window.monaco.editor.getModel(uri).getValue();
 };
 
 const findTreeBody = () => screen.findByTestId('ide-tree-body', {}, { timeout: 5000 });
@@ -107,6 +118,10 @@ export const createFile = async (path, content) => {
   await findAndSetEditorValue(content);
 };
 
+export const getFilesList = () => {
+  return screen.getAllByTestId('file-row-name-container').map(e => e.textContent.trim());
+};
+
 export const deleteFile = async path => {
   const row = await findAndTraverseToPath(path);
   clickFileRowAction(row, 'Delete');
@@ -119,4 +134,17 @@ export const commit = async () => {
   await screen.findByLabelText(/Commit to .+ branch/).then(x => x.click());
 
   screen.getByText('Commit').click();
+};
+
+export const createIdeComponent = (container, { isRepoEmpty = false, path = '' } = {}) => {
+  global.jsdom.reconfigure({
+    url: `${TEST_HOST}/-/ide/project/gitlab-test/lorem-ipsum${
+      isRepoEmpty ? '-empty' : ''
+    }/tree/master/-/${path}`,
+  });
+
+  const el = document.createElement('div');
+  Object.assign(el.dataset, IDE_DATASET);
+  container.appendChild(el);
+  return initIde(el, { extendStore });
 };

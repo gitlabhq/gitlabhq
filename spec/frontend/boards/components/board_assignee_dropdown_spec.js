@@ -20,6 +20,7 @@ describe('BoardCardAssigneeDropdown', () => {
   let fakeApollo;
   let getIssueParticipantsSpy;
   let getSearchUsersSpy;
+  let dispatchSpy;
 
   const iid = '111';
   const activeIssueName = 'test';
@@ -91,10 +92,11 @@ describe('BoardCardAssigneeDropdown', () => {
       },
     };
 
-    jest.spyOn(store, 'dispatch').mockResolvedValue();
+    dispatchSpy = jest.spyOn(store, 'dispatch').mockResolvedValue();
   });
 
   afterEach(() => {
+    window.gon = {};
     jest.restoreAllMocks();
   });
 
@@ -304,5 +306,26 @@ describe('BoardCardAssigneeDropdown', () => {
     await openDropdown();
 
     expect(wrapper.find(GlSearchBoxByType).exists()).toBe(true);
+  });
+
+  describe('when assign-self is emitted from IssuableAssignees', () => {
+    const currentUser = { username: 'self', name: '', id: '' };
+
+    beforeEach(() => {
+      window.gon = { current_username: currentUser.username };
+
+      dispatchSpy.mockResolvedValue([currentUser]);
+      createComponent();
+
+      wrapper.find(IssuableAssignees).vm.$emit('assign-self');
+    });
+
+    it('calls setAssignees with currentUser', () => {
+      expect(store.dispatch).toHaveBeenCalledWith('setAssignees', currentUser.username);
+    });
+
+    it('adds the user to the selected list', async () => {
+      expect(findByText(currentUser.username).exists()).toBe(true);
+    });
   });
 });

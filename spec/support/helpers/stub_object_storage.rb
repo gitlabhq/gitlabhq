@@ -22,6 +22,16 @@ module StubObjectStorage
         background_upload: false,
         direct_upload: false
   )
+    new_config = config.to_h.deep_symbolize_keys.merge({
+      enabled: enabled,
+      proxy_download: proxy_download,
+      background_upload: background_upload,
+      direct_upload: direct_upload
+    })
+
+    # Needed for ObjectStorage::Config compatibility
+    allow(config).to receive(:to_hash).and_return(new_config)
+    allow(config).to receive(:to_h).and_return(new_config)
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:background_upload) { background_upload }
