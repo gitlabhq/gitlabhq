@@ -7710,9 +7710,6 @@ msgstr ""
 msgid "Could not restore the group"
 msgstr ""
 
-msgid "Could not retrieve custom scanners for scanner filter. Please try again later."
-msgstr ""
-
 msgid "Could not revoke impersonation token %{token_name}."
 msgstr ""
 

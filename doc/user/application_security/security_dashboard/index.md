@@ -63,8 +63,6 @@ job finishes but the DAST job fails, the security dashboard doesn't show SAST re
 the analyzer outputs an
 [exit code](../../../development/integrations/secure.md#exit-code).
 
-You can filter the vulnerabilities list by selecting from the **Severity** and **Scanner** dropdowns.
-
 ## Project Security Dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235558) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
@@ -106,11 +104,6 @@ You can filter the vulnerabilities by one or more of the following:
 | Status | Detected, Confirmed, Dismissed, Resolved |
 | Severity | Critical, High, Medium, Low, Info, Unknown |
 | Scanner | [Available Scanners](../index.md#security-scanning-tools) |
-
-You can filter the vulnerabilities list by selecting from the **Status**, **Severity**, and
-**Scanner** dropdowns. In the **Scanner** dropdown, select individual scanners or scanner groups to
-toggle those scanners. The **Scanner** dropdown includes both GitLab scanners, and in GitLab 13.6
-and later, custom scanners.
 
 You can also dismiss vulnerabilities in the table:
 
@@ -266,11 +259,6 @@ You can filter which vulnerabilities the vulnerability report displays by:
 | Severity | Critical, High, Medium, Low, Info, Unknown |
 | Scanner | [Available Scanners](../index.md#security-scanning-tools) |
 | Project | Projects configured in the Security Center settings |
-
-You can filter the vulnerabilities list by selecting from the **Status**, **Severity**, and
-**Scanner**, and **Project** dropdowns. In the **Scanner** dropdown, select individual scanners or
-scanner groups to toggle those scanners. The **Scanner** dropdown includes both GitLab scanners, and
-in GitLab 13.6 and later, custom scanners.
 
 Clicking any vulnerability in the table takes you to its
 [Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.
